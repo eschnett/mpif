@@ -8,6 +8,12 @@
 typedef __int128 int128_t;
 #endif
 
+int MPI_Abi_get_version(int *abi_major, int *abi_minor) {
+  *abi_major = MPI_ABI_VERSION;
+  *abi_minor = MPI_ABI_SUBVERSION;
+  return MPI_SUCCESS;
+}
+
 MPI_Info mpif_abi_info = MPI_INFO_NULL;
 
 int MPI_Abi_get_info(MPI_Info *info) {
