@@ -4,6 +4,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Work around MPICH bug
+#ifdef MPICH_VERSION
+  static int MPI_Abi_get_fortran_booleans1(int logical_size, void *logical_true, void *logical_false, int *is_set)
+  {
+    *is_set = 1;   // pretend
+    return MPI_Abi_get_fortran_booleans(logical_size, logical_true, logical_false);
+  }
+#  define MPI_Abi_get_fortran_booleans MPI_Abi_get_fortran_booleans1
+#endif
+
 void mpi_abi_get_fortran_booleans_(
   const MPI_Fint* restrict const logical_size,
   void* restrict const logical_true,
