@@ -75,14 +75,7 @@ end
 function ensure_comm!(state, input_conversions)
     state.have_comm[] && return
     append!(input_conversions, [
-        "MPI_Comm q_comm;",
-        "{",
-        "  const int q_ierror = MPI_Comm_fromint(*comm);",
-        "  if (q_ierror != MPI_SUCCESS) {",
-        "    if (ierror) *ierror = q_ierror;",
-        "    return;",
-        "  }",
-        "}",
+        "const MPI_Comm q_comm = MPI_Comm_fromint(*comm);",
     ])
     state.have_comm[] = true
 end
@@ -131,14 +124,12 @@ append!(c_implementations, [
     "#include <string.h>",
     "",
     "// Work around MPICH bug",
-    "#ifdef MPICH_VERSION",
-    "  static int MPI_Abi_get_fortran_booleans1(int logical_size, void *logical_true, void *logical_false, int *is_set)",
-    "  {",
-    "    *is_set = 1;   // pretend",
-    "    return MPI_Abi_get_fortran_booleans(logical_size, logical_true, logical_false);",
-    "  }",
-    "#  define MPI_Abi_get_fortran_booleans MPI_Abi_get_fortran_booleans1",
-    "#endif",
+    "static int MPI_Abi_get_fortran_booleans1(int logical_size, void *logical_true, void *logical_false, int *is_set)",
+    "{",
+    "  *is_set = 1;   // pretend",
+    "  return MPI_Abi_get_fortran_booleans(logical_size, logical_true, logical_false);",
+    "}",
+    "#define MPI_Abi_get_fortran_booleans MPI_Abi_get_fortran_booleans1",
 ])
 
 for key in sort(collect(keys(apis)))

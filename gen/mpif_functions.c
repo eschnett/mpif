@@ -5,14 +5,12 @@
 #include <string.h>
 
 // Work around MPICH bug
-#ifdef MPICH_VERSION
-  static int MPI_Abi_get_fortran_booleans1(int logical_size, void *logical_true, void *logical_false, int *is_set)
-  {
-    *is_set = 1;   // pretend
-    return MPI_Abi_get_fortran_booleans(logical_size, logical_true, logical_false);
-  }
-#  define MPI_Abi_get_fortran_booleans MPI_Abi_get_fortran_booleans1
-#endif
+static int MPI_Abi_get_fortran_booleans1(int logical_size, void *logical_true, void *logical_false, int *is_set)
+{
+  *is_set = 1;   // pretend
+  return MPI_Abi_get_fortran_booleans(logical_size, logical_true, logical_false);
+}
+#define MPI_Abi_get_fortran_booleans MPI_Abi_get_fortran_booleans1
 
 void mpi_abi_get_fortran_booleans_(
   const MPI_Fint* restrict const logical_size,
@@ -507,14 +505,7 @@ void mpi_alltoallw_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_size;
   {
     const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
@@ -558,14 +549,7 @@ void mpi_alltoallw_init_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_size;
   {
     const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
@@ -999,14 +983,7 @@ void mpi_cart_sub_(
     }
   }
   if (!q_is_set) abort();
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int ndims;
   {
     const int q_ierror = MPI_Cartdim_get(q_comm, &ndims);
@@ -1065,14 +1042,7 @@ void mpi_comm_accept_(
   const size_t length_port_name
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -1151,14 +1121,7 @@ void mpi_comm_connect_(
   const size_t length_port_name
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -1688,14 +1651,7 @@ void mpi_comm_spawn_(
   const size_t length_argv
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -1748,14 +1704,7 @@ void mpi_comm_spawn_multiple_(
   const size_t length_array_of_argv
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -3265,14 +3214,7 @@ void mpi_gather_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -3308,14 +3250,7 @@ void mpi_gather_init_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -3354,14 +3289,7 @@ void mpi_gatherv_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -3399,14 +3327,7 @@ void mpi_gatherv_init_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -4132,14 +4053,7 @@ void mpi_ialltoallw_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_size;
   {
     const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
@@ -4272,14 +4186,7 @@ void mpi_igather_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -4318,14 +4225,7 @@ void mpi_igatherv_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -4536,14 +4436,7 @@ void mpi_ineighbor_alltoallw_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_size;
   {
     const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
@@ -5146,14 +5039,7 @@ void mpi_iscatter_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -5192,14 +5078,7 @@ void mpi_iscatterv_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -5665,14 +5544,7 @@ void mpi_neighbor_alltoallw_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_size;
   {
     const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
@@ -5716,14 +5588,7 @@ void mpi_neighbor_alltoallw_init_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_size;
   {
     const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
@@ -6753,14 +6618,7 @@ void mpi_scatter_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -6796,14 +6654,7 @@ void mpi_scatter_init_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -6842,14 +6693,7 @@ void mpi_scatterv_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
@@ -6887,14 +6731,7 @@ void mpi_scatterv_init_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Comm q_comm;
-  {
-    const int q_ierror = MPI_Comm_fromint(*comm);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_comm_rank;
   {
     const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
