@@ -47,30 +47,33 @@ kind2type = Dict([
     "WINDOW" => "Win",
 ])
 
+fortran_false = 0
+fortran_true = 1
+
 struct State
-    have_fortran_booleans::Ref{Bool}
+    # have_fortran_booleans::Ref{Bool}
     have_comm::Ref{Bool}
     have_comm_rank::Ref{Bool}
     have_comm_size::Ref{Bool}
 
-    State() = new(Ref(false), Ref(false), Ref(false), Ref(false))
+    State() = new(Ref(false), Ref(false), Ref(false))
 end
 
-function ensure_fortran_booleans!(state, input_conversions)
-    state.have_fortran_booleans[] && return
-    append!(input_conversions, [
-        "MPI_Fint q_logical_true, q_logical_false, q_is_set;",
-        "{",
-        "  const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);",
-        "  if (q_ierror != MPI_SUCCESS) {",
-        "    if (ierror) *ierror = q_ierror;",
-        "    return;",
-        "  }",
-        "}",
-        "if (!q_is_set) abort();",
-    ])
-    state.have_fortran_booleans[] = true
-end
+# function ensure_fortran_booleans!(state, input_conversions)
+#     state.have_fortran_booleans[] && return
+#     append!(input_conversions, [
+#         "MPI_Fint q_logical_true, q_logical_false, q_is_set;",
+#         "{",
+#         "  const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);",
+#         "  if (q_ierror != MPI_SUCCESS) {",
+#         "    if (ierror) *ierror = q_ierror;",
+#         "    return;",
+#         "  }",
+#         "}",
+#         "if (!q_is_set) abort();",
+#     ])
+#     state.have_fortran_booleans[] = true
+# end
 
 function ensure_comm!(state, input_conversions)
     state.have_comm[] && return
@@ -130,77 +133,6 @@ append!(c_implementations, [
     "  return MPI_Abi_get_fortran_booleans(logical_size, logical_true, logical_false);",
     "}",
     "#define MPI_Abi_get_fortran_booleans MPI_Abi_get_fortran_booleans1",
-    "",
-    "int MPI_Abi_get_version(int *abi_major, int *abi_minor)",
-    "{",
-    "  *abi_major = MPI_ABI_VERSION;",
-    "  *abi_minor = MPI_ABI_SUBVERSION;",
-    "  return MPI_SUCCESS",
-    "}",
-
-int MPI_Abi_set_fortran_info(MPI_Info info)
-int MPI_Abi_get_fortran_info(MPI_Info *info)
-
-"mpi_logical_size":
-The size in bytes of the Fortran default LOGICAL kind.
-"mpi_integer_size":
-The size in bytes of the Fortran default INTEGER kind.
-"mpi_real_size":
-The size in bytes of the Fortran default REAL kind.
-"mpi_double_precision_size":
-The size in bytes of the Fortran DOUBLE PRECISION kind.
-"mpi_logical1_supported":
-(boolean) MPI_LOGICAL1 is supported.
-"mpi_logical2_supported":
-(boolean) MPI_LOGICAL2 is supported.
-"mpi_logical4_supported":
-(boolean) MPI_LOGICAL4 is supported.
-"mpi_logical8_supported":
-(boolean) MPI_LOGICAL8 is supported.
-"mpi_logical16_supported":
-(boolean) MPI_LOGICAL16 is supported.
-"mpi_integer1_supported":
-(boolean) MPI_INTEGER1 is supported.
-"mpi_integer2_supported":
-(boolean) MPI_INTEGER2 is supported.
-"mpi_integer4_supported":
-(boolean) MPI_INTEGER4 is supported.
-"mpi_integer8_supported":
-(boolean) MPI_INTEGER8 is supported.
-"mpi_integer16_supported":
-(boolean) MPI_INTEGER16 is supported.
-"mpi_real2_supported":
-(boolean) MPI_REAL2 is supported.
-"mpi_real4_supported":
-(boolean) MPI_REAL4 is supported.
-"mpi_real8_supported":
-(boolean) MPI_REAL8 is supported.
-"mpi_real16_supported":
-(boolean) MPI_REAL16 is supported.
-"mpi_complex4_supported":
-(boolean) MPI_COMPLEX4 is supported.
-"mpi_complex8_supported":
-(boolean) MPI_COMPLEX8 is supported.
-"mpi_complex16_supported":
-(boolean) MPI_COMPLEX16 is supported.
-"mpi_complex32_supported":
-(boolean) MPI_COMPLEX32 is supported.
-"mpi_double_complex_supported":
-(boolean) MPI_DOUBLE_COMPLEX is supported.
-
-
-
-int MPI_Abi_get_info(MPI_Info *info)
-
-
-int MPI_Abi_set_fortran_booleans(int logical_size, void *logical_true, void *logical_false)
-
-int MPI_Abi_get_fortran_booleans(int logical_size, void *logical_true, void *logical_false, int *is_set)
-
-
-defined reference to `MPI_Abi_set_fortran_booleans'
-/opt/riscv64-linux-gnu/bin/../lib/gcc/riscv64-linux-gnu/14.2.0/../../../../riscv64-linux-gnu/bin/ld: /workspace/destdir/lib/libmpif.so: un
-defined reference to `MPI_Abi_get_fortran_booleans'
 ])
 
 for key in sort(collect(keys(apis)))
@@ -504,17 +436,16 @@ for key in sort(collect(keys(apis)))
             @assert "f90_parameter" ∉ suppress
             @assert !large_only
             @assert !root_only
-            ensure_fortran_booleans!(state, input_conversions)
             if param_direction == "in"
                 if length == nothing
                     push!(input_arguments, "const MPI_Fint* restrict const $parname")
-                    push!(call_arguments, "*$parname != q_logical_false")
+                    push!(call_arguments, "*$parname != $fortran_false")
                 elseif length == "ndims"
                     push!(input_arguments, "const MPI_Fint* restrict const $parname")
                     append!(input_conversions, [
                         "int c_$parname[*ndims];",
                         "for (int dim=0; dim<*ndims; ++dim)",
-                        "  c_$parname[dim] = $parname[dim] != q_logical_false;",
+                        "  c_$parname[dim] = $parname[dim] != $fortran_false;",
                     ])
                     push!(call_arguments, "c_$parname")
                 elseif name == "MPI_Cart_sub" && length == "*"
@@ -531,7 +462,7 @@ for key in sort(collect(keys(apis)))
                         "}",
                         "int c_$parname[ndims];",
                         "for (int dim=0; dim<ndims; ++dim)",
-                        "  c_$parname[dim] = $parname[dim] != q_logical_false;",
+                        "  c_$parname[dim] = $parname[dim] != $fortran_false;",
                     ])
                     push!(call_arguments, "c_$parname")
                 else

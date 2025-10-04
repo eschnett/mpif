@@ -20,15 +20,6 @@ void mpi_abi_get_fortran_booleans_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_is_set;
   const int c_ierror = MPI_Abi_get_fortran_booleans(
     *logical_size,
@@ -604,15 +595,6 @@ void mpi_attr_get_(
 )
 {
   void *c_attribute_val;
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Attr_get(
     MPI_Comm_fromint(*comm),
@@ -846,25 +828,16 @@ void mpi_cart_create_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   int c_periods[*ndims];
   for (int dim=0; dim<*ndims; ++dim)
-    c_periods[dim] = periods[dim] != q_logical_false;
+    c_periods[dim] = periods[dim] != 0;
   MPI_Comm c_comm_cart;
   const int c_ierror = MPI_Cart_create(
     MPI_Comm_fromint(*comm_old),
     *ndims,
     dims,
     c_periods,
-    *reorder != q_logical_false,
+    *reorder != 0,
     &c_comm_cart
   );
   *comm_cart = MPI_Comm_toint(c_comm_cart);
@@ -880,15 +853,6 @@ void mpi_cart_get_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   int c_periods[*maxdims];
   const int c_ierror = MPI_Cart_get(
     MPI_Comm_fromint(*comm),
@@ -911,18 +875,9 @@ void mpi_cart_map_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   int c_periods[*ndims];
   for (int dim=0; dim<*ndims; ++dim)
-    c_periods[dim] = periods[dim] != q_logical_false;
+    c_periods[dim] = periods[dim] != 0;
   const int c_ierror = MPI_Cart_map(
     MPI_Comm_fromint(*comm),
     *ndims,
@@ -974,15 +929,6 @@ void mpi_cart_sub_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int ndims;
   {
@@ -994,7 +940,7 @@ void mpi_cart_sub_(
   }
   int c_remain_dims[ndims];
   for (int dim=0; dim<ndims; ++dim)
-    c_remain_dims[dim] = remain_dims[dim] != q_logical_false;
+    c_remain_dims[dim] = remain_dims[dim] != 0;
   MPI_Comm c_newcomm;
   const int c_ierror = MPI_Cart_sub(
     MPI_Comm_fromint(*comm),
@@ -1359,15 +1305,6 @@ void mpi_comm_get_attr_(
 )
 {
   void *c_attribute_val;
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Comm_get_attr(
     MPI_Comm_fromint(*comm),
@@ -1806,15 +1743,6 @@ void mpi_comm_test_inter_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Comm_test_inter(
     MPI_Comm_fromint(*comm),
@@ -1875,15 +1803,6 @@ void mpi_dist_graph_create_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Comm c_comm_dist_graph;
   const int c_ierror = MPI_Dist_graph_create(
     MPI_Comm_fromint(*comm_old),
@@ -1893,7 +1812,7 @@ void mpi_dist_graph_create_(
     destinations,
     weights,
     MPI_Info_fromint(*info),
-    *reorder != q_logical_false,
+    *reorder != 0,
     &c_comm_dist_graph
   );
   *comm_dist_graph = MPI_Comm_toint(c_comm_dist_graph);
@@ -1914,15 +1833,6 @@ void mpi_dist_graph_create_adjacent_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Comm c_comm_dist_graph;
   const int c_ierror = MPI_Dist_graph_create_adjacent(
     MPI_Comm_fromint(*comm_old),
@@ -1933,7 +1843,7 @@ void mpi_dist_graph_create_adjacent_(
     destinations,
     destweights,
     MPI_Info_fromint(*info),
-    *reorder != q_logical_false,
+    *reorder != 0,
     &c_comm_dist_graph
   );
   *comm_dist_graph = MPI_Comm_toint(c_comm_dist_graph);
@@ -1971,15 +1881,6 @@ void mpi_dist_graph_neighbors_count_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_weighted;
   const int c_ierror = MPI_Dist_graph_neighbors_count(
     MPI_Comm_fromint(*comm),
@@ -2189,15 +2090,6 @@ void mpi_file_get_atomicity_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_File_get_atomicity(
     MPI_File_fromint(*fh),
@@ -2854,18 +2746,9 @@ void mpi_file_set_atomicity_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   const int c_ierror = MPI_File_set_atomicity(
     MPI_File_fromint(*fh),
-    *flag != q_logical_false
+    *flag != 0
   );
   if (ierror) *ierror = c_ierror;
 }
@@ -3174,15 +3057,6 @@ void mpi_finalized_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Finalized(
     &c_flag
@@ -3538,22 +3412,13 @@ void mpi_graph_create_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Comm c_comm_graph;
   const int c_ierror = MPI_Graph_create(
     MPI_Comm_fromint(*comm_old),
     *nnodes,
     index,
     edges,
-    *reorder != q_logical_false,
+    *reorder != 0,
     &c_comm_graph
   );
   *comm_graph = MPI_Comm_toint(c_comm_graph);
@@ -4261,15 +4126,6 @@ void mpi_improbe_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   MPI_Message c_message;
   const int c_ierror = MPI_Improbe(
@@ -4553,15 +4409,6 @@ void mpi_info_get_(
   char* const c_key = mpif_strdup_f2c(key, length_key);
   const size_t length_value = *valuelen;
   char c_value[length_value + 1];
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Info_get(
     MPI_Info_fromint(*info),
@@ -4620,15 +4467,6 @@ void mpi_info_get_string_(
 {
   char* const c_key = mpif_strdup_f2c(key, length_key);
   char c_value[length_value + 1];
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Info_get_string(
     MPI_Info_fromint(*info),
@@ -4653,15 +4491,6 @@ void mpi_info_get_valuelen_(
 )
 {
   char* const c_key = mpif_strdup_f2c(key, length_key);
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Info_get_valuelen(
     MPI_Info_fromint(*info),
@@ -4726,15 +4555,6 @@ void mpi_initialized_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Initialized(
     &c_flag
@@ -4803,19 +4623,10 @@ void mpi_intercomm_merge_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Comm c_newintracomm;
   const int c_ierror = MPI_Intercomm_merge(
     MPI_Comm_fromint(*intercomm),
-    *high != q_logical_false,
+    *high != 0,
     &c_newintracomm
   );
   *newintracomm = MPI_Comm_toint(c_newintracomm);
@@ -4831,15 +4642,6 @@ void mpi_iprobe_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Iprobe(
     *source,
@@ -4984,15 +4786,6 @@ void mpi_is_thread_main_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Is_thread_main(
     &c_flag
@@ -5627,15 +5420,6 @@ void mpi_op_commutative_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_commute;
   const int c_ierror = MPI_Op_commutative(
     MPI_Op_fromint(*op),
@@ -5653,19 +5437,10 @@ void mpi_op_create_(
 )
 {
   abort();
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Op c_op;
   const int c_ierror = MPI_Op_create(
     user_fn,
-    *commute != q_logical_false,
+    *commute != 0,
     &c_op
   );
   *op = MPI_Op_toint(c_op);
@@ -5794,15 +5569,6 @@ void mpi_parrived_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Parrived(
     MPI_Request_fromint(*request),
@@ -6312,15 +6078,6 @@ void mpi_request_get_status_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Request_get_status(
     MPI_Request_fromint(*request),
@@ -6342,15 +6099,6 @@ void mpi_request_get_status_all_(
   MPI_Request c_array_of_requests[*count];
   for (int rank=0; rank<*count; ++rank)
     c_array_of_requests[rank] = MPI_Request_fromint(array_of_requests[rank]);
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Request_get_status_all(
     *count,
@@ -6374,15 +6122,6 @@ void mpi_request_get_status_any_(
   MPI_Request c_array_of_requests[*count];
   for (int rank=0; rank<*count; ++rank)
     c_array_of_requests[rank] = MPI_Request_fromint(array_of_requests[rank]);
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Request_get_status_any(
     *count,
@@ -7198,18 +6937,9 @@ void mpi_status_set_cancelled_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   const int c_ierror = MPI_Status_set_cancelled(
     (MPI_Status*)status,
-    *flag != q_logical_false
+    *flag != 0
   );
   if (ierror) *ierror = c_ierror;
 }
@@ -7291,15 +7021,6 @@ void mpi_test_(
 )
 {
   MPI_Request c_request = MPI_Request_fromint(*request);
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Test(
     &c_request,
@@ -7317,15 +7038,6 @@ void mpi_test_cancelled_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Test_cancelled(
     (const MPI_Status*)status,
@@ -7344,15 +7056,6 @@ void mpi_testall_(
 )
 {
   MPI_Request c_array_of_requests = MPI_Request_fromint(*array_of_requests);
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Testall(
     *count,
@@ -7375,15 +7078,6 @@ void mpi_testany_(
 )
 {
   MPI_Request c_array_of_requests = MPI_Request_fromint(*array_of_requests);
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Testany(
     *count,
@@ -7773,15 +7467,6 @@ void mpi_type_get_attr_(
 )
 {
   void *c_attribute_val;
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Type_get_attr(
     MPI_Type_fromint(*datatype),
@@ -8471,15 +8156,6 @@ void mpi_win_get_attr_(
 )
 {
   void *c_attribute_val;
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Win_get_attr(
     MPI_Win_fromint(*win),
@@ -8708,15 +8384,6 @@ void mpi_win_test_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint q_logical_true, q_logical_false, q_is_set;
-  {
-    const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);
-    if (q_ierror != MPI_SUCCESS) {
-      if (ierror) *ierror = q_ierror;
-      return;
-    }
-  }
-  if (!q_is_set) abort();
   MPI_Fint c_flag;
   const int c_ierror = MPI_Win_test(
     MPI_Win_fromint(*win),
