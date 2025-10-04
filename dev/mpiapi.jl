@@ -130,6 +130,77 @@ append!(c_implementations, [
     "  return MPI_Abi_get_fortran_booleans(logical_size, logical_true, logical_false);",
     "}",
     "#define MPI_Abi_get_fortran_booleans MPI_Abi_get_fortran_booleans1",
+    "",
+    "int MPI_Abi_get_version(int *abi_major, int *abi_minor)",
+    "{",
+    "  *abi_major = MPI_ABI_VERSION;",
+    "  *abi_minor = MPI_ABI_SUBVERSION;",
+    "  return MPI_SUCCESS",
+    "}",
+
+int MPI_Abi_set_fortran_info(MPI_Info info)
+int MPI_Abi_get_fortran_info(MPI_Info *info)
+
+"mpi_logical_size":
+The size in bytes of the Fortran default LOGICAL kind.
+"mpi_integer_size":
+The size in bytes of the Fortran default INTEGER kind.
+"mpi_real_size":
+The size in bytes of the Fortran default REAL kind.
+"mpi_double_precision_size":
+The size in bytes of the Fortran DOUBLE PRECISION kind.
+"mpi_logical1_supported":
+(boolean) MPI_LOGICAL1 is supported.
+"mpi_logical2_supported":
+(boolean) MPI_LOGICAL2 is supported.
+"mpi_logical4_supported":
+(boolean) MPI_LOGICAL4 is supported.
+"mpi_logical8_supported":
+(boolean) MPI_LOGICAL8 is supported.
+"mpi_logical16_supported":
+(boolean) MPI_LOGICAL16 is supported.
+"mpi_integer1_supported":
+(boolean) MPI_INTEGER1 is supported.
+"mpi_integer2_supported":
+(boolean) MPI_INTEGER2 is supported.
+"mpi_integer4_supported":
+(boolean) MPI_INTEGER4 is supported.
+"mpi_integer8_supported":
+(boolean) MPI_INTEGER8 is supported.
+"mpi_integer16_supported":
+(boolean) MPI_INTEGER16 is supported.
+"mpi_real2_supported":
+(boolean) MPI_REAL2 is supported.
+"mpi_real4_supported":
+(boolean) MPI_REAL4 is supported.
+"mpi_real8_supported":
+(boolean) MPI_REAL8 is supported.
+"mpi_real16_supported":
+(boolean) MPI_REAL16 is supported.
+"mpi_complex4_supported":
+(boolean) MPI_COMPLEX4 is supported.
+"mpi_complex8_supported":
+(boolean) MPI_COMPLEX8 is supported.
+"mpi_complex16_supported":
+(boolean) MPI_COMPLEX16 is supported.
+"mpi_complex32_supported":
+(boolean) MPI_COMPLEX32 is supported.
+"mpi_double_complex_supported":
+(boolean) MPI_DOUBLE_COMPLEX is supported.
+
+
+
+int MPI_Abi_get_info(MPI_Info *info)
+
+
+int MPI_Abi_set_fortran_booleans(int logical_size, void *logical_true, void *logical_false)
+
+int MPI_Abi_get_fortran_booleans(int logical_size, void *logical_true, void *logical_false, int *is_set)
+
+
+defined reference to `MPI_Abi_set_fortran_booleans'
+/opt/riscv64-linux-gnu/bin/../lib/gcc/riscv64-linux-gnu/14.2.0/../../../../riscv64-linux-gnu/bin/ld: /workspace/destdir/lib/libmpif.so: un
+defined reference to `MPI_Abi_get_fortran_booleans'
 ])
 
 for key in sort(collect(keys(apis)))

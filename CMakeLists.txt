@@ -175,7 +175,8 @@ add_library(mpif
   src/mpi.F90
   # Implementation
   include/mpif_strings.h
-  src/mpif_init.F90
+  src/mpif_init.c
+  src/mpif_mpich.c
   src/mpif_sizeof.c
   src/mpif_strings.c
   gen/mpif_functions.c
