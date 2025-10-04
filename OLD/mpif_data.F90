@@ -1,0 +1,75 @@
+block data mpif_data
+   implicit none
+
+   integer MPI_ADDRESS_KIND
+   parameter (MPI_ADDRESS_KIND = kind(loc(MPI_ADDRESS_KIND)))
+   
+   integer MPI_STATUS_SIZE
+   parameter (MPI_STATUS_SIZE                = 8)
+
+   ! Buffer Address Constants
+   
+   integer MPI_BOTTOM(1)
+   integer(MPI_ADDRESS_KIND) MPI_BOTTOM_PTR
+   pointer (MPI_BOTTOM_PTR, MPI_BOTTOM)
+   common /MPI_BOTTOM_PTR/ MPI_BOTTOM_PTR
+   
+   integer MPI_IN_PLACE(1)
+   integer(MPI_ADDRESS_KIND) MPI_IN_PLACE_PTR
+   pointer (MPI_IN_PLACE_PTR, MPI_IN_PLACE)
+   common /MPI_IN_PLACE_PTR/ MPI_IN_PLACE_PTR
+   
+   integer MPI_BUFFER_AUTOMATIC(1)
+   integer(MPI_ADDRESS_KIND) MPI_BUFFER_AUTOMATIC_PTR
+   pointer (MPI_BUFFER_AUTOMATIC_PTR, MPI_BUFFER_AUTOMATIC)
+   common /MPI_BUFFER_AUTOMATIC_PTR/ MPI_BUFFER_AUTOMATIC_PTR
+   
+   ! Empty/Ignored Constants
+   
+   integer MPI_ARGVS_NULL(1)
+   integer(MPI_ADDRESS_KIND) MPI_ARGVS_NULL_PTR
+   pointer (MPI_ARGVS_NULL_PTR, MPI_ARGVS_NULL)
+   common /MPI_ARGVS_NULL_PTR/ MPI_ARGVS_NULL_PTR
+   
+   integer MPI_ARGV_NULL(1)
+   integer(MPI_ADDRESS_KIND) MPI_ARGV_NULL_PTR
+   pointer (MPI_ARGV_NULL_PTR, MPI_ARGV_NULL)
+   common /MPI_ARGV_NULL_PTR/ MPI_ARGV_NULL_PTR
+   
+   integer MPI_ERRCODES_IGNORE(1)
+   integer(MPI_ADDRESS_KIND) MPI_ERRCODES_IGNORE_PTR
+   pointer (MPI_ERRCODES_IGNORE_PTR, MPI_ERRCODES_IGNORE)
+   common /MPI_ERRCODES_IGNORE_PTR/ MPI_ERRCODES_IGNORE_PTR
+   
+   integer MPI_STATUS_IGNORE(MPI_STATUS_SIZE)
+   integer(MPI_ADDRESS_KIND) MPI_STATUS_IGNORE_PTR
+   pointer (MPI_STATUS_IGNORE_PTR, MPI_STATUS_IGNORE)
+   common /MPI_STATUS_IGNORE_PTR/ MPI_STATUS_IGNORE_PTR
+   
+   integer MPI_STATUSES_IGNORE(MPI_STATUS_SIZE)
+   integer(MPI_ADDRESS_KIND) MPI_STATUSES_IGNORE_PTR
+   pointer (MPI_STATUSES_IGNORE_PTR, MPI_STATUSES_IGNORE)
+   common /MPI_STATUSES_IGNORE_PTR/ MPI_STATUSES_IGNORE_PTR
+   
+   integer MPI_UNWEIGHTED(1)
+   integer(MPI_ADDRESS_KIND) MPI_UNWEIGHTED_PTR
+   pointer (MPI_UNWEIGHTED_PTR, MPI_UNWEIGHTED)
+   common /MPI_UNWEIGHTED_PTR/ MPI_UNWEIGHTED_PTR
+   
+   integer MPI_WEIGHTS_EMPTY(1)
+   integer(MPI_ADDRESS_KIND) MPI_WEIGHTS_EMPTY_PTR
+   pointer (MPI_WEIGHTS_EMPTY_PTR, MPI_WEIGHTS_EMPTY)
+   common /MPI_WEIGHTS_EMPTY_PTR/ MPI_WEIGHTS_EMPTY_PTR
+
+   data MPI_BOTTOM_PTR                          /0/
+   data MPI_IN_PLACE_PTR                        /1/
+   data MPI_BUFFER_AUTOMATIC_PTR                /2/
+
+   data MPI_ARGV_NULL_PTR                       /0/
+   data MPI_ARGVS_NULL_PTR                      /0/
+   data MPI_ERRCODES_IGNORE_PTR                 /0/
+   data MPI_STATUS_IGNORE_PTR                   /0/
+   data MPI_STATUSES_IGNORE_PTR                 /0/
+   data MPI_UNWEIGHTED_PTR                      /10/
+   data MPI_WEIGHTS_EMPTY_PTR                   /11/
+end block data

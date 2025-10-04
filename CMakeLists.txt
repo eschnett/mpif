@@ -190,7 +190,7 @@ add_library(mpif
 target_include_directories(mpif PRIVATE include)
 target_link_libraries(mpif PRIVATE MPI::MPI_C)
 list(APPEND public_headers
-  mpif.h
+  include/mpif.h
 )
 set_target_properties(mpif PROPERTIES
   VERSION ${PROJECT_VERSION}
