@@ -173,6 +173,10 @@ add_library(mpif
   include/mpif.h
   # MPI Fortran modules
   src/mpi.F90
+  src/mpi_f08.F90
+  src/mpi_f08_constants.F90
+  src/mpi_f08_functions.F90
+  src/mpi_f08_types.F90
   # Implementation
   include/mpif_strings.h
   src/mpif_init.c
@@ -192,6 +196,8 @@ target_include_directories(mpif PRIVATE include)
 target_link_libraries(mpif PRIVATE MPI::MPI_C)
 list(APPEND public_headers
   include/mpif.h
+  include/mpif_constants.h
+  include/mpif_functions.h
 )
 set_target_properties(mpif PROPERTIES
   VERSION ${PROJECT_VERSION}
