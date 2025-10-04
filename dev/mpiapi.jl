@@ -2,7 +2,7 @@
 # mkdir data
 # cp pympistandard/src/pympistandard/data/apis.json data
 #
-# julia bin/mpiapi.jl
+# julia dev/mpiapi.jl
 
 using JSON
 apis = JSON.parsefile("data/apis.json")
