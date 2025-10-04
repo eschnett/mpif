@@ -1,4 +1,5 @@
 # git clone https://github.com/mpi-forum/pympistandard
+# mkdir data
 # cp pympistandard/src/pympistandard/data/apis.json data
 #
 # julia bin/mpiapi.jl
