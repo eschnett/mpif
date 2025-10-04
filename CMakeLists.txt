@@ -1,0 +1,240 @@
+cmake_minimum_required(VERSION 3.12...3.20)
+project(
+  mpif VERSION 1.0.0
+  DESCRIPTION "MPI Fortran bindings"
+  HOMEPAGE_URL "https://github.com/eschnett/mpif"
+  LANGUAGES C Fortran
+  )
+
+# SOVERSION is the ABI version of mpif. (That's different from the
+# MPI_ABI version.)
+#
+# SOVERSION is handled differently under Linux and macOS. We are using
+# a single-digit SOVERSION to avoid confusion between VERSION (which
+# consists of 3 numbers) and SOVERSION.
+#
+# Different SOVERSIONs are incompatible; there is no need to have a
+# major/minor version number.
+set(SOVERSION 1)
+
+include(CheckLanguage)
+
+check_language(C)
+if(NOT(CMAKE_C_COMPILER))
+  message(FATAL_ERROR "No C support")
+endif()
+set(CMAKE_C_STANDARD 99)
+enable_language(C)
+
+check_language(Fortran)
+if(NOT(CMAKE_Fortran_COMPILER))
+  message(FATAL_ERROR "No Fortran support")
+endif()
+enable_language(Fortran)
+
+set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
+include(GNUInstallDirs)
+
+find_package(MPI REQUIRED COMPONENTS C)
+
+# Check for Fortran features
+
+include(CheckFortranCompilerFlag)
+check_fortran_compiler_flag(-fallow-argument-mismatch Fortran_flag_allow_argument_mismatch)
+if(Fortran_flag_allow_argument_mismatch)
+  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fallow-argument-mismatch")
+endif()
+check_fortran_compiler_flag(-fcray-pointer Fortran_flag_cray_pointer)
+if(Fortran_flag_cray_pointer)
+  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fcray-pointer")
+endif()
+check_fortran_source_compiles(
+  "
+  end
+  subroutine sub(buf)
+    implicit none
+    integer buf(*)
+  end
+  subroutine caller1(buf)
+    implicit none
+    integer buf(1)
+    interface
+       subroutine sub(buf)
+         implicit none
+         integer buf(*)
+         !dir$ ignore_tkr(tkr) buf
+       end subroutine sub
+    end interface
+    call sub(buf)
+  end subroutine caller1
+  subroutine caller2(buf)
+    implicit none
+    real buf(1)
+    interface
+       subroutine sub(buf)
+         implicit none
+         integer buf(*)
+         !dir$ ignore_tkr(tkr) buf
+       end subroutine sub
+    end interface
+    call sub(buf)
+  end subroutine caller2
+  subroutine caller3(buf)
+    implicit none
+    real buf
+    interface
+       subroutine sub(buf)
+         implicit none
+         integer buf(*)
+         !dir$ ignore_tkr(tkr) buf
+       end subroutine sub
+    end interface
+    call sub(buf)
+  end subroutine caller3
+  "
+  HAVE_Fortran_attribute_dir_ignore_tkr
+  SRC_EXT f90
+)
+if(HAVE_Fortran_attribute_dir_ignore_tkr)
+  set(DIR_IGNORE_TKR "")
+else()
+  set(DIR_IGNORE_TKR "!disabled ")
+endif()
+check_fortran_source_compiles(
+  "
+  end
+  subroutine sub(buf)
+    implicit none
+    !gcc$ attributes no_arg_check :: buf
+    integer buf(*)
+  end
+  subroutine caller1(buf)
+    implicit none
+    integer buf(1)
+    interface
+       subroutine sub(buf)
+         implicit none
+         integer buf(*)
+         !gcc$ attributes no_arg_check :: buf
+       end subroutine sub
+    end interface
+    call sub(buf)
+  end subroutine caller1
+  subroutine caller2(buf)
+    implicit none
+    real buf(1)
+    interface
+       subroutine sub(buf)
+         implicit none
+         integer buf(*)
+         !gcc$ attributes no_arg_check :: buf
+       end subroutine sub
+    end interface
+    call sub(buf)
+  end subroutine caller2
+  subroutine caller3(buf)
+    implicit none
+    real buf
+    interface
+       subroutine sub(buf)
+         implicit none
+         integer buf(*)
+         !gcc$ attributes no_arg_check :: buf
+       end subroutine sub
+    end interface
+    call sub(buf)
+  end subroutine caller3
+  "
+  HAVE_Fortran_attribute_gcc_attributes_no_arg_check
+  SRC_EXT f90
+)
+if(HAVE_Fortran_attribute_gcc_attributes_no_arg_check)
+  set(GCC_ATTRIBUTES_NO_ARG_CHECK "")
+else()
+  set(GCC_ATTRIBUTES_NO_ARG_CHECK "!disabled ")
+endif()
+add_compile_definitions(ENABLE_FORTRAN)
+
+# configure_file(include/mpitrampoline.h.in include/mpitrampoline.h @ONLY)
+# configure_file(include/mpitrampolinef.h.in include/mpitrampolinef.h @ONLY)
+# configure_file(include/mpif_functions.h.in include/mpif_functions.h @ONLY)
+# configure_file(src/mpi_f08_functions.F90.in src/mpi_f08_functions.F90 @ONLY)
+
+add_library(mpif
+  # # MPI C header files
+  # include/mpitrampoline.h
+  # include/mpi.h
+  # include/mpi_mpitrampoline.h
+  # include/mpi_types.h
+  # include/mpi_constants.h
+  # include/mpi_functions.h
+  # include/mpi_mpiabi_function_pointers.h
+  # MPI Fortran header files
+  include/mpif.h
+  # MPI Fortran modules
+  src/mpi.F90
+  # Implementation
+  include/mpif_strings.h
+  src/mpif_init.F90
+  src/mpif_sizeof.c
+  src/mpif_strings.c
+  gen/mpif_functions.c
+)
+# target_compile_options(mpif PRIVATE -Wall -Wextra -Wno-unused-dummy-argument -Wno-unused-parameter)
+# target_include_directories(
+#   mpif
+#   PRIVATE include ${CMAKE_CURRENT_BINARY_DIR}/include
+#   PRIVATE ../mpiabi
+# )
+# target_link_libraries(mpif PRIVATE ${CMAKE_DL_LIBS})
+target_include_directories(mpif PRIVATE include)
+target_link_libraries(mpif PRIVATE MPI::MPI_C)
+list(APPEND public_headers
+  mpif.h
+)
+set_target_properties(mpif PROPERTIES
+  VERSION ${PROJECT_VERSION}
+  SOVERSION ${SOVERSION}
+  PUBLIC_HEADER "${public_headers}"
+)
+
+install(TARGETS mpif EXPORT mpifTargets)
+
+install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+# # Install pkgconfig files
+# 
+# configure_file(pkgconfig/MPItrampoline.pc.in pkgconfig/MPItrampoline.pc @ONLY)
+# configure_file(pkgconfig/mpi-c.pc.in pkgconfig/mpi-c.pc @ONLY)
+# configure_file(pkgconfig/mpi-cxx.pc.in pkgconfig/mpi-cxx.pc @ONLY)
+# configure_file(pkgconfig/mpi-fort.pc.in pkgconfig/mpi-fort.pc @ONLY)
+# install(
+#   FILES
+#   ${CMAKE_BINARY_DIR}/pkgconfig/MPItrampoline.pc
+#   ${CMAKE_BINARY_DIR}/pkgconfig/mpi-c.pc
+#   ${CMAKE_BINARY_DIR}/pkgconfig/mpi-cxx.pc
+#   ${CMAKE_BINARY_DIR}/pkgconfig/mpi-fort.pc
+#   DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+# )
+
+# # Install compiler wrappers
+# 
+# configure_file(bin/mpicc.in bin/mpicc @ONLY)
+# install(
+#   FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpicc
+#   DESTINATION ${CMAKE_INSTALL_BINDIR}
+#   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+# )
+# configure_file(bin/mpicxx.in bin/mpicxx @ONLY)
+# install(
+#   FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpicxx
+#   DESTINATION ${CMAKE_INSTALL_BINDIR}
+#   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+# )
+# configure_file(bin/mpifc.in bin/mpifc @ONLY)
+# configure_file(bin/mpifort.in bin/mpifort @ONLY)
+# install(
+#   FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpifc ${CMAKE_CURRENT_BINARY_DIR}/bin/mpifort
+#   DESTINATION ${CMAKE_INSTALL_BINDIR}
+#   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+# )
