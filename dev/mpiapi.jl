@@ -474,7 +474,7 @@ for key in sort(collect(keys(apis)))
                     push!(input_arguments, "MPI_Fint* restrict const $parname")
                     push!(input_conversions, "MPI_Fint c_$parname;")
                     push!(call_arguments, "&c_$parname")
-                    push!(output_conversions, "*$parname = c_$parname ? q_logical_true : q_logical_false;")
+                    push!(output_conversions, "*$parname = c_$parname ? $fortran_true : $fortran_false;")
                 elseif length == "maxdims"
                     push!(input_arguments, "MPI_Fint* restrict const $parname")
                     append!(input_conversions, [
@@ -483,7 +483,7 @@ for key in sort(collect(keys(apis)))
                     push!(call_arguments, "c_$parname")
                     append!(output_conversions, [
                         "for (int dim=0; dim<*maxdims; ++dim)",
-                        "  $parname[dim] = c_$parname[dim] ? q_logical_true : q_logical_false;",
+                        "  $parname[dim] = c_$parname[dim] ? $fortran_true : $fortran_false;",
                     ])
                 else
                     @show name length

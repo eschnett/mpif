@@ -4,13 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-// // Work around MPICH bug
-// static int MPI_Abi_get_fortran_booleans1(int logical_size, void *logical_true, void *logical_false, int *is_set)
-// {
-//   *is_set = 1;   // pretend
-//   return MPI_Abi_get_fortran_booleans(logical_size, logical_true, logical_false);
-// }
-// #define MPI_Abi_get_fortran_booleans MPI_Abi_get_fortran_booleans1
+// Work around MPICH bug
+static int MPI_Abi_get_fortran_booleans1(int logical_size, void *logical_true, void *logical_false, int *is_set)
+{
+  *is_set = 1;   // pretend
+  return MPI_Abi_get_fortran_booleans(logical_size, logical_true, logical_false);
+}
+#define MPI_Abi_get_fortran_booleans MPI_Abi_get_fortran_booleans1
 
 void mpi_abi_get_fortran_booleans_(
   const MPI_Fint* restrict const logical_size,
@@ -27,7 +27,7 @@ void mpi_abi_get_fortran_booleans_(
     logical_false,
     &c_is_set
   );
-  *is_set = c_is_set ? q_logical_true : q_logical_false;
+  *is_set = c_is_set ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -603,7 +603,7 @@ void mpi_attr_get_(
     &c_flag
   );
   *attribute_val = (int)(intptr_t)c_attribute_val;
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -862,7 +862,7 @@ void mpi_cart_get_(
     coords
   );
   for (int dim=0; dim<*maxdims; ++dim)
-    periods[dim] = c_periods[dim] ? q_logical_true : q_logical_false;
+    periods[dim] = c_periods[dim] ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -1313,7 +1313,7 @@ void mpi_comm_get_attr_(
     &c_flag
   );
   *attribute_val = (MPI_Aint)c_attribute_val;
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -1748,7 +1748,7 @@ void mpi_comm_test_inter_(
     MPI_Comm_fromint(*comm),
     &c_flag
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -1888,7 +1888,7 @@ void mpi_dist_graph_neighbors_count_(
     outdegree,
     &c_weighted
   );
-  *weighted = c_weighted ? q_logical_true : q_logical_false;
+  *weighted = c_weighted ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -2095,7 +2095,7 @@ void mpi_file_get_atomicity_(
     MPI_File_fromint(*fh),
     &c_flag
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -3061,7 +3061,7 @@ void mpi_finalized_(
   const int c_ierror = MPI_Finalized(
     &c_flag
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -4136,7 +4136,7 @@ void mpi_improbe_(
     &c_message,
     (MPI_Status*)status
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   *message = MPI_Message_toint(c_message);
   if (ierror) *ierror = c_ierror;
 }
@@ -4419,7 +4419,7 @@ void mpi_info_get_(
   );
   free(c_key);
   mpif_strcpy_c2f(value, c_value, length_value, strlen(c_value));
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -4477,7 +4477,7 @@ void mpi_info_get_string_(
   );
   free(c_key);
   mpif_strcpy_c2f(value, c_value, length_value, strlen(c_value));
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -4499,7 +4499,7 @@ void mpi_info_get_valuelen_(
     &c_flag
   );
   free(c_key);
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -4559,7 +4559,7 @@ void mpi_initialized_(
   const int c_ierror = MPI_Initialized(
     &c_flag
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -4650,7 +4650,7 @@ void mpi_iprobe_(
     &c_flag,
     (MPI_Status*)status
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -4790,7 +4790,7 @@ void mpi_is_thread_main_(
   const int c_ierror = MPI_Is_thread_main(
     &c_flag
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -5425,7 +5425,7 @@ void mpi_op_commutative_(
     MPI_Op_fromint(*op),
     &c_commute
   );
-  *commute = c_commute ? q_logical_true : q_logical_false;
+  *commute = c_commute ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -5575,7 +5575,7 @@ void mpi_parrived_(
     *partition,
     &c_flag
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -6084,7 +6084,7 @@ void mpi_request_get_status_(
     &c_flag,
     (MPI_Status*)status
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -6106,7 +6106,7 @@ void mpi_request_get_status_all_(
     &c_flag,
     (MPI_Status*)array_of_statuses
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -6130,7 +6130,7 @@ void mpi_request_get_status_any_(
     &c_flag,
     (MPI_Status*)status
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -7028,7 +7028,7 @@ void mpi_test_(
     (MPI_Status*)status
   );
   *request = MPI_Request_toint(c_request);
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -7043,7 +7043,7 @@ void mpi_test_cancelled_(
     (const MPI_Status*)status,
     &c_flag
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -7064,7 +7064,7 @@ void mpi_testall_(
     (MPI_Status*)array_of_statuses
   );
   *array_of_requests = MPI_Request_toint(c_array_of_requests);
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -7087,7 +7087,7 @@ void mpi_testany_(
     (MPI_Status*)status
   );
   *array_of_requests = MPI_Request_toint(c_array_of_requests);
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -7475,7 +7475,7 @@ void mpi_type_get_attr_(
     &c_flag
   );
   *attribute_val = (MPI_Aint)c_attribute_val;
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -8164,7 +8164,7 @@ void mpi_win_get_attr_(
     &c_flag
   );
   *attribute_val = (MPI_Aint)c_attribute_val;
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
@@ -8389,7 +8389,7 @@ void mpi_win_test_(
     MPI_Win_fromint(*win),
     &c_flag
   );
-  *flag = c_flag ? q_logical_true : q_logical_false;
+  *flag = c_flag ? 1 : 0;
   if (ierror) *ierror = c_ierror;
 }
 
