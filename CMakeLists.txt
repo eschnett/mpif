@@ -219,9 +219,10 @@ install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod DESTINATION ${CMAKE_INST
 
 # Install compiler wrappers
 
+configure_file(bin/mpifort.in bin/mpifc @ONLY)
 configure_file(bin/mpifort.in bin/mpifort @ONLY)
 install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpifort
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpifc ${CMAKE_CURRENT_BINARY_DIR}/bin/mpifort
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
