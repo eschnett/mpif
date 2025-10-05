@@ -36,7 +36,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/work/mpif/opt
-          key: mpich-${{ runner.os }}-f47908fa4a74bf4ac29997202fb2967c8c59b0c9.2
+          key: mpich-${{ runner.os }}-f47908fa4a74bf4ac29997202fb2967c8c59b0c9.3
           restore-keys: |
             mpich-${{ runner.os }}-
 
