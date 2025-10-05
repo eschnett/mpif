@@ -154,9 +154,12 @@ jobs:
 
 
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Configure project
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/mpif/opt -DMPI_HOME=/home/runner/work/mpif/mpif/opt
+          cmake -B build --verbose -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/mpif/opt -DMPI_HOME=/home/runner/work/mpif/mpif/opt
 
       - name: Build project
         run: |
