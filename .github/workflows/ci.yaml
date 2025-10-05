@@ -19,8 +19,10 @@ jobs:
 
       - name: Install MPICH
         run: |
-          git clone https://github.com/pmodels/mpich.git --branch f47908fa4a74bf4ac29997202fb2967c8c59b0c9 --single-branch
+          git clone --depth 1 https://github.com/pmodels/mpich.git --branch main
           cd mpich
+          git fetch --depth 1 origin f47908fa4a74bf4ac29997202fb2967c8c59b0c9
+          git checkout f47908fa4a74bf4ac29997202fb2967c8c59b0c9
           git submodule update --init
           ./autogen.sh
           ./configure --disable-dependency-tracking --disable-doc --disable-fortran --enable-cxx=no --enable-mpi-abi --enable-static=no --with-hwloc --prefix=/usr/local
