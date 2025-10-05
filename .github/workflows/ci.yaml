@@ -24,11 +24,11 @@ jobs:
           cd mpich-4.3.2rc2
           ./configure --disable-dependency-tracking --disable-doc --disable-fortran --enable-cxx-no --enable-mpi-abi --with-hwloc --prefix=/usr/local
           make -j2
-          make install
+          sudo make install
 
       - name: Configure project
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -DMPI_HOME=/usr/local
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DMPI_HOME=/usr/local
 
       - name: Build project
         run: |
@@ -37,3 +37,7 @@ jobs:
       - name: Run tests (if any)
         run: |
           ctest --test-dir build || echo "No tests defined"
+
+      - name: Install project
+        run: |
+          sudo cmake --install build
