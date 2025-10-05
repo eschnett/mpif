@@ -74,7 +74,7 @@ jobs:
           pushd /home/runner/work/mpif/opt
           mv include/mpi.h include/mpi_mpich.h
           mv include/mpi_abi.h include/mpi.h
-          # patch -dinclude -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran_mpich.patch
+          patch -d include -p 1 </home/runner/work/mpif/mpif/.github/workflows/fortran_mpich.patch
           rm bin/mpicc_abi
           rm bin/mpicxx_abi
           sed -i -e 's/mpi_abi=no/mpi_abi=yes/' bin/mpicc
@@ -140,7 +140,7 @@ jobs:
           mv include/mpi.h include/mpi_openmpi.h
           mv include/abi.h include/mpi.h
           sed -i -e 's/_ABI_INTERNAL//g' include/mpi.h
-          patch -dinclude -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran_openmpi.patch
+          patch -d include -p 1 </home/runner/work/mpif/mpif/.github/workflows/fortran_openmpi.patch
           sed -i -e 's/-lmpi/-lmpi_abi/' bin/ompi_wrapper_script
           popd
 
@@ -154,9 +154,6 @@ jobs:
           echo "LD_LIBRARY_PATH=/home/runner/work/mpif/opt/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
 
-
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
 
       - name: Configure project
         run: |
