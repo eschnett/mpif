@@ -73,7 +73,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /usr/local/mpi
-          key:openmpi-${{ runner.os }}-df6aff9df9bbb79f91e6064748a5a78acdc7e47c
+          key: openmpi-${{ runner.os }}-df6aff9df9bbb79f91e6064748a5a78acdc7e47c
           restore-keys: |
             openmpi-${{ runner.os }}-
 
