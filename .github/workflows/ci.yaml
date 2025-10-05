@@ -8,6 +8,13 @@ jobs:
   build:
     runs-on: ubuntu-24.04
 
+    strategy:
+      matrix:
+        mpi:
+          - mpich
+          - openmpi
+      fail-fast: false
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -17,38 +24,94 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gfortran cmake libhwloc-dev
 
+
+
       - name: Cache MPICH install
+        if: matrix.mpi == 'mpich'
         id: cache-mpich
         uses: actions/cache@v4
         with:
-          path: /usr/local/mpich
+          path: /usr/local/mpi
           key: mpich-${{ runner.os }}-f47908fa4a74bf4ac29997202fb2967c8c59b0c9
           restore-keys: |
             mpich-${{ runner.os }}-
 
       - name: Install MPICH
-        if: steps.cache-mpich.outputs.cache-hit != 'true'
+        if: matrix.mpi == 'mpich' && steps.cache-mpich.outputs.cache-hit != 'true'
         run: |
           git clone --depth 1 https://github.com/pmodels/mpich.git --branch main
           cd mpich
           git fetch --depth 1 origin f47908fa4a74bf4ac29997202fb2967c8c59b0c9
           git checkout f47908fa4a74bf4ac29997202fb2967c8c59b0c9
-          git submodule update --init
+          git submodule update --depth 1 --init --recursive
           ./autogen.sh
-          ./configure --disable-dependency-tracking --disable-doc --disable-fortran \
-                      --enable-cxx=no --enable-mpi-abi --enable-static=no \
-                      --with-hwloc --prefix=/usr/local/mpich
+          ./configure \
+              --disable-dependency-tracking \
+              --disable-doc \
+              --enable-cxx=no \
+              --enable-fortran=no \
+              --enable-mpi-abi=yes \
+              --enable-static=no \
+              --with-hwloc \
+              --prefix=/usr/local/mpi
+          make -j$(nproc)
+          sudo make install
+          mv /usr/local/include/mpi.h /usr/local/include/mpi_mpich.h
+          mv /usr/local/include/mpi_abi.h /usr/local/include/mpi.h
+
+      - name: Add MPICH to environment
+        if: matrix.mpi == 'mpich'
+        run: |
+          echo "/usr/local/mpi/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=/usr/local/mpi/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+
+
+
+      - name: Cache OpenMPI install
+        if: matrix.mpi == 'openmpi'
+        id: cache-openmpi
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/mpi
+          key:openmpi-${{ runner.os }}-df6aff9df9bbb79f91e6064748a5a78acdc7e47c
+          restore-keys: |
+            openmpi-${{ runner.os }}-
+
+      - name: Install OpenMPI
+        if: matrix.mpi == 'openmpi' && steps.cache-openmpi.outputs.cache-hit != 'true'
+        run: |
+          git clone --depth 1 https://github.com/open-mpi/ompi.git
+          cd ompi
+          # git fetch --depth 1 origin pull/13280/head:pr-13280
+          # git checkout pr-13280
+          git fetch --depth 1 origin df6aff9df9bbb79f91e6064748a5a78acdc7e47c
+          git checkout df6aff9df9bbb79f91e6064748a5a78acdc7e47c
+          git submodule update --depth 1 --init --recursive
+          ./autogen.pl
+          ./configure \
+              --enable-mpi-fortran=no \
+              --enable-mpi1-compatibility=yes \
+              --enable-script-wrapper-compilers \
+              --enable-shared=yes \
+              --enable-standard-abi=yes \
+              --enable-static=no \
+              --with-hwloc \
+              --with-libevent=internal \
+              --prefix=/usr/local/mpi
           make -j$(nproc)
           sudo make install
 
-      - name: Add MPICH to environment
+      - name: Add OpenMPI to environment
+        if: matrix.mpi == 'openmpi'
         run: |
-          echo "/usr/local/mpich/bin" >> $GITHUB_PATH
-          echo "LD_LIBRARY_PATH=/usr/local/mpich/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+          echo "/usr/local/mpi/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=/usr/local/mpi/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+
+
 
       - name: Configure project
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DMPI_HOME=/usr/local/mpich
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DMPI_HOME=/usr/local/mpi
 
       - name: Build project
         run: |
