@@ -1,5 +1,7 @@
 # mpif: MPI Fortran bindings
 
+[![CI](https://github.com/eschnett/mpif/actions/workflows/ci.yaml/badge.svg)](https://github.com/eschnett/mpif/actions/workflows/ci.yaml)
+
 This package provides [Fortran](https://en.wikipedia.org/wiki/Fortran)
 bindings for [MPI](https://www.mpi-forum.org), given any C
 implementation of MPI.

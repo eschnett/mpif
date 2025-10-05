@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gfortran cmake make libhwloc-dev
+          sudo apt-get install -y gfortran cmake libhwloc-dev
 
       - name: Install MPICH
         run: |
