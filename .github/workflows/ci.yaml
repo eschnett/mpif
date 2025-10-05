@@ -74,7 +74,6 @@ jobs:
           pushd /home/runner/work/mpif/opt
           mv include/mpi.h include/mpi_mpich.h
           mv include/mpi_abi.h include/mpi.h
-          set -i -e 's/_ABI_INTERNAL//g' include/mpi.h
           # patch -dinclude -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran_mpich.patch
           rm bin/mpicc_abi
           rm bin/mpicxx_abi
@@ -140,6 +139,7 @@ jobs:
           pushd /home/runner/work/mpif/opt
           mv include/mpi.h include/mpi_openmpi.h
           mv include/abi.h include/mpi.h
+          sed -i -e 's/_ABI_INTERNAL//g' include/mpi.h
           patch -dinclude -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran_openmpi.patch
           sed -i -e 's/-lmpi/-lmpi_abi/' bin/ompi_wrapper_script
           popd
