@@ -35,7 +35,7 @@ jobs:
         id: cache-mpich
         uses: actions/cache@v4
         with:
-          path: /home/runner/work/mpif/mpif/opt
+          path: /home/runner/work/mpif/opt
           key: mpich-${{ runner.os }}-f47908fa4a74bf4ac29997202fb2967c8c59b0c9.2
           restore-keys: |
             mpich-${{ runner.os }}-
@@ -43,8 +43,8 @@ jobs:
       - name: Install MPICH
         if: matrix.mpi == 'mpich' && steps.cache-mpich.outputs.cache-hit != 'true'
         run: |
-          mkdir -p /home/runner/work/mpif/mpif/opt
-          cd /home/runner/work/mpif/mpif/opt
+          mkdir -p /home/runner/work/mpif/opt
+          cd /home/runner/work/mpif/opt
 
           mkdir -p src
           pushd src
@@ -66,15 +66,15 @@ jobs:
               --enable-mpi-abi=yes \
               --enable-static=no \
               --with-hwloc \
-              --prefix=/home/runner/work/mpif/mpif/opt
+              --prefix=/home/runner/work/mpif/opt
           make -j$(nproc)
           make install
 
           # Fixup
-          pushd /home/runner/work/mpif/mpif/opt
+          pushd /home/runner/work/mpif/opt
           mv include/mpi.h include/mpi_mpich.h
           mv include/mpi_abi.h include/mpi.h
-          patch -dinclude -p1 /home/runner/work/mpif/mpif/.github/workflows/fortran_mpich.patch
+          patch -dinclude -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran_mpich.patch
           rm bin/mpicc_abi
           rm bin/mpicxx_abi
           sed -i -e 's/mpi_abi=no/mpi_abi=yes/' bin/mpicc
@@ -87,8 +87,8 @@ jobs:
       - name: Add MPICH to environment
         if: matrix.mpi == 'mpich'
         run: |
-          echo "/home/runner/work/mpif/mpif/opt/bin" >> $GITHUB_PATH
-          echo "LD_LIBRARY_PATH=/home/runner/work/mpif/mpif/opt/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+          echo "/home/runner/work/mpif/opt/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=/home/runner/work/mpif/opt/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
 
 
@@ -97,7 +97,7 @@ jobs:
         id: cache-openmpi
         uses: actions/cache@v4
         with:
-          path: /home/runner/work/mpif/mpif/opt
+          path: /home/runner/work/mpif/opt
           key: openmpi-${{ runner.os }}-df6aff9df9bbb79f91e6064748a5a78acdc7e47c.2
           restore-keys: |
             openmpi-${{ runner.os }}-
@@ -105,8 +105,8 @@ jobs:
       - name: Install OpenMPI
         if: matrix.mpi == 'openmpi' && steps.cache-openmpi.outputs.cache-hit != 'true'
         run: |
-          mkdir -p /home/runner/work/mpif/mpif/opt
-          cd /home/runner/work/mpif/mpif/opt
+          mkdir -p /home/runner/work/mpif/opt
+          cd /home/runner/work/mpif/opt
 
           mkdir -p src
           pushd src
@@ -131,15 +131,15 @@ jobs:
               --enable-static=no \
               --with-hwloc \
               --with-libevent=internal \
-              --prefix=/home/runner/work/mpif/mpif/opt
+              --prefix=/home/runner/work/mpif/opt
           make -j$(nproc)
           make install
 
           # Fixup
-          pushd /home/runner/work/mpif/mpif/opt
+          pushd /home/runner/work/mpif/opt
           mv include/mpi.h include/mpi_openmpi.h
           mv include/abi.h include/mpi.h
-          patch -dinclude -p1 /home/runner/work/mpif/mpif/.github/workflows/fortran_openmpi.patch
+          patch -dinclude -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran_openmpi.patch
           sed -i -e 's/-lmpi/-lmpi_abi/' bin/ompi_wrapper_script
           popd
 
@@ -149,8 +149,8 @@ jobs:
       - name: Add OpenMPI to environment
         if: matrix.mpi == 'openmpi'
         run: |
-          echo "/home/runner/work/mpif/mpif/opt/bin" >> $GITHUB_PATH
-          echo "LD_LIBRARY_PATH=/home/runner/work/mpif/mpif/opt/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+          echo "/home/runner/work/mpif/opt/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=/home/runner/work/mpif/opt/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
 
 
@@ -159,7 +159,7 @@ jobs:
 
       - name: Configure project
         run: |
-          cmake -B build --verbose -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/mpif/opt -DMPI_HOME=/home/runner/work/mpif/mpif/opt
+          cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt -DMPI_HOME=/home/runner/work/mpif/opt
 
       - name: Build project
         run: |
