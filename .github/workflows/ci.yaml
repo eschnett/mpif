@@ -56,8 +56,8 @@ jobs:
               --prefix=/usr/local/mpi
           make -j$(nproc)
           sudo make install
-          mv /usr/local/include/mpi.h /usr/local/include/mpi_mpich.h
-          mv /usr/local/include/mpi_abi.h /usr/local/include/mpi.h
+          mv /usr/local/mpi/include/mpi.h /usr/local/mpi/include/mpi_mpich.h
+          mv /usr/local/mpi/include/mpi_abi.h /usr/local/mpi/include/mpi.h
 
       - name: Add MPICH to environment
         if: matrix.mpi == 'mpich'
