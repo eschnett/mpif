@@ -1,5 +1,9 @@
 name: CI
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
   pull_request:
@@ -56,8 +60,8 @@ jobs:
               --prefix=/usr/local/mpi
           make -j$(nproc)
           sudo make install
-          mv /usr/local/mpi/include/mpi.h /usr/local/mpi/include/mpi_mpich.h
-          mv /usr/local/mpi/include/mpi_abi.h /usr/local/mpi/include/mpi.h
+          sudo mv /usr/local/mpi/include/mpi.h /usr/local/mpi/include/mpi_mpich.h
+          sudo mv /usr/local/mpi/include/mpi_abi.h /usr/local/mpi/include/mpi.h
 
       - name: Add MPICH to environment
         if: matrix.mpi == 'mpich'
@@ -100,6 +104,8 @@ jobs:
               --prefix=/usr/local/mpi
           make -j$(nproc)
           sudo make install
+          sudo mv /usr/local/mpi/include/mpi.h /usr/local/mpi/include/mpi_openmpi.h
+          sudo mv /usr/local/mpi/include/abi.h /usr/local/mpi/include/mpi.h
 
       - name: Add OpenMPI to environment
         if: matrix.mpi == 'openmpi'
