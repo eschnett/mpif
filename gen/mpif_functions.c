@@ -1,6 +1,7 @@
 #include <mpif_strings.h>
 #include <mpi.h>
 #include <assert.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 

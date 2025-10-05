@@ -123,6 +123,7 @@ append!(c_implementations, [
     "#include <mpif_strings.h>",
     "#include <mpi.h>",
     "#include <assert.h>",
+    "#include <stdint.h>",
     "#include <stdlib.h>",
     "#include <string.h>",
     # "",
@@ -174,6 +175,7 @@ for key in sort(collect(keys(apis)))
         kind = parameter["kind"]
         length = parameter["length"]
         large_only = parameter["large_only"]
+        optional = parameter["optional"]
         parname = parameter["name"]
         param_direction = parameter["param_direction"]
         root_only = parameter["root_only"]
@@ -184,6 +186,7 @@ for key in sort(collect(keys(apis)))
             @assert "f90_parameter" ∉ suppress
             @assert !large_only
             @assert length == nothing
+            @assert !optional
             if param_direction == "in"
                 if name ∈ ["MPI_Buffer_attach", "MPI_Comm_attach_buffer", "MPI_Free_mem", "MPI_Precv_init", "MPI_Session_attach_buffer", "MPI_Win_attach", "MPI_Win_create"]
                     # The buffer is declared as `in` argument, but this refers to the pointer (not the buffer data)
@@ -207,6 +210,7 @@ for key in sort(collect(keys(apis)))
             @assert "c_parameter" ∉ suppress
             @assert "f90_parameter" ∉ suppress
             @assert !large_only
+            @assert !optional
             if name == "MPI_Cancel" && parname == "request"
                 @assert kind == "REQUEST"
                 @assert param_direction == "in"
@@ -281,6 +285,7 @@ for key in sort(collect(keys(apis)))
             @assert "c_parameter" ∉ suppress
             @assert "f90_parameter" ∉ suppress
             @assert !large_only
+            @assert !optional
             @assert !root_only
             if param_direction == "in"
                 @assert length == nothing
@@ -302,6 +307,7 @@ for key in sort(collect(keys(apis)))
                     param_direction = "in"
                 end
                 if param_direction == "in"
+                    @assert !optional
                     @assert "c_parameter" ∉ suppress
                     if length == nothing
                         if "f90_parameter" ∉ suppress
@@ -331,9 +337,11 @@ for key in sort(collect(keys(apis)))
                     if "f90_parameter" ∉ suppress
                         push!(input_arguments, "MPI_Fint* restrict const $parname")
                         if "c_parameter" ∉ suppress
+                            @assert !optional
                             push!(call_arguments, "$parname")
                         end
                     else
+                        @assert !optional
                         @assert "c_parameter" ∉ suppress
                         push!(call_arguments, "NULL")
                     end
@@ -346,6 +354,7 @@ for key in sort(collect(keys(apis)))
             @assert "c_parameter" ∉ suppress
             @assert !large_only
             @assert length == nothing
+            @assert !optional
             @assert !root_only
             # This is an integer in Fortran but a pointer in C
             if param_direction == "in"
@@ -363,6 +372,7 @@ for key in sort(collect(keys(apis)))
             @assert "c_parameter" ∉ suppress
             @assert "f90_parameter" ∉ suppress
             @assert !large_only
+            @assert !optional
             @assert !root_only
             if param_direction == "in"
                 if length == nothing
@@ -387,6 +397,7 @@ for key in sort(collect(keys(apis)))
             @assert "f90_parameter" ∉ suppress
             @assert !large_only
             @assert length == nothing
+            @assert !optional
             @assert !root_only
             if param_direction == "in"
                 push!(input_arguments, "const MPI_Aint* restrict const $parname")
@@ -402,6 +413,7 @@ for key in sort(collect(keys(apis)))
         elseif kind in ["GENERIC_DTYPE_COUNT", "NUM_BYTES", "XFER_NUM_ELEM"]
             @assert "c_parameter" ∉ suppress
             @assert "f90_parameter" ∉ suppress
+            @assert !optional
             if !large_only
                 @assert !root_only
                 if param_direction == "in"
@@ -421,6 +433,7 @@ for key in sort(collect(keys(apis)))
             @assert "f90_parameter" ∉ suppress
             @assert !large_only
             @assert length == nothing
+            @assert !optional
             @assert !root_only
             if param_direction == "in"
                 push!(input_arguments, "const MPI_Offset* restrict const $parname")
@@ -435,6 +448,7 @@ for key in sort(collect(keys(apis)))
             @assert "c_parameter" ∉ suppress
             @assert "f90_parameter" ∉ suppress
             @assert !large_only
+            @assert !optional
             @assert !root_only
             if param_direction == "in"
                 if length == nothing
@@ -495,6 +509,7 @@ for key in sort(collect(keys(apis)))
         elseif kind ∈ ["ARGUMENT_LIST", "STRING"]
             @assert "c_parameter" ∉ suppress
             @assert !large_only
+            @assert !optional
             if name == "MPI_Info_create_env" && parname == "argv"
                 @assert param_direction == "inout"
                 # `MPI_Info_create_env` does not modify the argument count
@@ -562,6 +577,7 @@ for key in sort(collect(keys(apis)))
             @assert "c_parameter" ∉ suppress
             @assert !large_only
             @assert length == nothing
+            @assert !optional
             @assert root_only
             @assert param_direction == "in"
             if "f90_parameter" ∉ suppress
@@ -590,6 +606,7 @@ for key in sort(collect(keys(apis)))
             @assert "f90_parameter" ∉ suppress
             @assert !large_only
             @assert length == "count"
+            @assert !optional
             @assert root_only
             @assert param_direction == "in"
             push!(input_arguments, "const char* restrict const $parname")
@@ -623,6 +640,7 @@ for key in sort(collect(keys(apis)))
             @assert "f90_parameter" ∉ suppress
             @assert !large_only
             @assert length == nothing
+            @assert !optional
             @assert !root_only
             @assert param_direction == "in"
             func_type = parameter["func_type"]
