@@ -38,9 +38,9 @@
 +
  /* Profiling MPI API */
  int PMPI_Abi_get_fortran_booleans(int logical_size, void* logical_true, void* logical_false, int* is_set);
- int PMPI_Abi_get_fortran_info(MPI_Info_ABI_INTERNAL* info);
+ int PMPI_Abi_get_fortran_info(MPI_Info* info);
 @@ -1991,6 +2016,30 @@
- int PMPI_Win_wait(MPI_Win_ABI_INTERNAL win);
+ int PMPI_Win_wait(MPI_Win win);
  double PMPI_Wtick(void);
  double PMPI_Wtime(void);
 +

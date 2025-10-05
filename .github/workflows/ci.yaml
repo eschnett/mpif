@@ -74,7 +74,8 @@ jobs:
           pushd /home/runner/work/mpif/opt
           mv include/mpi.h include/mpi_mpich.h
           mv include/mpi_abi.h include/mpi.h
-          patch -dinclude -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran_mpich.patch
+          set -i -e 's/_ABI_INTERNAL//g' include/mpi.h
+          # patch -dinclude -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran_mpich.patch
           rm bin/mpicc_abi
           rm bin/mpicxx_abi
           sed -i -e 's/mpi_abi=no/mpi_abi=yes/' bin/mpicc
