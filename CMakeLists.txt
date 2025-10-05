@@ -196,8 +196,6 @@ target_include_directories(mpif PRIVATE include)
 target_link_libraries(mpif PRIVATE MPI::MPI_C)
 list(APPEND public_headers
   include/mpif.h
-  include/mpif_constants.h
-  include/mpif_functions.h
 )
 set_target_properties(mpif PROPERTIES
   VERSION ${PROJECT_VERSION}
@@ -207,7 +205,14 @@ set_target_properties(mpif PROPERTIES
 
 install(TARGETS mpif EXPORT mpifTargets)
 
-install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_constants.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_functions.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_types.mod
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
 # # Install pkgconfig files
 # 
