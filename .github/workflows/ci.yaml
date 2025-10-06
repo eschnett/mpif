@@ -98,7 +98,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/work/mpif/opt
-          key: openmpi-${{ runner.os }}-df6aff9df9bbb79f91e6064748a5a78acdc7e47c.2
+          key: openmpi-${{ runner.os }}-df6aff9df9bbb79f91e6064748a5a78acdc7e47c.3
           restore-keys: |
             openmpi-${{ runner.os }}-
 
@@ -138,8 +138,7 @@ jobs:
           # Fixup
           pushd /home/runner/work/mpif/opt
           mv include/mpi.h include/mpi_openmpi.h
-          mv include/abi.h include/mpi.h
-          sed -i -e 's/_ABI_INTERNAL//g' include/mpi.h
+          mv include/standard_abi/mpi.h include/mpi.h
           patch -d include -p 1 </home/runner/work/mpif/mpif/.github/workflows/fortran_openmpi.patch
           sed -i -e 's/-lmpi/-lmpi_abi/' bin/ompi_wrapper_script
           popd
