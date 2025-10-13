@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef MPI_Datarep_extent_function MPI_Datarep_extent_function_c;
+
 void mpi_abi_get_fortran_booleans_(
   const MPI_Fint* restrict const logical_size,
   void* restrict const logical_true,
@@ -129,6 +131,33 @@ void mpi_accumulate_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_accumulate_c_(
+  const void* restrict const origin_addr,
+  const MPI_Count* restrict const origin_count,
+  const MPI_Fint* restrict const origin_datatype,
+  const MPI_Fint* restrict const target_rank,
+  const MPI_Fint* restrict const target_disp,
+  const MPI_Count* restrict const target_count,
+  const MPI_Fint* restrict const target_datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const win,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Accumulate_c(
+    origin_addr,
+    *origin_count,
+    MPI_Type_fromint(*origin_datatype),
+    *target_rank,
+    *target_disp,
+    *target_count,
+    MPI_Type_fromint(*target_datatype),
+    MPI_Op_fromint(*op),
+    MPI_Win_fromint(*win)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_add_error_class_(
   MPI_Fint* restrict const errorclass,
   MPI_Fint* restrict const ierror
@@ -216,6 +245,29 @@ void mpi_allgather_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_allgather_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Allgather_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_allgather_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -231,6 +283,35 @@ void mpi_allgather_init_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Allgather_init(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_allgather_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Allgather_init_c(
     sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
@@ -270,6 +351,31 @@ void mpi_allgatherv_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_allgatherv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const displs,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Allgatherv_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    displs,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_allgatherv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -286,6 +392,37 @@ void mpi_allgatherv_init_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Allgatherv_init(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    displs,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_allgatherv_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const displs,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Allgatherv_init_c(
     sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
@@ -337,6 +474,27 @@ void mpi_allreduce_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_allreduce_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Allreduce_c(
+    sendbuf,
+    recvbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_allreduce_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -351,6 +509,33 @@ void mpi_allreduce_init_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Allreduce_init(
+    sendbuf,
+    recvbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_allreduce_init_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Allreduce_init_c(
     sendbuf,
     recvbuf,
     *count,
@@ -387,6 +572,29 @@ void mpi_alltoall_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_alltoall_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Alltoall_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_alltoall_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -402,6 +610,35 @@ void mpi_alltoall_init_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Alltoall_init(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_alltoall_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Alltoall_init_c(
     sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
@@ -443,6 +680,33 @@ void mpi_alltoallv_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_alltoallv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const sdispls,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const rdispls,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Alltoallv_c(
+    sendbuf,
+    sendcounts,
+    sdispls,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    rdispls,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_alltoallv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -460,6 +724,39 @@ void mpi_alltoallv_init_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Alltoallv_init(
+    sendbuf,
+    sendcounts,
+    sdispls,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    rdispls,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_alltoallv_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const sdispls,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const rdispls,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Alltoallv_init_c(
     sendbuf,
     sendcounts,
     sdispls,
@@ -518,6 +815,48 @@ void mpi_alltoallw_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_alltoallw_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const sdispls,
+  const MPI_Fint* restrict const sendtypes,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const rdispls,
+  const MPI_Fint* restrict const recvtypes,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_size;
+  {
+    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Datatype c_sendtypes[q_comm_size];
+  for (int rank=0; rank<q_comm_size; ++rank)
+    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  MPI_Datatype c_recvtypes[q_comm_size];
+  for (int rank=0; rank<q_comm_size; ++rank)
+    c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
+  const int c_ierror = MPI_Alltoallw_c(
+    sendbuf,
+    sendcounts,
+    sdispls,
+    c_sendtypes,
+    recvbuf,
+    recvcounts,
+    rdispls,
+    c_recvtypes,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_alltoallw_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -550,6 +889,54 @@ void mpi_alltoallw_init_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   const int c_ierror = MPI_Alltoallw_init(
+    sendbuf,
+    sendcounts,
+    sdispls,
+    c_sendtypes,
+    recvbuf,
+    recvcounts,
+    rdispls,
+    c_recvtypes,
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_alltoallw_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const sdispls,
+  const MPI_Fint* restrict const sendtypes,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const rdispls,
+  const MPI_Fint* restrict const recvtypes,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_size;
+  {
+    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Datatype c_sendtypes[q_comm_size];
+  for (int rank=0; rank<q_comm_size; ++rank)
+    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  MPI_Datatype c_recvtypes[q_comm_size];
+  for (int rank=0; rank<q_comm_size; ++rank)
+    c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
+  MPI_Request c_request;
+  const int c_ierror = MPI_Alltoallw_init_c(
     sendbuf,
     sendcounts,
     sdispls,
@@ -662,6 +1049,25 @@ void mpi_bcast_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_bcast_c_(
+  void* restrict const buffer,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Bcast_c(
+    buffer,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *root,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_bcast_init_(
   void* restrict const buffer,
   const MPI_Fint* restrict const count,
@@ -687,6 +1093,31 @@ void mpi_bcast_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_bcast_init_c_(
+  void* restrict const buffer,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Bcast_init_c(
+    buffer,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *root,
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_bsend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -698,6 +1129,27 @@ void mpi_bsend_(
 )
 {
   const int c_ierror = MPI_Bsend(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *tag,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_bsend_c_(
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Bsend_c(
     buf,
     *count,
     MPI_Type_fromint(*datatype),
@@ -733,6 +1185,31 @@ void mpi_bsend_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_bsend_init_c_(
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Bsend_init_c(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *tag,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_buffer_attach_(
   void* restrict const buffer,
   const MPI_Fint* restrict const size,
@@ -746,6 +1223,19 @@ void mpi_buffer_attach_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_buffer_attach_c_(
+  void* restrict const buffer,
+  const MPI_Count* restrict const size,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Buffer_attach_c(
+    buffer,
+    *size
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_buffer_detach_(
   MPI_Aint* restrict const buffer_addr,
   MPI_Fint* restrict const size,
@@ -753,6 +1243,19 @@ void mpi_buffer_detach_(
 )
 {
   const int c_ierror = MPI_Buffer_detach(
+    buffer_addr,
+    size
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_buffer_detach_c_(
+  MPI_Aint* restrict const buffer_addr,
+  MPI_Count* restrict const size,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Buffer_detach_c(
     buffer_addr,
     size
   );
@@ -1022,6 +1525,21 @@ void mpi_comm_attach_buffer_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_comm_attach_buffer_c_(
+  const MPI_Fint* restrict const comm,
+  void* restrict const buffer,
+  const MPI_Count* restrict const size,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Comm_attach_buffer_c(
+    MPI_Comm_fromint(*comm),
+    buffer,
+    *size
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_comm_call_errhandler_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const errorcode,
@@ -1202,6 +1720,21 @@ void mpi_comm_detach_buffer_(
 )
 {
   const int c_ierror = MPI_Comm_detach_buffer(
+    MPI_Comm_fromint(*comm),
+    buffer_addr,
+    size
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_comm_detach_buffer_c_(
+  const MPI_Fint* restrict const comm,
+  MPI_Aint* restrict const buffer_addr,
+  MPI_Count* restrict const size,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Comm_detach_buffer_c(
     MPI_Comm_fromint(*comm),
     buffer_addr,
     size
@@ -1950,6 +2483,27 @@ void mpi_exscan_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_exscan_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Exscan_c(
+    sendbuf,
+    recvbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_exscan_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -1964,6 +2518,33 @@ void mpi_exscan_init_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Exscan_init(
+    sendbuf,
+    recvbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_exscan_init_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Exscan_init_c(
     sendbuf,
     recvbuf,
     *count,
@@ -2206,6 +2787,21 @@ void mpi_file_get_type_extent_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_get_type_extent_c_(
+  const MPI_Fint* restrict const fh,
+  const MPI_Fint* restrict const datatype,
+  MPI_Count* restrict const extent,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_get_type_extent_c(
+    MPI_File_fromint(*fh),
+    MPI_Type_fromint(*datatype),
+    extent
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_get_view_(
   const MPI_Fint* restrict const fh,
   MPI_Offset* restrict const disp,
@@ -2253,6 +2849,27 @@ void mpi_file_iread_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_iread_c_(
+  const MPI_Fint* restrict const fh,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_File_iread_c(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_iread_all_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -2264,6 +2881,27 @@ void mpi_file_iread_all_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_File_iread_all(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_iread_all_c_(
+  const MPI_Fint* restrict const fh,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_File_iread_all_c(
     MPI_File_fromint(*fh),
     buf,
     *count,
@@ -2286,6 +2924,29 @@ void mpi_file_iread_at_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_File_iread_at(
+    MPI_File_fromint(*fh),
+    *offset,
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_iread_at_c_(
+  const MPI_Fint* restrict const fh,
+  const MPI_Offset* restrict const offset,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_File_iread_at_c(
     MPI_File_fromint(*fh),
     *offset,
     buf,
@@ -2320,6 +2981,29 @@ void mpi_file_iread_at_all_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_iread_at_all_c_(
+  const MPI_Fint* restrict const fh,
+  const MPI_Offset* restrict const offset,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_File_iread_at_all_c(
+    MPI_File_fromint(*fh),
+    *offset,
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_iread_shared_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -2331,6 +3015,27 @@ void mpi_file_iread_shared_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_File_iread_shared(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_iread_shared_c_(
+  const MPI_Fint* restrict const fh,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_File_iread_shared_c(
     MPI_File_fromint(*fh),
     buf,
     *count,
@@ -2362,6 +3067,27 @@ void mpi_file_iwrite_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_iwrite_c_(
+  const MPI_Fint* restrict const fh,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_File_iwrite_c(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_iwrite_all_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -2373,6 +3099,27 @@ void mpi_file_iwrite_all_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_File_iwrite_all(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_iwrite_all_c_(
+  const MPI_Fint* restrict const fh,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_File_iwrite_all_c(
     MPI_File_fromint(*fh),
     buf,
     *count,
@@ -2395,6 +3142,29 @@ void mpi_file_iwrite_at_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_File_iwrite_at(
+    MPI_File_fromint(*fh),
+    *offset,
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_iwrite_at_c_(
+  const MPI_Fint* restrict const fh,
+  const MPI_Offset* restrict const offset,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_File_iwrite_at_c(
     MPI_File_fromint(*fh),
     *offset,
     buf,
@@ -2429,6 +3199,29 @@ void mpi_file_iwrite_at_all_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_iwrite_at_all_c_(
+  const MPI_Fint* restrict const fh,
+  const MPI_Offset* restrict const offset,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_File_iwrite_at_all_c(
+    MPI_File_fromint(*fh),
+    *offset,
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_iwrite_shared_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -2440,6 +3233,27 @@ void mpi_file_iwrite_shared_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_File_iwrite_shared(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_iwrite_shared_c_(
+  const MPI_Fint* restrict const fh,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_File_iwrite_shared_c(
     MPI_File_fromint(*fh),
     buf,
     *count,
@@ -2506,6 +3320,25 @@ void mpi_file_read_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_read_c_(
+  const MPI_Fint* restrict const fh,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_read_c(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_read_all_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -2525,6 +3358,25 @@ void mpi_file_read_all_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_read_all_c_(
+  const MPI_Fint* restrict const fh,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_read_all_c(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_read_all_begin_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -2534,6 +3386,23 @@ void mpi_file_read_all_begin_(
 )
 {
   const int c_ierror = MPI_File_read_all_begin(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_read_all_begin_c_(
+  const MPI_Fint* restrict const fh,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_read_all_begin_c(
     MPI_File_fromint(*fh),
     buf,
     *count,
@@ -2578,6 +3447,27 @@ void mpi_file_read_at_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_read_at_c_(
+  const MPI_Fint* restrict const fh,
+  const MPI_Offset* restrict const offset,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_read_at_c(
+    MPI_File_fromint(*fh),
+    *offset,
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_read_at_all_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -2599,6 +3489,27 @@ void mpi_file_read_at_all_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_read_at_all_c_(
+  const MPI_Fint* restrict const fh,
+  const MPI_Offset* restrict const offset,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_read_at_all_c(
+    MPI_File_fromint(*fh),
+    *offset,
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_read_at_all_begin_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -2609,6 +3520,25 @@ void mpi_file_read_at_all_begin_(
 )
 {
   const int c_ierror = MPI_File_read_at_all_begin(
+    MPI_File_fromint(*fh),
+    *offset,
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_read_at_all_begin_c_(
+  const MPI_Fint* restrict const fh,
+  const MPI_Offset* restrict const offset,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_read_at_all_begin_c(
     MPI_File_fromint(*fh),
     *offset,
     buf,
@@ -2652,6 +3582,25 @@ void mpi_file_read_ordered_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_read_ordered_c_(
+  const MPI_Fint* restrict const fh,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_read_ordered_c(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_read_ordered_begin_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -2661,6 +3610,23 @@ void mpi_file_read_ordered_begin_(
 )
 {
   const int c_ierror = MPI_File_read_ordered_begin(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_read_ordered_begin_c_(
+  const MPI_Fint* restrict const fh,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_read_ordered_begin_c(
     MPI_File_fromint(*fh),
     buf,
     *count,
@@ -2694,6 +3660,25 @@ void mpi_file_read_shared_(
 )
 {
   const int c_ierror = MPI_File_read_shared(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_read_shared_c_(
+  const MPI_Fint* restrict const fh,
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_read_shared_c(
     MPI_File_fromint(*fh),
     buf,
     *count,
@@ -2839,6 +3824,25 @@ void mpi_file_write_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_write_c_(
+  const MPI_Fint* restrict const fh,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_write_c(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_write_all_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -2858,6 +3862,25 @@ void mpi_file_write_all_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_write_all_c_(
+  const MPI_Fint* restrict const fh,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_write_all_c(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_write_all_begin_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -2867,6 +3890,23 @@ void mpi_file_write_all_begin_(
 )
 {
   const int c_ierror = MPI_File_write_all_begin(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_write_all_begin_c_(
+  const MPI_Fint* restrict const fh,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_write_all_begin_c(
     MPI_File_fromint(*fh),
     buf,
     *count,
@@ -2911,6 +3951,27 @@ void mpi_file_write_at_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_write_at_c_(
+  const MPI_Fint* restrict const fh,
+  const MPI_Offset* restrict const offset,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_write_at_c(
+    MPI_File_fromint(*fh),
+    *offset,
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_write_at_all_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -2932,6 +3993,27 @@ void mpi_file_write_at_all_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_write_at_all_c_(
+  const MPI_Fint* restrict const fh,
+  const MPI_Offset* restrict const offset,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_write_at_all_c(
+    MPI_File_fromint(*fh),
+    *offset,
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_write_at_all_begin_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -2942,6 +4024,25 @@ void mpi_file_write_at_all_begin_(
 )
 {
   const int c_ierror = MPI_File_write_at_all_begin(
+    MPI_File_fromint(*fh),
+    *offset,
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_write_at_all_begin_c_(
+  const MPI_Fint* restrict const fh,
+  const MPI_Offset* restrict const offset,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_write_at_all_begin_c(
     MPI_File_fromint(*fh),
     *offset,
     buf,
@@ -2985,6 +4086,25 @@ void mpi_file_write_ordered_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_file_write_ordered_c_(
+  const MPI_Fint* restrict const fh,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_write_ordered_c(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_file_write_ordered_begin_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -2994,6 +4114,23 @@ void mpi_file_write_ordered_begin_(
 )
 {
   const int c_ierror = MPI_File_write_ordered_begin(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_write_ordered_begin_c_(
+  const MPI_Fint* restrict const fh,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_write_ordered_begin_c(
     MPI_File_fromint(*fh),
     buf,
     *count,
@@ -3027,6 +4164,25 @@ void mpi_file_write_shared_(
 )
 {
   const int c_ierror = MPI_File_write_shared(
+    MPI_File_fromint(*fh),
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_file_write_shared_c_(
+  const MPI_Fint* restrict const fh,
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_File_write_shared_c(
     MPI_File_fromint(*fh),
     buf,
     *count,
@@ -3103,6 +4259,40 @@ void mpi_gather_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_gather_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_rank;
+  {
+    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  const int c_ierror = MPI_Gather_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    *root,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_gather_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -3143,6 +4333,46 @@ void mpi_gather_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_gather_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_rank;
+  {
+    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Request c_request;
+  const int c_ierror = MPI_Gather_init_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    *root,
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_gatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -3166,6 +4396,42 @@ void mpi_gatherv_(
     }
   }
   const int c_ierror = MPI_Gatherv(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    displs,
+    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    *root,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_gatherv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const displs,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_rank;
+  {
+    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  const int c_ierror = MPI_Gatherv_c(
     sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
@@ -3221,6 +4487,48 @@ void mpi_gatherv_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_gatherv_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const displs,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_rank;
+  {
+    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Request c_request;
+  const int c_ierror = MPI_Gatherv_init_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    displs,
+    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    *root,
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_get_(
   void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -3234,6 +4542,31 @@ void mpi_get_(
 )
 {
   const int c_ierror = MPI_Get(
+    origin_addr,
+    *origin_count,
+    MPI_Type_fromint(*origin_datatype),
+    *target_rank,
+    *target_disp,
+    *target_count,
+    MPI_Type_fromint(*target_datatype),
+    MPI_Win_fromint(*win)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_get_c_(
+  void* restrict const origin_addr,
+  const MPI_Count* restrict const origin_count,
+  const MPI_Fint* restrict const origin_datatype,
+  const MPI_Fint* restrict const target_rank,
+  const MPI_Fint* restrict const target_disp,
+  const MPI_Count* restrict const target_count,
+  const MPI_Fint* restrict const target_datatype,
+  const MPI_Fint* restrict const win,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Get_c(
     origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
@@ -3279,6 +4612,39 @@ void mpi_get_accumulate_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_get_accumulate_c_(
+  const void* restrict const origin_addr,
+  const MPI_Count* restrict const origin_count,
+  const MPI_Fint* restrict const origin_datatype,
+  void* restrict const result_addr,
+  const MPI_Count* restrict const result_count,
+  const MPI_Fint* restrict const result_datatype,
+  const MPI_Fint* restrict const target_rank,
+  const MPI_Fint* restrict const target_disp,
+  const MPI_Count* restrict const target_count,
+  const MPI_Fint* restrict const target_datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const win,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Get_accumulate_c(
+    origin_addr,
+    *origin_count,
+    MPI_Type_fromint(*origin_datatype),
+    result_addr,
+    *result_count,
+    MPI_Type_fromint(*result_datatype),
+    *target_rank,
+    *target_disp,
+    *target_count,
+    MPI_Type_fromint(*target_datatype),
+    MPI_Op_fromint(*op),
+    MPI_Win_fromint(*win)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_get_address_(
   const void* restrict const location,
   MPI_Aint* restrict const address,
@@ -3307,6 +4673,21 @@ void mpi_get_count_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_get_count_c_(
+  const MPI_Fint* restrict const status,
+  const MPI_Fint* restrict const datatype,
+  MPI_Count* restrict const count,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Get_count_c(
+    (const MPI_Status*)status,
+    MPI_Type_fromint(*datatype),
+    count
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_get_elements_(
   const MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -3315,6 +4696,21 @@ void mpi_get_elements_(
 )
 {
   const int c_ierror = MPI_Get_elements(
+    (const MPI_Status*)status,
+    MPI_Type_fromint(*datatype),
+    count
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_get_elements_c_(
+  const MPI_Fint* restrict const status,
+  const MPI_Fint* restrict const datatype,
+  MPI_Count* restrict const count,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Get_elements_c(
     (const MPI_Status*)status,
     MPI_Type_fromint(*datatype),
     count
@@ -3670,7 +5066,7 @@ void mpi_group_range_excl_(
   const int c_ierror = MPI_Group_range_excl(
     MPI_Group_fromint(*group),
     *n,
-    (int(*)[3])ranges,
+    (MPI_Fint(*)[3])ranges,
     &c_newgroup
   );
   *newgroup = MPI_Group_toint(c_newgroup);
@@ -3689,7 +5085,7 @@ void mpi_group_range_incl_(
   const int c_ierror = MPI_Group_range_incl(
     MPI_Group_fromint(*group),
     *n,
-    (int(*)[3])ranges,
+    (MPI_Fint(*)[3])ranges,
     &c_newgroup
   );
   *newgroup = MPI_Group_toint(c_newgroup);
@@ -3785,6 +5181,33 @@ void mpi_iallgather_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_iallgather_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Iallgather_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_iallgatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -3800,6 +5223,35 @@ void mpi_iallgatherv_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Iallgatherv(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    displs,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_iallgatherv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const displs,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Iallgatherv_c(
     sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
@@ -3839,6 +5291,31 @@ void mpi_iallreduce_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_iallreduce_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Iallreduce_c(
+    sendbuf,
+    recvbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_ialltoall_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -3853,6 +5330,33 @@ void mpi_ialltoall_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Ialltoall(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_ialltoall_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ialltoall_c(
     sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
@@ -3882,6 +5386,37 @@ void mpi_ialltoallv_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Ialltoallv(
+    sendbuf,
+    sendcounts,
+    sdispls,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    rdispls,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_ialltoallv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const sdispls,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const rdispls,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ialltoallv_c(
     sendbuf,
     sendcounts,
     sdispls,
@@ -3943,6 +5478,52 @@ void mpi_ialltoallw_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_ialltoallw_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const sdispls,
+  const MPI_Fint* restrict const sendtypes,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const rdispls,
+  const MPI_Fint* restrict const recvtypes,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_size;
+  {
+    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Datatype c_sendtypes[q_comm_size];
+  for (int rank=0; rank<q_comm_size; ++rank)
+    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  MPI_Datatype c_recvtypes[q_comm_size];
+  for (int rank=0; rank<q_comm_size; ++rank)
+    c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ialltoallw_c(
+    sendbuf,
+    sendcounts,
+    sdispls,
+    c_sendtypes,
+    recvbuf,
+    recvcounts,
+    rdispls,
+    c_recvtypes,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_ibarrier_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const request,
@@ -3981,6 +5562,29 @@ void mpi_ibcast_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_ibcast_c_(
+  void* restrict const buffer,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ibcast_c(
+    buffer,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *root,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_ibsend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -4006,6 +5610,31 @@ void mpi_ibsend_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_ibsend_c_(
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ibsend_c(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *tag,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_iexscan_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -4019,6 +5648,31 @@ void mpi_iexscan_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Iexscan(
+    sendbuf,
+    recvbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_iexscan_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Iexscan_c(
     sendbuf,
     recvbuf,
     *count,
@@ -4069,6 +5723,44 @@ void mpi_igather_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_igather_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_rank;
+  {
+    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Request c_request;
+  const int c_ierror = MPI_Igather_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    *root,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_igatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -4094,6 +5786,46 @@ void mpi_igatherv_(
   }
   MPI_Request c_request;
   const int c_ierror = MPI_Igatherv(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    displs,
+    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    *root,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_igatherv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const displs,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_rank;
+  {
+    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Request c_request;
+  const int c_ierror = MPI_Igatherv_c(
     sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
@@ -4157,6 +5889,29 @@ void mpi_imrecv_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_imrecv_c_(
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const message,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Message c_message = MPI_Message_fromint(*message);
+  MPI_Request c_request;
+  const int c_ierror = MPI_Imrecv_c(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    &c_message,
+    &c_request
+  );
+  *message = MPI_Message_toint(c_message);
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_ineighbor_allgather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -4171,6 +5926,33 @@ void mpi_ineighbor_allgather_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Ineighbor_allgather(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_ineighbor_allgather_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ineighbor_allgather_c(
     sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
@@ -4213,6 +5995,35 @@ void mpi_ineighbor_allgatherv_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_ineighbor_allgatherv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const displs,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ineighbor_allgatherv_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    displs,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_ineighbor_alltoall_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -4227,6 +6038,33 @@ void mpi_ineighbor_alltoall_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Ineighbor_alltoall(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_ineighbor_alltoall_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ineighbor_alltoall_c(
     sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
@@ -4256,6 +6094,37 @@ void mpi_ineighbor_alltoallv_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Ineighbor_alltoallv(
+    sendbuf,
+    sendcounts,
+    sdispls,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    rdispls,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_ineighbor_alltoallv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const sdispls,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const rdispls,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ineighbor_alltoallv_c(
     sendbuf,
     sendcounts,
     sdispls,
@@ -4302,6 +6171,52 @@ void mpi_ineighbor_alltoallw_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   const int c_ierror = MPI_Ineighbor_alltoallw(
+    sendbuf,
+    sendcounts,
+    sdispls,
+    c_sendtypes,
+    recvbuf,
+    recvcounts,
+    rdispls,
+    c_recvtypes,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_ineighbor_alltoallw_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const sdispls,
+  const MPI_Fint* restrict const sendtypes,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const rdispls,
+  const MPI_Fint* restrict const recvtypes,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_size;
+  {
+    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Datatype c_sendtypes[q_comm_size];
+  for (int rank=0; rank<q_comm_size; ++rank)
+    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  MPI_Datatype c_recvtypes[q_comm_size];
+  for (int rank=0; rank<q_comm_size; ++rank)
+    c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ineighbor_alltoallw_c(
     sendbuf,
     sendcounts,
     sdispls,
@@ -4672,6 +6587,31 @@ void mpi_irecv_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_irecv_c_(
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const source,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Irecv_c(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *source,
+    *tag,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_ireduce_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -4686,6 +6626,33 @@ void mpi_ireduce_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Ireduce(
+    sendbuf,
+    recvbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    *root,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_ireduce_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ireduce_c(
     sendbuf,
     recvbuf,
     *count,
@@ -4724,6 +6691,31 @@ void mpi_ireduce_scatter_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_ireduce_scatter_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ireduce_scatter_c(
+    sendbuf,
+    recvbuf,
+    recvcounts,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_ireduce_scatter_block_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -4749,6 +6741,31 @@ void mpi_ireduce_scatter_block_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_ireduce_scatter_block_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ireduce_scatter_block_c(
+    sendbuf,
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_irsend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -4762,6 +6779,31 @@ void mpi_irsend_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Irsend(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *tag,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_irsend_c_(
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Irsend_c(
     buf,
     *count,
     MPI_Type_fromint(*datatype),
@@ -4812,6 +6854,31 @@ void mpi_iscan_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_iscan_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Iscan_c(
+    sendbuf,
+    recvbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_iscatter_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -4836,6 +6903,44 @@ void mpi_iscatter_(
   }
   MPI_Request c_request;
   const int c_ierror = MPI_Iscatter(
+    sendbuf,
+    *sendcount,
+    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    *root,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_iscatter_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_rank;
+  {
+    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Request c_request;
+  const int c_ierror = MPI_Iscatter_c(
     sendbuf,
     *sendcount,
     q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
@@ -4890,6 +6995,46 @@ void mpi_iscatterv_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_iscatterv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const displs,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_rank;
+  {
+    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Request c_request;
+  const int c_ierror = MPI_Iscatterv_c(
+    sendbuf,
+    sendcounts,
+    displs,
+    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    *root,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_isend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -4903,6 +7048,31 @@ void mpi_isend_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Isend(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *tag,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_isend_c_(
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Isend_c(
     buf,
     *count,
     MPI_Type_fromint(*datatype),
@@ -4950,6 +7120,41 @@ void mpi_isendrecv_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_isendrecv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const sendtag,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const source,
+  const MPI_Fint* restrict const recvtag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Isendrecv_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    *dest,
+    *sendtag,
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    *source,
+    *recvtag,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_isendrecv_replace_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -4979,6 +7184,35 @@ void mpi_isendrecv_replace_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_isendrecv_replace_c_(
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const sendtag,
+  const MPI_Fint* restrict const source,
+  const MPI_Fint* restrict const recvtag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Isendrecv_replace_c(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *sendtag,
+    *source,
+    *recvtag,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_issend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -4992,6 +7226,31 @@ void mpi_issend_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Issend(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *tag,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_issend_c_(
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Issend_c(
     buf,
     *count,
     MPI_Type_fromint(*datatype),
@@ -5097,6 +7356,27 @@ void mpi_mrecv_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_mrecv_c_(
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const message,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Message c_message = MPI_Message_fromint(*message);
+  const int c_ierror = MPI_Mrecv_c(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    &c_message,
+    (MPI_Status*)status
+  );
+  *message = MPI_Message_toint(c_message);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_neighbor_allgather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -5109,6 +7389,29 @@ void mpi_neighbor_allgather_(
 )
 {
   const int c_ierror = MPI_Neighbor_allgather(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_neighbor_allgather_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Neighbor_allgather_c(
     sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
@@ -5149,6 +7452,35 @@ void mpi_neighbor_allgather_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_neighbor_allgather_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Neighbor_allgather_init_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_neighbor_allgatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -5162,6 +7494,31 @@ void mpi_neighbor_allgatherv_(
 )
 {
   const int c_ierror = MPI_Neighbor_allgatherv(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    displs,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_neighbor_allgatherv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const displs,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Neighbor_allgatherv_c(
     sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
@@ -5205,6 +7562,37 @@ void mpi_neighbor_allgatherv_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_neighbor_allgatherv_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const displs,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Neighbor_allgatherv_init_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    displs,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_neighbor_alltoall_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -5217,6 +7605,29 @@ void mpi_neighbor_alltoall_(
 )
 {
   const int c_ierror = MPI_Neighbor_alltoall(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_neighbor_alltoall_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Neighbor_alltoall_c(
     sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
@@ -5257,6 +7668,35 @@ void mpi_neighbor_alltoall_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_neighbor_alltoall_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Neighbor_alltoall_init_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_neighbor_alltoallv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -5271,6 +7711,33 @@ void mpi_neighbor_alltoallv_(
 )
 {
   const int c_ierror = MPI_Neighbor_alltoallv(
+    sendbuf,
+    sendcounts,
+    sdispls,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    rdispls,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_neighbor_alltoallv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const sdispls,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const rdispls,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Neighbor_alltoallv_c(
     sendbuf,
     sendcounts,
     sdispls,
@@ -5317,6 +7784,39 @@ void mpi_neighbor_alltoallv_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_neighbor_alltoallv_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const sdispls,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const rdispls,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Neighbor_alltoallv_init_c(
+    sendbuf,
+    sendcounts,
+    sdispls,
+    MPI_Type_fromint(*sendtype),
+    recvbuf,
+    recvcounts,
+    rdispls,
+    MPI_Type_fromint(*recvtype),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_neighbor_alltoallw_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -5346,6 +7846,48 @@ void mpi_neighbor_alltoallw_(
   for (int rank=0; rank<q_comm_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   const int c_ierror = MPI_Neighbor_alltoallw(
+    sendbuf,
+    sendcounts,
+    sdispls,
+    c_sendtypes,
+    recvbuf,
+    recvcounts,
+    rdispls,
+    c_recvtypes,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_neighbor_alltoallw_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const sdispls,
+  const MPI_Fint* restrict const sendtypes,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const rdispls,
+  const MPI_Fint* restrict const recvtypes,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_size;
+  {
+    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Datatype c_sendtypes[q_comm_size];
+  for (int rank=0; rank<q_comm_size; ++rank)
+    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  MPI_Datatype c_recvtypes[q_comm_size];
+  for (int rank=0; rank<q_comm_size; ++rank)
+    c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
+  const int c_ierror = MPI_Neighbor_alltoallw_c(
     sendbuf,
     sendcounts,
     sdispls,
@@ -5407,6 +7949,54 @@ void mpi_neighbor_alltoallw_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_neighbor_alltoallw_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const sdispls,
+  const MPI_Fint* restrict const sendtypes,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Aint* restrict const rdispls,
+  const MPI_Fint* restrict const recvtypes,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_size;
+  {
+    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Datatype c_sendtypes[q_comm_size];
+  for (int rank=0; rank<q_comm_size; ++rank)
+    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  MPI_Datatype c_recvtypes[q_comm_size];
+  for (int rank=0; rank<q_comm_size; ++rank)
+    c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
+  MPI_Request c_request;
+  const int c_ierror = MPI_Neighbor_alltoallw_init_c(
+    sendbuf,
+    sendcounts,
+    sdispls,
+    c_sendtypes,
+    recvbuf,
+    recvcounts,
+    rdispls,
+    c_recvtypes,
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_op_commutative_(
   const MPI_Fint* restrict const op,
   MPI_Fint* restrict const commute,
@@ -5432,6 +8022,24 @@ void mpi_op_create_(
   abort();
   MPI_Op c_op;
   const int c_ierror = MPI_Op_create(
+    user_fn,
+    *commute != 0,
+    &c_op
+  );
+  *op = MPI_Op_toint(c_op);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_op_create_c_(
+  MPI_User_function_c* const user_fn,
+  const MPI_Fint* restrict const commute,
+  MPI_Fint* restrict const op,
+  MPI_Fint* restrict const ierror
+)
+{
+  abort();
+  MPI_Op c_op;
+  const int c_ierror = MPI_Op_create_c(
     user_fn,
     *commute != 0,
     &c_op
@@ -5492,6 +8100,29 @@ void mpi_pack_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_pack_c_(
+  const void* restrict const inbuf,
+  const MPI_Count* restrict const incount,
+  const MPI_Fint* restrict const datatype,
+  void* restrict const outbuf,
+  const MPI_Count* restrict const outsize,
+  MPI_Count* restrict const position,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Pack_c(
+    inbuf,
+    *incount,
+    MPI_Type_fromint(*datatype),
+    outbuf,
+    *outsize,
+    position,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_pack_external_(
   const char* restrict const datarep,
   const void* restrict const inbuf,
@@ -5506,6 +8137,32 @@ void mpi_pack_external_(
 {
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   const int c_ierror = MPI_Pack_external(
+    c_datarep,
+    inbuf,
+    *incount,
+    MPI_Type_fromint(*datatype),
+    outbuf,
+    *outsize,
+    position
+  );
+  free(c_datarep);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_pack_external_c_(
+  const char* restrict const datarep,
+  const void* restrict const inbuf,
+  const MPI_Count* restrict const incount,
+  const MPI_Fint* restrict const datatype,
+  void* restrict const outbuf,
+  const MPI_Count* restrict const outsize,
+  MPI_Count* restrict const position,
+  MPI_Fint* restrict const ierror,
+  const size_t length_datarep
+)
+{
+  char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
+  const int c_ierror = MPI_Pack_external_c(
     c_datarep,
     inbuf,
     *incount,
@@ -5538,6 +8195,26 @@ void mpi_pack_external_size_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_pack_external_size_c_(
+  const char* restrict const datarep,
+  const MPI_Count* restrict const incount,
+  const MPI_Fint* restrict const datatype,
+  MPI_Count* restrict const size,
+  MPI_Fint* restrict const ierror,
+  const size_t length_datarep
+)
+{
+  char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
+  const int c_ierror = MPI_Pack_external_size_c(
+    c_datarep,
+    *incount,
+    MPI_Type_fromint(*datatype),
+    size
+  );
+  free(c_datarep);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_pack_size_(
   const MPI_Fint* restrict const incount,
   const MPI_Fint* restrict const datatype,
@@ -5547,6 +8224,23 @@ void mpi_pack_size_(
 )
 {
   const int c_ierror = MPI_Pack_size(
+    *incount,
+    MPI_Type_fromint(*datatype),
+    MPI_Comm_fromint(*comm),
+    size
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_pack_size_c_(
+  const MPI_Count* restrict const incount,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const comm,
+  MPI_Count* restrict const size,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Pack_size_c(
     *incount,
     MPI_Type_fromint(*datatype),
     MPI_Comm_fromint(*comm),
@@ -5736,6 +8430,31 @@ void mpi_put_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_put_c_(
+  const void* restrict const origin_addr,
+  const MPI_Count* restrict const origin_count,
+  const MPI_Fint* restrict const origin_datatype,
+  const MPI_Fint* restrict const target_rank,
+  const MPI_Fint* restrict const target_disp,
+  const MPI_Count* restrict const target_count,
+  const MPI_Fint* restrict const target_datatype,
+  const MPI_Fint* restrict const win,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Put_c(
+    origin_addr,
+    *origin_count,
+    MPI_Type_fromint(*origin_datatype),
+    *target_rank,
+    *target_disp,
+    *target_count,
+    MPI_Type_fromint(*target_datatype),
+    MPI_Win_fromint(*win)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_query_thread_(
   MPI_Fint* restrict const provided,
   MPI_Fint* restrict const ierror
@@ -5778,6 +8497,37 @@ void mpi_raccumulate_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_raccumulate_c_(
+  const void* restrict const origin_addr,
+  const MPI_Count* restrict const origin_count,
+  const MPI_Fint* restrict const origin_datatype,
+  const MPI_Fint* restrict const target_rank,
+  const MPI_Fint* restrict const target_disp,
+  const MPI_Count* restrict const target_count,
+  const MPI_Fint* restrict const target_datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const win,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Raccumulate_c(
+    origin_addr,
+    *origin_count,
+    MPI_Type_fromint(*origin_datatype),
+    *target_rank,
+    *target_disp,
+    *target_count,
+    MPI_Type_fromint(*target_datatype),
+    MPI_Op_fromint(*op),
+    MPI_Win_fromint(*win),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_recv_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -5790,6 +8540,29 @@ void mpi_recv_(
 )
 {
   const int c_ierror = MPI_Recv(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *source,
+    *tag,
+    MPI_Comm_fromint(*comm),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_recv_c_(
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const source,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Recv_c(
     buf,
     *count,
     MPI_Type_fromint(*datatype),
@@ -5826,6 +8599,31 @@ void mpi_recv_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_recv_init_c_(
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const source,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Recv_init_c(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *source,
+    *tag,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_reduce_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -5838,6 +8636,29 @@ void mpi_reduce_(
 )
 {
   const int c_ierror = MPI_Reduce(
+    sendbuf,
+    recvbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    *root,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_reduce_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Reduce_c(
     sendbuf,
     recvbuf,
     *count,
@@ -5878,6 +8699,35 @@ void mpi_reduce_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_reduce_init_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Reduce_init_c(
+    sendbuf,
+    recvbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    *root,
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_reduce_local_(
   const void* restrict const inbuf,
   void* restrict const inoutbuf,
@@ -5888,6 +8738,25 @@ void mpi_reduce_local_(
 )
 {
   const int c_ierror = MPI_Reduce_local(
+    inbuf,
+    inoutbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_reduce_local_c_(
+  const void* restrict const inbuf,
+  void* restrict const inoutbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Reduce_local_c(
     inbuf,
     inoutbuf,
     *count,
@@ -5908,6 +8777,27 @@ void mpi_reduce_scatter_(
 )
 {
   const int c_ierror = MPI_Reduce_scatter(
+    sendbuf,
+    recvbuf,
+    recvcounts,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_reduce_scatter_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Reduce_scatter_c(
     sendbuf,
     recvbuf,
     recvcounts,
@@ -5939,6 +8829,27 @@ void mpi_reduce_scatter_block_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_reduce_scatter_block_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Reduce_scatter_block_c(
+    sendbuf,
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_reduce_scatter_block_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -5953,6 +8864,33 @@ void mpi_reduce_scatter_block_init_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Reduce_scatter_block_init(
+    sendbuf,
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_reduce_scatter_block_init_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Reduce_scatter_block_init_c(
     sendbuf,
     recvbuf,
     *recvcount,
@@ -5993,6 +8931,33 @@ void mpi_reduce_scatter_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_reduce_scatter_init_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcounts,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Reduce_scatter_init_c(
+    sendbuf,
+    recvbuf,
+    recvcounts,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_register_datarep_(
   const char* restrict const datarep,
   MPI_Datarep_conversion_function* const read_conversion_fn,
@@ -6008,6 +8973,31 @@ void mpi_register_datarep_(
   abort();
   abort();
   const int c_ierror = MPI_Register_datarep(
+    c_datarep,
+    read_conversion_fn,
+    write_conversion_fn,
+    dtype_file_extent_fn,
+    (void*)*extra_state
+  );
+  free(c_datarep);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_register_datarep_c_(
+  const char* restrict const datarep,
+  MPI_Datarep_conversion_function_c* const read_conversion_fn,
+  MPI_Datarep_conversion_function_c* const write_conversion_fn,
+  MPI_Datarep_extent_function_c* const dtype_file_extent_fn,
+  const MPI_Aint* restrict const extra_state,
+  MPI_Fint* restrict const ierror,
+  const size_t length_datarep
+)
+{
+  char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
+  abort();
+  abort();
+  abort();
+  const int c_ierror = MPI_Register_datarep_c(
     c_datarep,
     read_conversion_fn,
     write_conversion_fn,
@@ -6178,6 +9168,35 @@ void mpi_rget_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_rget_c_(
+  void* restrict const origin_addr,
+  const MPI_Count* restrict const origin_count,
+  const MPI_Fint* restrict const origin_datatype,
+  const MPI_Fint* restrict const target_rank,
+  const MPI_Fint* restrict const target_disp,
+  const MPI_Count* restrict const target_count,
+  const MPI_Fint* restrict const target_datatype,
+  const MPI_Fint* restrict const win,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Rget_c(
+    origin_addr,
+    *origin_count,
+    MPI_Type_fromint(*origin_datatype),
+    *target_rank,
+    *target_disp,
+    *target_count,
+    MPI_Type_fromint(*target_datatype),
+    MPI_Win_fromint(*win),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_rget_accumulate_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -6197,6 +9216,43 @@ void mpi_rget_accumulate_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Rget_accumulate(
+    origin_addr,
+    *origin_count,
+    MPI_Type_fromint(*origin_datatype),
+    result_addr,
+    *result_count,
+    MPI_Type_fromint(*result_datatype),
+    *target_rank,
+    *target_disp,
+    *target_count,
+    MPI_Type_fromint(*target_datatype),
+    MPI_Op_fromint(*op),
+    MPI_Win_fromint(*win),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_rget_accumulate_c_(
+  const void* restrict const origin_addr,
+  const MPI_Count* restrict const origin_count,
+  const MPI_Fint* restrict const origin_datatype,
+  void* restrict const result_addr,
+  const MPI_Count* restrict const result_count,
+  const MPI_Fint* restrict const result_datatype,
+  const MPI_Fint* restrict const target_rank,
+  const MPI_Fint* restrict const target_disp,
+  const MPI_Count* restrict const target_count,
+  const MPI_Fint* restrict const target_datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const win,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Rget_accumulate_c(
     origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
@@ -6244,6 +9300,35 @@ void mpi_rput_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_rput_c_(
+  const void* restrict const origin_addr,
+  const MPI_Count* restrict const origin_count,
+  const MPI_Fint* restrict const origin_datatype,
+  const MPI_Fint* restrict const target_rank,
+  const MPI_Fint* restrict const target_disp,
+  const MPI_Count* restrict const target_count,
+  const MPI_Fint* restrict const target_datatype,
+  const MPI_Fint* restrict const win,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Rput_c(
+    origin_addr,
+    *origin_count,
+    MPI_Type_fromint(*origin_datatype),
+    *target_rank,
+    *target_disp,
+    *target_count,
+    MPI_Type_fromint(*target_datatype),
+    MPI_Win_fromint(*win),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_rsend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -6255,6 +9340,27 @@ void mpi_rsend_(
 )
 {
   const int c_ierror = MPI_Rsend(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *tag,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_rsend_c_(
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Rsend_c(
     buf,
     *count,
     MPI_Type_fromint(*datatype),
@@ -6290,6 +9396,31 @@ void mpi_rsend_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_rsend_init_c_(
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Rsend_init_c(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *tag,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_scan_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -6301,6 +9432,27 @@ void mpi_scan_(
 )
 {
   const int c_ierror = MPI_Scan(
+    sendbuf,
+    recvbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_scan_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Scan_c(
     sendbuf,
     recvbuf,
     *count,
@@ -6338,6 +9490,33 @@ void mpi_scan_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_scan_init_c_(
+  const void* restrict const sendbuf,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const op,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Scan_init_c(
+    sendbuf,
+    recvbuf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    MPI_Op_fromint(*op),
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_scatter_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -6360,6 +9539,40 @@ void mpi_scatter_(
     }
   }
   const int c_ierror = MPI_Scatter(
+    sendbuf,
+    *sendcount,
+    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    *root,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_scatter_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_rank;
+  {
+    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  const int c_ierror = MPI_Scatter_c(
     sendbuf,
     *sendcount,
     q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
@@ -6412,6 +9625,46 @@ void mpi_scatter_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_scatter_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_rank;
+  {
+    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Request c_request;
+  const int c_ierror = MPI_Scatter_init_c(
+    sendbuf,
+    *sendcount,
+    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    *root,
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_scatterv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -6435,6 +9688,42 @@ void mpi_scatterv_(
     }
   }
   const int c_ierror = MPI_Scatterv(
+    sendbuf,
+    sendcounts,
+    displs,
+    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    *root,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_scatterv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const displs,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_rank;
+  {
+    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  const int c_ierror = MPI_Scatterv_c(
     sendbuf,
     sendcounts,
     displs,
@@ -6490,6 +9779,48 @@ void mpi_scatterv_init_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_scatterv_init_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcounts,
+  const MPI_Aint* restrict const displs,
+  const MPI_Fint* restrict const sendtype,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const root,
+  const MPI_Fint* restrict const comm,
+  const MPI_Fint* restrict const info,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
+  int q_comm_rank;
+  {
+    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    if (q_ierror != MPI_SUCCESS) {
+      if (ierror) *ierror = q_ierror;
+      return;
+    }
+  }
+  MPI_Request c_request;
+  const int c_ierror = MPI_Scatterv_init_c(
+    sendbuf,
+    sendcounts,
+    displs,
+    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    *root,
+    MPI_Comm_fromint(*comm),
+    MPI_Info_fromint(*info),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_send_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -6501,6 +9832,27 @@ void mpi_send_(
 )
 {
   const int c_ierror = MPI_Send(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *tag,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_send_c_(
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Send_c(
     buf,
     *count,
     MPI_Type_fromint(*datatype),
@@ -6524,6 +9876,31 @@ void mpi_send_init_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Send_init(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *tag,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_send_init_c_(
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Send_init_c(
     buf,
     *count,
     MPI_Type_fromint(*datatype),
@@ -6569,6 +9946,39 @@ void mpi_sendrecv_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_sendrecv_c_(
+  const void* restrict const sendbuf,
+  const MPI_Count* restrict const sendcount,
+  const MPI_Fint* restrict const sendtype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const sendtag,
+  void* restrict const recvbuf,
+  const MPI_Count* restrict const recvcount,
+  const MPI_Fint* restrict const recvtype,
+  const MPI_Fint* restrict const source,
+  const MPI_Fint* restrict const recvtag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Sendrecv_c(
+    sendbuf,
+    *sendcount,
+    MPI_Type_fromint(*sendtype),
+    *dest,
+    *sendtag,
+    recvbuf,
+    *recvcount,
+    MPI_Type_fromint(*recvtype),
+    *source,
+    *recvtag,
+    MPI_Comm_fromint(*comm),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_sendrecv_replace_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -6596,6 +10006,33 @@ void mpi_sendrecv_replace_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_sendrecv_replace_c_(
+  void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const sendtag,
+  const MPI_Fint* restrict const source,
+  const MPI_Fint* restrict const recvtag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const status,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Sendrecv_replace_c(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *sendtag,
+    *source,
+    *recvtag,
+    MPI_Comm_fromint(*comm),
+    (MPI_Status*)status
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_session_attach_buffer_(
   const MPI_Fint* restrict const session,
   void* restrict const buffer,
@@ -6604,6 +10041,21 @@ void mpi_session_attach_buffer_(
 )
 {
   const int c_ierror = MPI_Session_attach_buffer(
+    MPI_Session_fromint(*session),
+    buffer,
+    *size
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_session_attach_buffer_c_(
+  const MPI_Fint* restrict const session,
+  void* restrict const buffer,
+  const MPI_Count* restrict const size,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Session_attach_buffer_c(
     MPI_Session_fromint(*session),
     buffer,
     *size
@@ -6648,6 +10100,21 @@ void mpi_session_detach_buffer_(
 )
 {
   const int c_ierror = MPI_Session_detach_buffer(
+    MPI_Session_fromint(*session),
+    buffer_addr,
+    size
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_session_detach_buffer_c_(
+  const MPI_Fint* restrict const session,
+  MPI_Aint* restrict const buffer_addr,
+  MPI_Count* restrict const size,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Session_detach_buffer_c(
     MPI_Session_fromint(*session),
     buffer_addr,
     size
@@ -6832,6 +10299,27 @@ void mpi_ssend_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_ssend_c_(
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Ssend_c(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *tag,
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_ssend_init_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -6845,6 +10333,31 @@ void mpi_ssend_init_(
 {
   MPI_Request c_request;
   const int c_ierror = MPI_Ssend_init(
+    buf,
+    *count,
+    MPI_Type_fromint(*datatype),
+    *dest,
+    *tag,
+    MPI_Comm_fromint(*comm),
+    &c_request
+  );
+  *request = MPI_Request_toint(c_request);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_ssend_init_c_(
+  const void* restrict const buf,
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const dest,
+  const MPI_Fint* restrict const tag,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const request,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Request c_request;
+  const int c_ierror = MPI_Ssend_init_c(
     buf,
     *count,
     MPI_Type_fromint(*datatype),
@@ -6945,6 +10458,21 @@ void mpi_status_set_elements_(
 )
 {
   const int c_ierror = MPI_Status_set_elements(
+    (MPI_Status*)status,
+    MPI_Type_fromint(*datatype),
+    *count
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_status_set_elements_c_(
+  MPI_Fint* restrict const status,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Count* restrict const count,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Status_set_elements_c(
     (MPI_Status*)status,
     MPI_Type_fromint(*datatype),
     *count
@@ -7148,6 +10676,23 @@ void mpi_type_contiguous_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_type_contiguous_c_(
+  const MPI_Count* restrict const count,
+  const MPI_Fint* restrict const oldtype,
+  MPI_Fint* restrict const newtype,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Datatype c_newtype;
+  const int c_ierror = MPI_Type_contiguous_c(
+    *count,
+    MPI_Type_fromint(*oldtype),
+    &c_newtype
+  );
+  *newtype = MPI_Type_toint(c_newtype);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_type_create_darray_(
   const MPI_Fint* restrict const size,
   const MPI_Fint* restrict const rank,
@@ -7164,6 +10709,37 @@ void mpi_type_create_darray_(
 {
   MPI_Datatype c_newtype;
   const int c_ierror = MPI_Type_create_darray(
+    *size,
+    *rank,
+    *ndims,
+    array_of_gsizes,
+    array_of_distribs,
+    array_of_dargs,
+    array_of_psizes,
+    *order,
+    MPI_Type_fromint(*oldtype),
+    &c_newtype
+  );
+  *newtype = MPI_Type_toint(c_newtype);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_type_create_darray_c_(
+  const MPI_Fint* restrict const size,
+  const MPI_Fint* restrict const rank,
+  const MPI_Fint* restrict const ndims,
+  const MPI_Count* restrict const array_of_gsizes,
+  const MPI_Fint* restrict const array_of_distribs,
+  const MPI_Fint* restrict const array_of_dargs,
+  const MPI_Fint* restrict const array_of_psizes,
+  const MPI_Fint* restrict const order,
+  const MPI_Fint* restrict const oldtype,
+  MPI_Fint* restrict const newtype,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Datatype c_newtype;
+  const int c_ierror = MPI_Type_create_darray_c(
     *size,
     *rank,
     *ndims,
@@ -7249,6 +10825,27 @@ void mpi_type_create_hindexed_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_type_create_hindexed_c_(
+  const MPI_Count* restrict const count,
+  const MPI_Count* restrict const array_of_blocklengths,
+  const MPI_Count* restrict const array_of_displacements,
+  const MPI_Fint* restrict const oldtype,
+  MPI_Fint* restrict const newtype,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Datatype c_newtype;
+  const int c_ierror = MPI_Type_create_hindexed_c(
+    *count,
+    array_of_blocklengths,
+    array_of_displacements,
+    MPI_Type_fromint(*oldtype),
+    &c_newtype
+  );
+  *newtype = MPI_Type_toint(c_newtype);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_type_create_hindexed_block_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const blocklength,
@@ -7260,6 +10857,27 @@ void mpi_type_create_hindexed_block_(
 {
   MPI_Datatype c_newtype;
   const int c_ierror = MPI_Type_create_hindexed_block(
+    *count,
+    *blocklength,
+    array_of_displacements,
+    MPI_Type_fromint(*oldtype),
+    &c_newtype
+  );
+  *newtype = MPI_Type_toint(c_newtype);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_type_create_hindexed_block_c_(
+  const MPI_Count* restrict const count,
+  const MPI_Count* restrict const blocklength,
+  const MPI_Count* restrict const array_of_displacements,
+  const MPI_Fint* restrict const oldtype,
+  MPI_Fint* restrict const newtype,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Datatype c_newtype;
+  const int c_ierror = MPI_Type_create_hindexed_block_c(
     *count,
     *blocklength,
     array_of_displacements,
@@ -7291,6 +10909,27 @@ void mpi_type_create_hvector_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_type_create_hvector_c_(
+  const MPI_Count* restrict const count,
+  const MPI_Count* restrict const blocklength,
+  const MPI_Count* restrict const stride,
+  const MPI_Fint* restrict const oldtype,
+  MPI_Fint* restrict const newtype,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Datatype c_newtype;
+  const int c_ierror = MPI_Type_create_hvector_c(
+    *count,
+    *blocklength,
+    *stride,
+    MPI_Type_fromint(*oldtype),
+    &c_newtype
+  );
+  *newtype = MPI_Type_toint(c_newtype);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_type_create_indexed_block_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const blocklength,
@@ -7302,6 +10941,27 @@ void mpi_type_create_indexed_block_(
 {
   MPI_Datatype c_newtype;
   const int c_ierror = MPI_Type_create_indexed_block(
+    *count,
+    *blocklength,
+    array_of_displacements,
+    MPI_Type_fromint(*oldtype),
+    &c_newtype
+  );
+  *newtype = MPI_Type_toint(c_newtype);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_type_create_indexed_block_c_(
+  const MPI_Count* restrict const count,
+  const MPI_Count* restrict const blocklength,
+  const MPI_Count* restrict const array_of_displacements,
+  const MPI_Fint* restrict const oldtype,
+  MPI_Fint* restrict const newtype,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Datatype c_newtype;
+  const int c_ierror = MPI_Type_create_indexed_block_c(
     *count,
     *blocklength,
     array_of_displacements,
@@ -7350,6 +11010,25 @@ void mpi_type_create_resized_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_type_create_resized_c_(
+  const MPI_Fint* restrict const oldtype,
+  const MPI_Count* restrict const lb,
+  const MPI_Count* restrict const extent,
+  MPI_Fint* restrict const newtype,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Datatype c_newtype;
+  const int c_ierror = MPI_Type_create_resized_c(
+    MPI_Type_fromint(*oldtype),
+    *lb,
+    *extent,
+    &c_newtype
+  );
+  *newtype = MPI_Type_toint(c_newtype);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_type_create_struct_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const array_of_blocklengths,
@@ -7374,6 +11053,30 @@ void mpi_type_create_struct_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_type_create_struct_c_(
+  const MPI_Count* restrict const count,
+  const MPI_Count* restrict const array_of_blocklengths,
+  const MPI_Count* restrict const array_of_displacements,
+  const MPI_Fint* restrict const array_of_types,
+  MPI_Fint* restrict const newtype,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Datatype c_array_of_types[*count];
+  for (int rank=0; rank<*count; ++rank)
+    c_array_of_types[rank] = MPI_Type_fromint(array_of_types[rank]);
+  MPI_Datatype c_newtype;
+  const int c_ierror = MPI_Type_create_struct_c(
+    *count,
+    array_of_blocklengths,
+    array_of_displacements,
+    c_array_of_types,
+    &c_newtype
+  );
+  *newtype = MPI_Type_toint(c_newtype);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_type_create_subarray_(
   const MPI_Fint* restrict const ndims,
   const MPI_Fint* restrict const array_of_sizes,
@@ -7387,6 +11090,31 @@ void mpi_type_create_subarray_(
 {
   MPI_Datatype c_newtype;
   const int c_ierror = MPI_Type_create_subarray(
+    *ndims,
+    array_of_sizes,
+    array_of_subsizes,
+    array_of_starts,
+    *order,
+    MPI_Type_fromint(*oldtype),
+    &c_newtype
+  );
+  *newtype = MPI_Type_toint(c_newtype);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_type_create_subarray_c_(
+  const MPI_Fint* restrict const ndims,
+  const MPI_Count* restrict const array_of_sizes,
+  const MPI_Count* restrict const array_of_subsizes,
+  const MPI_Count* restrict const array_of_starts,
+  const MPI_Fint* restrict const order,
+  const MPI_Fint* restrict const oldtype,
+  MPI_Fint* restrict const newtype,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Datatype c_newtype;
+  const int c_ierror = MPI_Type_create_subarray_c(
     *ndims,
     array_of_sizes,
     array_of_subsizes,
@@ -7497,6 +11225,35 @@ void mpi_type_get_contents_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_type_get_contents_c_(
+  const MPI_Fint* restrict const datatype,
+  const MPI_Count* restrict const max_integers,
+  const MPI_Count* restrict const max_addresses,
+  const MPI_Count* restrict const max_large_counts,
+  const MPI_Count* restrict const max_datatypes,
+  MPI_Fint* restrict const array_of_integers,
+  MPI_Aint* restrict const array_of_addresses,
+  MPI_Count* restrict const array_of_large_counts,
+  MPI_Fint* restrict const array_of_datatypes,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Datatype c_array_of_datatypes;
+  const int c_ierror = MPI_Type_get_contents_c(
+    MPI_Type_fromint(*datatype),
+    *max_integers,
+    *max_addresses,
+    *max_large_counts,
+    *max_datatypes,
+    array_of_integers,
+    array_of_addresses,
+    array_of_large_counts,
+    &c_array_of_datatypes
+  );
+  *array_of_datatypes = MPI_Type_toint(c_array_of_datatypes);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_type_get_envelope_(
   const MPI_Fint* restrict const datatype,
   MPI_Fint* restrict const num_integers,
@@ -7516,6 +11273,27 @@ void mpi_type_get_envelope_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_type_get_envelope_c_(
+  const MPI_Fint* restrict const datatype,
+  MPI_Count* restrict const num_integers,
+  MPI_Count* restrict const num_addresses,
+  MPI_Count* restrict const num_large_counts,
+  MPI_Count* restrict const num_datatypes,
+  MPI_Fint* restrict const combiner,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Type_get_envelope_c(
+    MPI_Type_fromint(*datatype),
+    num_integers,
+    num_addresses,
+    num_large_counts,
+    num_datatypes,
+    combiner
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_type_get_extent_(
   const MPI_Fint* restrict const datatype,
   MPI_Aint* restrict const lb,
@@ -7524,6 +11302,21 @@ void mpi_type_get_extent_(
 )
 {
   const int c_ierror = MPI_Type_get_extent(
+    MPI_Type_fromint(*datatype),
+    lb,
+    extent
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_type_get_extent_c_(
+  const MPI_Fint* restrict const datatype,
+  MPI_Count* restrict const lb,
+  MPI_Count* restrict const extent,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Type_get_extent_c(
     MPI_Type_fromint(*datatype),
     lb,
     extent
@@ -7579,6 +11372,21 @@ void mpi_type_get_true_extent_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_type_get_true_extent_c_(
+  const MPI_Fint* restrict const datatype,
+  MPI_Count* restrict const true_lb,
+  MPI_Count* restrict const true_extent,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Type_get_true_extent_c(
+    MPI_Type_fromint(*datatype),
+    true_lb,
+    true_extent
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_type_get_true_extent_x_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const true_lb,
@@ -7622,6 +11430,27 @@ void mpi_type_indexed_(
 {
   MPI_Datatype c_newtype;
   const int c_ierror = MPI_Type_indexed(
+    *count,
+    array_of_blocklengths,
+    array_of_displacements,
+    MPI_Type_fromint(*oldtype),
+    &c_newtype
+  );
+  *newtype = MPI_Type_toint(c_newtype);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_type_indexed_c_(
+  const MPI_Count* restrict const count,
+  const MPI_Count* restrict const array_of_blocklengths,
+  const MPI_Count* restrict const array_of_displacements,
+  const MPI_Fint* restrict const oldtype,
+  MPI_Fint* restrict const newtype,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Datatype c_newtype;
+  const int c_ierror = MPI_Type_indexed_c(
     *count,
     array_of_blocklengths,
     array_of_displacements,
@@ -7693,6 +11522,19 @@ void mpi_type_size_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_type_size_c_(
+  const MPI_Fint* restrict const datatype,
+  MPI_Count* restrict const size,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Type_size_c(
+    MPI_Type_fromint(*datatype),
+    size
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_type_size_x_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const size,
@@ -7727,6 +11569,27 @@ void mpi_type_vector_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_type_vector_c_(
+  const MPI_Count* restrict const count,
+  const MPI_Count* restrict const blocklength,
+  const MPI_Count* restrict const stride,
+  const MPI_Fint* restrict const oldtype,
+  MPI_Fint* restrict const newtype,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Datatype c_newtype;
+  const int c_ierror = MPI_Type_vector_c(
+    *count,
+    *blocklength,
+    *stride,
+    MPI_Type_fromint(*oldtype),
+    &c_newtype
+  );
+  *newtype = MPI_Type_toint(c_newtype);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_unpack_(
   const void* restrict const inbuf,
   const MPI_Fint* restrict const insize,
@@ -7739,6 +11602,29 @@ void mpi_unpack_(
 )
 {
   const int c_ierror = MPI_Unpack(
+    inbuf,
+    *insize,
+    position,
+    outbuf,
+    *outcount,
+    MPI_Type_fromint(*datatype),
+    MPI_Comm_fromint(*comm)
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_unpack_c_(
+  const void* restrict const inbuf,
+  const MPI_Count* restrict const insize,
+  MPI_Count* restrict const position,
+  void* restrict const outbuf,
+  const MPI_Count* restrict const outcount,
+  const MPI_Fint* restrict const datatype,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Unpack_c(
     inbuf,
     *insize,
     position,
@@ -7764,6 +11650,32 @@ void mpi_unpack_external_(
 {
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   const int c_ierror = MPI_Unpack_external(
+    c_datarep,
+    inbuf,
+    *insize,
+    position,
+    outbuf,
+    *outcount,
+    MPI_Type_fromint(*datatype)
+  );
+  free(c_datarep);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_unpack_external_c_(
+  const char* restrict const datarep,
+  const void* restrict const inbuf,
+  const MPI_Count* restrict const insize,
+  MPI_Count* restrict const position,
+  void* restrict const outbuf,
+  const MPI_Count* restrict const outcount,
+  const MPI_Fint* restrict const datatype,
+  MPI_Fint* restrict const ierror,
+  const size_t length_datarep
+)
+{
+  char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
+  const int c_ierror = MPI_Unpack_external_c(
     c_datarep,
     inbuf,
     *insize,
@@ -7892,6 +11804,29 @@ void mpi_win_allocate_(
   if (ierror) *ierror = c_ierror;
 }
 
+void mpi_win_allocate_c_(
+  const MPI_Aint* restrict const size,
+  const MPI_Aint* restrict const disp_unit,
+  const MPI_Fint* restrict const info,
+  const MPI_Fint* restrict const comm,
+  MPI_Aint* restrict const baseptr,
+  MPI_Fint* restrict const win,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Win c_win;
+  const int c_ierror = MPI_Win_allocate_c(
+    *size,
+    *disp_unit,
+    MPI_Info_fromint(*info),
+    MPI_Comm_fromint(*comm),
+    baseptr,
+    &c_win
+  );
+  *win = MPI_Win_toint(c_win);
+  if (ierror) *ierror = c_ierror;
+}
+
 void mpi_win_allocate_shared_(
   const MPI_Aint* restrict const size,
   const MPI_Fint* restrict const disp_unit,
@@ -7904,6 +11839,29 @@ void mpi_win_allocate_shared_(
 {
   MPI_Win c_win;
   const int c_ierror = MPI_Win_allocate_shared(
+    *size,
+    *disp_unit,
+    MPI_Info_fromint(*info),
+    MPI_Comm_fromint(*comm),
+    baseptr,
+    &c_win
+  );
+  *win = MPI_Win_toint(c_win);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_win_allocate_shared_c_(
+  const MPI_Aint* restrict const size,
+  const MPI_Aint* restrict const disp_unit,
+  const MPI_Fint* restrict const info,
+  const MPI_Fint* restrict const comm,
+  MPI_Aint* restrict const baseptr,
+  MPI_Fint* restrict const win,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Win c_win;
+  const int c_ierror = MPI_Win_allocate_shared_c(
     *size,
     *disp_unit,
     MPI_Info_fromint(*info),
@@ -7966,6 +11924,29 @@ void mpi_win_create_(
 {
   MPI_Win c_win;
   const int c_ierror = MPI_Win_create(
+    base,
+    *size,
+    *disp_unit,
+    MPI_Info_fromint(*info),
+    MPI_Comm_fromint(*comm),
+    &c_win
+  );
+  *win = MPI_Win_toint(c_win);
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_win_create_c_(
+  void* restrict const base,
+  const MPI_Aint* restrict const size,
+  const MPI_Aint* restrict const disp_unit,
+  const MPI_Fint* restrict const info,
+  const MPI_Fint* restrict const comm,
+  MPI_Fint* restrict const win,
+  MPI_Fint* restrict const ierror
+)
+{
+  MPI_Win c_win;
+  const int c_ierror = MPI_Win_create_c(
     base,
     *size,
     *disp_unit,
@@ -8336,6 +12317,25 @@ void mpi_win_shared_query_(
 )
 {
   const int c_ierror = MPI_Win_shared_query(
+    MPI_Win_fromint(*win),
+    *rank,
+    size,
+    disp_unit,
+    baseptr
+  );
+  if (ierror) *ierror = c_ierror;
+}
+
+void mpi_win_shared_query_c_(
+  const MPI_Fint* restrict const win,
+  const MPI_Fint* restrict const rank,
+  MPI_Aint* restrict const size,
+  MPI_Aint* restrict const disp_unit,
+  MPI_Aint* restrict const baseptr,
+  MPI_Fint* restrict const ierror
+)
+{
+  const int c_ierror = MPI_Win_shared_query_c(
     MPI_Win_fromint(*win),
     *rank,
     size,
