@@ -177,25 +177,27 @@ module mpi_functions
     integer :: ierror
   end subroutine MPI_Add_error_string
 
-  subroutine MPI_Aint_add( &
+  function MPI_Aint_add( &
     base, &
     disp &
-  )
+  ) result(result)
     use mpi_constants
     implicit none
+    integer(MPI_ADDRESS_KIND) :: result
     integer(MPI_ADDRESS_KIND) :: base
     integer(MPI_ADDRESS_KIND) :: disp
-  end subroutine MPI_Aint_add
+  end function MPI_Aint_add
 
-  subroutine MPI_Aint_diff( &
+  function MPI_Aint_diff( &
     addr1, &
     addr2 &
-  )
+  ) result(result)
     use mpi_constants
     implicit none
+    integer(MPI_ADDRESS_KIND) :: result
     integer(MPI_ADDRESS_KIND) :: addr1
     integer(MPI_ADDRESS_KIND) :: addr2
-  end subroutine MPI_Aint_diff
+  end function MPI_Aint_diff
 
   subroutine MPI_Allgather( &
     sendbuf, &
@@ -10952,17 +10954,19 @@ module mpi_functions
     integer :: ierror
   end subroutine MPI_Win_wait
 
-  subroutine MPI_Wtick( &
-  )
+  function MPI_Wtick( &
+  ) result(result)
     use mpi_constants
     implicit none
-  end subroutine MPI_Wtick
+    double precision :: result
+  end function MPI_Wtick
 
-  subroutine MPI_Wtime( &
-  )
+  function MPI_Wtime( &
+  ) result(result)
     use mpi_constants
     implicit none
-  end subroutine MPI_Wtime
+    double precision :: result
+  end function MPI_Wtime
 
   end interface
 

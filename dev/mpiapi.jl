@@ -684,10 +684,16 @@ for key in sort(collect(keys(apis)))
         return_kind = api["return_kind"]
         if return_kind == "ERROR_CODE"
             return_type = "void"
+            f_unit = "subroutine"
+            f_return_type = ""
         elseif return_kind ∈ ["DISPLACEMENT", "LOCATION_SMALL"]
             return_type = "MPI_Aint"
+            f_unit = "function"
+            f_return_type = "integer(MPI_ADDRESS_KIND)"
         elseif return_kind ∈ ["TICK_RESOLUTION", "WALL_TIME"]
             return_type = "double"
+            f_unit = "function"
+            f_return_type = "double precision"
         else
             @assert false
         end
@@ -698,14 +704,21 @@ for key in sort(collect(keys(apis)))
             push!(c_implementations, "  $arg$comma")
         end
         push!(c_implementations, ")")
-        push!(f_interfaces, "  subroutine $f_name( &")
+        push!(f_interfaces, "  $f_unit $f_name( &")
         for (n, arg) in enumerate(f_arguments)
             comma = n < length(f_arguments) ? "," : ""
             push!(f_interfaces, "    $arg$comma &")
         end
-        push!(f_interfaces, "  )")
+        if f_unit == "function"
+            push!(f_interfaces, "  ) result(result)")
+        else
+            push!(f_interfaces, "  )")
+        end
         push!(f_interfaces, "    use mpi_constants")
         push!(f_interfaces, "    implicit none")
+        if f_unit == "function"
+            push!(f_interfaces, "    $f_return_type :: result")
+        end
         for decl in f_declarations
             push!(f_interfaces, "    $decl")
         end
@@ -750,7 +763,7 @@ for key in sort(collect(keys(apis)))
         end
 
         push!(c_implementations, "}")
-        push!(f_interfaces, "  end subroutine $f_name")
+        push!(f_interfaces, "  end $f_unit $f_name")
 
     end                         # for embiggen
 end                             # for api
