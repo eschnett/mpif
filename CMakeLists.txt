@@ -173,6 +173,7 @@ add_library(mpif
   include/mpif.h
   # MPI Fortran modules
   src/mpi.F90
+  src/mpi_constants.F90
   src/mpi_f08.F90
   src/mpi_f08_constants.F90
   src/mpi_f08_functions.F90
@@ -184,6 +185,7 @@ add_library(mpif
   src/mpif_sizeof.c
   src/mpif_strings.c
   gen/mpif_functions.c
+  gen/mpi_functions.F90
 )
 # target_compile_options(mpif PRIVATE -Wall -Wextra -Wno-unused-dummy-argument -Wno-unused-parameter)
 # target_include_directories(
@@ -208,9 +210,6 @@ install(TARGETS mpif EXPORT mpifTargets)
 install(FILES
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08.mod
-  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_constants.mod
-  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_functions.mod
-  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_types.mod
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 

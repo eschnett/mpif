@@ -136,6 +136,15 @@ append!(c_implementations,
          "",
          "typedef MPI_Datarep_extent_function MPI_Datarep_extent_function_c;"])
 
+append!(f_interfaces,
+        ["module mpi_functions",
+         "  implicit none",
+         "  public",
+         "  save",
+         "",
+         "  interface",
+         ])
+
 for key in sort(collect(keys(apis)))
     api = apis[key]
     # key in ["mpi_recv", "mpi_send"] || continue
@@ -167,6 +176,7 @@ for key in sort(collect(keys(apis)))
     for embiggen in (need_embiggen ? [false, true] : [false])
         name_c = name * (embiggen ? "_c" : "")
         name_f = lowercase(name * (embiggen ? "_c" : "") * "_")
+        f_name = name * (embiggen ? "_c" : "")
 
         state = State()
         input_arguments = []
@@ -174,6 +184,8 @@ for key in sort(collect(keys(apis)))
         input_conversions = []
         call_arguments = []
         output_conversions = []
+        f_arguments = []
+        f_declarations = []
         for parameter in parameters
             kind = parameter["kind"]
             length = parameter["length"]
@@ -183,6 +195,12 @@ for key in sort(collect(keys(apis)))
             param_direction = parameter["param_direction"]
             root_only = parameter["root_only"]
             suppress = split(parameter["suppress"])
+
+            if "f90_parameter" ∉ suppress
+                if !large_only || embiggen
+                    push!(f_arguments, "$parname")
+                end
+            end
 
             if kind ∈ ["BUFFER", "LOGICAL_VOID"]
                 @assert "c_parameter" ∉ suppress
@@ -209,6 +227,12 @@ for key in sort(collect(keys(apis)))
                     push!(call_arguments, "$parname")
                 else
                     @assert false
+                end
+                if kind == "LOGICAL_VOID"
+                    push!(f_declarations, "logical :: $parname")
+                else
+                    push!(f_declarations, "!gcc\$ attributes no_arg_check :: $parname")
+                    push!(f_declarations, "integer :: $parname(*)")
                 end
             elseif kind ∈ keys(kind2type)
                 @assert "c_parameter" ∉ suppress
@@ -282,6 +306,11 @@ for key in sort(collect(keys(apis)))
                 else
                     @assert false
                 end
+                if length == nothing
+                    push!(f_declarations, "integer :: $parname")
+                else
+                    push!(f_declarations, "integer :: $parname(*)")
+                end
             elseif kind == "STATUS"
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
@@ -300,13 +329,17 @@ for key in sort(collect(keys(apis)))
                     @show name parname param_direction
                     @assert false
                 end
+                push!(f_declarations, "integer :: $parname(MPI_STATUS_SIZE)")
             elseif kind in [int_kinds; int_aint_kinds; int_count_kinds; aint_kinds; aint_count_kinds; count_kinds]
                 if kind in int_kinds || (!embiggen && kind in int_aint_kinds) || (!embiggen && kind in int_count_kinds)
                     type = "MPI_Fint"
+                    f_type = "integer"
                 elseif kind in aint_kinds || (!embiggen && kind in aint_count_kinds) || (embiggen && kind in int_aint_kinds)
                     type = "MPI_Aint"
+                    f_type = "integer(MPI_ADDRESS_KIND)"
                 elseif kind in count_kinds || (embiggen && kind in int_count_kinds) || (embiggen && kind in aint_count_kinds)
                     type = "MPI_Count"
+                    f_type = "integer(MPI_COUNT_KIND)"
                 else
                     @assert false
                 end
@@ -362,6 +395,11 @@ for key in sort(collect(keys(apis)))
                     else
                         @assert false
                     end
+                    if length == nothing
+                        push!(f_declarations, "$f_type :: $parname")
+                    else
+                        push!(f_declarations, "$f_type :: $parname(*)")
+                    end
                 end
             elseif kind in ["ATTRIBUTE_VAL_10"]
                 @assert "f90_parameter" ∉ suppress
@@ -382,30 +420,7 @@ for key in sort(collect(keys(apis)))
                 else
                     @assert false
                 end
-                # elseif kind in aint_kinds || (!embiggen && kind in poly_aint_kinds)
-                #     @assert "c_parameter" ∉ suppress
-                #     @assert "f90_parameter" ∉ suppress
-                #     @assert !large_only
-                #     @assert !optional
-                #     @assert !root_only
-                #     if param_direction == "in"
-                #         if length == nothing
-                #             push!(input_arguments, "const MPI_Aint* restrict const $parname")
-                #             push!(call_arguments, "*$parname")
-                #         elseif length ∈ ["*", "count"]
-                #             push!(input_arguments, "const MPI_Aint* restrict const $parname")
-                #             push!(call_arguments, "$parname")
-                #         else
-                #             @show name parname length
-                #             @assert false
-                #         end
-                #     elseif param_direction ∈ ["inout", "out"]
-                #         @assert length == nothing || length ∈ ["max_addresses"]
-                #         push!(input_arguments, "MPI_Aint* restrict const $parname")
-                #         push!(call_arguments, "$parname")
-                #     else
-                #         @assert false
-                #     end
+                push!(f_declarations, "integer :: $parname")
             elseif kind in ["ATTRIBUTE_VAL", "EXTRA_STATE", "EXTRA_STATE2"]
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
@@ -424,32 +439,7 @@ for key in sort(collect(keys(apis)))
                 else
                     @assert false
                 end
-                # elseif kind in count_kinds || (embiggen && kind in poly_int_kinds) || (embiggen && kind in poly_aint_kinds)
-                #     @assert "c_parameter" ∉ suppress
-                #     @assert "f90_parameter" ∉ suppress
-                #     @assert !optional
-                #     if !large_only
-                #         @assert !root_only
-                #         if param_direction == "in"
-                #             if length == nothing
-                #                 push!(input_arguments, "const MPI_Count* restrict const $parname")
-                #                 push!(call_arguments, "*$parname")
-                #             elseif length ∈ ["*", "count", "n", "ndims", "indegree", "length", "nnodes", "outdegree"]
-                #                 @assert "f90_parameter" ∉ suppress
-                #                 push!(input_arguments, "const MPI_Count* restrict const $parname")
-                #                 push!(call_arguments, "$parname")
-                #             else
-                #                 @show name parname length
-                #                 @assert false
-                #             end
-                #         elseif param_direction ∈ ["inout", "out"]
-                #             @assert length == nothing || length ∈ ["max_addresses", "max_datatypes", "max_integers", "max_large_counts"]
-                #             push!(input_arguments, "MPI_Count* restrict const $parname")
-                #             push!(call_arguments, "$parname")
-                #         else
-                #             @assert false
-                #         end
-                #     end
+                push!(f_declarations, "integer :: $parname")
             elseif kind in ["OFFSET"]
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
@@ -465,6 +455,11 @@ for key in sort(collect(keys(apis)))
                     push!(call_arguments, "$parname")
                 else
                     @assert false
+                end
+                if length == nothing
+                    push!(f_declarations, "integer(MPI_OFFSET_KIND) :: $parname")
+                else
+                    push!(f_declarations, "integer(MPI_OFFSET_KIND) :: $parname(*)")
                 end
             elseif kind == "LOGICAL"
                 @assert "c_parameter" ∉ suppress
@@ -522,6 +517,11 @@ for key in sort(collect(keys(apis)))
                     end
                 else
                     @assert false
+                end
+                if length == nothing
+                    push!(f_declarations, "logical :: $parname")
+                else
+                    push!(f_declarations, "logical :: $parname(*)")
                 end
             elseif kind ∈ ["ARGUMENT_LIST", "STRING"]
                 @assert "c_parameter" ∉ suppress
@@ -589,6 +589,13 @@ for key in sort(collect(keys(apis)))
                 else
                     @assert false
                 end
+                if "f90_parameter" ∉ suppress
+                    if length == nothing
+                        push!(f_declarations, "character*(*) :: $parname")
+                    else
+                        push!(f_declarations, "character*($length) :: $parname")
+                    end
+                end
             elseif kind ∈ ["STRING_ARRAY"]
                 @assert "c_parameter" ∉ suppress
                 @assert !large_only
@@ -613,6 +620,9 @@ for key in sort(collect(keys(apis)))
                                                  "  free(argv_$parname[n]);"])
                 else
                     push!(call_arguments, "NULL")
+                end
+                if "f90_parameter" ∉ suppress
+                    push!(f_declarations, "character*(*) :: $parname(*)")
                 end
             elseif kind == "STRING_2DARRAY"
                 @assert "c_parameter" ∉ suppress
@@ -646,6 +656,7 @@ for key in sort(collect(keys(apis)))
                          "  for (size_t n=0; n<count_$parname[i]; ++n)",
                          "    free(argv_$parname[i][n]);",
                          "}"])
+                push!(f_declarations, "character*(*) :: $parname($length, *)")
             elseif kind ∈ ["FUNCTION", "POLYFUNCTION"]
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
@@ -658,6 +669,7 @@ for key in sort(collect(keys(apis)))
                 push!(input_arguments, "$func_type* const $parname")
                 push!(input_conversions, "abort();")
                 push!(call_arguments, "$parname")
+                push!(f_declarations, "external :: $parname")
             else
                 @show name parname kind
                 @assert false
@@ -667,6 +679,7 @@ for key in sort(collect(keys(apis)))
         input_arguments = [input_arguments; final_input_arguments]
 
         push!(c_implementations, "")
+        push!(f_interfaces, "")
 
         return_kind = api["return_kind"]
         if return_kind == "ERROR_CODE"
@@ -685,6 +698,17 @@ for key in sort(collect(keys(apis)))
             push!(c_implementations, "  $arg$comma")
         end
         push!(c_implementations, ")")
+        push!(f_interfaces, "  subroutine $f_name( &")
+        for (n, arg) in enumerate(f_arguments)
+            comma = n < length(f_arguments) ? "," : ""
+            push!(f_interfaces, "    $arg$comma &")
+        end
+        push!(f_interfaces, "  )")
+        push!(f_interfaces, "    use mpi_constants")
+        push!(f_interfaces, "    implicit none")
+        for decl in f_declarations
+            push!(f_interfaces, "    $decl")
+        end
 
         push!(c_implementations, "{")
 
@@ -726,13 +750,29 @@ for key in sort(collect(keys(apis)))
         end
 
         push!(c_implementations, "}")
+        push!(f_interfaces, "  end subroutine $f_name")
+
     end                         # for embiggen
 end                             # for api
+
+append!(f_interfaces,
+        ["",
+         "  end interface",
+         "",
+         "end module mpi_functions",
+         ])
 
 println("Writing \"gen/mpif_functions.c\"...")
 open("gen/mpif_functions.c", "w") do f
     for impl in c_implementations
         println(f, impl)
+    end
+end
+
+println("Writing \"gen/mpi_functions.F90\"...")
+open("gen/mpi_functions.F90", "w") do f
+    for ifc in f_interfaces
+        println(f, ifc)
     end
 end
 

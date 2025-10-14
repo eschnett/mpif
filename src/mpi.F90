@@ -1,6 +1,7 @@
 module mpi
+  use mpi_constants
+  use mpi_functions
   implicit none
   public
   save
-  include "mpif.h"
 end module mpi
