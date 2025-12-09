@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  mpif VERSION 1.0.0
+  mpif VERSION 0.1.0
   DESCRIPTION "MPI Fortran bindings"
   HOMEPAGE_URL "https://github.com/eschnett/mpif"
   LANGUAGES C Fortran
@@ -176,7 +176,6 @@ add_library(mpif
   src/mpi_constants.F90
   src/mpi_f08.F90
   src/mpi_f08_constants.F90
-  src/mpi_f08_functions.F90
   src/mpi_f08_types.F90
   # Implementation
   include/mpif_strings.h
@@ -186,6 +185,7 @@ add_library(mpif
   src/mpif_strings.c
   gen/mpif_functions.c
   gen/mpi_functions.F90
+  gen/mpi_f08_functions.F90
 )
 # target_compile_options(mpif PRIVATE -Wall -Wextra -Wno-unused-dummy-argument -Wno-unused-parameter)
 # target_include_directories(
@@ -237,3 +237,13 @@ install(
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
+
+# Tests
+
+enable_testing()
+
+add_executable(init_f init_f.f)
+target_link_libraries(init_f mpif)
+add_test(NAME init_f COMMAND init_f)
+# add_executable(init_f90 init_f90.f90)
+# add_executable(init_f08 init_f08.f90)

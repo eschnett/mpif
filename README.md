@@ -24,3 +24,4 @@ mpi_f08` parts are supported. Adding this support is planned.
 - `gen`: generated code
 - `include`: include files
 - `src`: source files
+- `test`: tests

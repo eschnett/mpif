@@ -50,14 +50,17 @@ jobs:
           pushd src
 
           # Download
-          git clone --depth 1 https://github.com/pmodels/mpich.git --branch main
-          cd mpich
-          git fetch --depth 1 origin f47908fa4a74bf4ac29997202fb2967c8c59b0c9
-          git checkout f47908fa4a74bf4ac29997202fb2967c8c59b0c9
-          git submodule update --depth 1 --init --recursive
+          # git clone --depth 1 https://github.com/pmodels/mpich.git --branch main
+          # cd mpich
+          # git fetch --depth 1 origin f47908fa4a74bf4ac29997202fb2967c8c59b0c9
+          # git checkout f47908fa4a74bf4ac29997202fb2967c8c59b0c9
+          # git submodule update --depth 1 --init --recursive
+          wget https://www.mpich.org/static/downloads/5.0.0b1/mpich-5.0.0b1.tar.gz
+          tar xzf mpich-5.0.0b1.tar.gz
+          cd mpich-5.0.0b1
 
           # Build
-          ./autogen.sh
+          # ./autogen.sh
           ./configure \
               --disable-dependency-tracking \
               --disable-doc \
@@ -156,7 +159,7 @@ jobs:
 
       - name: Configure project
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt -DMPI_HOME=/home/runner/work/mpif/opt
+          cmake -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt -DMPI_HOME=/home/runner/work/mpif/opt
 
       - name: Build project
         run: |
@@ -164,7 +167,7 @@ jobs:
 
       - name: Run tests (if any)
         run: |
-          ctest --test-dir build || echo "No tests defined"
+          ctest --test-dir build
 
       - name: Install project
         run: |

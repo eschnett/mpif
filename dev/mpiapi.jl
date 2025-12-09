@@ -77,7 +77,7 @@ end
 #         "{",
 #         "  const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);",
 #         "  if (q_ierror != MPI_SUCCESS) {",
-#         "    if (ierror) *ierror = q_ierror;",
+#         "    *ierror = q_ierror;",
 #         "    return;",
 #         "  }",
 #         "}",
@@ -100,7 +100,7 @@ function ensure_comm_size!(state, input_conversions)
              "{",
              "  const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);",
              "  if (q_ierror != MPI_SUCCESS) {",
-             "    if (ierror) *ierror = q_ierror;",
+             "    *ierror = q_ierror;",
              "    return;",
              "  }",
              "}"])
@@ -115,7 +115,7 @@ function ensure_comm_rank!(state, input_conversions)
              "{",
              "  const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);",
              "  if (q_ierror != MPI_SUCCESS) {",
-             "    if (ierror) *ierror = q_ierror;",
+             "    *ierror = q_ierror;",
              "    return;",
              "  }",
              "}"])
@@ -125,6 +125,9 @@ end
 c_implementations = []
 c_prototypes = []
 f_interfaces = []
+f08_implementations_useonly = []
+f08_implementations_public = []
+f08_implementations_body = []
 
 append!(c_implementations,
         ["#include <mpif_strings.h>",
@@ -145,9 +148,25 @@ append!(f_interfaces,
          "  interface",
          ])
 
+append!(f08_implementations_useonly,
+        ["module mpi_f08_functions",
+         "  use mpi, only: &",
+         ])
+append!(f08_implementations_public,
+        ["    MPI_VERSION",
+         "  implicit none",
+         "  private",
+         "  save",
+         "",
+         ])
+append!(f08_implementations_body,
+        ["",
+         "contains",
+         ])
+
 for key in sort(collect(keys(apis)))
     api = apis[key]
-    # key in ["mpi_recv", "mpi_send"] || continue
+    key in ["mpi_init"] || continue
 
     name = api["name"]
     attributes = api["attributes"]
@@ -177,6 +196,8 @@ for key in sort(collect(keys(apis)))
         name_c = name * (embiggen ? "_c" : "")
         name_f = lowercase(name * (embiggen ? "_c" : "") * "_")
         f_name = name * (embiggen ? "_c" : "")
+        f08_name = f_name
+        f08_name_f = replace(f08_name, "MPI" => "MPIF")
 
         state = State()
         input_arguments = []
@@ -186,6 +207,8 @@ for key in sort(collect(keys(apis)))
         output_conversions = []
         f_arguments = []
         f_declarations = []
+        f08_arguments = []
+        f08_declarations = []
         for parameter in parameters
             kind = parameter["kind"]
             length = parameter["length"]
@@ -199,6 +222,7 @@ for key in sort(collect(keys(apis)))
             if "f90_parameter" ∉ suppress
                 if !large_only || embiggen
                     push!(f_arguments, "$parname")
+                    push!(f08_arguments, "$parname")
                 end
             end
 
@@ -395,11 +419,22 @@ for key in sort(collect(keys(apis)))
                     else
                         @assert false
                     end
+                    @assert "f90_parameter" ∉ suppress
                     if length == nothing
-                        push!(f_declarations, "$f_type :: $parname")
+                        f_length = ""
                     else
-                        push!(f_declarations, "$f_type :: $parname(*)")
+                        f_length = "($length)"
                     end
+                    if optional
+                        f_optional = ", optional"
+                    else
+                        f_optional = ""
+                    end
+                    push!(f_declarations, "$f_type :: $parname$f_length")
+                    push!(f08_declarations, "$f_type, intent($param_direction), $f_optional :: $parname$f_length")
+
+                    CONTINUE HERE
+
                 end
             elseif kind in ["ATTRIBUTE_VAL_10"]
                 @assert "f90_parameter" ∉ suppress
@@ -486,7 +521,7 @@ for key in sort(collect(keys(apis)))
                                  "{",
                                  "  const int q_ierror = MPI_Cartdim_get(q_comm, &ndims);",
                                  "  if (q_ierror != MPI_SUCCESS) {",
-                                 "    if (ierror) *ierror = q_ierror;",
+                                 "    *ierror = q_ierror;",
                                  "    return;",
                                  "  }",
                                  "}",
@@ -680,6 +715,7 @@ for key in sort(collect(keys(apis)))
 
         push!(c_implementations, "")
         push!(f_interfaces, "")
+        push!(f08_implementations_body, "")
 
         return_kind = api["return_kind"]
         if return_kind == "ERROR_CODE"
@@ -704,6 +740,7 @@ for key in sort(collect(keys(apis)))
             push!(c_implementations, "  $arg$comma")
         end
         push!(c_implementations, ")")
+
         push!(f_interfaces, "  $f_unit $f_name( &")
         for (n, arg) in enumerate(f_arguments)
             comma = n < length(f_arguments) ? "," : ""
@@ -723,6 +760,29 @@ for key in sort(collect(keys(apis)))
             push!(f_interfaces, "    $decl")
         end
 
+        push!(f08_implementations_useonly, "    $f08_name_f => $f08_name, &")
+        push!(f08_implementations_public, "  public :: $f08_name")
+
+        push!(f08_implementations_body, "  $f_unit $f08_name( &")
+        for (n, arg) in enumerate(f08_arguments)
+            comma = n < length(f08_arguments) ? "," : ""
+            push!(f08_implementations, "    $arg$comma &")
+        end
+        if f_unit == "function"
+            push!(f08_implementations_bodyinterfaces, "  ) result(result)")
+        else
+            push!(f08_implementations_body, "  )")
+        end
+        push!(f08_implementations_body, "    use mpi_constants")
+        push!(f08_implementations_body, "    implicit none")
+        if f_unit == "function"
+            push!(f08_implementations_body, "    $f_return_type :: result")
+        end
+        for decl in f08_declarations
+            push!(f08_implementations_body, "    $decl")
+        end
+        push!(f08_implementations_body, "  end $f_unit $f08_name")
+
         push!(c_implementations, "{")
 
         c_expressible = attributes["c_expressible"]
@@ -741,7 +801,7 @@ for key in sort(collect(keys(apis)))
             end
 
             if return_type == "void"
-                push!(c_implementations, "  const int c_ierror = $name_c(")
+                push!(c_implementations, "  *ierror = $name_c(")
             else
                 push!(c_implementations, "  const $return_type result = $name_c(")
             end
@@ -755,9 +815,7 @@ for key in sort(collect(keys(apis)))
                 return push!(c_implementations, "  $oc")
             end
 
-            if return_type == "void"
-                push!(c_implementations, "  if (ierror) *ierror = c_ierror;")
-            else
+            if return_type != "void"
                 push!(c_implementations, "  return result;")
             end
         end
@@ -775,6 +833,13 @@ append!(f_interfaces,
          "end module mpi_functions",
          ])
 
+append!(f08_implementations_body,
+        ["",
+         "end module mpi_f08_functions",
+         ])
+
+f08_implementations = [f08_implementations_useonly; f08_implementations_public; f08_implementations_body]
+
 println("Writing \"gen/mpif_functions.c\"...")
 open("gen/mpif_functions.c", "w") do f
     for impl in c_implementations
@@ -786,6 +851,13 @@ println("Writing \"gen/mpi_functions.F90\"...")
 open("gen/mpi_functions.F90", "w") do f
     for ifc in f_interfaces
         println(f, ifc)
+    end
+end
+
+println("Writing \"gen/mpi_f08_functions.F90\"...")
+open("gen/mpi_f08_functions.F90", "w") do f
+    for impl in f08_implementations
+        println(f, impl)
     end
 end
 
