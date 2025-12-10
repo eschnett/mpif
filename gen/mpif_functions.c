@@ -271,33 +271,6 @@ static MPI_Datatype MPIF_Type_fromint(int type) {
   case (int)(intptr_t)MPI_COMPLEX16:
   case (int)(intptr_t)MPI_COMPLEX32:
     return (MPI_Datatype)(intptr_t)type;
-  // case (int)(intptr_t)MPI_INTEGER:           return MPI_INT;
-  // case (int)(intptr_t)MPI_REAL:              return MPI_FLOAT;
-  // case (int)(intptr_t)MPI_COMPLEX:           return MPI_C_FLOAT_COMPLEX;
-  // case (int)(intptr_t)MPI_DOUBLE_PRECISION:  return MPI_DOUBLE;
-  // case (int)(intptr_t)MPI_DOUBLE_COMPLEX:    return MPI_C_DOUBLE_COMPLEX;
-  // case (int)(intptr_t)MPI_CHARACTER:         return MPI_CHAR;
-  // case (int)(intptr_t)MPI_2REAL:             abort();
-  // case (int)(intptr_t)MPI_2DOUBLE_PRECISION: abort();
-  // case (int)(intptr_t)MPI_2INTEGER:          return MPI_2INT;
-  // case (int)(intptr_t)MPI_LOGICAL1:          abort();
-  // case (int)(intptr_t)MPI_INTEGER1:          return MPI_INT8_T;
-  // case (int)(intptr_t)MPI_LOGICAL2:          abort();
-  // case (int)(intptr_t)MPI_INTEGER2:          return MPI_INT16_T;
-  // case (int)(intptr_t)MPI_REAL2:             abort();
-  // case (int)(intptr_t)MPI_LOGICAL4:          abort();
-  // case (int)(intptr_t)MPI_INTEGER4:          return MPI_INT32_T;
-  // case (int)(intptr_t)MPI_REAL4:             return MPI_FLOAT;
-  // case (int)(intptr_t)MPI_COMPLEX4:          abort();
-  // case (int)(intptr_t)MPI_LOGICAL8:          abort();
-  // case (int)(intptr_t)MPI_INTEGER8:          return MPI_INT64_T;
-  // case (int)(intptr_t)MPI_REAL8:             return MPI_DOUBLE;
-  // case (int)(intptr_t)MPI_COMPLEX8:          return MPI_C_FLOAT_COMPLEX;
-  // case (int)(intptr_t)MPI_LOGICAL16:         abort();
-  // case (int)(intptr_t)MPI_INTEGER16:         abort();
-  // case (int)(intptr_t)MPI_REAL16:            abort();
-  // case (int)(intptr_t)MPI_COMPLEX16:         return MPI_C_DOUBLE_COMPLEX;
-  // case (int)(intptr_t)MPI_COMPLEX32:         abort();
   }
   return MPI_Type_fromint(type);
 }

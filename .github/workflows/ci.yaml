@@ -84,7 +84,7 @@ jobs:
           mkdir ${prefix}
           mkdir ${prefix}/lib
           mv ${prefix}-mpich/lib/libmpi_abi.* ${prefix}/lib
-          mv ${prefix}-mpich/lib/libpmpi_abi.* ${prefix}/lib
+          # mv ${prefix}-mpich/lib/libpmpi_abi.* ${prefix}/lib
           mkdir ${prefix}/bin
           mv ${prefix}-mpich/bin/* ${prefix}/bin
           rm ${prefix}/bin/mpichversion       # needs libmpi.so
