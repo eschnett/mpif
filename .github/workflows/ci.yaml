@@ -93,8 +93,6 @@ jobs:
           rm ${prefix}/bin/mpicxx_abi
           sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicc
           sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicxx
-          sed -i -e "s+${prefix}/mpich+${prefix}+" ${prefix}/bin/mpicc
-          sed -i -e "s+${prefix}/mpich+${prefix}+" ${prefix}/bin/mpicxx
           rm -rf ${prefix}-mpich
 
           popd

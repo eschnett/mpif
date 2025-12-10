@@ -40,8 +40,8 @@ module mpi_f08_types
        !
        MPIF_ERRHANDLER_NULL         => MPI_ERRHANDLER_NULL        , &
        MPIF_ERRORS_ARE_FATAL        => MPI_ERRORS_ARE_FATAL       , &
-       MPIF_ERRORS_RETURN           => MPI_ERRORS_RETURN          , &
        MPIF_ERRORS_ABORT            => MPI_ERRORS_ABORT           , &
+       MPIF_ERRORS_RETURN           => MPI_ERRORS_RETURN          , &
        !
        MPIF_REQUEST_NULL            => MPI_REQUEST_NULL           , &
        !
@@ -217,8 +217,8 @@ module mpi_f08_types
 
   type(MPI_Errhandler), parameter, public :: MPI_ERRHANDLER_NULL = MPI_Errhandler(MPIF_ERRHANDLER_NULL )
   type(MPI_Errhandler), parameter, public :: MPI_ERRORS_ARE_FATAL =MPI_Errhandler(MPIF_ERRORS_ARE_FATAL)
-  type(MPI_Errhandler), parameter, public :: MPI_ERRORS_RETURN   = MPI_Errhandler(MPIF_ERRORS_RETURN   )
   type(MPI_Errhandler), parameter, public :: MPI_ERRORS_ABORT    = MPI_Errhandler(MPIF_ERRORS_ABORT    )
+  type(MPI_Errhandler), parameter, public :: MPI_ERRORS_RETURN   = MPI_Errhandler(MPIF_ERRORS_RETURN   )
 
   type(MPI_Request), parameter, public :: MPI_REQUEST_NULL = MPI_Request(MPIF_REQUEST_NULL)
 

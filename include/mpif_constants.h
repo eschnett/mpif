@@ -51,8 +51,8 @@
 
       integer, parameter :: MPI_ERRHANDLER_NULL = int(z'00000140')
       integer, parameter :: MPI_ERRORS_ARE_FATAL = int(z'00000141')
-      integer, parameter :: MPI_ERRORS_RETURN   = int(z'00000142')
-      integer, parameter :: MPI_ERRORS_ABORT    = int(z'00000143')
+      integer, parameter :: MPI_ERRORS_ABORT    = int(z'00000142')
+      integer, parameter :: MPI_ERRORS_RETURN   = int(z'00000143')
 
       integer, parameter :: MPI_REQUEST_NULL    = int(z'00000180')
 
@@ -83,6 +83,7 @@
       integer, parameter :: MPI_COMPLEX         = int(z'0000021b')
       integer, parameter :: MPI_DOUBLE_PRECISION = int(z'0000021c')
       integer, parameter :: MPI_DOUBLE_COMPLEX  = int(z'0000021d')
+      integer, parameter :: MPI_CHARACTER       = int(z'0000021e')
       integer, parameter :: MPI_LONG_DOUBLE     = int(z'00000220')
       integer, parameter :: MPI_C_LONG_DOUBLE_COMPLEX =                 &
      &     int(z'00000224')
@@ -114,7 +115,6 @@
       integer, parameter :: MPI_UINT64_T        = int(z'00000259')
       integer, parameter :: MPI_LOGICAL1        = int(z'000002c0')
       integer, parameter :: MPI_INTEGER1        = int(z'000002c1')
-      integer, parameter :: MPI_CHARACTER       = int(z'000002c3')
       integer, parameter :: MPI_LOGICAL2        = int(z'000002c8')
       integer, parameter :: MPI_INTEGER2        = int(z'000002c9')
       integer, parameter :: MPI_REAL2           = int(z'000002ca')
@@ -358,9 +358,9 @@
       integer, parameter :: MPI_COMBINER_STRUCT         = 110
       integer, parameter :: MPI_COMBINER_SUBARRAY       = 111
       integer, parameter :: MPI_COMBINER_DARRAY         = 112
-      integer, parameter :: MPI_COMBINER_F90_INTEGER    = 113
-      integer, parameter :: MPI_COMBINER_F90_REAL       = 114
-      integer, parameter :: MPI_COMBINER_F90_COMPLEX    = 115
+      integer, parameter :: MPI_COMBINER_F90_REAL       = 113
+      integer, parameter :: MPI_COMBINER_F90_COMPLEX    = 114
+      integer, parameter :: MPI_COMBINER_F90_INTEGER    = 115
       integer, parameter :: MPI_COMBINER_RESIZED        = 116
       integer, parameter :: MPI_COMBINER_VALUE_INDEX    = 117
 
@@ -402,9 +402,9 @@
       integer, parameter :: MPI_WIN_SEPARATE            = 322
 
 !     File Positioning
-      integer, parameter :: MPI_SEEK_SET               = 401
-      integer, parameter :: MPI_SEEK_CUR               = 402
-      integer, parameter :: MPI_SEEK_END               = 403
+      integer, parameter :: MPI_SEEK_CUR               = 401
+      integer, parameter :: MPI_SEEK_END               = 402
+      integer, parameter :: MPI_SEEK_SET               = 403
 
 !     File Operation Constants
       integer(MPI_OFFSET_KIND), parameter :: MPI_DISPLACEMENT_CURRENT = &
@@ -420,9 +420,9 @@
       integer, parameter :: MPI_IO                      = 502
       integer, parameter :: MPI_HOST                    = 503 ! deprecated: MPI-4.1
       integer, parameter :: MPI_WTIME_IS_GLOBAL         = 504
-      integer, parameter :: MPI_UNIVERSE_SIZE           = 505
-      integer, parameter :: MPI_APPNUM                  = 506
-      integer, parameter :: MPI_LASTUSEDCODE            = 507
+      integer, parameter :: MPI_APPNUM                  = 505
+      integer, parameter :: MPI_LASTUSEDCODE            = 506
+      integer, parameter :: MPI_UNIVERSE_SIZE           = 507
 
 !     Window
       integer, parameter :: MPI_WIN_BASE                = 601
