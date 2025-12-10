@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install dependencies
         run: |
@@ -36,7 +36,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/work/mpif/opt
-          key: mpich-${{ runner.os }}-f47908fa4a74bf4ac29997202fb2967c8c59b0c9.3
+          key: mpich-${{ runner.os }}-5.0.0b1.2
           restore-keys: |
             mpich-${{ runner.os }}-
 
@@ -61,37 +61,48 @@ jobs:
 
           # Build
           # ./autogen.sh
-          ./configure \
-              --disable-dependency-tracking \
-              --disable-doc \
-              --enable-cxx=no \
-              --enable-fortran=no \
-              --enable-mpi-abi=yes \
-              --enable-static=no \
-              --with-hwloc \
-              --prefix=/home/runner/work/mpif/opt
+          mkdir build
+          cd build
+          prefix=/home/runner/work/mpif/opt
+          configure_flags=(
+              --disable-dependency-tracking
+              --disable-doc
+              --enable-fortran
+              --enable-cxx=no
+              --enable-static=no
+              --enable-mpi-abi
+              --prefix=${prefix}
+              --with-device=ch3
+              --with-hwloc=
+          )
+          ../configure "${configure_flags[@]}"
           make -j$(nproc)
           make install
 
-          # Fixup
-          pushd /home/runner/work/mpif/opt
-          mv include/mpi.h include/mpi_mpich.h
-          mv include/mpi_abi.h include/mpi.h
-          patch -d include -p 1 </home/runner/work/mpif/mpif/.github/workflows/fortran_mpich.patch
-          rm bin/mpicc_abi
-          rm bin/mpicxx_abi
-          sed -i -e 's/mpi_abi=no/mpi_abi=yes/' bin/mpicc
-          sed -i -e 's/mpi_abi=no/mpi_abi=yes/' bin/mpicxx
-          popd
+          # Extrat MPI ABI files
+          mv ${prefix} ${prefix}-mpich
+          mkdir ${prefix}
+          mkdir ${prefix}/lib
+          mv ${prefix}-mpich/lib/libmpi_abi.* ${prefix}/lib
+          mv ${prefix}-mpich/lib/libpmpi_abi.* ${prefix}/lib
+          mkdir ${prefix}/bin
+          mv ${prefix}-mpich/bin/* ${prefix}/bin
+          rm ${prefix}/bin/mpichversion       # needs libmpi.so
+          rm ${prefix}/bin/mpivars            # needs libmpi.so
+          rm ${prefix}/bin/mpicc_abi
+          rm ${prefix}/bin/mpicxx_abi
+          sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicc
+          sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicxx
+          sed -i -e "s+${prefix}/mpich+${prefix}+" ${prefix}/bin/mpicc
+          sed -i -e "s+${prefix}/mpich+${prefix}+" ${prefix}/bin/mpicxx
+          rm -rf ${prefix}-mpich
 
           popd
           rm -rf src
 
-      - name: Add MPICH to environment
-        if: matrix.mpi == 'mpich'
-        run: |
-          echo "/home/runner/work/mpif/opt/bin" >> $GITHUB_PATH
-          echo "LD_LIBRARY_PATH=/home/runner/work/mpif/opt/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+          # Add MPICH to environment
+          echo "${prefix}/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=${prefix}/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
 
 
@@ -149,26 +160,28 @@ jobs:
           popd
           rm -rf src
 
-      - name: Add OpenMPI to environment
-        if: matrix.mpi == 'openmpi'
-        run: |
+          # Add OpenMPI to environment
           echo "/home/runner/work/mpif/opt/bin" >> $GITHUB_PATH
           echo "LD_LIBRARY_PATH=/home/runner/work/mpif/opt/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
 
 
-      - name: Configure project
+      - name: Configure, build, and install project
         run: |
-          cmake -Bbuild -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt -DMPI_HOME=/home/runner/work/mpif/opt
-
-      - name: Build project
-        run: |
+          cmake \
+              -Bbuild \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt \
+              -DMPI_HOME=/home/runner/work/mpif/opt
           cmake --build build --parallel
-
-      - name: Run tests (if any)
-        run: |
-          ctest --test-dir build
-
-      - name: Install project
-        run: |
           cmake --install build
+
+      - name: Configure, build, and run tests
+        run: |
+          cd test
+          cmake \
+              -Bbuild-tests \
+              -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt \
+              -DMPI_HOME=${HOME}/mpif
+          cmake --build build-tests --parallel
+          ctest --test-dir build-tests

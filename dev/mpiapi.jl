@@ -41,6 +41,8 @@ kind2type = Dict(["COMMUNICATOR" => "Comm",
                   "SESSION" => "Session",
                   "WINDOW" => "Win"])
 
+# DISPOFFSET_SMALL
+
 int_kinds = ["ACCESS_MODE", "ARGUMENT_COUNT", "ARRAY_LENGTH", "ARRAY_LENGTH_NNI", "ARRAY_LENGTH_PI", "ASSERT", "COLOR", "COMBINER",
              "COMM_COMPARISON", "COMM_SIZE", "COMM_SIZE_PI", "COORDINATE", "DEGREE", "DIMENSION", "DISTRIB_ENUM",
              "DTYPE_DISTRIBUTION", "ERROR_CLASS", "ERROR_CODE", "FILE_DESCRIPTOR", "GENERIC_DTYPE_INT", "GROUP_COMPARISON", "INDEX",
@@ -52,7 +54,8 @@ int_aint_kinds = ["POLYDISPLACEMENT", "POLYRMA_DISPLACEMENT"]
 int_count_kinds = ["POLYDISPLACEMENT_COUNT", "POLYDTYPE_NUM_ELEM", "POLYDTYPE_NUM_ELEM_NNI", "POLYDTYPE_NUM_ELEM_PI",
                    "POLYNUM_BYTES", "POLYNUM_BYTES_NNI", "POLYNUM_PARAM_VALUES", "POLYXFER_NUM_ELEM", "POLYXFER_NUM_ELEM_NNI"]
 
-aint_kinds = ["ALLOC_MEM_NUM_BYTES", "C_BUFFER", "C_BUFFER2", "DISPLACEMENT", "LOCATION_SMALL", "WIN_ATTACH_SIZE", "WINDOW_SIZE"]
+aint_kinds = ["ALLOC_MEM_NUM_BYTES", "C_BUFFER", "C_BUFFER2", "C_BUFFER3", "C_BUFFER4", "DISPLACEMENT", "LOCATION_SMALL",
+              "WIN_ATTACH_SIZE", "WINDOW_SIZE"]
 aint_count_kinds = ["POLYDISPLACEMENT_AINT_COUNT", "POLYDISPOFFSET", "POLYDTYPE_PACK_SIZE", "POLYDTYPE_STRIDE_BYTES",
                     "POLYLOCATION"]
 
@@ -88,7 +91,7 @@ end
 
 function ensure_comm!(state, input_conversions)
     state.have_comm[] && return
-    append!(input_conversions, ["const MPI_Comm q_comm = MPI_Comm_fromint(*comm);"])
+    append!(input_conversions, ["const MPI_Comm q_comm = MPIF_Comm_fromint(*comm);"])
     return state.have_comm[] = true
 end
 
@@ -137,7 +140,370 @@ append!(c_implementations,
          "#include <stdlib.h>",
          "#include <string.h>",
          "",
-         "typedef MPI_Datarep_extent_function MPI_Datarep_extent_function_c;"])
+         "//TODO typedef MPI_Datarep_extent_function MPI_Datarep_extent_function_c;",
+         "",
+         "// Work around broken MPI implementations",
+         "",
+         "static MPI_Comm MPIF_Comm_fromint(int comm) {",
+         "  switch (comm) {",
+         "  case (int)(intptr_t)MPI_COMM_NULL:",
+         "  case (int)(intptr_t)MPI_COMM_WORLD:",
+         "  case (int)(intptr_t)MPI_COMM_SELF:",
+         "    return (MPI_Comm)(intptr_t)comm;",
+         "  }",
+         "  return MPI_Comm_fromint(comm);",
+         "}",
+         "",
+         "static int MPIF_Comm_toint(MPI_Comm comm) {",
+         "  switch ((intptr_t)comm) {",
+         "  case (intptr_t)MPI_COMM_NULL:",
+         "  case (intptr_t)MPI_COMM_WORLD:",
+         "  case (intptr_t)MPI_COMM_SELF:",
+         "    return (int)(intptr_t)comm;",
+         "  }",
+         "  return MPI_Comm_toint(comm);",
+         "}",
+         "",
+         "static MPI_Errhandler MPIF_Errhandler_fromint(int errhandler) {",
+         "  switch (errhandler) {",
+         "  case (int)(intptr_t)MPI_ERRHANDLER_NULL:",
+         "  case (int)(intptr_t)MPI_ERRORS_ARE_FATAL:",
+         "  case (int)(intptr_t)MPI_ERRORS_ABORT:",
+         "  case (int)(intptr_t)MPI_ERRORS_RETURN:",
+         "    return (MPI_Errhandler)(intptr_t)errhandler;",
+         "  }",
+         "  return MPI_Errhandler_fromint(errhandler);",
+         "}",
+         "",
+         "static int MPIF_Errhandler_toint(MPI_Errhandler errhandler) {",
+         "  switch ((intptr_t)errhandler) {",
+         "  case (intptr_t)MPI_ERRHANDLER_NULL:",
+         "  case (intptr_t)MPI_ERRORS_ARE_FATAL:",
+         "  case (intptr_t)MPI_ERRORS_ABORT:",
+         "  case (intptr_t)MPI_ERRORS_RETURN:",
+         "    return (int)(intptr_t)errhandler;",
+         "  }",
+         "  return MPI_Errhandler_toint(errhandler);",
+         "}",
+         "",
+         "static MPI_File MPIF_File_fromint(int file) {",
+         "  switch (file) {",
+         "  case (int)(intptr_t)MPI_FILE_NULL:",
+         "    return (MPI_File)(intptr_t)file;",
+         "  }",
+         "  return MPI_File_fromint(file);",
+         "}",
+         "",
+         "static int MPIF_File_toint(MPI_File file) {",
+         "  switch ((intptr_t)file) {",
+         "  case (intptr_t)MPI_FILE_NULL:",
+         "    return (int)(intptr_t)file;",
+         "  }",
+         "  return MPI_File_toint(file);",
+         "}",
+         "",
+         "static MPI_Group MPIF_Group_fromint(int group) {",
+         "  switch (group) {",
+         "  case (int)(intptr_t)MPI_GROUP_NULL:",
+         "  case (int)(intptr_t)MPI_GROUP_EMPTY:",
+         "    return (MPI_Group)(intptr_t)group;",
+         "  }",
+         "  return MPI_Group_fromint(group);",
+         "}",
+         "",
+         "static int MPIF_Group_toint(MPI_Group group) {",
+         "  switch ((intptr_t)group) {",
+         "  case (intptr_t)MPI_GROUP_NULL:",
+         "  case (intptr_t)MPI_GROUP_EMPTY:",
+         "    return (int)(intptr_t)group;",
+         "  }",
+         "  return MPI_Group_toint(group);",
+         "}",
+         "",
+         "static MPI_Info MPIF_Info_fromint(int info) {",
+         "  switch (info) {",
+         "  case (int)(intptr_t)MPI_INFO_NULL:",
+         "  case (int)(intptr_t)MPI_INFO_ENV:",
+         "    return (MPI_Info)(intptr_t)info;",
+         "  }",
+         "  return MPI_Info_fromint(info);",
+         "}",
+         "",
+         "static int MPIF_Info_toint(MPI_Info info) {",
+         "  switch ((intptr_t)info) {",
+         "  case (intptr_t)MPI_INFO_NULL:",
+         "  case (intptr_t)MPI_INFO_ENV:",
+         "    return (int)(intptr_t)info;",
+         "  }",
+         "  return MPI_Info_toint(info);",
+         "}",
+         "",
+         "static MPI_Message MPIF_Message_fromint(int message) {",
+         "  switch (message) {",
+         "  case (int)(intptr_t)MPI_MESSAGE_NULL:",
+         "  case (int)(intptr_t)MPI_MESSAGE_NO_PROC:",
+         "    return (MPI_Message)(intptr_t)message;",
+         "  }",
+         "  return MPI_Message_fromint(message);",
+         "}",
+         "",
+         "static int MPIF_Message_toint(MPI_Message message) {",
+         "  switch ((intptr_t)message) {",
+         "  case (intptr_t)MPI_MESSAGE_NULL:",
+         "  case (intptr_t)MPI_MESSAGE_NO_PROC:",
+         "    return (int)(intptr_t)message;",
+         "  }",
+         "  return MPI_Message_toint(message);",
+         "}",
+         "",
+         "static MPI_Op MPIF_Op_fromint(int op) {",
+         "  switch (op) {",
+         "  case (int)(intptr_t)MPI_OP_NULL:",
+         "  case (int)(intptr_t)MPI_SUM:",
+         "  case (int)(intptr_t)MPI_MIN:",
+         "  case (int)(intptr_t)MPI_MAX:",
+         "  case (int)(intptr_t)MPI_PROD:",
+         "  case (int)(intptr_t)MPI_BAND:",
+         "  case (int)(intptr_t)MPI_BOR:",
+         "  case (int)(intptr_t)MPI_BXOR:",
+         "  case (int)(intptr_t)MPI_LAND:",
+         "  case (int)(intptr_t)MPI_LOR:",
+         "  case (int)(intptr_t)MPI_LXOR:",
+         "  case (int)(intptr_t)MPI_MINLOC:",
+         "  case (int)(intptr_t)MPI_MAXLOC:",
+         "  case (int)(intptr_t)MPI_REPLACE:",
+         "  case (int)(intptr_t)MPI_NO_OP:",
+         "    return (MPI_Op)(intptr_t)op;",
+         "  }",
+         "  return MPI_Op_fromint(op);",
+         "}",
+         "",
+         "static int MPIF_Op_toint(MPI_Op op) {",
+         "  switch ((intptr_t)op) {",
+         "  case (intptr_t)MPI_OP_NULL:",
+         "  case (intptr_t)MPI_SUM:",
+         "  case (intptr_t)MPI_MIN:",
+         "  case (intptr_t)MPI_MAX:",
+         "  case (intptr_t)MPI_PROD:",
+         "  case (intptr_t)MPI_BAND:",
+         "  case (intptr_t)MPI_BOR:",
+         "  case (intptr_t)MPI_BXOR:",
+         "  case (intptr_t)MPI_LAND:",
+         "  case (intptr_t)MPI_LOR:",
+         "  case (intptr_t)MPI_LXOR:",
+         "  case (intptr_t)MPI_MINLOC:",
+         "  case (intptr_t)MPI_MAXLOC:",
+         "  case (intptr_t)MPI_REPLACE:",
+         "  case (intptr_t)MPI_NO_OP:",
+         "    return (int)(intptr_t)op;",
+         "  }",
+         "  return MPI_Op_toint(op);",
+         "}",
+         "",
+         "static MPI_Request MPIF_Request_fromint(int request) {",
+         "  switch (request) {",
+         "  case (int)(intptr_t)MPI_REQUEST_NULL:",
+         "    return (MPI_Request)(intptr_t)request;",
+         "  }",
+         "  return MPI_Request_fromint(request);",
+         "}",
+         "",
+         "static int MPIF_Request_toint(MPI_Request request) {",
+         "  switch ((intptr_t)request) {",
+         "  case (intptr_t)MPI_REQUEST_NULL:",
+         "    return (int)(intptr_t)request;",
+         "  }",
+         "  return MPI_Request_toint(request);",
+         "}",
+         "",
+         "static MPI_Session MPIF_Session_fromint(int session) {",
+         "  switch (session) {",
+         "  case (int)(intptr_t)MPI_SESSION_NULL:",
+         "    return (MPI_Session)(intptr_t)session;",
+         "  }",
+         "  return MPI_Session_fromint(session);",
+         "}",
+         "",
+         "static int MPIF_Session_toint(MPI_Session session) {",
+         "  switch ((intptr_t)session) {",
+         "  case (intptr_t)MPI_SESSION_NULL:",
+         "    return (int)(intptr_t)session;",
+         "  }",
+         "  return MPI_Session_toint(session);",
+         "}",
+         "",
+         "static MPI_Datatype MPIF_Type_fromint(int type) {",
+         "  switch (type) {",
+         "  case (int)(intptr_t)MPI_DATATYPE_NULL:",
+         "  case (int)(intptr_t)MPI_AINT:",
+         "  case (int)(intptr_t)MPI_COUNT:",
+         "  case (int)(intptr_t)MPI_OFFSET:",
+         "  case (int)(intptr_t)MPI_PACKED:",
+         "  case (int)(intptr_t)MPI_SHORT:",
+         "  case (int)(intptr_t)MPI_INT:",
+         "  case (int)(intptr_t)MPI_LONG:",
+         "  case (int)(intptr_t)MPI_LONG_LONG:",
+         "  case (int)(intptr_t)MPI_UNSIGNED_SHORT:",
+         "  case (int)(intptr_t)MPI_UNSIGNED:",
+         "  case (int)(intptr_t)MPI_UNSIGNED_LONG:",
+         "  case (int)(intptr_t)MPI_UNSIGNED_LONG_LONG:",
+         "  case (int)(intptr_t)MPI_FLOAT:",
+         "  case (int)(intptr_t)MPI_C_FLOAT_COMPLEX:",
+         "  case (int)(intptr_t)MPI_CXX_FLOAT_COMPLEX:",
+         "  case (int)(intptr_t)MPI_DOUBLE:",
+         "  case (int)(intptr_t)MPI_C_DOUBLE_COMPLEX:",
+         "  case (int)(intptr_t)MPI_CXX_DOUBLE_COMPLEX:",
+         "  case (int)(intptr_t)MPI_LOGICAL:",
+         "  case (int)(intptr_t)MPI_INTEGER:",
+         "  case (int)(intptr_t)MPI_REAL:",
+         "  case (int)(intptr_t)MPI_COMPLEX:",
+         "  case (int)(intptr_t)MPI_DOUBLE_PRECISION:",
+         "  case (int)(intptr_t)MPI_DOUBLE_COMPLEX:",
+         "  case (int)(intptr_t)MPI_CHARACTER:",
+         "  case (int)(intptr_t)MPI_LONG_DOUBLE:",
+         "  case (int)(intptr_t)MPI_C_LONG_DOUBLE_COMPLEX:",
+         "  case (int)(intptr_t)MPI_CXX_LONG_DOUBLE_COMPLEX:",
+         "  case (int)(intptr_t)MPI_FLOAT_INT:",
+         "  case (int)(intptr_t)MPI_DOUBLE_INT:",
+         "  case (int)(intptr_t)MPI_LONG_INT:",
+         "  case (int)(intptr_t)MPI_2INT:",
+         "  case (int)(intptr_t)MPI_SHORT_INT:",
+         "  case (int)(intptr_t)MPI_LONG_DOUBLE_INT:",
+         "  case (int)(intptr_t)MPI_2REAL:",
+         "  case (int)(intptr_t)MPI_2DOUBLE_PRECISION:",
+         "  case (int)(intptr_t)MPI_2INTEGER:",
+         "  case (int)(intptr_t)MPI_C_BOOL:",
+         "  case (int)(intptr_t)MPI_CXX_BOOL:",
+         "  case (int)(intptr_t)MPI_WCHAR:",
+         "  case (int)(intptr_t)MPI_INT8_T:",
+         "  case (int)(intptr_t)MPI_UINT8_T:",
+         "  case (int)(intptr_t)MPI_CHAR:",
+         "  case (int)(intptr_t)MPI_SIGNED_CHAR:",
+         "  case (int)(intptr_t)MPI_UNSIGNED_CHAR:",
+         "  case (int)(intptr_t)MPI_BYTE:",
+         "  case (int)(intptr_t)MPI_INT16_T:",
+         "  case (int)(intptr_t)MPI_UINT16_T:",
+         "  case (int)(intptr_t)MPI_INT32_T:",
+         "  case (int)(intptr_t)MPI_UINT32_T:",
+         "  case (int)(intptr_t)MPI_INT64_T:",
+         "  case (int)(intptr_t)MPI_UINT64_T:",
+         "  case (int)(intptr_t)MPI_LOGICAL1:",
+         "  case (int)(intptr_t)MPI_INTEGER1:",
+         "  case (int)(intptr_t)MPI_LOGICAL2:",
+         "  case (int)(intptr_t)MPI_INTEGER2:",
+         "  case (int)(intptr_t)MPI_REAL2:",
+         "  case (int)(intptr_t)MPI_LOGICAL4:",
+         "  case (int)(intptr_t)MPI_INTEGER4:",
+         "  case (int)(intptr_t)MPI_REAL4:",
+         "  case (int)(intptr_t)MPI_COMPLEX4:",
+         "  case (int)(intptr_t)MPI_LOGICAL8:",
+         "  case (int)(intptr_t)MPI_INTEGER8:",
+         "  case (int)(intptr_t)MPI_REAL8:",
+         "  case (int)(intptr_t)MPI_COMPLEX8:",
+         "  case (int)(intptr_t)MPI_LOGICAL16:",
+         "  case (int)(intptr_t)MPI_INTEGER16:",
+         "  case (int)(intptr_t)MPI_REAL16:",
+         "  case (int)(intptr_t)MPI_COMPLEX16:",
+         "  case (int)(intptr_t)MPI_COMPLEX32:",
+         "    return (MPI_Datatype)(intptr_t)type;",
+         "  }",
+         "  return MPI_Type_fromint(type);",
+         "}",
+         "",
+         "static int MPIF_Type_toint(MPI_Datatype type) {",
+         "  switch ((intptr_t)type) {",
+         "  case (intptr_t)MPI_DATATYPE_NULL:",
+         "  case (intptr_t)MPI_AINT:",
+         "  case (intptr_t)MPI_COUNT:",
+         "  case (intptr_t)MPI_OFFSET:",
+         "  case (intptr_t)MPI_PACKED:",
+         "  case (intptr_t)MPI_SHORT:",
+         "  case (intptr_t)MPI_INT:",
+         "  case (intptr_t)MPI_LONG:",
+         "  case (intptr_t)MPI_LONG_LONG:",
+         "  case (intptr_t)MPI_UNSIGNED_SHORT:",
+         "  case (intptr_t)MPI_UNSIGNED:",
+         "  case (intptr_t)MPI_UNSIGNED_LONG:",
+         "  case (intptr_t)MPI_UNSIGNED_LONG_LONG:",
+         "  case (intptr_t)MPI_FLOAT:",
+         "  case (intptr_t)MPI_C_FLOAT_COMPLEX:",
+         "  case (intptr_t)MPI_CXX_FLOAT_COMPLEX:",
+         "  case (intptr_t)MPI_DOUBLE:",
+         "  case (intptr_t)MPI_C_DOUBLE_COMPLEX:",
+         "  case (intptr_t)MPI_CXX_DOUBLE_COMPLEX:",
+         "  case (intptr_t)MPI_LOGICAL:",
+         "  case (intptr_t)MPI_INTEGER:",
+         "  case (intptr_t)MPI_REAL:",
+         "  case (intptr_t)MPI_COMPLEX:",
+         "  case (intptr_t)MPI_DOUBLE_PRECISION:",
+         "  case (intptr_t)MPI_DOUBLE_COMPLEX:",
+         "  case (intptr_t)MPI_CHARACTER:",
+         "  case (intptr_t)MPI_LONG_DOUBLE:",
+         "  case (intptr_t)MPI_C_LONG_DOUBLE_COMPLEX:",
+         "  case (intptr_t)MPI_CXX_LONG_DOUBLE_COMPLEX:",
+         "  case (intptr_t)MPI_FLOAT_INT:",
+         "  case (intptr_t)MPI_DOUBLE_INT:",
+         "  case (intptr_t)MPI_LONG_INT:",
+         "  case (intptr_t)MPI_2INT:",
+         "  case (intptr_t)MPI_SHORT_INT:",
+         "  case (intptr_t)MPI_LONG_DOUBLE_INT:",
+         "  case (intptr_t)MPI_2REAL:",
+         "  case (intptr_t)MPI_2DOUBLE_PRECISION:",
+         "  case (intptr_t)MPI_2INTEGER:",
+         "  case (intptr_t)MPI_C_BOOL:",
+         "  case (intptr_t)MPI_CXX_BOOL:",
+         "  case (intptr_t)MPI_WCHAR:",
+         "  case (intptr_t)MPI_INT8_T:",
+         "  case (intptr_t)MPI_UINT8_T:",
+         "  case (intptr_t)MPI_CHAR:",
+         "  case (intptr_t)MPI_SIGNED_CHAR:",
+         "  case (intptr_t)MPI_UNSIGNED_CHAR:",
+         "  case (intptr_t)MPI_BYTE:",
+         "  case (intptr_t)MPI_INT16_T:",
+         "  case (intptr_t)MPI_UINT16_T:",
+         "  case (intptr_t)MPI_INT32_T:",
+         "  case (intptr_t)MPI_UINT32_T:",
+         "  case (intptr_t)MPI_INT64_T:",
+         "  case (intptr_t)MPI_UINT64_T:",
+         "  case (intptr_t)MPI_LOGICAL1:",
+         "  case (intptr_t)MPI_INTEGER1:",
+         "  case (intptr_t)MPI_LOGICAL2:",
+         "  case (intptr_t)MPI_INTEGER2:",
+         "  case (intptr_t)MPI_REAL2:",
+         "  case (intptr_t)MPI_LOGICAL4:",
+         "  case (intptr_t)MPI_INTEGER4:",
+         "  case (intptr_t)MPI_REAL4:",
+         "  case (intptr_t)MPI_COMPLEX4:",
+         "  case (intptr_t)MPI_LOGICAL8:",
+         "  case (intptr_t)MPI_INTEGER8:",
+         "  case (intptr_t)MPI_REAL8:",
+         "  case (intptr_t)MPI_COMPLEX8:",
+         "  case (intptr_t)MPI_LOGICAL16:",
+         "  case (intptr_t)MPI_INTEGER16:",
+         "  case (intptr_t)MPI_REAL16:",
+         "  case (intptr_t)MPI_COMPLEX16:",
+         "  case (intptr_t)MPI_COMPLEX32:",
+         "    return (int)(intptr_t)type;",
+         "  }",
+         "  return MPI_Type_toint(type);",
+         "}",
+         "",
+         "static MPI_Win MPIF_Win_fromint(int win) {",
+         "  switch (win) {",
+         "  case (int)(intptr_t)MPI_WIN_NULL:",
+         "    return (MPI_Win)(intptr_t)win;",
+         "  }",
+         "  return MPI_Win_fromint(win);",
+         "}",
+         "",
+         "static int MPIF_Win_toint(MPI_Win win) {",
+         "  switch ((intptr_t)win) {",
+         "  case (intptr_t)MPI_WIN_NULL:",
+         "    return (int)(intptr_t)win;",
+         "  }",
+         "  return MPI_Win_toint(win);",
+         "}",
+])
 
 append!(f_interfaces,
         ["module mpi_functions",
@@ -166,7 +532,7 @@ append!(f08_implementations_body,
 
 for key in sort(collect(keys(apis)))
     api = apis[key]
-    key in ["mpi_init"] || continue
+    # key in ["mpi_init"] || continue
 
     name = api["name"]
     attributes = api["attributes"]
@@ -209,6 +575,10 @@ for key in sort(collect(keys(apis)))
         f_declarations = []
         f08_arguments = []
         f08_declarations = []
+        f08_call_temp_declarations = []
+        f08_call_temp_copyins = []
+        f08_call_arguments = []
+        f08_call_temp_copyouts = []
         for parameter in parameters
             kind = parameter["kind"]
             length = parameter["length"]
@@ -223,6 +593,28 @@ for key in sort(collect(keys(apis)))
                 if !large_only || embiggen
                     push!(f_arguments, "$parname")
                     push!(f08_arguments, "$parname")
+
+                    if optional
+                        @assert param_direction == "out"
+                        f_argname = "tmp_$parname"
+                        if kind == "LOGICAL"
+                            f_type = "logical"
+                        elseif  kind == "ERROR_CODE"
+                            f_type = "integer"
+                        else
+                            @show kind
+                            @assert false
+                        end
+                        push!(f08_call_temp_declarations, "$f_type :: $f_argname")
+                        push!(f08_call_temp_copyouts, "if (present($parname)) $parname = $f_argname")
+                    else
+                        f_argname = parname
+                    end
+                    if kind ∈ keys(kind2type) || kind == "STATUS"
+                        push!(f08_call_arguments, "$f_argname%MPI_VAL")
+                    else
+                        push!(f08_call_arguments, "$f_argname")
+                    end
                 end
             end
 
@@ -254,9 +646,12 @@ for key in sort(collect(keys(apis)))
                 end
                 if kind == "LOGICAL_VOID"
                     push!(f_declarations, "logical :: $parname")
+                    push!(f08_declarations, "logical, intent($param_direction) :: $parname")
                 else
                     push!(f_declarations, "!gcc\$ attributes no_arg_check :: $parname")
                     push!(f_declarations, "integer :: $parname(*)")
+                    push!(f08_declarations, "!gcc\$ attributes no_arg_check :: $parname")
+                    push!(f08_declarations, "integer :: $parname(*)")
                 end
             elseif kind ∈ keys(kind2type)
                 @assert "c_parameter" ∉ suppress
@@ -275,9 +670,9 @@ for key in sort(collect(keys(apis)))
                         if root_only
                             ensure_comm_rank!(state, input_conversions)
                             push!(call_arguments,
-                                  "q_comm_rank == 0 ? MPI_$(kind2fun[kind])_fromint(*$parname) : MPI_$(kind2null[kind])_NULL")
+                                  "q_comm_rank == 0 ? MPIF_$(kind2fun[kind])_fromint(*$parname) : MPI_$(kind2null[kind])_NULL")
                         else
-                            push!(call_arguments, "MPI_$(kind2fun[kind])_fromint(*$parname)")
+                            push!(call_arguments, "MPIF_$(kind2fun[kind])_fromint(*$parname)")
                         end
                     elseif length == "*"
                         push!(input_arguments, "const MPI_Fint* restrict const $parname")
@@ -288,11 +683,11 @@ for key in sort(collect(keys(apis)))
                             append!(input_conversions,
                                     ["if (q_comm_rank == 0)",
                                      "  for (int rank=0; rank<q_comm_size; ++rank)",
-                                     "    c_$parname[rank] = MPI_$(kind2fun[kind])_fromint($parname[rank]);"])
+                                     "    c_$parname[rank] = MPIF_$(kind2fun[kind])_fromint($parname[rank]);"])
                         else
                             append!(input_conversions,
                                     ["for (int rank=0; rank<q_comm_size; ++rank)",
-                                     "  c_$parname[rank] = MPI_$(kind2fun[kind])_fromint($parname[rank]);"])
+                                     "  c_$parname[rank] = MPIF_$(kind2fun[kind])_fromint($parname[rank]);"])
                         end
                         push!(call_arguments, "c_$parname")
                     elseif length ∈ ["count", "incount"]
@@ -303,11 +698,11 @@ for key in sort(collect(keys(apis)))
                             append!(input_conversions,
                                     ["if (q_comm_rank == 0)",
                                      "  for (int rank=0; rank<*$length; ++rank)",
-                                     "    c_$parname[rank] = MPI_$(kind2fun[kind])_fromint($parname[rank]);"])
+                                     "    c_$parname[rank] = MPIF_$(kind2fun[kind])_fromint($parname[rank]);"])
                         else
                             append!(input_conversions,
                                     ["for (int rank=0; rank<*$length; ++rank)",
-                                     "  c_$parname[rank] = MPI_$(kind2fun[kind])_fromint($parname[rank]);"])
+                                     "  c_$parname[rank] = MPIF_$(kind2fun[kind])_fromint($parname[rank]);"])
                         end
                         push!(call_arguments, "c_$parname")
                     else
@@ -319,22 +714,20 @@ for key in sort(collect(keys(apis)))
                     push!(input_arguments, "MPI_Fint* restrict const $parname")
                     push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname;")
                     push!(call_arguments, "&c_$(parname)")
-                    push!(output_conversions, "*$parname = MPI_$(kind2fun[kind])_toint(c_$parname);")
+                    push!(output_conversions, "*$parname = MPIF_$(kind2fun[kind])_toint(c_$parname);")
                 elseif param_direction == "inout"
                     @assert !root_only
                     @assert !root_only
                     push!(input_arguments, "MPI_Fint* restrict const $parname")
-                    push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname = MPI_$(kind2fun[kind])_fromint(*$parname);")
+                    push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname = MPIF_$(kind2fun[kind])_fromint(*$parname);")
                     push!(call_arguments, "&c_$(parname)")
-                    push!(output_conversions, "*$parname = MPI_$(kind2fun[kind])_toint(c_$parname);")
+                    push!(output_conversions, "*$parname = MPIF_$(kind2fun[kind])_toint(c_$parname);")
                 else
                     @assert false
                 end
-                if length == nothing
-                    push!(f_declarations, "integer :: $parname")
-                else
-                    push!(f_declarations, "integer :: $parname(*)")
-                end
+                f_length = length == nothing ? "" : "(*)"
+                push!(f_declarations, "integer :: $parname$f_length")
+                push!(f08_declarations, "type(MPI_$(kind2type[kind])), intent($param_direction) :: $parname$f_length")
             elseif kind == "STATUS"
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
@@ -354,6 +747,7 @@ for key in sort(collect(keys(apis)))
                     @assert false
                 end
                 push!(f_declarations, "integer :: $parname(MPI_STATUS_SIZE)")
+                push!(f08_declarations, "type(MPI_Status), intent($param_direction) :: $parname")
             elseif kind in [int_kinds; int_aint_kinds; int_count_kinds; aint_kinds; aint_count_kinds; count_kinds]
                 if kind in int_kinds || (!embiggen && kind in int_aint_kinds) || (!embiggen && kind in int_count_kinds)
                     type = "MPI_Fint"
@@ -419,22 +813,23 @@ for key in sort(collect(keys(apis)))
                     else
                         @assert false
                     end
-                    @assert "f90_parameter" ∉ suppress
+                    f_intent = "f08_intent" ∉ suppress ? ", intent($param_direction)" : ""
+                    f_optional = optional ? ", optional" : ""
                     if length == nothing
                         f_length = ""
+                    elseif length == ""
+                        f_length = "(*)"
+                    elseif length == ["n", "3"]
+                        f_length = "(3, n)"
                     else
                         f_length = "($length)"
                     end
-                    if optional
-                        f_optional = ", optional"
-                    else
-                        f_optional = ""
+                    if "f90_parameter" ∉ suppress
+                        push!(f_declarations, "$f_type :: $parname$f_length")
                     end
-                    push!(f_declarations, "$f_type :: $parname$f_length")
-                    push!(f08_declarations, "$f_type, intent($param_direction), $f_optional :: $parname$f_length")
-
-                    CONTINUE HERE
-
+                    if "f08_parameter" ∉ suppress
+                        push!(f08_declarations, "$f_type$f_intent$f_optional :: $parname$f_length")
+                    end
                 end
             elseif kind in ["ATTRIBUTE_VAL_10"]
                 @assert "f90_parameter" ∉ suppress
@@ -456,6 +851,7 @@ for key in sort(collect(keys(apis)))
                     @assert false
                 end
                 push!(f_declarations, "integer :: $parname")
+                push!(f08_declarations, "integer, intent($param_direction) :: $parname")
             elseif kind in ["ATTRIBUTE_VAL", "EXTRA_STATE", "EXTRA_STATE2"]
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
@@ -475,6 +871,7 @@ for key in sort(collect(keys(apis)))
                     @assert false
                 end
                 push!(f_declarations, "integer :: $parname")
+                push!(f08_declarations, "integer, intent($param_direction) :: $parname")
             elseif kind in ["OFFSET"]
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
@@ -491,11 +888,9 @@ for key in sort(collect(keys(apis)))
                 else
                     @assert false
                 end
-                if length == nothing
-                    push!(f_declarations, "integer(MPI_OFFSET_KIND) :: $parname")
-                else
-                    push!(f_declarations, "integer(MPI_OFFSET_KIND) :: $parname(*)")
-                end
+                f_length = length == nothing ? "" : length == "" ? "(*)" : "ERROR"
+                push!(f_declarations, "integer(MPI_OFFSET_KIND) :: $parname$f_length")
+                push!(f08_declarations, "integer(MPI_OFFSET_KIND), intent($param_direction) :: $parname$f_length")
             elseif kind == "LOGICAL"
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
@@ -553,11 +948,9 @@ for key in sort(collect(keys(apis)))
                 else
                     @assert false
                 end
-                if length == nothing
-                    push!(f_declarations, "logical :: $parname")
-                else
-                    push!(f_declarations, "logical :: $parname(*)")
-                end
+                f_length = length == nothing ? "" : "(*)"
+                push!(f_declarations, "logical :: $parname$f_length")
+                push!(f08_declarations, "logical, intent($param_direction) :: $parname$f_length")
             elseif kind ∈ ["ARGUMENT_LIST", "STRING"]
                 @assert "c_parameter" ∉ suppress
                 @assert !large_only
@@ -625,11 +1018,9 @@ for key in sort(collect(keys(apis)))
                     @assert false
                 end
                 if "f90_parameter" ∉ suppress
-                    if length == nothing
-                        push!(f_declarations, "character*(*) :: $parname")
-                    else
-                        push!(f_declarations, "character*($length) :: $parname")
-                    end
+                    f_length = length == nothing ? "*" : "$length"
+                    push!(f_declarations, "character*($f_length) :: $parname")
+                    push!(f08_declarations, "character*($f_length), intent($param_direction) :: $parname")
                 end
             elseif kind ∈ ["STRING_ARRAY"]
                 @assert "c_parameter" ∉ suppress
@@ -658,6 +1049,9 @@ for key in sort(collect(keys(apis)))
                 end
                 if "f90_parameter" ∉ suppress
                     push!(f_declarations, "character*(*) :: $parname(*)")
+                end
+                if "f08_parameter" ∉ suppress
+                    push!(f08_declarations, "character*(*), intent($param_direction) :: $parname(*)")
                 end
             elseif kind == "STRING_2DARRAY"
                 @assert "c_parameter" ∉ suppress
@@ -692,6 +1086,7 @@ for key in sort(collect(keys(apis)))
                          "    free(argv_$parname[i][n]);",
                          "}"])
                 push!(f_declarations, "character*(*) :: $parname($length, *)")
+                push!(f08_declarations, "character*(*), intent($param_direction) :: $parname($length, *)")
             elseif kind ∈ ["FUNCTION", "POLYFUNCTION"]
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
@@ -700,11 +1095,14 @@ for key in sort(collect(keys(apis)))
                 @assert !optional
                 @assert !root_only
                 @assert param_direction == "in"
-                func_type = parameter["func_type"] * (embiggen ? "_c" : "")
+                # TODO: Check properly whether the function parameter needs embiggening
+                embiggen_func = embiggen && parameter["func_type"] ∉ ["MPI_Datarep_extent_function"]
+                func_type = parameter["func_type"] * (embiggen_func ? "_c" : "")
                 push!(input_arguments, "$func_type* const $parname")
                 push!(input_conversions, "abort();")
                 push!(call_arguments, "$parname")
                 push!(f_declarations, "external :: $parname")
+                push!(f08_declarations, "procedure($func_type) :: $parname")
             else
                 @show name parname kind
                 @assert false
@@ -766,20 +1164,40 @@ for key in sort(collect(keys(apis)))
         push!(f08_implementations_body, "  $f_unit $f08_name( &")
         for (n, arg) in enumerate(f08_arguments)
             comma = n < length(f08_arguments) ? "," : ""
-            push!(f08_implementations, "    $arg$comma &")
+            push!(f08_implementations_body, "    $arg$comma &")
         end
         if f_unit == "function"
-            push!(f08_implementations_bodyinterfaces, "  ) result(result)")
+            push!(f08_implementations_body, "  ) result(result)")
         else
             push!(f08_implementations_body, "  )")
         end
-        push!(f08_implementations_body, "    use mpi_constants")
+        push!(f08_implementations_body, "    use mpi_f08_constants")
+        push!(f08_implementations_body, "    use mpi_f08_types")
         push!(f08_implementations_body, "    implicit none")
         if f_unit == "function"
             push!(f08_implementations_body, "    $f_return_type :: result")
         end
         for decl in f08_declarations
             push!(f08_implementations_body, "    $decl")
+        end
+        for decl in f08_call_temp_declarations
+            push!(f08_implementations_body, "    $decl")
+        end
+        for stmt in f08_call_temp_copyins
+            push!(f08_implementations_body, "    $stmt")
+        end
+        if f_unit == "function"        
+            push!(f08_implementations_body, "    result = $f08_name_f( &")
+        else
+            push!(f08_implementations_body, "    call $f08_name_f( &")
+        end
+        for (n, arg) in enumerate(f08_call_arguments)
+            comma = n < length(f08_call_arguments) ? "," : ""
+            push!(f08_implementations_body, "      $arg$comma &")
+        end
+        push!(f08_implementations_body, "    )")
+        for stmt in f08_call_temp_copyouts
+            push!(f08_implementations_body, "    $stmt")
         end
         push!(f08_implementations_body, "  end $f_unit $f08_name")
 

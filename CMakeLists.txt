@@ -15,7 +15,7 @@ project(
 #
 # Different SOVERSIONs are incompatible; there is no need to have a
 # major/minor version number.
-set(SOVERSION 1)
+set(SOVERSION 0)
 
 include(CheckLanguage)
 
@@ -198,6 +198,8 @@ target_include_directories(mpif PRIVATE include)
 target_link_libraries(mpif PRIVATE MPI::MPI_C)
 list(APPEND public_headers
   include/mpif.h
+  include/mpif_constants.h
+  include/mpif_functions.h
 )
 set_target_properties(mpif PROPERTIES
   VERSION ${PROJECT_VERSION}
@@ -237,13 +239,3 @@ install(
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
-
-# Tests
-
-enable_testing()
-
-add_executable(init_f init_f.f)
-target_link_libraries(init_f mpif)
-add_test(NAME init_f COMMAND init_f)
-# add_executable(init_f90 init_f90.f90)
-# add_executable(init_f08 init_f08.f90)

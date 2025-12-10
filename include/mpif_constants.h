@@ -89,6 +89,7 @@
       integer, parameter :: MPI_CXX_LONG_DOUBLE_COMPLEX =               &
      &     int(z'00000225')
       integer, parameter :: MPI_FLOAT_INT       = int(z'00000228')
+      integer, parameter :: MPI_DOUBLE_INT      = int(z'00000229')
       integer, parameter :: MPI_LONG_INT        = int(z'0000022a')
       integer, parameter :: MPI_2INT            = int(z'0000022b')
       integer, parameter :: MPI_SHORT_INT       = int(z'0000022c')
