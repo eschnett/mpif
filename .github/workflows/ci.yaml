@@ -63,7 +63,7 @@ jobs:
           # ./autogen.sh
           mkdir build
           cd build
-          prefix=/home/runner/work/mpif/opt
+          prefix=/home/runner/work/mpif/opt/mpi
           configure_flags=(
               --disable-dependency-tracking
               --disable-doc
@@ -79,7 +79,7 @@ jobs:
           make -j$(nproc)
           make install
 
-          # Extrat MPI ABI files
+          # Extract MPI ABI files
           mv ${prefix} ${prefix}-mpich
           mkdir ${prefix}
           mkdir ${prefix}/lib
@@ -119,8 +119,8 @@ jobs:
       - name: Install OpenMPI
         if: matrix.mpi == 'openmpi' && steps.cache-openmpi.outputs.cache-hit != 'true'
         run: |
-          mkdir -p /home/runner/work/mpif/opt
-          cd /home/runner/work/mpif/opt
+          mkdir -p /home/runner/work/mpif/opt/mpi
+          cd /home/runner/work/mpif/opt/mpi
 
           mkdir -p src
           pushd src
@@ -145,15 +145,15 @@ jobs:
               --enable-static=no \
               --with-hwloc \
               --with-libevent=internal \
-              --prefix=/home/runner/work/mpif/opt
+              --prefix=/home/runner/work/mpif/opt/mpi
           make -j$(nproc)
           make install
 
           # Fixup
-          pushd /home/runner/work/mpif/opt
+          pushd /home/runner/work/mpif/opt/mpi
           mv include/mpi.h include/mpi_openmpi.h
-          mv include/standard_abi/mpi.h include/mpi.h
-          patch -d include -p 1 </home/runner/work/mpif/mpif/.github/workflows/fortran_openmpi.patch
+          # mv include/standard_abi/mpi.h include/mpi.h
+          # patch -d include -p 1 </home/runner/work/mpif/mpif/.github/workflows/fortran_openmpi.patch
           sed -i -e 's/-lmpi/-lmpi_abi/' bin/ompi_wrapper_script
           popd
 
@@ -161,8 +161,22 @@ jobs:
           rm -rf src
 
           # Add OpenMPI to environment
-          echo "/home/runner/work/mpif/opt/bin" >> $GITHUB_PATH
-          echo "LD_LIBRARY_PATH=/home/runner/work/mpif/opt/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+          echo "/home/runner/work/mpif/opt/mpi/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=/home/runner/work/mpif/opt/mpi/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+
+
+
+      - name: Install official MPI header file
+        run: |
+          mkdir src
+          pushd src
+          git clone https://github.com/mpi-forum/mpi-abi-stubs
+          prefix=/home/runner/work/mpif/opt/mpi
+          mkdir -p ${prefix}/include
+          cp mpi-abi-stubs/mpi.h ${prefix}/include
+          (cd ${prefix}/include && patch -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran_mpich.patch)
+          popd
+          rm -rf src
 
 
 
@@ -171,8 +185,8 @@ jobs:
           cmake \
               -Bbuild \
               -DCMAKE_BUILD_TYPE=Debug \
-              -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt \
-              -DMPI_HOME=/home/runner/work/mpif/opt
+              -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt/mpif \
+              -DMPI_HOME=/home/runner/work/mpif/opt/mpi
           cmake --build build --parallel
           cmake --install build
 
@@ -181,7 +195,7 @@ jobs:
           cd test
           cmake \
               -Bbuild-tests \
-              -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt \
-              -DMPI_HOME=${HOME}/mpif
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DMPI_HOME=/home/runner/work/mpif/opt/mpif
           cmake --build build-tests --parallel
           ctest --test-dir build-tests
