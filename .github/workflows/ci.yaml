@@ -186,6 +186,7 @@ jobs:
         run: |
           cmake \
               -Bbuild \
+              -DBUILD_SHARED_LIBS=ON \
               -DCMAKE_BUILD_TYPE=Debug \
               -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt/mpif \
               -DMPI_HOME=/home/runner/work/mpif/opt/mpi
@@ -198,6 +199,7 @@ jobs:
           cmake \
               -Bbuild-tests \
               -DCMAKE_BUILD_TYPE=Debug \
-              -DMPI_HOME=/home/runner/work/mpif/opt/mpif
+              -DMPI_HOME=/home/runner/work/mpif/opt/mpif \
+              -DMPI_Fortran_COMPILER=/home/runner/work/mpif/opt/mpif/bin/mpifort
           cmake --build build-tests --parallel
           ctest --test-dir build-tests
