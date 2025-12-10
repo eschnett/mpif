@@ -46,7 +46,7 @@ jobs:
           mkdir -p /home/runner/work/mpif/opt
           cd /home/runner/work/mpif/opt
 
-          mkdir -p src
+          mkdir src
           pushd src
 
           # Download
@@ -119,10 +119,10 @@ jobs:
       - name: Install OpenMPI
         if: matrix.mpi == 'openmpi' && steps.cache-openmpi.outputs.cache-hit != 'true'
         run: |
-          mkdir -p /home/runner/work/mpif/opt/mpi
-          cd /home/runner/work/mpif/opt/mpi
+          mkdir -p /home/runner/work/mpif/opt
+          cd /home/runner/work/mpif/opt
 
-          mkdir -p src
+          mkdir src
           pushd src
 
           # Download
@@ -168,6 +168,8 @@ jobs:
 
       - name: Install official MPI header file
         run: |
+          mkdir -p /home/runner/work/mpif/opt
+          cd /home/runner/work/mpif/opt
           mkdir src
           pushd src
           git clone https://github.com/mpi-forum/mpi-abi-stubs
