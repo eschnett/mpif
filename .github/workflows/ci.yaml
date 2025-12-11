@@ -99,7 +99,7 @@ jobs:
           rm ${prefix}/lib/libmpifort.*
           rm ${prefix}/lib/libmpl.*
           rm ${prefix}/lib/libopa.*
-          rm ${prefix}/lib/libpmpi.*
+          rm ${prefix}/lib/libpmpi.* || true   # This library does not exist on all architectures
           rm ${prefix}/lib/pkgconfig/mpich.pc
 
           popd
