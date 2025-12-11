@@ -74,12 +74,15 @@ jobs:
           make install
 
           # Fixup
-          rm ${prefix}/bin/mpichversion       # needs libmpi.so
-          rm ${prefix}/bin/mpivars            # needs libmpi.so
-          rm ${prefix}/bin/mpicc_abi
-          rm ${prefix}/bin/mpicxx_abi
           sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicc
           sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicxx
+          rm ${prefix}/bin/mpicc_abi
+          rm ${prefix}/bin/mpichversion       # needs libmpi.so
+          rm ${prefix}/bin/mpicxx_abi
+          rm ${prefix}/bin/mpif77
+          rm ${prefix}/bin/mpif90
+          rm ${prefix}/bin/mpifort
+          rm ${prefix}/bin/mpivars            # needs libmpi.so
 
           rm ${prefix}/include/mpi_abi.h
           rm ${prefix}/include/mpi_base.mod
@@ -117,7 +120,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/work/mpif/opt
-          key: openmpi-${{ runner.os }}-71da9a472fe08873e1598d5488680ac223b93aa0.1
+          key: openmpi-${{ runner.os }}-71da9a472fe08873e1598d5488680ac223b93aa0.2
           restore-keys: |
             openmpi-${{ runner.os }}-
 
@@ -159,8 +162,10 @@ jobs:
           make -j$(nproc)
           make install
 
-
           # Fixup
+          rm ${prefix}/bin/mpif77
+          rm ${prefix}/bin/mpif90
+          rm ${prefix}/bin/mpifort
           sed -i -e 's/-lmpi/-lmpi_abi/' ${prefix}/bin/ompi_wrapper_script
 
           rm     ${prefix}/include/abi_converters.h
