@@ -74,8 +74,6 @@ jobs:
           make install
 
           # Fixup
-          sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicc
-          sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicxx
           rm ${prefix}/bin/mpicc_abi
           rm ${prefix}/bin/mpichversion       # needs libmpi.so
           rm ${prefix}/bin/mpicxx_abi
@@ -83,16 +81,29 @@ jobs:
           rm ${prefix}/bin/mpif90
           rm ${prefix}/bin/mpifort
           rm ${prefix}/bin/mpivars            # needs libmpi.so
+          sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicc
+          sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicxx
 
-          rm ${prefix}/include/mpi_abi.h
-          rm ${prefix}/include/mpi_base.mod
-          rm ${prefix}/include/mpi_constants.mod
-          rm ${prefix}/include/mpi_proto.h
-          rm ${prefix}/include/mpi_sizeofs.mod
           rm ${prefix}/include/mpi.h
           rm ${prefix}/include/mpi.mod
+          rm ${prefix}/include/mpi_abi.h
+          rm ${prefix}/include/mpi_base.mod
+          rm ${prefix}/include/mpi_c_interface.mod
+          rm ${prefix}/include/mpi_c_interface_cdesc.mod
+          rm ${prefix}/include/mpi_c_interface_glue.mod
+          rm ${prefix}/include/mpi_c_interface_nobuf.mod
+          rm ${prefix}/include/mpi_c_interface_types.mod
+          rm ${prefix}/include/mpi_constants.mod
+          rm ${prefix}/include/mpi_f08.mod
+          rm ${prefix}/include/mpi_f08_callbacks.mod
+          rm ${prefix}/include/mpi_f08_compile_constants.mod
+          rm ${prefix}/include/mpi_f08_link_constants.mod
+          rm ${prefix}/include/mpi_f08_types.mod
+          rm ${prefix}/include/mpi_proto.h
+          rm ${prefix}/include/mpi_sizeofs.mod
           rm ${prefix}/include/mpif.h
           rm ${prefix}/include/pmpi_base.mod
+          rm ${prefix}/include/pmpi_f08.mod
 
           rm ${prefix}/lib/libfmpich.*
           rm ${prefix}/lib/libmpi.*
