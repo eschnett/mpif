@@ -55,7 +55,7 @@ jobs:
           cd mpich-5.0.0b1
 
           # Build
-          patch -p2 </home/runner/work/mpif/mpif/.github/workflows/mpich.patch
+          patch -p1 </home/runner/work/mpif/mpif/.github/workflows/mpich.patch
           mkdir build
           cd build
           prefix=/home/runner/work/mpif/opt/mpi
@@ -155,7 +155,6 @@ jobs:
           git submodule update --init --recursive
 
           # Build
-          patch -p2 </home/runner/work/mpif/mpif/.github/workflows/openmpi.patch
           ./autogen.pl
           mkdir build
           cd build
@@ -172,6 +171,8 @@ jobs:
               --with-libevent=internal
           )
           ../configure "${configure_flags[@]}"
+          # We need to patch after configuring because the file is generated
+          (cd .. && patch -p1 </home/runner/work/mpif/mpif/.github/workflows/openmpi.patch)
           make -j$(nproc)
           make install
 
