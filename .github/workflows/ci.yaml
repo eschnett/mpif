@@ -131,7 +131,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/work/mpif/opt
-          key: openmpi-${{ runner.os }}-71da9a472fe08873e1598d5488680ac223b93aa0.2
+          key: openmpi-${{ runner.os }}-4110e997cccce890cab3b800a8bf9db72eb43227.0
           restore-keys: |
             openmpi-${{ runner.os }}-
 
@@ -149,8 +149,8 @@ jobs:
           cd ompi
           # git fetch --depth 1 origin pull/13280/head:pr-13280
           # git checkout pr-13280
-          git fetch --depth 1 origin 71da9a472fe08873e1598d5488680ac223b93aa0
-          git checkout 71da9a472fe08873e1598d5488680ac223b93aa0
+          git fetch --depth 1 origin 4110e997cccce890cab3b800a8bf9db72eb43227
+          git checkout 4110e997cccce890cab3b800a8bf9db72eb43227
           git submodule update --init --recursive
 
           # Build
