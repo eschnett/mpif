@@ -1,5 +1,5 @@
---- a/src/binding/abi/c_binding_abi.c	2025-12-11 09:51:20
-+++ b/src/binding/abi/c_binding_abi.c	2025-12-11 09:52:19
+--- a/mpich-5.0.0b1/src/binding/abi/c_binding_abi.c.orig	2025-12-11 09:51:20
++++ b/mpich-5.0.0b1/src/binding/abi/c_binding_abi.c	2025-12-11 10:37:56
 @@ -60,10 +60,6 @@
          /* do we leave other outputs unset? */
      } else {
@@ -11,3 +11,12 @@
          switch(logical_size) {
              case 1:
                  *(int8_t *) logical_true = MPIR_fortran_true;
+@@ -153,7 +149,7 @@
+ #endif /* HAVE_ERROR_CHECKING */
+ 
+     /* ... body of routine ... */
+-#ifdef HAVE_FORTRAN_BINDING
++#if 1
+     MPIR_Info *info_ptr;
+     mpi_errno = MPIR_Info_alloc(&info_ptr);
+     MPIR_ERR_CHECK(mpi_errno);

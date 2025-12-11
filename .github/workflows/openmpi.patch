@@ -1,0 +1,113 @@
+diff --git a/ompi/mpi/c/ompi_abi_fortran.c b/ompi/mpi/c/ompi_abi_fortran.c
+index da139e7..eb502eb 100644
+--- a/ompi/mpi/c/ompi_abi_fortran.c
++++ b/ompi/mpi/c/ompi_abi_fortran.c
+@@ -224,96 +224,18 @@ int ompi_abi_get_fortran_booleans(int logical_size, void *logical_true, void *lo
+     bool unavailable = false;
+     bool use_int8_t = false, use_int16_t = false, use_int32_t = false, use_int64_t = false;
+     switch (logical_size) {
+-    case OMPI_SIZEOF_FORTRAN_LOGICAL1:
+-        switch (OMPI_DATATYPE_MPI_LOGICAL1) {
+-        case OMPI_DATATYPE_MPI_INT8_T:
+-            use_int8_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT16_T:
+-            use_int16_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT32_T:
+-            use_int32_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT64_T:
+-            use_int64_t = true;
+-            break;
+-        default:
+-            unavailable = true;
+-            break;
+-         }
+-    case OMPI_SIZEOF_FORTRAN_LOGICAL2:
+-        switch (OMPI_DATATYPE_MPI_LOGICAL2) {
+-        case OMPI_DATATYPE_MPI_INT8_T:
+-            use_int8_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT16_T:
+-            use_int16_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT32_T:
+-            use_int32_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT64_T:
+-            use_int64_t = true;
+-            break;
+-        default:
+-            unavailable = true;
+-            break;
+-        }
+-    case OMPI_SIZEOF_FORTRAN_LOGICAL4:
+-        switch (OMPI_DATATYPE_MPI_LOGICAL4) {
+-        case OMPI_DATATYPE_MPI_INT8_T:
+-            use_int8_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT16_T:
+-            use_int16_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT32_T:
+-            use_int32_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT64_T:
+-            use_int64_t = true;
+-            break;
+-        default:
+-            unavailable = true;
+-            break;
+-        }
+-    case OMPI_SIZEOF_FORTRAN_LOGICAL8:
+-        switch (OMPI_DATATYPE_MPI_LOGICAL8) {
+-        case OMPI_DATATYPE_MPI_INT8_T:
+-            use_int8_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT16_T:
+-            use_int16_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT32_T:
+-            use_int32_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT64_T:
+-            use_int64_t = true;
+-            break;
+-        default:
+-            unavailable = true;
+-            break;
+-        }
+-    case OMPI_SIZEOF_FORTRAN_LOGICAL16:
+-        switch (OMPI_DATATYPE_MPI_LOGICAL16) {
+-        case OMPI_DATATYPE_MPI_INT8_T:
+-            use_int8_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT16_T:
+-            use_int16_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT32_T:
+-            use_int32_t = true;
+-            break;
+-        case OMPI_DATATYPE_MPI_INT64_T:
+-            use_int64_t = true;
+-            break;
+-        default:
+-            unavailable = true;
+-            break;
+-        }
++    case 1:
++        use_int8_t = true;
++        break;
++    case 2:
++        use_int16_t = true;
++        break;
++    case 4:
++        use_int32_t = true;
++        break;
++    case 8:
++        use_int64_t = true;
++        break;
+     default:
+         unavailable = true;
+     }

@@ -161,14 +161,6 @@ add_compile_definitions(ENABLE_FORTRAN)
 # configure_file(src/mpi_f08_functions.F90.in src/mpi_f08_functions.F90 @ONLY)
 
 add_library(mpif
-  # # MPI C header files
-  # include/mpitrampoline.h
-  # include/mpi.h
-  # include/mpi_mpitrampoline.h
-  # include/mpi_types.h
-  # include/mpi_constants.h
-  # include/mpi_functions.h
-  # include/mpi_mpiabi_function_pointers.h
   # MPI Fortran header files
   include/mpif.h
   # MPI Fortran modules
@@ -180,9 +172,6 @@ add_library(mpif
   # Implementation
   include/mpif_strings.h
   src/mpif_constants.c
-  # src/mpif_fortran_booleans.c
-  # [not needed any more] src/mpif_mpich.c
-  # [handled in the wrapper] src/mpif_openmpi.c
   src/mpif_sizeof.c
   src/mpif_strings.c
   gen/mpif_functions.c

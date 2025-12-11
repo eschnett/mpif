@@ -36,7 +36,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/work/mpif/opt
-          key: mpich-${{ runner.os }}-5.0.0b1.3
+          key: mpich-${{ runner.os }}-5.0.0b1.4
           restore-keys: |
             mpich-${{ runner.os }}-
 
@@ -55,6 +55,7 @@ jobs:
           cd mpich-5.0.0b1
 
           # Build
+          patch -p2 <${HOME}/src/mpif/.github/workflows/mpich.patch
           mkdir build
           cd build
           prefix=/home/runner/work/mpif/opt/mpi
@@ -131,7 +132,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/work/mpif/opt
-          key: openmpi-${{ runner.os }}-4110e997cccce890cab3b800a8bf9db72eb43227.0
+          key: openmpi-${{ runner.os }}-4110e997cccce890cab3b800a8bf9db72eb43227.1
           restore-keys: |
             openmpi-${{ runner.os }}-
 
@@ -154,6 +155,7 @@ jobs:
           git submodule update --init --recursive
 
           # Build
+          patch -p2 <${HOME}/src/mpif/.github/workflows/openmpi.patch
           ./autogen.pl
           mkdir build
           cd build
