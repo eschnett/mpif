@@ -1,4 +1,4 @@
-// Implement missing function from MPICH 4.3.2
+// Implement missing functions for MPICH 5.0.0b1
 
 #include <mpi.h>
 #include <stdint.h>
@@ -7,23 +7,6 @@
 #ifdef __SIZEOF_INT128__
 typedef __int128 int128_t;
 #endif
-
-int MPI_Abi_get_version(int *abi_major, int *abi_minor) {
-  *abi_major = 1;
-  *abi_minor = 0;
-  return MPI_SUCCESS;
-}
-
-MPI_Info mpif_abi_info = MPI_INFO_NULL;
-
-int MPI_Abi_get_info(MPI_Info *info) {
-  if (mpif_abi_info == MPI_INFO_NULL)
-    return MPI_ERR_ABI;
-  const int ierr = MPI_Info_dup(mpif_abi_info, info);
-  if (ierr != MPI_SUCCESS)
-    return ierr;
-  return MPI_SUCCESS;
-}
 
 MPI_Info mpif_fortran_info = MPI_INFO_NULL;
 
@@ -46,6 +29,38 @@ int MPI_Abi_get_fortran_info(MPI_Info *info) {
     return ierr;
   return MPI_SUCCESS;
 }
+
+__attribute__((__constructor__))
+static void mpif_init(void) {
+  if (mpif_fortran_info != MPI_INFO_NULL)
+    abort();
+  MPI_Info_create(&mpif_fortran_info);
+  MPI_Info_set(mpif_fortran_info, "mpi_logical_size", "4");
+  MPI_Info_set(mpif_fortran_info, "mpi_integer_size", "4");
+  MPI_Info_set(mpif_fortran_info, "mpi_real_size", "4");
+  MPI_Info_set(mpif_fortran_info, "mpi_double_precision_size", "8");
+  MPI_Info_set(mpif_fortran_info, "mpi_logical1_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_logical2_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_logical4_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_logical8_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_logical16_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_integer1_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_integer2_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_integer4_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_integer8_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_integer16_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_real2_supported", "false");
+  MPI_Info_set(mpif_fortran_info, "mpi_real4_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_real8_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_real16_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_complex4_supported", "false");
+  MPI_Info_set(mpif_fortran_info, "mpi_complex8_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_complex16_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_complex32_supported", "true");
+  MPI_Info_set(mpif_fortran_info, "mpi_double_complex_supported", "true");
+}
+
+
 
 const int8_t mpif_false1 = 0, mpif_true1 = 1;
 const int16_t mpif_false2 = 0, mpif_true2 = 1;

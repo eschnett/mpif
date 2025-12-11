@@ -140,10 +140,42 @@ append!(c_implementations,
          "#include <stdlib.h>",
          "#include <string.h>",
          "",
-         "//TODO typedef MPI_Datarep_extent_function MPI_Datarep_extent_function_c;",
+         "// Avoid deleted MPI-1 functions",
          "",
-         "// Work around broken MPI implementations",
+         "#undef MPI_Attr_delete",
+         "#undef MPI_Attr_get",
+         "#undef MPI_Attr_put",
+         "#undef MPI_Keyval_free",
+         "#define MPI_Attr_delete MPI_Comm_delete_attr",
+         "#define MPI_Attr_get MPI_Comm_get_attr",
+         "#define MPI_Attr_put MPI_Comm_set_attr",
+         "#define MPI_Keyval_free MPI_Comm_free_keyval",
          "",
+         "// Work around broken MPI implementations [only MPICH]",
+         "",
+         # "#define MPIF_Comm_fromint MPI_Comm_fromint",
+         # "#define MPIF_Comm_toint MPI_Comm_toint",
+         # "#define MPIF_Errhandler_fromint MPI_Errhandler_fromint",
+         # "#define MPIF_Errhandler_toint MPI_Errhandler_toint",
+         # "#define MPIF_File_fromint MPI_File_fromint",
+         # "#define MPIF_File_toint MPI_File_toint",
+         # "#define MPIF_Group_fromint MPI_Group_fromint",
+         # "#define MPIF_Group_toint MPI_Group_toint",
+         # "#define MPIF_Info_fromint MPI_Info_fromint",
+         # "#define MPIF_Info_toint MPI_Info_toint",
+         # "#define MPIF_Message_fromint MPI_Message_fromint",
+         # "#define MPIF_Message_toint MPI_Message_toint",
+         # "#define MPIF_Op_fromint MPI_Op_fromint",
+         # "#define MPIF_Op_toint MPI_Op_toint",
+         # "#define MPIF_Request_fromint MPI_Request_fromint",
+         # "#define MPIF_Request_toint MPI_Request_toint",
+         # "#define MPIF_Session_fromint MPI_Session_fromint",
+         # "#define MPIF_Session_toint MPI_Session_toint",
+         # "#define MPIF_Type_fromint MPI_Type_fromint",
+         # "#define MPIF_Type_toint MPI_Type_toint",
+         # "#define MPIF_Win_fromint MPI_Win_fromint",
+         # "#define MPIF_Win_toint MPI_Win_toint",
+         #
          "static MPI_Comm MPIF_Comm_fromint(int comm) {",
          "  switch (comm) {",
          "  case (int)(intptr_t)MPI_COMM_NULL:",
@@ -644,7 +676,7 @@ for key in sort(collect(keys(apis)))
                 else
                     @assert false
                 end
-                if kind == "LOGICAL_VOID"
+                if false && kind == "LOGICAL_VOID"
                     push!(f_declarations, "logical :: $parname")
                     push!(f08_declarations, "logical, intent($param_direction) :: $parname")
                 else

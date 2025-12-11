@@ -36,7 +36,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/work/mpif/opt
-          key: mpich-${{ runner.os }}-5.0.0b1.2
+          key: mpich-${{ runner.os }}-5.0.0b1.3
           restore-keys: |
             mpich-${{ runner.os }}-
 
@@ -50,17 +50,11 @@ jobs:
           pushd src
 
           # Download
-          # git clone --depth 1 https://github.com/pmodels/mpich.git --branch main
-          # cd mpich
-          # git fetch --depth 1 origin f47908fa4a74bf4ac29997202fb2967c8c59b0c9
-          # git checkout f47908fa4a74bf4ac29997202fb2967c8c59b0c9
-          # git submodule update --depth 1 --init --recursive
           wget https://www.mpich.org/static/downloads/5.0.0b1/mpich-5.0.0b1.tar.gz
           tar xzf mpich-5.0.0b1.tar.gz
           cd mpich-5.0.0b1
 
           # Build
-          # ./autogen.sh
           mkdir build
           cd build
           prefix=/home/runner/work/mpif/opt/mpi
@@ -73,27 +67,40 @@ jobs:
               --enable-mpi-abi
               --prefix=${prefix}
               --with-device=ch3
-              --with-hwloc=
+              --with-hwloc
           )
           ../configure "${configure_flags[@]}"
           make -j$(nproc)
           make install
 
-          # Extract MPI ABI files
-          mv ${prefix} ${prefix}-mpich
-          mkdir ${prefix}
-          mkdir ${prefix}/lib
-          mv ${prefix}-mpich/lib/libmpi_abi.* ${prefix}/lib
-          # mv ${prefix}-mpich/lib/libpmpi_abi.* ${prefix}/lib
-          mkdir ${prefix}/bin
-          mv ${prefix}-mpich/bin/* ${prefix}/bin
+          # Fixup
           rm ${prefix}/bin/mpichversion       # needs libmpi.so
           rm ${prefix}/bin/mpivars            # needs libmpi.so
           rm ${prefix}/bin/mpicc_abi
           rm ${prefix}/bin/mpicxx_abi
           sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicc
           sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicxx
-          rm -rf ${prefix}-mpich
+
+          rm ${prefix}/include/mpi_abi.h
+          rm ${prefix}/include/mpi_base.mod
+          rm ${prefix}/include/mpi_constants.mod
+          rm ${prefix}/include/mpi_proto.h
+          rm ${prefix}/include/mpi_sizeofs.mod
+          rm ${prefix}/include/mpi.h
+          rm ${prefix}/include/mpi.mod
+          rm ${prefix}/include/mpif.h
+          rm ${prefix}/include/pmpi_base.mod
+
+          rm ${prefix}/lib/libfmpich.*
+          rm ${prefix}/lib/libmpi.*
+          rm ${prefix}/lib/libmpich.*
+          rm ${prefix}/lib/libmpichcxx.*
+          rm ${prefix}/lib/libmpichf90.*
+          rm ${prefix}/lib/libmpifort.*
+          rm ${prefix}/lib/libmpl.*
+          rm ${prefix}/lib/libopa.*
+          rm ${prefix}/lib/libpmpi.*
+          rm ${prefix}/lib/pkgconfig/mpich.pc
 
           popd
           rm -rf src
@@ -110,7 +117,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/work/mpif/opt
-          key: openmpi-${{ runner.os }}-df6aff9df9bbb79f91e6064748a5a78acdc7e47c.3
+          key: openmpi-${{ runner.os }}-71da9a472fe08873e1598d5488680ac223b93aa0.1
           restore-keys: |
             openmpi-${{ runner.os }}-
 
@@ -128,32 +135,82 @@ jobs:
           cd ompi
           # git fetch --depth 1 origin pull/13280/head:pr-13280
           # git checkout pr-13280
-          git fetch --depth 1 origin df6aff9df9bbb79f91e6064748a5a78acdc7e47c
-          git checkout df6aff9df9bbb79f91e6064748a5a78acdc7e47c
-          git submodule update --depth 1 --init --recursive
+          git fetch --depth 1 origin 71da9a472fe08873e1598d5488680ac223b93aa0
+          git checkout 71da9a472fe08873e1598d5488680ac223b93aa0
+          git submodule update --init --recursive
 
           # Build
           ./autogen.pl
-          ./configure \
-              --enable-mpi-fortran=no \
-              --enable-mpi1-compatibility=yes \
-              --enable-script-wrapper-compilers \
-              --enable-shared=yes \
-              --enable-standard-abi=yes \
-              --enable-static=no \
-              --with-hwloc \
-              --with-libevent=internal \
-              --prefix=/home/runner/work/mpif/opt/mpi
+          mkdir build
+          cd build
+          prefix=/home/runner/work/mpif/opt/mpi
+          configure_flags=(
+              --enable-mpi-fortran=yes
+              --enable-mpi1-compatibility=yes
+              --enable-script-wrapper-compilers
+              --enable-shared=yes
+              --enable-standard-abi=yes
+              --enable-static=no
+              --prefix=${prefix}
+              --with-hwloc
+              --with-libevent=internal
+          )
+          ../configure "${configure_flags[@]}"
           make -j$(nproc)
           make install
 
+
           # Fixup
-          pushd /home/runner/work/mpif/opt/mpi
-          mv include/mpi.h include/mpi_openmpi.h
-          # mv include/standard_abi/mpi.h include/mpi.h
-          # patch -d include -p 1 </home/runner/work/mpif/mpif/.github/workflows/fortran_openmpi.patch
-          sed -i -e 's/-lmpi/-lmpi_abi/' bin/ompi_wrapper_script
-          popd
+          sed -i -e 's/-lmpi/-lmpi_abi/' ${prefix}/bin/ompi_wrapper_script
+
+          rm     ${prefix}/include/abi_converters.h
+          rm     ${prefix}/include/abi.h
+          rm     ${prefix}/include/evdns.h
+          rm     ${prefix}/include/event.h
+          rm -rf ${prefix}/include/event2
+          rm     ${prefix}/include/evhttp.h
+          rm     ${prefix}/include/evrpc.h
+          rm     ${prefix}/include/evutil.h
+          rm     ${prefix}/include/mpi_portable_platform.h
+          rm     ${prefix}/include/mpi-ext.h
+          rm     ${prefix}/include/mpi.h
+          rm     ${prefix}/include/mpif-c-constants-decl.h
+          rm     ${prefix}/include/mpif-config.h
+          rm     ${prefix}/include/mpif-constants.h
+          rm     ${prefix}/include/mpif-ext.h
+          rm     ${prefix}/include/mpif-externals.h
+          rm     ${prefix}/include/mpif-handles.h
+          rm     ${prefix}/include/mpif-io-constants.h
+          rm     ${prefix}/include/mpif-io-handles.h
+          rm     ${prefix}/include/mpif-sentinels.h
+          rm     ${prefix}/include/mpif-sizeof.h
+          rm     ${prefix}/include/mpif.h
+          rm -rf ${prefix}/include/openmpi
+          rm -rf ${prefix}/include/pmix
+          rm     ${prefix}/include/pmix_common.h
+          rm     ${prefix}/include/pmix_deprecated.h
+          rm     ${prefix}/include/pmix_server.h
+          rm     ${prefix}/include/pmix_tool.h
+          rm     ${prefix}/include/pmix_version.h
+          rm     ${prefix}/include/pmix.h
+          rm -rf ${prefix}/include/prte
+          rm     ${prefix}/include/prte_version.h
+          rm     ${prefix}/include/prte.h
+          rm -rf ${prefix}/include/standard_abi
+
+          rm ${prefix}/lib/mpi_ext.mod
+          rm ${prefix}/lib/mpi_f08_callbacks.mod
+          rm ${prefix}/lib/mpi_f08_ext.mod
+          rm ${prefix}/lib/mpi_f08_interfaces_callbacks.mod
+          rm ${prefix}/lib/mpi_f08_interfaces.mod
+          rm ${prefix}/lib/mpi_f08_types.mod
+          rm ${prefix}/lib/mpi_f08.mod
+          rm ${prefix}/lib/mpi_types.mod
+          rm ${prefix}/lib/mpi.mod
+          rm ${prefix}/lib/pkgconfig/libevent*.pc
+          rm ${prefix}/lib/pkgconfig/ompi*pc
+          rm ${prefix}/lib/pkgconfig/pmix*pc
+          rm ${prefix}/lib/pmpi_f08_interfaces.mod
 
           popd
           rm -rf src
@@ -174,7 +231,7 @@ jobs:
           prefix=/home/runner/work/mpif/opt/mpi
           mkdir -p ${prefix}/include
           cp mpi-abi-stubs/mpi.h ${prefix}/include
-          (cd ${prefix}/include && patch -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran_mpich.patch)
+          (cd ${prefix}/include && patch -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran.patch)
           popd
           rm -rf src
 

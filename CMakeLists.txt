@@ -179,8 +179,10 @@ add_library(mpif
   src/mpi_f08_types.F90
   # Implementation
   include/mpif_strings.h
-  src/mpif_init.c
-  src/mpif_mpich.c
+  src/mpif_constants.c
+  # src/mpif_fortran_booleans.c
+  # [not needed any more] src/mpif_mpich.c
+  # [handled in the wrapper] src/mpif_openmpi.c
   src/mpif_sizeof.c
   src/mpif_strings.c
   gen/mpif_functions.c

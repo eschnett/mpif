@@ -172,6 +172,36 @@ module mpi_f08_types
      integer :: MPI_VAL
   end type MPI_Win
 
+  public :: operator(==), operator(/=)
+
+  interface operator(==)
+     module procedure MPI_Comm_equal
+     module procedure MPI_Datatype_equal
+     module procedure MPI_Errhandler_equal
+     module procedure MPI_File_equal
+     module procedure MPI_Group_equal
+     module procedure MPI_Info_equal
+     module procedure MPI_Message_equal
+     module procedure MPI_Op_equal
+     module procedure MPI_Request_equal
+     module procedure MPI_Session_equal
+     module procedure MPI_Win_equal
+  end interface operator(==)
+
+  interface operator(/=)
+     module procedure MPI_Comm_not_equal
+     module procedure MPI_Datatype_not_equal
+     module procedure MPI_Errhandler_not_equal
+     module procedure MPI_File_not_equal
+     module procedure MPI_Group_not_equal
+     module procedure MPI_Info_not_equal
+     module procedure MPI_Message_not_equal
+     module procedure MPI_Op_not_equal
+     module procedure MPI_Request_not_equal
+     module procedure MPI_Session_not_equal
+     module procedure MPI_Win_not_equal
+  end interface operator(/=)
+
   ! Status
 
   type, bind(C), public :: MPI_Status
@@ -559,6 +589,116 @@ module mpi_f08_types
   end interface
 
 contains
+
+  logical function MPI_Comm_equal(comm1, comm2) result(result)
+    type(MPI_Comm), intent(in) :: comm1, comm2
+    result = comm1%MPI_VAL == comm2%MPI_VAL
+  end function MPI_Comm_equal
+
+  logical function MPI_Comm_not_equal(comm1, comm2) result(result)
+    type(MPI_Comm), intent(in) :: comm1, comm2
+    result = .not.(comm1 == comm2)
+  end function MPI_Comm_not_equal
+
+  logical function MPI_Datatype_equal(type1, type2) result(result)
+    type(MPI_Datatype), intent(in) :: type1, type2
+    result = type1%MPI_VAL == type2%MPI_VAL
+  end function MPI_Datatype_equal
+
+  logical function MPI_Datatype_not_equal(type1, type2) result(result)
+    type(MPI_Datatype), intent(in) :: type1, type2
+    result = .not.(type1 == type2)
+  end function MPI_Datatype_not_equal
+
+  logical function MPI_Errhandler_equal(errhandler1, errhandler2) result(result)
+    type(MPI_Errhandler), intent(in) :: errhandler1, errhandler2
+    result = errhandler1%MPI_VAL == errhandler2%MPI_VAL
+  end function MPI_Errhandler_equal
+
+  logical function MPI_Errhandler_not_equal(errhandler1, errhandler2) result(result)
+    type(MPI_Errhandler), intent(in) :: errhandler1, errhandler2
+    result = .not.(errhandler1 == errhandler2)
+  end function MPI_Errhandler_not_equal
+
+  logical function MPI_File_equal(file1, file2) result(result)
+    type(MPI_File), intent(in) :: file1, file2
+    result = file1%MPI_VAL == file2%MPI_VAL
+  end function MPI_File_equal
+
+  logical function MPI_File_not_equal(file1, file2) result(result)
+    type(MPI_File), intent(in) :: file1, file2
+    result = .not.(file1 == file2)
+  end function MPI_File_not_equal
+
+  logical function MPI_Group_equal(group1, group2) result(result)
+    type(MPI_Group), intent(in) :: group1, group2
+    result = group1%MPI_VAL == group2%MPI_VAL
+  end function MPI_Group_equal
+
+  logical function MPI_Group_not_equal(group1, group2) result(result)
+    type(MPI_Group), intent(in) :: group1, group2
+    result = .not.(group1 == group2)
+  end function MPI_Group_not_equal
+
+  logical function MPI_Info_equal(info1, info2) result(result)
+    type(MPI_Info), intent(in) :: info1, info2
+    result = info1%MPI_VAL == info2%MPI_VAL
+  end function MPI_Info_equal
+
+  logical function MPI_Info_not_equal(info1, info2) result(result)
+    type(MPI_Info), intent(in) :: info1, info2
+    result = .not.(info1 == info2)
+  end function MPI_Info_not_equal
+
+  logical function MPI_Message_equal(message1, message2) result(result)
+    type(MPI_Message), intent(in) :: message1, message2
+    result = message1%MPI_VAL == message2%MPI_VAL
+  end function MPI_Message_equal
+
+  logical function MPI_Message_not_equal(message1, message2) result(result)
+    type(MPI_Message), intent(in) :: message1, message2
+    result = .not.(message1 == message2)
+  end function MPI_Message_not_equal
+
+  logical function MPI_Op_equal(op1, op2) result(result)
+    type(MPI_Op), intent(in) :: op1, op2
+    result = op1%MPI_VAL == op2%MPI_VAL
+  end function MPI_Op_equal
+
+  logical function MPI_Op_not_equal(op1, op2) result(result)
+    type(MPI_Op), intent(in) :: op1, op2
+    result = .not.(op1 == op2)
+  end function MPI_Op_not_equal
+
+  logical function MPI_Request_equal(request1, request2) result(result)
+    type(MPI_Request), intent(in) :: request1, request2
+    result = request1%MPI_VAL == request2%MPI_VAL
+  end function MPI_Request_equal
+
+  logical function MPI_Request_not_equal(request1, request2) result(result)
+    type(MPI_Request), intent(in) :: request1, request2
+    result = .not.(request1 == request2)
+  end function MPI_Request_not_equal
+
+  logical function MPI_Session_equal(session1, session2) result(result)
+    type(MPI_Session), intent(in) :: session1, session2
+    result = session1%MPI_VAL == session2%MPI_VAL
+  end function MPI_Session_equal
+
+  logical function MPI_Session_not_equal(session1, session2) result(result)
+    type(MPI_Session), intent(in) :: session1, session2
+    result = .not.(session1 == session2)
+  end function MPI_Session_not_equal
+
+  logical function MPI_Win_equal(win1, win2) result(result)
+    type(MPI_Win), intent(in) :: win1, win2
+    result = win1%MPI_VAL == win2%MPI_VAL
+  end function MPI_Win_equal
+
+  logical function MPI_Win_not_equal(win1, win2) result(result)
+    type(MPI_Win), intent(in) :: win1, win2
+    result = .not.(win1 == win2)
+  end function MPI_Win_not_equal
 
   subroutine MPI_Status_f2f08(f_status, f08_status, ierror)
     integer, intent(in) :: f_status(MPI_STATUS_SIZE)

@@ -5,9 +5,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-//TODO typedef MPI_Datarep_extent_function MPI_Datarep_extent_function_c;
+// Avoid deleted MPI-1 functions
 
-// Work around broken MPI implementations
+#undef MPI_Attr_delete
+#undef MPI_Attr_get
+#undef MPI_Attr_put
+#undef MPI_Keyval_free
+#define MPI_Attr_delete MPI_Comm_delete_attr
+#define MPI_Attr_get MPI_Comm_get_attr
+#define MPI_Attr_put MPI_Comm_set_attr
+#define MPI_Keyval_free MPI_Comm_free_keyval
+
+// Work around broken MPI implementations [only MPICH]
 
 static MPI_Comm MPIF_Comm_fromint(int comm) {
   switch (comm) {

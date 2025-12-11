@@ -1197,8 +1197,10 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: logical_size
-    logical, intent(out) :: logical_true
-    logical, intent(out) :: logical_false
+    !gcc$ attributes no_arg_check :: logical_true
+    integer :: logical_true(*)
+    !gcc$ attributes no_arg_check :: logical_false
+    integer :: logical_false(*)
     logical, intent(out) :: is_set
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
@@ -1276,8 +1278,10 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: logical_size
-    logical, intent(in) :: logical_true
-    logical, intent(in) :: logical_false
+    !gcc$ attributes no_arg_check :: logical_true
+    integer :: logical_true(*)
+    !gcc$ attributes no_arg_check :: logical_false
+    integer :: logical_false(*)
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Abi_set_fortran_booleans( &
