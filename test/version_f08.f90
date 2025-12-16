@@ -15,11 +15,7 @@ program version_f08
   integer :: valuelen
   logical :: flag
 
-  integer*1 :: logical1_true, logical1_false
-  integer*2 :: logical2_true, logical2_false
-  integer*4 :: logical4_true, logical4_false
-  integer*8 :: logical8_true, logical8_false
-  ! integer*16 :: logical16_true, logical16_false
+  logical :: logical_true, logical_false
   logical :: is_set
 
   call MPI_Init()
@@ -45,6 +41,15 @@ program version_f08
      print '("   ",i0,": ",a,"=",a)', n, trim(key), trim(value)
   end do
 
+  print '("MPI ABI Fortran booleans:")'
+  call MPI_Abi_get_fortran_booleans(4, logical_true, logical_false, is_set)
+  if (.not.is_set) stop 1
+  if (is_set) then
+     print '("   logical: true=",l0,", false=",l0)', logical_true, logical_false
+  else
+     print '("   logical: (not set)")'
+  end if
+
   ! This requires MPI_Init, although it probably shouldn't
   print '("MPI ABI Fortran info:")'
   call MPI_Abi_get_fortran_info(abi_info)
@@ -56,38 +61,6 @@ program version_f08
      if (.not.flag) stop 1
      print '("   ",i0,": ",a,"=",a)', n, trim(key), trim(value)
   end do
-
-  print '("MPI ABI Fortran booleans:")'
-  call MPI_Abi_get_fortran_booleans(1, logical1_true, logical1_false, is_set)
-  if (is_set) then
-     print '("   logical*1: true=",i0,", false=",i0)', logical1_true, logical1_false
-  else
-     print '("   logical*1: (not set)")'
-  end if
-  call MPI_Abi_get_fortran_booleans(2, logical2_true, logical2_false, is_set)
-  if (is_set) then
-     print '("   logical*2: true=",i0,", false=",i0)', logical2_true, logical2_false
-  else
-     print '("   logical*2: (not set)")'
-  end if
-  call MPI_Abi_get_fortran_booleans(4, logical4_true, logical4_false, is_set)
-  if (is_set) then
-     print '("   logical*4: true=",i0,", false=",i0)', logical4_true, logical4_false
-  else
-     print '("   logical*4: (not set)")'
-  end if
-  call MPI_Abi_get_fortran_booleans(8, logical8_true, logical8_false, is_set)
-  if (is_set) then
-     print '("   logical*8: true=",i0,", false=",i0)', logical8_true, logical8_false
-  else
-     print '("   logical*8: (not set)")'
-  end if
-  ! call MPI_Abi_get_fortran_booleans(16, logical16_true, logical16_false, is_set)
-  ! if (is_set) then
-  !    print '("   logical*16: true=",i0,", false=",i0)', logical16_true, logical16_false
-  ! else
-  !    print '("   logical*16: (not set)")'
-  ! end if
      
   call MPI_Finalize()
 
