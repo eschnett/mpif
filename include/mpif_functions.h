@@ -17,7 +17,8 @@
       double precision, external :: MPI_Wtime, PMPI_Wtime
 
       integer(MPI_ADDRESS_KIND), external :: MPI_Aint_add, PMPI_Aint_add
-      integer(MPI_ADDRESS_KIND), external :: MPI_Aint_diff, PMPI_Aint_diff
+      integer(MPI_ADDRESS_KIND), external :: MPI_Aint_diff,             &
+     &     PMPI_Aint_diff
 
       interface mpi_sizeof
 
