@@ -36,7 +36,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/work/mpif/opt
-          key: mpich-${{ runner.os }}-5.0.0b1.4
+          key: mpich-${{ runner.os }}-5.0.0rc1.1
           restore-keys: |
             mpich-${{ runner.os }}-
 
@@ -50,22 +50,21 @@ jobs:
           pushd src
 
           # Download
-          wget https://www.mpich.org/static/downloads/5.0.0b1/mpich-5.0.0b1.tar.gz
-          tar xzf mpich-5.0.0b1.tar.gz
-          cd mpich-5.0.0b1
+          wget https://www.mpich.org/static/downloads/5.0.0rc1/mpich-5.0.0rc1.tar.gz
+          tar xzf mpich-5.0.0rc1.tar.gz
+          cd mpich-5.0.0rc1
 
           # Build
-          patch -p1 </home/runner/work/mpif/mpif/.github/workflows/mpich.patch
           mkdir build
           cd build
           prefix=/home/runner/work/mpif/opt/mpi
           configure_flags=(
               --disable-dependency-tracking
               --disable-doc
-              --enable-fortran
               --enable-cxx=no
-              --enable-static=no
+              --enable-fortran
               --enable-mpi-abi
+              --enable-static=no
               --prefix=${prefix}
               --with-device=ch3
               --with-hwloc
@@ -171,8 +170,6 @@ jobs:
               --with-libevent=internal
           )
           ../configure "${configure_flags[@]}"
-          # We need to patch after configuring because the file is generated
-          (cd .. && patch -p1 </home/runner/work/mpif/mpif/.github/workflows/openmpi.patch)
           make -j$(nproc)
           make install
 
@@ -217,6 +214,10 @@ jobs:
           rm     ${prefix}/include/prte.h
           rm -rf ${prefix}/include/standard_abi
 
+          rm ${prefix}/lib/libmpi.*
+          rm ${prefix}/lib/libmpi_mpifh.*
+          rm ${prefix}/lib/libmpi_usempi_ignore_tkr.*
+          rm ${prefix}/lib/libmpi_usempif08.*
           rm ${prefix}/lib/mpi_ext.mod
           rm ${prefix}/lib/mpi_f08_callbacks.mod
           rm ${prefix}/lib/mpi_f08_ext.mod
