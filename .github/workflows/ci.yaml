@@ -179,8 +179,6 @@ jobs:
           rm ${prefix}/bin/mpifort
           sed -i -e 's/-lmpi/-lmpi_abi/' ${prefix}/bin/ompi_wrapper_script
 
-          rm     ${prefix}/include/abi_converters.h
-          rm     ${prefix}/include/abi.h
           rm     ${prefix}/include/evdns.h
           rm     ${prefix}/include/event.h
           rm -rf ${prefix}/include/event2
