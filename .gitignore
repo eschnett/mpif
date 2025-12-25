@@ -1,4 +1,3 @@
 BUILD.sh
-build
-build-tests
+build*
 data
