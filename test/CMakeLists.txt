@@ -50,6 +50,14 @@ add_executable(sendrecv_f08 sendrecv_f08.f90)
 target_link_libraries(sendrecv_f08 MPI::MPI_Fortran)
 add_test(NAME sendrecv_f08 COMMAND sendrecv_f08)
 
+add_executable(inplace_f90 inplace_f90.f90)
+target_link_libraries(inplace_f90 MPI::MPI_Fortran)
+add_test(NAME inplace_f90 COMMAND inplace_f90)
+
+add_executable(inplace_f08 inplace_f08.f90)
+target_link_libraries(inplace_f08 MPI::MPI_Fortran)
+add_test(NAME inplace_f08 COMMAND inplace_f08)
+
 add_executable(version_f08 version_f08.f90)
 target_link_libraries(version_f08 MPI::MPI_Fortran)
 add_test(NAME version_f08 COMMAND version_f08)

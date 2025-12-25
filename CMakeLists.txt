@@ -178,14 +178,11 @@ add_library(mpif
   gen/mpi_functions.F90
   gen/mpi_f08_functions.F90
 )
-# target_compile_options(mpif PRIVATE -Wall -Wextra -Wno-unused-dummy-argument -Wno-unused-parameter)
-# target_include_directories(
-#   mpif
-#   PRIVATE include ${CMAKE_CURRENT_BINARY_DIR}/include
-#   PRIVATE ../mpiabi
-# )
-# target_link_libraries(mpif PRIVATE ${CMAKE_DL_LIBS})
 target_include_directories(mpif PRIVATE include)
+if(APPLE)
+  # Ensure that there is only one instance of our MPI common blocks
+  target_link_options(mpif INTERFACE "LINKER:-commons,use_dylibs")
+endif()
 target_link_libraries(mpif PRIVATE MPI::MPI_C)
 list(APPEND public_headers
   include/mpif.h
@@ -222,6 +219,12 @@ install(FILES
 # )
 
 # Install compiler wrappers
+
+set(LINK_FLAGS "")
+if(APPLE)
+  # Ensure that there is only one copy of our common blocks in the final executable
+  set(LINK_FLAGS "-Wl,-commons,use_dylibs")
+endif()
 
 configure_file(bin/mpifort.in bin/mpifc @ONLY)
 configure_file(bin/mpifort.in bin/mpifort @ONLY)
