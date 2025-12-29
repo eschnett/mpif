@@ -205,7 +205,10 @@ module mpi_f08_types
   ! Status
 
   type, bind(C), public :: MPI_Status
-     integer :: MPI_VAL(MPI_STATUS_SIZE)
+     integer :: MPI_SOURCE
+     integer :: MPI_TAG
+     integer :: MPI_ERROR
+     integer :: MPI_internal(5)
   end type MPI_Status
 
   ! Constants
@@ -704,7 +707,10 @@ contains
     integer, intent(in) :: f_status(MPI_STATUS_SIZE)
     type(MPI_Status), intent(out) :: f08_status
     integer, optional, intent(out) :: ierror
-    f08_status%MPI_VAL = f_status
+    f08_status%MPI_SOURCE = f_status(MPI_SOURCE)
+    f08_status%MPI_TAG = f_status(MPI_TAG)
+    f08_status%MPI_ERROR = f_status(MPI_ERROR)
+    f08_status%MPI_internal(1:5) = f_status(4:8)
     if (present(ierror)) ierror = MPI_SUCCESS
   end subroutine MPI_Status_f2f08
 
@@ -712,7 +718,10 @@ contains
     type(MPI_Status), intent(in) :: f08_status
     integer, intent(out) :: f_status(MPI_STATUS_SIZE)
     integer, optional, intent(out) :: ierror
-    f_status = f08_status%MPI_VAL
+    f_status(MPI_SOURCE) = f08_status%MPI_SOURCE
+    f_status(MPI_TAG) = f08_status%MPI_TAG
+    f_status(MPI_ERROR) = f08_status%MPI_ERROR
+    f_status(4:8) = f08_status%MPI_internal(1:5)
     if (present(ierror)) ierror = MPI_SUCCESS
   end subroutine MPI_Status_f082f
 

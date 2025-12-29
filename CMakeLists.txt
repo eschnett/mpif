@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13...3.20)
 project(
-  mpif VERSION 0.1.1
+  mpif VERSION 0.1.2
   DESCRIPTION "MPI Fortran bindings"
   HOMEPAGE_URL "https://github.com/eschnett/mpif"
   LANGUAGES C Fortran
@@ -40,6 +40,33 @@ find_package(MPI REQUIRED COMPONENTS C)
 # Check for Fortran features
 
 include(CheckFortranCompilerFlag)
+include(CheckFortranSourceCompiles)
+
+check_fortran_source_compiles(
+  "
+  program test
+    real*2 :: x
+  end program
+  "
+  HAVE_REAL2
+  SRC_EXT f90
+)
+if(HAVE_REAL2)
+  add_definitions(-DHAVE_REAL2)
+endif()
+check_fortran_source_compiles(
+  "
+  program test
+    real*16 :: x
+  end
+  "
+  HAVE_REAL16
+  SRC_EXT f90
+)
+if(HAVE_REAL16)
+  add_definitions(-DHAVE_REAL16)
+endif()
+
 check_fortran_compiler_flag(-fallow-argument-mismatch Fortran_flag_allow_argument_mismatch)
 if(Fortran_flag_allow_argument_mismatch)
   set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fallow-argument-mismatch")
@@ -166,13 +193,17 @@ add_library(mpif
   # MPI Fortran modules
   src/mpi.F90
   src/mpi_constants.F90
+  src/mpi_types.F90
   src/mpi_f08.F90
   src/mpi_f08_constants.F90
   src/mpi_f08_types.F90
   # Implementation
   include/mpif_strings.h
   src/mpif_constants.c
+  # src/mpif_constants_init.c
+  # src/mpif_constants_init.F90
   src/mpif_sizeof.c
+  src/mpi_status.c
   src/mpif_strings.c
   gen/mpif_functions.c
   gen/mpi_functions.F90
@@ -198,8 +229,14 @@ set_target_properties(mpif PROPERTIES
 install(TARGETS mpif EXPORT mpifTargets)
 
 install(FILES
-  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_constants.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_constants.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_functions.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_types.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_functions.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_types.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 

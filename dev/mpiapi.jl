@@ -642,8 +642,21 @@ for key in sort(collect(keys(apis)))
                     else
                         f_argname = parname
                     end
-                    if kind ∈ keys(kind2type) || kind == "STATUS"
+                    if kind ∈ keys(kind2type)
                         push!(f08_call_arguments, "$f_argname%MPI_VAL")
+                    elseif kind == "STATUS"
+                        push!(f08_call_temp_declarations, "integer :: tmp_$f_argname(MPI_STATUS_SIZE)")
+                        if param_direction in ["in", "inout"]
+                            push!(f08_call_temp_copyins, "if (loc($f_argname) /= loc(MPI_STATUS_IGNORE)) then")
+                            push!(f08_call_temp_copyins, "  call MPI_Status_f082f($f_argname, tmp_$f_argname)")
+                            push!(f08_call_temp_copyins, "endif")
+                        end
+                        push!(f08_call_arguments, "tmp_$f_argname")
+                        if param_direction in ["out", "inout"]
+                            push!(f08_call_temp_copyouts, "if (loc($f_argname) /= loc(MPI_STATUS_IGNORE)) then")
+                            push!(f08_call_temp_copyouts, "  call MPI_Status_f2f08(tmp_$f_argname, $f_argname)")
+                            push!(f08_call_temp_copyouts, "endif")
+                        end
                     else
                         push!(f08_call_arguments, "$f_argname")
                     end
