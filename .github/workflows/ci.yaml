@@ -475,3 +475,183 @@ jobs:
               -DMPI_Fortran_COMPILER=/home/runner/work/mpif/opt/mpif/bin/mpifort
           cmake --build build-tests --parallel
           ctest --test-dir build-tests
+
+
+
+  build-openmpi-llvm:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 21
+          sudo apt-get update
+          sudo apt-get install -y \
+              autoconf \
+              automake \
+              clang-21 \
+              cmake \
+              flang-21 \
+              libc++-21-dev \
+              libc++abi-21-dev \
+              libhwloc-dev \
+              libomp-21-dev \
+              libtool \
+              lld-21 \
+              llvm-21 \
+              pkg-config
+
+      - name: Cache OpenMPI/LLVM install
+        id: cache-openmpi-llvm
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/work/mpif/opt
+          key: openmpi-llvm-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74
+          restore-keys: |
+            openmpi-llvm-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74
+
+      - name: Install OpenMPI via LLVM
+        if: steps.cache-openmpi-llvm.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p /home/runner/work/mpif/opt
+          cd /home/runner/work/mpif/opt
+
+          mkdir src
+          pushd src
+
+          # Download
+          git clone --depth 1 https://github.com/open-mpi/ompi.git
+          cd ompi
+          # git fetch --depth 1 origin pull/13280/head:pr-13280
+          # git checkout pr-13280
+          git fetch --depth 1 origin 70416c44cf459e639d550fe08ab58dae185c4b74
+          git checkout 70416c44cf459e639d550fe08ab58dae185c4b74
+          git submodule update --init --recursive
+
+          # Build
+          ./autogen.pl
+          mkdir build
+          cd build
+          prefix=/home/runner/work/mpif/opt/mpi
+          configure_flags=(
+              --enable-mpi-fortran=yes
+              --enable-mpi1-compatibility=yes
+              --enable-script-wrapper-compilers
+              --enable-shared=yes
+              --enable-standard-abi=yes
+              --enable-static=no
+              --prefix=${prefix}
+              --with-hwloc
+              --with-libevent=internal
+          )
+          export CC=clang-21
+          export CXX=clang++-21
+          export FC=flang-new-21
+          ../configure "${configure_flags[@]}"
+          make -j$(nproc)
+          make install
+
+          # Fixup
+          rm ${prefix}/bin/mpif77
+          rm ${prefix}/bin/mpif90
+          rm ${prefix}/bin/mpifort
+          sed -i -e 's/-lmpi/-lmpi_abi/' ${prefix}/bin/ompi_wrapper_script
+
+          rm     ${prefix}/include/evdns.h
+          rm     ${prefix}/include/event.h
+          rm -rf ${prefix}/include/event2
+          rm     ${prefix}/include/evhttp.h
+          rm     ${prefix}/include/evrpc.h
+          rm     ${prefix}/include/evutil.h
+          rm     ${prefix}/include/mpi_portable_platform.h
+          rm     ${prefix}/include/mpi-ext.h
+          rm     ${prefix}/include/mpi.h
+          rm     ${prefix}/include/mpif-c-constants-decl.h
+          rm     ${prefix}/include/mpif-config.h
+          rm     ${prefix}/include/mpif-constants.h
+          rm     ${prefix}/include/mpif-ext.h
+          rm     ${prefix}/include/mpif-externals.h
+          rm     ${prefix}/include/mpif-handles.h
+          rm     ${prefix}/include/mpif-io-constants.h
+          rm     ${prefix}/include/mpif-io-handles.h
+          rm     ${prefix}/include/mpif-sentinels.h
+          rm     ${prefix}/include/mpif-sizeof.h
+          rm     ${prefix}/include/mpif.h
+          rm -rf ${prefix}/include/openmpi
+          rm -rf ${prefix}/include/pmix
+          rm     ${prefix}/include/pmix_common.h
+          rm     ${prefix}/include/pmix_deprecated.h
+          rm     ${prefix}/include/pmix_server.h
+          rm     ${prefix}/include/pmix_tool.h
+          rm     ${prefix}/include/pmix_version.h
+          rm     ${prefix}/include/pmix.h
+          rm -rf ${prefix}/include/prte
+          rm     ${prefix}/include/prte_version.h
+          rm     ${prefix}/include/prte.h
+          rm -rf ${prefix}/include/standard_abi
+
+          rm ${prefix}/lib/libmpi.*
+          rm ${prefix}/lib/libmpi_mpifh.*
+          rm ${prefix}/lib/libmpi_usempi_ignore_tkr.*
+          rm ${prefix}/lib/libmpi_usempif08.*
+          rm ${prefix}/lib/mpi_ext.mod
+          rm ${prefix}/lib/mpi_f08_callbacks.mod
+          rm ${prefix}/lib/mpi_f08_ext.mod
+          rm ${prefix}/lib/mpi_f08_interfaces_callbacks.mod
+          rm ${prefix}/lib/mpi_f08_interfaces.mod
+          rm ${prefix}/lib/mpi_f08_types.mod
+          rm ${prefix}/lib/mpi_f08.mod
+          rm ${prefix}/lib/mpi_types.mod
+          rm ${prefix}/lib/mpi.mod
+          rm ${prefix}/lib/pkgconfig/libevent*.pc
+          rm ${prefix}/lib/pkgconfig/ompi*pc
+          rm ${prefix}/lib/pkgconfig/pmix*pc
+          rm ${prefix}/lib/pmpi_f08_interfaces.mod
+
+          popd
+          rm -rf src
+
+          # Add OpenMPI to environment
+          echo "/home/runner/work/mpif/opt/mpi/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=/home/runner/work/mpif/opt/mpi/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+
+      - name: Install official MPI header file
+        run: |
+          mkdir -p /home/runner/work/mpif/opt
+          cd /home/runner/work/mpif/opt
+          mkdir src
+          pushd src
+          git clone https://github.com/mpi-forum/mpi-abi-stubs
+          prefix=/home/runner/work/mpif/opt/mpi
+          mkdir -p ${prefix}/include
+          cp mpi-abi-stubs/mpi.h ${prefix}/include
+          (cd ${prefix}/include && patch -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran.patch)
+          popd
+          rm -rf src
+
+      - name: Configure, build, and install project
+        run: |
+          ls -lR /home/runner/work/mpif/opt/mpi
+          cmake \
+              -Bbuild \
+              -DBUILD_SHARED_LIBS=ON \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt/mpif \
+              -DMPI_HOME=/home/runner/work/mpif/opt/mpi
+          cmake --build build --parallel
+          cmake --install build
+
+      - name: Configure, build, and run tests
+        run: |
+          cd test
+          cmake \
+              -Bbuild-tests \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DMPI_HOME=/home/runner/work/mpif/opt/mpif \
+              -DMPI_Fortran_COMPILER=/home/runner/work/mpif/opt/mpif/bin/mpifort
+          cmake --build build-tests --parallel
+          ctest --test-dir build-tests
