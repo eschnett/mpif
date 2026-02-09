@@ -1197,8 +1197,10 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: logical_size
+    !dir$ ignore_tkr(tkr) logical_true
     !gcc$ attributes no_arg_check :: logical_true
     integer :: logical_true(*)
+    !dir$ ignore_tkr(tkr) logical_false
     !gcc$ attributes no_arg_check :: logical_false
     integer :: logical_false(*)
     logical, intent(out) :: is_set
@@ -1278,8 +1280,10 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: logical_size
+    !dir$ ignore_tkr(tkr) logical_true
     !gcc$ attributes no_arg_check :: logical_true
     integer :: logical_true(*)
+    !dir$ ignore_tkr(tkr) logical_false
     !gcc$ attributes no_arg_check :: logical_false
     integer :: logical_false(*)
     integer, intent(out), optional :: ierror
@@ -1345,6 +1349,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer, intent(in) :: origin_count
@@ -1387,6 +1392,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
@@ -1516,10 +1522,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -1553,10 +1561,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -1592,10 +1602,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -1635,10 +1647,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -1677,10 +1691,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -1717,10 +1733,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -1759,10 +1777,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -1805,10 +1825,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -1870,8 +1892,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: count
@@ -1904,8 +1928,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -1940,8 +1966,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: count
@@ -1980,8 +2008,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -2019,10 +2049,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -2056,10 +2088,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -2095,10 +2129,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -2138,10 +2174,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -2181,11 +2219,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer, intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -2224,11 +2264,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -2269,11 +2311,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer, intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -2318,11 +2362,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -2365,11 +2411,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer, intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtypes(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -2408,11 +2456,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtypes(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -2453,11 +2503,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer, intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtypes(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -2502,11 +2554,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtypes(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -2654,6 +2708,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer, intent(in) :: count
@@ -2684,6 +2739,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -2716,6 +2772,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer, intent(in) :: count
@@ -2752,6 +2809,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -2787,6 +2845,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -2820,6 +2879,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -2854,6 +2914,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -2890,6 +2951,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -2921,6 +2983,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer, intent(in) :: size
@@ -2942,6 +3005,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND), intent(in) :: size
@@ -3310,6 +3374,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
+    !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer, intent(in) :: size
@@ -3334,6 +3399,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
+    !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND), intent(in) :: size
@@ -4266,10 +4332,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
+    !dir$ ignore_tkr(tkr) compare_addr
     !gcc$ attributes no_arg_check :: compare_addr
     integer :: compare_addr(*)
+    !dir$ ignore_tkr(tkr) result_addr
     !gcc$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     type(MPI_Datatype), intent(in) :: datatype
@@ -4532,8 +4601,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: count
@@ -4566,8 +4637,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -4602,8 +4675,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: count
@@ -4642,8 +4717,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -4674,6 +4751,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     call MPIF_F_sync_reg( &
@@ -4694,8 +4772,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
+    !dir$ ignore_tkr(tkr) result_addr
     !gcc$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     type(MPI_Datatype), intent(in) :: datatype
@@ -5065,6 +5145,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5095,6 +5176,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5125,6 +5207,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5155,6 +5238,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5187,6 +5271,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5220,6 +5305,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5253,6 +5339,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5286,6 +5373,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5317,6 +5405,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5347,6 +5436,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5377,6 +5467,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5407,6 +5498,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5437,6 +5529,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5467,6 +5560,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5499,6 +5593,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5532,6 +5627,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5565,6 +5661,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5598,6 +5695,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5629,6 +5727,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5659,6 +5758,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5738,6 +5838,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5772,6 +5873,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5806,6 +5908,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5840,6 +5943,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5873,6 +5977,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5900,6 +6005,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -5926,6 +6032,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     type(MPI_Status), intent(out) :: status
@@ -5958,6 +6065,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -5995,6 +6103,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -6032,6 +6141,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -6069,6 +6179,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -6105,6 +6216,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -6135,6 +6247,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -6162,6 +6275,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     type(MPI_Status), intent(out) :: status
@@ -6192,6 +6306,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -6226,6 +6341,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -6259,6 +6375,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -6286,6 +6403,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -6312,6 +6430,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     type(MPI_Status), intent(out) :: status
@@ -6342,6 +6461,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -6376,6 +6496,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -6585,6 +6706,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -6619,6 +6741,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -6653,6 +6776,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -6687,6 +6811,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -6720,6 +6845,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -6747,6 +6873,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -6773,6 +6900,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     type(MPI_Status), intent(out) :: status
@@ -6805,6 +6933,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -6842,6 +6971,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -6879,6 +7009,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -6916,6 +7047,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -6952,6 +7084,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -6982,6 +7115,7 @@ contains
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -7009,6 +7143,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     type(MPI_Status), intent(out) :: status
@@ -7039,6 +7174,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -7073,6 +7209,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -7106,6 +7243,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -7133,6 +7271,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -7159,6 +7298,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     type(MPI_Status), intent(out) :: status
@@ -7189,6 +7329,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -7223,6 +7364,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -7283,6 +7425,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) base
     !gcc$ attributes no_arg_check :: base
     integer :: base(*)
     integer, intent(out), optional :: ierror
@@ -7308,10 +7451,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -7348,10 +7493,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -7390,10 +7537,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -7436,10 +7585,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -7481,10 +7632,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -7524,10 +7677,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -7569,10 +7724,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -7618,10 +7775,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -7664,6 +7823,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer, intent(in) :: origin_count
@@ -7703,6 +7863,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
@@ -7746,10 +7907,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer, intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
+    !dir$ ignore_tkr(tkr) result_addr
     !gcc$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer, intent(in) :: result_count
@@ -7798,10 +7961,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
+    !dir$ ignore_tkr(tkr) result_addr
     !gcc$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer(MPI_COUNT_KIND), intent(in) :: result_count
@@ -7840,6 +8005,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) location
     !gcc$ attributes no_arg_check :: location
     integer :: location(*)
     integer(MPI_ADDRESS_KIND), intent(out) :: address
@@ -8592,10 +8758,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -8632,10 +8800,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -8673,10 +8843,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -8716,10 +8888,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -8757,8 +8931,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: count
@@ -8794,8 +8970,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -8832,10 +9010,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -8872,10 +9052,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -8914,11 +9096,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer, intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -8960,11 +9144,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -9006,11 +9192,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer, intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtypes(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -9052,11 +9240,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtypes(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -9114,6 +9304,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer, intent(in) :: count
@@ -9147,6 +9338,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -9181,6 +9373,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -9217,6 +9410,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -9253,8 +9447,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: count
@@ -9290,8 +9486,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -9329,10 +9527,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -9372,10 +9572,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -9416,10 +9618,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -9462,10 +9666,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -9539,6 +9745,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -9569,6 +9776,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -9602,10 +9810,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -9642,10 +9852,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -9683,10 +9895,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -9726,10 +9940,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -9768,10 +9984,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -9808,10 +10026,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -9850,11 +10070,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer, intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -9896,11 +10118,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -9942,11 +10166,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtypes(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -9988,11 +10214,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtypes(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -10449,6 +10677,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -10485,6 +10714,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -10522,8 +10752,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: count
@@ -10562,8 +10794,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -10601,8 +10835,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -10638,8 +10874,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -10675,8 +10913,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -10712,8 +10952,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -10749,6 +10991,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -10785,6 +11028,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -10838,8 +11082,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: count
@@ -10875,8 +11121,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -10914,10 +11162,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -10957,10 +11207,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -11001,11 +11253,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer, intent(in) :: displs(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -11047,11 +11301,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -11090,6 +11346,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -11126,6 +11383,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -11167,12 +11425,14 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
     integer, intent(in) :: dest
     integer, intent(in) :: sendtag
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -11219,12 +11479,14 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
     integer, intent(in) :: dest
     integer, intent(in) :: sendtag
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -11268,6 +11530,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -11310,6 +11573,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -11350,6 +11614,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -11386,6 +11651,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -11519,6 +11785,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -11553,6 +11820,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -11589,10 +11857,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -11626,10 +11896,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -11665,10 +11937,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -11708,10 +11982,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -11750,10 +12026,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -11790,10 +12068,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -11832,10 +12112,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -11878,10 +12160,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -11921,10 +12205,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -11958,10 +12244,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -11997,10 +12285,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -12040,10 +12330,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -12083,11 +12375,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer, intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -12126,11 +12420,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -12171,11 +12467,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer, intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -12220,11 +12518,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -12267,11 +12567,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtypes(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -12310,11 +12612,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtypes(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -12355,11 +12659,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtypes(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -12404,11 +12710,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
     type(MPI_Datatype), intent(in) :: sendtypes(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -12552,10 +12860,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer, intent(in) :: incount
     type(MPI_Datatype), intent(in) :: datatype
+    !dir$ ignore_tkr(tkr) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer, intent(in) :: outsize
@@ -12589,10 +12899,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: incount
     type(MPI_Datatype), intent(in) :: datatype
+    !dir$ ignore_tkr(tkr) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: outsize
@@ -12627,10 +12939,12 @@ contains
     use mpi_f08_types
     implicit none
     character*(*), intent(in) :: datarep
+    !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer, intent(in) :: incount
     type(MPI_Datatype), intent(in) :: datatype
+    !dir$ ignore_tkr(tkr) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: outsize
@@ -12664,10 +12978,12 @@ contains
     use mpi_f08_types
     implicit none
     character*(*), intent(in) :: datarep
+    !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: incount
     type(MPI_Datatype), intent(in) :: datatype
+    !dir$ ignore_tkr(tkr) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: outsize
@@ -12895,6 +13211,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: partitions
@@ -12967,6 +13284,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: partitions
@@ -13031,6 +13349,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer, intent(in) :: origin_count
@@ -13070,6 +13389,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
@@ -13128,6 +13448,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer, intent(in) :: origin_count
@@ -13173,6 +13494,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
@@ -13215,6 +13537,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -13255,6 +13578,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -13295,6 +13619,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -13331,6 +13656,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -13367,8 +13693,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: count
@@ -13404,8 +13732,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -13443,8 +13773,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: count
@@ -13486,8 +13818,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -13525,8 +13859,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
+    !dir$ ignore_tkr(tkr) inoutbuf
     !gcc$ attributes no_arg_check :: inoutbuf
     integer :: inoutbuf(*)
     integer, intent(in) :: count
@@ -13556,8 +13892,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
+    !dir$ ignore_tkr(tkr) inoutbuf
     !gcc$ attributes no_arg_check :: inoutbuf
     integer :: inoutbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -13588,8 +13926,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -13622,8 +13962,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -13656,8 +13998,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -13690,8 +14034,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -13726,8 +14072,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -13766,8 +14114,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -13806,8 +14156,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcounts(*)
@@ -13846,8 +14198,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
@@ -14136,6 +14490,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer, intent(in) :: origin_count
@@ -14178,6 +14533,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
@@ -14224,10 +14580,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer, intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
+    !dir$ ignore_tkr(tkr) result_addr
     !gcc$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer, intent(in) :: result_count
@@ -14279,10 +14637,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
+    !dir$ ignore_tkr(tkr) result_addr
     !gcc$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer(MPI_COUNT_KIND), intent(in) :: result_count
@@ -14330,6 +14690,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer, intent(in) :: origin_count
@@ -14372,6 +14733,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
@@ -14411,6 +14773,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -14444,6 +14807,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -14478,6 +14842,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -14514,6 +14879,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -14549,8 +14915,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: count
@@ -14583,8 +14951,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -14619,8 +14989,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: count
@@ -14659,8 +15031,10 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -14699,10 +15073,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -14739,10 +15115,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -14781,10 +15159,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -14827,10 +15207,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -14872,11 +15254,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer, intent(in) :: displs(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -14915,11 +15299,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -14960,11 +15346,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcounts(*)
     integer, intent(in) :: displs(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -15009,11 +15397,13 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
     type(MPI_Datatype), intent(in) :: sendtype
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -15053,6 +15443,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -15086,6 +15477,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -15120,6 +15512,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -15156,6 +15549,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -15197,12 +15591,14 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer, intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
     integer, intent(in) :: dest
     integer, intent(in) :: sendtag
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer, intent(in) :: recvcount
@@ -15253,12 +15649,14 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: sendcount
     type(MPI_Datatype), intent(in) :: sendtype
     integer, intent(in) :: dest
     integer, intent(in) :: sendtag
+    !dir$ ignore_tkr(tkr) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: recvcount
@@ -15306,6 +15704,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -15352,6 +15751,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -15393,6 +15793,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
+    !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer, intent(in) :: size
@@ -15417,6 +15818,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
+    !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND), intent(in) :: size
@@ -15741,6 +16143,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -15774,6 +16177,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -15808,6 +16212,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: count
@@ -15844,6 +16249,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
@@ -17672,10 +18078,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer, intent(in) :: insize
     integer, intent(inout) :: position
+    !dir$ ignore_tkr(tkr) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer, intent(in) :: outcount
@@ -17709,10 +18117,12 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: insize
     integer(MPI_COUNT_KIND), intent(inout) :: position
+    !dir$ ignore_tkr(tkr) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: outcount
@@ -17747,10 +18157,12 @@ contains
     use mpi_f08_types
     implicit none
     character*(*), intent(in) :: datarep
+    !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: insize
     integer(MPI_ADDRESS_KIND), intent(inout) :: position
+    !dir$ ignore_tkr(tkr) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer, intent(in) :: outcount
@@ -17784,10 +18196,12 @@ contains
     use mpi_f08_types
     implicit none
     character*(*), intent(in) :: datarep
+    !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: insize
     integer(MPI_COUNT_KIND), intent(inout) :: position
+    !dir$ ignore_tkr(tkr) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND), intent(in) :: outcount
@@ -18082,6 +18496,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
+    !dir$ ignore_tkr(tkr) base
     !gcc$ attributes no_arg_check :: base
     integer :: base(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -18145,6 +18560,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) base
     !gcc$ attributes no_arg_check :: base
     integer :: base(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -18178,6 +18594,7 @@ contains
     use mpi_f08_constants
     use mpi_f08_types
     implicit none
+    !dir$ ignore_tkr(tkr) base
     !gcc$ attributes no_arg_check :: base
     integer :: base(*)
     integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -18297,6 +18714,7 @@ contains
     use mpi_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
+    !dir$ ignore_tkr(tkr) base
     !gcc$ attributes no_arg_check :: base
     integer :: base(*)
     integer, intent(out), optional :: ierror

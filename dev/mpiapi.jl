@@ -693,8 +693,10 @@ for key in sort(collect(keys(apis)))
                     push!(f_declarations, "logical :: $parname")
                     push!(f08_declarations, "logical, intent($param_direction) :: $parname")
                 else
+                    push!(f_declarations, "!dir\$ ignore_tkr(trk) $parname")
                     push!(f_declarations, "!gcc\$ attributes no_arg_check :: $parname")
                     push!(f_declarations, "integer :: $parname(*)")
+                    push!(f08_declarations, "!dir\$ ignore_tkr(tkr) $parname")
                     push!(f08_declarations, "!gcc\$ attributes no_arg_check :: $parname")
                     push!(f08_declarations, "integer :: $parname(*)")
                 end

@@ -10,24 +10,30 @@ module mpi_types
      module procedure mpif_sizeof_logical2
      module procedure mpif_sizeof_logical4
      module procedure mpif_sizeof_logical8
+#ifdef MPIF_HAVE_LOGICAL16
+     module procedure mpif_sizeof_logical16
+#endif
      module procedure mpif_sizeof_integer1
      module procedure mpif_sizeof_integer2
      module procedure mpif_sizeof_integer4
      module procedure mpif_sizeof_integer8
-#ifdef HAVE_REAL2
+#ifdef MPIF_HAVE_INTEGER16
+     module procedure mpif_sizeof_integer16
+#endif
+#ifdef MPIF_HAVE_REAL2
      module procedure mpif_sizeof_real2
 #endif
      module procedure mpif_sizeof_real4
      module procedure mpif_sizeof_real8
-#ifdef HAVE_REAL16
+#ifdef MPIF_HAVE_REAL16
      module procedure mpif_sizeof_real16
 #endif
-#ifdef HAVE_REAL2
+#ifdef MPIF_HAVE_REAL2
      module procedure mpif_sizeof_complex4
 #endif
      module procedure mpif_sizeof_complex8
      module procedure mpif_sizeof_complex16
-#ifdef HAVE_REAL16
+#ifdef MPIF_HAVE_REAL16
      module procedure mpif_sizeof_complex32
 #endif
   end interface MPI_Sizeof
@@ -66,6 +72,16 @@ contains
     if (present(ierror)) ierror = MPI_SUCCESS
   end subroutine mpif_sizeof_logical8
 
+#ifdef MPIF_HAVE_LOGICAL16
+  subroutine mpif_sizeof_logical16(x, size, ierror)
+    logical*16                     :: x(*)
+    integer, intent(out)           :: size
+    integer, intent(out), optional :: ierror
+    size = 16
+    if (present(ierror)) ierror = MPI_SUCCESS
+  end subroutine mpif_sizeof_logical16
+#endif
+
   subroutine mpif_sizeof_integer1(x, size, ierror)
     integer*1                      :: x(*)
     integer, intent(out)           :: size
@@ -98,7 +114,17 @@ contains
     if (present(ierror)) ierror = MPI_SUCCESS
   end subroutine mpif_sizeof_integer8
 
-#ifdef HAVE_REAL2
+#ifdef MPIF_HAVE_INTEGER16
+  subroutine mpif_sizeof_integer16(x, size, ierror)
+    integer*16                     :: x(*)
+    integer, intent(out)           :: size
+    integer, intent(out), optional :: ierror
+    size = 16
+    if (present(ierror)) ierror = MPI_SUCCESS
+  end subroutine mpif_sizeof_integer16
+#endif
+
+#ifdef MPIF_HAVE_REAL2
   subroutine mpif_sizeof_real2(x, size, ierror)
     real*2                      :: x(*)
     real, intent(out)           :: size
@@ -124,7 +150,7 @@ contains
     if (present(ierror)) ierror = MPI_SUCCESS
   end subroutine mpif_sizeof_real8
 
-#ifdef HAVE_REAL16
+#ifdef MPIF_HAVE_REAL16
   subroutine mpif_sizeof_real16(x, size, ierror)
     real*16                      :: x(*)
     real, intent(out)           :: size
@@ -134,7 +160,7 @@ contains
   end subroutine mpif_sizeof_real16
 #endif
 
-#ifdef HAVE_REAL2
+#ifdef MPIF_HAVE_REAL2
   subroutine mpif_sizeof_complex4(x, size, ierror)
     complex*4                      :: x(*)
     complex, intent(out)           :: size
@@ -160,7 +186,7 @@ contains
     if (present(ierror)) ierror = MPI_SUCCESS
   end subroutine mpif_sizeof_complex16
 
-#ifdef HAVE_REAL16
+#ifdef MPIF_HAVE_REAL16
   subroutine mpif_sizeof_complex32(x, size, ierror)
     complex*32                      :: x(*)
     complex, intent(out)           :: size

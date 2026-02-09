@@ -9,16 +9,8 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build-mpich-gcc:
     runs-on: ubuntu-24.04
-
-    strategy:
-      matrix:
-        mpi:
-          - mpich
-          - openmpi
-      fail-fast: false
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -28,20 +20,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gfortran cmake libhwloc-dev
 
-
-
-      - name: Cache MPICH install
-        if: matrix.mpi == 'mpich'
-        id: cache-mpich
+      - name: Cache MPICH/GCC install
+        id: cache-mpich-gcc
         uses: actions/cache@v4
         with:
           path: /home/runner/work/mpif/opt
-          key: mpich-${{ runner.os }}-5.0.0rc1.1
+          key: mpich-gcc-${{ runner.os }}-5.0.0
           restore-keys: |
-            mpich-${{ runner.os }}-
+            mpich-gcc-${{ runner.os }}-5.0.0
 
-      - name: Install MPICH
-        if: matrix.mpi == 'mpich' && steps.cache-mpich.outputs.cache-hit != 'true'
+      - name: Install MPICH via GCC
+        if: steps.cache-mpich-gcc.outputs.cache-hit != 'true'
         run: |
           mkdir -p /home/runner/work/mpif/opt
           cd /home/runner/work/mpif/opt
@@ -50,9 +39,9 @@ jobs:
           pushd src
 
           # Download
-          wget https://www.mpich.org/static/downloads/5.0.0rc1/mpich-5.0.0rc1.tar.gz
-          tar xzf mpich-5.0.0rc1.tar.gz
-          cd mpich-5.0.0rc1
+          wget https://www.mpich.org/static/downloads/5.0.0/mpich-5.0.0.tar.gz
+          tar xzf mpich-5.0.0.tar.gz
+          cd mpich-5.0.0
 
           # Build
           mkdir build
@@ -123,20 +112,233 @@ jobs:
           echo "${prefix}/bin" >> $GITHUB_PATH
           echo "LD_LIBRARY_PATH=${prefix}/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
+      - name: Install official MPI header file
+        run: |
+          mkdir -p /home/runner/work/mpif/opt
+          cd /home/runner/work/mpif/opt
+          mkdir src
+          pushd src
+          git clone https://github.com/mpi-forum/mpi-abi-stubs
+          prefix=/home/runner/work/mpif/opt/mpi
+          mkdir -p ${prefix}/include
+          cp mpi-abi-stubs/mpi.h ${prefix}/include
+          (cd ${prefix}/include && patch -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran.patch)
+          popd
+          rm -rf src
+
+      - name: Configure, build, and install project
+        run: |
+          ls -lR /home/runner/work/mpif/opt/mpi
+          cmake \
+              -Bbuild \
+              -DBUILD_SHARED_LIBS=ON \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt/mpif \
+              -DMPI_HOME=/home/runner/work/mpif/opt/mpi
+          cmake --build build --parallel
+          cmake --install build
+
+      - name: Configure, build, and run tests
+        run: |
+          cd test
+          cmake \
+              -Bbuild-tests \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DMPI_HOME=/home/runner/work/mpif/opt/mpif \
+              -DMPI_Fortran_COMPILER=/home/runner/work/mpif/opt/mpif/bin/mpifort
+          cmake --build build-tests --parallel
+          ctest --test-dir build-tests
 
 
-      - name: Cache OpenMPI install
-        if: matrix.mpi == 'openmpi'
-        id: cache-openmpi
+
+  build-mpich-llvm
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 21
+          sudo apt-get update
+          sudo apt-get install -y \
+              autoconf \
+              automake \
+              clang-21 \
+              cmake \
+              flang-21 \
+              libc++-21-dev
+              libc++abi-21-dev \
+              libhwloc-dev \
+              libomp-21-dev \
+              libtool \
+              lld-21 \
+              llvm-21 \
+              pkg-config
+
+      - name: Cache MPICH/LLVM install
+        id: cache-mpich-llvm
         uses: actions/cache@v4
         with:
           path: /home/runner/work/mpif/opt
-          key: openmpi-${{ runner.os }}-d80e240ad6acc5eeddfad972d620409f867cea86.1
+          key: mpich-llvm-${{ runner.os }}-5.0.0
           restore-keys: |
-            openmpi-${{ runner.os }}-
+            mpich-llvm-${{ runner.os }}-5.0.0
 
-      - name: Install OpenMPI
-        if: matrix.mpi == 'openmpi' && steps.cache-openmpi.outputs.cache-hit != 'true'
+      - name: Install MPICH via LLVM
+        if: steps.cache-mpich-llvm.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p /home/runner/work/mpif/opt
+          cd /home/runner/work/mpif/opt
+
+          mkdir src
+          pushd src
+
+          # Download
+          wget https://www.mpich.org/static/downloads/5.0.0/mpich-5.0.0.tar.gz
+          tar xzf mpich-5.0.0.tar.gz
+          cd mpich-5.0.0
+
+          # Build
+          mkdir build
+          cd build
+          prefix=/home/runner/work/mpif/opt/mpi
+          configure_flags=(
+              --disable-dependency-tracking
+              --disable-doc
+              --enable-cxx=no
+              --enable-fortran
+              --enable-mpi-abi
+              --enable-static=no
+              --prefix=${prefix}
+              --with-device=ch3
+              --with-hwloc
+          )
+          export CC=clang-21
+          export CXX=clang++-21
+          export FC=flang-new-21
+          ../configure "${configure_flags[@]}"
+          make -j$(nproc)
+          make install
+
+          # Fixup
+          rm ${prefix}/bin/mpicc_abi
+          rm ${prefix}/bin/mpichversion       # needs libmpi.so
+          rm ${prefix}/bin/mpicxx_abi
+          rm ${prefix}/bin/mpif77
+          rm ${prefix}/bin/mpif90
+          rm ${prefix}/bin/mpifort
+          rm ${prefix}/bin/mpivars            # needs libmpi.so
+          sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicc
+          sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${prefix}/bin/mpicxx
+
+          rm ${prefix}/include/mpi.h
+          rm ${prefix}/include/mpi.mod
+          rm ${prefix}/include/mpi_abi.h
+          rm ${prefix}/include/mpi_base.mod
+          rm ${prefix}/include/mpi_c_interface.mod
+          rm ${prefix}/include/mpi_c_interface_cdesc.mod
+          rm ${prefix}/include/mpi_c_interface_glue.mod
+          rm ${prefix}/include/mpi_c_interface_nobuf.mod
+          rm ${prefix}/include/mpi_c_interface_types.mod
+          rm ${prefix}/include/mpi_constants.mod
+          rm ${prefix}/include/mpi_f08.mod
+          rm ${prefix}/include/mpi_f08_callbacks.mod
+          rm ${prefix}/include/mpi_f08_compile_constants.mod
+          rm ${prefix}/include/mpi_f08_link_constants.mod
+          rm ${prefix}/include/mpi_f08_types.mod
+          rm ${prefix}/include/mpi_proto.h
+          rm ${prefix}/include/mpi_sizeofs.mod
+          rm ${prefix}/include/mpif.h
+          rm ${prefix}/include/pmpi_base.mod
+          rm ${prefix}/include/pmpi_f08.mod
+
+          rm ${prefix}/lib/libfmpich.*
+          rm ${prefix}/lib/libmpi.*
+          rm ${prefix}/lib/libmpich.*
+          rm ${prefix}/lib/libmpichcxx.*
+          rm ${prefix}/lib/libmpichf90.*
+          rm ${prefix}/lib/libmpifort.*
+          rm ${prefix}/lib/libmpl.*
+          rm ${prefix}/lib/libopa.*
+          rm ${prefix}/lib/libpmpi.* || true   # This library does not exist on all architectures
+          rm ${prefix}/lib/pkgconfig/mpich.pc
+
+          popd
+          rm -rf src
+
+          # Add MPICH to environment
+          echo "${prefix}/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=${prefix}/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+
+      - name: Install official MPI header file
+        run: |
+          mkdir -p /home/runner/work/mpif/opt
+          cd /home/runner/work/mpif/opt
+          mkdir src
+          pushd src
+          git clone https://github.com/mpi-forum/mpi-abi-stubs
+          prefix=/home/runner/work/mpif/opt/mpi
+          mkdir -p ${prefix}/include
+          cp mpi-abi-stubs/mpi.h ${prefix}/include
+          (cd ${prefix}/include && patch -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran.patch)
+          popd
+          rm -rf src
+
+      - name: Configure, build, and install project
+        run: |
+          ls -lR /home/runner/work/mpif/opt/mpi
+          export CC=clang-21
+          export CXX=clang++-21
+          export FC=flang-new-21
+          cmake \
+              -Bbuild \
+              -DBUILD_SHARED_LIBS=ON \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_Fortran_COMPILER=flang-new-21 \
+              -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt/mpif \
+              -DMPI_HOME=/home/runner/work/mpif/opt/mpi
+          cmake --build build --parallel
+          cmake --install build
+
+      - name: Configure, build, and run tests
+        run: |
+          cd test
+          cmake \
+              -Bbuild-tests \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_Fortran_COMPILER=flang-new-21 \
+              -DMPI_HOME=/home/runner/work/mpif/opt/mpif \
+              -DMPI_Fortran_COMPILER=/home/runner/work/mpif/opt/mpif/bin/mpifort
+          cmake --build build-tests --parallel
+          ctest --test-dir build-tests
+
+
+
+  build-openmpi-gcc:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gfortran cmake libhwloc-dev
+
+      - name: Cache OpenMPI/GCC install
+        id: cache-openmpi-gcc
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/work/mpif/opt
+          key: openmpi-gcc-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74
+          restore-keys: |
+            openmpi-gcc-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74
+
+      - name: Install OpenMPI via GCC
+        if: steps.cache-openmpi-gcc.outputs.cache-hit != 'true'
         run: |
           mkdir -p /home/runner/work/mpif/opt
           cd /home/runner/work/mpif/opt
@@ -149,8 +351,8 @@ jobs:
           cd ompi
           # git fetch --depth 1 origin pull/13280/head:pr-13280
           # git checkout pr-13280
-          git fetch --depth 1 origin d80e240ad6acc5eeddfad972d620409f867cea86
-          git checkout d80e240ad6acc5eeddfad972d620409f867cea86
+          git fetch --depth 1 origin 70416c44cf459e639d550fe08ab58dae185c4b74
+          git checkout 70416c44cf459e639d550fe08ab58dae185c4b74
           git submodule update --init --recursive
 
           # Build
@@ -237,8 +439,6 @@ jobs:
           echo "/home/runner/work/mpif/opt/mpi/bin" >> $GITHUB_PATH
           echo "LD_LIBRARY_PATH=/home/runner/work/mpif/opt/mpi/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
-
-
       - name: Install official MPI header file
         run: |
           mkdir -p /home/runner/work/mpif/opt
@@ -252,8 +452,6 @@ jobs:
           (cd ${prefix}/include && patch -p1 </home/runner/work/mpif/mpif/.github/workflows/fortran.patch)
           popd
           rm -rf src
-
-
 
       - name: Configure, build, and install project
         run: |

@@ -45,6 +45,19 @@ include(CheckFortranSourceCompiles)
 check_fortran_source_compiles(
   "
   program test
+    logical*16 :: x
+  end
+  "
+  HAVE_LOGICAL16
+  SRC_EXT f90
+)
+if(HAVE_LOGICAL16)
+  add_definitions(-DMPIF_HAVE_LOGICAL16)
+endif()
+
+check_fortran_source_compiles(
+  "
+  program test
     real*2 :: x
   end program
   "
@@ -52,7 +65,7 @@ check_fortran_source_compiles(
   SRC_EXT f90
 )
 if(HAVE_REAL2)
-  add_definitions(-DHAVE_REAL2)
+  add_definitions(-DMPIF_HAVE_REAL2)
 endif()
 check_fortran_source_compiles(
   "
@@ -64,7 +77,7 @@ check_fortran_source_compiles(
   SRC_EXT f90
 )
 if(HAVE_REAL16)
-  add_definitions(-DHAVE_REAL16)
+  add_definitions(-DMPIF_HAVE_REAL16)
 endif()
 
 check_fortran_compiler_flag(-fallow-argument-mismatch Fortran_flag_allow_argument_mismatch)
@@ -182,11 +195,6 @@ else()
 endif()
 add_compile_definitions(ENABLE_FORTRAN)
 
-# configure_file(include/mpitrampoline.h.in include/mpitrampoline.h @ONLY)
-# configure_file(include/mpitrampolinef.h.in include/mpitrampolinef.h @ONLY)
-# configure_file(include/mpif_functions.h.in include/mpif_functions.h @ONLY)
-# configure_file(src/mpi_f08_functions.F90.in src/mpi_f08_functions.F90 @ONLY)
-
 add_library(mpif
   # MPI Fortran header files
   include/mpif.h
@@ -200,8 +208,6 @@ add_library(mpif
   # Implementation
   include/mpif_strings.h
   src/mpif_constants.c
-  # src/mpif_constants_init.c
-  # src/mpif_constants_init.F90
   src/mpif_sizeof.c
   src/mpi_status.c
   src/mpif_strings.c

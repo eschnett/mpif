@@ -15,8 +15,10 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: logical_size
+    !dir$ ignore_tkr(trk) logical_true
     !gcc$ attributes no_arg_check :: logical_true
     integer :: logical_true(*)
+    !dir$ ignore_tkr(trk) logical_false
     !gcc$ attributes no_arg_check :: logical_false
     integer :: logical_false(*)
     logical :: is_set
@@ -64,8 +66,10 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: logical_size
+    !dir$ ignore_tkr(trk) logical_true
     !gcc$ attributes no_arg_check :: logical_true
     integer :: logical_true(*)
+    !dir$ ignore_tkr(trk) logical_false
     !gcc$ attributes no_arg_check :: logical_false
     integer :: logical_false(*)
     integer :: ierror
@@ -107,6 +111,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
@@ -134,6 +139,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
@@ -215,10 +221,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -239,10 +247,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -265,10 +275,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -293,10 +305,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -320,10 +334,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -346,10 +362,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -374,10 +392,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -404,10 +424,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -444,8 +466,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
@@ -466,8 +490,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -490,8 +516,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
@@ -516,8 +544,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -541,10 +571,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -565,10 +597,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -591,10 +625,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -619,10 +655,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -647,11 +685,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -675,11 +715,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -705,11 +747,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -737,11 +781,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -767,11 +813,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -795,11 +843,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -825,11 +875,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -857,11 +909,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -949,6 +1003,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: count
@@ -968,6 +1023,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: count
@@ -989,6 +1045,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: count
@@ -1012,6 +1069,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: count
@@ -1034,6 +1092,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -1055,6 +1114,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -1077,6 +1137,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -1100,6 +1161,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -1118,6 +1180,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: size
@@ -1131,6 +1194,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: size
@@ -1356,6 +1420,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: comm
+    !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: size
@@ -1371,6 +1436,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: comm
+    !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: size
@@ -1939,10 +2005,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
+    !dir$ ignore_tkr(trk) compare_addr
     !gcc$ attributes no_arg_check :: compare_addr
     integer :: compare_addr(*)
+    !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer :: datatype
@@ -2105,8 +2174,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
@@ -2127,8 +2198,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2151,8 +2224,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
@@ -2177,8 +2252,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2195,6 +2272,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
   end subroutine MPI_F_sync_reg
@@ -2211,8 +2289,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
+    !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer :: datatype
@@ -2436,6 +2516,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2455,6 +2536,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2474,6 +2556,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2493,6 +2576,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2514,6 +2598,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2535,6 +2620,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2556,6 +2642,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2577,6 +2664,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2596,6 +2684,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2615,6 +2704,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2634,6 +2724,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2653,6 +2744,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2672,6 +2764,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2691,6 +2784,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2712,6 +2806,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2733,6 +2828,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2754,6 +2850,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2775,6 +2872,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2794,6 +2892,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2813,6 +2912,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2862,6 +2962,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2881,6 +2982,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2900,6 +3002,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2919,6 +3022,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2937,6 +3041,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -2954,6 +3059,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -2970,6 +3076,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
@@ -2989,6 +3096,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3010,6 +3118,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3031,6 +3140,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3052,6 +3162,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3072,6 +3183,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3091,6 +3203,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3107,6 +3220,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
@@ -3124,6 +3238,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3143,6 +3258,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3161,6 +3277,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3178,6 +3295,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3194,6 +3312,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
@@ -3211,6 +3330,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3230,6 +3350,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3355,6 +3476,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3374,6 +3496,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3393,6 +3516,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3412,6 +3536,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3430,6 +3555,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3447,6 +3573,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3463,6 +3590,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
@@ -3482,6 +3610,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3503,6 +3632,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3524,6 +3654,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3545,6 +3676,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3565,6 +3697,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3584,6 +3717,7 @@ module mpi_functions
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3600,6 +3734,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
@@ -3617,6 +3752,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3636,6 +3772,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3654,6 +3791,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3671,6 +3809,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3687,6 +3826,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
@@ -3704,6 +3844,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -3723,6 +3864,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: fh
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -3755,6 +3897,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
     integer :: base(*)
     integer :: ierror
@@ -3773,10 +3916,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -3799,10 +3944,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -3827,10 +3974,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -3857,10 +4006,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -3886,10 +4037,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -3914,10 +4067,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -3944,10 +4099,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -3976,10 +4133,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -4005,6 +4164,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
@@ -4030,6 +4190,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
@@ -4059,10 +4220,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
+    !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer :: result_count
@@ -4093,10 +4256,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
+    !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer(MPI_COUNT_KIND) :: result_count
@@ -4117,6 +4282,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) location
     !gcc$ attributes no_arg_check :: location
     integer :: location(*)
     integer(MPI_ADDRESS_KIND) :: address
@@ -4566,10 +4732,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -4592,10 +4760,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -4619,10 +4789,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -4647,10 +4819,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -4673,8 +4847,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
@@ -4697,8 +4873,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -4722,10 +4900,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -4748,10 +4928,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -4776,11 +4958,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -4806,11 +4990,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -4836,11 +5022,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -4866,11 +5054,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -4904,6 +5094,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: count
@@ -4925,6 +5116,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: count
@@ -4947,6 +5139,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -4970,6 +5163,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -4993,8 +5187,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
@@ -5017,8 +5213,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -5043,10 +5241,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -5071,10 +5271,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -5100,10 +5302,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -5130,10 +5334,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -5175,6 +5381,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -5194,6 +5401,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -5216,10 +5424,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -5242,10 +5452,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -5269,10 +5481,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -5297,10 +5511,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -5324,10 +5540,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -5350,10 +5568,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -5378,11 +5598,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -5408,11 +5630,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -5438,11 +5662,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -5468,11 +5694,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -5747,6 +5975,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -5770,6 +5999,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -5794,8 +6024,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
@@ -5820,8 +6052,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -5845,8 +6079,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -5869,8 +6105,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -5893,8 +6131,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -5917,8 +6157,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -5941,6 +6183,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -5964,6 +6207,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -5997,8 +6241,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
@@ -6021,8 +6267,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -6047,10 +6295,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -6075,10 +6325,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -6104,11 +6356,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: displs(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -6134,11 +6388,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -6161,6 +6417,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -6184,6 +6441,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -6212,12 +6470,14 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     integer :: dest
     integer :: sendtag
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -6246,12 +6506,14 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     integer :: dest
     integer :: sendtag
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -6277,6 +6539,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -6304,6 +6567,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -6329,6 +6593,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -6352,6 +6617,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -6431,6 +6697,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -6450,6 +6717,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -6471,10 +6739,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -6495,10 +6765,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -6521,10 +6793,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -6549,10 +6823,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -6576,10 +6852,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -6602,10 +6880,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -6630,10 +6910,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -6660,10 +6942,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -6687,10 +6971,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -6711,10 +6997,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -6737,10 +7025,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -6765,10 +7055,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -6793,11 +7085,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -6821,11 +7115,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -6851,11 +7147,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -6883,11 +7181,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -6913,11 +7213,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -6941,11 +7243,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -6971,11 +7275,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -7003,11 +7309,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -7093,10 +7401,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer :: incount
     integer :: datatype
+    !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer :: outsize
@@ -7117,10 +7427,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND) :: incount
     integer :: datatype
+    !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND) :: outsize
@@ -7142,10 +7454,12 @@ module mpi_functions
     use mpi_constants
     implicit none
     character*(*) :: datarep
+    !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer :: incount
     integer :: datatype
+    !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_ADDRESS_KIND) :: outsize
@@ -7166,10 +7480,12 @@ module mpi_functions
     use mpi_constants
     implicit none
     character*(*) :: datarep
+    !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND) :: incount
     integer :: datatype
+    !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND) :: outsize
@@ -7309,6 +7625,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: partitions
@@ -7352,6 +7669,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: partitions
@@ -7392,6 +7710,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
@@ -7417,6 +7736,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
@@ -7454,6 +7774,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
@@ -7483,6 +7804,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
@@ -7509,6 +7831,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -7532,6 +7855,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -7555,6 +7879,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -7578,6 +7903,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -7601,8 +7927,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
@@ -7625,8 +7953,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -7651,8 +7981,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
@@ -7679,8 +8011,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -7703,8 +8037,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
+    !dir$ ignore_tkr(trk) inoutbuf
     !gcc$ attributes no_arg_check :: inoutbuf
     integer :: inoutbuf(*)
     integer :: count
@@ -7723,8 +8059,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
+    !dir$ ignore_tkr(trk) inoutbuf
     !gcc$ attributes no_arg_check :: inoutbuf
     integer :: inoutbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -7744,8 +8082,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -7766,8 +8106,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -7788,8 +8130,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -7810,8 +8154,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -7834,8 +8180,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -7860,8 +8208,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -7886,8 +8236,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
@@ -7912,8 +8264,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
@@ -8081,6 +8435,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
@@ -8108,6 +8463,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
@@ -8139,10 +8495,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
+    !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer :: result_count
@@ -8175,10 +8533,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
+    !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer(MPI_COUNT_KIND) :: result_count
@@ -8207,6 +8567,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
@@ -8234,6 +8595,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
@@ -8258,6 +8620,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -8279,6 +8642,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -8301,6 +8665,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -8324,6 +8689,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -8346,8 +8712,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
@@ -8368,8 +8736,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -8392,8 +8762,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
@@ -8418,8 +8790,10 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -8444,10 +8818,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -8470,10 +8846,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -8498,10 +8876,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -8528,10 +8908,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -8557,11 +8939,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: displs(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -8585,11 +8969,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -8615,11 +9001,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: displs(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -8647,11 +9035,13 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
     integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -8674,6 +9064,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -8695,6 +9086,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -8717,6 +9109,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -8740,6 +9133,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -8768,12 +9162,14 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     integer :: dest
     integer :: sendtag
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
@@ -8802,12 +9198,14 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     integer :: dest
     integer :: sendtag
+    !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
@@ -8833,6 +9231,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -8860,6 +9259,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -8882,6 +9282,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: session
+    !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: size
@@ -8897,6 +9298,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: session
+    !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: size
@@ -9094,6 +9496,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -9115,6 +9518,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -9137,6 +9541,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
@@ -9160,6 +9565,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
@@ -10233,10 +10639,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer :: insize
     integer :: position
+    !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer :: outcount
@@ -10257,10 +10665,12 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND) :: insize
     integer(MPI_COUNT_KIND) :: position
+    !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND) :: outcount
@@ -10282,10 +10692,12 @@ module mpi_functions
     use mpi_constants
     implicit none
     character*(*) :: datarep
+    !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_ADDRESS_KIND) :: insize
     integer(MPI_ADDRESS_KIND) :: position
+    !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer :: outcount
@@ -10306,10 +10718,12 @@ module mpi_functions
     use mpi_constants
     implicit none
     character*(*) :: datarep
+    !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND) :: insize
     integer(MPI_COUNT_KIND) :: position
+    !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND) :: outcount
@@ -10480,6 +10894,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: win
+    !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
     integer :: base(*)
     integer(MPI_ADDRESS_KIND) :: size
@@ -10519,6 +10934,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
     integer :: base(*)
     integer(MPI_ADDRESS_KIND) :: size
@@ -10540,6 +10956,7 @@ module mpi_functions
   )
     use mpi_constants
     implicit none
+    !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
     integer :: base(*)
     integer(MPI_ADDRESS_KIND) :: size
@@ -10612,6 +11029,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: win
+    !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
     integer :: base(*)
     integer :: ierror
