@@ -169,7 +169,7 @@ jobs:
               clang-21 \
               cmake \
               flang-21 \
-              libc++-21-dev
+              libc++-21-dev \
               libc++abi-21-dev \
               libhwloc-dev \
               libomp-21-dev \
