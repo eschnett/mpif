@@ -209,7 +209,7 @@ add_library(mpif
   include/mpif_strings.h
   src/mpif_constants.c
   src/mpif_sizeof.c
-  src/mpi_status.c
+  src/mpi_handles.c
   src/mpif_strings.c
   gen/mpif_functions.c
   gen/mpi_functions.F90
