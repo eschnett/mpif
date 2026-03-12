@@ -128,24 +128,31 @@ jobs:
 
       - name: Configure, build, and install project
         run: |
-          ls -lR /home/runner/work/mpif/opt/mpi
+          MPIABI_DIR=/home/runner/work/mpif/opt/mpi
+          MPIF_DIR=/home/runner/work/mpif/opt/mpif
+          ls -lR ${MPIABI_DIR}
           cmake \
               -Bbuild \
               -DBUILD_SHARED_LIBS=ON \
               -DCMAKE_BUILD_TYPE=Debug \
-              -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt/mpif \
-              -DMPI_HOME=/home/runner/work/mpif/opt/mpi
+              -DCMAKE_INSTALL_PREFIX=${MPIF_DIR} \
+              -DMPI_HOME=${MPIABI_DIR}
           cmake --build build --parallel
           cmake --install build
 
       - name: Configure, build, and run tests
         run: |
+          MPIABI_DIR=/home/runner/work/mpif/opt/mpi
+          MPIF_DIR=/home/runner/work/mpif/opt/mpif
           cd test
           cmake \
               -Bbuild-tests \
               -DCMAKE_BUILD_TYPE=Debug \
-              -DMPI_HOME=/home/runner/work/mpif/opt/mpif \
-              -DMPI_Fortran_COMPILER=/home/runner/work/mpif/opt/mpif/bin/mpifort
+              -DMPI_C_COMPILER=${MPIABI_DIR}/bin/mpicc \
+              -DMPI_Fortran_COMPILER=${MPIF_DIR}/bin/mpifort \
+              -DMPI_C_HEADER_DIR=${MPIABI_DIR}/include \
+              -DMPI_C_LIB_NAMES=mpi_abi \
+              -DMPI_mpi_abi_LIBRARY=${MPIABI_DIR}/lib/libmpi_abi.so
           cmake --build build-tests --parallel
           ctest --test-dir build-tests
 
@@ -289,7 +296,9 @@ jobs:
 
       - name: Configure, build, and install project
         run: |
-          ls -lR /home/runner/work/mpif/opt/mpi
+          MPIABI_DIR=/home/runner/work/mpif/opt/mpi
+          MPIF_DIR=/home/runner/work/mpif/opt/mpif
+          ls -lR ${MPIABI_DIR}
           export CC=clang-21
           export CXX=clang++-21
           export FC=flang-new-21
@@ -298,20 +307,25 @@ jobs:
               -DBUILD_SHARED_LIBS=ON \
               -DCMAKE_BUILD_TYPE=Debug \
               -DCMAKE_Fortran_COMPILER=flang-new-21 \
-              -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt/mpif \
-              -DMPI_HOME=/home/runner/work/mpif/opt/mpi
+              -DCMAKE_INSTALL_PREFIX=${MPIF_DIR} \
+              -DMPI_HOME=${MPIABI_DIR}
           cmake --build build --parallel
           cmake --install build
 
       - name: Configure, build, and run tests
         run: |
+          MPIABI_DIR=/home/runner/work/mpif/opt/mpi
+          MPIF_DIR=/home/runner/work/mpif/opt/mpif
           cd test
           cmake \
               -Bbuild-tests \
               -DCMAKE_BUILD_TYPE=Debug \
               -DCMAKE_Fortran_COMPILER=flang-new-21 \
-              -DMPI_HOME=/home/runner/work/mpif/opt/mpif \
-              -DMPI_Fortran_COMPILER=/home/runner/work/mpif/opt/mpif/bin/mpifort
+              -DMPI_C_COMPILER=${MPIABI_DIR}/bin/mpicc \
+              -DMPI_Fortran_COMPILER=${MPIF_DIR}/bin/mpifort \
+              -DMPI_C_HEADER_DIR=${MPIABI_DIR}/include \
+              -DMPI_C_LIB_NAMES=mpi_abi \
+              -DMPI_mpi_abi_LIBRARY=${MPIABI_DIR}/lib/libmpi_abi.so
           cmake --build build-tests --parallel
           ctest --test-dir build-tests
 
@@ -455,24 +469,31 @@ jobs:
 
       - name: Configure, build, and install project
         run: |
-          ls -lR /home/runner/work/mpif/opt/mpi
+          MPIABI_DIR=/home/runner/work/mpif/opt/mpi
+          MPIF_DIR=/home/runner/work/mpif/opt/mpif
+          ls -lR ${MPIABI_DIR}
           cmake \
               -Bbuild \
               -DBUILD_SHARED_LIBS=ON \
               -DCMAKE_BUILD_TYPE=Debug \
-              -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt/mpif \
-              -DMPI_HOME=/home/runner/work/mpif/opt/mpi
+              -DCMAKE_INSTALL_PREFIX=${MPIF_DIR} \
+              -DMPI_HOME=${MPIABI_DIR}
           cmake --build build --parallel
           cmake --install build
 
       - name: Configure, build, and run tests
         run: |
+          MPIABI_DIR=/home/runner/work/mpif/opt/mpi
+          MPIF_DIR=/home/runner/work/mpif/opt/mpif
           cd test
           cmake \
               -Bbuild-tests \
               -DCMAKE_BUILD_TYPE=Debug \
-              -DMPI_HOME=/home/runner/work/mpif/opt/mpif \
-              -DMPI_Fortran_COMPILER=/home/runner/work/mpif/opt/mpif/bin/mpifort
+              -DMPI_C_COMPILER=${MPIABI_DIR}/bin/mpicc \
+              -DMPI_Fortran_COMPILER=${MPIF_DIR}/bin/mpifort \
+              -DMPI_C_HEADER_DIR=${MPIABI_DIR}/include \
+              -DMPI_C_LIB_NAMES=mpi_abi \
+              -DMPI_mpi_abi_LIBRARY=${MPIABI_DIR}/lib/libmpi_abi.so
           cmake --build build-tests --parallel
           ctest --test-dir build-tests
 
@@ -635,23 +656,35 @@ jobs:
 
       - name: Configure, build, and install project
         run: |
-          ls -lR /home/runner/work/mpif/opt/mpi
+          MPIABI_DIR=/home/runner/work/mpif/opt/mpi
+          MPIF_DIR=/home/runner/work/mpif/opt/mpif
+          ls -lR ${MPIABI_DIR}
+          export CC=clang-21
+          export CXX=clang++-21
+          export FC=flang-new-21
           cmake \
               -Bbuild \
               -DBUILD_SHARED_LIBS=ON \
               -DCMAKE_BUILD_TYPE=Debug \
-              -DCMAKE_INSTALL_PREFIX=/home/runner/work/mpif/opt/mpif \
-              -DMPI_HOME=/home/runner/work/mpif/opt/mpi
+              -DCMAKE_Fortran_COMPILER=flang-new-21 \
+              -DCMAKE_INSTALL_PREFIX=${MPIF_DIR} \
+              -DMPI_HOME=${MPIABI_DIR}
           cmake --build build --parallel
           cmake --install build
 
       - name: Configure, build, and run tests
         run: |
+          MPIABI_DIR=/home/runner/work/mpif/opt/mpi
+          MPIF_DIR=/home/runner/work/mpif/opt/mpif
           cd test
           cmake \
               -Bbuild-tests \
               -DCMAKE_BUILD_TYPE=Debug \
-              -DMPI_HOME=/home/runner/work/mpif/opt/mpif \
-              -DMPI_Fortran_COMPILER=/home/runner/work/mpif/opt/mpif/bin/mpifort
+              -DCMAKE_Fortran_COMPILER=flang-new-21 \
+              -DMPI_C_COMPILER=${MPIABI_DIR}/bin/mpicc \
+              -DMPI_Fortran_COMPILER=${MPIF_DIR}/bin/mpifort \
+              -DMPI_C_HEADER_DIR=${MPIABI_DIR}/include \
+              -DMPI_C_LIB_NAMES=mpi_abi \
+              -DMPI_mpi_abi_LIBRARY=${MPIABI_DIR}/lib/libmpi_abi.so
           cmake --build build-tests --parallel
           ctest --test-dir build-tests

@@ -8,13 +8,19 @@ project(
 
 include(CheckLanguage)
 
+check_language(C)
+if(NOT(CMAKE_C_COMPILER))
+  message(FATAL_ERROR "No C support")
+endif()
+enable_language(C)
+
 check_language(Fortran)
 if(NOT(CMAKE_Fortran_COMPILER))
   message(FATAL_ERROR "No Fortran support")
 endif()
 enable_language(Fortran)
 
-find_package(MPI REQUIRED COMPONENTS Fortran)
+find_package(MPI REQUIRED COMPONENTS C Fortran)
 
 enable_testing()
 
@@ -61,3 +67,7 @@ add_test(NAME inplace_f08 COMMAND inplace_f08)
 add_executable(version_f08 version_f08.f90)
 target_link_libraries(version_f08 MPI::MPI_Fortran)
 add_test(NAME version_f08 COMMAND version_f08)
+
+add_executable(interlanguage interlanguage.c interlanguage_subf90.f90)
+target_link_libraries(interlanguage MPI::MPI_Fortran MPI::MPI_C)
+add_test(NAME interlanguage COMMAND interlanguage)
