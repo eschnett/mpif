@@ -22,7 +22,7 @@ jobs:
 
       - name: Cache MPICH/GCC install
         id: cache-mpich-gcc
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /home/runner/work/mpif/opt
           key: mpich-gcc-${{ runner.os }}-5.0.0
@@ -187,7 +187,7 @@ jobs:
 
       - name: Cache MPICH/LLVM install
         id: cache-mpich-llvm
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /home/runner/work/mpif/opt
           key: mpich-llvm-${{ runner.os }}-5.0.0
@@ -344,7 +344,7 @@ jobs:
 
       - name: Cache OpenMPI/GCC install
         id: cache-openmpi-gcc
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /home/runner/work/mpif/opt
           key: openmpi-gcc-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74
@@ -528,7 +528,7 @@ jobs:
 
       - name: Cache OpenMPI/LLVM install
         id: cache-openmpi-llvm
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /home/runner/work/mpif/opt
           key: openmpi-llvm-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74
