@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13...3.20)
 project(
-  mpif VERSION 0.1.4
+  mpif VERSION 0.1.5
   DESCRIPTION "MPI Fortran bindings"
   HOMEPAGE_URL "https://github.com/eschnett/mpif"
   LANGUAGES C Fortran
@@ -209,7 +209,6 @@ add_library(mpif
   include/mpif_strings.h
   src/mpif_constants.c
   src/mpif_sizeof.c
-  src/mpi_handles.c
   src/mpif_strings.c
   gen/mpif_functions.c
   gen/mpi_functions.F90
