@@ -25,9 +25,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: /home/runner/work/mpif/opt
-          key: mpich-gcc-${{ runner.os }}-5.0.0
+          key: mpich-gcc-${{ runner.os }}-5.0.0-v1
           restore-keys: |
-            mpich-gcc-${{ runner.os }}-5.0.0
+            mpich-gcc-${{ runner.os }}-5.0.0-v1
 
       - name: Install MPICH via GCC
         if: steps.cache-mpich-gcc.outputs.cache-hit != 'true'
@@ -190,9 +190,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: /home/runner/work/mpif/opt
-          key: mpich-llvm-${{ runner.os }}-5.0.0
+          key: mpich-llvm-${{ runner.os }}-5.0.0-v1
           restore-keys: |
-            mpich-llvm-${{ runner.os }}-5.0.0
+            mpich-llvm-${{ runner.os }}-5.0.0-v1
 
       - name: Install MPICH via LLVM
         if: steps.cache-mpich-llvm.outputs.cache-hit != 'true'
@@ -347,9 +347,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: /home/runner/work/mpif/opt
-          key: openmpi-gcc-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74
+          key: openmpi-gcc-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74-v1
           restore-keys: |
-            openmpi-gcc-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74
+            openmpi-gcc-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74-v1
 
       - name: Install OpenMPI via GCC
         if: steps.cache-openmpi-gcc.outputs.cache-hit != 'true'
@@ -531,9 +531,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: /home/runner/work/mpif/opt
-          key: openmpi-llvm-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74
+          key: openmpi-llvm-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74-v1
           restore-keys: |
-            openmpi-llvm-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74
+            openmpi-llvm-${{ runner.os }}-70416c44cf459e639d550fe08ab58dae185c4b74-v1
 
       - name: Install OpenMPI via LLVM
         if: steps.cache-openmpi-llvm.outputs.cache-hit != 'true'
