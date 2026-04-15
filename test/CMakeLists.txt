@@ -71,3 +71,7 @@ add_test(NAME version_f08 COMMAND version_f08)
 add_executable(interlanguage interlanguage.c interlanguage_subf90.f90)
 target_link_libraries(interlanguage MPI::MPI_Fortran MPI::MPI_C)
 add_test(NAME interlanguage COMMAND interlanguage)
+
+add_executable(c2f c2f.c c2f_subf90.f90)
+target_link_libraries(c2f MPI::MPI_Fortran MPI::MPI_C)
+add_test(NAME c2f COMMAND c2f)
