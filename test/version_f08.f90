@@ -53,15 +53,18 @@ program version_f08
   ! This requires MPI_Init, although it probably shouldn't
   print '("MPI ABI Fortran info:")'
   call MPI_Abi_get_fortran_info(abi_info)
-  if (abi_info == MPI_INFO_NULL) stop 1
-  call MPI_Info_get_nkeys(abi_info, nkeys)
-  do n = 0, nkeys-1
-     call MPI_Info_get_nthkey(abi_info, n, key)
-     call MPI_Info_get(abi_info, key, len(value), value, flag)
-     if (.not.flag) stop 1
-     print '("   ",i0,": ",a,"=",a)', n, trim(key), trim(value)
-  end do
-     
+  if (abi_info == MPI_INFO_NULL) then
+     print '("   (not set)")'
+  else
+     call MPI_Info_get_nkeys(abi_info, nkeys)
+     do n = 0, nkeys-1
+        call MPI_Info_get_nthkey(abi_info, n, key)
+        call MPI_Info_get(abi_info, key, len(value), value, flag)
+        if (.not.flag) stop 1
+        print '("   ",i0,": ",a,"=",a)', n, trim(key), trim(value)
+     end do
+  end if
+
   call MPI_Finalize()
 
 end program version_f08

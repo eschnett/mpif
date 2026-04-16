@@ -43,7 +43,7 @@ RUN tar xzf mpich-5.0.1.tar.gz
 WORKDIR /cactus/mpich-5.0.1
 
 # Add Fortran bindings
-ADD fortran.c src/binding/abi/fortran_binding_abi.c
+ADD fortran_binding_abi.c src/binding/abi/fortran_binding_abi.c
 RUN perl -pi -e 's!src/binding/abi/c_binding_abi.c!src/binding/abi/c_binding_abi.c src/binding/abi/fortran_binding_abi.c!' src/binding/abi/Makefile.mk
 RUN ./autogen.sh
 

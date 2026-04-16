@@ -39,10 +39,11 @@ RUN <<EOF
     apt-get --yes --no-install-recommends install "${packages[@]}"
 EOF
 
-
 ENV CC=clang-21
 ENV CXX=clang++-21
 ENV FC=flang-new-21
+
+
 
 ################################################################################
 # Install MPICH
@@ -53,12 +54,12 @@ RUN tar xzf mpich-5.0.1.tar.gz
 WORKDIR /cactus/mpich-5.0.1
 
 # Add Fortran bindings
-ADD fortran.c src/binding/abi/fortran_binding_abi.c
+ADD fortran_binding_abi.c src/binding/abi/fortran_binding_abi.c
 RUN perl -pi -e 's!src/binding/abi/c_binding_abi.c!src/binding/abi/c_binding_abi.c src/binding/abi/fortran_binding_abi.c!' src/binding/abi/Makefile.mk
 RUN ./autogen.sh
 
 # Configure
-ENV mpi_prefix=/mpich-mpiabi-gcc
+ENV mpi_prefix=/mpich-mpiabi-llvm
 RUN <<EOF
     set -e
     configure_flags=(
@@ -145,7 +146,7 @@ RUN git clone https://github.com/eschnett/mpif
 WORKDIR /cactus/mpif
 
 # Configure
-ENV mpif_prefix=/cactus/mpif-mpich-gcc
+ENV mpif_prefix=/cactus/mpif-mpich-llvm
 RUN <<EOF
     flags=(
         -DBUILD_SHARED_LIBS=ON
@@ -153,14 +154,14 @@ RUN <<EOF
         -DCMAKE_INSTALL_PREFIX=${mpif_prefix}
         -DMPI_HOME=${mpi_prefix}
     )
-    cmake -Bbuild-mpich-gcc "${flags[@]}"
+    cmake -Bbuild-mpich-llvm "${flags[@]}"
 EOF
 
 # Build
-RUN cmake --build build-mpich-gcc
+RUN cmake --build build-mpich-llvm
 
 # Install
-RUN cmake --install build-mpich-gcc
+RUN cmake --install build-mpich-llvm
 
 WORKDIR /cactus/mpif/test
 
@@ -173,11 +174,11 @@ RUN <<EOF
         -DMPI_C_LIB_NAMES=mpi_abi
         -DMPI_mpi_abi_LIBRARY=${mpi_prefix}/lib/libmpi_abi.so
     )
-    cmake -Bbuild-mpich-gcc-tests "${test_flags[@]}"
+    cmake -Bbuild-mpich-llvm-tests "${test_flags[@]}"
 EOF
 
 # Build tests
-RUN cmake --build build-mpich-gcc-tests
+RUN cmake --build build-mpich-llvm-tests
 
 # Run tests
-RUN ctest --test-dir build-mpich-gcc-tests
+RUN ctest --test-dir build-mpich-llvm-tests

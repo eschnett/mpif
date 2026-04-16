@@ -1,3 +1,5 @@
+// For MPICH
+
 #include "mpi_abi.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -105,8 +107,8 @@ __attribute__((visibility("default"))) MPI_Fint PMPI_File_c2f(MPI_File file) {
   return MPI_File_toint(file);
 }
 
-__attribute__((visibility("default")))
-MPI_Group PMPI_Group_f2c(MPI_Fint group) {
+__attribute__((visibility("default"))) MPI_Group
+PMPI_Group_f2c(MPI_Fint group) {
   return MPI_Group_fromint(group);
 }
 
