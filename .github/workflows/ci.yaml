@@ -49,8 +49,6 @@ jobs:
           ./autogen.sh
 
           # Build
-          mkdir build
-          cd build
           prefix=/home/runner/work/mpif/opt/mpi
 
           # Configure
@@ -65,7 +63,7 @@ jobs:
               --with-device=ch3
               --with-hwloc
           )
-          ../configure "${configure_flags[@]}"
+          ./configure "${configure_flags[@]}"
 
           # Disable MPI_File_{c2f,f2c} that shouldn't be there
           patch -p1 </home/runner/work/mpif/mpif/fortran/mpich-disable-file.patch
@@ -228,8 +226,6 @@ jobs:
           ./autogen.sh
 
           # Build
-          mkdir build
-          cd build
           prefix=/home/runner/work/mpif/opt/mpi
 
           # Configure
@@ -247,7 +243,7 @@ jobs:
           export CC=clang-21
           export CXX=clang++-21
           export FC=flang-new-21
-          ../configure "${configure_flags[@]}"
+          ./configure "${configure_flags[@]}"
 
           # Disable MPI_File_{c2f,f2c} that shouldn't be there
           patch -p1 </home/runner/work/mpif/mpif/fortran/mpich-disable-file.patch
@@ -399,8 +395,6 @@ jobs:
 
           # Build
           ./autogen.pl
-          mkdir build
-          cd build
           prefix=/home/runner/work/mpif/opt/mpi
           configure_flags=(
               --enable-mpi-fortran=yes
@@ -413,7 +407,7 @@ jobs:
               --with-hwloc
               --with-libevent=internal
           )
-          ../configure "${configure_flags[@]}"
+          ./configure "${configure_flags[@]}"
           make -j$(nproc)
           make install
 
@@ -583,8 +577,6 @@ jobs:
 
           # Build
           ./autogen.pl
-          mkdir build
-          cd build
           prefix=/home/runner/work/mpif/opt/mpi
           configure_flags=(
               --enable-mpi-fortran=yes
@@ -600,7 +592,7 @@ jobs:
           export CC=clang-21
           export CXX=clang++-21
           export FC=flang-new-21
-          ../configure "${configure_flags[@]}"
+          ./configure "${configure_flags[@]}"
           make -j$(nproc)
           make install
 
