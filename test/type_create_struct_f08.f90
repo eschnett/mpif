@@ -10,22 +10,31 @@ program type_create_struct_f08
 
   call MPI_Init()
 
+  !
+
   count = 2
   array_of_blocklengths = [1, 1]
   array_of_displacements = [0, 8]
   array_of_types = [MPI_DOUBLE_PRECISION, MPI_DOUBLE_PRECISION]
-  print *, count
-  print *, array_of_blocklengths
-  print *, array_of_displacements
-  print *, array_of_types
   call MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype)
-  print *, newtype
 
   call MPI_Type_commit(newtype)
-  print *, newtype
 
   call MPI_Type_free(newtype)
-  print *, newtype
+
+  !
+
+  count = 1
+  array_of_blocklengths(:1) = [2]
+  array_of_displacements(:1) = [0]
+  array_of_types(:1) = [MPI_DOUBLE_PRECISION]
+  call MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype)
+
+  call MPI_Type_commit(newtype)
+
+  call MPI_Type_free(newtype)
+
+  !
 
   call MPI_Finalize()
 end program type_create_struct_f08

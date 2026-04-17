@@ -1,4 +1,4 @@
-# env DOCKER_BUILDKIT=1 docker build --file openmpi-llvm.dockerfile --platform linux/arm64 --progress plain --tag openmpi-mpiabi-llvm .
+# env DOCKER_BUILDKIT=1 docker build --file docker/openmpi-llvm.dockerfile --platform linux/arm64 --progress plain --tag openmpi-mpiabi-llvm .
 
 FROM arm64v8/ubuntu:noble-20260324
 
@@ -55,9 +55,9 @@ RUN git checkout ed5193c3d101e5ef8f6fda19fa89e694c88ada18
 RUN git submodule update --init --recursive
 
 # Add Fortran bindings
-ADD f2c_abi.c ompi/mpi/c/f2c_abi.c
+ADD fortran/f2c_abi.c ompi/mpi/c/f2c_abi.c
 RUN perl -pi -e 's!comm_fromint_abi.c!f2c_abi.c comm_fromint_abi.c!' ompi/mpi/c/Makefile_abi.include
-ADD openmpi-disable-type.patch openmpi-disable-type.patch
+ADD fortran/openmpi-disable-type.patch openmpi-disable-type.patch
 RUN patch -p1 <openmpi-disable-type.patch
 RUN ./autogen.pl
 
@@ -144,7 +144,7 @@ EOF
 
 # Install official mpi.h header file
 ADD https://raw.githubusercontent.com/mpi-forum/mpi-abi-stubs/refs/heads/main/mpi.h ${mpi_prefix}/include/mpi.h
-ADD mpi.h.patch mpi.h.patch
+ADD fortran/mpi.h.patch mpi.h.patch
 RUN (cd ${mpi_prefix}/include && patch -p1 </cactus/ompi/mpi.h.patch)
 
 
@@ -153,9 +153,10 @@ RUN (cd ${mpi_prefix}/include && patch -p1 </cactus/ompi/mpi.h.patch)
 # mpif
 
 WORKDIR /cactus
-RUN : 1
+RUN : d40209744cb0452c79ef11b847dc1282cdd07221
 RUN git clone https://github.com/eschnett/mpif
 WORKDIR /cactus/mpif
+ADD test/type_create_struct_f08.f90 test/type_create_struct_f08.f90
 
 # Configure
 ENV mpif_prefix=/cactus/mpif-openmpi-llvm
@@ -193,5 +194,4 @@ EOF
 RUN cmake --build build-openmpi-llvm-tests
 
 # Run tests
-RUN ./build-openmpi-llvm-tests/version_f08
 RUN ctest --test-dir build-openmpi-llvm-tests

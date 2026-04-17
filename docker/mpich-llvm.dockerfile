@@ -1,4 +1,4 @@
-# env DOCKER_BUILDKIT=1 docker build --file mpich-llvm.dockerfile --platform linux/arm64 --progress plain --tag mpich-mpiabi-llvm .
+# env DOCKER_BUILDKIT=1 docker build --file docker/mpich-llvm.dockerfile --platform linux/arm64 --progress plain --tag mpich-mpiabi-llvm .
 
 FROM arm64v8/ubuntu:noble-20260324
 # FROM arm64v8/ubuntu:resolute-20260404
@@ -54,7 +54,7 @@ RUN tar xzf mpich-5.0.1.tar.gz
 WORKDIR /cactus/mpich-5.0.1
 
 # Add Fortran bindings
-ADD fortran_binding_abi.c src/binding/abi/fortran_binding_abi.c
+ADD fortran/fortran_binding_abi.c src/binding/abi/fortran_binding_abi.c
 RUN perl -pi -e 's!src/binding/abi/c_binding_abi.c!src/binding/abi/c_binding_abi.c src/binding/abi/fortran_binding_abi.c!' src/binding/abi/Makefile.mk
 RUN ./autogen.sh
 
@@ -77,7 +77,7 @@ RUN <<EOF
 EOF
 
 # Disable MPI_File_{c2f,f2c} that shouldn't be there
-ADD mpich-disable-file.patch /cactus/mpich-disable-file.patch
+ADD fortran/mpich-disable-file.patch /cactus/mpich-disable-file.patch
 RUN patch -p1 </cactus/mpich-disable-file.patch
 
 # Build
@@ -133,7 +133,7 @@ EOF
 
 # Install official mpi.h header file
 ADD https://raw.githubusercontent.com/mpi-forum/mpi-abi-stubs/refs/heads/main/mpi.h ${mpi_prefix}/include/mpi.h
-ADD mpi.h.patch mpi.h.patch
+ADD fortran/mpi.h.patch mpi.h.patch
 RUN (cd ${mpi_prefix}/include && patch -p1 </cactus/mpich-5.0.1/mpi.h.patch)
 
 
@@ -142,9 +142,10 @@ RUN (cd ${mpi_prefix}/include && patch -p1 </cactus/mpich-5.0.1/mpi.h.patch)
 # mpif
 
 WORKDIR /cactus
-RUN : 1
+RUN : d40209744cb0452c79ef11b847dc1282cdd07221
 RUN git clone https://github.com/eschnett/mpif
 WORKDIR /cactus/mpif
+ADD test/type_create_struct_f08.f90 test/type_create_struct_f08.f90
 
 # Configure
 ENV mpif_prefix=/cactus/mpif-mpich-llvm
