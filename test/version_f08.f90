@@ -55,6 +55,7 @@ program version_f08
   call MPI_Abi_get_fortran_info(abi_info)
   if (abi_info == MPI_INFO_NULL) then
      print '("   (not set)")'
+     stop 1                     ! This should not happen
   else
      call MPI_Info_get_nkeys(abi_info, nkeys)
      do n = 0, nkeys-1

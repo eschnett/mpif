@@ -4222,7 +4222,7 @@ contains
     character*(*), intent(in) :: array_of_commands(*)
     character*(*), intent(in) :: array_of_argv(count, *)
     integer, intent(in) :: array_of_maxprocs(count)
-    type(MPI_Info), intent(in) :: array_of_info(*)
+    type(MPI_Info), intent(in) :: array_of_info(count)
     integer, intent(in) :: root
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Comm), intent(out) :: intercomm
@@ -14390,7 +14390,7 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: count
-    type(MPI_Request), intent(in) :: array_of_requests(*)
+    type(MPI_Request), intent(in) :: array_of_requests(count)
     logical, intent(out) :: flag
     type(MPI_Status), intent(out) :: array_of_statuses
     integer, intent(out), optional :: ierror
@@ -14421,7 +14421,7 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: count
-    type(MPI_Request), intent(in) :: array_of_requests(*)
+    type(MPI_Request), intent(in) :: array_of_requests(count)
     integer, intent(out) :: index
     logical, intent(out) :: flag
     type(MPI_Status), intent(out) :: status
@@ -14454,7 +14454,7 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: incount
-    type(MPI_Request), intent(in) :: array_of_requests(*)
+    type(MPI_Request), intent(in) :: array_of_requests(incount)
     integer, intent(out) :: outcount
     integer, intent(out) :: array_of_indices(*)
     type(MPI_Status), intent(out) :: array_of_statuses
@@ -16299,7 +16299,7 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: count
-    type(MPI_Request), intent(inout) :: array_of_requests(*)
+    type(MPI_Request), intent(inout) :: array_of_requests(count)
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Startall( &
@@ -16642,7 +16642,7 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: count
-    type(MPI_Request), intent(inout) :: array_of_requests(*)
+    type(MPI_Request), intent(inout) :: array_of_requests(count)
     logical, intent(out) :: flag
     type(MPI_Status), intent(out) :: array_of_statuses
     integer, intent(out), optional :: ierror
@@ -16673,7 +16673,7 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: count
-    type(MPI_Request), intent(inout) :: array_of_requests(*)
+    type(MPI_Request), intent(inout) :: array_of_requests(count)
     integer, intent(out) :: index
     logical, intent(out) :: flag
     type(MPI_Status), intent(out) :: status
@@ -16706,7 +16706,7 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: incount
-    type(MPI_Request), intent(inout) :: array_of_requests(*)
+    type(MPI_Request), intent(inout) :: array_of_requests(incount)
     integer, intent(out) :: outcount
     integer, intent(out) :: array_of_indices(*)
     type(MPI_Status), intent(out) :: array_of_statuses
@@ -17288,7 +17288,7 @@ contains
     integer, intent(in) :: count
     integer, intent(in) :: array_of_blocklengths(count)
     integer(MPI_ADDRESS_KIND), intent(in) :: array_of_displacements(count)
-    type(MPI_Datatype), intent(in) :: array_of_types(*)
+    type(MPI_Datatype), intent(in) :: array_of_types(count)
     type(MPI_Datatype), intent(out) :: newtype
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
@@ -17317,7 +17317,7 @@ contains
     integer(MPI_COUNT_KIND), intent(in) :: count
     integer(MPI_COUNT_KIND), intent(in) :: array_of_blocklengths(count)
     integer(MPI_COUNT_KIND), intent(in) :: array_of_displacements(count)
-    type(MPI_Datatype), intent(in) :: array_of_types(*)
+    type(MPI_Datatype), intent(in) :: array_of_types(count)
     type(MPI_Datatype), intent(out) :: newtype
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
@@ -17521,7 +17521,7 @@ contains
     integer, intent(in) :: max_datatypes
     integer, intent(out) :: array_of_integers(max_integers)
     integer(MPI_ADDRESS_KIND), intent(out) :: array_of_addresses(max_addresses)
-    type(MPI_Datatype), intent(out) :: array_of_datatypes(*)
+    type(MPI_Datatype), intent(out) :: array_of_datatypes(max_datatypes)
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Type_get_contents( &
@@ -17560,7 +17560,7 @@ contains
     integer, intent(out) :: array_of_integers(max_integers)
     integer(MPI_ADDRESS_KIND), intent(out) :: array_of_addresses(max_addresses)
     integer(MPI_COUNT_KIND), intent(out) :: array_of_large_counts(max_large_counts)
-    type(MPI_Datatype), intent(out) :: array_of_datatypes(*)
+    type(MPI_Datatype), intent(out) :: array_of_datatypes(max_datatypes)
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Type_get_contents_c( &
@@ -18278,7 +18278,7 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: count
-    type(MPI_Request), intent(inout) :: array_of_requests(*)
+    type(MPI_Request), intent(inout) :: array_of_requests(count)
     type(MPI_Status), intent(out) :: array_of_statuses
     integer, intent(out), optional :: ierror
     integer :: tmp_array_of_statuses(MPI_STATUS_SIZE)
@@ -18306,7 +18306,7 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: count
-    type(MPI_Request), intent(inout) :: array_of_requests(*)
+    type(MPI_Request), intent(inout) :: array_of_requests(count)
     integer, intent(out) :: index
     type(MPI_Status), intent(out) :: status
     integer, intent(out), optional :: ierror
@@ -18337,7 +18337,7 @@ contains
     use mpi_f08_types
     implicit none
     integer, intent(in) :: incount
-    type(MPI_Request), intent(inout) :: array_of_requests(*)
+    type(MPI_Request), intent(inout) :: array_of_requests(incount)
     integer, intent(out) :: outcount
     integer, intent(out) :: array_of_indices(*)
     type(MPI_Status), intent(out) :: array_of_statuses

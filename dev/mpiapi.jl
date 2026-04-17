@@ -772,7 +772,7 @@ for key in sort(collect(keys(apis)))
                 else
                     @assert false
                 end
-                f_length = length == nothing ? "" : "(*)"
+                f_length = length == nothing ? "" : "($length)"
                 push!(f_declarations, "integer :: $parname$f_length")
                 push!(f08_declarations, "type(MPI_$(kind2type[kind])), intent($param_direction) :: $parname$f_length")
             elseif kind == "STATUS"

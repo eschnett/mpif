@@ -153,6 +153,7 @@ RUN (cd ${mpi_prefix}/include && patch -p1 </cactus/ompi/mpi.h.patch)
 # mpif
 
 WORKDIR /cactus
+RUN : 1
 RUN git clone https://github.com/eschnett/mpif
 WORKDIR /cactus/mpif
 

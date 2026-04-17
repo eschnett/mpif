@@ -1,6 +1,6 @@
-# env DOCKER_BUILDKIT=1 docker build --file mpich-gcc.dockerfile --platform linux/arm64 --progress plain --tag mpich-mpiabi-gcc .
+# env DOCKER_BUILDKIT=1 docker build --file mpich-gcc-arm.dockerfile --platform linux/arm/v7 --progress plain --tag mpich-mpiabi-gcc-arm .
 
-FROM arm64v8/ubuntu:noble-20260324
+FROM arm32v7/ubuntu:noble-20260324
 
 SHELL ["/bin/bash", "-c"]
 

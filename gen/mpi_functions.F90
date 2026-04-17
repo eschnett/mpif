@@ -1939,7 +1939,7 @@ module mpi_functions
     character*(*) :: array_of_commands(*)
     character*(*) :: array_of_argv(count, *)
     integer :: array_of_maxprocs(count)
-    integer :: array_of_info(*)
+    integer :: array_of_info(count)
     integer :: root
     integer :: comm
     integer :: intercomm
@@ -8379,7 +8379,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: count
-    integer :: array_of_requests(*)
+    integer :: array_of_requests(count)
     logical :: flag
     integer :: array_of_statuses(MPI_STATUS_SIZE)
     integer :: ierror
@@ -8396,7 +8396,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: count
-    integer :: array_of_requests(*)
+    integer :: array_of_requests(count)
     integer :: index
     logical :: flag
     integer :: status(MPI_STATUS_SIZE)
@@ -8414,7 +8414,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: incount
-    integer :: array_of_requests(*)
+    integer :: array_of_requests(incount)
     integer :: outcount
     integer :: array_of_indices(*)
     integer :: array_of_statuses(MPI_STATUS_SIZE)
@@ -9595,7 +9595,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: count
-    integer :: array_of_requests(*)
+    integer :: array_of_requests(count)
     integer :: ierror
   end subroutine MPI_Startall
 
@@ -9761,7 +9761,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: count
-    integer :: array_of_requests(*)
+    integer :: array_of_requests(count)
     logical :: flag
     integer :: array_of_statuses(MPI_STATUS_SIZE)
     integer :: ierror
@@ -9778,7 +9778,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: count
-    integer :: array_of_requests(*)
+    integer :: array_of_requests(count)
     integer :: index
     logical :: flag
     integer :: status(MPI_STATUS_SIZE)
@@ -9796,7 +9796,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: incount
-    integer :: array_of_requests(*)
+    integer :: array_of_requests(incount)
     integer :: outcount
     integer :: array_of_indices(*)
     integer :: array_of_statuses(MPI_STATUS_SIZE)
@@ -10154,7 +10154,7 @@ module mpi_functions
     integer :: count
     integer :: array_of_blocklengths(count)
     integer(MPI_ADDRESS_KIND) :: array_of_displacements(count)
-    integer :: array_of_types(*)
+    integer :: array_of_types(count)
     integer :: newtype
     integer :: ierror
   end subroutine MPI_Type_create_struct
@@ -10172,7 +10172,7 @@ module mpi_functions
     integer(MPI_COUNT_KIND) :: count
     integer(MPI_COUNT_KIND) :: array_of_blocklengths(count)
     integer(MPI_COUNT_KIND) :: array_of_displacements(count)
-    integer :: array_of_types(*)
+    integer :: array_of_types(count)
     integer :: newtype
     integer :: ierror
   end subroutine MPI_Type_create_struct_c
@@ -10299,7 +10299,7 @@ module mpi_functions
     integer :: max_datatypes
     integer :: array_of_integers(max_integers)
     integer(MPI_ADDRESS_KIND) :: array_of_addresses(max_addresses)
-    integer :: array_of_datatypes(*)
+    integer :: array_of_datatypes(max_datatypes)
     integer :: ierror
   end subroutine MPI_Type_get_contents
 
@@ -10325,7 +10325,7 @@ module mpi_functions
     integer :: array_of_integers(max_integers)
     integer(MPI_ADDRESS_KIND) :: array_of_addresses(max_addresses)
     integer(MPI_COUNT_KIND) :: array_of_large_counts(max_large_counts)
-    integer :: array_of_datatypes(*)
+    integer :: array_of_datatypes(max_datatypes)
     integer :: ierror
   end subroutine MPI_Type_get_contents_c
 
@@ -10766,7 +10766,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: count
-    integer :: array_of_requests(*)
+    integer :: array_of_requests(count)
     integer :: array_of_statuses(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_Waitall
@@ -10781,7 +10781,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: count
-    integer :: array_of_requests(*)
+    integer :: array_of_requests(count)
     integer :: index
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -10798,7 +10798,7 @@ module mpi_functions
     use mpi_constants
     implicit none
     integer :: incount
-    integer :: array_of_requests(*)
+    integer :: array_of_requests(incount)
     integer :: outcount
     integer :: array_of_indices(*)
     integer :: array_of_statuses(MPI_STATUS_SIZE)

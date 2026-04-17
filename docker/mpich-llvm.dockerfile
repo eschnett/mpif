@@ -142,6 +142,7 @@ RUN (cd ${mpi_prefix}/include && patch -p1 </cactus/mpich-5.0.1/mpi.h.patch)
 # mpif
 
 WORKDIR /cactus
+RUN : 1
 RUN git clone https://github.com/eschnett/mpif
 WORKDIR /cactus/mpif
 

@@ -75,3 +75,11 @@ add_test(NAME interlanguage COMMAND interlanguage)
 add_executable(c2f c2f.c c2f_subf90.f90)
 target_link_libraries(c2f MPI::MPI_Fortran MPI::MPI_C)
 add_test(NAME c2f COMMAND c2f)
+
+add_executable(type_create_struct_c type_create_struct_c.c)
+target_link_libraries(type_create_struct_c MPI::MPI_C)
+add_test(NAME type_create_struct_c COMMAND type_create_struct_c)
+
+add_executable(type_create_struct_f08 type_create_struct_f08.f90)
+target_link_libraries(type_create_struct_f08 MPI::MPI_Fortran)
+add_test(NAME type_create_struct_f08 COMMAND type_create_struct_f08)
