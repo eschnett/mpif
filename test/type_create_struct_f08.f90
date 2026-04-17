@@ -7,8 +7,18 @@ program type_create_struct_f08
   integer(MPI_ADDRESS_KIND) :: array_of_displacements(2)
   type(MPI_Datatype) :: array_of_types(2)
   type(MPI_Datatype) :: newtype
+  integer :: size
 
   call MPI_Init()
+
+  !
+
+  call MPI_Type_dup(MPI_UINT32_T, newtype)
+
+  call MPI_Type_size(newtype, size)
+  if (size /= 4) stop 1
+
+  call MPI_Type_free(newtype)
 
   !
 
@@ -19,6 +29,9 @@ program type_create_struct_f08
   call MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype)
 
   call MPI_Type_commit(newtype)
+
+  call MPI_Type_size(newtype, size)
+  if (size /= 16) stop 1
 
   call MPI_Type_free(newtype)
 
@@ -31,6 +44,9 @@ program type_create_struct_f08
   call MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype)
 
   call MPI_Type_commit(newtype)
+
+  call MPI_Type_size(newtype, size)
+  if (size /= 16) stop 1
 
   call MPI_Type_free(newtype)
 
