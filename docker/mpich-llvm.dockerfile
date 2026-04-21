@@ -145,10 +145,9 @@ RUN (cd ${mpi_prefix}/include && patch -p1 </cactus/mpich-5.0.1/mpi.h.patch)
 # mpif
 
 WORKDIR /cactus
-RUN : fc4742e2c27b9b062cc74d866c1aad0a9289dd5f
-RUN git clone https://github.com/eschnett/mpif
+RUN mkdir mpif
 WORKDIR /cactus/mpif
-ADD test/type_create_struct_f08.f90 test/type_create_struct_f08.f90
+COPY --parents bin CMakeLists.txt gen include src .
 
 # Configure
 ENV mpif_prefix=/cactus/mpif-mpich-llvm
@@ -168,7 +167,9 @@ RUN cmake --build build-mpich-llvm
 # Install
 RUN cmake --install build-mpich-llvm
 
+RUN mkdir test
 WORKDIR /cactus/mpif/test
+COPY test/CMakeLists.txt test/*.c test/*.f test/*.f90 .
 
 # Configure tests
 RUN <<EOF
