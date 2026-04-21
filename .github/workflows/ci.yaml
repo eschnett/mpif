@@ -25,9 +25,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: /home/runner/work/mpif/opt
-          key: mpich-gcc-${{ runner.os }}-5.0.1-v1
+          key: mpich-gcc-${{ runner.os }}-5.0.1-v2
           restore-keys: |
-            mpich-gcc-${{ runner.os }}-5.0.1-v1
+            mpich-gcc-${{ runner.os }}-5.0.1-v2
 
       - name: Install MPICH via GCC
         if: steps.cache-mpich-gcc.outputs.cache-hit != 'true'
@@ -205,9 +205,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: /home/runner/work/mpif/opt
-          key: mpich-llvm-${{ runner.os }}-5.0.1-v1
+          key: mpich-llvm-${{ runner.os }}-5.0.1-v2
           restore-keys: |
-            mpich-llvm-${{ runner.os }}-5.0.1-v1
+            mpich-llvm-${{ runner.os }}-5.0.1-v2
 
       - name: Install MPICH via LLVM
         if: steps.cache-mpich-llvm.outputs.cache-hit != 'true'
