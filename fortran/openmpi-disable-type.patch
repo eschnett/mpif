@@ -1,5 +1,5 @@
---- a/ompi/mpi/c//Makefile_abi.include
-+++ b/ompi/mpi/c//Makefile_abi.include
+--- a/ompi/mpi/c/Makefile_abi.include
++++ b/ompi/mpi/c/Makefile_abi.include
 @@ -422,7 +422,6 @@
  	test_cancelled_abi_generated.c \
  	testsome_abi_generated.c \

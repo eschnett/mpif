@@ -143,7 +143,7 @@ RUN (cd ${mpi_prefix}/include && patch -p1 </cactus/ompi/mpi.h.patch)
 # mpif
 
 WORKDIR /cactus
-RUN : d40209744cb0452c79ef11b847dc1282cdd07221
+RUN : fc4742e2c27b9b062cc74d866c1aad0a9289dd5f
 RUN git clone https://github.com/eschnett/mpif
 WORKDIR /cactus/mpif
 ADD test/type_create_struct_f08.f90 test/type_create_struct_f08.f90
@@ -184,4 +184,4 @@ EOF
 RUN cmake --build build-openmpi-gcc-tests
 
 # Run tests
-RUN ctest --test-dir build-openmpi-gcc-tests
+RUN ctest --test-dir build-openmpi-gcc-tests --output-on-failure

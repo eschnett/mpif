@@ -2,15 +2,13 @@
 
 #include "ompi_config.h"
 
-#include "ompi/communicator/communicator.h"
-#include "ompi/errhandler/errhandler.h"
 #include "ompi/mpi/c/bindings.h"
 #include "ompi/runtime/params.h"
 
 #include "ompi/mpi/c/abi.h"
 
 #define MPI_Aint MPI_Aint_ABI_INTERNAL
-#define MPI_Fint MPI_Fint_ABI_INTERNAL
+// #define MPI_Fint MPI_Fint_ABI_INTERNAL
 #define MPI_Count MPI_Count_ABI_INTERNAL
 #define MPI_Offset MPI_Offset_ABI_INTERNAL
 
@@ -25,16 +23,16 @@
 #define MPI_Op MPI_Op_ABI_INTERNAL
 #define MPI_Request MPI_Request_ABI_INTERNAL
 #define MPI_Session MPI_Session_ABI_INTERNAL
-#define MPI_Type MPI_Type_ABI_INTERNAL
+#define MPI_Datatype MPI_Datatype_ABI_INTERNAL
 #define MPI_Win MPI_Win_ABI_INTERNAL
 
-#define MPI_STATUS_IGNORE MPI_STATUS_IGNORE_ABI_INTERNAL
-#define MPI_STATUSES_IGNORE MPI_STATUSES_IGNORE_ABI_INTERNAL
+// #define MPI_STATUS_IGNORE MPI_STATUS_IGNORE_ABI_INTERNAL
+// #define MPI_STATUSES_IGNORE MPI_STATUSES_IGNORE_ABI_INTERNAL
 
 ////////////////////////////////////////////////////////////////////////////////
 // Types
 
-typedef int MPI_Fint;
+// typedef int MPI_Fint;
 
 typedef MPI_Status MPI_F08_Status;
 
@@ -58,6 +56,8 @@ int MPI_Status_f2c(const MPI_Fint *f_status, MPI_Status *c_status);
 int MPI_Status_c2f(const MPI_Status *c_status, MPI_Fint *f_status);
 int MPI_Status_f082c(const MPI_F08_Status *f08_status, MPI_Status *c_status);
 int MPI_Status_c2f08(const MPI_Status *c_status, MPI_F08_Status *f08_status);
+
+#if OMPI_BUILD_MPI_PROFILING
 
 __attribute__((visibility("default"))) int
 PMPI_Status_f2c(const MPI_Fint *f_status, MPI_Status *c_status) {
@@ -97,6 +97,8 @@ PMPI_Status_c2f08(const MPI_Status *c_status, MPI_F08_Status *f08_status) {
   return MPI_SUCCESS;
 }
 
+#else
+
 __attribute__((visibility("default"))) int
 MPI_Status_f2c(const MPI_Fint *f_status, MPI_Status *c_status) {
   return PMPI_Status_f2c(f_status, c_status);
@@ -116,6 +118,8 @@ __attribute__((visibility("default"))) int
 MPI_Status_c2f08(const MPI_Status *c_status, MPI_F08_Status *f08_status) {
   return PMPI_Status_c2f08(c_status, f08_status);
 }
+
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Handle functions
@@ -165,6 +169,8 @@ MPI_Datatype MPI_Type_f2c(MPI_Fint datatype);
 MPI_Fint MPI_Type_c2f(MPI_Datatype datatype);
 MPI_Win MPI_Win_f2c(MPI_Fint win);
 MPI_Fint MPI_Win_c2f(MPI_Win win);
+
+#if OMPI_BUILD_MPI_PROFILING
 
 __attribute__((visibility("default"))) MPI_Comm PMPI_Comm_f2c(MPI_Fint comm) {
   return MPI_Comm_fromint(comm);
@@ -266,6 +272,8 @@ __attribute__((visibility("default"))) MPI_Fint PMPI_Win_c2f(MPI_Win win) {
   return MPI_Win_toint(win);
 }
 
+#else
+
 __attribute__((visibility("default"))) MPI_Comm MPI_Comm_f2c(MPI_Fint comm) {
   return PMPI_Comm_f2c(comm);
 }
@@ -363,3 +371,5 @@ __attribute__((visibility("default"))) MPI_Win MPI_Win_f2c(MPI_Fint win) {
 __attribute__((visibility("default"))) MPI_Fint MPI_Win_c2f(MPI_Win win) {
   return PMPI_Win_c2f(win);
 }
+
+#endif
