@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13...3.20)
 project(
-  mpif VERSION 0.1.7
+  mpif VERSION 0.2.0
   DESCRIPTION "MPI Fortran bindings"
   HOMEPAGE_URL "https://github.com/eschnett/mpif"
   LANGUAGES C Fortran
@@ -195,7 +195,7 @@ else()
 endif()
 add_compile_definitions(ENABLE_FORTRAN)
 
-add_library(mpif
+add_library(mpifort_abi
   # MPI Fortran header files
   include/mpif.h
   # MPI Fortran modules
@@ -214,24 +214,24 @@ add_library(mpif
   gen/mpi_functions.F90
   gen/mpi_f08_functions.F90
 )
-target_include_directories(mpif PRIVATE include)
+target_include_directories(mpifort_abi PRIVATE include)
 if(APPLE)
   # Ensure that there is only one instance of our MPI common blocks
-  target_link_options(mpif INTERFACE "LINKER:-commons,use_dylibs")
+  target_link_options(mpifort_abi INTERFACE "LINKER:-commons,use_dylibs")
 endif()
-target_link_libraries(mpif PRIVATE MPI::MPI_C)
+target_link_libraries(mpifort_abi PRIVATE MPI::MPI_C)
 list(APPEND public_headers
   include/mpif.h
   include/mpif_constants.h
   include/mpif_functions.h
 )
-set_target_properties(mpif PROPERTIES
+set_target_properties(mpifort_abi PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION ${SOVERSION}
   PUBLIC_HEADER "${public_headers}"
 )
 
-install(TARGETS mpif EXPORT mpifTargets)
+install(TARGETS mpifort_abi EXPORT mpifort_abiTargets)
 
 install(FILES
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_constants.mod

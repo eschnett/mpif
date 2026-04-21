@@ -53,6 +53,9 @@ ADD https://www.mpich.org/static/downloads/5.0.1/mpich-5.0.1.tar.gz /cactus/mpic
 RUN tar xzf mpich-5.0.1.tar.gz
 WORKDIR /cactus/mpich-5.0.1
 
+ADD https://github.com/pmodels/mpich/commit/689a0869c8f58167e3b0b5db13f8ce8db5f24009.patch 689a0869c8f58167e3b0b5db13f8ce8db5f24009.patch
+RUN patch -p1 <689a0869c8f58167e3b0b5db13f8ce8db5f24009.patch
+
 # Add Fortran bindings
 ADD fortran/fortran_binding_abi.c src/binding/abi/fortran_binding_abi.c
 RUN perl -pi -e 's!src/binding/abi/c_binding_abi.c!src/binding/abi/c_binding_abi.c src/binding/abi/fortran_binding_abi.c!' src/binding/abi/Makefile.mk

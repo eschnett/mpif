@@ -43,6 +43,9 @@ jobs:
           tar xzf mpich-5.0.1.tar.gz
           cd mpich-5.0.1
 
+          wget https://github.com/pmodels/mpich/commit/689a0869c8f58167e3b0b5db13f8ce8db5f24009.patch
+          patch -p1 <689a0869c8f58167e3b0b5db13f8ce8db5f24009.patch
+
           # Add Fortran bindings to library
           cp /home/runner/work/mpif/mpif/fortran/fortran_binding_abi.c src/binding/abi/fortran_binding_abi.c
           perl -pi -e 's!src/binding/abi/c_binding_abi.c!src/binding/abi/c_binding_abi.c src/binding/abi/fortran_binding_abi.c!' src/binding/abi/Makefile.mk
@@ -219,6 +222,9 @@ jobs:
           wget https://www.mpich.org/static/downloads/5.0.1/mpich-5.0.1.tar.gz
           tar xzf mpich-5.0.1.tar.gz
           cd mpich-5.0.1
+
+          wget https://github.com/pmodels/mpich/commit/689a0869c8f58167e3b0b5db13f8ce8db5f24009.patch
+          patch -p1 <689a0869c8f58167e3b0b5db13f8ce8db5f24009.patch
 
           # Add Fortran bindings to library
           cp /home/runner/work/mpif/mpif/fortran/fortran_binding_abi.c src/binding/abi/fortran_binding_abi.c

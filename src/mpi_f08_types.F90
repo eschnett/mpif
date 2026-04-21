@@ -208,7 +208,7 @@ module mpi_f08_types
      integer :: MPI_SOURCE
      integer :: MPI_TAG
      integer :: MPI_ERROR
-     integer :: MPI_internal(5)
+     integer :: MPI_INTERNAL(5)
   end type MPI_Status
 
   ! Constants
