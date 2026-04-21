@@ -169,7 +169,7 @@ jobs:
               -DMPI_C_LIB_NAMES=mpi_abi \
               -DMPI_mpi_abi_LIBRARY=${MPIABI_DIR}/lib/libmpi_abi.so
           cmake --build build-tests --parallel
-          ctest --test-dir build-tests
+          ctest --test-dir build-tests --output-on-failure
 
 
 
@@ -357,7 +357,7 @@ jobs:
               -DMPI_C_LIB_NAMES=mpi_abi \
               -DMPI_mpi_abi_LIBRARY=${MPIABI_DIR}/lib/libmpi_abi.so
           cmake --build build-tests --parallel
-          ctest --test-dir build-tests
+          ctest --test-dir build-tests --output-on-failure
 
 
 
@@ -526,7 +526,7 @@ jobs:
               -DMPI_C_LIB_NAMES=mpi_abi \
               -DMPI_mpi_abi_LIBRARY=${MPIABI_DIR}/lib/libmpi_abi.so
           cmake --build build-tests --parallel
-          ctest --test-dir build-tests
+          ctest --test-dir build-tests --output-on-failure
 
 
 
@@ -719,4 +719,4 @@ jobs:
               -DMPI_C_LIB_NAMES=mpi_abi \
               -DMPI_mpi_abi_LIBRARY=${MPIABI_DIR}/lib/libmpi_abi.so
           cmake --build build-tests --parallel
-          ctest --test-dir build-tests
+          ctest --test-dir build-tests --output-on-failure
