@@ -268,6 +268,8 @@ if(APPLE)
   set(LINK_FLAGS "-Wl,-commons,use_dylibs")
 endif()
 
+list(JOIN MPI_C_LINK_FLAGS " " MPI_C_LINK_FLAGS_STR)
+list(JOIN MPI_C_LIBRARIES " " MPI_C_LIBRARIES_STR)
 configure_file(bin/mpifort.in bin/mpifc @ONLY)
 configure_file(bin/mpifort.in bin/mpifort @ONLY)
 install(

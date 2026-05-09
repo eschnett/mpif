@@ -64,6 +64,10 @@ add_executable(inplace_f08 inplace_f08.f90)
 target_link_libraries(inplace_f08 MPI::MPI_Fortran)
 add_test(NAME inplace_f08 COMMAND inplace_f08)
 
+add_executable(version_c version_c.c)
+target_link_libraries(version_c MPI::MPI_C)
+add_test(NAME version_c COMMAND version_c)
+
 add_executable(version_f08 version_f08.f90)
 target_link_libraries(version_f08 MPI::MPI_Fortran)
 add_test(NAME version_f08 COMMAND version_f08)

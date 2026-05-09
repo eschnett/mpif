@@ -1,7 +1,6 @@
-# env DOCKER_BUILDKIT=1 docker build --file docker/mpich-llvm.dockerfile --platform linux/arm64 --progress plain --tag mpich-mpiabi-llvm .
+# env DOCKER_BUILDKIT=1 docker build --file docker/mpich-gcc-arm64v8.dockerfile --platform linux/arm64 --progress plain --tag mpich-mpiabi-gcc-arm64v8 .
 
 FROM arm64v8/ubuntu:noble-20260324
-# FROM arm64v8/ubuntu:resolute-20260404
 
 SHELL ["/bin/bash", "-c"]
 
@@ -14,19 +13,13 @@ RUN mkdir /cactus
 WORKDIR /cactus
 
 # Install system packages
-ADD https://apt.llvm.org/llvm.sh /cactus/llvm.sh
 RUN <<EOF
     set -e
     apt-get update
-    apt-get --yes --no-install-recommends install gnupg lsb-release software-properties-common wget
-    chmod +x llvm.sh
-    ./llvm.sh 21
-    apt-get update
     packages=(
         ca-certificates
-        clang-21
         cmake
-        flang-21
+        gfortran
         git
         language-pack-en
         libhwloc-dev
@@ -38,10 +31,6 @@ RUN <<EOF
     )
     apt-get --yes --no-install-recommends install "${packages[@]}"
 EOF
-
-ENV CC=clang-21
-ENV CXX=clang++-21
-ENV FC=flang-new-21
 
 
 
@@ -62,7 +51,7 @@ RUN perl -pi -e 's!src/binding/abi/c_binding_abi.c!src/binding/abi/c_binding_abi
 RUN ./autogen.sh
 
 # Configure
-ENV mpi_prefix=/mpich-mpiabi-llvm
+ENV mpi_prefix=/mpich-mpiabi-gcc
 RUN <<EOF
     set -e
     configure_flags=(
@@ -150,7 +139,7 @@ WORKDIR /cactus/mpif
 COPY --parents bin CMakeLists.txt gen include src .
 
 # Configure
-ENV mpif_prefix=/cactus/mpif-mpich-llvm
+ENV mpif_prefix=/cactus/mpif-mpich-gcc
 RUN <<EOF
     flags=(
         -DBUILD_SHARED_LIBS=ON
@@ -158,14 +147,14 @@ RUN <<EOF
         -DCMAKE_INSTALL_PREFIX=${mpif_prefix}
         -DMPI_HOME=${mpi_prefix}
     )
-    cmake -Bbuild-mpich-llvm "${flags[@]}"
+    cmake -Bbuild-mpich-gcc "${flags[@]}"
 EOF
 
 # Build
-RUN cmake --build build-mpich-llvm
+RUN cmake --build build-mpich-gcc
 
 # Install
-RUN cmake --install build-mpich-llvm
+RUN cmake --install build-mpich-gcc
 
 RUN mkdir test
 WORKDIR /cactus/mpif/test
@@ -180,11 +169,11 @@ RUN <<EOF
         -DMPI_C_LIB_NAMES=mpi_abi
         -DMPI_mpi_abi_LIBRARY=${mpi_prefix}/lib/libmpi_abi.so
     )
-    cmake -Bbuild-mpich-llvm-tests "${test_flags[@]}"
+    cmake -Bbuild-mpich-gcc-tests "${test_flags[@]}"
 EOF
 
 # Build tests
-RUN cmake --build build-mpich-llvm-tests
+RUN cmake --build build-mpich-gcc-tests
 
 # Run tests
-RUN ctest --test-dir build-mpich-llvm-tests --output-on-failure
+RUN ctest --test-dir build-mpich-gcc-tests --output-on-failure

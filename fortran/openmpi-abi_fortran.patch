@@ -1,0 +1,12 @@
+diff --git a/ompi/mpi/c/ompi_abi_fortran.c b/ompi/mpi/c/ompi_abi_fortran.c
+index ff80e8b..84e0f9e 100644
+--- a/ompi/mpi/c/ompi_abi_fortran.c
++++ b/ompi/mpi/c/ompi_abi_fortran.c
+@@ -81,6 +81,6 @@ int ompi_abi_get_fortran_info(ompi_info_t **info)
+     const char *cptr;
+
+     newinfo = ompi_info_allocate ();
+-    if (NULL == (*info)) {
++    if (NULL == newinfo) {
+         return MPI_ERR_NO_MEM;
+     }

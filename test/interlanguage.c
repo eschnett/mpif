@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void subf90_(const MPI_Fint *fcomm, const int *rank, const int *size, int *fstatus);
+void subf90_(const MPI_Fint *fcomm, const int *rank, const int *size,
+             int *fstatus);
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   MPI_Init(&argc, &argv);
 
   MPI_Comm comm;
@@ -20,15 +21,15 @@ int main(int argc, char** argv) {
   int sendbuf, recvbuf;
   sendbuf = rank;
   recvbuf = -1;
-  MPI_Sendrecv(&sendbuf, 1, MPI_INT, (rank + 1) % size, 0, &recvbuf, 1, MPI_INT, (rank + size - 1) % size, 0,
-               comm, MPI_STATUS_IGNORE);
+  MPI_Sendrecv(&sendbuf, 1, MPI_INT, (rank + 1) % size, 0, &recvbuf, 1, MPI_INT,
+               (rank + size - 1) % size, 0, comm, MPI_STATUS_IGNORE);
   if (recvbuf != (rank + size - 1) % size)
     abort();
 
   sendbuf = rank;
   recvbuf = -1;
-  MPI_Sendrecv(&sendbuf, 1, MPI_INT, (rank + 1) % size, 0, &recvbuf, 1, MPI_INT, (rank + size - 1) % size, 0,
-               comm, &status);
+  MPI_Sendrecv(&sendbuf, 1, MPI_INT, (rank + 1) % size, 0, &recvbuf, 1, MPI_INT,
+               (rank + size - 1) % size, 0, comm, &status);
   if (status.MPI_SOURCE != (rank + size - 1) % size || status.MPI_TAG != 0)
     abort();
   if (recvbuf != (rank + size - 1) % size)
@@ -38,7 +39,8 @@ int main(int argc, char** argv) {
   MPI_Fint fstatus[MPI_F_STATUS_SIZE];
   subf90_(&fcomm, &rank, &size, fstatus);
   MPI_Status_f2c(fstatus, &status);
-  if (status.MPI_SOURCE != fstatus[MPI_F_SOURCE] || status.MPI_TAG != fstatus[MPI_F_TAG])
+  if (status.MPI_SOURCE != fstatus[MPI_F_SOURCE] ||
+      status.MPI_TAG != fstatus[MPI_F_TAG])
     abort();
 
   MPI_Comm_free(&comm);

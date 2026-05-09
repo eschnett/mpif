@@ -1,4 +1,4 @@
-# env DOCKER_BUILDKIT=1 docker build --file docker/mpich-gcc-arm.dockerfile --platform linux/arm/v7 --progress plain --tag mpich-mpiabi-gcc-arm .
+# env DOCKER_BUILDKIT=1 docker build --file docker/mpich-gcc-arm32v7.dockerfile --platform linux/arm/v7 --progress plain --tag mpich-mpiabi-gcc-arm32v7 .
 
 FROM arm32v7/ubuntu:noble-20260324
 

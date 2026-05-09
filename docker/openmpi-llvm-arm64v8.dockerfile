@@ -1,4 +1,4 @@
-# env DOCKER_BUILDKIT=1 docker build --file docker/openmpi-llvm.dockerfile --platform linux/arm64 --progress plain --tag openmpi-mpiabi-llvm .
+# env DOCKER_BUILDKIT=1 docker build --file docker/openmpi-llvm-arm64v8.dockerfile --platform linux/arm64 --progress plain --tag openmpi-mpiabi-llvm-arm64v8 .
 
 FROM arm64v8/ubuntu:noble-20260324
 
@@ -50,15 +50,19 @@ ENV FC=flang-new-21
 # Download OpenMPI
 RUN git clone --depth 1 https://github.com/open-mpi/ompi.git
 WORKDIR /cactus/ompi
-RUN git fetch --depth 1 origin ed5193c3d101e5ef8f6fda19fa89e694c88ada18
-RUN git checkout ed5193c3d101e5ef8f6fda19fa89e694c88ada18
+# RUN git fetch --depth 1 origin ed5193c3d101e5ef8f6fda19fa89e694c88ada18
+# RUN git checkout ed5193c3d101e5ef8f6fda19fa89e694c88ada18
+RUN git fetch --depth 1 origin aff7a8b89e6792357d4bca4cc18284f5e30d03fa
+RUN git checkout aff7a8b89e6792357d4bca4cc18284f5e30d03fa
 RUN git submodule update --init --recursive
 
 # Add Fortran bindings
 ADD fortran/f2c_abi.c ompi/mpi/c/f2c_abi.c
 RUN perl -pi -e 's!comm_fromint_abi.c!f2c_abi.c comm_fromint_abi.c!' ompi/mpi/c/Makefile_abi.include
-ADD fortran/openmpi-disable-type.patch openmpi-disable-type.patch
-RUN patch -p1 <openmpi-disable-type.patch
+# ADD fortran/openmpi-disable-type.patch openmpi-disable-type.patch
+# RUN patch -p1 <openmpi-disable-type.patch
+ADD fortran/openmpi-abi_fortran.patch openmpi-abi_fortran.patch
+RUN patch -p1 <openmpi-abi_fortran.patch
 RUN ./autogen.pl
 
 # Configure

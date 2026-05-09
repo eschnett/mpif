@@ -8,7 +8,7 @@ program version_f08
   character*(MPI_MAX_LIBRARY_VERSION_STRING) :: library_version
   integer :: resultlen
 
-  type(MPI_Info) :: abi_info
+  type(MPI_Info) :: abi_info, abi_fortran_info
   integer :: nkeys, n
   character*(MPI_MAX_INFO_KEY) :: key
   character*(MPI_MAX_INFO_VAL) :: value
@@ -52,15 +52,15 @@ program version_f08
 
   ! This requires MPI_Init, although it probably shouldn't
   print '("MPI ABI Fortran info:")'
-  call MPI_Abi_get_fortran_info(abi_info)
-  if (abi_info == MPI_INFO_NULL) then
+  call MPI_Abi_get_fortran_info(abi_fortran_info)
+  if (abi_fortran_info == MPI_INFO_NULL) then
      print '("   (not set)")'
      stop 1                     ! This should not happen
   else
-     call MPI_Info_get_nkeys(abi_info, nkeys)
+     call MPI_Info_get_nkeys(abi_fortran_info, nkeys)
      do n = 0, nkeys-1
-        call MPI_Info_get_nthkey(abi_info, n, key)
-        call MPI_Info_get(abi_info, key, len(value), value, flag)
+        call MPI_Info_get_nthkey(abi_fortran_info, n, key)
+        call MPI_Info_get(abi_fortran_info, key, len(value), value, flag)
         if (.not.flag) stop 1
         print '("   ",i0,": ",a,"=",a)', n, trim(key), trim(value)
      end do
