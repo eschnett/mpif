@@ -1,89 +1,35 @@
-cmake_minimum_required(VERSION 3.12...3.20)
+cmake_minimum_required(VERSION 3.13...3.28)
 project(
   mpif-tests VERSION 0.1.0
   DESCRIPTION "Tests for MPI Fortran bindings"
   HOMEPAGE_URL "https://github.com/eschnett/mpif"
-  LANGUAGES Fortran
+  LANGUAGES C Fortran
   )
-
-include(CheckLanguage)
-
-check_language(C)
-if(NOT(CMAKE_C_COMPILER))
-  message(FATAL_ERROR "No C support")
-endif()
-enable_language(C)
-
-check_language(Fortran)
-if(NOT(CMAKE_Fortran_COMPILER))
-  message(FATAL_ERROR "No Fortran support")
-endif()
-enable_language(Fortran)
 
 find_package(MPI REQUIRED COMPONENTS C Fortran)
 
 enable_testing()
 
-add_executable(init_f init_f.f)
-target_link_libraries(init_f MPI::MPI_Fortran)
-add_test(NAME init_f COMMAND init_f)
+function(add_mpi_test name)
+  cmake_parse_arguments(T "" "" "SOURCES;LIBS" ${ARGN})
+  add_executable(${name} ${T_SOURCES})
+  target_link_libraries(${name} PRIVATE ${T_LIBS})
+  add_test(NAME ${name} COMMAND ${name})
+endfunction()
 
-add_executable(init_f90 init_f90.f90)
-target_link_libraries(init_f90 MPI::MPI_Fortran)
-add_test(NAME init_f90 COMMAND init_f90)
-
-add_executable(init_f08 init_f08.f90)
-target_link_libraries(init_f08 MPI::MPI_Fortran)
-add_test(NAME init_f08 COMMAND init_f08)
-
-add_executable(comm_f comm_f.f)
-target_link_libraries(comm_f MPI::MPI_Fortran)
-add_test(NAME comm_f COMMAND comm_f)
-
-add_executable(comm_f90 comm_f90.f90)
-target_link_libraries(comm_f90 MPI::MPI_Fortran)
-add_test(NAME comm_f90 COMMAND comm_f90)
-
-add_executable(comm_f08 comm_f08.f90)
-target_link_libraries(comm_f08 MPI::MPI_Fortran)
-add_test(NAME comm_f08 COMMAND comm_f08)
-
-add_executable(sendrecv_f90 sendrecv_f90.f90)
-target_link_libraries(sendrecv_f90 MPI::MPI_Fortran)
-add_test(NAME sendrecv_f90 COMMAND sendrecv_f90)
-
-add_executable(sendrecv_f08 sendrecv_f08.f90)
-target_link_libraries(sendrecv_f08 MPI::MPI_Fortran)
-add_test(NAME sendrecv_f08 COMMAND sendrecv_f08)
-
-add_executable(inplace_f90 inplace_f90.f90)
-target_link_libraries(inplace_f90 MPI::MPI_Fortran)
-add_test(NAME inplace_f90 COMMAND inplace_f90)
-
-add_executable(inplace_f08 inplace_f08.f90)
-target_link_libraries(inplace_f08 MPI::MPI_Fortran)
-add_test(NAME inplace_f08 COMMAND inplace_f08)
-
-add_executable(version_c version_c.c)
-target_link_libraries(version_c MPI::MPI_C)
-add_test(NAME version_c COMMAND version_c)
-
-add_executable(version_f08 version_f08.f90)
-target_link_libraries(version_f08 MPI::MPI_Fortran)
-add_test(NAME version_f08 COMMAND version_f08)
-
-add_executable(interlanguage interlanguage.c interlanguage_subf90.f90)
-target_link_libraries(interlanguage MPI::MPI_Fortran MPI::MPI_C)
-add_test(NAME interlanguage COMMAND interlanguage)
-
-add_executable(c2f c2f.c c2f_subf90.f90)
-target_link_libraries(c2f MPI::MPI_Fortran MPI::MPI_C)
-add_test(NAME c2f COMMAND c2f)
-
-add_executable(type_create_struct_c type_create_struct_c.c)
-target_link_libraries(type_create_struct_c MPI::MPI_C)
-add_test(NAME type_create_struct_c COMMAND type_create_struct_c)
-
-add_executable(type_create_struct_f08 type_create_struct_f08.f90)
-target_link_libraries(type_create_struct_f08 MPI::MPI_Fortran)
-add_test(NAME type_create_struct_f08 COMMAND type_create_struct_f08)
+add_mpi_test(init_f                 SOURCES init_f.f                                LIBS MPI::MPI_Fortran)
+add_mpi_test(init_f90               SOURCES init_f90.f90                            LIBS MPI::MPI_Fortran)
+add_mpi_test(init_f08               SOURCES init_f08.f90                            LIBS MPI::MPI_Fortran)
+add_mpi_test(comm_f                 SOURCES comm_f.f                                LIBS MPI::MPI_Fortran)
+add_mpi_test(comm_f90               SOURCES comm_f90.f90                            LIBS MPI::MPI_Fortran)
+add_mpi_test(comm_f08               SOURCES comm_f08.f90                            LIBS MPI::MPI_Fortran)
+add_mpi_test(sendrecv_f90           SOURCES sendrecv_f90.f90                        LIBS MPI::MPI_Fortran)
+add_mpi_test(sendrecv_f08           SOURCES sendrecv_f08.f90                        LIBS MPI::MPI_Fortran)
+add_mpi_test(inplace_f90            SOURCES inplace_f90.f90                         LIBS MPI::MPI_Fortran)
+add_mpi_test(inplace_f08            SOURCES inplace_f08.f90                         LIBS MPI::MPI_Fortran)
+add_mpi_test(version_c              SOURCES version_c.c                             LIBS MPI::MPI_C)
+add_mpi_test(version_f08            SOURCES version_f08.f90                         LIBS MPI::MPI_Fortran)
+add_mpi_test(interlanguage          SOURCES interlanguage.c interlanguage_subf90.f90 LIBS MPI::MPI_Fortran MPI::MPI_C)
+add_mpi_test(c2f                    SOURCES c2f.c c2f_subf90.f90                    LIBS MPI::MPI_Fortran MPI::MPI_C)
+add_mpi_test(type_create_struct_c   SOURCES type_create_struct_c.c                  LIBS MPI::MPI_C)
+add_mpi_test(type_create_struct_f08 SOURCES type_create_struct_f08.f90              LIBS MPI::MPI_Fortran)

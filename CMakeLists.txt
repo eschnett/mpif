@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13...3.20)
+cmake_minimum_required(VERSION 3.13...3.28)
 project(
   mpif VERSION 0.2.0
   DESCRIPTION "MPI Fortran bindings"
@@ -17,21 +17,7 @@ project(
 # major/minor version number.
 set(SOVERSION 0)
 
-include(CheckLanguage)
-
-check_language(C)
-if(NOT(CMAKE_C_COMPILER))
-  message(FATAL_ERROR "No C support")
-endif()
 set(CMAKE_C_STANDARD 99)
-enable_language(C)
-
-check_language(Fortran)
-if(NOT(CMAKE_Fortran_COMPILER))
-  message(FATAL_ERROR "No Fortran support")
-endif()
-enable_language(Fortran)
-
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
 include(GNUInstallDirs)
 
@@ -51,9 +37,6 @@ check_fortran_source_compiles(
   HAVE_LOGICAL16
   SRC_EXT f90
 )
-if(HAVE_LOGICAL16)
-  add_definitions(-DMPIF_HAVE_LOGICAL16)
-endif()
 
 check_fortran_source_compiles(
   "
@@ -64,9 +47,6 @@ check_fortran_source_compiles(
   HAVE_REAL2
   SRC_EXT f90
 )
-if(HAVE_REAL2)
-  add_definitions(-DMPIF_HAVE_REAL2)
-endif()
 check_fortran_source_compiles(
   "
   program test
@@ -76,18 +56,18 @@ check_fortran_source_compiles(
   HAVE_REAL16
   SRC_EXT f90
 )
-if(HAVE_REAL16)
-  add_definitions(-DMPIF_HAVE_REAL16)
-endif()
 
+set(MPIF_Fortran_FLAGS_LIST "")
 check_fortran_compiler_flag(-fallow-argument-mismatch Fortran_flag_allow_argument_mismatch)
 if(Fortran_flag_allow_argument_mismatch)
-  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fallow-argument-mismatch")
+  list(APPEND MPIF_Fortran_FLAGS_LIST -fallow-argument-mismatch)
 endif()
 check_fortran_compiler_flag(-fcray-pointer Fortran_flag_cray_pointer)
 if(Fortran_flag_cray_pointer)
-  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fcray-pointer")
+  list(APPEND MPIF_Fortran_FLAGS_LIST -fcray-pointer)
 endif()
+list(JOIN MPIF_Fortran_FLAGS_LIST " " MPIF_Fortran_FLAGS_STR)
+
 check_fortran_source_compiles(
   "
   end
@@ -193,9 +173,8 @@ if(HAVE_Fortran_attribute_gcc_attributes_no_arg_check)
 else()
   set(GCC_ATTRIBUTES_NO_ARG_CHECK "!disabled ")
 endif()
-add_compile_definitions(ENABLE_FORTRAN)
 
-add_library(mpifort_abi
+add_library(mpifort_abi SHARED
   # MPI Fortran header files
   include/mpif.h
   # MPI Fortran modules
@@ -214,7 +193,21 @@ add_library(mpifort_abi
   gen/mpi_functions.F90
   gen/mpi_f08_functions.F90
 )
-target_include_directories(mpifort_abi PRIVATE include)
+target_include_directories(mpifort_abi
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+target_compile_definitions(mpifort_abi PRIVATE
+  ENABLE_FORTRAN
+  $<$<BOOL:${HAVE_LOGICAL16}>:MPIF_HAVE_LOGICAL16>
+  $<$<BOOL:${HAVE_REAL2}>:MPIF_HAVE_REAL2>
+  $<$<BOOL:${HAVE_REAL16}>:MPIF_HAVE_REAL16>
+)
+target_compile_options(mpifort_abi PRIVATE
+  $<$<COMPILE_LANGUAGE:Fortran>:${MPIF_Fortran_FLAGS_LIST}>
+)
 if(APPLE)
   # Ensure that there is only one instance of our MPI common blocks
   target_link_options(mpifort_abi INTERFACE "LINKER:-commons,use_dylibs")
@@ -231,7 +224,13 @@ set_target_properties(mpifort_abi PROPERTIES
   PUBLIC_HEADER "${public_headers}"
 )
 
-install(TARGETS mpifort_abi EXPORT mpifort_abiTargets)
+install(TARGETS mpifort_abi EXPORT mpifort_abiTargets
+  LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME       DESTINATION ${CMAKE_INSTALL_BINDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  INCLUDES      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 
 install(FILES
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_constants.mod
@@ -245,20 +244,33 @@ install(FILES
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-# # Install pkgconfig files
-# 
-# configure_file(pkgconfig/MPItrampoline.pc.in pkgconfig/MPItrampoline.pc @ONLY)
-# configure_file(pkgconfig/mpi-c.pc.in pkgconfig/mpi-c.pc @ONLY)
-# configure_file(pkgconfig/mpi-cxx.pc.in pkgconfig/mpi-cxx.pc @ONLY)
-# configure_file(pkgconfig/mpi-fort.pc.in pkgconfig/mpi-fort.pc @ONLY)
-# install(
-#   FILES
-#   ${CMAKE_BINARY_DIR}/pkgconfig/MPItrampoline.pc
-#   ${CMAKE_BINARY_DIR}/pkgconfig/mpi-c.pc
-#   ${CMAKE_BINARY_DIR}/pkgconfig/mpi-cxx.pc
-#   ${CMAKE_BINARY_DIR}/pkgconfig/mpi-fort.pc
-#   DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
-# )
+# Generate and install package configuration so consumers can use
+# find_package(mpif).
+
+include(CMakePackageConfigHelpers)
+set(MPIF_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/mpif")
+
+install(EXPORT mpifort_abiTargets
+  FILE mpifTargets.cmake
+  NAMESPACE mpif::
+  DESTINATION ${MPIF_INSTALL_CMAKEDIR}
+)
+
+configure_package_config_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/mpifConfig.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/mpifConfig.cmake
+  INSTALL_DESTINATION ${MPIF_INSTALL_CMAKEDIR}
+)
+write_basic_package_version_file(
+  ${CMAKE_CURRENT_BINARY_DIR}/mpifConfigVersion.cmake
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion
+)
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/mpifConfig.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/mpifConfigVersion.cmake
+  DESTINATION ${MPIF_INSTALL_CMAKEDIR}
+)
 
 # Install compiler wrappers
 

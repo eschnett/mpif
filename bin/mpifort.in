@@ -8,7 +8,7 @@
 # MPICH supports "-compile-info" and "-link-info".
 
 MPIF_FC=${MPIF_FC:-@CMAKE_Fortran_COMPILER@}
-MPIF_FCFLAGS=${MPIF_FCFLAGS:-@CMAKE_Fortran_FLAGS@}
+MPIF_FCFLAGS=${MPIF_FCFLAGS:-@CMAKE_Fortran_FLAGS@ @MPIF_Fortran_FLAGS_STR@}
 MPIF_FCLIBS=${MPIF_FCLIBS:- -L@CMAKE_INSTALL_PREFIX@/lib -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/lib -lmpifort_abi @MPI_C_LINK_FLAGS_STR@ @MPI_C_LIBRARIES_STR@}
 
 case "$1" in
