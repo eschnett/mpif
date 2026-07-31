@@ -122,6 +122,27 @@ fi
 
 cd "${tree}"
 
+# libtool drives the Fortran compiler with clang's Darwin options when linking a
+# shared library (`-dynamiclib`, a bare `-install_name`, `-compatibility_version`
+# ...), which flang rejects. Put a wrapper in front of it that rewrites them; see
+# scripts/flang-darwin-shim.sh for why that is done here rather than by patching
+# libtool's command templates. Deciding on the compiler's behaviour rather than
+# its name leaves gfortran alone and retires this once flang accepts the options.
+if [[ $(uname) == Darwin && -n ${FC:-} ]]; then
+    probe=darwin-fortran-probe
+    rm -rf "${probe}"
+    mkdir "${probe}"
+    printf 'end\n' >"${probe}/probe.f90"
+    if ! (cd "${probe}" &&
+              ${FC} -dynamiclib -install_name @rpath/libprobe.dylib \
+                    -o libprobe.dylib probe.f90) >/dev/null 2>&1; then
+        echo "${FC} rejects Darwin's linker options; wrapping it for libtool"
+        export FLANG_DARWIN_SHIM_FC=${FC}
+        export FC=${scriptdir}/flang-darwin-shim.sh
+    fi
+    rm -rf "${probe}"
+fi
+
 # Configure
 configure_flags=(
     --disable-dependency-tracking
@@ -140,71 +161,6 @@ configure_flags=(
     "--with-hwloc${HWLOC_PREFIX:+=${HWLOC_PREFIX}}"
 )
 ./configure "${configure_flags[@]}"
-
-# On macOS, libtool links Fortran shared libraries with `-dynamiclib` and a
-# bare `-install_name`. flang understands neither: it wants `-shared`, and
-# linker options have to go through `-Wl,` (the same limitation CMakeLists.txt
-# works around for mpif's own library). gfortran accepts the original form and
-# produces a working libmpifort with it, so probe what the compiler actually
-# does instead of matching on its name -- this then also stops applying itself
-# once flang learns these options.
-if [[ $(uname) == Darwin ]]; then
-    fortran_tag_config() {
-        sed -n "/^# ### BEGIN LIBTOOL TAG CONFIG: $1\$/,/^# ### END LIBTOOL TAG CONFIG: $1\$/p" libtool
-    }
-    fortran_compiler=$(fortran_tag_config FC | sed -n 's/^CC=//p' | tr -d '"' | head -1)
-
-    probe=darwin-fortran-probe
-    rm -rf "${probe}"
-    mkdir "${probe}"
-    printf 'end\n' >"${probe}/probe.f90"
-    if [[ -n ${fortran_compiler} ]] &&
-           ! (cd "${probe}" &&
-                  ${fortran_compiler} -dynamiclib -install_name @rpath/libprobe.dylib \
-                                      -o libprobe.dylib probe.f90) >/dev/null 2>&1; then
-        echo "${fortran_compiler} rejects -dynamiclib/-install_name;" \
-             "translating them in libtool's Fortran tags"
-        # One `-Wl,` per token, rather than `-Wl,-install_name,<name>`: that is
-        # how both libtool itself (for nagfor, just below) and CMake's
-        # Platform/Apple-NAG-Fortran module pass linker options for non-GNU
-        # Fortran drivers on Darwin.
-        perl -pi -e 'if (/^# ### BEGIN LIBTOOL TAG CONFIG: (FC|F77)$/) { $tag = 1 }
-                     elsif (/^# ### END LIBTOOL TAG CONFIG/) { $tag = 0 }
-                     if ($tag) {
-                         if (/^archive(_expsym)?_cmds=/) {
-                             s/-dynamiclib/-shared/g;
-                             s/-install_name /-Wl,-install_name -Wl,/g;
-                         }
-                         if (/^module_cmds=/) { s/ -bundle/ -Wl,-bundle/g }
-                     }' libtool
-
-        # The Fortran tag must no longer drive the link with `-dynamiclib`, and
-        # must pass the install name through the linker; the C tag, which clang
-        # is perfectly happy with, must keep using the original options.
-        fc_archive_cmds=$(fortran_tag_config FC | sed -n 's/^archive_cmds=//p')
-        case ${fc_archive_cmds} in
-            *-dynamiclib*)
-                echo "error: -dynamiclib survived in libtool's FC tag" >&2
-                exit 1
-                ;;
-            *'-Wl,-install_name -Wl,'*) ;;
-            *)
-                echo "error: could not translate the install name in libtool's FC tag:" >&2
-                echo "  ${fc_archive_cmds}" >&2
-                exit 1
-                ;;
-        esac
-        grep -q -- '-dynamiclib' libtool
-
-        # The library version is passed separately, through `$verstring`, which
-        # has its own compiler list -- libtool knows that NAG needs `-Wl,` here
-        # but not that flang does. This `case` switches on the compiler, so
-        # adding flang leaves gfortran alone.
-        perl -pi -e 's!^(\s*)nagfor\*\)$!${1}nagfor*|flang*)!' libtool
-        grep -q 'nagfor\*|flang\*)' libtool
-    fi
-    rm -rf "${probe}"
-fi
 
 # Stop here if libtool decided against shared libraries anyway, rather than
 # building for many minutes and failing much later with a confusing error.
