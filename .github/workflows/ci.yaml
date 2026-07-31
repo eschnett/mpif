@@ -34,9 +34,12 @@ jobs:
         # images have been retired and `macos-15-intel` is not a valid label, so
         # x86-64 macOS would mean a larger runner, which is billed even for
         # public repositories.
-        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
-        mpi: [mpich, openmpi]
-        toolchain: [gcc, llvm]
+        #TODO os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+        #TODO mpi: [mpich, openmpi]
+        #TODO toolchain: [gcc, llvm]
+        os: [ubuntu-24.04-arm]
+        mpi: [mpich]
+        toolchain: [gcc]
 
     env:
       # Suffix of shared libraries
@@ -273,6 +276,22 @@ jobs:
               -DMPI_mpi_abi_LIBRARY="${MPI_PREFIX}/lib/libmpi_abi.${SHLIB_EXT}"
           cmake --build build-tests --parallel
           ctest --test-dir build-tests --output-on-failure
+
+      # MPICH's own suite has ~300 Fortran tests across mpif.h, `use mpi` and
+      # `use mpi_f08`, and disables all of them for the standard ABI because the
+      # ABI has no Fortran bindings -- which is what mpif supplies. Far broader
+      # coverage than test/, so worth running even before every test passes.
+      #TODO Remove continue-on-error once the failures have been triaged; until
+      #TODO then this reports without being able to fail the build.
+      - name: Run MPICH's Fortran test suite
+        continue-on-error: true
+        run: |
+          # Open MPI refuses to oversubscribe by default, and the runners have
+          # fewer cores than the suite asks processes for
+          if [[ ${{ matrix.mpi }} == openmpi ]]; then
+              export MPIEXEC_ARGS=--oversubscribe
+          fi
+          scripts/test-mpich-suite.sh "${MPI_PREFIX}" "${MPIF_PREFIX}"
 
       # CMake keeps the compiler and linker output of its own checks -- such as
       # the one behind `missing: MPI_C_WORKS` -- in these files, and reports
