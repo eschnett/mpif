@@ -115,3 +115,4 @@ perl -pi -e 's!-lmpi!-lmpi_abi!' "${prefix}/bin/ompi_wrapper_script"
 # Expose the standard ABI only
 "${scriptdir}/prune-install.sh" "${prefix}" "${scriptdir}/openmpi-prune.txt"
 "${scriptdir}/install-mpi-header.sh" "${prefix}"
+"${scriptdir}/check-mpi-install.sh" "${prefix}"

@@ -163,7 +163,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ${{ runner.temp }}/opt/mpi
-          key: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('scripts/install-*.sh', 'scripts/prune-install.sh', 'scripts/*-prune.txt', 'fortran/**') }}
+          key: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('scripts/**', 'fortran/**') }}
 
       # The downloaded and autogen'ed source tree. Its key deliberately ignores
       # `fortran/`, so editing the bindings still skips the clone, the
@@ -225,6 +225,11 @@ jobs:
           # macOS needs no equivalent: the libraries carry an `@rpath`
           # install name, and the executables an rpath pointing at them.
 
+      # The install scripts run this too, but not when the installation came
+      # from the cache -- and its output is what diagnoses a broken one.
+      - name: Check the MPI installation
+        run: scripts/check-mpi-install.sh "${MPI_PREFIX}"
+
       - name: Configure, build, and install mpif
         run: |
           cmake \
@@ -253,3 +258,20 @@ jobs:
               -DMPI_mpi_abi_LIBRARY="${MPI_PREFIX}/lib/libmpi_abi.${SHLIB_EXT}"
           cmake --build build-tests --parallel
           ctest --test-dir build-tests --output-on-failure
+
+      # CMake keeps the compiler and linker output of its own checks -- such as
+      # the one behind `missing: MPI_C_WORKS` -- in these files, and reports
+      # only the conclusion on the console.
+      - name: Show CMake's check logs
+        if: failure()
+        run: |
+          for dir in build build-tests; do
+              for log in "${dir}"/CMakeFiles/CMakeConfigureLog.yaml \
+                         "${dir}"/CMakeFiles/CMakeError.log; do
+                  if [[ -f ${log} ]]; then
+                      echo "::group::${log}"
+                      cat "${log}"
+                      echo "::endgroup::"
+                  fi
+              done
+          done

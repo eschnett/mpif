@@ -132,3 +132,4 @@ perl -pi -e 's!mpi_abi=no!mpi_abi=yes!' "${prefix}/bin/mpicc" "${prefix}/bin/mpi
 # Expose the standard ABI only
 "${scriptdir}/prune-install.sh" "${prefix}" "${scriptdir}/mpich-prune.txt"
 "${scriptdir}/install-mpi-header.sh" "${prefix}"
+"${scriptdir}/check-mpi-install.sh" "${prefix}"
