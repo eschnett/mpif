@@ -49,8 +49,10 @@ fi
 
 tree=${srcdir}/mpich-${MPICH_VERSION}
 # The stamp records what the prepared tree contains, so anything that changes
-# that tree -- other than the bindings themselves -- belongs in its name.
-stamp=${srcdir}/prepared-${MPICH_VERSION}-${MPICH_PATCH_COMMIT}
+# that tree -- other than the bindings themselves -- belongs in its name. That
+# includes this script, since it patches the tree: without the checksum, editing
+# the patches below would silently reuse a tree prepared by an older version.
+stamp=${srcdir}/prepared-${MPICH_VERSION}-${MPICH_PATCH_COMMIT}-$(cksum <"${BASH_SOURCE[0]}" | cut -d' ' -f1)
 
 # Copy in the Fortran/C handle conversion functions. Only the contents of this
 # file vary from run to run, so this happens on every run, including when the
@@ -101,28 +103,13 @@ else
     # Patch the generated `configure` rather than confdb/libtool.m4, which
     # `autogen.sh` overwrites with the system libtool's copy.
     #
-    # Being on that list is necessary but not sufficient: libtool then links
-    # Fortran shared libraries with `$FC -dynamiclib ... -install_name <name>`,
-    # and flang understands neither option (it wants `-shared`, and linker
-    # options have to go through `-Wl,`). Translate those, in the Fortran tags
-    # only -- clang accepts them, so the C and C++ tags must keep them as they
-    # are. This is the same flang limitation that CMakeLists.txt works around
-    # for mpif's own library.
+    # Being on that list only restores shared libraries; the link commands
+    # themselves are adjusted after `configure`, where the Fortran compiler is
+    # known. gfortran matches neither entry in the case statement and so is
+    # unaffected by this.
     if [[ $(uname) == Darwin ]]; then
         perl -pi -e 's!\bifort\*\|nagfor\*\)!ifort*|nagfor*|flang*)!g' configure
         grep -q 'ifort\*|nagfor\*|flang\*)' configure
-
-        perl -pi -e 'if (/^\s*archive(_expsym)?_cmds_(FC|F77)=/) {
-                         s/-dynamiclib/-shared/g;
-                         s/-install_name /-Wl,-install_name,/g;
-                     }
-                     if (/^\s*module_cmds_(FC|F77)=/) {
-                         s/ -bundle/ -Wl,-bundle/g;
-                     }' configure
-        # The Fortran tags must be free of the options flang rejects, and the C
-        # tag must still have them.
-        ! grep -qE '^\s*archive(_expsym)?_cmds_(FC|F77)=.*(-dynamiclib|-install_name )' configure
-        grep -q -- '-dynamiclib' configure
     fi
 
     touch "${stamp}"
@@ -154,6 +141,71 @@ configure_flags=(
 )
 ./configure "${configure_flags[@]}"
 
+# On macOS, libtool links Fortran shared libraries with `-dynamiclib` and a
+# bare `-install_name`. flang understands neither: it wants `-shared`, and
+# linker options have to go through `-Wl,` (the same limitation CMakeLists.txt
+# works around for mpif's own library). gfortran accepts the original form and
+# produces a working libmpifort with it, so probe what the compiler actually
+# does instead of matching on its name -- this then also stops applying itself
+# once flang learns these options.
+if [[ $(uname) == Darwin ]]; then
+    fortran_tag_config() {
+        sed -n "/^# ### BEGIN LIBTOOL TAG CONFIG: $1\$/,/^# ### END LIBTOOL TAG CONFIG: $1\$/p" libtool
+    }
+    fortran_compiler=$(fortran_tag_config FC | sed -n 's/^CC=//p' | tr -d '"' | head -1)
+
+    probe=darwin-fortran-probe
+    rm -rf "${probe}"
+    mkdir "${probe}"
+    printf 'end\n' >"${probe}/probe.f90"
+    if [[ -n ${fortran_compiler} ]] &&
+           ! (cd "${probe}" &&
+                  ${fortran_compiler} -dynamiclib -install_name @rpath/libprobe.dylib \
+                                      -o libprobe.dylib probe.f90) >/dev/null 2>&1; then
+        echo "${fortran_compiler} rejects -dynamiclib/-install_name;" \
+             "translating them in libtool's Fortran tags"
+        # One `-Wl,` per token, rather than `-Wl,-install_name,<name>`: that is
+        # how both libtool itself (for nagfor, just below) and CMake's
+        # Platform/Apple-NAG-Fortran module pass linker options for non-GNU
+        # Fortran drivers on Darwin.
+        perl -pi -e 'if (/^# ### BEGIN LIBTOOL TAG CONFIG: (FC|F77)$/) { $tag = 1 }
+                     elsif (/^# ### END LIBTOOL TAG CONFIG/) { $tag = 0 }
+                     if ($tag) {
+                         if (/^archive(_expsym)?_cmds=/) {
+                             s/-dynamiclib/-shared/g;
+                             s/-install_name /-Wl,-install_name -Wl,/g;
+                         }
+                         if (/^module_cmds=/) { s/ -bundle/ -Wl,-bundle/g }
+                     }' libtool
+
+        # The Fortran tag must no longer drive the link with `-dynamiclib`, and
+        # must pass the install name through the linker; the C tag, which clang
+        # is perfectly happy with, must keep using the original options.
+        fc_archive_cmds=$(fortran_tag_config FC | sed -n 's/^archive_cmds=//p')
+        case ${fc_archive_cmds} in
+            *-dynamiclib*)
+                echo "error: -dynamiclib survived in libtool's FC tag" >&2
+                exit 1
+                ;;
+            *'-Wl,-install_name -Wl,'*) ;;
+            *)
+                echo "error: could not translate the install name in libtool's FC tag:" >&2
+                echo "  ${fc_archive_cmds}" >&2
+                exit 1
+                ;;
+        esac
+        grep -q -- '-dynamiclib' libtool
+
+        # The library version is passed separately, through `$verstring`, which
+        # has its own compiler list -- libtool knows that NAG needs `-Wl,` here
+        # but not that flang does. This `case` switches on the compiler, so
+        # adding flang leaves gfortran alone.
+        perl -pi -e 's!^(\s*)nagfor\*\)$!${1}nagfor*|flang*)!' libtool
+        grep -q 'nagfor\*|flang\*)' libtool
+    fi
+    rm -rf "${probe}"
+fi
+
 # Stop here if libtool decided against shared libraries anyway, rather than
 # building for many minutes and failing much later with a confusing error.
 if ! grep -q '^build_libtool_libs=yes' libtool; then
@@ -175,8 +227,10 @@ else
     echo "The MPI_File_{c2f,f2c} bindings are already disabled"
 fi
 
-# Build and install
-make -j"${nprocs}"
+# Build and install. `V=1` because automake's silent rules hide the libtool
+# link commands, and those are exactly what one needs to see when a compiler
+# rejects an option that libtool chose for it.
+make V=1 -j"${nprocs}"
 make install
 
 # Point the wrapper compilers at the ABI library
