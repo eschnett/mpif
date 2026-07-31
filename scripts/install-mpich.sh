@@ -104,6 +104,11 @@ configure_flags=(
     --enable-cxx=no
     --enable-fortran
     --enable-mpi-abi
+    # Explicit, because MPICH does not default to shared libraries everywhere:
+    # on macOS it builds static ones only, and the resulting installation is
+    # unusable here, since pruning removes the non-ABI libraries that the
+    # static libmpi_abi.a still needs symbols from.
+    --enable-shared=yes
     --enable-static=no
     --prefix="${prefix}"
     --with-device=ch3
