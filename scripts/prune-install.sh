@@ -12,6 +12,9 @@
 # `#` comments are ignored. A pattern matching nothing is reported as a warning
 # rather than an error, since upstream renames files from time to time and a
 # stale entry should not break the build.
+#
+# This script deliberately uses no arrays: macOS still ships bash 3.2, where
+# expanding an empty array under `set -u` is an error rather than an empty list.
 
 set -euo pipefail
 shopt -s nullglob extglob
@@ -19,7 +22,8 @@ shopt -s nullglob extglob
 prefix=${1:?usage: prune-install.sh <prefix> <list-file>}
 list=${2:?usage: prune-install.sh <prefix> <list-file>}
 
-missing=()
+missing=""
+missing_count=0
 
 while IFS= read -r line || [[ -n ${line} ]]; do
     # Strip the comment, then surrounding whitespace. This must not go through
@@ -33,29 +37,27 @@ while IFS= read -r line || [[ -n ${line} ]]; do
         continue
     fi
 
-    # shellcheck disable=SC2206  # the pattern must be glob-expanded
-    matches=("${prefix}"/${pattern})
-
-    # `nullglob` drops patterns that match nothing, but a pattern without
-    # wildcards survives even when the file is absent, so check explicitly.
-    found=()
-    for match in "${matches[@]}"; do
+    # Iterate the glob directly. `nullglob` makes a pattern that matches
+    # nothing expand to no words at all, so the body simply does not run; a
+    # pattern without wildcards always yields one word, hence the -e test.
+    # shellcheck disable=SC2231  # the pattern must be glob-expanded
+    found=0
+    for match in "${prefix}"/${pattern}; do
         if [[ -e ${match} || -L ${match} ]]; then
-            found+=("${match}")
+            rm -rf "${match}"
+            found=1
         fi
     done
 
-    if [[ ${#found[@]} -eq 0 ]]; then
-        missing+=("${pattern}")
-        continue
+    if [[ ${found} -eq 0 ]]; then
+        missing="${missing}    ${pattern}"$'\n'
+        missing_count=$((missing_count + 1))
     fi
-
-    rm -rf "${found[@]}"
 done <"${list}"
 
-if [[ ${#missing[@]} -gt 0 ]]; then
-    echo "prune-install.sh: warning: ${#missing[@]} pattern(s) from" \
+if [[ ${missing_count} -gt 0 ]]; then
+    echo "prune-install.sh: warning: ${missing_count} pattern(s) from" \
          "$(basename "${list}") matched nothing in ${prefix}:" >&2
-    printf '    %s\n' "${missing[@]}" >&2
+    printf '%s' "${missing}" >&2
     echo "prune-install.sh: warning: has the MPI installation layout changed?" >&2
 fi
