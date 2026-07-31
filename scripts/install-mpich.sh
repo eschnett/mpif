@@ -87,6 +87,44 @@ else
 
     ./autogen.sh
 
+    # libtool only believes that GNU, Intel and NAG Fortran compilers can build
+    # shared libraries on macOS: `_LT_DARWIN_LINKER_FEATURES` in libtool.m4 has
+    # `case $cc_basename in ifort*|nagfor*) _lt_dar_can_shared=yes ;; *)
+    # _lt_dar_can_shared=$GCC ;; esac`, and for the Fortran tag `GCC` is
+    # `ac_cv_fc_compiler_gnu`. flang is neither GNU nor on the list, so libtool
+    # concludes `ld_shlibs_FC=no` -- and since `can_build_shared` is *untagged*,
+    # that switches off shared libraries for the entire build, the C libraries
+    # included. MPICH then installs static libraries only, and the installation
+    # is unusable here because pruning removes the non-ABI libraries that
+    # libmpi_abi.a needs symbols from.
+    #
+    # Patch the generated `configure` rather than confdb/libtool.m4, which
+    # `autogen.sh` overwrites with the system libtool's copy.
+    #
+    # Being on that list is necessary but not sufficient: libtool then links
+    # Fortran shared libraries with `$FC -dynamiclib ... -install_name <name>`,
+    # and flang understands neither option (it wants `-shared`, and linker
+    # options have to go through `-Wl,`). Translate those, in the Fortran tags
+    # only -- clang accepts them, so the C and C++ tags must keep them as they
+    # are. This is the same flang limitation that CMakeLists.txt works around
+    # for mpif's own library.
+    if [[ $(uname) == Darwin ]]; then
+        perl -pi -e 's!\bifort\*\|nagfor\*\)!ifort*|nagfor*|flang*)!g' configure
+        grep -q 'ifort\*|nagfor\*|flang\*)' configure
+
+        perl -pi -e 'if (/^\s*archive(_expsym)?_cmds_(FC|F77)=/) {
+                         s/-dynamiclib/-shared/g;
+                         s/-install_name /-Wl,-install_name,/g;
+                     }
+                     if (/^\s*module_cmds_(FC|F77)=/) {
+                         s/ -bundle/ -Wl,-bundle/g;
+                     }' configure
+        # The Fortran tags must be free of the options flang rejects, and the C
+        # tag must still have them.
+        ! grep -qE '^\s*archive(_expsym)?_cmds_(FC|F77)=.*(-dynamiclib|-install_name )' configure
+        grep -q -- '-dynamiclib' configure
+    fi
+
     touch "${stamp}"
 fi
 
@@ -115,6 +153,16 @@ configure_flags=(
     "--with-hwloc${HWLOC_PREFIX:+=${HWLOC_PREFIX}}"
 )
 ./configure "${configure_flags[@]}"
+
+# Stop here if libtool decided against shared libraries anyway, rather than
+# building for many minutes and failing much later with a confusing error.
+if ! grep -q '^build_libtool_libs=yes' libtool; then
+    echo "error: configure did not enable shared libraries:" >&2
+    grep '^build_libtool_libs=\|^can_build_shared=' libtool >&2
+    echo "error: look for 'supports shared libraries' in ${tree}/config.log;" >&2
+    echo "error: one language's linker check turns them off for all of them" >&2
+    exit 1
+fi
 
 # Remove the MPI_File_{c2f,f2c} bindings, which are not part of the ABI. This
 # has to happen after `configure`, which regenerates the file. Testing for the
