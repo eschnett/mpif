@@ -25,11 +25,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        #TODO os: [ubuntu-24.04, macos-15]
-        #TODO mpi: [mpich, openmpi]
-        #TODO toolchain: [gcc, llvm]
-        os: [macos-15]
-        mpi: [mpich]
+        # The runner label carries the architecture, so another architecture is
+        # just another entry in `os`. Everything downstream already adapts at run
+        # time: `brew --prefix` finds Homebrew wherever it lives, SHLIB_EXT
+        # follows from the label, and the compilers are chosen from RUNNER_OS.
+        #
+        # x86-64 is covered on Linux only, deliberately. The free Intel macOS
+        # images have been retired and `macos-15-intel` is not a valid label, so
+        # x86-64 macOS would mean a larger runner, which is billed even for
+        # public repositories.
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+        mpi: [mpich, openmpi]
         toolchain: [gcc, llvm]
 
     env:
