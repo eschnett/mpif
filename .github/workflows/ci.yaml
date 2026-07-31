@@ -158,12 +158,16 @@ jobs:
       # Three caches, from coarsest to finest. The MPI installation is all that
       # is needed for a run that changes neither the bindings nor the build
       # scripts; the other two only come into play when it misses.
+      # Note the enumeration: `scripts/**` would also cover scripts/macos-*.sh,
+      # which only drive local builds and cannot affect what CI installs, so
+      # editing those would needlessly rebuild every MPI here. Anything new that
+      # CI does use has to be added to this list.
       - name: Cache MPI installation
         id: cache-mpi
         uses: actions/cache@v5
         with:
           path: ${{ runner.temp }}/opt/mpi
-          key: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('scripts/**', 'fortran/**') }}
+          key: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('scripts/install-*.sh', 'scripts/prune-install.sh', 'scripts/check-mpi-install.sh', 'scripts/*-prune.txt', 'fortran/**') }}
 
       # The downloaded and autogen'ed source tree. Its key deliberately ignores
       # `fortran/`, so editing the bindings still skips the clone, the
