@@ -21,6 +21,28 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
 include(GNUInstallDirs)
 
+# CMake ships no `Platform/Apple-LLVMFlang-Fortran` module (still true as of
+# CMake 4.4), so linking a Fortran shared library on macOS falls back to the
+# settings for C: `CMAKE_SHARED_LIBRARY_CREATE_Fortran_FLAGS` drives the link
+# with `-dynamiclib`, and `CMAKE_SHARED_LIBRARY_SONAME_Fortran_FLAG` inherits
+# the C flag `-install_name` (see `CMakeCommonLanguageInclude.cmake`). flang
+# accepts neither: it wants `-shared`, and linker options have to go through
+# `-Wl,`. Do the same thing CMake's own `Platform/Apple-NAG-Fortran` module
+# does, including gluing the SONAME flag directly to the name.
+#
+# The guard makes this disappear by itself once CMake grows a platform module
+# of its own, since that will use the `-Wl,` form.
+if(APPLE AND CMAKE_Fortran_COMPILER_ID STREQUAL "LLVMFlang"
+    AND NOT CMAKE_SHARED_LIBRARY_SONAME_Fortran_FLAG MATCHES "^-Wl,")
+  set(CMAKE_Fortran_OSX_COMPATIBILITY_VERSION_FLAG "-Wl,-compatibility_version -Wl,")
+  set(CMAKE_Fortran_OSX_CURRENT_VERSION_FLAG "-Wl,-current_version -Wl,")
+  set(CMAKE_SHARED_LIBRARY_CREATE_Fortran_FLAGS "-shared -Wl,-headerpad_max_install_names")
+  set(CMAKE_SHARED_MODULE_CREATE_Fortran_FLAGS "-Wl,-bundle")
+  set(CMAKE_SHARED_LIBRARY_SONAME_Fortran_FLAG "-Wl,-install_name -Wl,")
+  set(CMAKE_Fortran_CREATE_SHARED_LIBRARY
+    "<CMAKE_Fortran_COMPILER> <LANGUAGE_COMPILE_FLAGS> <LINK_FLAGS> -o <TARGET> <SONAME_FLAG><TARGET_INSTALLNAME_DIR><TARGET_SONAME> <OBJECTS> <LINK_LIBRARIES>")
+endif()
+
 find_package(MPI REQUIRED COMPONENTS C)
 
 # Check for Fortran features

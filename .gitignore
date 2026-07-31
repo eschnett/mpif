@@ -1,3 +1,5 @@
-BUILD.sh
-build*
-data
+*~
+/BUILD.sh
+/data/
+/mpi/
+build*/

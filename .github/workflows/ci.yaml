@@ -25,49 +25,45 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04]
+        os: [ubuntu-24.04, macos-15]
         mpi: [mpich, openmpi]
         toolchain: [gcc, llvm]
-        include:
-          - toolchain: gcc
-            cc: gcc
-            cxx: g++
-            fc: gfortran
-          - toolchain: llvm
-            cc: clang-21
-            cxx: clang++-21
-            fc: flang-21
 
     env:
-      CC: ${{ matrix.cc }}
-      CXX: ${{ matrix.cxx }}
-      FC: ${{ matrix.fc }}
-      # Suffix of shared libraries; `dylib` once macOS runners are added
+      # Suffix of shared libraries
       SHLIB_EXT: ${{ startsWith(matrix.os, 'macos') && 'dylib' || 'so' }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      # Set here rather than in the job's `env:`, because the `runner` context
+      # is not available there.
       - name: Set up paths
         run: |
-          echo "MPI_PREFIX=${RUNNER_TEMP}/opt/mpi" >>"${GITHUB_ENV}"
-          echo "MPIF_PREFIX=${RUNNER_TEMP}/opt/mpif" >>"${GITHUB_ENV}"
+          {
+              echo "MPI_PREFIX=${RUNNER_TEMP}/opt/mpi"
+              echo "MPIF_PREFIX=${RUNNER_TEMP}/opt/mpif"
+              echo "MPI_SRC_DIR=${RUNNER_TEMP}/mpi-src"
+              echo "CCACHE_DIR=${RUNNER_TEMP}/ccache"
+              echo "CCACHE_MAXSIZE=500M"
+          } >>"${GITHUB_ENV}"
 
-      - name: Install dependencies (GCC)
+      - name: Install dependencies (Linux, GCC)
         if: runner.os == 'Linux' && matrix.toolchain == 'gcc'
         run: |
           sudo apt-get update
           sudo apt-get install -y \
               autoconf \
               automake \
+              ccache \
               cmake \
               gfortran \
               libhwloc-dev \
               libtool \
               pkg-config
 
-      - name: Install dependencies (LLVM)
+      - name: Install dependencies (Linux, LLVM)
         if: runner.os == 'Linux' && matrix.toolchain == 'llvm'
         run: |
           curl -fsSLO https://apt.llvm.org/llvm.sh
@@ -77,6 +73,7 @@ jobs:
           sudo apt-get install -y \
               autoconf \
               automake \
+              ccache \
               clang-21 \
               cmake \
               flang-21 \
@@ -89,24 +86,144 @@ jobs:
               llvm-21 \
               pkg-config
 
-      # The build recipe lives entirely in `scripts/` and `fortran/`, so editing
-      # this workflow does not invalidate the cache -- but changing the ABI
-      # bindings, the patches, or the build scripts does.
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install autoconf automake ccache hwloc libtool
+          # hwloc, like everything else Homebrew installs, lives under `brew --prefix`
+          echo "HWLOC_PREFIX=$(brew --prefix)" >>"${GITHUB_ENV}"
+
+      - name: Install dependencies (macOS, LLVM)
+        if: runner.os == 'macOS' && matrix.toolchain == 'llvm'
+        run: brew install flang llvm
+
+      # Chosen here rather than in the matrix so that there is a single place
+      # where a compiler name has to be adjusted, and so that macOS can look up
+      # Homebrew's paths at run time.
+      - name: Select toolchain
+        run: |
+          case "${RUNNER_OS}-${{ matrix.toolchain }}" in
+              Linux-gcc)
+                  cc=gcc cxx=g++ fc=gfortran
+                  ;;
+              Linux-llvm)
+                  cc=clang-21 cxx=clang++-21 fc=flang-21
+                  ;;
+              macOS-gcc)
+                  # Homebrew GCC, preinstalled on the runner image
+                  cc=gcc-15 cxx=g++-15 fc=gfortran-15
+                  ;;
+              macOS-llvm)
+                  # Homebrew's clang and flang are not on PATH by default, and
+                  # `flang-new` was renamed to `flang` in LLVM 20
+                  cc=clang cxx=clang++ fc=flang
+                  bindirs=$(brew --prefix llvm)/bin:$(brew --prefix flang)/bin
+                  if [[ ! -x $(brew --prefix flang)/bin/flang ]]; then
+                      fc=flang-new
+                  fi
+                  ;;
+          esac
+          # Compiler names are kept bare so that ccache can be put in front of
+          # them below, and so that the `mpicc`/`mpifort` wrappers that MPI and
+          # mpif install do not record paths specific to this runner.
+          echo "PATH=${bindirs:+${bindirs}:}${PATH}" >>"${GITHUB_ENV}"
+          {
+              echo "CC=${cc}"
+              echo "CXX=${cxx}"
+              echo "FC=${fc}"
+          } >>"${GITHUB_ENV}"
+          export PATH=${bindirs:+${bindirs}:}${PATH}
+          for var in cc cxx fc; do
+              command -v "${!var}"
+              "${!var}" --version | head -1
+          done
+
+      # ccache in masquerade mode: symlinks named after the compilers, ahead of
+      # them on PATH. Nothing has to know about ccache, and in particular the
+      # installed compiler wrappers still refer to the real compilers. Fortran
+      # is left alone, as ccache does not support it.
+      - name: Set up ccache
+        run: |
+          shims=${RUNNER_TEMP}/ccache-shims
+          mkdir -p "${shims}"
+          ln -sf "$(command -v ccache)" "${shims}/${CC}"
+          ln -sf "$(command -v ccache)" "${shims}/${CXX}"
+          echo "PATH=${shims}:${PATH}" >>"${GITHUB_ENV}"
+          # Verify that the masquerade works: ccache has to be found first, and
+          # has to resolve to the intended compiler and not, say, Apple clang.
+          export PATH=${shims}:${PATH}
+          test "$(command -v "${CC}")" = "${shims}/${CC}"
+          "${CC}" --version | head -1
+
+      # Three caches, from coarsest to finest. The MPI installation is all that
+      # is needed for a run that changes neither the bindings nor the build
+      # scripts; the other two only come into play when it misses.
       - name: Cache MPI installation
         id: cache-mpi
         uses: actions/cache@v5
         with:
           path: ${{ runner.temp }}/opt/mpi
-          key: ${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('scripts/install-*.sh', 'scripts/prune-install.sh', 'scripts/*-prune.txt', 'fortran/**') }}
+          key: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('scripts/install-*.sh', 'scripts/prune-install.sh', 'scripts/*-prune.txt', 'fortran/**') }}
+
+      # The downloaded and autogen'ed source tree. Its key deliberately ignores
+      # `fortran/`, so editing the bindings still skips the clone, the
+      # submodules and `autogen`. Saved explicitly right after preparing it,
+      # because by the end of the job the tree also holds all the build output.
+      - name: Restore MPI source tree
+        id: cache-mpi-src
+        if: steps.cache-mpi.outputs.cache-hit != 'true'
+        uses: actions/cache/restore@v5
+        with:
+          path: ${{ runner.temp }}/mpi-src
+          key: mpi-src-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('scripts/install-*.sh') }}
+
+      - name: Prepare MPI source tree
+        if: steps.cache-mpi.outputs.cache-hit != 'true' && steps.cache-mpi-src.outputs.cache-hit != 'true'
+        env:
+          MPI_PREPARE_ONLY: 1
+        run: scripts/install-${{ matrix.mpi }}.sh
+
+      - name: Save MPI source tree
+        if: steps.cache-mpi.outputs.cache-hit != 'true' && steps.cache-mpi-src.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: ${{ runner.temp }}/mpi-src
+          key: ${{ steps.cache-mpi-src.outputs.cache-primary-key }}
+
+      # Compiler cache, so that a change to the bindings recompiles only what
+      # actually changed. Restored from whatever the most recent run left, and
+      # saved under a fresh key because caches are immutable.
+      - name: Restore ccache
+        id: cache-ccache
+        if: steps.cache-mpi.outputs.cache-hit != 'true'
+        uses: actions/cache/restore@v5
+        with:
+          path: ${{ runner.temp }}/ccache
+          key: ccache-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ github.run_id }}
+          restore-keys: ccache-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-
 
       - name: Build and install ${{ matrix.mpi }}
         if: steps.cache-mpi.outputs.cache-hit != 'true'
-        run: scripts/install-${{ matrix.mpi }}.sh "${MPI_PREFIX}"
+        run: |
+          ccache --zero-stats
+          scripts/install-${{ matrix.mpi }}.sh "${MPI_PREFIX}"
+          ccache --show-stats
+
+      - name: Save ccache
+        if: steps.cache-mpi.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: ${{ runner.temp }}/ccache
+          key: ${{ steps.cache-ccache.outputs.cache-primary-key }}
 
       - name: Add MPI to the environment
         run: |
           echo "${MPI_PREFIX}/bin" >>"${GITHUB_PATH}"
-          echo "LD_LIBRARY_PATH=${MPI_PREFIX}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" >>"${GITHUB_ENV}"
+          if [[ ${RUNNER_OS} == Linux ]]; then
+              echo "LD_LIBRARY_PATH=${MPI_PREFIX}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" >>"${GITHUB_ENV}"
+          fi
+          # macOS needs no equivalent: the libraries carry an `@rpath`
+          # install name, and the executables an rpath pointing at them.
 
       - name: Configure, build, and install mpif
         run: |
@@ -123,8 +240,8 @@ jobs:
 
       - name: Configure, build, and run tests
         run: |
-          cd test
           cmake \
+              -Stest \
               -Bbuild-tests \
               -DCMAKE_BUILD_TYPE=Debug \
               -DCMAKE_C_COMPILER="${CC}" \

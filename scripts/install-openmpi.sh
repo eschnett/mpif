@@ -8,45 +8,88 @@
 # `mpi.h`, Fortran modules and non-ABI libraries are removed, and the official
 # ABI `mpi.h` is installed in their place.
 #
-# Usage: install-openmpi.sh <prefix>
+# Usage: install-openmpi.sh [<prefix>]
 #
 # Environment:
-#   CC, CXX, FC     compilers to build OpenMPI with (default: system compilers)
-#   HWLOC_PREFIX    where hwloc is installed, if not in a default location
-#                   (e.g. /opt/local for MacPorts, /opt/homebrew for Homebrew)
+#   CC, CXX, FC       compilers to build OpenMPI with (default: system compilers)
+#   HWLOC_PREFIX      where hwloc is installed, if not in a default location
+#                     (e.g. /opt/local for MacPorts, /opt/homebrew for Homebrew)
+#   MPI_SRC_DIR       where to download and build. Defaults to a temporary
+#                     directory that is removed afterwards. If it already holds
+#                     a tree prepared for this commit, the download and
+#                     `autogen.pl` steps are skipped -- this is what CI caches.
+#   MPI_PREPARE_ONLY  set to 1 to only prepare the source tree (download,
+#                     bindings, autogen) and stop before configuring; <prefix>
+#                     is then not needed.
 
 set -euo pipefail
 
-# Keep this commit in sync with the cache key comment in .github/workflows/ci.yaml
 OMPI_COMMIT=090cfceee430174fdeb3ce3b00a57f29fc71a379
 
-prefix=${1:?usage: install-openmpi.sh <prefix>}
+prefix=${1:-}
+prepare_only=${MPI_PREPARE_ONLY:-0}
+if [[ ${prepare_only} != 1 && -z ${prefix} ]]; then
+    echo "usage: install-openmpi.sh <prefix>" >&2
+    exit 1
+fi
 
 scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 repodir=$(cd "${scriptdir}/.." && pwd)
 nprocs=$(getconf _NPROCESSORS_ONLN)
 
-workdir=$(mktemp -d)
-trap 'rm -rf "${workdir}"' EXIT
-cd "${workdir}"
+if [[ -n ${MPI_SRC_DIR:-} ]]; then
+    mkdir -p "${MPI_SRC_DIR}"
+    srcdir=$(cd "${MPI_SRC_DIR}" && pwd)
+else
+    srcdir=$(mktemp -d)
+    trap 'rm -rf "${srcdir}"' EXIT
+fi
 
-# Download
-git clone --quiet --depth 1 https://github.com/open-mpi/ompi.git ompi
-cd ompi
-git fetch --quiet --depth 1 origin "${OMPI_COMMIT}"
-git checkout --quiet "${OMPI_COMMIT}"
-git submodule update --init --recursive
+tree=${srcdir}/ompi
+# The stamp records what the prepared tree contains, so anything that changes
+# that tree -- other than the bindings themselves -- belongs in its name.
+stamp=${srcdir}/prepared-${OMPI_COMMIT}
 
-# Add the Fortran/C handle conversion functions to the ABI library
-cp "${repodir}/fortran/f2c_abi_openmpi.c" ompi/mpi/c/f2c_abi.c
-perl -pi -e 's!comm_fromint_abi\.c!f2c_abi.c comm_fromint_abi.c!' \
-     ompi/mpi/c/Makefile_abi.include
-# Fail loudly if upstream renamed the file we hooked into: without this the
-# bindings would be silently left out of the library, and the failure would
-# only show up much later as undefined symbols when linking a test.
-grep -q 'f2c_abi\.c' ompi/mpi/c/Makefile_abi.include
+# Copy in the Fortran/C handle conversion functions. Only the contents of this
+# file vary from run to run, so this happens on every run, including when the
+# prepared tree came from a cache.
+install_bindings() {
+    cp "${repodir}/fortran/f2c_abi_openmpi.c" "${tree}/ompi/mpi/c/f2c_abi.c"
+}
 
-./autogen.pl
+if [[ -f ${stamp} ]]; then
+    echo "Reusing the prepared source tree in ${tree}"
+    install_bindings
+else
+    rm -rf "${tree}"
+
+    # Download
+    git clone --quiet --depth 1 https://github.com/open-mpi/ompi.git "${tree}"
+    cd "${tree}"
+    git fetch --quiet --depth 1 origin "${OMPI_COMMIT}"
+    git checkout --quiet "${OMPI_COMMIT}"
+    git submodule update --init --recursive
+
+    # Add the Fortran/C handle conversion functions to the ABI library
+    install_bindings
+    perl -pi -e 's!comm_fromint_abi\.c!f2c_abi.c comm_fromint_abi.c!' \
+         ompi/mpi/c/Makefile_abi.include
+    # Fail loudly if upstream renamed the file we hooked into: without this the
+    # bindings would be silently left out of the library, and the failure would
+    # only show up much later as undefined symbols when linking a test.
+    grep -q 'f2c_abi\.c' ompi/mpi/c/Makefile_abi.include
+
+    ./autogen.pl
+
+    touch "${stamp}"
+fi
+
+if [[ ${prepare_only} == 1 ]]; then
+    echo "Prepared source tree in ${tree}"
+    exit 0
+fi
+
+cd "${tree}"
 
 # Configure
 configure_flags=(
