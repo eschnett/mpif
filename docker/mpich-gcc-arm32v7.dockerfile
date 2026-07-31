@@ -1,6 +1,7 @@
 # env DOCKER_BUILDKIT=1 docker build --file docker/mpich-gcc-arm32v7.dockerfile --platform linux/arm/v7 --progress plain --tag mpich-mpiabi-gcc-arm32v7 .
 
-FROM arm32v7/ubuntu:noble-20260324
+# FROM arm32v7/ubuntu:noble-20260410
+FROM arm32v7/ubuntu:resolute-20260627
 
 SHELL ["/bin/bash", "-c"]
 
@@ -20,6 +21,7 @@ RUN <<EOF
         ca-certificates
         cmake
         gfortran
+        curl
         git
         language-pack-en
         libhwloc-dev
@@ -37,106 +39,24 @@ EOF
 ################################################################################
 # Install MPICH
 
-# Download MPICH
-ADD https://www.mpich.org/static/downloads/5.0.1/mpich-5.0.1.tar.gz /cactus/mpich-5.0.1.tar.gz
-RUN tar xzf mpich-5.0.1.tar.gz
-WORKDIR /cactus/mpich-5.0.1
+# The build recipe is shared with CI and with the local build scripts; see
+# scripts/install-mpich.sh. It builds MPICH with the MPI standard ABI, adds
+# mpif's Fortran/C handle conversion functions, removes everything that is not
+# part of the standard ABI, and installs the official ABI `mpi.h`.
 
-ADD https://github.com/pmodels/mpich/commit/689a0869c8f58167e3b0b5db13f8ce8db5f24009.patch 689a0869c8f58167e3b0b5db13f8ce8db5f24009.patch
-RUN patch -p1 <689a0869c8f58167e3b0b5db13f8ce8db5f24009.patch
+WORKDIR /cactus/mpif
+COPY fortran ./fortran
+COPY scripts ./scripts
 
-# Add Fortran bindings
-ADD fortran/fortran_binding_abi.c src/binding/abi/fortran_binding_abi.c
-RUN perl -pi -e 's!src/binding/abi/c_binding_abi.c!src/binding/abi/c_binding_abi.c src/binding/abi/fortran_binding_abi.c!' src/binding/abi/Makefile.mk
-RUN ./autogen.sh
-
-# Configure
 ENV mpi_prefix=/mpich-mpiabi-gcc
-RUN <<EOF
-    set -e
-    configure_flags=(
-        --disable-dependency-tracking
-        --disable-doc
-        --enable-cxx=no
-        --enable-fortran
-        --enable-mpi-abi
-        --enable-static=no
-        --prefix=${mpi_prefix}
-        --with-device=ch3
-        --with-hwloc
-    )
-    ./configure "${configure_flags[@]}"
-EOF
-
-# Disable MPI_File_{c2f,f2c} that shouldn't be there
-ADD fortran/mpich-disable-file.patch /cactus/mpich-disable-file.patch
-RUN patch -p1 </cactus/mpich-disable-file.patch
-
-# Build
-RUN make -j$(nproc)
-
-# Install
-RUN make install
-
-# Fixup
-RUN <<EOF
-    rm ${mpi_prefix}/bin/mpicc_abi
-    rm ${mpi_prefix}/bin/mpichversion       # needs libmpi.so
-    rm ${mpi_prefix}/bin/mpicxx_abi
-    rm ${mpi_prefix}/bin/mpif77
-    rm ${mpi_prefix}/bin/mpif90
-    rm ${mpi_prefix}/bin/mpifort
-    rm ${mpi_prefix}/bin/mpivars            # needs libmpi.so
-    sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${mpi_prefix}/bin/mpicc
-    sed -i -e 's/mpi_abi=no/mpi_abi=yes/' ${mpi_prefix}/bin/mpicxx
-    
-    rm ${mpi_prefix}/include/mpi.h
-    rm ${mpi_prefix}/include/mpi.mod
-    rm ${mpi_prefix}/include/mpi_abi.h
-    rm ${mpi_prefix}/include/mpi_base.mod
-    rm ${mpi_prefix}/include/mpi_c_interface.mod
-    rm ${mpi_prefix}/include/mpi_c_interface_cdesc.mod
-    rm ${mpi_prefix}/include/mpi_c_interface_glue.mod
-    rm ${mpi_prefix}/include/mpi_c_interface_nobuf.mod
-    rm ${mpi_prefix}/include/mpi_c_interface_types.mod
-    rm ${mpi_prefix}/include/mpi_constants.mod
-    rm ${mpi_prefix}/include/mpi_f08.mod
-    rm ${mpi_prefix}/include/mpi_f08_callbacks.mod
-    rm ${mpi_prefix}/include/mpi_f08_compile_constants.mod
-    rm ${mpi_prefix}/include/mpi_f08_link_constants.mod
-    rm ${mpi_prefix}/include/mpi_f08_types.mod
-    rm ${mpi_prefix}/include/mpi_proto.h
-    rm ${mpi_prefix}/include/mpi_sizeofs.mod
-    rm ${mpi_prefix}/include/mpif.h
-    rm ${mpi_prefix}/include/pmpi_base.mod
-    rm ${mpi_prefix}/include/pmpi_f08.mod
-    
-    rm ${mpi_prefix}/lib/libfmpich.*
-    rm ${mpi_prefix}/lib/libmpi.*
-    rm ${mpi_prefix}/lib/libmpich.*
-    rm ${mpi_prefix}/lib/libmpichcxx.*
-    rm ${mpi_prefix}/lib/libmpichf90.*
-    rm ${mpi_prefix}/lib/libmpifort.*
-    rm ${mpi_prefix}/lib/libmpl.*
-    rm ${mpi_prefix}/lib/libopa.*
-    rm ${mpi_prefix}/lib/libpmpi.*
-    rm ${mpi_prefix}/lib/pkgconfig/mpich.pc
-EOF
-
-# Install official mpi.h header file
-ADD https://raw.githubusercontent.com/mpi-forum/mpi-abi-stubs/refs/heads/main/mpi.h ${mpi_prefix}/include/mpi.h
-ADD fortran/mpi.h.patch mpi.h.patch
-RUN (cd ${mpi_prefix}/include && patch -p1 </cactus/mpich-5.0.1/mpi.h.patch)
+RUN scripts/install-mpich.sh ${mpi_prefix}
 
 
 
 ################################################################################
 # mpif
 
-WORKDIR /cactus
-RUN mkdir mpif
-WORKDIR /cactus/mpif
-COPY --parents bin CMakeLists.txt gen include src .
+COPY --parents bin cmake CMakeLists.txt gen include src .
 
 # Configure
 ENV mpif_prefix=/cactus/mpif-mpich-gcc

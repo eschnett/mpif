@@ -1,0 +1,58 @@
+# Files installed by OpenMPI that must not be part of a standard-ABI-only
+# installation. See scripts/prune-install.sh for the format.
+
+# Fortran wrapper compilers; mpif installs its own `mpifort`
+bin/mpif77
+bin/mpif90
+bin/mpifort
+
+include/evdns.h
+include/event.h
+include/event2
+include/evhttp.h
+include/evrpc.h
+include/evutil.h
+include/mpi-ext.h
+include/mpi.h                          # replaced by the official ABI header
+include/mpi_portable_platform.h
+include/mpif-c-constants-decl.h
+include/mpif-config.h
+include/mpif-constants.h
+include/mpif-ext.h
+include/mpif-externals.h
+include/mpif-handles.h
+include/mpif-io-constants.h
+include/mpif-io-handles.h
+include/mpif-sentinels.h
+include/mpif-sizeof.h
+include/mpif.h
+include/openmpi
+include/pmix
+include/pmix.h
+include/pmix_common.h
+include/pmix_deprecated.h
+include/pmix_server.h
+include/pmix_tool.h
+include/pmix_version.h
+include/prte
+include/prte.h
+include/prte_version.h
+include/standard_abi
+
+lib/libmpi.*                           # the non-ABI library
+lib/libmpi_mpifh.*
+lib/libmpi_usempi_ignore_tkr.*
+lib/libmpi_usempif08.*
+lib/mpi.mod
+lib/mpi_ext.mod
+lib/mpi_f08.mod
+lib/mpi_f08_callbacks.mod
+lib/mpi_f08_ext.mod
+lib/mpi_f08_interfaces.mod
+lib/mpi_f08_interfaces_callbacks.mod
+lib/mpi_f08_types.mod
+lib/mpi_types.mod
+lib/pmpi_f08_interfaces.mod
+lib/pkgconfig/libevent*.pc
+lib/pkgconfig/ompi*.pc
+lib/pkgconfig/pmix*.pc

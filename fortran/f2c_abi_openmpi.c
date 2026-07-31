@@ -48,7 +48,7 @@ typedef MPI_Status MPI_F08_Status;
 // Status functions
 
 #if OMPI_BUILD_MPI_PROFILING
-#if OPAL_HAVE_WEAK_SYMBOLS
+#if OPAL_HAVE_WEAK_ALIASES
 #pragma weak MPI_Status_f2c = PMPI_Status_f2c
 #pragma weak MPI_Status_c2f = PMPI_Status_c2f
 #pragma weak MPI_Status_f082c = PMPI_Status_f082c
@@ -60,10 +60,10 @@ typedef MPI_Status MPI_F08_Status;
 #define MPI_Status_c2f08 PMPI_Status_c2f08
 #endif
 
-int MPI_Status_f2c(const MPI_Fint *f_status, MPI_Status *c_status);
-int MPI_Status_c2f(const MPI_Status *c_status, MPI_Fint *f_status);
-int MPI_Status_f082c(const MPI_F08_Status *f08_status, MPI_Status *c_status);
-int MPI_Status_c2f08(const MPI_Status *c_status, MPI_F08_Status *f08_status);
+OMPI_DECLSPEC int MPI_Status_f2c(const MPI_Fint *f_status, MPI_Status *c_status);
+OMPI_DECLSPEC int MPI_Status_c2f(const MPI_Status *c_status, MPI_Fint *f_status);
+OMPI_DECLSPEC int MPI_Status_f082c(const MPI_F08_Status *f08_status, MPI_Status *c_status);
+OMPI_DECLSPEC int MPI_Status_c2f08(const MPI_Status *c_status, MPI_F08_Status *f08_status);
 
 // __attribute__((visibility("default")))
 int MPI_Status_f2c(const MPI_Fint *f_status, MPI_Status *c_status) {
@@ -103,11 +103,43 @@ int MPI_Status_c2f08(const MPI_Status *c_status, MPI_F08_Status *f08_status) {
   return MPI_SUCCESS;
 }
 
+// Mach-O cannot express a weak *alias*. Where weak aliases are unavailable,
+// define the public MPI_* symbol here as a weak function forwarding to the
+// strong PMPI_* one (this is what Open MPI's own bindings do).
+#if OMPI_BUILD_MPI_PROFILING && !OPAL_HAVE_WEAK_ALIASES
+
+#undef MPI_Status_f2c
+#undef MPI_Status_c2f
+#undef MPI_Status_f082c
+#undef MPI_Status_c2f08
+
+OMPI_DECLSPEC __opal_attribute_weak__ int
+MPI_Status_f2c(const MPI_Fint *f_status, MPI_Status *c_status) {
+  return PMPI_Status_f2c(f_status, c_status);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ int
+MPI_Status_c2f(const MPI_Status *c_status, MPI_Fint *f_status) {
+  return PMPI_Status_c2f(c_status, f_status);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ int
+MPI_Status_f082c(const MPI_F08_Status *f08_status, MPI_Status *c_status) {
+  return PMPI_Status_f082c(f08_status, c_status);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ int
+MPI_Status_c2f08(const MPI_Status *c_status, MPI_F08_Status *f08_status) {
+  return PMPI_Status_c2f08(c_status, f08_status);
+}
+
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 // Handle functions
 
 #if OMPI_BUILD_MPI_PROFILING
-#if OPAL_HAVE_WEAK_SYMBOLS
+#if OPAL_HAVE_WEAK_ALIASES
 #pragma weak MPI_Comm_f2c = PMPI_Comm_f2c
 #pragma weak MPI_Comm_c2f = PMPI_Comm_c2f
 #pragma weak MPI_Errhandler_f2c = PMPI_Errhandler_f2c
@@ -155,28 +187,28 @@ int MPI_Status_c2f08(const MPI_Status *c_status, MPI_F08_Status *f08_status) {
 #define MPI_Win_c2f PMPI_Win_c2f
 #endif
 
-MPI_Comm MPI_Comm_f2c(MPI_Fint comm);
-MPI_Fint MPI_Comm_c2f(MPI_Comm comm);
-MPI_Errhandler MPI_Errhandler_f2c(MPI_Fint errhandler);
-MPI_Fint MPI_Errhandler_c2f(MPI_Errhandler errhandler);
-MPI_File MPI_File_f2c(MPI_Fint file);
-MPI_Fint MPI_File_c2f(MPI_File file);
-MPI_Group MPI_Group_f2c(MPI_Fint group);
-MPI_Fint MPI_Group_c2f(MPI_Group group);
-MPI_Info MPI_Info_f2c(MPI_Fint info);
-MPI_Fint MPI_Info_c2f(MPI_Info info);
-MPI_Message MPI_Message_f2c(MPI_Fint message);
-MPI_Fint MPI_Message_c2f(MPI_Message message);
-MPI_Op MPI_Op_f2c(MPI_Fint op);
-MPI_Fint MPI_Op_c2f(MPI_Op op);
-MPI_Request MPI_Request_f2c(MPI_Fint request);
-MPI_Fint MPI_Request_c2f(MPI_Request request);
-MPI_Session MPI_Session_f2c(MPI_Fint session);
-MPI_Fint MPI_Session_c2f(MPI_Session session);
-MPI_Datatype MPI_Type_f2c(MPI_Fint datatype);
-MPI_Fint MPI_Type_c2f(MPI_Datatype datatype);
-MPI_Win MPI_Win_f2c(MPI_Fint win);
-MPI_Fint MPI_Win_c2f(MPI_Win win);
+OMPI_DECLSPEC MPI_Comm MPI_Comm_f2c(MPI_Fint comm);
+OMPI_DECLSPEC MPI_Fint MPI_Comm_c2f(MPI_Comm comm);
+OMPI_DECLSPEC MPI_Errhandler MPI_Errhandler_f2c(MPI_Fint errhandler);
+OMPI_DECLSPEC MPI_Fint MPI_Errhandler_c2f(MPI_Errhandler errhandler);
+OMPI_DECLSPEC MPI_File MPI_File_f2c(MPI_Fint file);
+OMPI_DECLSPEC MPI_Fint MPI_File_c2f(MPI_File file);
+OMPI_DECLSPEC MPI_Group MPI_Group_f2c(MPI_Fint group);
+OMPI_DECLSPEC MPI_Fint MPI_Group_c2f(MPI_Group group);
+OMPI_DECLSPEC MPI_Info MPI_Info_f2c(MPI_Fint info);
+OMPI_DECLSPEC MPI_Fint MPI_Info_c2f(MPI_Info info);
+OMPI_DECLSPEC MPI_Message MPI_Message_f2c(MPI_Fint message);
+OMPI_DECLSPEC MPI_Fint MPI_Message_c2f(MPI_Message message);
+OMPI_DECLSPEC MPI_Op MPI_Op_f2c(MPI_Fint op);
+OMPI_DECLSPEC MPI_Fint MPI_Op_c2f(MPI_Op op);
+OMPI_DECLSPEC MPI_Request MPI_Request_f2c(MPI_Fint request);
+OMPI_DECLSPEC MPI_Fint MPI_Request_c2f(MPI_Request request);
+OMPI_DECLSPEC MPI_Session MPI_Session_f2c(MPI_Fint session);
+OMPI_DECLSPEC MPI_Fint MPI_Session_c2f(MPI_Session session);
+OMPI_DECLSPEC MPI_Datatype MPI_Type_f2c(MPI_Fint datatype);
+OMPI_DECLSPEC MPI_Fint MPI_Type_c2f(MPI_Datatype datatype);
+OMPI_DECLSPEC MPI_Win MPI_Win_f2c(MPI_Fint win);
+OMPI_DECLSPEC MPI_Fint MPI_Win_c2f(MPI_Win win);
 
 // __attribute__((visibility("default")))
 MPI_Comm MPI_Comm_f2c(MPI_Fint comm) { return MPI_Comm_fromint(comm); }
@@ -263,3 +295,128 @@ MPI_Win MPI_Win_f2c(MPI_Fint win) { return MPI_Win_fromint(win); }
 
 // __attribute__((visibility("default")))
 MPI_Fint MPI_Win_c2f(MPI_Win win) { return MPI_Win_toint(win); }
+
+#if OMPI_BUILD_MPI_PROFILING && !OPAL_HAVE_WEAK_ALIASES
+
+#undef MPI_Comm_f2c
+#undef MPI_Comm_c2f
+#undef MPI_Errhandler_f2c
+#undef MPI_Errhandler_c2f
+#undef MPI_File_f2c
+#undef MPI_File_c2f
+#undef MPI_Group_f2c
+#undef MPI_Group_c2f
+#undef MPI_Info_f2c
+#undef MPI_Info_c2f
+#undef MPI_Message_f2c
+#undef MPI_Message_c2f
+#undef MPI_Op_f2c
+#undef MPI_Op_c2f
+#undef MPI_Request_f2c
+#undef MPI_Request_c2f
+#undef MPI_Session_f2c
+#undef MPI_Session_c2f
+#undef MPI_Type_f2c
+#undef MPI_Type_c2f
+#undef MPI_Win_f2c
+#undef MPI_Win_c2f
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Comm MPI_Comm_f2c(MPI_Fint comm) {
+  return PMPI_Comm_f2c(comm);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Fint MPI_Comm_c2f(MPI_Comm comm) {
+  return PMPI_Comm_c2f(comm);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Errhandler
+MPI_Errhandler_f2c(MPI_Fint errhandler) {
+  return PMPI_Errhandler_f2c(errhandler);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Fint
+MPI_Errhandler_c2f(MPI_Errhandler errhandler) {
+  return PMPI_Errhandler_c2f(errhandler);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_File MPI_File_f2c(MPI_Fint file) {
+  return PMPI_File_f2c(file);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Fint MPI_File_c2f(MPI_File file) {
+  return PMPI_File_c2f(file);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Group MPI_Group_f2c(MPI_Fint group) {
+  return PMPI_Group_f2c(group);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Fint MPI_Group_c2f(MPI_Group group) {
+  return PMPI_Group_c2f(group);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Info MPI_Info_f2c(MPI_Fint info) {
+  return PMPI_Info_f2c(info);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Fint MPI_Info_c2f(MPI_Info info) {
+  return PMPI_Info_c2f(info);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Message
+MPI_Message_f2c(MPI_Fint message) {
+  return PMPI_Message_f2c(message);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Fint
+MPI_Message_c2f(MPI_Message message) {
+  return PMPI_Message_c2f(message);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Op MPI_Op_f2c(MPI_Fint op) {
+  return PMPI_Op_f2c(op);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Fint MPI_Op_c2f(MPI_Op op) {
+  return PMPI_Op_c2f(op);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Request
+MPI_Request_f2c(MPI_Fint request) {
+  return PMPI_Request_f2c(request);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Fint
+MPI_Request_c2f(MPI_Request request) {
+  return PMPI_Request_c2f(request);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Session
+MPI_Session_f2c(MPI_Fint session) {
+  return PMPI_Session_f2c(session);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Fint
+MPI_Session_c2f(MPI_Session session) {
+  return PMPI_Session_c2f(session);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Datatype
+MPI_Type_f2c(MPI_Fint datatype) {
+  return PMPI_Type_f2c(datatype);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Fint
+MPI_Type_c2f(MPI_Datatype datatype) {
+  return PMPI_Type_c2f(datatype);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Win MPI_Win_f2c(MPI_Fint win) {
+  return PMPI_Win_f2c(win);
+}
+
+OMPI_DECLSPEC __opal_attribute_weak__ MPI_Fint MPI_Win_c2f(MPI_Win win) {
+  return PMPI_Win_c2f(win);
+}
+
+#endif

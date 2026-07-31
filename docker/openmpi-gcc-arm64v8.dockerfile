@@ -1,6 +1,7 @@
 # env DOCKER_BUILDKIT=1 docker build --file docker/openmpi-gcc-arm64v8.dockerfile --platform linux/arm64 --progress plain --tag openmpi-mpiabi-gcc-arm64v8 .
 
-FROM arm64v8/ubuntu:noble-20260324
+# FROM arm64v8/ubuntu:noble-20260410
+FROM arm64v8/ubuntu:resolute-20260627
 
 SHELL ["/bin/bash", "-c"]
 
@@ -20,6 +21,7 @@ RUN <<EOF
         ca-certificates
         cmake
         gfortran
+        flex
         git
         language-pack-en
         libhwloc-dev
@@ -37,119 +39,24 @@ EOF
 ################################################################################
 # Install OpenMPI
 
-# Download OpenMPI
-RUN git clone --depth 1 https://github.com/open-mpi/ompi.git
-WORKDIR /cactus/ompi
-# RUN git fetch --depth 1 origin ed5193c3d101e5ef8f6fda19fa89e694c88ada18
-# RUN git checkout ed5193c3d101e5ef8f6fda19fa89e694c88ada18
-RUN git fetch --depth 1 origin aff7a8b89e6792357d4bca4cc18284f5e30d03fa
-RUN git checkout aff7a8b89e6792357d4bca4cc18284f5e30d03fa
-RUN git submodule update --init --recursive
+# The build recipe is shared with CI and with the local build scripts; see
+# scripts/install-openmpi.sh. It builds OpenMPI with the MPI standard ABI, adds
+# mpif's Fortran/C handle conversion functions, removes everything that is not
+# part of the standard ABI, and installs the official ABI `mpi.h`.
 
-# Add Fortran bindings
-ADD fortran/f2c_abi.c ompi/mpi/c/f2c_abi.c
-RUN perl -pi -e 's!comm_fromint_abi.c!f2c_abi.c comm_fromint_abi.c!' ompi/mpi/c/Makefile_abi.include
-# ADD fortran/openmpi-disable-type.patch openmpi-disable-type.patch
-# RUN patch -p1 <openmpi-disable-type.patch
-ADD fortran/openmpi-abi_fortran.patch openmpi-abi_fortran.patch
-RUN patch -p1 <openmpi-abi_fortran.patch
-RUN ./autogen.pl
+WORKDIR /cactus/mpif
+COPY fortran ./fortran
+COPY scripts ./scripts
 
-# Configure
 ENV mpi_prefix=/openmpi-mpiabi-gcc
-RUN apt-get --yes --no-install-recommends install flex
-RUN <<EOF
-    set -e
-    configure_flags=(
-        --enable-mpi-fortran=yes
-        --enable-mpi1-compatibility=yes
-        --enable-script-wrapper-compilers
-        --enable-shared=yes
-        --enable-standard-abi=yes
-        --enable-static=no
-        --prefix=${mpi_prefix}
-        --with-hwloc
-        --with-libevent=internal
-    )
-    ./configure "${configure_flags[@]}"
-EOF
-
-# Build
-RUN make -j$(nproc)
-
-# Install
-RUN make install
-
-# Fixup
-RUN <<EOF
-    sed -i -e 's/-lmpi/-lmpi_abi/' ${mpi_prefix}/bin/ompi_wrapper_script
-    
-    rm     ${mpi_prefix}/include/evdns.h
-    rm     ${mpi_prefix}/include/event.h
-    rm -rf ${mpi_prefix}/include/event2
-    rm     ${mpi_prefix}/include/evhttp.h
-    rm     ${mpi_prefix}/include/evrpc.h
-    rm     ${mpi_prefix}/include/evutil.h
-    rm     ${mpi_prefix}/include/mpi_portable_platform.h
-    rm     ${mpi_prefix}/include/mpi-ext.h
-    rm     ${mpi_prefix}/include/mpi.h
-    rm     ${mpi_prefix}/include/mpif-c-constants-decl.h
-    rm     ${mpi_prefix}/include/mpif-config.h
-    rm     ${mpi_prefix}/include/mpif-constants.h
-    rm     ${mpi_prefix}/include/mpif-ext.h
-    rm     ${mpi_prefix}/include/mpif-externals.h
-    rm     ${mpi_prefix}/include/mpif-handles.h
-    rm     ${mpi_prefix}/include/mpif-io-constants.h
-    rm     ${mpi_prefix}/include/mpif-io-handles.h
-    rm     ${mpi_prefix}/include/mpif-sentinels.h
-    rm     ${mpi_prefix}/include/mpif-sizeof.h
-    rm     ${mpi_prefix}/include/mpif.h
-    rm -rf ${mpi_prefix}/include/openmpi
-    rm -rf ${mpi_prefix}/include/pmix
-    rm     ${mpi_prefix}/include/pmix_common.h
-    rm     ${mpi_prefix}/include/pmix_deprecated.h
-    rm     ${mpi_prefix}/include/pmix_server.h
-    rm     ${mpi_prefix}/include/pmix_tool.h
-    rm     ${mpi_prefix}/include/pmix_version.h
-    rm     ${mpi_prefix}/include/pmix.h
-    rm -rf ${mpi_prefix}/include/prte
-    rm     ${mpi_prefix}/include/prte_version.h
-    rm     ${mpi_prefix}/include/prte.h
-    rm -rf ${mpi_prefix}/include/standard_abi
-    
-    rm ${mpi_prefix}/lib/libmpi.*
-    rm ${mpi_prefix}/lib/libmpi_mpifh.*
-    rm ${mpi_prefix}/lib/libmpi_usempi_ignore_tkr.*
-    rm ${mpi_prefix}/lib/libmpi_usempif08.*
-    rm ${mpi_prefix}/lib/mpi.mod
-    rm ${mpi_prefix}/lib/mpi_ext.mod
-    rm ${mpi_prefix}/lib/mpi_f08.mod
-    rm ${mpi_prefix}/lib/mpi_f08_callbacks.mod
-    rm ${mpi_prefix}/lib/mpi_f08_ext.mod
-    rm ${mpi_prefix}/lib/mpi_f08_interfaces.mod
-    rm ${mpi_prefix}/lib/mpi_f08_interfaces_callbacks.mod
-    rm ${mpi_prefix}/lib/mpi_f08_types.mod
-    rm ${mpi_prefix}/lib/mpi_types.mod
-    rm ${mpi_prefix}/lib/pkgconfig/libevent*.pc
-    rm ${mpi_prefix}/lib/pkgconfig/ompi*pc
-    rm ${mpi_prefix}/lib/pkgconfig/pmix*pc
-    rm ${mpi_prefix}/lib/pmpi_f08_interfaces.mod
-EOF
-
-# Install official mpi.h header file
-ADD https://raw.githubusercontent.com/mpi-forum/mpi-abi-stubs/refs/heads/main/mpi.h ${mpi_prefix}/include/mpi.h
-ADD fortran/mpi.h.patch mpi.h.patch
-RUN (cd ${mpi_prefix}/include && patch -p1 </cactus/ompi/mpi.h.patch)
+RUN scripts/install-openmpi.sh ${mpi_prefix}
 
 
 
 ################################################################################
 # mpif
 
-WORKDIR /cactus
-RUN mkdir mpif
-WORKDIR /cactus/mpif
-COPY --parents bin CMakeLists.txt gen include src .
+COPY --parents bin cmake CMakeLists.txt gen include src .
 
 # Configure
 ENV mpif_prefix=/cactus/mpif-openmpi-gcc
@@ -189,4 +96,4 @@ EOF
 RUN cmake --build build-openmpi-gcc-tests
 
 # Run tests
-#TODO RUN ctest --test-dir build-openmpi-gcc-tests --output-on-failure
+RUN ctest --test-dir build-openmpi-gcc-tests --output-on-failure

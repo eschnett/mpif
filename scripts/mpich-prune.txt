@@ -1,0 +1,42 @@
+# Files installed by MPICH that must not be part of a standard-ABI-only
+# installation. See scripts/prune-install.sh for the format.
+
+bin/mpicc_abi
+bin/mpichversion                       # needs libmpi.so
+bin/mpicxx_abi
+bin/mpif77
+bin/mpif90
+bin/mpifort                            # mpif installs its own `mpifort`
+bin/mpivars                            # needs libmpi.so
+
+include/mpi.h                          # replaced by the official ABI header
+include/mpi.mod
+include/mpi_abi.h
+include/mpi_base.mod
+include/mpi_c_interface.mod
+include/mpi_c_interface_cdesc.mod
+include/mpi_c_interface_glue.mod
+include/mpi_c_interface_nobuf.mod
+include/mpi_c_interface_types.mod
+include/mpi_constants.mod
+include/mpi_f08.mod
+include/mpi_f08_callbacks.mod
+include/mpi_f08_compile_constants.mod
+include/mpi_f08_link_constants.mod
+include/mpi_f08_types.mod
+include/mpi_proto.h
+include/mpi_sizeofs.mod
+include/mpif.h
+include/pmpi_base.mod
+include/pmpi_f08.mod
+
+lib/libfmpich.*
+lib/libmpi.*                           # the non-ABI library
+lib/libmpich.*
+lib/libmpichcxx.*
+lib/libmpichf90.*
+lib/libmpifort.*
+lib/libmpl.*
+lib/libopa.*
+lib/libpmpi.*                          # does not exist on all architectures
+lib/pkgconfig/mpich.pc
