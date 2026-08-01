@@ -287,7 +287,20 @@ jobs:
           # Open MPI refuses to oversubscribe by default, and the runners have
           # fewer cores than the suite asks processes for
           if [[ ${{ matrix.mpi }} == openmpi ]]; then
-              export MPIEXEC_ARGS=--oversubscribe
+              args=--oversubscribe
+              # On macOS Open MPI picks a non-loopback interface and then fails
+              # to configure the socket -- "setsockopt(TCP_NODELAY) failed:
+              # Invalid argument (22)", followed by its own warning that this
+              # "may end up hanging". It does, in every test that communicates
+              # across a spawned intercommunicator, and each one then burns
+              # runtests' 180-second timeout rather than failing. The interface
+              # is lo0 on macOS and lo on Linux, but Linux does not need this at
+              # all, so it is not worth naming there. See
+              # scripts/macos-test-mpich-suite.sh, which does the same locally.
+              if [[ ${RUNNER_OS} == macOS ]]; then
+                  args="${args} --mca btl_tcp_if_include lo0"
+              fi
+              export MPIEXEC_ARGS="${args}"
           fi
           ci-scripts/test-mpich-suite.sh "${MPI_PREFIX}" "${MPIF_PREFIX}"
 

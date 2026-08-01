@@ -39,6 +39,9 @@ export MPICH_TESTS_DIR=${MPICH_TESTS_DIR:-${repodir}/mpi/tests-${variant}}
 #
 # Not an mpif problem: a pure C program that spawns and then sends across the
 # intercommunicator hangs the same way, with no Fortran involved.
+#
+# The CI step does the same, guarded on RUNNER_OS -- Linux needs neither the
+# flag nor the interface name, its loopback being lo rather than lo0.
 if [[ ${mpi} == openmpi ]]; then
     export MPIEXEC_ARGS="${MPIEXEC_ARGS:---oversubscribe --mca btl_tcp_if_include lo0}"
 fi
