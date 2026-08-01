@@ -504,13 +504,22 @@ module mpi_f08_types
 
   public :: MPI_Grequest_query_function
   abstract interface
+     ! No INTENT on any argument of the three generalized request callbacks: that
+     ! is how MPI-5.0 section 13.2 declares them, and it is deliberate for
+     ! `extra_state`, which a callback may update -- the standard's own wording
+     ! is that the request's state lives there, and MPICH's greqf test requires a
+     ! `free_fn` that decrements it to be seen by the caller. An INTENT(IN) here
+     ! makes a conforming callback fail to compile with "INTENT mismatch in
+     ! argument 'extra_state'", so the intents are omitted rather than guessed.
+     ! Contrast the attribute callbacks above, where the standard does say
+     ! INTENT(IN) and mpif passes a copy.
      subroutine MPI_Grequest_query_function(extra_state, status, ierror)
        use mpi_f08_constants
        import :: MPI_Status
        implicit none
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       type(MPI_Status), intent(out) :: status
-       integer, intent(out) :: ierror
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       type(MPI_Status) :: status
+       integer :: ierror
      end subroutine MPI_Grequest_query_function
   end interface
 
@@ -519,9 +528,9 @@ module mpi_f08_types
      subroutine MPI_Grequest_cancel_function(extra_state, complete, ierror)
        use mpi_f08_constants
        implicit none
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       logical, intent(in) :: complete
-       integer, intent(out) :: ierror
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       logical :: complete
+       integer :: ierror
      end subroutine MPI_Grequest_cancel_function
   end interface
 
@@ -530,8 +539,8 @@ module mpi_f08_types
      subroutine MPI_Grequest_free_function(extra_state, ierror)
        use mpi_f08_constants
        implicit none
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer, intent(out) :: ierror
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer :: ierror
      end subroutine MPI_Grequest_free_function
   end interface
 
