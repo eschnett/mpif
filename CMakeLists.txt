@@ -217,6 +217,7 @@ add_library(mpifort_abi SHARED
   src/mpif_constants.c
   src/mpif_logical.F90
   src/mpif_logical.c
+  src/mpif_removed.c
   src/mpif_sizeof.c
   src/mpif_strings.c
   gen/mpif_functions.c
