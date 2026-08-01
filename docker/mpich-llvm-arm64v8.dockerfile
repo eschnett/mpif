@@ -50,16 +50,16 @@ ENV FC=flang-21
 # Install MPICH
 
 # The build recipe is shared with CI and with the local build scripts; see
-# scripts/install-mpich.sh. It builds MPICH with the MPI standard ABI, adds
+# ci-scripts/install-mpich.sh. It builds MPICH with the MPI standard ABI, adds
 # mpif's Fortran/C handle conversion functions, removes everything that is not
 # part of the standard ABI, and installs the official ABI `mpi.h`.
 
 WORKDIR /cactus/mpif
 COPY fortran ./fortran
-COPY scripts ./scripts
+COPY ci-scripts ./ci-scripts
 
 ENV mpi_prefix=/mpich-mpiabi-llvm
-RUN scripts/install-mpich.sh ${mpi_prefix}
+RUN ci-scripts/install-mpich.sh ${mpi_prefix}
 
 
 

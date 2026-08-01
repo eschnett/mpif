@@ -40,16 +40,16 @@ EOF
 # Install OpenMPI
 
 # The build recipe is shared with CI and with the local build scripts; see
-# scripts/install-openmpi.sh. It builds OpenMPI with the MPI standard ABI, adds
+# ci-scripts/install-openmpi.sh. It builds OpenMPI with the MPI standard ABI, adds
 # mpif's Fortran/C handle conversion functions, removes everything that is not
 # part of the standard ABI, and installs the official ABI `mpi.h`.
 
 WORKDIR /cactus/mpif
 COPY fortran ./fortran
-COPY scripts ./scripts
+COPY ci-scripts ./ci-scripts
 
 ENV mpi_prefix=/openmpi-mpiabi-gcc
-RUN scripts/install-openmpi.sh ${mpi_prefix}
+RUN ci-scripts/install-openmpi.sh ${mpi_prefix}
 
 
 

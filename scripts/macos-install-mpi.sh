@@ -9,4 +9,4 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/macos-common.sh" "$@"
 
 rm -rf "${mpi_prefix}"
-"${repodir}/scripts/install-${mpi}.sh" "${mpi_prefix}"
+"${repodir}/ci-scripts/install-${mpi}.sh" "${mpi_prefix}"

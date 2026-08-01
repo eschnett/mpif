@@ -1,5 +1,5 @@
 # Files installed by OpenMPI that must not be part of a standard-ABI-only
-# installation. See scripts/prune-install.sh for the format.
+# installation. See ci-scripts/prune-install.sh for the format.
 
 # Fortran wrapper compilers; mpif installs its own `mpifort`
 bin/mpif77

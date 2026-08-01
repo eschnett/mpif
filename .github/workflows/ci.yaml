@@ -170,18 +170,16 @@ jobs:
       # Three caches, from coarsest to finest. The MPI installation is all that
       # is needed for a run that changes neither the bindings nor the build
       # scripts; the other two only come into play when it misses.
-      # Note the enumeration: `scripts/**` would also cover scripts/macos-*.sh,
-      # which only drive local builds and cannot affect what CI installs, so
-      # editing those would needlessly rebuild every MPI here. The flip side is
-      # that every *other* script the install scripts reach for -- directly or
-      # indirectly -- has to be listed, or a change to it will reuse a stale
-      # installation.
+      # Hashing all of ci-scripts/ is safe precisely because that directory
+      # holds only what CI and the Docker images use: a new script there is
+      # covered automatically, and the local build scripts in scripts/ cannot
+      # invalidate this cache.
       - name: Cache MPI installation
         id: cache-mpi
         uses: actions/cache@v5
         with:
           path: ${{ runner.temp }}/opt/mpi
-          key: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('scripts/install-*.sh', 'scripts/prune-install.sh', 'scripts/check-mpi-install.sh', 'scripts/flang-darwin-shim.sh', 'scripts/*-prune.txt', 'fortran/**') }}
+          key: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('ci-scripts/**', 'fortran/**') }}
 
       # The downloaded and autogen'ed source tree. Its key deliberately ignores
       # `fortran/`, so editing the bindings still skips the clone, the
@@ -193,13 +191,13 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           path: ${{ runner.temp }}/mpi-src
-          key: mpi-src-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('scripts/install-*.sh') }}
+          key: mpi-src-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('ci-scripts/install-*.sh') }}
 
       - name: Prepare MPI source tree
         if: steps.cache-mpi.outputs.cache-hit != 'true' && steps.cache-mpi-src.outputs.cache-hit != 'true'
         env:
           MPI_PREPARE_ONLY: 1
-        run: scripts/install-${{ matrix.mpi }}.sh
+        run: ci-scripts/install-${{ matrix.mpi }}.sh
 
       - name: Save MPI source tree
         if: steps.cache-mpi.outputs.cache-hit != 'true' && steps.cache-mpi-src.outputs.cache-hit != 'true'
@@ -224,7 +222,7 @@ jobs:
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
           ccache --zero-stats
-          scripts/install-${{ matrix.mpi }}.sh "${MPI_PREFIX}"
+          ci-scripts/install-${{ matrix.mpi }}.sh "${MPI_PREFIX}"
           ccache --show-stats
 
       - name: Save ccache
@@ -246,7 +244,7 @@ jobs:
       # The install scripts run this too, but not when the installation came
       # from the cache -- and its output is what diagnoses a broken one.
       - name: Check the MPI installation
-        run: scripts/check-mpi-install.sh "${MPI_PREFIX}"
+        run: ci-scripts/check-mpi-install.sh "${MPI_PREFIX}"
 
       - name: Configure, build, and install mpif
         run: |
@@ -291,7 +289,7 @@ jobs:
           if [[ ${{ matrix.mpi }} == openmpi ]]; then
               export MPIEXEC_ARGS=--oversubscribe
           fi
-          scripts/test-mpich-suite.sh "${MPI_PREFIX}" "${MPIF_PREFIX}"
+          ci-scripts/test-mpich-suite.sh "${MPI_PREFIX}" "${MPIF_PREFIX}"
 
       # CMake keeps the compiler and linker output of its own checks -- such as
       # the one behind `missing: MPI_C_WORKS` -- in these files, and reports

@@ -13,7 +13,7 @@
 # version happens to spell those templates.
 #
 # The name has to start with `flang` so that libtool's `cc_basename` tests still
-# recognise the compiler (see scripts/install-mpich.sh, which adds `flang*` to
+# recognise the compiler (see ci-scripts/install-mpich.sh, which adds `flang*` to
 # libtool's list of Darwin Fortran compilers that can build shared libraries).
 #
 # Usage: set FC to this script and FLANG_DARWIN_SHIM_FC to the real flang.

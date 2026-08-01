@@ -14,4 +14,4 @@ source "${here}/macos-common.sh" "$@"
 # the download and the configure
 export MPICH_TESTS_DIR=${MPICH_TESTS_DIR:-${repodir}/mpi/tests-${variant}}
 
-exec "${here}/test-mpich-suite.sh" "${mpi_prefix}" "${mpif_prefix}"
+exec "${repodir}/ci-scripts/test-mpich-suite.sh" "${mpi_prefix}" "${mpif_prefix}"

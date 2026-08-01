@@ -43,7 +43,7 @@ export HWLOC_PREFIX=${HWLOC_PREFIX:-/opt/local}
 variant=${mpi}-${toolchain}
 
 # Keeping the MPI source tree around lets a rebuild skip the download and
-# `autogen`; see scripts/install-${mpi}.sh
+# `autogen`; see ci-scripts/install-${mpi}.sh
 export MPI_SRC_DIR=${MPI_SRC_DIR:-${repodir}/mpi/src-${variant}}
 
 mpi_prefix=${repodir}/mpi/${variant}

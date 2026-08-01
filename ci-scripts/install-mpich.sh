@@ -125,7 +125,7 @@ cd "${tree}"
 # libtool drives the Fortran compiler with clang's Darwin options when linking a
 # shared library (`-dynamiclib`, a bare `-install_name`, `-compatibility_version`
 # ...), which flang rejects. Put a wrapper in front of it that rewrites them; see
-# scripts/flang-darwin-shim.sh for why that is done here rather than by patching
+# ci-scripts/flang-darwin-shim.sh for why that is done here rather than by patching
 # libtool's command templates. Deciding on the compiler's behaviour rather than
 # its name leaves gfortran alone and retires this once flang accepts the options.
 if [[ $(uname) == Darwin && -n ${FC:-} ]]; then

@@ -1,5 +1,5 @@
 # Files installed by MPICH that must not be part of a standard-ABI-only
-# installation. See scripts/prune-install.sh for the format.
+# installation. See ci-scripts/prune-install.sh for the format.
 
 bin/mpicc_abi
 bin/mpichversion                       # needs libmpi.so
