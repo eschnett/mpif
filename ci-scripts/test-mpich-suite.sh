@@ -127,9 +127,13 @@ for language in "${languages[@]}"; do
         if [[ -n ${MPIEXEC_ARGS:-} ]]; then
             export MPITEST_MPIEXECARG="${MPIEXEC_ARGS}"
         fi
+        # Run mpiexec through a filter that drops launcher banners; see
+        # ci-scripts/mpiexec-filter.sh. The suite treats anything the launcher
+        # prints as unexpected test output.
+        export MPIF_REAL_MPIEXEC="${mpi_prefix}/bin/mpiexec"
         ../runtests \
             -tests=testlist \
-            -mpiexec="${mpi_prefix}/bin/mpiexec" \
+            -mpiexec="${scriptdir}/mpiexec-filter.sh" \
             -maxnp="${maxnp}" \
             -showprogress
     ) 2>&1 | tee "${log}"
