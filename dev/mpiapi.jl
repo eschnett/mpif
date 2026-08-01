@@ -47,7 +47,8 @@ int_kinds = ["ACCESS_MODE", "ARGUMENT_COUNT", "ARRAY_LENGTH", "ARRAY_LENGTH_NNI"
              "COMM_COMPARISON", "COMM_SIZE", "COMM_SIZE_PI", "COORDINATE", "DEGREE", "DIMENSION", "DISTRIB_ENUM",
              "DTYPE_DISTRIBUTION", "ERROR_CLASS", "ERROR_CODE", "FILE_DESCRIPTOR", "GENERIC_DTYPE_INT", "GROUP_COMPARISON", "INDEX",
              "INFO_VALUE_LENGTH", "KEY", "KEYVAL", "KEY_INDEX", "LOCK_TYPE", "MATH", "NUM_BYTES_SMALL", "NUM_DIMS", "ORDER",
-             "PARTITION", "PROCESS_GRID_SIZE", "RANK", "RANK_NNI", "RMA_DISPLACEMENT_NNI", "SPLIT_TYPE", "STRING_LENGTH", "TAG",
+             "PARTITION", "PROCESS_GRID_SIZE", "PROFILE_LEVEL", "RANK", "RANK_NNI", "RMA_DISPLACEMENT_NNI", "SPLIT_TYPE",
+             "STRING_LENGTH", "TAG",
              "THREAD_LEVEL", "TOPOLOGY_TYPE", "TYPECLASS", "TYPECLASS_SIZE", "UPDATE_MODE", "VERSION", "WEIGHT",
              "XFER_NUM_ELEM_NNI"]
 int_aint_kinds = ["POLYDISPLACEMENT", "POLYRMA_DISPLACEMENT"]
@@ -559,8 +560,11 @@ for key in sort(collect(keys(apis)))
     predefined_function = attributes["predefined_function"]
     predefined_function != nothing && continue
 
-    # Varargs cannot be forwarded
-    any(p -> p["kind"] == "VARARGS", parameters) && continue
+    # Varargs cannot be forwarded from Fortran, and the standard's Fortran
+    # bindings do not have them either -- MPI_Pcontrol is the only function
+    # concerned, and its Fortran binding takes just the level. Drop the varargs
+    # rather than the whole function.
+    parameters = filter(p -> p["kind"] != "VARARGS", parameters)
 
     # MPI_Sizeof needs to be implemented in Fortran
     name == "MPI_Sizeof" && continue
@@ -1243,7 +1247,15 @@ for key in sort(collect(keys(apis)))
             end
 
             if return_type == "void"
-                push!(c_implementations, "  *ierror = $name_c(")
+                # Almost every routine returning an error code has an `ierror`
+                # argument to put it in, but not quite all: MPI_Pcontrol's
+                # Fortran binding is just MPI_PCONTROL(LEVEL), so there is
+                # nowhere to store the result and it is discarded.
+                if any(p -> p["name"] == "ierror", parameters)
+                    push!(c_implementations, "  *ierror = $name_c(")
+                else
+                    push!(c_implementations, "  $name_c(")
+                end
             else
                 push!(c_implementations, "  const $return_type result = $name_c(")
             end
