@@ -83,6 +83,19 @@ strip_leading_blanks = Set([("MPI_Comm_spawn", "argv"),
                             ("MPI_Info_set", "key"),
                             ("MPI_Info_set", "value")])
 
+# The argument-vector sentinels, and the C constant each one stands for.
+#
+# Most sentinels need no special handling: MPI_ERRCODES_IGNORE and friends are
+# forwarded to C untouched, and mpif.h puts the Fortran symbol at the address of
+# the C constant (see include/mpif_constants.h), so passing the Fortran array
+# hands C exactly the value it expects. An argument vector is different, because
+# it has to be converted element by element, and these two constants are null
+# pointers in C -- MPI_ARGV_NULL "is the same as NULL" -- so the conversion would
+# read address zero. Compare against the C constant rather than against NULL:
+# MPI-5.0 only says MPI_ARGVS_NULL is "likely to be (char ***)0".
+argv_null_sentinels = Dict([("MPI_Comm_spawn", "argv") => "MPI_ARGV_NULL",
+                            ("MPI_Comm_spawn_multiple", "array_of_argv") => "MPI_ARGVS_NULL"])
+
 # Attribute callbacks are the callbacks mpif can forward: every one of them
 # receives the keyval, which is enough for a trampoline to find the Fortran
 # procedure again. See src/mpif_callbacks.c. The other callback types have
@@ -1189,15 +1202,22 @@ for key in sort(collect(keys(apis)))
                     push!(final_input_arguments, "const size_t length_$parname")
                     ensure_comm_rank!(state, input_conversions)
                     strdup_f2c = (name, parname) ∈ strip_leading_blanks ? "mpif_strdup_f2c_trim" : "mpif_strdup_f2c"
+                    sentinel = get(argv_null_sentinels, (name, parname), nothing)
+                    guard = sentinel == nothing ? "q_comm_rank == 0" : "q_comm_rank == 0 && !null_$parname"
+                    if sentinel != nothing
+                        push!(input_conversions,
+                              "const int null_$parname = (const void*)$parname == (const void*)$sentinel;")
+                    end
                     append!(input_conversions,
                             ["size_t count_$parname = 0;",
-                             "if (q_comm_rank == 0)",
+                             "if ($guard)",
                              "  count_$parname = mpif_fcount($parname, length_$parname);",
                              "char *argv_$parname[count_$parname + 1];",
                              "for (size_t n=0; n<count_$parname; ++n)",
                              "  argv_$parname[n] = $strdup_f2c($parname + n * length_$parname, length_$parname);",
                              "argv_$parname[count_$parname] = NULL;"])
-                    push!(call_arguments, "argv_$parname")
+                    push!(call_arguments,
+                          sentinel == nothing ? "argv_$parname" : "null_$parname ? $sentinel : argv_$parname")
                     append!(output_conversions, ["for (size_t n=0; n<count_$parname; ++n)",
                                                  "  free(argv_$parname[n]);"])
                 else
@@ -1221,11 +1241,17 @@ for key in sort(collect(keys(apis)))
                 push!(final_input_arguments, "const size_t length_$parname")
                 ensure_comm_rank!(state, input_conversions)
                 strdup_f2c = (name, parname) ∈ strip_leading_blanks ? "mpif_strdup_f2c_trim" : "mpif_strdup_f2c"
+                sentinel = get(argv_null_sentinels, (name, parname), nothing)
+                guard = sentinel == nothing ? "q_comm_rank == 0" : "q_comm_rank == 0 && !null_$parname"
+                if sentinel != nothing
+                    push!(input_conversions,
+                          "const int null_$parname = (const void*)$parname == (const void*)$sentinel;")
+                end
                 append!(input_conversions,
                         ["size_t count_$parname[*count];",
                          "char **argv_$parname[*count];",
                          "for (int i=0; i<*count; ++i) {",
-                         "  if (q_comm_rank == 0) {",
+                         "  if ($guard) {",
                          "    count_$parname[i] = mpif_fcount2d($parname, *count, i, length_$parname);",
                          "    argv_$parname[i] = malloc((count_$parname[i] + 1) * sizeof(char*));",
                          "    for (size_t n=0; n<count_$parname[i]; ++n)",
@@ -1236,7 +1262,8 @@ for key in sort(collect(keys(apis)))
                          "    argv_$parname[i] = NULL;",
                          "  }",
                          "}"])
-                push!(call_arguments, "argv_$parname")
+                push!(call_arguments,
+                      sentinel == nothing ? "argv_$parname" : "null_$parname ? $sentinel : argv_$parname")
                 append!(output_conversions,
                         ["for (int i=0; i<*count; ++i) {",
                          "  for (size_t n=0; n<count_$parname[i]; ++n)",

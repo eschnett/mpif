@@ -2414,8 +2414,9 @@ void mpi_comm_spawn_(
   char* c_command = NULL;
   if (q_comm_rank == 0)
     c_command = mpif_strdup_f2c_trim(command, length_command);
+  const int null_argv = (const void*)argv == (const void*)MPI_ARGV_NULL;
   size_t count_argv = 0;
-  if (q_comm_rank == 0)
+  if (q_comm_rank == 0 && !null_argv)
     count_argv = mpif_fcount(argv, length_argv);
   char *argv_argv[count_argv + 1];
   for (size_t n=0; n<count_argv; ++n)
@@ -2424,7 +2425,7 @@ void mpi_comm_spawn_(
   MPI_Comm c_intercomm;
   *ierror = MPI_Comm_spawn(
     c_command,
-    argv_argv,
+    null_argv ? MPI_ARGV_NULL : argv_argv,
     *maxprocs,
     q_comm_rank == 0 ? MPIF_Info_fromint(*info) : MPI_INFO_NULL,
     *root,
@@ -2470,10 +2471,11 @@ void mpi_comm_spawn_multiple_(
   for (size_t n=0; n<count_array_of_commands; ++n)
     argv_array_of_commands[n] = mpif_strdup_f2c_trim(array_of_commands + n * length_array_of_commands, length_array_of_commands);
   argv_array_of_commands[count_array_of_commands] = NULL;
+  const int null_array_of_argv = (const void*)array_of_argv == (const void*)MPI_ARGVS_NULL;
   size_t count_array_of_argv[*count];
   char **argv_array_of_argv[*count];
   for (int i=0; i<*count; ++i) {
-    if (q_comm_rank == 0) {
+    if (q_comm_rank == 0 && !null_array_of_argv) {
       count_array_of_argv[i] = mpif_fcount2d(array_of_argv, *count, i, length_array_of_argv);
       argv_array_of_argv[i] = malloc((count_array_of_argv[i] + 1) * sizeof(char*));
       for (size_t n=0; n<count_array_of_argv[i]; ++n)
@@ -2492,7 +2494,7 @@ void mpi_comm_spawn_multiple_(
   *ierror = MPI_Comm_spawn_multiple(
     *count,
     argv_array_of_commands,
-    argv_array_of_argv,
+    null_array_of_argv ? MPI_ARGVS_NULL : argv_array_of_argv,
     array_of_maxprocs,
     c_array_of_info,
     *root,

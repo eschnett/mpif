@@ -259,12 +259,23 @@
 
 !     Empty/Ignored Constants
 
-      integer MPI_ARGVS_NULL(1)
+!     These two stand in for an argument vector, which is a CHARACTER in Fortran
+!     and not an INTEGER, so they have to be CHARACTER too or they cannot be
+!     passed to MPI_COMM_SPAWN and MPI_COMM_SPAWN_MULTIPLE at all. The shapes are
+!     the ones MPI-5.0's rationale for MPI_ARGVS_NULL permits an implementation
+!     to pick ("with fixed dimensions, e.g., (1,1)"); Fortran sequence
+!     association takes care of the assumed-size dummy arguments.
+!
+!     Note that the Cray pointer puts these at the address of the C constants,
+!     which are null pointers, so their contents must never be read. The wrappers
+!     recognise them by address instead; see dev/mpiapi.jl.
+
+      character*1 MPI_ARGVS_NULL(1,1)
       integer(MPI_ADDRESS_KIND) MPIF_ARGVS_NULL_PTR
       pointer (MPIF_ARGVS_NULL_PTR, MPI_ARGVS_NULL)
       common /MPIF_ARGVS_NULL_PTR/ MPIF_ARGVS_NULL_PTR
 
-      integer MPI_ARGV_NULL(1)
+      character*1 MPI_ARGV_NULL(1)
       integer(MPI_ADDRESS_KIND) MPIF_ARGV_NULL_PTR
       pointer (MPIF_ARGV_NULL_PTR, MPI_ARGV_NULL)
       common /MPIF_ARGV_NULL_PTR/ MPIF_ARGV_NULL_PTR
