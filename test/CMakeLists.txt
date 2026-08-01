@@ -35,3 +35,4 @@ add_mpi_test(type_create_struct_c   SOURCES type_create_struct_c.c              
 add_mpi_test(predefined_types_c     SOURCES predefined_types_c.c                    LIBS MPI::MPI_C)
 add_mpi_test(type_create_struct_f08 SOURCES type_create_struct_f08.f90              LIBS MPI::MPI_Fortran)
 add_mpi_test(info_get_string_f08    SOURCES info_get_string_f08.f90                 LIBS MPI::MPI_Fortran)
+add_mpi_test(info_blanks_f08        SOURCES info_blanks_f08.f90                     LIBS MPI::MPI_Fortran)

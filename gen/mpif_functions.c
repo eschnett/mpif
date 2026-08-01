@@ -2413,13 +2413,13 @@ void mpi_comm_spawn_(
   }
   char* c_command = NULL;
   if (q_comm_rank == 0)
-    c_command = mpif_strdup_f2c(command, length_command);
+    c_command = mpif_strdup_f2c_trim(command, length_command);
   size_t count_argv = 0;
   if (q_comm_rank == 0)
     count_argv = mpif_fcount(argv, length_argv);
   char *argv_argv[count_argv + 1];
   for (size_t n=0; n<count_argv; ++n)
-    argv_argv[n] = mpif_strdup_f2c(argv + n * length_argv, length_argv);
+    argv_argv[n] = mpif_strdup_f2c_trim(argv + n * length_argv, length_argv);
   argv_argv[count_argv] = NULL;
   MPI_Comm c_intercomm;
   *ierror = MPI_Comm_spawn(
@@ -2468,7 +2468,7 @@ void mpi_comm_spawn_multiple_(
     count_array_of_commands = mpif_fcount(array_of_commands, length_array_of_commands);
   char *argv_array_of_commands[count_array_of_commands + 1];
   for (size_t n=0; n<count_array_of_commands; ++n)
-    argv_array_of_commands[n] = mpif_strdup_f2c(array_of_commands + n * length_array_of_commands, length_array_of_commands);
+    argv_array_of_commands[n] = mpif_strdup_f2c_trim(array_of_commands + n * length_array_of_commands, length_array_of_commands);
   argv_array_of_commands[count_array_of_commands] = NULL;
   size_t count_array_of_argv[*count];
   char **argv_array_of_argv[*count];
@@ -2477,7 +2477,7 @@ void mpi_comm_spawn_multiple_(
       count_array_of_argv[i] = mpif_fcount2d(array_of_argv, *count, i, length_array_of_argv);
       argv_array_of_argv[i] = malloc((count_array_of_argv[i] + 1) * sizeof(char*));
       for (size_t n=0; n<count_array_of_argv[i]; ++n)
-        argv_array_of_argv[i][n] = mpif_strdup_f2c(array_of_argv + i * length_array_of_argv + n * *count * length_array_of_argv, length_array_of_argv);
+        argv_array_of_argv[i][n] = mpif_strdup_f2c_trim(array_of_argv + i * length_array_of_argv + n * *count * length_array_of_argv, length_array_of_argv);
       argv_array_of_argv[i][count_array_of_argv[i]] = NULL;
     } else {
       count_array_of_argv[i] = 0;
@@ -6387,7 +6387,7 @@ void mpi_info_delete_(
   const size_t length_key
 )
 {
-  char* const c_key = mpif_strdup_f2c(key, length_key);
+  char* const c_key = mpif_strdup_f2c_trim(key, length_key);
   *ierror = MPI_Info_delete(
     MPIF_Info_fromint(*info),
     c_key
@@ -6431,7 +6431,7 @@ void mpi_info_get_(
   const size_t length_key
 )
 {
-  char* const c_key = mpif_strdup_f2c(key, length_key);
+  char* const c_key = mpif_strdup_f2c_trim(key, length_key);
   const size_t buflen_value = *valuelen;
   const size_t length_value = *valuelen;
   char c_value[buflen_value + 1];
@@ -6444,7 +6444,8 @@ void mpi_info_get_(
     &c_flag
   );
   free(c_key);
-  mpif_strcpy_c2f(value, c_value, length_value, strlen(c_value));
+  if (c_flag)
+    mpif_strcpy_c2f(value, c_value, length_value, strlen(c_value));
   *flag = mpif_bool2logical(c_flag);
 }
 
@@ -6489,7 +6490,7 @@ void mpi_info_get_string_(
   const size_t length_value
 )
 {
-  char* const c_key = mpif_strdup_f2c(key, length_key);
+  char* const c_key = mpif_strdup_f2c_trim(key, length_key);
   const MPI_Fint f_buflen = *buflen;
   int c_buflen = 0;
   if (f_buflen > 0)
@@ -6523,7 +6524,7 @@ void mpi_info_get_valuelen_(
   const size_t length_key
 )
 {
-  char* const c_key = mpif_strdup_f2c(key, length_key);
+  char* const c_key = mpif_strdup_f2c_trim(key, length_key);
   MPI_Fint c_flag;
   *ierror = MPI_Info_get_valuelen(
     MPIF_Info_fromint(*info),
@@ -6544,8 +6545,8 @@ void mpi_info_set_(
   const size_t length_value
 )
 {
-  char* const c_key = mpif_strdup_f2c(key, length_key);
-  char* const c_value = mpif_strdup_f2c(value, length_value);
+  char* const c_key = mpif_strdup_f2c_trim(key, length_key);
+  char* const c_value = mpif_strdup_f2c_trim(value, length_value);
   *ierror = MPI_Info_set(
     MPIF_Info_fromint(*info),
     c_key,

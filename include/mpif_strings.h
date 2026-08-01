@@ -10,6 +10,11 @@ size_t mpif_fstrlen(const char *str, size_t str_length);
 // Duplicate a Fortran string to a C string. Allocate the result with `malloc`.
 char *mpif_strdup_f2c(const char *str, size_t str_length);
 
+// The same, but stripping leading blanks as well as trailing ones. MPI asks for
+// this for a handful of arguments only; see `mpif_strdup_f2c_trim` in
+// src/mpif_strings.c.
+char *mpif_strdup_f2c_trim(const char *str, size_t str_length);
+
 // Copy a C string into a Fortran string
 void mpif_strcpy_c2f(char *dest, const char *src, size_t dest_length,
                      size_t src_length);

@@ -62,6 +62,27 @@ aint_count_kinds = ["POLYDISPLACEMENT_AINT_COUNT", "POLYDISPOFFSET", "POLYDTYPE_
 
 count_kinds = ["GENERIC_DTYPE_COUNT", "NUM_BYTES", "XFER_NUM_ELEM"]
 
+# Fortran string arguments whose leading blanks have to be stripped along with
+# their trailing ones. MPI specifies this per argument rather than uniformly, so
+# this is a list and not a rule: MPI-5.0 asks for it for info keys and values
+# (section 10, "The Info Object", and MPI_INFO_SET) and for MPI_COMM_SPAWN's
+# `command` and `argv`, which MPI_COMM_SPAWN_MULTIPLE inherits by being
+# "identical to MPI_COMM_SPAWN except that there are multiple executable
+# specifications". Everything else keeps only its trailing blanks stripped:
+# MPI_ADD_ERROR_STRING is explicitly trailing-only, and for port names, service
+# names, file names and datareps the standard says nothing, so the conservative
+# reading applies. See `mpif_strdup_f2c_trim` in src/mpif_strings.c.
+strip_leading_blanks = Set([("MPI_Comm_spawn", "argv"),
+                            ("MPI_Comm_spawn", "command"),
+                            ("MPI_Comm_spawn_multiple", "array_of_argv"),
+                            ("MPI_Comm_spawn_multiple", "array_of_commands"),
+                            ("MPI_Info_delete", "key"),
+                            ("MPI_Info_get", "key"),
+                            ("MPI_Info_get_string", "key"),
+                            ("MPI_Info_get_valuelen", "key"),
+                            ("MPI_Info_set", "key"),
+                            ("MPI_Info_set", "value")])
+
 # Attribute callbacks are the callbacks mpif can forward: every one of them
 # receives the keyval, which is enough for a trampoline to find the Fortran
 # procedure again. See src/mpif_callbacks.c. The other callback types have
@@ -1076,16 +1097,17 @@ for key in sort(collect(keys(apis)))
                             @show name parname length
                             @assert false
                         end
+                        strdup_f2c = (name, parname) ∈ strip_leading_blanks ? "mpif_strdup_f2c_trim" : "mpif_strdup_f2c"
                         if root_only
                             ensure_comm_rank!(state, input_conversions)
                             append!(input_conversions,
                                     ["char* c_$parname = NULL;",
                                      "if (q_comm_rank == 0)",
-                                     "  c_$parname = mpif_strdup_f2c($parname, length_$parname);"])
+                                     "  c_$parname = $strdup_f2c($parname, length_$parname);"])
                             append!(output_conversions, ["if (q_comm_rank == 0)",
                                                          "  free(c_$parname);"])
                         else
-                            push!(input_conversions, "char* const c_$parname = mpif_strdup_f2c($parname, length_$parname);")
+                            push!(input_conversions, "char* const c_$parname = $strdup_f2c($parname, length_$parname);")
                             push!(output_conversions, "free(c_$parname);")
                         end
                         push!(call_arguments, "c_$parname")
@@ -1130,14 +1152,17 @@ for key in sort(collect(keys(apis)))
                     push!(call_arguments, "c_$parname")
                     # Pad or truncate to the caller's length, never to buflen
                     copy_c2f = "mpif_strcpy_c2f($parname, c_$parname, length_$parname, strlen(c_$parname));"
-                    if name == "MPI_Info_get_string" && parname == "value"
-                        # MPI writes nothing at all into the buffer when the key does
-                        # not exist, or when `buflen` is zero, and the caller's string
-                        # has to be left untouched in both cases. `c_value` is still
-                        # uninitialised then, so copying it out would hand back garbage
-                        # -- and `strlen` would read uninitialised memory to decide how
-                        # much of it.
-                        append!(output_conversions, ["if (c_flag && f_buflen > 0)", "  $copy_c2f"])
+                    # The only two routines whose string output is conditional. Both
+                    # write nothing at all when the key does not exist -- MPI_INFO_GET
+                    # "sets flag to false and leaves value unchanged" -- and
+                    # MPI_INFO_GET_STRING additionally writes nothing when `buflen` is
+                    # zero. The caller's string has to be left untouched in those
+                    # cases: `c_value` is still uninitialised, so copying it out would
+                    # hand back garbage, and `strlen` would read uninitialised memory to
+                    # decide how much of it.
+                    if name ∈ ["MPI_Info_get", "MPI_Info_get_string"] && parname == "value"
+                        guard = name == "MPI_Info_get_string" ? "c_flag && f_buflen > 0" : "c_flag"
+                        append!(output_conversions, ["if ($guard)", "  $copy_c2f"])
                     else
                         push!(output_conversions, copy_c2f)
                     end
@@ -1163,13 +1188,14 @@ for key in sort(collect(keys(apis)))
                     push!(input_arguments, "const char* restrict const $parname")
                     push!(final_input_arguments, "const size_t length_$parname")
                     ensure_comm_rank!(state, input_conversions)
+                    strdup_f2c = (name, parname) ∈ strip_leading_blanks ? "mpif_strdup_f2c_trim" : "mpif_strdup_f2c"
                     append!(input_conversions,
                             ["size_t count_$parname = 0;",
                              "if (q_comm_rank == 0)",
                              "  count_$parname = mpif_fcount($parname, length_$parname);",
                              "char *argv_$parname[count_$parname + 1];",
                              "for (size_t n=0; n<count_$parname; ++n)",
-                             "  argv_$parname[n] = mpif_strdup_f2c($parname + n * length_$parname, length_$parname);",
+                             "  argv_$parname[n] = $strdup_f2c($parname + n * length_$parname, length_$parname);",
                              "argv_$parname[count_$parname] = NULL;"])
                     push!(call_arguments, "argv_$parname")
                     append!(output_conversions, ["for (size_t n=0; n<count_$parname; ++n)",
@@ -1194,6 +1220,7 @@ for key in sort(collect(keys(apis)))
                 push!(input_arguments, "const char* restrict const $parname")
                 push!(final_input_arguments, "const size_t length_$parname")
                 ensure_comm_rank!(state, input_conversions)
+                strdup_f2c = (name, parname) ∈ strip_leading_blanks ? "mpif_strdup_f2c_trim" : "mpif_strdup_f2c"
                 append!(input_conversions,
                         ["size_t count_$parname[*count];",
                          "char **argv_$parname[*count];",
@@ -1202,7 +1229,7 @@ for key in sort(collect(keys(apis)))
                          "    count_$parname[i] = mpif_fcount2d($parname, *count, i, length_$parname);",
                          "    argv_$parname[i] = malloc((count_$parname[i] + 1) * sizeof(char*));",
                          "    for (size_t n=0; n<count_$parname[i]; ++n)",
-                         "      argv_$parname[i][n] = mpif_strdup_f2c($parname + i * length_$parname + n * *count * length_$parname, length_$parname);",
+                         "      argv_$parname[i][n] = $strdup_f2c($parname + i * length_$parname + n * *count * length_$parname, length_$parname);",
                          "    argv_$parname[i][count_$parname[i]] = NULL;",
                          "  } else {",
                          "    count_$parname[i] = 0;",

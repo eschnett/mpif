@@ -22,6 +22,34 @@ char *mpif_strdup_f2c(const char *restrict const str, const size_t str_length) {
   return res;
 }
 
+// Duplicate a Fortran string to a C string, stripping leading blanks as well as
+// trailing ones. Allocate the result with `malloc`.
+//
+// This is deliberately separate from `mpif_strdup_f2c` rather than a change to
+// it, because MPI specifies the leading-blank stripping per argument and not
+// uniformly. MPI-5.0 asks for it for info keys and values (section 10, "The Info
+// Object", and MPI_INFO_SET) and for the commands and argument vectors of
+// MPI_COMM_SPAWN and MPI_COMM_SPAWN_MULTIPLE. MPI_ADD_ERROR_STRING, by contrast,
+// is specified to strip trailing blanks only, and for port names, service names,
+// file names and datareps the standard says nothing at all. Note that MPICH's own
+// Fortran binding strips both ends for every string argument, which is more than
+// the standard requires.
+//
+// A string of nothing but blanks becomes the empty string, which is what
+// MPI_COMM_SPAWN's `argv` explicitly requires.
+char *mpif_strdup_f2c_trim(const char *restrict const str,
+                           const size_t str_length) {
+  const size_t end = mpif_fstrlen(str, str_length);
+  size_t begin = 0;
+  while (begin < end && str[begin] == ' ')
+    ++begin;
+  const size_t len = end - begin;
+  char *restrict const res = malloc(len + 1);
+  memcpy(res, str + begin, len);
+  res[len] = '\0';
+  return res;
+}
+
 // Copy a C string into a Fortran string
 void mpif_strcpy_c2f(char *restrict const dest, const char *restrict const src,
                      const size_t dest_length, const size_t src_length) {
