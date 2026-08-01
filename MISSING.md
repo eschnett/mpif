@@ -256,6 +256,14 @@ counterpart in MPICH's own test suite fail until this is fixed upstream. The
 reproducer sent with the issue is `bug-mpich-7916/mpich-abi-attr-bug.c`; it is pure C, with
 no Fortran involved.
 
+### OpenMPI: some built-in types are not mapped correctly
+
+https://github.com/open-mpi/ompi/issues/14243
+
+The Fortran types `MPI_2INTEGER`, `MPI_2REAL`, and
+`MPI_2DOUBLE_PRECISION` are not mapped correctly from their ABI handle
+to their internal OpenMPI handle.
+
 ## Missing features
 
 ### Assumed-rank choice buffers
