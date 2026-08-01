@@ -211,6 +211,30 @@ module mpi_f08_types
      integer :: MPI_INTERNAL(5)
   end type MPI_Status
 
+  ! MPI_STATUS_IGNORE and MPI_STATUSES_IGNORE are TYPE(MPI_Status) here, where
+  ! mpif.h and the mpi module declare them as INTEGER arrays. They therefore
+  ! cannot just be re-exported from mpi_f08_constants the way the other sentinels
+  ! are, and are declared here instead, this being where MPI_Status exists. An
+  ! INTEGER one cannot be passed to a TYPE(MPI_Status) dummy argument at all,
+  ! which is what stopped MPICH's f08 spawn tests from compiling.
+  !
+  ! Same Cray pointer into the same common block as include/mpif_constants.h uses,
+  ! so all three interfaces put these names at one address: that of the C
+  ! constant. The generated wrappers compare loc(status) against it and never read
+  ! the contents.
+
+  public :: MPI_STATUS_IGNORE
+  type(MPI_Status) :: MPI_STATUS_IGNORE
+  integer(MPI_ADDRESS_KIND) :: MPIF_F08_STATUS_IGNORE_PTR
+  pointer (MPIF_F08_STATUS_IGNORE_PTR, MPI_STATUS_IGNORE)
+  common /MPIF_STATUS_IGNORE_PTR/ MPIF_F08_STATUS_IGNORE_PTR
+
+  public :: MPI_STATUSES_IGNORE
+  type(MPI_Status) :: MPI_STATUSES_IGNORE(1)
+  integer(MPI_ADDRESS_KIND) :: MPIF_F08_STATUSES_IGNORE_PTR
+  pointer (MPIF_F08_STATUSES_IGNORE_PTR, MPI_STATUSES_IGNORE)
+  common /MPIF_STATUSES_IGNORE_PTR/ MPIF_F08_STATUSES_IGNORE_PTR
+
   ! Constants
 
   type(MPI_Op), parameter, public :: MPI_OP_NULL = MPI_Op(MPIF_OP_NULL)

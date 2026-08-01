@@ -232,8 +232,6 @@ module mpi_f08_constants
        MPI_ARGV_NULL, &
        MPI_ARGVS_NULL, &
        MPI_ERRCODES_IGNORE, &
-       MPI_STATUS_IGNORE, &
-       MPI_STATUSES_IGNORE, &
        MPI_UNWEIGHTED, &
        MPI_WEIGHTS_EMPTY
 
@@ -474,8 +472,6 @@ module mpi_f08_constants
        MPI_ARGV_NULL, &
        MPI_ARGVS_NULL, &
        MPI_ERRCODES_IGNORE, &
-       MPI_STATUS_IGNORE, &
-       MPI_STATUSES_IGNORE, &
        MPI_UNWEIGHTED, &
        MPI_WEIGHTS_EMPTY
 
