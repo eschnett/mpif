@@ -29,12 +29,31 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// Handle conversions, as in the generated wrappers
+// Handle conversions.
+//
+// These have to short-circuit predefined handles the way the generated
+// MPIF_Type_fromint and MPIF_Type_toint do, because some implementations
+// mishandle them -- forwarding MPI_INTEGER straight to MPI_Type_fromint yields
+// an invalid datatype, the constructor below then fails, and converting the
+// resulting garbage back aborts inside MPI_Type_toint. Every predefined handle
+// the ABI defines is a small integer, well below the addresses a real handle
+// carries, so a range test covers them all without enumerating them, and keeps
+// working as the ABI adds more.
+//
+// TODO: the generator should emit its helpers into a shared header so this file
+// can include them instead; see MISSING.md section 1a.
+
+enum { MPIF_PREDEFINED_HANDLE_MAX = 0x1000 };
+
 static MPI_Datatype type_fromint(MPI_Fint datatype) {
+  if ((uintptr_t)(intptr_t)datatype < MPIF_PREDEFINED_HANDLE_MAX)
+    return (MPI_Datatype)(intptr_t)datatype;
   return MPI_Type_fromint(datatype);
 }
 
 static MPI_Fint type_toint(MPI_Datatype datatype) {
+  if ((uintptr_t)datatype < MPIF_PREDEFINED_HANDLE_MAX)
+    return (MPI_Fint)(intptr_t)datatype;
   return MPI_Type_toint(datatype);
 }
 
@@ -51,7 +70,10 @@ void mpi_type_hvector_(const MPI_Fint *count, const MPI_Fint *blocklength,
   MPI_Datatype c_newtype;
   *ierror = MPI_Type_create_hvector(*count, *blocklength, (MPI_Aint)*stride,
                                     type_fromint(*oldtype), &c_newtype);
-  *newtype = type_toint(c_newtype);
+  // Only convert on success: on failure c_newtype holds nothing meaningful, and
+  // MPI_Type_toint aborts when handed an invalid datatype.
+  *newtype = *ierror == MPI_SUCCESS ? type_toint(c_newtype)
+                                    : (MPI_Fint)(intptr_t)MPI_DATATYPE_NULL;
 }
 
 void mpi_type_hindexed_(const MPI_Fint *count,
@@ -66,7 +88,10 @@ void mpi_type_hindexed_(const MPI_Fint *count,
   *ierror = MPI_Type_create_hindexed(*count, array_of_blocklengths,
                                      c_displacements, type_fromint(*oldtype),
                                      &c_newtype);
-  *newtype = type_toint(c_newtype);
+  // Only convert on success: on failure c_newtype holds nothing meaningful, and
+  // MPI_Type_toint aborts when handed an invalid datatype.
+  *newtype = *ierror == MPI_SUCCESS ? type_toint(c_newtype)
+                                    : (MPI_Fint)(intptr_t)MPI_DATATYPE_NULL;
 }
 
 void mpi_type_struct_(const MPI_Fint *count,
@@ -83,7 +108,10 @@ void mpi_type_struct_(const MPI_Fint *count,
   MPI_Datatype c_newtype;
   *ierror = MPI_Type_create_struct(*count, array_of_blocklengths,
                                    c_displacements, c_types, &c_newtype);
-  *newtype = type_toint(c_newtype);
+  // Only convert on success: on failure c_newtype holds nothing meaningful, and
+  // MPI_Type_toint aborts when handed an invalid datatype.
+  *newtype = *ierror == MPI_SUCCESS ? type_toint(c_newtype)
+                                    : (MPI_Fint)(intptr_t)MPI_DATATYPE_NULL;
 }
 
 // MPI_ADDRESS -> MPI_GET_ADDRESS
