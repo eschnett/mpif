@@ -401,11 +401,31 @@ MPI_MAX_INFO_VAL", and the standard uses empty info values meaningfully elsewher
 no memory allocation kinds" -- so an empty value looks legitimate and OpenMPI's
 refusal looks wrong.
 
+Worse, the standard gives the empty value a defined meaning on two reserved keys.
+For both `"mpi_memory_alloc_kinds"` and `"mpi_assert_memory_alloc_kinds"`: "A
+value corresponding to the empty string represents no memory allocation kinds."
+Under Open MPI there is no way to say that through an info object.
+
+The cause is a zero-length test sitting alongside the NULL and over-long ones in
+`ompi/mpi/c/info_set.c.in`:
+
+    value_length = (value) ? (int)strlen (value) : 0;
+    if ((NULL == value) || (0 == value_length) ||
+        (@MPI_MAX_INFO_VAL@ <= value_length)) {
+
+Open MPI's own doc comment on that function states only the length rule. The
+zero-length *key* check just above is a separate question -- MPICH rejects an
+empty key too -- and is not part of this.
+
 It reaches Fortran through the blank stripping of error 10: a value of nothing
 but spaces becomes the empty string, which is exactly what `MPI_COMM_SPAWN`'s
 `argv` requires of the same helper. Not reported upstream yet, and not worked
 around; `test/info_blanks_f08.f90` avoids asserting on it so that mpif's own
 tests do not fail on the implementations' disagreement.
+
+The reproducer to send with the report is
+`bug-ompi-info-value/ompi-empty-info-value.c`; it is pure C, with no Fortran
+involved, and exits 0 on MPICH and 1 on Open MPI.
 
 ### MPICH: the f08 copy of `spawnargvf90` contradicts the standard and its own f90 copy
 
