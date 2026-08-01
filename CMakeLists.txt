@@ -196,43 +196,7 @@ else()
   set(GCC_ATTRIBUTES_NO_ARG_CHECK "!disabled ")
 endif()
 
-# Check for the deprecated MPI-1 attribute routines
-#
-# MPI-4.0 removed them, and an ABI implementation need not provide them: MPICH
-# exports all five, Open MPI none. The ABI header declares them either way, so
-# only a link test can tell. Where they are missing, src/mpif_deprecated.c
-# supplies them in terms of their MPI-2 replacements.
-include(CheckSourceCompiles)
-set(CMAKE_REQUIRED_LIBRARIES_SAVED "${CMAKE_REQUIRED_LIBRARIES}")
-list(APPEND CMAKE_REQUIRED_LIBRARIES MPI::MPI_C)
-check_source_compiles(C
-  "
-  #include <mpi.h>
-  int main(void) {
-    int keyval;
-    MPI_Keyval_create(MPI_NULL_COPY_FN, MPI_NULL_DELETE_FN, &keyval, 0);
-    MPI_Attr_put(MPI_COMM_WORLD, keyval, 0);
-    MPI_Attr_get(MPI_COMM_WORLD, keyval, 0, 0);
-    MPI_Attr_delete(MPI_COMM_WORLD, keyval);
-    MPI_Keyval_free(&keyval);
-    return 0;
-  }
-  "
-  HAVE_MPI_DEPRECATED_ATTRS
-)
-set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES_SAVED}")
-if(HAVE_MPI_DEPRECATED_ATTRS)
-  set(MPIF_DEPRECATED_SOURCES "")
-else()
-  set(MPIF_DEPRECATED_SOURCES src/mpif_deprecated.c)
-  message(STATUS
-    "The MPI library does not provide the deprecated MPI-1 attribute routines; "
-    "mpif will define them")
-endif()
-
 add_library(mpifort_abi SHARED
-  # Deprecated MPI-1 routines, if the MPI library lacks them
-  ${MPIF_DEPRECATED_SOURCES}
   # MPI Fortran header files
   include/mpif.h
   # MPI Fortran modules
