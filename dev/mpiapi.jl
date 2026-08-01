@@ -739,19 +739,46 @@ for key in sort(collect(keys(apis)))
                         @show name parname length
                         @assert false
                     end
-                elseif param_direction == "out"
+                elseif param_direction ∈ ["out", "inout"]
                     @assert !root_only
                     push!(input_arguments, "MPI_Fint* restrict const $parname")
-                    push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname;")
-                    push!(call_arguments, "&c_$(parname)")
-                    push!(output_conversions, "*$parname = MPIF_$(kind2fun[kind])_toint(c_$parname);")
-                elseif param_direction == "inout"
-                    @assert !root_only
-                    @assert !root_only
-                    push!(input_arguments, "MPI_Fint* restrict const $parname")
-                    push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname = MPIF_$(kind2fun[kind])_fromint(*$parname);")
-                    push!(call_arguments, "&c_$(parname)")
-                    push!(output_conversions, "*$parname = MPIF_$(kind2fun[kind])_toint(c_$parname);")
+                    if length == nothing
+                        if param_direction == "inout"
+                            push!(input_conversions,
+                                  "MPI_$(kind2type[kind]) c_$parname = MPIF_$(kind2fun[kind])_fromint(*$parname);")
+                        else
+                            push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname;")
+                        end
+                        push!(call_arguments, "&c_$(parname)")
+                        push!(output_conversions,
+                              "*$parname = MPIF_$(kind2fun[kind])_toint(c_$parname);")
+                    else
+                        # An array of handles, which needs an array of
+                        # temporaries. A scalar temporary would be catastrophic
+                        # rather than merely wrong: MPI writes through the whole
+                        # array -- MPI_Waitall sets every request to
+                        # MPI_REQUEST_NULL -- and so would write past the
+                        # temporary and into this function's frame.
+                        @assert length ∈ ["*", "count", "incount", "max_datatypes", "num_elements"]
+                        if length == "*"
+                            ensure_comm_size!(state, input_conversions)
+                            count = "q_comm_size"
+                        else
+                            count = "*$length"
+                        end
+                        push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[$count];")
+                        if param_direction == "inout"
+                            append!(input_conversions,
+                                    ["for (int i=0; i<$count; ++i)",
+                                     "  c_$parname[i] = MPIF_$(kind2fun[kind])_fromint($parname[i]);"])
+                        end
+                        push!(call_arguments, "c_$parname")
+                        # Every element is converted back, not just the ones MPI
+                        # changed: for MPI_Waitany the rest round-trip unchanged.
+                        append!(output_conversions,
+                                ["for (int i=0; i<$count; ++i)",
+                                 "  $parname[i] = MPIF_$(kind2fun[kind])_toint(c_$parname[i]);"])
+                    end
                 else
                     @assert false
                 end

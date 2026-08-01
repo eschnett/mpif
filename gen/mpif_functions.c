@@ -10385,12 +10385,15 @@ void mpi_startall_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests = MPIF_Request_fromint(*array_of_requests);
+  MPI_Request c_array_of_requests[*count];
+  for (int i=0; i<*count; ++i)
+    c_array_of_requests[i] = MPIF_Request_fromint(array_of_requests[i]);
   *ierror = MPI_Startall(
     *count,
-    &c_array_of_requests
+    c_array_of_requests
   );
-  *array_of_requests = MPIF_Request_toint(c_array_of_requests);
+  for (int i=0; i<*count; ++i)
+    array_of_requests[i] = MPIF_Request_toint(c_array_of_requests[i]);
 }
 
 void mpi_status_get_error_(
@@ -10559,15 +10562,18 @@ void mpi_testall_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests = MPIF_Request_fromint(*array_of_requests);
+  MPI_Request c_array_of_requests[*count];
+  for (int i=0; i<*count; ++i)
+    c_array_of_requests[i] = MPIF_Request_fromint(array_of_requests[i]);
   MPI_Fint c_flag;
   *ierror = MPI_Testall(
     *count,
-    &c_array_of_requests,
+    c_array_of_requests,
     &c_flag,
     (MPI_Status*)array_of_statuses
   );
-  *array_of_requests = MPIF_Request_toint(c_array_of_requests);
+  for (int i=0; i<*count; ++i)
+    array_of_requests[i] = MPIF_Request_toint(c_array_of_requests[i]);
   *flag = mpif_bool2logical(c_flag);
 }
 
@@ -10580,16 +10586,19 @@ void mpi_testany_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests = MPIF_Request_fromint(*array_of_requests);
+  MPI_Request c_array_of_requests[*count];
+  for (int i=0; i<*count; ++i)
+    c_array_of_requests[i] = MPIF_Request_fromint(array_of_requests[i]);
   MPI_Fint c_flag;
   *ierror = MPI_Testany(
     *count,
-    &c_array_of_requests,
+    c_array_of_requests,
     index,
     &c_flag,
     (MPI_Status*)status
   );
-  *array_of_requests = MPIF_Request_toint(c_array_of_requests);
+  for (int i=0; i<*count; ++i)
+    array_of_requests[i] = MPIF_Request_toint(c_array_of_requests[i]);
   *flag = mpif_bool2logical(c_flag);
 }
 
@@ -10602,15 +10611,18 @@ void mpi_testsome_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests = MPIF_Request_fromint(*array_of_requests);
+  MPI_Request c_array_of_requests[*incount];
+  for (int i=0; i<*incount; ++i)
+    c_array_of_requests[i] = MPIF_Request_fromint(array_of_requests[i]);
   *ierror = MPI_Testsome(
     *incount,
-    &c_array_of_requests,
+    c_array_of_requests,
     outcount,
     array_of_indices,
     (MPI_Status*)array_of_statuses
   );
-  *array_of_requests = MPIF_Request_toint(c_array_of_requests);
+  for (int i=0; i<*incount; ++i)
+    array_of_requests[i] = MPIF_Request_toint(c_array_of_requests[i]);
 }
 
 void mpi_topo_test_(
@@ -11170,7 +11182,7 @@ void mpi_type_get_contents_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Datatype c_array_of_datatypes;
+  MPI_Datatype c_array_of_datatypes[*max_datatypes];
   *ierror = MPI_Type_get_contents(
     MPIF_Type_fromint(*datatype),
     *max_integers,
@@ -11178,9 +11190,10 @@ void mpi_type_get_contents_(
     *max_datatypes,
     array_of_integers,
     array_of_addresses,
-    &c_array_of_datatypes
+    c_array_of_datatypes
   );
-  *array_of_datatypes = MPIF_Type_toint(c_array_of_datatypes);
+  for (int i=0; i<*max_datatypes; ++i)
+    array_of_datatypes[i] = MPIF_Type_toint(c_array_of_datatypes[i]);
 }
 
 void mpi_type_get_contents_c_(
@@ -11196,7 +11209,7 @@ void mpi_type_get_contents_c_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Datatype c_array_of_datatypes;
+  MPI_Datatype c_array_of_datatypes[*max_datatypes];
   *ierror = MPI_Type_get_contents_c(
     MPIF_Type_fromint(*datatype),
     *max_integers,
@@ -11206,9 +11219,10 @@ void mpi_type_get_contents_c_(
     array_of_integers,
     array_of_addresses,
     array_of_large_counts,
-    &c_array_of_datatypes
+    c_array_of_datatypes
   );
-  *array_of_datatypes = MPIF_Type_toint(c_array_of_datatypes);
+  for (int i=0; i<*max_datatypes; ++i)
+    array_of_datatypes[i] = MPIF_Type_toint(c_array_of_datatypes[i]);
 }
 
 void mpi_type_get_envelope_(
@@ -11662,13 +11676,16 @@ void mpi_waitall_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests = MPIF_Request_fromint(*array_of_requests);
+  MPI_Request c_array_of_requests[*count];
+  for (int i=0; i<*count; ++i)
+    c_array_of_requests[i] = MPIF_Request_fromint(array_of_requests[i]);
   *ierror = MPI_Waitall(
     *count,
-    &c_array_of_requests,
+    c_array_of_requests,
     (MPI_Status*)array_of_statuses
   );
-  *array_of_requests = MPIF_Request_toint(c_array_of_requests);
+  for (int i=0; i<*count; ++i)
+    array_of_requests[i] = MPIF_Request_toint(c_array_of_requests[i]);
 }
 
 void mpi_waitany_(
@@ -11679,14 +11696,17 @@ void mpi_waitany_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests = MPIF_Request_fromint(*array_of_requests);
+  MPI_Request c_array_of_requests[*count];
+  for (int i=0; i<*count; ++i)
+    c_array_of_requests[i] = MPIF_Request_fromint(array_of_requests[i]);
   *ierror = MPI_Waitany(
     *count,
-    &c_array_of_requests,
+    c_array_of_requests,
     index,
     (MPI_Status*)status
   );
-  *array_of_requests = MPIF_Request_toint(c_array_of_requests);
+  for (int i=0; i<*count; ++i)
+    array_of_requests[i] = MPIF_Request_toint(c_array_of_requests[i]);
 }
 
 void mpi_waitsome_(
@@ -11698,15 +11718,18 @@ void mpi_waitsome_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests = MPIF_Request_fromint(*array_of_requests);
+  MPI_Request c_array_of_requests[*incount];
+  for (int i=0; i<*incount; ++i)
+    c_array_of_requests[i] = MPIF_Request_fromint(array_of_requests[i]);
   *ierror = MPI_Waitsome(
     *incount,
-    &c_array_of_requests,
+    c_array_of_requests,
     outcount,
     array_of_indices,
     (MPI_Status*)array_of_statuses
   );
-  *array_of_requests = MPIF_Request_toint(c_array_of_requests);
+  for (int i=0; i<*incount; ++i)
+    array_of_requests[i] = MPIF_Request_toint(c_array_of_requests[i]);
 }
 
 void mpi_win_allocate_(
