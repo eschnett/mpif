@@ -438,7 +438,7 @@ take an `MPI_Aint` too -- so one list entry covers both. Not to be confused with
 `POLYRMA_DISPLACEMENT`, the `disp_unit` of `MPI_Win_create`, which really is a
 plain `INTEGER` in the small form and stays in `int_aint_kinds`.
 
-### 16. The `TYPE(C_PTR)` forms of the memory-allocating routines are missing
+### 16. The `TYPE(C_PTR)` forms of the memory-allocating routines were missing — fixed
 
 Four routines hand back a base address, and the standard makes each a generic in
 the `mpi` module and `mpif.h` with two specifics -- one taking
@@ -456,9 +456,31 @@ passed TYPE(C_PTR) to INTEGER(8)".
 
 The `_CPTR` names are the standard's way of writing an overload in an interface
 block and are not separate entry points, so this is a Fortran-side addition
-only -- the C side is already a `void*` either way. `apis.json` does not describe
-the overload, so the generator would need a list, as it has for the other
-per-argument special cases.
+only -- the C side is already a `void*` either way.
+
+mpi_f08 had the opposite half of the same bug: there the standard has *only* the
+`TYPE(C_PTR)` form, and mpif emitted the address-kind one.
+
+Fixed. The f08 declaration is generated, `baseptr` becoming `TYPE(C_PTR)` with a
+`transfer` from the address-sized integer the C wrapper writes. The mpi module's
+overload is hand-written in `src/mpi_cptr.F90`, which calls the generated
+address-kind interface under a renamed alias, with the generics gathered in
+`src/mpi.F90`. The large-count variants are covered too; mpif spells those as
+separate names rather than further overloads, so each has its own generic.
+
+Where the generics live is forced, and was worth establishing by experiment:
+
+- A generic declared inside `mpi_cptr` *shadows* the use-associated specific
+  rather than extending it, so the address-kind form stops resolving.
+- A specific from one module and a same-named generic from another are an
+  ambiguous reference at the point of use.
+- A generic naming one of its own specifics, in a scope where both are visible,
+  works -- and is what the standard's own interface block for `MPI_ALLOC_MEM`
+  writes. Hence `interface MPI_Alloc_mem; procedure MPI_Alloc_mem; procedure
+  MPI_Alloc_mem_cptr; end interface` in `src/mpi.F90`.
+
+`mpif.h` needed nothing: its interfaces are implicit, so a `TYPE(C_PTR)` actual
+argument already reached the same C wrapper unchecked.
 
 ## External blockers
 

@@ -202,6 +202,7 @@ add_library(mpifort_abi SHARED
   # MPI Fortran modules
   src/mpi.F90
   src/mpi_constants.F90
+  src/mpi_cptr.F90
   src/mpi_types.F90
   src/mpi_f08.F90
   src/mpi_f08_constants.F90

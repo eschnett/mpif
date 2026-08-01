@@ -704,6 +704,13 @@ for key in sort(collect(keys(apis)))
                     end
                     if kind ∈ keys(kind2type)
                         push!(f08_call_arguments, "$f_argname%MPI_VAL")
+                    elseif kind == "C_BUFFER" && param_direction == "out"
+                        # The C wrapper writes the address into an address-sized
+                        # integer; a TYPE(C_PTR) is the same bits, so `transfer`
+                        # is the conversion.
+                        push!(f08_call_temp_declarations, "integer(MPI_ADDRESS_KIND) :: tmp_$f_argname")
+                        push!(f08_call_arguments, "tmp_$f_argname")
+                        push!(f08_call_temp_copyouts, "$f_argname = transfer(tmp_$f_argname, C_NULL_PTR)")
                     elseif kind == "STATUS"
                         push!(f08_call_temp_declarations, "integer :: tmp_$f_argname(MPI_STATUS_SIZE)")
                         if param_direction in ["in", "inout"]
@@ -991,7 +998,13 @@ for key in sort(collect(keys(apis)))
                         push!(f_declarations, "$f_type :: $parname$f_length")
                     end
                     if "f08_parameter" ∉ suppress
-                        push!(f08_declarations, "$f_type$f_intent$f_optional :: $parname$f_length")
+                        # mpi_f08 has only the TYPE(C_PTR) form of the base
+                        # address that MPI_Alloc_mem and the window allocators
+                        # hand back; the INTEGER(KIND=MPI_ADDRESS_KIND) one is the
+                        # mpi module's and mpif.h's, where it is paired with a
+                        # TYPE(C_PTR) overload (see src/mpi_cptr.F90).
+                        f08_type = kind == "C_BUFFER" && param_direction == "out" ? "type(C_PTR)" : f_type
+                        push!(f08_declarations, "$f08_type$f_intent$f_optional :: $parname$f_length")
                     end
                 end
             elseif kind in ["ATTRIBUTE_VAL_10", "EXTRA_STATE2"]
@@ -1522,6 +1535,9 @@ for key in sort(collect(keys(apis)))
         end
         push!(f08_implementations_body, "    use mpi_f08_constants")
         push!(f08_implementations_body, "    use mpi_f08_types")
+        if any(p -> p["kind"] == "C_BUFFER" && p["param_direction"] == "out", parameters)
+            push!(f08_implementations_body, "    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR")
+        end
         push!(f08_implementations_body, "    implicit none")
         if f_unit == "function"
             push!(f08_implementations_body, "    $f_return_type :: result")

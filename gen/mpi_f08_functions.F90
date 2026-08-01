@@ -1867,18 +1867,21 @@ contains
   )
     use mpi_f08_constants
     use mpi_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     integer(MPI_ADDRESS_KIND), intent(in) :: size
     type(MPI_Info), intent(in) :: info
-    integer(MPI_ADDRESS_KIND), intent(out) :: baseptr
+    type(C_PTR), intent(out) :: baseptr
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
     integer :: tmp_ierror
     call MPIF_Alloc_mem( &
       size, &
       info%MPI_VAL, &
-      baseptr, &
+      tmp_baseptr, &
       tmp_ierror &
     )
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Alloc_mem
 
@@ -18383,24 +18386,27 @@ contains
   )
     use mpi_f08_constants
     use mpi_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     integer(MPI_ADDRESS_KIND), intent(in) :: size
     integer, intent(in) :: disp_unit
     type(MPI_Info), intent(in) :: info
     type(MPI_Comm), intent(in) :: comm
-    integer(MPI_ADDRESS_KIND), intent(out) :: baseptr
+    type(C_PTR), intent(out) :: baseptr
     type(MPI_Win), intent(out) :: win
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
     integer :: tmp_ierror
     call MPIF_Win_allocate( &
       size, &
       disp_unit, &
       info%MPI_VAL, &
       comm%MPI_VAL, &
-      baseptr, &
+      tmp_baseptr, &
       win%MPI_VAL, &
       tmp_ierror &
     )
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Win_allocate
 
@@ -18415,24 +18421,27 @@ contains
   )
     use mpi_f08_constants
     use mpi_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     integer(MPI_ADDRESS_KIND), intent(in) :: size
     integer(MPI_ADDRESS_KIND), intent(in) :: disp_unit
     type(MPI_Info), intent(in) :: info
     type(MPI_Comm), intent(in) :: comm
-    integer(MPI_ADDRESS_KIND), intent(out) :: baseptr
+    type(C_PTR), intent(out) :: baseptr
     type(MPI_Win), intent(out) :: win
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
     integer :: tmp_ierror
     call MPIF_Win_allocate_c( &
       size, &
       disp_unit, &
       info%MPI_VAL, &
       comm%MPI_VAL, &
-      baseptr, &
+      tmp_baseptr, &
       win%MPI_VAL, &
       tmp_ierror &
     )
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Win_allocate_c
 
@@ -18447,24 +18456,27 @@ contains
   )
     use mpi_f08_constants
     use mpi_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     integer(MPI_ADDRESS_KIND), intent(in) :: size
     integer, intent(in) :: disp_unit
     type(MPI_Info), intent(in) :: info
     type(MPI_Comm), intent(in) :: comm
-    integer(MPI_ADDRESS_KIND), intent(out) :: baseptr
+    type(C_PTR), intent(out) :: baseptr
     type(MPI_Win), intent(out) :: win
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
     integer :: tmp_ierror
     call MPIF_Win_allocate_shared( &
       size, &
       disp_unit, &
       info%MPI_VAL, &
       comm%MPI_VAL, &
-      baseptr, &
+      tmp_baseptr, &
       win%MPI_VAL, &
       tmp_ierror &
     )
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Win_allocate_shared
 
@@ -18479,24 +18491,27 @@ contains
   )
     use mpi_f08_constants
     use mpi_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     integer(MPI_ADDRESS_KIND), intent(in) :: size
     integer(MPI_ADDRESS_KIND), intent(in) :: disp_unit
     type(MPI_Info), intent(in) :: info
     type(MPI_Comm), intent(in) :: comm
-    integer(MPI_ADDRESS_KIND), intent(out) :: baseptr
+    type(C_PTR), intent(out) :: baseptr
     type(MPI_Win), intent(out) :: win
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
     integer :: tmp_ierror
     call MPIF_Win_allocate_shared_c( &
       size, &
       disp_unit, &
       info%MPI_VAL, &
       comm%MPI_VAL, &
-      baseptr, &
+      tmp_baseptr, &
       win%MPI_VAL, &
       tmp_ierror &
     )
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Win_allocate_shared_c
 
@@ -19140,22 +19155,25 @@ contains
   )
     use mpi_f08_constants
     use mpi_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(in) :: rank
     integer(MPI_ADDRESS_KIND), intent(out) :: size
     integer, intent(out) :: disp_unit
-    integer(MPI_ADDRESS_KIND), intent(out) :: baseptr
+    type(C_PTR), intent(out) :: baseptr
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
     integer :: tmp_ierror
     call MPIF_Win_shared_query( &
       win%MPI_VAL, &
       rank, &
       size, &
       disp_unit, &
-      baseptr, &
+      tmp_baseptr, &
       tmp_ierror &
     )
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Win_shared_query
 
@@ -19169,22 +19187,25 @@ contains
   )
     use mpi_f08_constants
     use mpi_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(in) :: rank
     integer(MPI_ADDRESS_KIND), intent(out) :: size
     integer(MPI_ADDRESS_KIND), intent(out) :: disp_unit
-    integer(MPI_ADDRESS_KIND), intent(out) :: baseptr
+    type(C_PTR), intent(out) :: baseptr
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
     integer :: tmp_ierror
     call MPIF_Win_shared_query_c( &
       win%MPI_VAL, &
       rank, &
       size, &
       disp_unit, &
-      baseptr, &
+      tmp_baseptr, &
       tmp_ierror &
     )
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Win_shared_query_c
 
