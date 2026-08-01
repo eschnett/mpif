@@ -120,10 +120,16 @@ for language in "${languages[@]}"; do
     log=${workdir}/runtests-${language}.log
     (
         cd "${language}"
+        # `-mpiexecarg=` is not a command line option -- it is a key recognised
+        # inside testlist files. Extra mpiexec arguments reach `runtests` through
+        # the environment instead, as a single string that it splices into the
+        # command line verbatim.
+        if [[ -n ${MPIEXEC_ARGS:-} ]]; then
+            export MPITEST_MPIEXECARG="${MPIEXEC_ARGS}"
+        fi
         ../runtests \
             -tests=testlist \
             -mpiexec="${mpi_prefix}/bin/mpiexec" \
-            ${MPIEXEC_ARGS:+-mpiexecarg="${MPIEXEC_ARGS}"} \
             -maxnp="${maxnp}" \
             -showprogress
     ) 2>&1 | tee "${log}"
