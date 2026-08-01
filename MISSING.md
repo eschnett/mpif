@@ -482,6 +482,42 @@ Where the generics live is forced, and was worth establishing by experiment:
 `mpif.h` needed nothing: its interfaces are implicit, so a `TYPE(C_PTR)` actual
 argument already reached the same C wrapper unchecked.
 
+### 17. `mpi_f08` did not overload the large-count procedures — fixed
+
+MPI-4.0 added large counts "via separate additional MPI procedures in C (suffixed
+with `_c`) and via interface polymorphism in Fortran when using USE mpi_f08". So
+in `mpi_f08` the base name has to accept an `INTEGER(KIND=MPI_COUNT_KIND)` count
+as well as a default `INTEGER` one. mpif generated `MPI_Send` and `MPI_Send_c` as
+two unrelated names with no generic tying them together, so a conforming program
+did not compile: "Type mismatch in argument 'count'; passed INTEGER(8) to
+INTEGER(4)", which is what stopped `f08/pt2pt/pt2pt_largef08`.
+
+Fixed: the generator emits a generic per base name, gathering the small-count
+procedure and its `_c` companion. 153 of them.
+
+Not all 159 `_c` procedures get one, and the rule matters:
+
+- A generic is only possible where Fortran can tell the two apart. `POLY` kinds
+  that go from default `INTEGER` to an address- or count-sized one qualify; those
+  that go from `MPI_ADDRESS_KIND` to `MPI_COUNT_KIND` do not, because mpif defines
+  `MPI_COUNT_KIND` as `MPI_ADDRESS_KIND` and the large form then has a signature
+  identical to the small one. `MPI_Type_get_extent`, `MPI_Type_get_true_extent`,
+  `MPI_Type_create_resized` and `MPI_File_get_type_extent` are of that sort, and
+  gfortran rejects a generic over them with "Ambiguous interfaces in generic
+  interface". MPICH's generator applies the same test, comparing the two kinds'
+  sizes; see `real_poly_kinds` in its `maint/local_python/binding_f08.py`.
+- That test also excludes the two the standard exempts by name, "the explicit
+  Fortran procedures MPI_Op_create_c and MPI_Register_datarep_c", whose only
+  `POLY` parameter is a callback: "interface polymorphism cannot be used to
+  differentiate between the two different user callback prototypes despite their
+  different type signatures".
+
+The `mpi` module and `mpif.h` are left alone, which is also what the standard
+asks: "No polymorphic support for larger types is provided in Fortran when using
+mpif.h and use mpi." Note that mpif nonetheless exposes the `_c` names there, as
+ordinary separate procedures. That is an extension rather than a conformance
+problem, and removing it would break anyone already calling them, so it stands.
+
 ## External blockers
 
 ### MPICH: attributes on predefined datatypes abort in ABI builds

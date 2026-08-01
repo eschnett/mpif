@@ -1185,6 +1185,771 @@ module mpif_f08_functions
   public :: MPI_Win_wait
   public :: MPI_Wtick
   public :: MPI_Wtime
+  interface MPI_Accumulate
+     procedure MPI_Accumulate
+     procedure MPI_Accumulate_c
+  end interface MPI_Accumulate
+
+  interface MPI_Allgather
+     procedure MPI_Allgather
+     procedure MPI_Allgather_c
+  end interface MPI_Allgather
+
+  interface MPI_Allgather_init
+     procedure MPI_Allgather_init
+     procedure MPI_Allgather_init_c
+  end interface MPI_Allgather_init
+
+  interface MPI_Allgatherv
+     procedure MPI_Allgatherv
+     procedure MPI_Allgatherv_c
+  end interface MPI_Allgatherv
+
+  interface MPI_Allgatherv_init
+     procedure MPI_Allgatherv_init
+     procedure MPI_Allgatherv_init_c
+  end interface MPI_Allgatherv_init
+
+  interface MPI_Allreduce
+     procedure MPI_Allreduce
+     procedure MPI_Allreduce_c
+  end interface MPI_Allreduce
+
+  interface MPI_Allreduce_init
+     procedure MPI_Allreduce_init
+     procedure MPI_Allreduce_init_c
+  end interface MPI_Allreduce_init
+
+  interface MPI_Alltoall
+     procedure MPI_Alltoall
+     procedure MPI_Alltoall_c
+  end interface MPI_Alltoall
+
+  interface MPI_Alltoall_init
+     procedure MPI_Alltoall_init
+     procedure MPI_Alltoall_init_c
+  end interface MPI_Alltoall_init
+
+  interface MPI_Alltoallv
+     procedure MPI_Alltoallv
+     procedure MPI_Alltoallv_c
+  end interface MPI_Alltoallv
+
+  interface MPI_Alltoallv_init
+     procedure MPI_Alltoallv_init
+     procedure MPI_Alltoallv_init_c
+  end interface MPI_Alltoallv_init
+
+  interface MPI_Alltoallw
+     procedure MPI_Alltoallw
+     procedure MPI_Alltoallw_c
+  end interface MPI_Alltoallw
+
+  interface MPI_Alltoallw_init
+     procedure MPI_Alltoallw_init
+     procedure MPI_Alltoallw_init_c
+  end interface MPI_Alltoallw_init
+
+  interface MPI_Bcast
+     procedure MPI_Bcast
+     procedure MPI_Bcast_c
+  end interface MPI_Bcast
+
+  interface MPI_Bcast_init
+     procedure MPI_Bcast_init
+     procedure MPI_Bcast_init_c
+  end interface MPI_Bcast_init
+
+  interface MPI_Bsend
+     procedure MPI_Bsend
+     procedure MPI_Bsend_c
+  end interface MPI_Bsend
+
+  interface MPI_Bsend_init
+     procedure MPI_Bsend_init
+     procedure MPI_Bsend_init_c
+  end interface MPI_Bsend_init
+
+  interface MPI_Buffer_attach
+     procedure MPI_Buffer_attach
+     procedure MPI_Buffer_attach_c
+  end interface MPI_Buffer_attach
+
+  interface MPI_Buffer_detach
+     procedure MPI_Buffer_detach
+     procedure MPI_Buffer_detach_c
+  end interface MPI_Buffer_detach
+
+  interface MPI_Comm_attach_buffer
+     procedure MPI_Comm_attach_buffer
+     procedure MPI_Comm_attach_buffer_c
+  end interface MPI_Comm_attach_buffer
+
+  interface MPI_Comm_detach_buffer
+     procedure MPI_Comm_detach_buffer
+     procedure MPI_Comm_detach_buffer_c
+  end interface MPI_Comm_detach_buffer
+
+  interface MPI_Exscan
+     procedure MPI_Exscan
+     procedure MPI_Exscan_c
+  end interface MPI_Exscan
+
+  interface MPI_Exscan_init
+     procedure MPI_Exscan_init
+     procedure MPI_Exscan_init_c
+  end interface MPI_Exscan_init
+
+  interface MPI_File_iread
+     procedure MPI_File_iread
+     procedure MPI_File_iread_c
+  end interface MPI_File_iread
+
+  interface MPI_File_iread_all
+     procedure MPI_File_iread_all
+     procedure MPI_File_iread_all_c
+  end interface MPI_File_iread_all
+
+  interface MPI_File_iread_at
+     procedure MPI_File_iread_at
+     procedure MPI_File_iread_at_c
+  end interface MPI_File_iread_at
+
+  interface MPI_File_iread_at_all
+     procedure MPI_File_iread_at_all
+     procedure MPI_File_iread_at_all_c
+  end interface MPI_File_iread_at_all
+
+  interface MPI_File_iread_shared
+     procedure MPI_File_iread_shared
+     procedure MPI_File_iread_shared_c
+  end interface MPI_File_iread_shared
+
+  interface MPI_File_iwrite
+     procedure MPI_File_iwrite
+     procedure MPI_File_iwrite_c
+  end interface MPI_File_iwrite
+
+  interface MPI_File_iwrite_all
+     procedure MPI_File_iwrite_all
+     procedure MPI_File_iwrite_all_c
+  end interface MPI_File_iwrite_all
+
+  interface MPI_File_iwrite_at
+     procedure MPI_File_iwrite_at
+     procedure MPI_File_iwrite_at_c
+  end interface MPI_File_iwrite_at
+
+  interface MPI_File_iwrite_at_all
+     procedure MPI_File_iwrite_at_all
+     procedure MPI_File_iwrite_at_all_c
+  end interface MPI_File_iwrite_at_all
+
+  interface MPI_File_iwrite_shared
+     procedure MPI_File_iwrite_shared
+     procedure MPI_File_iwrite_shared_c
+  end interface MPI_File_iwrite_shared
+
+  interface MPI_File_read
+     procedure MPI_File_read
+     procedure MPI_File_read_c
+  end interface MPI_File_read
+
+  interface MPI_File_read_all
+     procedure MPI_File_read_all
+     procedure MPI_File_read_all_c
+  end interface MPI_File_read_all
+
+  interface MPI_File_read_all_begin
+     procedure MPI_File_read_all_begin
+     procedure MPI_File_read_all_begin_c
+  end interface MPI_File_read_all_begin
+
+  interface MPI_File_read_at
+     procedure MPI_File_read_at
+     procedure MPI_File_read_at_c
+  end interface MPI_File_read_at
+
+  interface MPI_File_read_at_all
+     procedure MPI_File_read_at_all
+     procedure MPI_File_read_at_all_c
+  end interface MPI_File_read_at_all
+
+  interface MPI_File_read_at_all_begin
+     procedure MPI_File_read_at_all_begin
+     procedure MPI_File_read_at_all_begin_c
+  end interface MPI_File_read_at_all_begin
+
+  interface MPI_File_read_ordered
+     procedure MPI_File_read_ordered
+     procedure MPI_File_read_ordered_c
+  end interface MPI_File_read_ordered
+
+  interface MPI_File_read_ordered_begin
+     procedure MPI_File_read_ordered_begin
+     procedure MPI_File_read_ordered_begin_c
+  end interface MPI_File_read_ordered_begin
+
+  interface MPI_File_read_shared
+     procedure MPI_File_read_shared
+     procedure MPI_File_read_shared_c
+  end interface MPI_File_read_shared
+
+  interface MPI_File_write
+     procedure MPI_File_write
+     procedure MPI_File_write_c
+  end interface MPI_File_write
+
+  interface MPI_File_write_all
+     procedure MPI_File_write_all
+     procedure MPI_File_write_all_c
+  end interface MPI_File_write_all
+
+  interface MPI_File_write_all_begin
+     procedure MPI_File_write_all_begin
+     procedure MPI_File_write_all_begin_c
+  end interface MPI_File_write_all_begin
+
+  interface MPI_File_write_at
+     procedure MPI_File_write_at
+     procedure MPI_File_write_at_c
+  end interface MPI_File_write_at
+
+  interface MPI_File_write_at_all
+     procedure MPI_File_write_at_all
+     procedure MPI_File_write_at_all_c
+  end interface MPI_File_write_at_all
+
+  interface MPI_File_write_at_all_begin
+     procedure MPI_File_write_at_all_begin
+     procedure MPI_File_write_at_all_begin_c
+  end interface MPI_File_write_at_all_begin
+
+  interface MPI_File_write_ordered
+     procedure MPI_File_write_ordered
+     procedure MPI_File_write_ordered_c
+  end interface MPI_File_write_ordered
+
+  interface MPI_File_write_ordered_begin
+     procedure MPI_File_write_ordered_begin
+     procedure MPI_File_write_ordered_begin_c
+  end interface MPI_File_write_ordered_begin
+
+  interface MPI_File_write_shared
+     procedure MPI_File_write_shared
+     procedure MPI_File_write_shared_c
+  end interface MPI_File_write_shared
+
+  interface MPI_Gather
+     procedure MPI_Gather
+     procedure MPI_Gather_c
+  end interface MPI_Gather
+
+  interface MPI_Gather_init
+     procedure MPI_Gather_init
+     procedure MPI_Gather_init_c
+  end interface MPI_Gather_init
+
+  interface MPI_Gatherv
+     procedure MPI_Gatherv
+     procedure MPI_Gatherv_c
+  end interface MPI_Gatherv
+
+  interface MPI_Gatherv_init
+     procedure MPI_Gatherv_init
+     procedure MPI_Gatherv_init_c
+  end interface MPI_Gatherv_init
+
+  interface MPI_Get
+     procedure MPI_Get
+     procedure MPI_Get_c
+  end interface MPI_Get
+
+  interface MPI_Get_accumulate
+     procedure MPI_Get_accumulate
+     procedure MPI_Get_accumulate_c
+  end interface MPI_Get_accumulate
+
+  interface MPI_Get_count
+     procedure MPI_Get_count
+     procedure MPI_Get_count_c
+  end interface MPI_Get_count
+
+  interface MPI_Get_elements
+     procedure MPI_Get_elements
+     procedure MPI_Get_elements_c
+  end interface MPI_Get_elements
+
+  interface MPI_Iallgather
+     procedure MPI_Iallgather
+     procedure MPI_Iallgather_c
+  end interface MPI_Iallgather
+
+  interface MPI_Iallgatherv
+     procedure MPI_Iallgatherv
+     procedure MPI_Iallgatherv_c
+  end interface MPI_Iallgatherv
+
+  interface MPI_Iallreduce
+     procedure MPI_Iallreduce
+     procedure MPI_Iallreduce_c
+  end interface MPI_Iallreduce
+
+  interface MPI_Ialltoall
+     procedure MPI_Ialltoall
+     procedure MPI_Ialltoall_c
+  end interface MPI_Ialltoall
+
+  interface MPI_Ialltoallv
+     procedure MPI_Ialltoallv
+     procedure MPI_Ialltoallv_c
+  end interface MPI_Ialltoallv
+
+  interface MPI_Ialltoallw
+     procedure MPI_Ialltoallw
+     procedure MPI_Ialltoallw_c
+  end interface MPI_Ialltoallw
+
+  interface MPI_Ibcast
+     procedure MPI_Ibcast
+     procedure MPI_Ibcast_c
+  end interface MPI_Ibcast
+
+  interface MPI_Ibsend
+     procedure MPI_Ibsend
+     procedure MPI_Ibsend_c
+  end interface MPI_Ibsend
+
+  interface MPI_Iexscan
+     procedure MPI_Iexscan
+     procedure MPI_Iexscan_c
+  end interface MPI_Iexscan
+
+  interface MPI_Igather
+     procedure MPI_Igather
+     procedure MPI_Igather_c
+  end interface MPI_Igather
+
+  interface MPI_Igatherv
+     procedure MPI_Igatherv
+     procedure MPI_Igatherv_c
+  end interface MPI_Igatherv
+
+  interface MPI_Imrecv
+     procedure MPI_Imrecv
+     procedure MPI_Imrecv_c
+  end interface MPI_Imrecv
+
+  interface MPI_Ineighbor_allgather
+     procedure MPI_Ineighbor_allgather
+     procedure MPI_Ineighbor_allgather_c
+  end interface MPI_Ineighbor_allgather
+
+  interface MPI_Ineighbor_allgatherv
+     procedure MPI_Ineighbor_allgatherv
+     procedure MPI_Ineighbor_allgatherv_c
+  end interface MPI_Ineighbor_allgatherv
+
+  interface MPI_Ineighbor_alltoall
+     procedure MPI_Ineighbor_alltoall
+     procedure MPI_Ineighbor_alltoall_c
+  end interface MPI_Ineighbor_alltoall
+
+  interface MPI_Ineighbor_alltoallv
+     procedure MPI_Ineighbor_alltoallv
+     procedure MPI_Ineighbor_alltoallv_c
+  end interface MPI_Ineighbor_alltoallv
+
+  interface MPI_Ineighbor_alltoallw
+     procedure MPI_Ineighbor_alltoallw
+     procedure MPI_Ineighbor_alltoallw_c
+  end interface MPI_Ineighbor_alltoallw
+
+  interface MPI_Irecv
+     procedure MPI_Irecv
+     procedure MPI_Irecv_c
+  end interface MPI_Irecv
+
+  interface MPI_Ireduce
+     procedure MPI_Ireduce
+     procedure MPI_Ireduce_c
+  end interface MPI_Ireduce
+
+  interface MPI_Ireduce_scatter
+     procedure MPI_Ireduce_scatter
+     procedure MPI_Ireduce_scatter_c
+  end interface MPI_Ireduce_scatter
+
+  interface MPI_Ireduce_scatter_block
+     procedure MPI_Ireduce_scatter_block
+     procedure MPI_Ireduce_scatter_block_c
+  end interface MPI_Ireduce_scatter_block
+
+  interface MPI_Irsend
+     procedure MPI_Irsend
+     procedure MPI_Irsend_c
+  end interface MPI_Irsend
+
+  interface MPI_Iscan
+     procedure MPI_Iscan
+     procedure MPI_Iscan_c
+  end interface MPI_Iscan
+
+  interface MPI_Iscatter
+     procedure MPI_Iscatter
+     procedure MPI_Iscatter_c
+  end interface MPI_Iscatter
+
+  interface MPI_Iscatterv
+     procedure MPI_Iscatterv
+     procedure MPI_Iscatterv_c
+  end interface MPI_Iscatterv
+
+  interface MPI_Isend
+     procedure MPI_Isend
+     procedure MPI_Isend_c
+  end interface MPI_Isend
+
+  interface MPI_Isendrecv
+     procedure MPI_Isendrecv
+     procedure MPI_Isendrecv_c
+  end interface MPI_Isendrecv
+
+  interface MPI_Isendrecv_replace
+     procedure MPI_Isendrecv_replace
+     procedure MPI_Isendrecv_replace_c
+  end interface MPI_Isendrecv_replace
+
+  interface MPI_Issend
+     procedure MPI_Issend
+     procedure MPI_Issend_c
+  end interface MPI_Issend
+
+  interface MPI_Mrecv
+     procedure MPI_Mrecv
+     procedure MPI_Mrecv_c
+  end interface MPI_Mrecv
+
+  interface MPI_Neighbor_allgather
+     procedure MPI_Neighbor_allgather
+     procedure MPI_Neighbor_allgather_c
+  end interface MPI_Neighbor_allgather
+
+  interface MPI_Neighbor_allgather_init
+     procedure MPI_Neighbor_allgather_init
+     procedure MPI_Neighbor_allgather_init_c
+  end interface MPI_Neighbor_allgather_init
+
+  interface MPI_Neighbor_allgatherv
+     procedure MPI_Neighbor_allgatherv
+     procedure MPI_Neighbor_allgatherv_c
+  end interface MPI_Neighbor_allgatherv
+
+  interface MPI_Neighbor_allgatherv_init
+     procedure MPI_Neighbor_allgatherv_init
+     procedure MPI_Neighbor_allgatherv_init_c
+  end interface MPI_Neighbor_allgatherv_init
+
+  interface MPI_Neighbor_alltoall
+     procedure MPI_Neighbor_alltoall
+     procedure MPI_Neighbor_alltoall_c
+  end interface MPI_Neighbor_alltoall
+
+  interface MPI_Neighbor_alltoall_init
+     procedure MPI_Neighbor_alltoall_init
+     procedure MPI_Neighbor_alltoall_init_c
+  end interface MPI_Neighbor_alltoall_init
+
+  interface MPI_Neighbor_alltoallv
+     procedure MPI_Neighbor_alltoallv
+     procedure MPI_Neighbor_alltoallv_c
+  end interface MPI_Neighbor_alltoallv
+
+  interface MPI_Neighbor_alltoallv_init
+     procedure MPI_Neighbor_alltoallv_init
+     procedure MPI_Neighbor_alltoallv_init_c
+  end interface MPI_Neighbor_alltoallv_init
+
+  interface MPI_Neighbor_alltoallw
+     procedure MPI_Neighbor_alltoallw
+     procedure MPI_Neighbor_alltoallw_c
+  end interface MPI_Neighbor_alltoallw
+
+  interface MPI_Neighbor_alltoallw_init
+     procedure MPI_Neighbor_alltoallw_init
+     procedure MPI_Neighbor_alltoallw_init_c
+  end interface MPI_Neighbor_alltoallw_init
+
+  interface MPI_Pack
+     procedure MPI_Pack
+     procedure MPI_Pack_c
+  end interface MPI_Pack
+
+  interface MPI_Pack_external
+     procedure MPI_Pack_external
+     procedure MPI_Pack_external_c
+  end interface MPI_Pack_external
+
+  interface MPI_Pack_external_size
+     procedure MPI_Pack_external_size
+     procedure MPI_Pack_external_size_c
+  end interface MPI_Pack_external_size
+
+  interface MPI_Pack_size
+     procedure MPI_Pack_size
+     procedure MPI_Pack_size_c
+  end interface MPI_Pack_size
+
+  interface MPI_Put
+     procedure MPI_Put
+     procedure MPI_Put_c
+  end interface MPI_Put
+
+  interface MPI_Raccumulate
+     procedure MPI_Raccumulate
+     procedure MPI_Raccumulate_c
+  end interface MPI_Raccumulate
+
+  interface MPI_Recv
+     procedure MPI_Recv
+     procedure MPI_Recv_c
+  end interface MPI_Recv
+
+  interface MPI_Recv_init
+     procedure MPI_Recv_init
+     procedure MPI_Recv_init_c
+  end interface MPI_Recv_init
+
+  interface MPI_Reduce
+     procedure MPI_Reduce
+     procedure MPI_Reduce_c
+  end interface MPI_Reduce
+
+  interface MPI_Reduce_init
+     procedure MPI_Reduce_init
+     procedure MPI_Reduce_init_c
+  end interface MPI_Reduce_init
+
+  interface MPI_Reduce_local
+     procedure MPI_Reduce_local
+     procedure MPI_Reduce_local_c
+  end interface MPI_Reduce_local
+
+  interface MPI_Reduce_scatter
+     procedure MPI_Reduce_scatter
+     procedure MPI_Reduce_scatter_c
+  end interface MPI_Reduce_scatter
+
+  interface MPI_Reduce_scatter_block
+     procedure MPI_Reduce_scatter_block
+     procedure MPI_Reduce_scatter_block_c
+  end interface MPI_Reduce_scatter_block
+
+  interface MPI_Reduce_scatter_block_init
+     procedure MPI_Reduce_scatter_block_init
+     procedure MPI_Reduce_scatter_block_init_c
+  end interface MPI_Reduce_scatter_block_init
+
+  interface MPI_Reduce_scatter_init
+     procedure MPI_Reduce_scatter_init
+     procedure MPI_Reduce_scatter_init_c
+  end interface MPI_Reduce_scatter_init
+
+  interface MPI_Rget
+     procedure MPI_Rget
+     procedure MPI_Rget_c
+  end interface MPI_Rget
+
+  interface MPI_Rget_accumulate
+     procedure MPI_Rget_accumulate
+     procedure MPI_Rget_accumulate_c
+  end interface MPI_Rget_accumulate
+
+  interface MPI_Rput
+     procedure MPI_Rput
+     procedure MPI_Rput_c
+  end interface MPI_Rput
+
+  interface MPI_Rsend
+     procedure MPI_Rsend
+     procedure MPI_Rsend_c
+  end interface MPI_Rsend
+
+  interface MPI_Rsend_init
+     procedure MPI_Rsend_init
+     procedure MPI_Rsend_init_c
+  end interface MPI_Rsend_init
+
+  interface MPI_Scan
+     procedure MPI_Scan
+     procedure MPI_Scan_c
+  end interface MPI_Scan
+
+  interface MPI_Scan_init
+     procedure MPI_Scan_init
+     procedure MPI_Scan_init_c
+  end interface MPI_Scan_init
+
+  interface MPI_Scatter
+     procedure MPI_Scatter
+     procedure MPI_Scatter_c
+  end interface MPI_Scatter
+
+  interface MPI_Scatter_init
+     procedure MPI_Scatter_init
+     procedure MPI_Scatter_init_c
+  end interface MPI_Scatter_init
+
+  interface MPI_Scatterv
+     procedure MPI_Scatterv
+     procedure MPI_Scatterv_c
+  end interface MPI_Scatterv
+
+  interface MPI_Scatterv_init
+     procedure MPI_Scatterv_init
+     procedure MPI_Scatterv_init_c
+  end interface MPI_Scatterv_init
+
+  interface MPI_Send
+     procedure MPI_Send
+     procedure MPI_Send_c
+  end interface MPI_Send
+
+  interface MPI_Send_init
+     procedure MPI_Send_init
+     procedure MPI_Send_init_c
+  end interface MPI_Send_init
+
+  interface MPI_Sendrecv
+     procedure MPI_Sendrecv
+     procedure MPI_Sendrecv_c
+  end interface MPI_Sendrecv
+
+  interface MPI_Sendrecv_replace
+     procedure MPI_Sendrecv_replace
+     procedure MPI_Sendrecv_replace_c
+  end interface MPI_Sendrecv_replace
+
+  interface MPI_Session_attach_buffer
+     procedure MPI_Session_attach_buffer
+     procedure MPI_Session_attach_buffer_c
+  end interface MPI_Session_attach_buffer
+
+  interface MPI_Session_detach_buffer
+     procedure MPI_Session_detach_buffer
+     procedure MPI_Session_detach_buffer_c
+  end interface MPI_Session_detach_buffer
+
+  interface MPI_Ssend
+     procedure MPI_Ssend
+     procedure MPI_Ssend_c
+  end interface MPI_Ssend
+
+  interface MPI_Ssend_init
+     procedure MPI_Ssend_init
+     procedure MPI_Ssend_init_c
+  end interface MPI_Ssend_init
+
+  interface MPI_Status_set_elements
+     procedure MPI_Status_set_elements
+     procedure MPI_Status_set_elements_c
+  end interface MPI_Status_set_elements
+
+  interface MPI_Type_contiguous
+     procedure MPI_Type_contiguous
+     procedure MPI_Type_contiguous_c
+  end interface MPI_Type_contiguous
+
+  interface MPI_Type_create_darray
+     procedure MPI_Type_create_darray
+     procedure MPI_Type_create_darray_c
+  end interface MPI_Type_create_darray
+
+  interface MPI_Type_create_hindexed
+     procedure MPI_Type_create_hindexed
+     procedure MPI_Type_create_hindexed_c
+  end interface MPI_Type_create_hindexed
+
+  interface MPI_Type_create_hindexed_block
+     procedure MPI_Type_create_hindexed_block
+     procedure MPI_Type_create_hindexed_block_c
+  end interface MPI_Type_create_hindexed_block
+
+  interface MPI_Type_create_hvector
+     procedure MPI_Type_create_hvector
+     procedure MPI_Type_create_hvector_c
+  end interface MPI_Type_create_hvector
+
+  interface MPI_Type_create_indexed_block
+     procedure MPI_Type_create_indexed_block
+     procedure MPI_Type_create_indexed_block_c
+  end interface MPI_Type_create_indexed_block
+
+  interface MPI_Type_create_struct
+     procedure MPI_Type_create_struct
+     procedure MPI_Type_create_struct_c
+  end interface MPI_Type_create_struct
+
+  interface MPI_Type_create_subarray
+     procedure MPI_Type_create_subarray
+     procedure MPI_Type_create_subarray_c
+  end interface MPI_Type_create_subarray
+
+  interface MPI_Type_get_contents
+     procedure MPI_Type_get_contents
+     procedure MPI_Type_get_contents_c
+  end interface MPI_Type_get_contents
+
+  interface MPI_Type_get_envelope
+     procedure MPI_Type_get_envelope
+     procedure MPI_Type_get_envelope_c
+  end interface MPI_Type_get_envelope
+
+  interface MPI_Type_indexed
+     procedure MPI_Type_indexed
+     procedure MPI_Type_indexed_c
+  end interface MPI_Type_indexed
+
+  interface MPI_Type_size
+     procedure MPI_Type_size
+     procedure MPI_Type_size_c
+  end interface MPI_Type_size
+
+  interface MPI_Type_vector
+     procedure MPI_Type_vector
+     procedure MPI_Type_vector_c
+  end interface MPI_Type_vector
+
+  interface MPI_Unpack
+     procedure MPI_Unpack
+     procedure MPI_Unpack_c
+  end interface MPI_Unpack
+
+  interface MPI_Unpack_external
+     procedure MPI_Unpack_external
+     procedure MPI_Unpack_external_c
+  end interface MPI_Unpack_external
+
+  interface MPI_Win_allocate
+     procedure MPI_Win_allocate
+     procedure MPI_Win_allocate_c
+  end interface MPI_Win_allocate
+
+  interface MPI_Win_allocate_shared
+     procedure MPI_Win_allocate_shared
+     procedure MPI_Win_allocate_shared_c
+  end interface MPI_Win_allocate_shared
+
+  interface MPI_Win_create
+     procedure MPI_Win_create
+     procedure MPI_Win_create_c
+  end interface MPI_Win_create
+
+  interface MPI_Win_shared_query
+     procedure MPI_Win_shared_query
+     procedure MPI_Win_shared_query_c
+  end interface MPI_Win_shared_query
+
 
 contains
 

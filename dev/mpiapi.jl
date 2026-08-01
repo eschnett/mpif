@@ -205,6 +205,25 @@ c_prototypes = []
 f_interfaces = []
 f08_implementations_useonly = []
 f08_implementations_public = []
+f08_generic_interfaces = []
+
+# Base names that got a large-count `_c` companion, so that mpi_f08 can overload
+# the two under the base name. MPI-4.0 added large counts "via separate
+# additional MPI procedures in C (suffixed with `_c`) and via interface
+# polymorphism in Fortran when using USE mpi_f08" -- so `MPI_Send` there has to
+# accept an INTEGER(KIND=MPI_COUNT_KIND) count, not send the caller to a
+# separate `MPI_Send_c`. Note the other half of that sentence: "No polymorphic
+# support for larger types is provided in Fortran when using mpif.h and use
+# mpi", which is why this list only feeds the f08 module.
+f08_large_count_pairs = []
+
+# The two the standard exempts, listing them as "the explicit Fortran procedures
+# MPI_Op_create_c and MPI_Register_datarep_c". Both take a user callback whose
+# large-count prototype differs from the small one, and, as the text puts it for
+# MPI_Op_create, "interface polymorphism cannot be used to differentiate between
+# the two different user callback prototypes despite their different type
+# signatures".
+f08_explicit_large_count = ["MPI_Op_create", "MPI_Register_datarep"]
 f08_implementations_body = []
 
 append!(c_implementations,
@@ -1522,6 +1541,24 @@ for key in sort(collect(keys(apis)))
 
         push!(f08_implementations_useonly, "    $f08_name_f => $f08_name, &")
         push!(f08_implementations_public, "  public :: $f08_name")
+        # Only overload when Fortran can actually tell the two apart. A POLY kind
+        # that goes from default INTEGER to an address- or count-sized one does
+        # that; one that goes from MPI_ADDRESS_KIND to MPI_COUNT_KIND does not,
+        # because mpif defines MPI_COUNT_KIND as MPI_ADDRESS_KIND, leaving the
+        # large form with a signature identical to the small one. MPI_Type_get_extent
+        # and MPI_Type_create_resized are of that sort, and declaring a generic
+        # over them is rejected: "Ambiguous interfaces in generic interface".
+        # MPICH's generator applies the same test, comparing the two kinds' sizes.
+        #
+        # This also excludes the two the standard exempts by name, MPI_Op_create
+        # and MPI_Register_datarep, whose only POLY parameter is the callback:
+        # "interface polymorphism cannot be used to differentiate between the two
+        # different user callback prototypes despite their different type
+        # signatures".
+        if embiggen && any(p -> p["kind"] ∈ [int_aint_kinds; int_count_kinds], parameters)
+            @assert name ∉ f08_explicit_large_count
+            push!(f08_large_count_pairs, name)
+        end
 
         push!(f08_implementations_body, "  $f_unit $f08_name( &")
         for (n, arg) in enumerate(f08_arguments)
@@ -1629,7 +1666,22 @@ append!(f08_implementations_body,
          "end module mpif_f08_functions",
          ])
 
-f08_implementations = [f08_implementations_useonly; f08_implementations_public; f08_implementations_body]
+# One generic per base name, gathering the small-count procedure and its
+# large-count companion. Naming the generic after one of its own specifics is
+# what the standard's own interface blocks do, and the two are distinguishable
+# because a default INTEGER count and an INTEGER(KIND=MPI_COUNT_KIND) one are
+# different kinds.
+for name in sort(f08_large_count_pairs)
+    append!(f08_generic_interfaces,
+            ["  interface $name",
+             "     procedure $name",
+             "     procedure $(name)_c",
+             "  end interface $name",
+             ""])
+end
+
+f08_implementations = [f08_implementations_useonly; f08_implementations_public;
+                       f08_generic_interfaces; f08_implementations_body]
 
 println("Writing \"gen/mpif_functions.c\"...")
 open("gen/mpif_functions.c", "w") do f
