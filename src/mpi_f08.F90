@@ -1,7 +1,7 @@
 module mpi_f08
-  use mpi_f08_types
-  use mpi_f08_constants
-  use mpi_f08_functions
+  use mpif_f08_types
+  use mpif_f08_constants
+  use mpif_f08_functions
 
   implicit none
   public

@@ -1,4 +1,4 @@
-module mpi_f08_functions
+module mpif_f08_functions
   use mpi, only: &
     MPIF_Abi_get_fortran_booleans => MPI_Abi_get_fortran_booleans, &
     MPIF_Abi_get_fortran_info => MPI_Abi_get_fortran_info, &
@@ -1195,8 +1195,8 @@ contains
     is_set, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: logical_size
     !dir$ ignore_tkr(tkr) logical_true
@@ -1222,8 +1222,8 @@ contains
     info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(out) :: info
     integer, intent(out), optional :: ierror
@@ -1239,8 +1239,8 @@ contains
     info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(out) :: info
     integer, intent(out), optional :: ierror
@@ -1257,8 +1257,8 @@ contains
     abi_minor, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(out) :: abi_major
     integer, intent(out) :: abi_minor
@@ -1278,8 +1278,8 @@ contains
     logical_false, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: logical_size
     !dir$ ignore_tkr(tkr) logical_true
@@ -1303,8 +1303,8 @@ contains
     info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(in) :: info
     integer, intent(out), optional :: ierror
@@ -1321,8 +1321,8 @@ contains
     errorcode, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: errorcode
@@ -1348,8 +1348,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -1391,8 +1391,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -1426,8 +1426,8 @@ contains
     errorclass, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(out) :: errorclass
     integer, intent(out), optional :: ierror
@@ -1444,8 +1444,8 @@ contains
     errorcode, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: errorclass
     integer, intent(out) :: errorcode
@@ -1464,8 +1464,8 @@ contains
     string, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: errorcode
     character*(*), intent(in) :: string
@@ -1483,8 +1483,8 @@ contains
     base, &
     disp &
   ) result(result)
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_ADDRESS_KIND) :: result
     integer(MPI_ADDRESS_KIND), intent(in) :: base
@@ -1499,8 +1499,8 @@ contains
     addr1, &
     addr2 &
   ) result(result)
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_ADDRESS_KIND) :: result
     integer(MPI_ADDRESS_KIND), intent(in) :: addr1
@@ -1521,8 +1521,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -1560,8 +1560,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -1601,8 +1601,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -1646,8 +1646,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -1690,8 +1690,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -1732,8 +1732,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -1776,8 +1776,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -1824,8 +1824,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -1865,8 +1865,8 @@ contains
     baseptr, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -1894,8 +1894,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -1930,8 +1930,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -1968,8 +1968,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2010,8 +2010,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2051,8 +2051,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2090,8 +2090,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2131,8 +2131,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2176,8 +2176,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2221,8 +2221,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2266,8 +2266,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2313,8 +2313,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2364,8 +2364,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2413,8 +2413,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2458,8 +2458,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2505,8 +2505,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2556,8 +2556,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2598,8 +2598,8 @@ contains
     keyval, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: keyval
@@ -2620,8 +2620,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: keyval
@@ -2645,8 +2645,8 @@ contains
     attribute_val, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: keyval
@@ -2666,8 +2666,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(out), optional :: ierror
@@ -2685,8 +2685,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Info), intent(in) :: info
@@ -2710,8 +2710,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -2741,8 +2741,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -2774,8 +2774,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -2811,8 +2811,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -2847,8 +2847,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -2881,8 +2881,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -2916,8 +2916,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -2953,8 +2953,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -2985,8 +2985,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -3007,8 +3007,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -3029,8 +3029,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_ADDRESS_KIND), intent(out) :: buffer_addr
     integer, intent(out) :: size
@@ -3049,8 +3049,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_ADDRESS_KIND), intent(out) :: buffer_addr
     integer(MPI_COUNT_KIND), intent(out) :: size
@@ -3067,8 +3067,8 @@ contains
   subroutine MPI_Buffer_flush( &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
@@ -3082,8 +3082,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Request), intent(out) :: request
     integer, intent(out), optional :: ierror
@@ -3099,8 +3099,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Request), intent(inout) :: request
     integer, intent(out), optional :: ierror
@@ -3119,8 +3119,8 @@ contains
     coords, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: rank
@@ -3147,8 +3147,8 @@ contains
     comm_cart, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm_old
     integer, intent(in) :: ndims
@@ -3178,8 +3178,8 @@ contains
     coords, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: maxdims
@@ -3207,8 +3207,8 @@ contains
     newrank, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: ndims
@@ -3234,8 +3234,8 @@ contains
     rank, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: coords(*)
@@ -3259,8 +3259,8 @@ contains
     rank_dest, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: direction
@@ -3286,8 +3286,8 @@ contains
     newcomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     logical, intent(in) :: remain_dims(*)
@@ -3308,8 +3308,8 @@ contains
     ndims, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(out) :: ndims
@@ -3327,8 +3327,8 @@ contains
     port_name, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: port_name
     integer, intent(out), optional :: ierror
@@ -3348,8 +3348,8 @@ contains
     newcomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: port_name
     type(MPI_Info), intent(in) :: info
@@ -3375,8 +3375,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     !dir$ ignore_tkr(tkr) buffer
@@ -3400,8 +3400,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     !dir$ ignore_tkr(tkr) buffer
@@ -3424,8 +3424,8 @@ contains
     errorcode, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: errorcode
@@ -3445,8 +3445,8 @@ contains
     result, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm1
     type(MPI_Comm), intent(in) :: comm2
@@ -3470,8 +3470,8 @@ contains
     newcomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: port_name
     type(MPI_Info), intent(in) :: info
@@ -3497,8 +3497,8 @@ contains
     newcomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Group), intent(in) :: group
@@ -3519,8 +3519,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     procedure(MPI_Comm_errhandler_function) :: comm_errhandler_fn
     type(MPI_Errhandler), intent(out) :: errhandler
@@ -3542,8 +3542,8 @@ contains
     newcomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group
     character*(*), intent(in) :: stringtag
@@ -3570,8 +3570,8 @@ contains
     newcomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Group), intent(in) :: group
@@ -3596,8 +3596,8 @@ contains
     extra_state, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     procedure(MPI_Comm_copy_attr_function) :: comm_copy_attr_fn
     procedure(MPI_Comm_delete_attr_function) :: comm_delete_attr_fn
@@ -3620,8 +3620,8 @@ contains
     comm_keyval, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: comm_keyval
@@ -3641,8 +3641,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer(MPI_ADDRESS_KIND), intent(out) :: buffer_addr
@@ -3664,8 +3664,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer(MPI_ADDRESS_KIND), intent(out) :: buffer_addr
@@ -3685,8 +3685,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(inout) :: comm
     integer, intent(out), optional :: ierror
@@ -3703,8 +3703,8 @@ contains
     newcomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Comm), intent(out) :: newcomm
@@ -3724,8 +3724,8 @@ contains
     newcomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Info), intent(in) :: info
@@ -3745,8 +3745,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(out), optional :: ierror
@@ -3762,8 +3762,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(inout) :: comm
     integer, intent(out), optional :: ierror
@@ -3779,8 +3779,8 @@ contains
     comm_keyval, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(inout) :: comm_keyval
     integer, intent(out), optional :: ierror
@@ -3799,8 +3799,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: comm_keyval
@@ -3823,8 +3823,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Errhandler), intent(out) :: errhandler
@@ -3843,8 +3843,8 @@ contains
     info_used, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Info), intent(out) :: info_used
@@ -3864,8 +3864,8 @@ contains
     resultlen, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     character*(MPI_MAX_OBJECT_NAME), intent(out) :: comm_name
@@ -3885,8 +3885,8 @@ contains
     parent, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(out) :: parent
     integer, intent(out), optional :: ierror
@@ -3903,8 +3903,8 @@ contains
     group, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Group), intent(out) :: group
@@ -3924,8 +3924,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Comm), intent(out) :: newcomm
@@ -3948,8 +3948,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Info), intent(in) :: info
@@ -3972,8 +3972,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Request), intent(out) :: request
@@ -3992,8 +3992,8 @@ contains
     intercomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: fd
     type(MPI_Comm), intent(out) :: intercomm
@@ -4012,8 +4012,8 @@ contains
     rank, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(out) :: rank
@@ -4032,8 +4032,8 @@ contains
     group, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Group), intent(out) :: group
@@ -4052,8 +4052,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(out) :: size
@@ -4073,8 +4073,8 @@ contains
     attribute_val, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: comm_keyval
@@ -4095,8 +4095,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Errhandler), intent(in) :: errhandler
@@ -4115,8 +4115,8 @@ contains
     info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Info), intent(in) :: info
@@ -4135,8 +4135,8 @@ contains
     comm_name, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     character*(*), intent(in) :: comm_name
@@ -4155,8 +4155,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(out) :: size
@@ -4181,8 +4181,8 @@ contains
     array_of_errcodes, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: command
     character*(*), intent(in) :: argv(*)
@@ -4220,8 +4220,8 @@ contains
     array_of_errcodes, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     character*(*), intent(in) :: array_of_commands(*)
@@ -4256,8 +4256,8 @@ contains
     newcomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: color
@@ -4283,8 +4283,8 @@ contains
     newcomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: split_type
@@ -4309,8 +4309,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     logical, intent(out) :: flag
@@ -4334,8 +4334,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -4371,8 +4371,8 @@ contains
     dims, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: nnodes
     integer, intent(in) :: ndims
@@ -4400,8 +4400,8 @@ contains
     comm_dist_graph, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm_old
     integer, intent(in) :: n
@@ -4442,8 +4442,8 @@ contains
     comm_dist_graph, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm_old
     integer, intent(in) :: indegree
@@ -4483,8 +4483,8 @@ contains
     destweights, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: maxindegree
@@ -4515,8 +4515,8 @@ contains
     weighted, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(out) :: indegree
@@ -4538,8 +4538,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Errhandler), intent(inout) :: errhandler
     integer, intent(out), optional :: ierror
@@ -4556,8 +4556,8 @@ contains
     errorclass, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: errorcode
     integer, intent(out) :: errorclass
@@ -4577,8 +4577,8 @@ contains
     resultlen, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: errorcode
     character*(MPI_MAX_ERROR_STRING), intent(out) :: string
@@ -4603,8 +4603,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4639,8 +4639,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4677,8 +4677,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4719,8 +4719,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4753,8 +4753,8 @@ contains
   subroutine MPI_F_sync_reg( &
     buf &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -4774,8 +4774,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -4808,8 +4808,8 @@ contains
     errorcode, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer, intent(in) :: errorcode
@@ -4827,8 +4827,8 @@ contains
     fh, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(inout) :: fh
     integer, intent(out), optional :: ierror
@@ -4845,8 +4845,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     procedure(MPI_File_errhandler_function) :: file_errhandler_fn
     type(MPI_Errhandler), intent(out) :: errhandler
@@ -4865,8 +4865,8 @@ contains
     info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: filename
     type(MPI_Info), intent(in) :: info
@@ -4885,8 +4885,8 @@ contains
     amode, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer, intent(out) :: amode
@@ -4905,8 +4905,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     logical, intent(out) :: flag
@@ -4926,8 +4926,8 @@ contains
     disp, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -4948,8 +4948,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: file
     type(MPI_Errhandler), intent(out) :: errhandler
@@ -4968,8 +4968,8 @@ contains
     group, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     type(MPI_Group), intent(out) :: group
@@ -4988,8 +4988,8 @@ contains
     info_used, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     type(MPI_Info), intent(out) :: info_used
@@ -5008,8 +5008,8 @@ contains
     offset, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(out) :: offset
@@ -5028,8 +5028,8 @@ contains
     offset, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(out) :: offset
@@ -5048,8 +5048,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(out) :: size
@@ -5069,8 +5069,8 @@ contains
     extent, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     type(MPI_Datatype), intent(in) :: datatype
@@ -5092,8 +5092,8 @@ contains
     extent, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     type(MPI_Datatype), intent(in) :: datatype
@@ -5117,8 +5117,8 @@ contains
     datarep, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(out) :: disp
@@ -5146,8 +5146,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5177,8 +5177,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5208,8 +5208,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5239,8 +5239,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5271,8 +5271,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -5305,8 +5305,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -5339,8 +5339,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -5373,8 +5373,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -5406,8 +5406,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5437,8 +5437,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5468,8 +5468,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5499,8 +5499,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5530,8 +5530,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5561,8 +5561,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5593,8 +5593,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -5627,8 +5627,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -5661,8 +5661,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -5695,8 +5695,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -5728,8 +5728,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5759,8 +5759,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5790,8 +5790,8 @@ contains
     fh, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     character*(*), intent(in) :: filename
@@ -5816,8 +5816,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: size
@@ -5839,8 +5839,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5874,8 +5874,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5909,8 +5909,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5944,8 +5944,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -5978,8 +5978,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6006,8 +6006,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6033,8 +6033,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6065,8 +6065,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -6103,8 +6103,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -6141,8 +6141,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -6179,8 +6179,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -6216,8 +6216,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -6247,8 +6247,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -6276,8 +6276,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6307,8 +6307,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6342,8 +6342,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6376,8 +6376,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6404,8 +6404,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6431,8 +6431,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6462,8 +6462,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6497,8 +6497,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6530,8 +6530,8 @@ contains
     whence, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -6553,8 +6553,8 @@ contains
     whence, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -6575,8 +6575,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     logical, intent(in) :: flag
@@ -6595,8 +6595,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: file
     type(MPI_Errhandler), intent(in) :: errhandler
@@ -6615,8 +6615,8 @@ contains
     info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     type(MPI_Info), intent(in) :: info
@@ -6635,8 +6635,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: size
@@ -6659,8 +6659,8 @@ contains
     info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: disp
@@ -6686,8 +6686,8 @@ contains
     fh, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer, intent(out), optional :: ierror
@@ -6707,8 +6707,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6742,8 +6742,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6777,8 +6777,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6812,8 +6812,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6846,8 +6846,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6874,8 +6874,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6901,8 +6901,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -6933,8 +6933,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -6971,8 +6971,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -7009,8 +7009,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -7047,8 +7047,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -7084,8 +7084,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -7115,8 +7115,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     integer(MPI_OFFSET_KIND), intent(in) :: offset
@@ -7144,8 +7144,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -7175,8 +7175,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -7210,8 +7210,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -7244,8 +7244,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -7272,8 +7272,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -7299,8 +7299,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -7330,8 +7330,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -7365,8 +7365,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_File), intent(in) :: fh
     !dir$ ignore_tkr(tkr) buf
@@ -7395,8 +7395,8 @@ contains
   subroutine MPI_Finalize( &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
@@ -7410,8 +7410,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     logical, intent(out) :: flag
     integer, intent(out), optional :: ierror
@@ -7427,8 +7427,8 @@ contains
     base, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) base
     !gcc$ attributes no_arg_check :: base
@@ -7453,8 +7453,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7495,8 +7495,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7539,8 +7539,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7587,8 +7587,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7634,8 +7634,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7679,8 +7679,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7726,8 +7726,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7777,8 +7777,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7825,8 +7825,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -7865,8 +7865,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -7909,8 +7909,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -7963,8 +7963,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -8007,8 +8007,8 @@ contains
     address, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) location
     !gcc$ attributes no_arg_check :: location
@@ -8030,8 +8030,8 @@ contains
     count, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(in) :: status
     type(MPI_Datatype), intent(in) :: datatype
@@ -8057,8 +8057,8 @@ contains
     count, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(in) :: status
     type(MPI_Datatype), intent(in) :: datatype
@@ -8084,8 +8084,8 @@ contains
     count, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(in) :: status
     type(MPI_Datatype), intent(in) :: datatype
@@ -8111,8 +8111,8 @@ contains
     count, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(in) :: status
     type(MPI_Datatype), intent(in) :: datatype
@@ -8138,8 +8138,8 @@ contains
     count, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(in) :: status
     type(MPI_Datatype), intent(in) :: datatype
@@ -8163,8 +8163,8 @@ contains
     hw_info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(out) :: hw_info
     integer, intent(out), optional :: ierror
@@ -8181,8 +8181,8 @@ contains
     resultlen, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(MPI_MAX_LIBRARY_VERSION_STRING), intent(out) :: version
     integer, intent(out) :: resultlen
@@ -8201,8 +8201,8 @@ contains
     resultlen, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(MPI_MAX_PROCESSOR_NAME), intent(out) :: name
     integer, intent(out) :: resultlen
@@ -8221,8 +8221,8 @@ contains
     subversion, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(out) :: version
     integer, intent(out) :: subversion
@@ -8245,8 +8245,8 @@ contains
     comm_graph, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm_old
     integer, intent(in) :: nnodes
@@ -8276,8 +8276,8 @@ contains
     edges, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: maxindex
@@ -8305,8 +8305,8 @@ contains
     newrank, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: nnodes
@@ -8333,8 +8333,8 @@ contains
     neighbors, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: rank
@@ -8358,8 +8358,8 @@ contains
     nneighbors, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: rank
@@ -8381,8 +8381,8 @@ contains
     nedges, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(out) :: nnodes
@@ -8402,8 +8402,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Request), intent(in) :: request
     integer, intent(out), optional :: ierror
@@ -8423,8 +8423,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     procedure(MPI_Grequest_query_function) :: query_fn
     procedure(MPI_Grequest_free_function) :: free_fn
@@ -8450,8 +8450,8 @@ contains
     result, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group1
     type(MPI_Group), intent(in) :: group2
@@ -8473,8 +8473,8 @@ contains
     newgroup, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group1
     type(MPI_Group), intent(in) :: group2
@@ -8497,8 +8497,8 @@ contains
     newgroup, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group
     integer, intent(in) :: n
@@ -8520,8 +8520,8 @@ contains
     group, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(inout) :: group
     integer, intent(out), optional :: ierror
@@ -8539,8 +8539,8 @@ contains
     newgroup, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     character*(*), intent(in) :: pset_name
@@ -8563,8 +8563,8 @@ contains
     newgroup, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group
     integer, intent(in) :: n
@@ -8588,8 +8588,8 @@ contains
     newgroup, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group1
     type(MPI_Group), intent(in) :: group2
@@ -8612,8 +8612,8 @@ contains
     newgroup, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group
     integer, intent(in) :: n
@@ -8638,8 +8638,8 @@ contains
     newgroup, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group
     integer, intent(in) :: n
@@ -8662,8 +8662,8 @@ contains
     rank, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group
     integer, intent(out) :: rank
@@ -8682,8 +8682,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group
     integer, intent(out) :: size
@@ -8705,8 +8705,8 @@ contains
     ranks2, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group1
     integer, intent(in) :: n
@@ -8732,8 +8732,8 @@ contains
     newgroup, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group1
     type(MPI_Group), intent(in) :: group2
@@ -8760,8 +8760,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8802,8 +8802,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8845,8 +8845,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8890,8 +8890,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8933,8 +8933,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8972,8 +8972,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9012,8 +9012,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9054,8 +9054,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9098,8 +9098,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9146,8 +9146,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9194,8 +9194,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9242,8 +9242,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9282,8 +9282,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Request), intent(out) :: request
@@ -9306,8 +9306,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -9340,8 +9340,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -9375,8 +9375,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9412,8 +9412,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9449,8 +9449,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9488,8 +9488,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9529,8 +9529,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9574,8 +9574,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9620,8 +9620,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9668,8 +9668,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9712,8 +9712,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: source
     integer, intent(in) :: tag
@@ -9747,8 +9747,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9778,8 +9778,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9812,8 +9812,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9854,8 +9854,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9897,8 +9897,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9942,8 +9942,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9986,8 +9986,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -10028,8 +10028,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -10072,8 +10072,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -10120,8 +10120,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -10168,8 +10168,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -10216,8 +10216,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -10255,8 +10255,8 @@ contains
     info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(out) :: info
     integer, intent(out), optional :: ierror
@@ -10272,8 +10272,8 @@ contains
     info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(out) :: info
     integer, intent(out), optional :: ierror
@@ -10290,8 +10290,8 @@ contains
     key, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(in) :: info
     character*(*), intent(in) :: key
@@ -10310,8 +10310,8 @@ contains
     newinfo, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(in) :: info
     type(MPI_Info), intent(out) :: newinfo
@@ -10329,8 +10329,8 @@ contains
     info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(inout) :: info
     integer, intent(out), optional :: ierror
@@ -10350,8 +10350,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(in) :: info
     character*(*), intent(in) :: key
@@ -10376,8 +10376,8 @@ contains
     nkeys, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(in) :: info
     integer, intent(out) :: nkeys
@@ -10397,8 +10397,8 @@ contains
     key, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(in) :: info
     integer, intent(in) :: n
@@ -10422,8 +10422,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(in) :: info
     character*(*), intent(in) :: key
@@ -10450,8 +10450,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(in) :: info
     character*(*), intent(in) :: key
@@ -10475,8 +10475,8 @@ contains
     value, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(in) :: info
     character*(*), intent(in) :: key
@@ -10495,8 +10495,8 @@ contains
   subroutine MPI_Init( &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
@@ -10511,8 +10511,8 @@ contains
     provided, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: required
     integer, intent(out) :: provided
@@ -10530,8 +10530,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     logical, intent(out) :: flag
     integer, intent(out), optional :: ierror
@@ -10552,8 +10552,8 @@ contains
     newintercomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: local_comm
     integer, intent(in) :: local_leader
@@ -10586,8 +10586,8 @@ contains
     newintercomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: local_group
     integer, intent(in) :: local_leader
@@ -10619,8 +10619,8 @@ contains
     newintracomm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: intercomm
     logical, intent(in) :: high
@@ -10644,8 +10644,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: source
     integer, intent(in) :: tag
@@ -10679,8 +10679,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -10716,8 +10716,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -10754,8 +10754,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -10796,8 +10796,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -10837,8 +10837,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -10876,8 +10876,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -10915,8 +10915,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -10954,8 +10954,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -10993,8 +10993,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -11030,8 +11030,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -11061,8 +11061,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     logical, intent(out) :: flag
     integer, intent(out), optional :: ierror
@@ -11084,8 +11084,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -11123,8 +11123,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -11164,8 +11164,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -11209,8 +11209,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -11255,8 +11255,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -11303,8 +11303,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -11348,8 +11348,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -11385,8 +11385,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -11427,8 +11427,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -11481,8 +11481,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -11532,8 +11532,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -11575,8 +11575,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -11616,8 +11616,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -11653,8 +11653,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -11687,8 +11687,8 @@ contains
     extra_state, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     procedure(MPI_Copy_function) :: copy_fn
     procedure(MPI_Delete_function) :: delete_fn
@@ -11710,8 +11710,8 @@ contains
     keyval, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(inout) :: keyval
     integer, intent(out), optional :: ierror
@@ -11729,8 +11729,8 @@ contains
     port_name, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: service_name
     type(MPI_Info), intent(in) :: info
@@ -11754,8 +11754,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: source
     integer, intent(in) :: tag
@@ -11787,8 +11787,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -11822,8 +11822,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -11859,8 +11859,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -11898,8 +11898,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -11939,8 +11939,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -11984,8 +11984,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12028,8 +12028,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12070,8 +12070,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12114,8 +12114,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12162,8 +12162,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12207,8 +12207,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12246,8 +12246,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12287,8 +12287,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12332,8 +12332,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12377,8 +12377,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12422,8 +12422,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12469,8 +12469,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12520,8 +12520,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12569,8 +12569,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12614,8 +12614,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12661,8 +12661,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12712,8 +12712,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -12754,8 +12754,8 @@ contains
     commute, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Op), intent(in) :: op
     logical, intent(out) :: commute
@@ -12775,8 +12775,8 @@ contains
     op, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     procedure(MPI_User_function) :: user_fn
     logical, intent(in) :: commute
@@ -12798,8 +12798,8 @@ contains
     op, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     procedure(MPI_User_function_c) :: user_fn
     logical, intent(in) :: commute
@@ -12819,8 +12819,8 @@ contains
     op, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Op), intent(inout) :: op
     integer, intent(out), optional :: ierror
@@ -12837,8 +12837,8 @@ contains
     port_name, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(in) :: info
     character*(MPI_MAX_PORT_NAME), intent(out) :: port_name
@@ -12862,8 +12862,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
@@ -12901,8 +12901,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
@@ -12940,8 +12940,8 @@ contains
     position, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: datarep
     !dir$ ignore_tkr(tkr) inbuf
@@ -12979,8 +12979,8 @@ contains
     position, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: datarep
     !dir$ ignore_tkr(tkr) inbuf
@@ -13015,8 +13015,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: datarep
     integer, intent(in) :: incount
@@ -13041,8 +13041,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: datarep
     integer(MPI_COUNT_KIND), intent(in) :: incount
@@ -13067,8 +13067,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: incount
     type(MPI_Datatype), intent(in) :: datatype
@@ -13093,8 +13093,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_COUNT_KIND), intent(in) :: incount
     type(MPI_Datatype), intent(in) :: datatype
@@ -13118,8 +13118,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Request), intent(in) :: request
     integer, intent(in) :: partition
@@ -13138,8 +13138,8 @@ contains
   subroutine MPI_Pcontrol( &
     level &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: level
     call MPIF_Pcontrol( &
@@ -13152,8 +13152,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: partition
     type(MPI_Request), intent(in) :: request
@@ -13173,8 +13173,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: length
     integer, intent(in) :: array_of_partitions(length)
@@ -13196,8 +13196,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: partition_low
     integer, intent(in) :: partition_high
@@ -13225,8 +13225,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -13263,8 +13263,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: source
     integer, intent(in) :: tag
@@ -13298,8 +13298,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -13335,8 +13335,8 @@ contains
     port_name, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: service_name
     type(MPI_Info), intent(in) :: info
@@ -13363,8 +13363,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -13403,8 +13403,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -13436,8 +13436,8 @@ contains
     provided, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(out) :: provided
     integer, intent(out), optional :: ierror
@@ -13462,8 +13462,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -13508,8 +13508,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -13551,8 +13551,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -13592,8 +13592,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -13633,8 +13633,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -13670,8 +13670,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -13707,8 +13707,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -13746,8 +13746,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -13787,8 +13787,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -13832,8 +13832,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -13873,8 +13873,8 @@ contains
     op, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
@@ -13906,8 +13906,8 @@ contains
     op, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
@@ -13940,8 +13940,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -13976,8 +13976,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -14012,8 +14012,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -14048,8 +14048,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -14086,8 +14086,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -14128,8 +14128,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -14170,8 +14170,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -14212,8 +14212,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -14251,8 +14251,8 @@ contains
     extra_state, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: datarep
     procedure(MPI_Datarep_conversion_function) :: read_conversion_fn
@@ -14280,8 +14280,8 @@ contains
     extra_state, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: datarep
     procedure(MPI_Datarep_conversion_function_c) :: read_conversion_fn
@@ -14305,8 +14305,8 @@ contains
     errorclass, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: errorclass
     integer, intent(out), optional :: ierror
@@ -14322,8 +14322,8 @@ contains
     errorcode, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: errorcode
     integer, intent(out), optional :: ierror
@@ -14339,8 +14339,8 @@ contains
     errorcode, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: errorcode
     integer, intent(out), optional :: ierror
@@ -14356,8 +14356,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Request), intent(inout) :: request
     integer, intent(out), optional :: ierror
@@ -14375,8 +14375,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Request), intent(in) :: request
     logical, intent(out) :: flag
@@ -14403,8 +14403,8 @@ contains
     array_of_statuses, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     type(MPI_Request), intent(in) :: array_of_requests(count)
@@ -14434,8 +14434,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     type(MPI_Request), intent(in) :: array_of_requests(count)
@@ -14467,8 +14467,8 @@ contains
     array_of_statuses, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: incount
     type(MPI_Request), intent(in) :: array_of_requests(incount)
@@ -14504,8 +14504,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -14547,8 +14547,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -14594,8 +14594,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -14651,8 +14651,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -14704,8 +14704,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -14747,8 +14747,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -14787,8 +14787,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -14821,8 +14821,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -14856,8 +14856,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -14893,8 +14893,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -14929,8 +14929,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -14965,8 +14965,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15003,8 +15003,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15045,8 +15045,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15087,8 +15087,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15129,8 +15129,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15173,8 +15173,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15221,8 +15221,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15268,8 +15268,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15313,8 +15313,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15360,8 +15360,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15411,8 +15411,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15457,8 +15457,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -15491,8 +15491,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -15526,8 +15526,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -15563,8 +15563,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -15605,8 +15605,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15663,8 +15663,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -15718,8 +15718,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -15765,8 +15765,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -15806,8 +15806,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     !dir$ ignore_tkr(tkr) buffer
@@ -15831,8 +15831,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     !dir$ ignore_tkr(tkr) buffer
@@ -15855,8 +15855,8 @@ contains
     errorcode, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     integer, intent(in) :: errorcode
@@ -15875,8 +15875,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     procedure(MPI_Session_errhandler_function) :: session_errhandler_fn
     type(MPI_Errhandler), intent(out) :: errhandler
@@ -15896,8 +15896,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     integer(MPI_ADDRESS_KIND), intent(out) :: buffer_addr
@@ -15919,8 +15919,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     integer(MPI_ADDRESS_KIND), intent(out) :: buffer_addr
@@ -15940,8 +15940,8 @@ contains
     session, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(inout) :: session
     integer, intent(out), optional :: ierror
@@ -15957,8 +15957,8 @@ contains
     session, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     integer, intent(out), optional :: ierror
@@ -15975,8 +15975,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     type(MPI_Errhandler), intent(out) :: errhandler
@@ -15995,8 +15995,8 @@ contains
     info_used, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     type(MPI_Info), intent(out) :: info_used
@@ -16018,8 +16018,8 @@ contains
     pset_name, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     type(MPI_Info), intent(in) :: info
@@ -16045,8 +16045,8 @@ contains
     npset_names, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     type(MPI_Info), intent(in) :: info
@@ -16068,8 +16068,8 @@ contains
     info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     character*(*), intent(in) :: pset_name
@@ -16090,8 +16090,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     type(MPI_Request), intent(out) :: request
@@ -16111,8 +16111,8 @@ contains
     session, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(in) :: info
     type(MPI_Errhandler), intent(in) :: errhandler
@@ -16133,8 +16133,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Session), intent(in) :: session
     type(MPI_Errhandler), intent(in) :: errhandler
@@ -16157,8 +16157,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -16191,8 +16191,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -16226,8 +16226,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -16263,8 +16263,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
@@ -16294,8 +16294,8 @@ contains
     request, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Request), intent(inout) :: request
     integer, intent(out), optional :: ierror
@@ -16312,8 +16312,8 @@ contains
     array_of_requests, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     type(MPI_Request), intent(inout) :: array_of_requests(count)
@@ -16332,8 +16332,8 @@ contains
     err, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(in) :: status
     integer, intent(out) :: err
@@ -16356,8 +16356,8 @@ contains
     source, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(in) :: status
     integer, intent(out) :: source
@@ -16380,8 +16380,8 @@ contains
     tag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(in) :: status
     integer, intent(out) :: tag
@@ -16404,8 +16404,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(inout) :: status
     logical, intent(in) :: flag
@@ -16432,8 +16432,8 @@ contains
     count, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(inout) :: status
     type(MPI_Datatype), intent(in) :: datatype
@@ -16462,8 +16462,8 @@ contains
     count, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(inout) :: status
     type(MPI_Datatype), intent(in) :: datatype
@@ -16492,8 +16492,8 @@ contains
     count, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(inout) :: status
     type(MPI_Datatype), intent(in) :: datatype
@@ -16521,8 +16521,8 @@ contains
     err, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(inout) :: status
     integer, intent(in) :: err
@@ -16548,8 +16548,8 @@ contains
     source, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(inout) :: status
     integer, intent(in) :: source
@@ -16575,8 +16575,8 @@ contains
     tag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(inout) :: status
     integer, intent(in) :: tag
@@ -16603,8 +16603,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Request), intent(inout) :: request
     logical, intent(out) :: flag
@@ -16629,8 +16629,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Status), intent(in) :: status
     logical, intent(out) :: flag
@@ -16655,8 +16655,8 @@ contains
     array_of_statuses, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     type(MPI_Request), intent(inout) :: array_of_requests(count)
@@ -16686,8 +16686,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     type(MPI_Request), intent(inout) :: array_of_requests(count)
@@ -16719,8 +16719,8 @@ contains
     array_of_statuses, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: incount
     type(MPI_Request), intent(inout) :: array_of_requests(incount)
@@ -16749,8 +16749,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(out) :: status
@@ -16768,8 +16768,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(inout) :: datatype
     integer, intent(out), optional :: ierror
@@ -16787,8 +16787,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: oldtype
@@ -16810,8 +16810,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: oldtype
@@ -16840,8 +16840,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: size
     integer, intent(in) :: rank
@@ -16884,8 +16884,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: size
     integer, intent(in) :: rank
@@ -16921,8 +16921,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: p
     integer, intent(in) :: r
@@ -16943,8 +16943,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: r
     type(MPI_Datatype), intent(out) :: newtype
@@ -16964,8 +16964,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: p
     integer, intent(in) :: r
@@ -16989,8 +16989,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     integer, intent(in) :: array_of_blocklengths(count)
@@ -17018,8 +17018,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_COUNT_KIND), intent(in) :: count
     integer(MPI_COUNT_KIND), intent(in) :: array_of_blocklengths(count)
@@ -17047,8 +17047,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     integer, intent(in) :: blocklength
@@ -17076,8 +17076,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_COUNT_KIND), intent(in) :: count
     integer(MPI_COUNT_KIND), intent(in) :: blocklength
@@ -17105,8 +17105,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     integer, intent(in) :: blocklength
@@ -17134,8 +17134,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_COUNT_KIND), intent(in) :: count
     integer(MPI_COUNT_KIND), intent(in) :: blocklength
@@ -17163,8 +17163,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     integer, intent(in) :: blocklength
@@ -17192,8 +17192,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_COUNT_KIND), intent(in) :: count
     integer(MPI_COUNT_KIND), intent(in) :: blocklength
@@ -17220,8 +17220,8 @@ contains
     extra_state, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     procedure(MPI_Type_copy_attr_function) :: type_copy_attr_fn
     procedure(MPI_Type_delete_attr_function) :: type_delete_attr_fn
@@ -17246,8 +17246,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: oldtype
     integer(MPI_ADDRESS_KIND), intent(in) :: lb
@@ -17272,8 +17272,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: oldtype
     integer(MPI_COUNT_KIND), intent(in) :: lb
@@ -17299,8 +17299,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     integer, intent(in) :: array_of_blocklengths(count)
@@ -17328,8 +17328,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_COUNT_KIND), intent(in) :: count
     integer(MPI_COUNT_KIND), intent(in) :: array_of_blocklengths(count)
@@ -17359,8 +17359,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: ndims
     integer, intent(in) :: array_of_sizes(ndims)
@@ -17394,8 +17394,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: ndims
     integer(MPI_COUNT_KIND), intent(in) :: array_of_sizes(ndims)
@@ -17424,8 +17424,8 @@ contains
     type_keyval, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(in) :: type_keyval
@@ -17444,8 +17444,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: oldtype
     type(MPI_Datatype), intent(out) :: newtype
@@ -17463,8 +17463,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(inout) :: datatype
     integer, intent(out), optional :: ierror
@@ -17480,8 +17480,8 @@ contains
     type_keyval, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(inout) :: type_keyval
     integer, intent(out), optional :: ierror
@@ -17500,8 +17500,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(in) :: type_keyval
@@ -17529,8 +17529,8 @@ contains
     array_of_datatypes, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(in) :: max_integers
@@ -17566,8 +17566,8 @@ contains
     array_of_datatypes, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(in) :: max_integers
@@ -17603,8 +17603,8 @@ contains
     combiner, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(out) :: num_integers
@@ -17633,8 +17633,8 @@ contains
     combiner, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(out) :: num_integers
@@ -17662,8 +17662,8 @@ contains
     extent, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_ADDRESS_KIND), intent(out) :: lb
@@ -17685,8 +17685,8 @@ contains
     extent, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(out) :: lb
@@ -17708,8 +17708,8 @@ contains
     extent, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(out) :: lb
@@ -17731,8 +17731,8 @@ contains
     resultlen, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     character*(MPI_MAX_OBJECT_NAME), intent(out) :: type_name
@@ -17754,8 +17754,8 @@ contains
     true_extent, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_ADDRESS_KIND), intent(out) :: true_lb
@@ -17777,8 +17777,8 @@ contains
     true_extent, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(out) :: true_lb
@@ -17800,8 +17800,8 @@ contains
     true_extent, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(out) :: true_lb
@@ -17823,8 +17823,8 @@ contains
     pair_type, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: value_type
     type(MPI_Datatype), intent(in) :: index_type
@@ -17848,8 +17848,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     integer, intent(in) :: array_of_blocklengths(count)
@@ -17877,8 +17877,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_COUNT_KIND), intent(in) :: count
     integer(MPI_COUNT_KIND), intent(in) :: array_of_blocklengths(count)
@@ -17904,8 +17904,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: typeclass
     integer, intent(in) :: size
@@ -17927,8 +17927,8 @@ contains
     attribute_val, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(in) :: type_keyval
@@ -17949,8 +17949,8 @@ contains
     type_name, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     character*(*), intent(in) :: type_name
@@ -17969,8 +17969,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(out) :: size
@@ -17989,8 +17989,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(out) :: size
@@ -18009,8 +18009,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(out) :: size
@@ -18032,8 +18032,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     integer, intent(in) :: blocklength
@@ -18061,8 +18061,8 @@ contains
     newtype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer(MPI_COUNT_KIND), intent(in) :: count
     integer(MPI_COUNT_KIND), intent(in) :: blocklength
@@ -18092,8 +18092,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
@@ -18131,8 +18131,8 @@ contains
     comm, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) inbuf
     !gcc$ attributes no_arg_check :: inbuf
@@ -18170,8 +18170,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: datarep
     !dir$ ignore_tkr(tkr) inbuf
@@ -18209,8 +18209,8 @@ contains
     datatype, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: datarep
     !dir$ ignore_tkr(tkr) inbuf
@@ -18244,8 +18244,8 @@ contains
     port_name, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     character*(*), intent(in) :: service_name
     type(MPI_Info), intent(in) :: info
@@ -18266,8 +18266,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Request), intent(inout) :: request
     type(MPI_Status), intent(out) :: status
@@ -18291,8 +18291,8 @@ contains
     array_of_statuses, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     type(MPI_Request), intent(inout) :: array_of_requests(count)
@@ -18319,8 +18319,8 @@ contains
     status, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: count
     type(MPI_Request), intent(inout) :: array_of_requests(count)
@@ -18350,8 +18350,8 @@ contains
     array_of_statuses, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: incount
     type(MPI_Request), intent(inout) :: array_of_requests(incount)
@@ -18384,8 +18384,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -18419,8 +18419,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -18454,8 +18454,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -18489,8 +18489,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -18521,8 +18521,8 @@ contains
     size, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     !dir$ ignore_tkr(tkr) base
@@ -18545,8 +18545,8 @@ contains
     errorcode, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(in) :: errorcode
@@ -18564,8 +18564,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(out), optional :: ierror
@@ -18586,8 +18586,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) base
     !gcc$ attributes no_arg_check :: base
@@ -18620,8 +18620,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     !dir$ ignore_tkr(tkr) base
     !gcc$ attributes no_arg_check :: base
@@ -18651,8 +18651,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Info), intent(in) :: info
     type(MPI_Comm), intent(in) :: comm
@@ -18673,8 +18673,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     procedure(MPI_Win_errhandler_function) :: win_errhandler_fn
     type(MPI_Errhandler), intent(out) :: errhandler
@@ -18695,8 +18695,8 @@ contains
     extra_state, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     procedure(MPI_Win_copy_attr_function) :: win_copy_attr_fn
     procedure(MPI_Win_delete_attr_function) :: win_delete_attr_fn
@@ -18719,8 +18719,8 @@ contains
     win_keyval, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(in) :: win_keyval
@@ -18739,8 +18739,8 @@ contains
     base, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     !dir$ ignore_tkr(tkr) base
@@ -18761,8 +18761,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: assert
     type(MPI_Win), intent(in) :: win
@@ -18781,8 +18781,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: rank
     type(MPI_Win), intent(in) :: win
@@ -18800,8 +18800,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(out), optional :: ierror
@@ -18818,8 +18818,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: rank
     type(MPI_Win), intent(in) :: win
@@ -18837,8 +18837,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(out), optional :: ierror
@@ -18854,8 +18854,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(inout) :: win
     integer, intent(out), optional :: ierror
@@ -18871,8 +18871,8 @@ contains
     win_keyval, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(inout) :: win_keyval
     integer, intent(out), optional :: ierror
@@ -18891,8 +18891,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(in) :: win_keyval
@@ -18915,8 +18915,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     type(MPI_Errhandler), intent(out) :: errhandler
@@ -18935,8 +18935,8 @@ contains
     group, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     type(MPI_Group), intent(out) :: group
@@ -18955,8 +18955,8 @@ contains
     info_used, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     type(MPI_Info), intent(out) :: info_used
@@ -18976,8 +18976,8 @@ contains
     resultlen, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     character*(MPI_MAX_OBJECT_NAME), intent(out) :: win_name
@@ -19000,8 +19000,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: lock_type
     integer, intent(in) :: rank
@@ -19024,8 +19024,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: assert
     type(MPI_Win), intent(in) :: win
@@ -19045,8 +19045,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group
     integer, intent(in) :: assert
@@ -19068,8 +19068,8 @@ contains
     attribute_val, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(in) :: win_keyval
@@ -19090,8 +19090,8 @@ contains
     errhandler, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     type(MPI_Errhandler), intent(in) :: errhandler
@@ -19110,8 +19110,8 @@ contains
     info, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     type(MPI_Info), intent(in) :: info
@@ -19130,8 +19130,8 @@ contains
     win_name, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     character*(*), intent(in) :: win_name
@@ -19153,8 +19153,8 @@ contains
     baseptr, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     type(MPI_Win), intent(in) :: win
@@ -19185,8 +19185,8 @@ contains
     baseptr, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     type(MPI_Win), intent(in) :: win
@@ -19215,8 +19215,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Group), intent(in) :: group
     integer, intent(in) :: assert
@@ -19236,8 +19236,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(out), optional :: ierror
@@ -19254,8 +19254,8 @@ contains
     flag, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     logical, intent(out) :: flag
@@ -19274,8 +19274,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     integer, intent(in) :: rank
     type(MPI_Win), intent(in) :: win
@@ -19293,8 +19293,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(out), optional :: ierror
@@ -19310,8 +19310,8 @@ contains
     win, &
     ierror &
   )
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(out), optional :: ierror
@@ -19325,8 +19325,8 @@ contains
 
   function MPI_Wtick( &
   ) result(result)
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     double precision :: result
     result = MPIF_Wtick( &
@@ -19335,12 +19335,12 @@ contains
 
   function MPI_Wtime( &
   ) result(result)
-    use mpi_f08_constants
-    use mpi_f08_types
+    use mpif_f08_constants
+    use mpif_f08_types
     implicit none
     double precision :: result
     result = MPIF_Wtime( &
     )
   end function MPI_Wtime
 
-end module mpi_f08_functions
+end module mpif_f08_functions

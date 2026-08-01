@@ -1,5 +1,5 @@
-module mpi_types
-  use mpi_constants
+module mpif_types
+  use mpif_constants
 
   implicit none
   public
@@ -392,4 +392,4 @@ contains
     if (present(ierror)) ierror = MPI_SUCCESS
   end subroutine mpif_sizeof_character_v
 
-end module mpi_types
+end module mpif_types

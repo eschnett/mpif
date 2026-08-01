@@ -1,5 +1,5 @@
-module mpi_f08_types
-  use mpi_f08_constants
+module mpif_f08_types
+  use mpif_f08_constants
 
   use mpi, only: &
        !
@@ -175,31 +175,31 @@ module mpi_f08_types
   public :: operator(==), operator(/=)
 
   interface operator(==)
-     module procedure MPI_Comm_equal
-     module procedure MPI_Datatype_equal
-     module procedure MPI_Errhandler_equal
-     module procedure MPI_File_equal
-     module procedure MPI_Group_equal
-     module procedure MPI_Info_equal
-     module procedure MPI_Message_equal
-     module procedure MPI_Op_equal
-     module procedure MPI_Request_equal
-     module procedure MPI_Session_equal
-     module procedure MPI_Win_equal
+     module procedure mpif_comm_equal
+     module procedure mpif_datatype_equal
+     module procedure mpif_errhandler_equal
+     module procedure mpif_file_equal
+     module procedure mpif_group_equal
+     module procedure mpif_info_equal
+     module procedure mpif_message_equal
+     module procedure mpif_op_equal
+     module procedure mpif_request_equal
+     module procedure mpif_session_equal
+     module procedure mpif_win_equal
   end interface operator(==)
 
   interface operator(/=)
-     module procedure MPI_Comm_not_equal
-     module procedure MPI_Datatype_not_equal
-     module procedure MPI_Errhandler_not_equal
-     module procedure MPI_File_not_equal
-     module procedure MPI_Group_not_equal
-     module procedure MPI_Info_not_equal
-     module procedure MPI_Message_not_equal
-     module procedure MPI_Op_not_equal
-     module procedure MPI_Request_not_equal
-     module procedure MPI_Session_not_equal
-     module procedure MPI_Win_not_equal
+     module procedure mpif_comm_not_equal
+     module procedure mpif_datatype_not_equal
+     module procedure mpif_errhandler_not_equal
+     module procedure mpif_file_not_equal
+     module procedure mpif_group_not_equal
+     module procedure mpif_info_not_equal
+     module procedure mpif_message_not_equal
+     module procedure mpif_op_not_equal
+     module procedure mpif_request_not_equal
+     module procedure mpif_session_not_equal
+     module procedure mpif_win_not_equal
   end interface operator(/=)
 
   ! Status
@@ -213,7 +213,7 @@ module mpi_f08_types
 
   ! MPI_STATUS_IGNORE and MPI_STATUSES_IGNORE are TYPE(MPI_Status) here, where
   ! mpif.h and the mpi module declare them as INTEGER arrays. They therefore
-  ! cannot just be re-exported from mpi_f08_constants the way the other sentinels
+  ! cannot just be re-exported from mpif_f08_constants the way the other sentinels
   ! are, and are declared here instead, this being where MPI_Status exists. An
   ! INTEGER one cannot be passed to a TYPE(MPI_Status) dummy argument at all,
   ! which is what stopped MPICH's f08 spawn tests from compiling.
@@ -358,7 +358,7 @@ module mpi_f08_types
   public :: MPI_Copy_function
   abstract interface
      subroutine MPI_Copy_function(oldcomm, keyval, extra_state, attribute_val_in, attribute_val_out, flag, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Comm
        implicit none
        type(MPI_Comm), intent(in) :: oldcomm
@@ -374,7 +374,7 @@ module mpi_f08_types
   public :: MPI_Delete_function
   abstract interface
      subroutine MPI_Delete_function(comm, keyval, attribute_val, extra_state, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Comm
        implicit none
        type(MPI_Comm), intent(in) :: comm
@@ -389,7 +389,7 @@ module mpi_f08_types
   public :: MPI_User_function_c
   abstract interface
      subroutine MPI_User_function(invec, inoutvec, len, datatype)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
        integer(MPI_ADDRESS_KIND), intent(in) :: invec
@@ -399,7 +399,7 @@ module mpi_f08_types
      end subroutine MPI_User_function
 
      subroutine MPI_User_function_c(invec, inoutvec, len, datatype)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
        integer(MPI_ADDRESS_KIND), intent(in) :: invec
@@ -412,7 +412,7 @@ module mpi_f08_types
   public :: MPI_Comm_copy_attr_function
   abstract interface
      subroutine MPI_Comm_copy_attr_function(oldcomm, comm_keyval, extra_state, attribute_val_in, attribute_val_out, flag, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Comm
        implicit none
        type(MPI_Comm), intent(in) :: oldcomm
@@ -428,7 +428,7 @@ module mpi_f08_types
   public :: MPI_Comm_delete_attr_function
   abstract interface
      subroutine MPI_Comm_delete_attr_function(comm, comm_keyval, attribute_val, extra_state, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Comm
        implicit none
        type(MPI_Comm), intent(in) :: comm
@@ -453,7 +453,7 @@ module mpi_f08_types
   public :: MPI_Datarep_conversion_function_c
   abstract interface
      subroutine MPI_Datarep_conversion_function(userbuf, datatype, count, filebuf, position, extra_state, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
        integer(MPI_ADDRESS_KIND), intent(in) :: userbuf
@@ -466,7 +466,7 @@ module mpi_f08_types
      end subroutine MPI_Datarep_conversion_function
 
      subroutine MPI_Datarep_conversion_function_c(userbuf, datatype, count, filebuf, position, extra_state, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
        integer(MPI_ADDRESS_KIND), intent(in) :: userbuf
@@ -482,7 +482,7 @@ module mpi_f08_types
   public :: MPI_Datarep_extent_function
   abstract interface
      subroutine MPI_Datarep_extent_function(datatype, extent, extra_state, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
        type(MPI_Datatype), intent(in) :: datatype
@@ -514,7 +514,7 @@ module mpi_f08_types
      ! Contrast the attribute callbacks above, where the standard does say
      ! INTENT(IN) and mpif passes a copy.
      subroutine MPI_Grequest_query_function(extra_state, status, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Status
        implicit none
        integer(MPI_ADDRESS_KIND) :: extra_state
@@ -526,7 +526,7 @@ module mpi_f08_types
   public :: MPI_Grequest_cancel_function
   abstract interface
      subroutine MPI_Grequest_cancel_function(extra_state, complete, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        implicit none
        integer(MPI_ADDRESS_KIND) :: extra_state
        logical :: complete
@@ -537,7 +537,7 @@ module mpi_f08_types
   public :: MPI_Grequest_free_function
   abstract interface
      subroutine MPI_Grequest_free_function(extra_state, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        implicit none
        integer(MPI_ADDRESS_KIND) :: extra_state
        integer :: ierror
@@ -557,7 +557,7 @@ module mpi_f08_types
   public :: MPI_Type_copy_attr_function
   abstract interface
      subroutine MPI_Type_copy_attr_function(oldtype, type_keyval, extra_state, attribute_val_in, attribute_val_out, flag, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
        type(MPI_Datatype), intent(in) :: oldtype
@@ -573,7 +573,7 @@ module mpi_f08_types
   public :: MPI_Type_delete_attr_function
   abstract interface
      subroutine MPI_Type_delete_attr_function(type, type_keyval, attribute_val, extra_state, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
        type(MPI_Datatype), intent(in) :: type
@@ -597,7 +597,7 @@ module mpi_f08_types
   public :: MPI_Win_copy_attr_function
   abstract interface
      subroutine MPI_Win_copy_attr_function(oldwin, win_keyval, extra_state, attribute_val_in, attribute_val_out, flag, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Win
        implicit none
        type(MPI_Win), intent(in) :: oldwin
@@ -613,7 +613,7 @@ module mpi_f08_types
   public :: MPI_Win_delete_attr_function
   abstract interface
      subroutine MPI_Win_delete_attr_function(win, win_keyval, attribute_val, extra_state, ierror)
-       use mpi_f08_constants
+       use mpif_f08_constants
        import :: MPI_Win
        implicit none
        type(MPI_Win), intent(in) :: win
@@ -626,115 +626,115 @@ module mpi_f08_types
 
 contains
 
-  logical function MPI_Comm_equal(comm1, comm2) result(result)
+  logical function mpif_comm_equal(comm1, comm2) result(result)
     type(MPI_Comm), intent(in) :: comm1, comm2
     result = comm1%MPI_VAL == comm2%MPI_VAL
-  end function MPI_Comm_equal
+  end function mpif_comm_equal
 
-  logical function MPI_Comm_not_equal(comm1, comm2) result(result)
+  logical function mpif_comm_not_equal(comm1, comm2) result(result)
     type(MPI_Comm), intent(in) :: comm1, comm2
     result = .not.(comm1 == comm2)
-  end function MPI_Comm_not_equal
+  end function mpif_comm_not_equal
 
-  logical function MPI_Datatype_equal(type1, type2) result(result)
+  logical function mpif_datatype_equal(type1, type2) result(result)
     type(MPI_Datatype), intent(in) :: type1, type2
     result = type1%MPI_VAL == type2%MPI_VAL
-  end function MPI_Datatype_equal
+  end function mpif_datatype_equal
 
-  logical function MPI_Datatype_not_equal(type1, type2) result(result)
+  logical function mpif_datatype_not_equal(type1, type2) result(result)
     type(MPI_Datatype), intent(in) :: type1, type2
     result = .not.(type1 == type2)
-  end function MPI_Datatype_not_equal
+  end function mpif_datatype_not_equal
 
-  logical function MPI_Errhandler_equal(errhandler1, errhandler2) result(result)
+  logical function mpif_errhandler_equal(errhandler1, errhandler2) result(result)
     type(MPI_Errhandler), intent(in) :: errhandler1, errhandler2
     result = errhandler1%MPI_VAL == errhandler2%MPI_VAL
-  end function MPI_Errhandler_equal
+  end function mpif_errhandler_equal
 
-  logical function MPI_Errhandler_not_equal(errhandler1, errhandler2) result(result)
+  logical function mpif_errhandler_not_equal(errhandler1, errhandler2) result(result)
     type(MPI_Errhandler), intent(in) :: errhandler1, errhandler2
     result = .not.(errhandler1 == errhandler2)
-  end function MPI_Errhandler_not_equal
+  end function mpif_errhandler_not_equal
 
-  logical function MPI_File_equal(file1, file2) result(result)
+  logical function mpif_file_equal(file1, file2) result(result)
     type(MPI_File), intent(in) :: file1, file2
     result = file1%MPI_VAL == file2%MPI_VAL
-  end function MPI_File_equal
+  end function mpif_file_equal
 
-  logical function MPI_File_not_equal(file1, file2) result(result)
+  logical function mpif_file_not_equal(file1, file2) result(result)
     type(MPI_File), intent(in) :: file1, file2
     result = .not.(file1 == file2)
-  end function MPI_File_not_equal
+  end function mpif_file_not_equal
 
-  logical function MPI_Group_equal(group1, group2) result(result)
+  logical function mpif_group_equal(group1, group2) result(result)
     type(MPI_Group), intent(in) :: group1, group2
     result = group1%MPI_VAL == group2%MPI_VAL
-  end function MPI_Group_equal
+  end function mpif_group_equal
 
-  logical function MPI_Group_not_equal(group1, group2) result(result)
+  logical function mpif_group_not_equal(group1, group2) result(result)
     type(MPI_Group), intent(in) :: group1, group2
     result = .not.(group1 == group2)
-  end function MPI_Group_not_equal
+  end function mpif_group_not_equal
 
-  logical function MPI_Info_equal(info1, info2) result(result)
+  logical function mpif_info_equal(info1, info2) result(result)
     type(MPI_Info), intent(in) :: info1, info2
     result = info1%MPI_VAL == info2%MPI_VAL
-  end function MPI_Info_equal
+  end function mpif_info_equal
 
-  logical function MPI_Info_not_equal(info1, info2) result(result)
+  logical function mpif_info_not_equal(info1, info2) result(result)
     type(MPI_Info), intent(in) :: info1, info2
     result = .not.(info1 == info2)
-  end function MPI_Info_not_equal
+  end function mpif_info_not_equal
 
-  logical function MPI_Message_equal(message1, message2) result(result)
+  logical function mpif_message_equal(message1, message2) result(result)
     type(MPI_Message), intent(in) :: message1, message2
     result = message1%MPI_VAL == message2%MPI_VAL
-  end function MPI_Message_equal
+  end function mpif_message_equal
 
-  logical function MPI_Message_not_equal(message1, message2) result(result)
+  logical function mpif_message_not_equal(message1, message2) result(result)
     type(MPI_Message), intent(in) :: message1, message2
     result = .not.(message1 == message2)
-  end function MPI_Message_not_equal
+  end function mpif_message_not_equal
 
-  logical function MPI_Op_equal(op1, op2) result(result)
+  logical function mpif_op_equal(op1, op2) result(result)
     type(MPI_Op), intent(in) :: op1, op2
     result = op1%MPI_VAL == op2%MPI_VAL
-  end function MPI_Op_equal
+  end function mpif_op_equal
 
-  logical function MPI_Op_not_equal(op1, op2) result(result)
+  logical function mpif_op_not_equal(op1, op2) result(result)
     type(MPI_Op), intent(in) :: op1, op2
     result = .not.(op1 == op2)
-  end function MPI_Op_not_equal
+  end function mpif_op_not_equal
 
-  logical function MPI_Request_equal(request1, request2) result(result)
+  logical function mpif_request_equal(request1, request2) result(result)
     type(MPI_Request), intent(in) :: request1, request2
     result = request1%MPI_VAL == request2%MPI_VAL
-  end function MPI_Request_equal
+  end function mpif_request_equal
 
-  logical function MPI_Request_not_equal(request1, request2) result(result)
+  logical function mpif_request_not_equal(request1, request2) result(result)
     type(MPI_Request), intent(in) :: request1, request2
     result = .not.(request1 == request2)
-  end function MPI_Request_not_equal
+  end function mpif_request_not_equal
 
-  logical function MPI_Session_equal(session1, session2) result(result)
+  logical function mpif_session_equal(session1, session2) result(result)
     type(MPI_Session), intent(in) :: session1, session2
     result = session1%MPI_VAL == session2%MPI_VAL
-  end function MPI_Session_equal
+  end function mpif_session_equal
 
-  logical function MPI_Session_not_equal(session1, session2) result(result)
+  logical function mpif_session_not_equal(session1, session2) result(result)
     type(MPI_Session), intent(in) :: session1, session2
     result = .not.(session1 == session2)
-  end function MPI_Session_not_equal
+  end function mpif_session_not_equal
 
-  logical function MPI_Win_equal(win1, win2) result(result)
+  logical function mpif_win_equal(win1, win2) result(result)
     type(MPI_Win), intent(in) :: win1, win2
     result = win1%MPI_VAL == win2%MPI_VAL
-  end function MPI_Win_equal
+  end function mpif_win_equal
 
-  logical function MPI_Win_not_equal(win1, win2) result(result)
+  logical function mpif_win_not_equal(win1, win2) result(result)
     type(MPI_Win), intent(in) :: win1, win2
     result = .not.(win1 == win2)
-  end function MPI_Win_not_equal
+  end function mpif_win_not_equal
 
   subroutine MPI_Status_f2f08(f_status, f08_status, ierror)
     integer, intent(in) :: f_status(MPI_STATUS_SIZE)
@@ -758,4 +758,4 @@ contains
     if (present(ierror)) ierror = MPI_SUCCESS
   end subroutine MPI_Status_f082f
 
-end module mpi_f08_types
+end module mpif_f08_types

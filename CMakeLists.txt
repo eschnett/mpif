@@ -201,12 +201,12 @@ add_library(mpifort_abi SHARED
   include/mpif.h
   # MPI Fortran modules
   src/mpi.F90
-  src/mpi_constants.F90
-  src/mpi_cptr.F90
-  src/mpi_types.F90
+  src/mpif_constants.F90
+  src/mpif_cptr.F90
+  src/mpif_types.F90
   src/mpi_f08.F90
-  src/mpi_f08_constants.F90
-  src/mpi_f08_types.F90
+  src/mpif_f08_constants.F90
+  src/mpif_f08_types.F90
   # Implementation
   include/mpif_attrs.h
   include/mpif_callbacks.h
@@ -222,8 +222,8 @@ add_library(mpifort_abi SHARED
   src/mpif_sizeof.c
   src/mpif_strings.c
   gen/mpif_functions.c
-  gen/mpi_functions.F90
-  gen/mpi_f08_functions.F90
+  gen/mpif_functions.F90
+  gen/mpif_f08_functions.F90
 )
 target_include_directories(mpifort_abi
   PUBLIC
@@ -265,13 +265,14 @@ install(TARGETS mpifort_abi EXPORT mpifort_abiTargets
 )
 
 install(FILES
-  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_constants.mod
-  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_constants.mod
-  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_functions.mod
-  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_types.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_constants.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_cptr.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_constants.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_functions.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_types.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08.mod
-  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_functions.mod
-  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_types.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_functions.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_types.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )

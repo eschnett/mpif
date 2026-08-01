@@ -595,7 +595,7 @@ append!(c_implementations,
 ])
 
 append!(f_interfaces,
-        ["module mpi_functions",
+        ["module mpif_functions",
          "  implicit none",
          "  public",
          "  save",
@@ -604,7 +604,7 @@ append!(f_interfaces,
          ])
 
 append!(f08_implementations_useonly,
-        ["module mpi_f08_functions",
+        ["module mpif_f08_functions",
          "  use mpi, only: &",
          ])
 append!(f08_implementations_public,
@@ -1002,7 +1002,7 @@ for key in sort(collect(keys(apis)))
                         # address that MPI_Alloc_mem and the window allocators
                         # hand back; the INTEGER(KIND=MPI_ADDRESS_KIND) one is the
                         # mpi module's and mpif.h's, where it is paired with a
-                        # TYPE(C_PTR) overload (see src/mpi_cptr.F90).
+                        # TYPE(C_PTR) overload (see src/mpif_cptr.F90).
                         f08_type = kind == "C_BUFFER" && param_direction == "out" ? "type(C_PTR)" : f_type
                         push!(f08_declarations, "$f08_type$f_intent$f_optional :: $parname$f_length")
                     end
@@ -1511,7 +1511,7 @@ for key in sort(collect(keys(apis)))
         else
             push!(f_interfaces, "  )")
         end
-        push!(f_interfaces, "    use mpi_constants")
+        push!(f_interfaces, "    use mpif_constants")
         push!(f_interfaces, "    implicit none")
         if f_unit == "function"
             push!(f_interfaces, "    $f_return_type :: result")
@@ -1533,8 +1533,8 @@ for key in sort(collect(keys(apis)))
         else
             push!(f08_implementations_body, "  )")
         end
-        push!(f08_implementations_body, "    use mpi_f08_constants")
-        push!(f08_implementations_body, "    use mpi_f08_types")
+        push!(f08_implementations_body, "    use mpif_f08_constants")
+        push!(f08_implementations_body, "    use mpif_f08_types")
         if any(p -> p["kind"] == "C_BUFFER" && p["param_direction"] == "out", parameters)
             push!(f08_implementations_body, "    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR")
         end
@@ -1621,12 +1621,12 @@ append!(f_interfaces,
         ["",
          "  end interface",
          "",
-         "end module mpi_functions",
+         "end module mpif_functions",
          ])
 
 append!(f08_implementations_body,
         ["",
-         "end module mpi_f08_functions",
+         "end module mpif_f08_functions",
          ])
 
 f08_implementations = [f08_implementations_useonly; f08_implementations_public; f08_implementations_body]
@@ -1638,15 +1638,15 @@ open("gen/mpif_functions.c", "w") do f
     end
 end
 
-println("Writing \"gen/mpi_functions.F90\"...")
-open("gen/mpi_functions.F90", "w") do f
+println("Writing \"gen/mpif_functions.F90\"...")
+open("gen/mpif_functions.F90", "w") do f
     for ifc in f_interfaces
         println(f, ifc)
     end
 end
 
-println("Writing \"gen/mpi_f08_functions.F90\"...")
-open("gen/mpi_f08_functions.F90", "w") do f
+println("Writing \"gen/mpif_f08_functions.F90\"...")
+open("gen/mpif_f08_functions.F90", "w") do f
     for impl in f08_implementations
         println(f, impl)
     end

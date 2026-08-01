@@ -1,7 +1,7 @@
 # Missing features and known errors
 
 A review of `dev/mpiapi.jl`, the generator that produces `gen/mpif_functions.c`,
-`gen/mpi_functions.F90` and `gen/mpi_f08_functions.F90` from the MPI standard's
+`gen/mpif_functions.F90` and `gen/mpif_f08_functions.F90` from the MPI standard's
 `apis.json`.
 
 Findings were checked against `data/apis.json`, the generated output, the
@@ -196,7 +196,7 @@ their arguments are `TYPE(MPI_Comm)` rather than `INTEGER`.
 Both are required constants in all three interfaces, and neither existed.
 
 Fixed: both are `.false.` in `include/mpif_constants.h`, which serves `mpif.h`
-and the `mpi` module, and are re-exported by `src/mpi_f08_constants.F90` for
+and the `mpi` module, and are re-exported by `src/mpif_f08_constants.F90` for
 `mpi_f08`. They are hand-written rather than generated, along with the rest of
 the constants.
 
@@ -223,7 +223,7 @@ For the `ATTRIBUTE_VAL` and `EXTRA_STATE` kinds the generator emitted
 variable. The standard calls for `INTEGER(KIND=MPI_ADDRESS_KIND)`.
 
 Fixed in the generator, and in the hand-written f08 abstract interfaces in
-`src/mpi_f08_types.F90`, where `extra_state` was already address-sized but
+`src/mpif_f08_types.F90`, where `extra_state` was already address-sized but
 `attribute_val` was not. `EXTRA_STATE2` moved to the deprecated MPI-1 branch
 alongside `ATTRIBUTE_VAL_10`, which is plain `INTEGER` on both sides and was
 already self-consistent.
@@ -288,7 +288,7 @@ Two consequences behind that one:
   writes `count` of them. Fixing the declaration alone would leave the f08 path
   overrunning that temporary.
 - `MPI_STATUSES_IGNORE` is never detected. It does not appear anywhere in
-  `gen/mpi_f08_functions.F90`; the generated guards all compare against
+  `gen/mpif_f08_functions.F90`; the generated guards all compare against
   `MPI_STATUS_IGNORE`. Since the two sentinels are different addresses, passing
   `MPI_STATUSES_IGNORE` fails the comparison and the wrapper converts into it --
   and it points at the C constant, which is a null pointer.
@@ -350,13 +350,13 @@ and `mpif_fcount` faulted. It now takes the count from `count`.
 
 ### 12. `MPI_STATUS_IGNORE` was `INTEGER` in `mpi_f08` — fixed
 
-`mpi_f08_constants.F90` re-exported the `INTEGER` arrays that `mpif.h` and the
+`mpif_f08_constants.F90` re-exported the `INTEGER` arrays that `mpif.h` and the
 `mpi` module declare, so the sentinel could not be passed to a
 `TYPE(MPI_Status)` dummy argument and every f08 spawn test failed to compile.
 
 The two interfaces need different declarations of one name, so `mpi_f08` can no
 longer re-export: `MPI_STATUS_IGNORE` and `MPI_STATUSES_IGNORE` are now declared
-in `src/mpi_f08_types.F90`, where `MPI_Status` exists, with the same Cray pointer
+in `src/mpif_f08_types.F90`, where `MPI_Status` exists, with the same Cray pointer
 into the same common block. All three interfaces still name one address. The
 generated wrappers already compared `loc(status)` against the sentinel, so
 nothing else changed -- but see error 9 for `MPI_STATUSES_IGNORE`, which is still
@@ -382,7 +382,7 @@ executables directly with no launcher.
 
 ### 14. `MPI_Sizeof` was unusable — fixed
 
-`src/mpi_types.F90` defines the generic by hand, and every specific is wrong in
+`src/mpif_types.F90` defines the generic by hand, and every specific is wrong in
 the same three ways. Taking `mpif_sizeof_real4` as the example:
 
     subroutine mpif_sizeof_real4(x, size, ierror)
@@ -463,14 +463,14 @@ mpi_f08 had the opposite half of the same bug: there the standard has *only* the
 
 Fixed. The f08 declaration is generated, `baseptr` becoming `TYPE(C_PTR)` with a
 `transfer` from the address-sized integer the C wrapper writes. The mpi module's
-overload is hand-written in `src/mpi_cptr.F90`, which calls the generated
+overload is hand-written in `src/mpif_cptr.F90`, which calls the generated
 address-kind interface under a renamed alias, with the generics gathered in
 `src/mpi.F90`. The large-count variants are covered too; mpif spells those as
 separate names rather than further overloads, so each has its own generic.
 
 Where the generics live is forced, and was worth establishing by experiment:
 
-- A generic declared inside `mpi_cptr` *shadows* the use-associated specific
+- A generic declared inside `mpif_cptr` *shadows* the use-associated specific
   rather than extending it, so the address-kind form stops resolving.
 - A specific from one module and a same-named generic from another are an
   ambiguous reference at the point of use.
@@ -677,7 +677,7 @@ Two hand-maintained pieces describe callbacks that `apis.json` already
 describes, and can therefore drift from it:
 
 - the f08 abstract interfaces (`MPI_User_function`,
-  `MPI_Comm_copy_attr_function`, ...) in `src/mpi_f08_types.F90`, all 18 of
+  `MPI_Comm_copy_attr_function`, ...) in `src/mpif_f08_types.F90`, all 18 of
   which are in the JSON;
 - the predefined callbacks in `src/mpif_attr_fns.F90`, all 14 of which are in
   the JSON as `predefined_function` entries.
@@ -698,13 +698,41 @@ divergences worth knowing before generating them:
   buffer. The kind alone does not say which, so the generator would need to
   distinguish callbacks from ordinary functions.
 
+## Namespace
+
+Only what the MPI standard defines may be spelled `MPI_` or `mpi_`; everything
+mpif invents is `mpif_` or `MPIF_`. Two modules are the standard's and keep their
+names, `mpi` and `mpi_f08`; the seven mpif provides beneath them are
+`mpif_constants`, `mpif_types`, `mpif_functions`, `mpif_cptr`,
+`mpif_f08_constants`, `mpif_f08_types` and `mpif_f08_functions`. Their `.mod`
+files follow, which also removes a real collision: MPICH installs an
+`mpi_constants.mod` and Open MPI an `mpi_types.mod` and `mpi_f08_types.mod` of
+their own, and mpif used to ship files of exactly those names.
+
+The Fortran entry points that C provides -- `mpi_send_`, `mpi_alloc_mem_`, ... --
+are of course named after the MPI routines they implement; that is what makes
+them callable. Everything else on the C side is `mpif_`.
+
+Two judgement calls worth recording:
+
+- `MPI_Alloc_mem_cptr`, `MPI_Win_allocate_cptr`, `MPI_Win_allocate_shared_cptr`
+  and `MPI_Win_shared_query_cptr` keep `MPI_`, because the standard names them:
+  "The base procedure name of this overloaded function is MPI_ALLOC_MEM_CPTR."
+- Their large-count counterparts do not exist in the standard -- section 19.1.5's
+  rules for implied specific names cover the `_f08` and `_f` schemes, not a
+  `_c_cptr` combination -- so those are `mpif_win_allocate_c_cptr` and friends.
+
+The procedures behind `operator(==)` and `operator(/=)` on the handle types were
+`MPI_Comm_equal` and so on, which the standard does not define; they are now
+`mpif_comm_equal` and friends. They were already private to `mpif_f08_types`.
+
 ## Verified as correct
 
 Recorded so that they do not get re-investigated:
 
 - **Nothing is silently dropped.** Replaying the generator's filters over
   `apis.json` gives 430 kept functions, 589 including `_c` variants, and
-  `gen/mpi_f08_functions.F90` contains exactly those 589. Every omission is
+  `gen/mpif_f08_functions.F90` contains exactly those 589. Every omission is
   attributable to a filter.
 - The 102 functions skipped as `not f90_expressible` are the C-only handle
   converters (`MPI_Comm_c2f`, `MPI_Comm_fromint`, ...) and the whole `MPI_T`
@@ -724,6 +752,6 @@ Recorded so that they do not get re-investigated:
   `MPI_STATUSES_IGNORE` (error 9).
 - `MPI_Wtime`, `MPI_Wtick`, `MPI_Aint_add` and `MPI_Aint_diff` are hand-written
   rather than generated, and are present. `MPI_Sizeof` is a hand-written generic
-  in `src/mpi_types.F90`. `MPI_Status_f2f08` and `MPI_Status_f082f` are
-  implemented and public in `src/mpi_f08_types.F90`.
+  in `src/mpif_types.F90`. `MPI_Status_f2f08` and `MPI_Status_f082f` are
+  implemented and public in `src/mpif_f08_types.F90`.
 - `ierror` is `OPTIONAL` throughout the f08 bindings.

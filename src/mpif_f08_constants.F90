@@ -1,4 +1,4 @@
-module mpi_f08_constants
+module mpif_f08_constants
   use mpi, only: &
        MPI_VERSION, &
        MPI_SUBVERSION, &
@@ -475,4 +475,4 @@ module mpi_f08_constants
        MPI_UNWEIGHTED, &
        MPI_WEIGHTS_EMPTY
 
-end module mpi_f08_constants
+end module mpif_f08_constants

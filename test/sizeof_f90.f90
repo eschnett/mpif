@@ -1,4 +1,4 @@
-! MPI_Sizeof is a hand-written generic in src/mpi_types.F90, one specific per
+! MPI_Sizeof is a hand-written generic in src/mpif_types.F90, one specific per
 ! type and rank. It used to have only assumed-size specifics, so a scalar
 ! argument matched nothing; `size` and `ierror` were declared REAL or COMPLEX
 ! rather than INTEGER in the real and complex specifics; and there was no

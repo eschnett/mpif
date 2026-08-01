@@ -10,7 +10,7 @@
 ! name" -- and it names that procedure MPI_ALLOC_MEM_CPTR.
 !
 ! Only the second specific lives here; the first is the generated interface in
-! gen/mpi_functions.F90, which this module calls under a renamed alias so that
+! gen/mpif_functions.F90, which this module calls under a renamed alias so that
 ! the generic in src/mpi.F90 can gather the two. The address MPI writes is
 ! pointer-sized either way, so the conversion is a `transfer`.
 !
@@ -21,10 +21,18 @@
 !
 ! The large-count variants are here too. mpif spells them as separate names
 ! rather than as further overloads, so each gets its own generic.
+!
+! Two naming styles, deliberately. The standard names the four overloads it
+! defines -- MPI_ALLOC_MEM_CPTR, MPI_WIN_ALLOCATE_CPTR,
+! MPI_WIN_ALLOCATE_SHARED_CPTR and MPI_WIN_SHARED_QUERY_CPTR -- so those keep
+! their MPI_ names. It says nothing about a large-count form of them; section
+! 19.1.5's rules for implied specific names cover the _f08 and _f schemes, not a
+! _c_cptr combination. Those three are mpif's own invention and are therefore
+! spelled mpif_, since nothing outside the standard should claim the MPI_ prefix.
 
-module mpi_cptr
-  use mpi_constants
-  use mpi_functions, only: &
+module mpif_cptr
+  use mpif_constants
+  use mpif_functions, only: &
        MPIF_Alloc_mem                => MPI_Alloc_mem               , &
        MPIF_Win_allocate             => MPI_Win_allocate            , &
        MPIF_Win_allocate_c           => MPI_Win_allocate_c          , &
@@ -39,11 +47,11 @@ module mpi_cptr
 
   public :: MPI_Alloc_mem_cptr
   public :: MPI_Win_allocate_cptr
-  public :: MPI_Win_allocate_c_cptr
+  public :: mpif_win_allocate_c_cptr
   public :: MPI_Win_allocate_shared_cptr
-  public :: MPI_Win_allocate_shared_c_cptr
+  public :: mpif_win_allocate_shared_c_cptr
   public :: MPI_Win_shared_query_cptr
-  public :: MPI_Win_shared_query_c_cptr
+  public :: mpif_win_shared_query_c_cptr
 
 contains
 
@@ -70,7 +78,7 @@ contains
     baseptr = transfer(tmp_baseptr, C_NULL_PTR)
   end subroutine MPI_Win_allocate_cptr
 
-  subroutine MPI_Win_allocate_c_cptr(size, disp_unit, info, comm, baseptr, win, ierror)
+  subroutine mpif_win_allocate_c_cptr(size, disp_unit, info, comm, baseptr, win, ierror)
     integer(MPI_ADDRESS_KIND) :: size
     integer(MPI_ADDRESS_KIND) :: disp_unit
     integer :: info
@@ -81,7 +89,7 @@ contains
     integer(MPI_ADDRESS_KIND) :: tmp_baseptr
     call MPIF_Win_allocate_c(size, disp_unit, info, comm, tmp_baseptr, win, ierror)
     baseptr = transfer(tmp_baseptr, C_NULL_PTR)
-  end subroutine MPI_Win_allocate_c_cptr
+  end subroutine mpif_win_allocate_c_cptr
 
   subroutine MPI_Win_allocate_shared_cptr(size, disp_unit, info, comm, baseptr, win, ierror)
     integer(MPI_ADDRESS_KIND) :: size
@@ -96,7 +104,7 @@ contains
     baseptr = transfer(tmp_baseptr, C_NULL_PTR)
   end subroutine MPI_Win_allocate_shared_cptr
 
-  subroutine MPI_Win_allocate_shared_c_cptr(size, disp_unit, info, comm, baseptr, win, ierror)
+  subroutine mpif_win_allocate_shared_c_cptr(size, disp_unit, info, comm, baseptr, win, ierror)
     integer(MPI_ADDRESS_KIND) :: size
     integer(MPI_ADDRESS_KIND) :: disp_unit
     integer :: info
@@ -107,7 +115,7 @@ contains
     integer(MPI_ADDRESS_KIND) :: tmp_baseptr
     call MPIF_Win_allocate_shared_c(size, disp_unit, info, comm, tmp_baseptr, win, ierror)
     baseptr = transfer(tmp_baseptr, C_NULL_PTR)
-  end subroutine MPI_Win_allocate_shared_c_cptr
+  end subroutine mpif_win_allocate_shared_c_cptr
 
   subroutine MPI_Win_shared_query_cptr(win, rank, size, disp_unit, baseptr, ierror)
     integer :: win
@@ -121,7 +129,7 @@ contains
     baseptr = transfer(tmp_baseptr, C_NULL_PTR)
   end subroutine MPI_Win_shared_query_cptr
 
-  subroutine MPI_Win_shared_query_c_cptr(win, rank, size, disp_unit, baseptr, ierror)
+  subroutine mpif_win_shared_query_c_cptr(win, rank, size, disp_unit, baseptr, ierror)
     integer :: win
     integer :: rank
     integer(MPI_ADDRESS_KIND) :: size
@@ -131,6 +139,6 @@ contains
     integer(MPI_ADDRESS_KIND) :: tmp_baseptr
     call MPIF_Win_shared_query_c(win, rank, size, disp_unit, tmp_baseptr, ierror)
     baseptr = transfer(tmp_baseptr, C_NULL_PTR)
-  end subroutine MPI_Win_shared_query_c_cptr
+  end subroutine mpif_win_shared_query_c_cptr
 
-end module mpi_cptr
+end module mpif_cptr

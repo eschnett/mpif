@@ -1,4 +1,4 @@
-module mpi_functions
+module mpif_functions
   implicit none
   public
   save
@@ -12,7 +12,7 @@ module mpi_functions
     is_set, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: logical_size
     !dir$ ignore_tkr(trk) logical_true
@@ -29,7 +29,7 @@ module mpi_functions
     info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     integer :: ierror
@@ -39,7 +39,7 @@ module mpi_functions
     info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     integer :: ierror
@@ -50,7 +50,7 @@ module mpi_functions
     abi_minor, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: abi_major
     integer :: abi_minor
@@ -63,7 +63,7 @@ module mpi_functions
     logical_false, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: logical_size
     !dir$ ignore_tkr(trk) logical_true
@@ -79,7 +79,7 @@ module mpi_functions
     info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     integer :: ierror
@@ -90,7 +90,7 @@ module mpi_functions
     errorcode, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: errorcode
@@ -109,7 +109,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -137,7 +137,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -157,7 +157,7 @@ module mpi_functions
     errorclass, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: errorclass
     integer :: ierror
@@ -168,7 +168,7 @@ module mpi_functions
     errorcode, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: errorclass
     integer :: errorcode
@@ -180,7 +180,7 @@ module mpi_functions
     string, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: errorcode
     character*(*) :: string
@@ -191,7 +191,7 @@ module mpi_functions
     base, &
     disp &
   ) result(result)
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_ADDRESS_KIND) :: result
     integer(MPI_ADDRESS_KIND) :: base
@@ -202,7 +202,7 @@ module mpi_functions
     addr1, &
     addr2 &
   ) result(result)
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_ADDRESS_KIND) :: result
     integer(MPI_ADDRESS_KIND) :: addr1
@@ -219,7 +219,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -245,7 +245,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -273,7 +273,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -303,7 +303,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -332,7 +332,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -360,7 +360,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -390,7 +390,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -422,7 +422,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -447,7 +447,7 @@ module mpi_functions
     baseptr, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_ADDRESS_KIND) :: size
     integer :: info
@@ -464,7 +464,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -488,7 +488,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -514,7 +514,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -542,7 +542,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -569,7 +569,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -595,7 +595,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -623,7 +623,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -653,7 +653,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -683,7 +683,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -713,7 +713,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -745,7 +745,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -779,7 +779,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -811,7 +811,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -841,7 +841,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -873,7 +873,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -907,7 +907,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -932,7 +932,7 @@ module mpi_functions
     keyval, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: keyval
@@ -946,7 +946,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: keyval
@@ -961,7 +961,7 @@ module mpi_functions
     attribute_val, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: keyval
@@ -973,7 +973,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: ierror
@@ -985,7 +985,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: info
@@ -1001,7 +1001,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -1021,7 +1021,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -1043,7 +1043,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -1067,7 +1067,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -1090,7 +1090,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -1112,7 +1112,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -1135,7 +1135,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -1159,7 +1159,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -1178,7 +1178,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -1192,7 +1192,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -1206,7 +1206,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_ADDRESS_KIND) :: buffer_addr
     integer :: size
@@ -1218,7 +1218,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_ADDRESS_KIND) :: buffer_addr
     integer(MPI_COUNT_KIND) :: size
@@ -1228,7 +1228,7 @@ module mpi_functions
   subroutine MPI_Buffer_flush( &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: ierror
   end subroutine MPI_Buffer_flush
@@ -1237,7 +1237,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: request
     integer :: ierror
@@ -1247,7 +1247,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: request
     integer :: ierror
@@ -1260,7 +1260,7 @@ module mpi_functions
     coords, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: rank
@@ -1278,7 +1278,7 @@ module mpi_functions
     comm_cart, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm_old
     integer :: ndims
@@ -1297,7 +1297,7 @@ module mpi_functions
     coords, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: maxdims
@@ -1315,7 +1315,7 @@ module mpi_functions
     newrank, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: ndims
@@ -1331,7 +1331,7 @@ module mpi_functions
     rank, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: coords(*)
@@ -1347,7 +1347,7 @@ module mpi_functions
     rank_dest, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: direction
@@ -1363,7 +1363,7 @@ module mpi_functions
     newcomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     logical :: remain_dims(*)
@@ -1376,7 +1376,7 @@ module mpi_functions
     ndims, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: ndims
@@ -1387,7 +1387,7 @@ module mpi_functions
     port_name, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: port_name
     integer :: ierror
@@ -1401,7 +1401,7 @@ module mpi_functions
     newcomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: port_name
     integer :: info
@@ -1417,7 +1417,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     !dir$ ignore_tkr(trk) buffer
@@ -1433,7 +1433,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     !dir$ ignore_tkr(trk) buffer
@@ -1448,7 +1448,7 @@ module mpi_functions
     errorcode, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: errorcode
@@ -1461,7 +1461,7 @@ module mpi_functions
     result, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm1
     integer :: comm2
@@ -1477,7 +1477,7 @@ module mpi_functions
     newcomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: port_name
     integer :: info
@@ -1493,7 +1493,7 @@ module mpi_functions
     newcomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: group
@@ -1506,7 +1506,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     external :: comm_errhandler_fn
     integer :: errhandler
@@ -1521,7 +1521,7 @@ module mpi_functions
     newcomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group
     character*(*) :: stringtag
@@ -1538,7 +1538,7 @@ module mpi_functions
     newcomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: group
@@ -1554,7 +1554,7 @@ module mpi_functions
     extra_state, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     external :: comm_copy_attr_fn
     external :: comm_delete_attr_fn
@@ -1568,7 +1568,7 @@ module mpi_functions
     comm_keyval, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: comm_keyval
@@ -1581,7 +1581,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer(MPI_ADDRESS_KIND) :: buffer_addr
@@ -1595,7 +1595,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer(MPI_ADDRESS_KIND) :: buffer_addr
@@ -1607,7 +1607,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: ierror
@@ -1618,7 +1618,7 @@ module mpi_functions
     newcomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: newcomm
@@ -1631,7 +1631,7 @@ module mpi_functions
     newcomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: info
@@ -1643,7 +1643,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: ierror
@@ -1653,7 +1653,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: ierror
@@ -1663,7 +1663,7 @@ module mpi_functions
     comm_keyval, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm_keyval
     integer :: ierror
@@ -1676,7 +1676,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: comm_keyval
@@ -1690,7 +1690,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: errhandler
@@ -1702,7 +1702,7 @@ module mpi_functions
     info_used, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: info_used
@@ -1715,7 +1715,7 @@ module mpi_functions
     resultlen, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     character*(MPI_MAX_OBJECT_NAME) :: comm_name
@@ -1727,7 +1727,7 @@ module mpi_functions
     parent, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: parent
     integer :: ierror
@@ -1738,7 +1738,7 @@ module mpi_functions
     group, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: group
@@ -1751,7 +1751,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: newcomm
@@ -1766,7 +1766,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: info
@@ -1780,7 +1780,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: request
@@ -1792,7 +1792,7 @@ module mpi_functions
     intercomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fd
     integer :: intercomm
@@ -1804,7 +1804,7 @@ module mpi_functions
     rank, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: rank
@@ -1816,7 +1816,7 @@ module mpi_functions
     group, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: group
@@ -1828,7 +1828,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: size
@@ -1841,7 +1841,7 @@ module mpi_functions
     attribute_val, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: comm_keyval
@@ -1854,7 +1854,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: errhandler
@@ -1866,7 +1866,7 @@ module mpi_functions
     info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: info
@@ -1878,7 +1878,7 @@ module mpi_functions
     comm_name, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     character*(*) :: comm_name
@@ -1890,7 +1890,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: size
@@ -1908,7 +1908,7 @@ module mpi_functions
     array_of_errcodes, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: command
     character*(*) :: argv(*)
@@ -1933,7 +1933,7 @@ module mpi_functions
     array_of_errcodes, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     character*(*) :: array_of_commands(*)
@@ -1954,7 +1954,7 @@ module mpi_functions
     newcomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: color
@@ -1971,7 +1971,7 @@ module mpi_functions
     newcomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: split_type
@@ -1986,7 +1986,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     logical :: flag
@@ -2003,7 +2003,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -2027,7 +2027,7 @@ module mpi_functions
     dims, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: nnodes
     integer :: ndims
@@ -2047,7 +2047,7 @@ module mpi_functions
     comm_dist_graph, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm_old
     integer :: n
@@ -2074,7 +2074,7 @@ module mpi_functions
     comm_dist_graph, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm_old
     integer :: indegree
@@ -2099,7 +2099,7 @@ module mpi_functions
     destweights, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: maxindegree
@@ -2118,7 +2118,7 @@ module mpi_functions
     weighted, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: indegree
@@ -2131,7 +2131,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: errhandler
     integer :: ierror
@@ -2142,7 +2142,7 @@ module mpi_functions
     errorclass, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: errorcode
     integer :: errorclass
@@ -2155,7 +2155,7 @@ module mpi_functions
     resultlen, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: errorcode
     character*(MPI_MAX_ERROR_STRING) :: string
@@ -2172,7 +2172,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2196,7 +2196,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2222,7 +2222,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2250,7 +2250,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -2270,7 +2270,7 @@ module mpi_functions
   subroutine MPI_F_sync_reg( &
     buf &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -2287,7 +2287,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -2308,7 +2308,7 @@ module mpi_functions
     errorcode, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer :: errorcode
@@ -2319,7 +2319,7 @@ module mpi_functions
     fh, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer :: ierror
@@ -2330,7 +2330,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     external :: file_errhandler_fn
     integer :: errhandler
@@ -2342,7 +2342,7 @@ module mpi_functions
     info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: filename
     integer :: info
@@ -2354,7 +2354,7 @@ module mpi_functions
     amode, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer :: amode
@@ -2366,7 +2366,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     logical :: flag
@@ -2379,7 +2379,7 @@ module mpi_functions
     disp, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -2392,7 +2392,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: file
     integer :: errhandler
@@ -2404,7 +2404,7 @@ module mpi_functions
     group, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer :: group
@@ -2416,7 +2416,7 @@ module mpi_functions
     info_used, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer :: info_used
@@ -2428,7 +2428,7 @@ module mpi_functions
     offset, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -2440,7 +2440,7 @@ module mpi_functions
     offset, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -2452,7 +2452,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: size
@@ -2465,7 +2465,7 @@ module mpi_functions
     extent, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer :: datatype
@@ -2479,7 +2479,7 @@ module mpi_functions
     extent, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer :: datatype
@@ -2495,7 +2495,7 @@ module mpi_functions
     datarep, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: disp
@@ -2513,7 +2513,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2533,7 +2533,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2553,7 +2553,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2573,7 +2573,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2594,7 +2594,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -2616,7 +2616,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -2638,7 +2638,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -2660,7 +2660,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -2681,7 +2681,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2701,7 +2701,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2721,7 +2721,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2741,7 +2741,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2761,7 +2761,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2781,7 +2781,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2802,7 +2802,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -2824,7 +2824,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -2846,7 +2846,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -2868,7 +2868,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -2889,7 +2889,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2909,7 +2909,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2929,7 +2929,7 @@ module mpi_functions
     fh, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     character*(*) :: filename
@@ -2944,7 +2944,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: size
@@ -2959,7 +2959,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2979,7 +2979,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -2999,7 +2999,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3019,7 +3019,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3038,7 +3038,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3056,7 +3056,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3073,7 +3073,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3092,7 +3092,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3114,7 +3114,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3136,7 +3136,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3158,7 +3158,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3179,7 +3179,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3199,7 +3199,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3217,7 +3217,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3235,7 +3235,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3255,7 +3255,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3274,7 +3274,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3292,7 +3292,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3309,7 +3309,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3327,7 +3327,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3347,7 +3347,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3365,7 +3365,7 @@ module mpi_functions
     whence, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3379,7 +3379,7 @@ module mpi_functions
     whence, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3392,7 +3392,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     logical :: flag
@@ -3404,7 +3404,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: file
     integer :: errhandler
@@ -3416,7 +3416,7 @@ module mpi_functions
     info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer :: info
@@ -3428,7 +3428,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: size
@@ -3444,7 +3444,7 @@ module mpi_functions
     info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: disp
@@ -3459,7 +3459,7 @@ module mpi_functions
     fh, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer :: ierror
@@ -3473,7 +3473,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3493,7 +3493,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3513,7 +3513,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3533,7 +3533,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3552,7 +3552,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3570,7 +3570,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3587,7 +3587,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3606,7 +3606,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3628,7 +3628,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3650,7 +3650,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3672,7 +3672,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3693,7 +3693,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3713,7 +3713,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     integer(MPI_OFFSET_KIND) :: offset
@@ -3731,7 +3731,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3749,7 +3749,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3769,7 +3769,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3788,7 +3788,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3806,7 +3806,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3823,7 +3823,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3841,7 +3841,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3861,7 +3861,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: fh
     !dir$ ignore_tkr(trk) buf
@@ -3876,7 +3876,7 @@ module mpi_functions
   subroutine MPI_Finalize( &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: ierror
   end subroutine MPI_Finalize
@@ -3885,7 +3885,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     logical :: flag
     integer :: ierror
@@ -3895,7 +3895,7 @@ module mpi_functions
     base, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
@@ -3914,7 +3914,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -3942,7 +3942,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -3972,7 +3972,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4004,7 +4004,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4035,7 +4035,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4065,7 +4065,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4097,7 +4097,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4131,7 +4131,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4162,7 +4162,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -4188,7 +4188,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -4218,7 +4218,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -4254,7 +4254,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -4280,7 +4280,7 @@ module mpi_functions
     address, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) location
     !gcc$ attributes no_arg_check :: location
@@ -4295,7 +4295,7 @@ module mpi_functions
     count, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: datatype
@@ -4309,7 +4309,7 @@ module mpi_functions
     count, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: datatype
@@ -4323,7 +4323,7 @@ module mpi_functions
     count, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: datatype
@@ -4337,7 +4337,7 @@ module mpi_functions
     count, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: datatype
@@ -4351,7 +4351,7 @@ module mpi_functions
     count, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: datatype
@@ -4363,7 +4363,7 @@ module mpi_functions
     hw_info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: hw_info
     integer :: ierror
@@ -4374,7 +4374,7 @@ module mpi_functions
     resultlen, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(MPI_MAX_LIBRARY_VERSION_STRING) :: version
     integer :: resultlen
@@ -4386,7 +4386,7 @@ module mpi_functions
     resultlen, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(MPI_MAX_PROCESSOR_NAME) :: name
     integer :: resultlen
@@ -4398,7 +4398,7 @@ module mpi_functions
     subversion, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: version
     integer :: subversion
@@ -4414,7 +4414,7 @@ module mpi_functions
     comm_graph, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm_old
     integer :: nnodes
@@ -4433,7 +4433,7 @@ module mpi_functions
     edges, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: maxindex
@@ -4451,7 +4451,7 @@ module mpi_functions
     newrank, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: nnodes
@@ -4468,7 +4468,7 @@ module mpi_functions
     neighbors, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: rank
@@ -4483,7 +4483,7 @@ module mpi_functions
     nneighbors, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: rank
@@ -4497,7 +4497,7 @@ module mpi_functions
     nedges, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: nnodes
@@ -4509,7 +4509,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: request
     integer :: ierror
@@ -4523,7 +4523,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     external :: query_fn
     external :: free_fn
@@ -4539,7 +4539,7 @@ module mpi_functions
     result, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group1
     integer :: group2
@@ -4553,7 +4553,7 @@ module mpi_functions
     newgroup, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group1
     integer :: group2
@@ -4568,7 +4568,7 @@ module mpi_functions
     newgroup, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group
     integer :: n
@@ -4581,7 +4581,7 @@ module mpi_functions
     group, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group
     integer :: ierror
@@ -4593,7 +4593,7 @@ module mpi_functions
     newgroup, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     character*(*) :: pset_name
@@ -4608,7 +4608,7 @@ module mpi_functions
     newgroup, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group
     integer :: n
@@ -4623,7 +4623,7 @@ module mpi_functions
     newgroup, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group1
     integer :: group2
@@ -4638,7 +4638,7 @@ module mpi_functions
     newgroup, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group
     integer :: n
@@ -4654,7 +4654,7 @@ module mpi_functions
     newgroup, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group
     integer :: n
@@ -4668,7 +4668,7 @@ module mpi_functions
     rank, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group
     integer :: rank
@@ -4680,7 +4680,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group
     integer :: size
@@ -4695,7 +4695,7 @@ module mpi_functions
     ranks2, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group1
     integer :: n
@@ -4711,7 +4711,7 @@ module mpi_functions
     newgroup, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group1
     integer :: group2
@@ -4730,7 +4730,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4758,7 +4758,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4787,7 +4787,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4817,7 +4817,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4845,7 +4845,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4871,7 +4871,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4898,7 +4898,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4926,7 +4926,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4956,7 +4956,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -4988,7 +4988,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5020,7 +5020,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5052,7 +5052,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5076,7 +5076,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: request
@@ -5092,7 +5092,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -5114,7 +5114,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
@@ -5137,7 +5137,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -5161,7 +5161,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -5185,7 +5185,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5211,7 +5211,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5239,7 +5239,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5269,7 +5269,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5300,7 +5300,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5332,7 +5332,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5360,7 +5360,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: source
     integer :: tag
@@ -5379,7 +5379,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -5399,7 +5399,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -5422,7 +5422,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5450,7 +5450,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5479,7 +5479,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5509,7 +5509,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5538,7 +5538,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5566,7 +5566,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5596,7 +5596,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5628,7 +5628,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5660,7 +5660,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5692,7 +5692,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -5715,7 +5715,7 @@ module mpi_functions
     info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     integer :: ierror
@@ -5725,7 +5725,7 @@ module mpi_functions
     info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     integer :: ierror
@@ -5736,7 +5736,7 @@ module mpi_functions
     key, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     character*(*) :: key
@@ -5748,7 +5748,7 @@ module mpi_functions
     newinfo, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     integer :: newinfo
@@ -5759,7 +5759,7 @@ module mpi_functions
     info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     integer :: ierror
@@ -5773,7 +5773,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     character*(*) :: key
@@ -5788,7 +5788,7 @@ module mpi_functions
     nkeys, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     integer :: nkeys
@@ -5801,7 +5801,7 @@ module mpi_functions
     key, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     integer :: n
@@ -5817,7 +5817,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     character*(*) :: key
@@ -5834,7 +5834,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     character*(*) :: key
@@ -5849,7 +5849,7 @@ module mpi_functions
     value, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     character*(*) :: key
@@ -5860,7 +5860,7 @@ module mpi_functions
   subroutine MPI_Init( &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: ierror
   end subroutine MPI_Init
@@ -5870,7 +5870,7 @@ module mpi_functions
     provided, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: required
     integer :: provided
@@ -5881,7 +5881,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     logical :: flag
     integer :: ierror
@@ -5896,7 +5896,7 @@ module mpi_functions
     newintercomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: local_comm
     integer :: local_leader
@@ -5918,7 +5918,7 @@ module mpi_functions
     newintercomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: local_group
     integer :: local_leader
@@ -5937,7 +5937,7 @@ module mpi_functions
     newintracomm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: intercomm
     logical :: high
@@ -5953,7 +5953,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: source
     integer :: tag
@@ -5973,7 +5973,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -5997,7 +5997,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -6022,7 +6022,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6050,7 +6050,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6077,7 +6077,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6103,7 +6103,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6129,7 +6129,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6155,7 +6155,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6181,7 +6181,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -6205,7 +6205,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -6223,7 +6223,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     logical :: flag
     integer :: ierror
@@ -6239,7 +6239,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6265,7 +6265,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6293,7 +6293,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6323,7 +6323,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6354,7 +6354,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6386,7 +6386,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6415,7 +6415,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -6439,7 +6439,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -6468,7 +6468,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6504,7 +6504,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6537,7 +6537,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -6565,7 +6565,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -6591,7 +6591,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -6615,7 +6615,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -6636,7 +6636,7 @@ module mpi_functions
     extra_state, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     external :: copy_fn
     external :: delete_fn
@@ -6649,7 +6649,7 @@ module mpi_functions
     keyval, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: keyval
     integer :: ierror
@@ -6661,7 +6661,7 @@ module mpi_functions
     port_name, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: service_name
     integer :: info
@@ -6677,7 +6677,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: source
     integer :: tag
@@ -6695,7 +6695,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -6715,7 +6715,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -6737,7 +6737,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6763,7 +6763,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6791,7 +6791,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6821,7 +6821,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6850,7 +6850,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6878,7 +6878,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6908,7 +6908,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6940,7 +6940,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6969,7 +6969,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -6995,7 +6995,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7023,7 +7023,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7053,7 +7053,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7083,7 +7083,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7113,7 +7113,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7145,7 +7145,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7179,7 +7179,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7211,7 +7211,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7241,7 +7241,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7273,7 +7273,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7307,7 +7307,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7332,7 +7332,7 @@ module mpi_functions
     commute, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: op
     logical :: commute
@@ -7345,7 +7345,7 @@ module mpi_functions
     op, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     external :: user_fn
     logical :: commute
@@ -7359,7 +7359,7 @@ module mpi_functions
     op, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     external :: user_fn
     logical :: commute
@@ -7371,7 +7371,7 @@ module mpi_functions
     op, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: op
     integer :: ierror
@@ -7382,7 +7382,7 @@ module mpi_functions
     port_name, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     character*(MPI_MAX_PORT_NAME) :: port_name
@@ -7399,7 +7399,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
@@ -7425,7 +7425,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
@@ -7451,7 +7451,7 @@ module mpi_functions
     position, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: datarep
     !dir$ ignore_tkr(trk) inbuf
@@ -7477,7 +7477,7 @@ module mpi_functions
     position, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: datarep
     !dir$ ignore_tkr(trk) inbuf
@@ -7500,7 +7500,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: datarep
     integer :: incount
@@ -7516,7 +7516,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: datarep
     integer(MPI_COUNT_KIND) :: incount
@@ -7532,7 +7532,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: incount
     integer :: datatype
@@ -7548,7 +7548,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_COUNT_KIND) :: incount
     integer :: datatype
@@ -7563,7 +7563,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: request
     integer :: partition
@@ -7574,7 +7574,7 @@ module mpi_functions
   subroutine MPI_Pcontrol( &
     level &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: level
   end subroutine MPI_Pcontrol
@@ -7584,7 +7584,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: partition
     integer :: request
@@ -7597,7 +7597,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: length
     integer :: array_of_partitions(length)
@@ -7611,7 +7611,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: partition_low
     integer :: partition_high
@@ -7631,7 +7631,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -7654,7 +7654,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: source
     integer :: tag
@@ -7675,7 +7675,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -7697,7 +7697,7 @@ module mpi_functions
     port_name, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: service_name
     integer :: info
@@ -7716,7 +7716,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -7742,7 +7742,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -7761,7 +7761,7 @@ module mpi_functions
     provided, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: provided
     integer :: ierror
@@ -7780,7 +7780,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -7810,7 +7810,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -7837,7 +7837,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -7861,7 +7861,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -7885,7 +7885,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -7909,7 +7909,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -7933,7 +7933,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7959,7 +7959,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -7987,7 +7987,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8017,7 +8017,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8043,7 +8043,7 @@ module mpi_functions
     op, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
@@ -8065,7 +8065,7 @@ module mpi_functions
     op, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
@@ -8088,7 +8088,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8112,7 +8112,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8136,7 +8136,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8160,7 +8160,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8186,7 +8186,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8214,7 +8214,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8242,7 +8242,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8270,7 +8270,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8295,7 +8295,7 @@ module mpi_functions
     extra_state, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: datarep
     external :: read_conversion_fn
@@ -8313,7 +8313,7 @@ module mpi_functions
     extra_state, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: datarep
     external :: read_conversion_fn
@@ -8327,7 +8327,7 @@ module mpi_functions
     errorclass, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: errorclass
     integer :: ierror
@@ -8337,7 +8337,7 @@ module mpi_functions
     errorcode, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: errorcode
     integer :: ierror
@@ -8347,7 +8347,7 @@ module mpi_functions
     errorcode, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: errorcode
     integer :: ierror
@@ -8357,7 +8357,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: request
     integer :: ierror
@@ -8369,7 +8369,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: request
     logical :: flag
@@ -8384,7 +8384,7 @@ module mpi_functions
     array_of_statuses, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: array_of_requests(count)
@@ -8401,7 +8401,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: array_of_requests(count)
@@ -8419,7 +8419,7 @@ module mpi_functions
     array_of_statuses, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: incount
     integer :: array_of_requests(incount)
@@ -8441,7 +8441,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -8469,7 +8469,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -8501,7 +8501,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -8539,7 +8539,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -8573,7 +8573,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -8601,7 +8601,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
@@ -8626,7 +8626,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -8648,7 +8648,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -8671,7 +8671,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -8695,7 +8695,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -8718,7 +8718,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8742,7 +8742,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8768,7 +8768,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8796,7 +8796,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8824,7 +8824,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8852,7 +8852,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8882,7 +8882,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8914,7 +8914,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8945,7 +8945,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -8975,7 +8975,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9007,7 +9007,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9041,7 +9041,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9070,7 +9070,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9092,7 +9092,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9115,7 +9115,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9139,7 +9139,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9168,7 +9168,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9204,7 +9204,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
@@ -9237,7 +9237,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9265,7 +9265,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9287,7 +9287,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     !dir$ ignore_tkr(trk) buffer
@@ -9303,7 +9303,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     !dir$ ignore_tkr(trk) buffer
@@ -9318,7 +9318,7 @@ module mpi_functions
     errorcode, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     integer :: errorcode
@@ -9330,7 +9330,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     external :: session_errhandler_fn
     integer :: errhandler
@@ -9343,7 +9343,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     integer(MPI_ADDRESS_KIND) :: buffer_addr
@@ -9357,7 +9357,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     integer(MPI_ADDRESS_KIND) :: buffer_addr
@@ -9369,7 +9369,7 @@ module mpi_functions
     session, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     integer :: ierror
@@ -9379,7 +9379,7 @@ module mpi_functions
     session, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     integer :: ierror
@@ -9390,7 +9390,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     integer :: errhandler
@@ -9402,7 +9402,7 @@ module mpi_functions
     info_used, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     integer :: info_used
@@ -9417,7 +9417,7 @@ module mpi_functions
     pset_name, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     integer :: info
@@ -9433,7 +9433,7 @@ module mpi_functions
     npset_names, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     integer :: info
@@ -9447,7 +9447,7 @@ module mpi_functions
     info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     character*(*) :: pset_name
@@ -9460,7 +9460,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     integer :: request
@@ -9473,7 +9473,7 @@ module mpi_functions
     session, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     integer :: errhandler
@@ -9486,7 +9486,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: session
     integer :: errhandler
@@ -9502,7 +9502,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9524,7 +9524,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9547,7 +9547,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9571,7 +9571,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
@@ -9589,7 +9589,7 @@ module mpi_functions
     request, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: request
     integer :: ierror
@@ -9600,7 +9600,7 @@ module mpi_functions
     array_of_requests, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: array_of_requests(count)
@@ -9612,7 +9612,7 @@ module mpi_functions
     err, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: err
@@ -9624,7 +9624,7 @@ module mpi_functions
     source, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: source
@@ -9636,7 +9636,7 @@ module mpi_functions
     tag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: tag
@@ -9648,7 +9648,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     logical :: flag
@@ -9661,7 +9661,7 @@ module mpi_functions
     count, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: datatype
@@ -9675,7 +9675,7 @@ module mpi_functions
     count, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: datatype
@@ -9689,7 +9689,7 @@ module mpi_functions
     count, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: datatype
@@ -9702,7 +9702,7 @@ module mpi_functions
     err, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: err
@@ -9714,7 +9714,7 @@ module mpi_functions
     source, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: source
@@ -9726,7 +9726,7 @@ module mpi_functions
     tag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     integer :: tag
@@ -9739,7 +9739,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: request
     logical :: flag
@@ -9752,7 +9752,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: status(MPI_STATUS_SIZE)
     logical :: flag
@@ -9766,7 +9766,7 @@ module mpi_functions
     array_of_statuses, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: array_of_requests(count)
@@ -9783,7 +9783,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: array_of_requests(count)
@@ -9801,7 +9801,7 @@ module mpi_functions
     array_of_statuses, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: incount
     integer :: array_of_requests(incount)
@@ -9816,7 +9816,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: comm
     integer :: status
@@ -9827,7 +9827,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer :: ierror
@@ -9839,7 +9839,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: oldtype
@@ -9853,7 +9853,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_COUNT_KIND) :: count
     integer :: oldtype
@@ -9874,7 +9874,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: size
     integer :: rank
@@ -9902,7 +9902,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: size
     integer :: rank
@@ -9923,7 +9923,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: p
     integer :: r
@@ -9936,7 +9936,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: r
     integer :: newtype
@@ -9949,7 +9949,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: p
     integer :: r
@@ -9965,7 +9965,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: array_of_blocklengths(count)
@@ -9983,7 +9983,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_COUNT_KIND) :: count
     integer(MPI_COUNT_KIND) :: array_of_blocklengths(count)
@@ -10001,7 +10001,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: blocklength
@@ -10019,7 +10019,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_COUNT_KIND) :: count
     integer(MPI_COUNT_KIND) :: blocklength
@@ -10037,7 +10037,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: blocklength
@@ -10055,7 +10055,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_COUNT_KIND) :: count
     integer(MPI_COUNT_KIND) :: blocklength
@@ -10073,7 +10073,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: blocklength
@@ -10091,7 +10091,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_COUNT_KIND) :: count
     integer(MPI_COUNT_KIND) :: blocklength
@@ -10108,7 +10108,7 @@ module mpi_functions
     extra_state, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     external :: type_copy_attr_fn
     external :: type_delete_attr_fn
@@ -10124,7 +10124,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: oldtype
     integer(MPI_ADDRESS_KIND) :: lb
@@ -10140,7 +10140,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: oldtype
     integer(MPI_COUNT_KIND) :: lb
@@ -10157,7 +10157,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: array_of_blocklengths(count)
@@ -10175,7 +10175,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_COUNT_KIND) :: count
     integer(MPI_COUNT_KIND) :: array_of_blocklengths(count)
@@ -10195,7 +10195,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: ndims
     integer :: array_of_sizes(ndims)
@@ -10217,7 +10217,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: ndims
     integer(MPI_COUNT_KIND) :: array_of_sizes(ndims)
@@ -10234,7 +10234,7 @@ module mpi_functions
     type_keyval, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer :: type_keyval
@@ -10246,7 +10246,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: oldtype
     integer :: newtype
@@ -10257,7 +10257,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer :: ierror
@@ -10267,7 +10267,7 @@ module mpi_functions
     type_keyval, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: type_keyval
     integer :: ierror
@@ -10280,7 +10280,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer :: type_keyval
@@ -10299,7 +10299,7 @@ module mpi_functions
     array_of_datatypes, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer :: max_integers
@@ -10323,7 +10323,7 @@ module mpi_functions
     array_of_datatypes, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer(MPI_COUNT_KIND) :: max_integers
@@ -10345,7 +10345,7 @@ module mpi_functions
     combiner, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer :: num_integers
@@ -10364,7 +10364,7 @@ module mpi_functions
     combiner, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer(MPI_COUNT_KIND) :: num_integers
@@ -10381,7 +10381,7 @@ module mpi_functions
     extent, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer(MPI_ADDRESS_KIND) :: lb
@@ -10395,7 +10395,7 @@ module mpi_functions
     extent, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer(MPI_COUNT_KIND) :: lb
@@ -10409,7 +10409,7 @@ module mpi_functions
     extent, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer(MPI_COUNT_KIND) :: lb
@@ -10423,7 +10423,7 @@ module mpi_functions
     resultlen, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     character*(MPI_MAX_OBJECT_NAME) :: type_name
@@ -10437,7 +10437,7 @@ module mpi_functions
     true_extent, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer(MPI_ADDRESS_KIND) :: true_lb
@@ -10451,7 +10451,7 @@ module mpi_functions
     true_extent, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer(MPI_COUNT_KIND) :: true_lb
@@ -10465,7 +10465,7 @@ module mpi_functions
     true_extent, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer(MPI_COUNT_KIND) :: true_lb
@@ -10479,7 +10479,7 @@ module mpi_functions
     pair_type, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: value_type
     integer :: index_type
@@ -10495,7 +10495,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: array_of_blocklengths(count)
@@ -10513,7 +10513,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_COUNT_KIND) :: count
     integer(MPI_COUNT_KIND) :: array_of_blocklengths(count)
@@ -10529,7 +10529,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: typeclass
     integer :: size
@@ -10543,7 +10543,7 @@ module mpi_functions
     attribute_val, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer :: type_keyval
@@ -10556,7 +10556,7 @@ module mpi_functions
     type_name, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     character*(*) :: type_name
@@ -10568,7 +10568,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer :: size
@@ -10580,7 +10580,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer(MPI_COUNT_KIND) :: size
@@ -10592,7 +10592,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: datatype
     integer(MPI_COUNT_KIND) :: size
@@ -10607,7 +10607,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: blocklength
@@ -10625,7 +10625,7 @@ module mpi_functions
     newtype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_COUNT_KIND) :: count
     integer(MPI_COUNT_KIND) :: blocklength
@@ -10645,7 +10645,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
@@ -10671,7 +10671,7 @@ module mpi_functions
     comm, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
@@ -10697,7 +10697,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: datarep
     !dir$ ignore_tkr(trk) inbuf
@@ -10723,7 +10723,7 @@ module mpi_functions
     datatype, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: datarep
     !dir$ ignore_tkr(trk) inbuf
@@ -10745,7 +10745,7 @@ module mpi_functions
     port_name, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     character*(*) :: service_name
     integer :: info
@@ -10758,7 +10758,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: request
     integer :: status(MPI_STATUS_SIZE)
@@ -10771,7 +10771,7 @@ module mpi_functions
     array_of_statuses, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: array_of_requests(count)
@@ -10786,7 +10786,7 @@ module mpi_functions
     status, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: count
     integer :: array_of_requests(count)
@@ -10803,7 +10803,7 @@ module mpi_functions
     array_of_statuses, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: incount
     integer :: array_of_requests(incount)
@@ -10822,7 +10822,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_ADDRESS_KIND) :: size
     integer :: disp_unit
@@ -10842,7 +10842,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_ADDRESS_KIND) :: size
     integer(MPI_ADDRESS_KIND) :: disp_unit
@@ -10862,7 +10862,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_ADDRESS_KIND) :: size
     integer :: disp_unit
@@ -10882,7 +10882,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer(MPI_ADDRESS_KIND) :: size
     integer(MPI_ADDRESS_KIND) :: disp_unit
@@ -10899,7 +10899,7 @@ module mpi_functions
     size, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     !dir$ ignore_tkr(trk) base
@@ -10914,7 +10914,7 @@ module mpi_functions
     errorcode, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: errorcode
@@ -10925,7 +10925,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: ierror
@@ -10940,7 +10940,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
@@ -10962,7 +10962,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
@@ -10981,7 +10981,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: info
     integer :: comm
@@ -10994,7 +10994,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     external :: win_errhandler_fn
     integer :: errhandler
@@ -11008,7 +11008,7 @@ module mpi_functions
     extra_state, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     external :: win_copy_attr_fn
     external :: win_delete_attr_fn
@@ -11022,7 +11022,7 @@ module mpi_functions
     win_keyval, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: win_keyval
@@ -11034,7 +11034,7 @@ module mpi_functions
     base, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     !dir$ ignore_tkr(trk) base
@@ -11048,7 +11048,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: assert
     integer :: win
@@ -11060,7 +11060,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: rank
     integer :: win
@@ -11071,7 +11071,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: ierror
@@ -11082,7 +11082,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: rank
     integer :: win
@@ -11093,7 +11093,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: ierror
@@ -11103,7 +11103,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: ierror
@@ -11113,7 +11113,7 @@ module mpi_functions
     win_keyval, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win_keyval
     integer :: ierror
@@ -11126,7 +11126,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: win_keyval
@@ -11140,7 +11140,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: errhandler
@@ -11152,7 +11152,7 @@ module mpi_functions
     group, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: group
@@ -11164,7 +11164,7 @@ module mpi_functions
     info_used, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: info_used
@@ -11177,7 +11177,7 @@ module mpi_functions
     resultlen, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     character*(MPI_MAX_OBJECT_NAME) :: win_name
@@ -11192,7 +11192,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: lock_type
     integer :: rank
@@ -11206,7 +11206,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: assert
     integer :: win
@@ -11219,7 +11219,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group
     integer :: assert
@@ -11233,7 +11233,7 @@ module mpi_functions
     attribute_val, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: win_keyval
@@ -11246,7 +11246,7 @@ module mpi_functions
     errhandler, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: errhandler
@@ -11258,7 +11258,7 @@ module mpi_functions
     info, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: info
@@ -11270,7 +11270,7 @@ module mpi_functions
     win_name, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     character*(*) :: win_name
@@ -11285,7 +11285,7 @@ module mpi_functions
     baseptr, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: rank
@@ -11303,7 +11303,7 @@ module mpi_functions
     baseptr, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: rank
@@ -11319,7 +11319,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: group
     integer :: assert
@@ -11331,7 +11331,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: ierror
@@ -11342,7 +11342,7 @@ module mpi_functions
     flag, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     logical :: flag
@@ -11354,7 +11354,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: rank
     integer :: win
@@ -11365,7 +11365,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: ierror
@@ -11375,7 +11375,7 @@ module mpi_functions
     win, &
     ierror &
   )
-    use mpi_constants
+    use mpif_constants
     implicit none
     integer :: win
     integer :: ierror
@@ -11383,18 +11383,18 @@ module mpi_functions
 
   function MPI_Wtick( &
   ) result(result)
-    use mpi_constants
+    use mpif_constants
     implicit none
     double precision :: result
   end function MPI_Wtick
 
   function MPI_Wtime( &
   ) result(result)
-    use mpi_constants
+    use mpif_constants
     implicit none
     double precision :: result
   end function MPI_Wtime
 
   end interface
 
-end module mpi_functions
+end module mpif_functions
