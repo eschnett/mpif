@@ -5080,34 +5080,26 @@ void mpi_grequest_start_(
   MPI_Grequest_query_function* const query_fn,
   MPI_Grequest_free_function* const free_fn,
   MPI_Grequest_cancel_function* const cancel_fn,
-  const MPI_Aint* restrict const extra_state,
+  MPI_Aint* restrict const extra_state,
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const ierror
 )
 {
-  void *c_query_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)query_fn, &c_query_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Grequest_start", "query_fn");
-    return;
-  }
-  void *c_free_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)free_fn, &c_free_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Grequest_start", "free_fn");
-    return;
-  }
-  void *c_cancel_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)cancel_fn, &c_cancel_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Grequest_start", "cancel_fn");
+  void *const box = mpif_grequest_reserve((mpif_fortran_procedure)query_fn, (mpif_fortran_procedure)free_fn, (mpif_fortran_procedure)cancel_fn, extra_state);
+  if (!box) {
+    *ierror = MPI_ERR_OTHER;
     return;
   }
   MPI_Request c_request;
   *ierror = MPI_Grequest_start(
-    (MPI_Grequest_query_function*)c_query_fn,
-    (MPI_Grequest_free_function*)c_free_fn,
-    (MPI_Grequest_cancel_function*)c_cancel_fn,
-    (void*)*extra_state,
+    mpif_grequest_query_trampoline,
+    mpif_grequest_free_trampoline,
+    mpif_grequest_cancel_trampoline,
+    box,
     &c_request
   );
+  if (*ierror != MPI_SUCCESS)
+    mpif_grequest_cancel(box);
   *request = MPIF_Request_toint(c_request);
 }
 

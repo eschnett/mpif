@@ -103,6 +103,42 @@ void *mpif_errhandler_reserve(mpif_fortran_procedure callback,
 // Give a reserved slot back, MPI_*_create_errhandler having failed
 void mpif_errhandler_cancel(int slot);
 
+// User-defined generalized request callbacks
+//
+// A generalized request's three callbacks are told only `extra_state`, so there
+// is nothing to look up when one fires -- the same problem reduction operators
+// have. No pool is needed here, though: `extra_state` is mpif's to choose, so it
+// gives MPI a box holding the three Fortran procedures and passes the caller's
+// own extra state on from there. There is therefore no limit on how many
+// generalized requests a program may have.
+//
+// The box belongs to one request and is released by the free trampoline. MPI-5.0
+// section 13.2 has it that "free_fn will be invoked only once per request by a
+// correct program", and that "the request is not deallocated until after free_fn
+// completes", so nothing can reach the box afterwards.
+
+// Allocate the box to hand MPI as `extra_state`, or return NULL if out of
+// memory, in which case a diagnostic has been printed.
+//
+// `extra_state` is the address of the caller's Fortran variable rather than a
+// copy of its value, so that the callbacks alias it. The standard declares
+// `extra_state` without an INTENT in all three grequest callback interfaces --
+// unlike the attribute callbacks, where it is INTENT(IN) and mpif passes a copy
+// -- and a `free_fn` that updates it is expected to be seen by the caller.
+void *mpif_grequest_reserve(mpif_fortran_procedure query_fn,
+                            mpif_fortran_procedure free_fn,
+                            mpif_fortran_procedure cancel_fn,
+                            MPI_Aint *extra_state);
+
+// Release the box again, MPI_Grequest_start having failed. Safe only because MPI
+// never received it, so no callback can fire.
+void mpif_grequest_cancel(void *box);
+
+// The trampolines to hand MPI in place of the Fortran procedures
+int mpif_grequest_query_trampoline(void *extra_state, MPI_Status *status);
+int mpif_grequest_free_trampoline(void *extra_state);
+int mpif_grequest_cancel_trampoline(void *extra_state, int complete);
+
 // The C trampoline to hand MPI in place of a user-defined Fortran procedure
 void *mpif_attr_trampoline(enum mpif_attr_callback_kind kind);
 

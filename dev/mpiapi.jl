@@ -104,6 +104,14 @@ argv_null_sentinels = Dict([("MPI_Comm_spawn", "argv") => "MPI_ARGV_NULL",
 # the end of the caller's array.
 string_array_counts = Dict([("MPI_Comm_spawn_multiple", "array_of_commands") => "*count"])
 
+# The trampoline mpif hands MPI for each of a generalized request's callbacks.
+# One apiece is enough, rather than the pools the operators and error handlers
+# need, because `extra_state` belongs to mpif here and can carry a box saying
+# which Fortran procedures to call. See src/mpif_callbacks.c.
+grequest_trampolines = Dict(["MPI_Grequest_query_function" => "mpif_grequest_query_trampoline",
+                             "MPI_Grequest_free_function" => "mpif_grequest_free_trampoline",
+                             "MPI_Grequest_cancel_function" => "mpif_grequest_cancel_trampoline"])
+
 # Attribute callbacks are the callbacks mpif can forward: every one of them
 # receives the keyval, which is enough for a trampoline to find the Fortran
 # procedure again. See src/mpif_callbacks.c. The other callback types have
@@ -1016,8 +1024,20 @@ for key in sort(collect(keys(apis)))
                 @assert !optional
                 @assert !root_only
                 if param_direction == "in"
-                    push!(input_arguments, "const MPI_Aint* restrict const $parname")
-                    push!(call_arguments, "(void*)*$parname")
+                    if name == "MPI_Grequest_start"
+                        # MPI carries mpif's box here rather than the caller's
+                        # value, so that the trampolines can find the Fortran
+                        # procedures. The caller's variable is passed on to them
+                        # by address, which is why it is not declared const: the
+                        # standard gives the grequest callbacks an `extra_state`
+                        # with no INTENT, and a `free_fn` that updates it is
+                        # expected to be seen by the caller.
+                        push!(input_arguments, "MPI_Aint* restrict const $parname")
+                        push!(call_arguments, "box")
+                    else
+                        push!(input_arguments, "const MPI_Aint* restrict const $parname")
+                        push!(call_arguments, "(void*)*$parname")
+                    end
                 elseif param_direction == "out"
                     push!(input_arguments, "MPI_Aint* restrict const $parname")
                     push!(input_conversions, "void *c_$parname;")
@@ -1383,6 +1403,35 @@ for key in sort(collect(keys(apis)))
                     append!(output_conversions,
                             ["if (*ierror != MPI_SUCCESS)",
                              "  mpif_errhandler_cancel(slot_$parname);"])
+                elseif func_type ∈ keys(grequest_trampolines)
+                    # A generalized request's callbacks are told nothing that
+                    # says which request is being served, as for reduction
+                    # operators -- but here `extra_state` is mpif's to choose, so
+                    # a box carrying the three Fortran procedures goes in its
+                    # place and one trampoline per callback is enough. No pool
+                    # and no limit: the box belongs to one request, and the free
+                    # callback releases it.
+                    #
+                    # The box is emitted once, with the first of the three, since
+                    # the three procedures and the box are one unit. All three
+                    # are parameters of this wrapper, so naming them here is
+                    # fine, and `extra_state` is a later parameter that picks the
+                    # box up from `call_arguments`.
+                    if func_type == "MPI_Grequest_query_function"
+                        fns = [p["name"] for p in parameters if p["kind"] == "FUNCTION"]
+                        extra_state = only(p["name"] for p in parameters if p["kind"] == "EXTRA_STATE")
+                        procedures = join(["(mpif_fortran_procedure)$f" for f in fns], ", ")
+                        append!(input_conversions,
+                                ["void *const box = mpif_grequest_reserve($procedures, $extra_state);",
+                                 "if (!box) {",
+                                 "  *ierror = MPI_ERR_OTHER;",
+                                 "  return;",
+                                 "}"])
+                        append!(output_conversions,
+                                ["if (*ierror != MPI_SUCCESS)",
+                                 "  mpif_grequest_cancel(box);"])
+                    end
+                    push!(call_arguments, grequest_trampolines[func_type])
                 else
                     # The remaining callback types pass nothing a trampoline
                     # could use to find the Fortran procedure again, so only the

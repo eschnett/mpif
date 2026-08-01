@@ -7,6 +7,7 @@
 #include <stdatomic.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 // The Fortran side of the predefined callbacks, from src/mpif_attr_fns.F90.
 // Only their addresses are used; they are never called through these
@@ -882,4 +883,81 @@ void mpif_errhandler_cancel(int slot) {
   errhandler_slots[slot].fn = NULL;
   atomic_store_explicit(&errhandler_slots[slot].in_use, 0,
                         memory_order_release);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// User-defined generalized request callbacks
+//
+// Like a reduction operator, a generalized request's callbacks are told nothing
+// that identifies which request is being served, so there is nothing to look up
+// when one fires. Unlike a reduction operator, no pool of trampolines is needed:
+// `extra_state` is mpif's to choose, so one trampoline per callback suffices and
+// the box it receives says which Fortran procedures to call. See
+// include/mpif_callbacks.h for the lifetime argument.
+
+struct grequest_box {
+  mpif_fortran_procedure query_fn;
+  mpif_fortran_procedure free_fn;
+  mpif_fortran_procedure cancel_fn;
+  // The caller's Fortran variable, aliased rather than copied; see the header
+  MPI_Aint *extra_state;
+};
+
+// The Fortran callbacks, as declared in MPI-5.0 section 13.2. `status` is passed
+// through untouched: the C MPI_Status is three ints followed by five more and
+// MPI_STATUS_SIZE is 8, so one address serves the `INTEGER
+// STATUS(MPI_STATUS_SIZE)` of mpif.h and the `bind(C)` TYPE(MPI_Status) of
+// mpi_f08 alike. That is the same assumption the generated wrappers make when
+// they cast a Fortran status array to MPI_Status*.
+typedef void (*fortran_grequest_query_fn)(MPI_Aint *extra_state,
+                                          MPI_Status *status, MPI_Fint *ierror);
+typedef void (*fortran_grequest_free_fn)(MPI_Aint *extra_state,
+                                         MPI_Fint *ierror);
+typedef void (*fortran_grequest_cancel_fn)(MPI_Aint *extra_state,
+                                           MPI_Fint *complete,
+                                           MPI_Fint *ierror);
+
+void *mpif_grequest_reserve(mpif_fortran_procedure query_fn,
+                            mpif_fortran_procedure free_fn,
+                            mpif_fortran_procedure cancel_fn,
+                            MPI_Aint *extra_state) {
+  struct grequest_box *const box = malloc(sizeof *box);
+  if (!box) {
+    fprintf(stderr, "mpif: MPI_Grequest_start: out of memory allocating the "
+                    "callback state; returning MPI_ERR_OTHER\n");
+    return NULL;
+  }
+  box->query_fn = query_fn;
+  box->free_fn = free_fn;
+  box->cancel_fn = cancel_fn;
+  box->extra_state = extra_state;
+  return box;
+}
+
+void mpif_grequest_cancel(void *box) { free(box); }
+
+int mpif_grequest_query_trampoline(void *extra_state, MPI_Status *status) {
+  const struct grequest_box *const box = extra_state;
+  MPI_Fint f_ierror = MPI_SUCCESS;
+  ((fortran_grequest_query_fn)box->query_fn)(box->extra_state, status,
+                                             &f_ierror);
+  return f_ierror;
+}
+
+int mpif_grequest_free_trampoline(void *extra_state) {
+  struct grequest_box *const box = extra_state;
+  MPI_Fint f_ierror = MPI_SUCCESS;
+  ((fortran_grequest_free_fn)box->free_fn)(box->extra_state, &f_ierror);
+  // The last callback this request will make, so the box goes with it
+  free(box);
+  return f_ierror;
+}
+
+int mpif_grequest_cancel_trampoline(void *extra_state, int complete) {
+  const struct grequest_box *const box = extra_state;
+  MPI_Fint f_complete = mpif_bool2logical(complete);
+  MPI_Fint f_ierror = MPI_SUCCESS;
+  ((fortran_grequest_cancel_fn)box->cancel_fn)(box->extra_state, &f_complete,
+                                               &f_ierror);
+  return f_ierror;
 }

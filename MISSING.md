@@ -18,7 +18,7 @@ callback, and only the standard says which. Keep a copy at
 
 ## Errors
 
-### 1. Callbacks: predefined ones now work, user-defined ones do not
+### 1. Callbacks: all but `MPI_Register_datarep` now work
 
 Originally `dev/mpiapi.jl` emitted `abort();` as the C-side conversion for
 `FUNCTION` and `POLYFUNCTION` parameters, so thirteen generated wrappers killed
@@ -56,9 +56,6 @@ table grows only to the number of keyvals live at once, capped at 256. Access is
 lock-free, publishing the keyval with release ordering once the procedures are
 in place.
 
-The remaining callback types receive nothing a trampoline could use to find the
-Fortran procedure, so they still report `MPI_ERR_OTHER` with a diagnostic:
-
 User-defined **reduction operators** work too, by a different route.
 `MPI_User_function` is told only the buffers, the length and the datatype --
 nothing that says which operator is being applied -- so there is nothing to look
@@ -90,13 +87,38 @@ for deallocation and it stays in use by everything it is attached to, and an
 error handler is more likely than most callbacks to fire long after the program
 has stopped thinking about it.
 
+**Generalized request callbacks** work too, and cost no pool at all. `query_fn`,
+`free_fn` and `cancel_fn` are told only `extra_state`, so there is again nothing
+to look up when one fires -- but `extra_state` is mpif's to choose, so it hands
+MPI a box holding the three Fortran procedures and one trampoline apiece is
+enough. There is therefore no limit on how many generalized requests a program
+may have. The box belongs to one request and the free trampoline releases it,
+which is safe because "free_fn will be invoked only once per request by a correct
+program" and "the request is not deallocated until after free_fn completes".
+
+Two details differ from the other families. The box holds the *address* of the
+caller's `extra_state` rather than a copy of its value, so that the callbacks
+alias it: MPI-5.0 declares `extra_state` with no INTENT in all three grequest
+interfaces, unlike the attribute callbacks where it is INTENT(IN) and a copy is
+right, and MPICH's `greqf` requires a `free_fn` that decrements it to be visible
+to the caller afterwards. And `status` passes through untouched, the C
+`MPI_Status` being three `int`s followed by five more and `MPI_STATUS_SIZE` being
+8, so one address serves `INTEGER STATUS(MPI_STATUS_SIZE)` and the `bind(C)`
+`TYPE(MPI_Status)` alike.
+
+The f08 abstract interfaces for these three had picked up intents the standard
+does not give them, `INTENT(IN) :: extra_state` in particular. That made a
+conforming callback fail to compile -- "INTENT mismatch in argument
+'extra_state'" -- whenever it was a module procedure rather than an external one,
+so the intents are now omitted, matching the standard exactly.
+
 Still reporting `MPI_ERR_OTHER`:
 
-- `MPI_Grequest_start` and `MPI_Register_datarep` -- both pass `extra_state`, so
-  a box holding the Fortran procedures plus the user's own extra state can be
-  passed in its place. A generalized request's `free_fn` is called exactly once,
-  which is where its box is freed; datareps are never deregistered, so theirs
-  lives for the duration.
+- `MPI_Register_datarep`, whose conversion and extent callbacks also pass
+  `extra_state` and can take the same treatment as the generalized requests
+  above. Datareps are never deregistered, so a box would live for the duration
+  rather than being freed. `MPI_CONVERSION_FN_NULL` already works, being
+  predefined.
 
 ### 1a. Duplicated handle conversions
 
@@ -393,6 +415,8 @@ rest of the answers. Set the variable to check whether the upstream fix has
 landed.
 
 ### OpenMPI: an empty info value is rejected
+
+https://github.com/open-mpi/ompi/issues/14246
 
 `MPI_Info_set(info, "key", "")` returns `MPI_ERR_INFO_VALUE` (33) under OpenMPI
 and `MPI_SUCCESS` under MPICH. The ABI defines that class as "Value longer than
