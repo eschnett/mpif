@@ -2,6 +2,7 @@
 
 #include <mpi.h>
 #include <stddef.h>
+#include <stdio.h>
 
 // The Fortran side of the predefined callbacks, from src/mpif_attr_fns.F90.
 // Only their addresses are used; they are never called through these
@@ -61,4 +62,14 @@ int mpif_predefined_callback(mpif_fortran_procedure callback, void **result) {
     }
   }
   return 0;
+}
+
+int mpif_unsupported_callback(const char *routine, const char *argument) {
+  fprintf(stderr,
+          "mpif: %s: a user-defined Fortran procedure was passed as %s, "
+          "which mpif cannot forward to MPI yet; returning MPI_ERR_OTHER. "
+          "Only the predefined callbacks such as MPI_COMM_NULL_COPY_FN work "
+          "at the moment; see MISSING.md.\n",
+          routine, argument);
+  return MPI_ERR_OTHER;
 }

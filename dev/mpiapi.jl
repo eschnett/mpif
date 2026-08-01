@@ -1135,7 +1135,7 @@ for key in sort(collect(keys(apis)))
                 append!(input_conversions,
                         ["void *c_$parname;",
                          "if (!mpif_predefined_callback((mpif_fortran_procedure)$parname, &c_$parname)) {",
-                         "  *ierror = MPI_ERR_OTHER;",
+                         "  *ierror = mpif_unsupported_callback(\"$name_c\", \"$parname\");",
                          "  return;",
                          "}"])
                 push!(call_arguments, "($func_type*)c_$parname")

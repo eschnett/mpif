@@ -30,6 +30,13 @@ typedef void (*mpif_fortran_procedure)(void);
 // trampoline converting handles and calling conventions; see MISSING.md.
 int mpif_predefined_callback(mpif_fortran_procedure callback, void **result);
 
+// Complain about a user-defined callback that cannot be forwarded, and return
+// the error code to report. Returning an error is not enough on its own: mpif
+// synthesises it without going through MPI, so no error handler runs and the
+// program carries on, typically to fail later and elsewhere -- with an
+// uninitialised keyval, say.
+int mpif_unsupported_callback(const char *routine, const char *argument);
+
 #ifdef __cplusplus
 }
 #endif
