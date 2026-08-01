@@ -237,6 +237,127 @@ returned, for the respective attributes."
 not standard Fortran, and comparing addresses silently fails if the argument
 arrives as a copy.
 
+### 9. An array of statuses is declared as a single status
+
+Six routines take one: `MPI_Waitall`, `MPI_Waitsome`, `MPI_Testall`,
+`MPI_Testsome`, `MPI_Request_get_status_all` and `MPI_Request_get_status_some`.
+`apis.json` gives their `array_of_statuses` the `STATUS` kind with `length` `"*"`,
+but the generator's `STATUS` branch ignores `length` and emits a scalar for both
+Fortran interfaces:
+
+    push!(f_declarations, "integer :: $parname(MPI_STATUS_SIZE)")
+    push!(f08_declarations, "type(MPI_Status), intent($param_direction) :: $parname")
+
+They should be `integer :: $parname(MPI_STATUS_SIZE, *)` and
+`type(MPI_Status), intent(out) :: $parname(*)`.
+
+In `mpi_f08` this makes the six routines unusable: passing the array the standard
+calls for is a compile error, `Rank mismatch in argument 'array_of_statuses'
+(scalar and rank-1)`. In `mpif.h` and the `mpi` module the wrong declaration is
+survivable -- Fortran sequence association lets a larger actual argument through,
+and a four-request `MPI_Waitall` over receive requests returns all four statuses
+correctly -- but the interface still describes the wrong thing.
+
+Two consequences behind that one:
+
+- The f08 wrapper sizes its temporary for one status,
+  `integer :: tmp_array_of_statuses(MPI_STATUS_SIZE)`, and converts one, while
+  the C wrapper hands MPI the caller's buffer cast to `MPI_Status*` and MPI
+  writes `count` of them. Fixing the declaration alone would leave the f08 path
+  overrunning that temporary.
+- `MPI_STATUSES_IGNORE` is never detected. It does not appear anywhere in
+  `gen/mpi_f08_functions.F90`; the generated guards all compare against
+  `MPI_STATUS_IGNORE`. Since the two sentinels are different addresses, passing
+  `MPI_STATUSES_IGNORE` fails the comparison and the wrapper converts into it --
+  and it points at the C constant, which is a null pointer.
+
+### 10. Info keys and values were mishandled in several ways — fixed
+
+Four separate defects in the info getters, all found by `f77/info`, `f90/info`
+and `f08/info` in MPICH's suite, plus one shared with `MPI_Comm_spawn`:
+
+- `MPI_Info_get_string`'s `buflen` was passed straight through, but Fortran
+  counts characters and C counts characters plus the terminating NUL, so the
+  value came back truncated by one and the returned length was one too large.
+- The same argument was used to size the C buffer without being clamped to the
+  caller's `CHARACTER`, so a `buflen` larger than `len(value)` -- which MPICH's
+  own `infogetstrf90` passes -- had MPI writing past the end of a stack array.
+- `MPI_Info_get` and `MPI_Info_get_string` copied their internal buffer out even
+  when the key did not exist, or when `buflen` was zero. MPI writes nothing in
+  those cases, so this handed back an uninitialised buffer and ran `strlen` over
+  it. The standard is explicit for `MPI_INFO_GET`: "otherwise it sets flag to
+  false and leaves value unchanged".
+- Leading blanks were not stripped from info keys and values. MPI-5.0 section 10
+  requires it -- "In Fortran, leading and trailing spaces are stripped from both"
+  -- so ` See Below` was stored with its space and a later lookup of `See Below`
+  missed.
+
+Fixed. The leading-blank stripping is deliberately per argument rather than a
+change to `mpif_strdup_f2c`: the standard asks for it only for info keys and
+values and for `MPI_COMM_SPAWN`'s `command` and `argv` (which
+`MPI_COMM_SPAWN_MULTIPLE` inherits by being "identical to MPI_COMM_SPAWN except
+that there are multiple executable specifications"), while
+`MPI_ADD_ERROR_STRING` is specified to strip trailing blanks only and the
+standard says nothing at all about port names, service names, file names or
+datareps. `dev/mpiapi.jl` carries the list as `strip_leading_blanks` and selects
+`mpif_strdup_f2c_trim`; note that MPICH's own binding strips both ends of every
+string, which is more than the standard requires.
+
+### 11. The spawn argument vectors were unusable — fixed
+
+`MPI_ARGV_NULL` and `MPI_ARGVS_NULL` were declared `integer` in
+`include/mpif_constants.h`. They stand in for `argv` and `array_of_argv`, which
+are `CHARACTER` in Fortran, so passing them did not compile at all --
+`Type mismatch in argument 'argv'; passed INTEGER(4) to CHARACTER(*)`, which is
+what killed `f77/spawn/spawnf` and `spawnmult2f` and their f90 and f08
+counterparts. They are now `character*1 MPI_ARGV_NULL(1)` and
+`character*1 MPI_ARGVS_NULL(1,1)`, the shapes MPI-5.0's rationale permits.
+
+Correcting the type alone would have traded a compile error for a crash. The
+Cray pointer puts these arrays at the address of the C constants, which are
+`(char**)0`, and unlike `MPI_ERRCODES_IGNORE` -- forwarded to C untouched -- an
+argument vector has to be converted element by element, so the conversion read
+address zero. The wrappers now recognise them by address and pass the C constant
+through. The comparison is against the constant rather than against `NULL`, since
+the standard only says `MPI_ARGVS_NULL` is "likely to be `(char ***)0`".
+
+Separately, `MPI_Comm_spawn_multiple`'s `array_of_commands` was scanned for a
+blank-terminated entry, as `argv` correctly is. It has no terminator: `count`
+gives the "number of commands", so the scan ran off the end of the caller's array
+and `mpif_fcount` faulted. It now takes the count from `count`.
+
+### 12. `MPI_STATUS_IGNORE` was `INTEGER` in `mpi_f08` — fixed
+
+`mpi_f08_constants.F90` re-exported the `INTEGER` arrays that `mpif.h` and the
+`mpi` module declare, so the sentinel could not be passed to a
+`TYPE(MPI_Status)` dummy argument and every f08 spawn test failed to compile.
+
+The two interfaces need different declarations of one name, so `mpi_f08` can no
+longer re-export: `MPI_STATUS_IGNORE` and `MPI_STATUSES_IGNORE` are now declared
+in `src/mpi_f08_types.F90`, where `MPI_Status` exists, with the same Cray pointer
+into the same common block. All three interfaces still name one address. The
+generated wrappers already compared `loc(status)` against the sentinel, so
+nothing else changed -- but see error 9 for `MPI_STATUSES_IGNORE`, which is still
+not detected anywhere.
+
+### 13. Attribute values were converted when MPI had not set one — fixed
+
+`mpi_attr_get_`, `mpi_comm_get_attr_`, `mpi_type_get_attr_` and
+`mpi_win_get_attr_` called `mpif_attr_value` unconditionally. MPI writes
+`attribute_val` only when there is an attribute to report, so on a false flag the
+`void *` was still whatever the stack held -- and for the predefined keyvals the
+conversion dereferences it, `MPI_UNIVERSE_SIZE` and friends being a pointer to an
+`int` in C but a value in Fortran. That is a wild read; it crashed MPICH's f08
+spawn tests, whose `MTestSpawnPossible` asks `MPI_COMM_WORLD` for
+`MPI_UNIVERSE_SIZE` without knowing whether it is set.
+
+Fixed: zero on a false flag or an error, which is what MPICH's own Fortran
+binding does. Note that a user-defined keyval does not show the bug -- MPI nulls
+the pointer there and `mpif_attr_value` already guarded against that -- so
+`test/comm_get_attr_f08.f90` uses `MPI_APPNUM`. Not `MPI_UNIVERSE_SIZE`: asking
+for that makes MPICH talk to the process manager, and `test/` runs its
+executables directly with no launcher.
+
 ## External blockers
 
 ### MPICH: attributes on predefined datatypes abort in ABI builds
@@ -264,6 +385,40 @@ The Fortran types `MPI_2INTEGER`, `MPI_2REAL`, and
 `MPI_2DOUBLE_PRECISION` are not mapped correctly from their ABI handle
 to their internal OpenMPI handle.
 
+`test/predefined_types_c.c` is the probe that found it. The three pair types are
+behind `MPIF_PROBE_PAIRTYPES=1` there, off by default: the failure is a SIGSEGV
+inside `MPI_Type_get_name`, so unlike every other result the probe collects it
+cannot be caught and reported -- it takes the whole probe down, and with it the
+rest of the answers. Set the variable to check whether the upstream fix has
+landed.
+
+### OpenMPI: an empty info value is rejected
+
+`MPI_Info_set(info, "key", "")` returns `MPI_ERR_INFO_VALUE` (33) under OpenMPI
+and `MPI_SUCCESS` under MPICH. The ABI defines that class as "Value longer than
+MPI_MAX_INFO_VAL", and the standard uses empty info values meaningfully elsewhere
+-- a memory allocation kinds value "corresponding to the empty string represents
+no memory allocation kinds" -- so an empty value looks legitimate and OpenMPI's
+refusal looks wrong.
+
+It reaches Fortran through the blank stripping of error 10: a value of nothing
+but spaces becomes the empty string, which is exactly what `MPI_COMM_SPAWN`'s
+`argv` requires of the same helper. Not reported upstream yet, and not worked
+around; `test/info_blanks_f08.f90` avoids asserting on it so that mpif's own
+tests do not fail on the implementations' disagreement.
+
+### MPICH: the f08 copy of `spawnargvf90` contradicts the standard and its own f90 copy
+
+Both copies spawn with `inargv(5) = " Ss"`. The f90 one expects the child to see
+`"Ss"`, and passes; the f08 one expects `" Ss"`, and fails with
+`Found arg Ss but expected  Ss`. MPI-5.0 is explicit for `argv` -- "In Fortran,
+leading and trailing spaces are always stripped, so that a string consisting of
+all spaces is considered an empty string" -- and MPICH's own binding strips both
+ends, so the f08 file is an inconsistent hand-conversion of the f90 one.
+
+`f08/spawn/spawnargvf90` and `f08/spawn/spawnargvf03` therefore fail, and will
+keep failing while mpif follows the standard. Nothing to fix on this side.
+
 ## Missing features
 
 ### Assumed-rank choice buffers
@@ -284,6 +439,29 @@ the request completes. It would also confine mpif to compilers with Fortran 2018
 assumed-rank support, so the two mechanisms would have to coexist, selected by
 the same kind of `check_fortran_source_compiles` probe that already picks
 `ignore_tkr` over `no_arg_check`.
+
+### The PMPI profiling interface
+
+There is none. `nm` on the built library finds no `pmpi_` symbol at all, for any
+of the 585 entry points, and the generator emits none.
+
+`include/mpif_functions.h` is worse than silent about it: it declares four PMPI
+names it does not define,
+
+    double precision, external :: MPI_Wtick, PMPI_Wtick
+    double precision, external :: MPI_Wtime, PMPI_Wtime
+    integer(MPI_ADDRESS_KIND), external :: MPI_Aint_add, PMPI_Aint_add
+    ... PMPI_Aint_diff
+
+so an `mpif.h` program that calls one gets a link error rather than a diagnostic:
+`Undefined symbols: "_pmpi_wtime_"`. The `mpi` and `mpi_f08` modules do not
+declare them at all, which is what `f08/timer/wtimef90` hits --
+`Function 'pmpi_wtick' has no IMPLICIT type`.
+
+Because mpif prunes the implementation's own Fortran library, its `pmpi_*`
+symbols are not available as a fallback either. Generating the PMPI names
+alongside the MPI ones should be mechanical: each would be the same wrapper under
+a second symbol, calling the same C entry point.
 
 ### `bind(C)`
 
@@ -351,11 +529,19 @@ Recorded so that they do not get re-investigated:
 - The 102 functions skipped as `not f90_expressible` are the C-only handle
   converters (`MPI_Comm_c2f`, `MPI_Comm_fromint`, ...) and the whole `MPI_T`
   interface, which the standard defines for C only.
-- **Buffer sentinels work.** `MPI_BOTTOM`, `MPI_IN_PLACE`, `MPI_ARGV_NULL`,
-  `MPI_ARGVS_NULL`, `MPI_ERRCODES_IGNORE`, `MPI_STATUS_IGNORE` and
-  `MPI_STATUSES_IGNORE` are Cray-pointer arrays whose pointers live in common
+- **Buffer sentinels reach C intact.** `MPI_BOTTOM`, `MPI_IN_PLACE`,
+  `MPI_ARGV_NULL`, `MPI_ARGVS_NULL`, `MPI_ERRCODES_IGNORE`, `MPI_STATUS_IGNORE`
+  and `MPI_STATUSES_IGNORE` are Cray-pointer arrays whose pointers live in common
   blocks initialised from the C addresses in `src/mpif_constants.c`, so Fortran
-  passes the genuine C sentinel through.
+  passes the genuine C sentinel through. Verified for the argv pair by handing
+  them to a C probe with the wrappers' calling convention: both arrive as
+  `base=0x0`.
+
+  The addressing being right is only half of it, though, and this entry used to
+  claim more than it should have. A sentinel also has to have a type the caller
+  can pass (error 11), and any wrapper that does not simply forward it has to
+  recognise it rather than dereference it -- which is still not done for
+  `MPI_STATUSES_IGNORE` (error 9).
 - `MPI_Wtime`, `MPI_Wtick`, `MPI_Aint_add` and `MPI_Aint_diff` are hand-written
   rather than generated, and are present. `MPI_Sizeof` is a hand-written generic
   in `src/mpi_types.F90`. `MPI_Status_f2f08` and `MPI_Status_f082f` are
