@@ -1991,21 +1991,21 @@ void mpi_comm_create_keyval_(
 )
 {
   void *c_comm_copy_attr_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)comm_copy_attr_fn, &c_comm_copy_attr_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Comm_create_keyval", "comm_copy_attr_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)comm_copy_attr_fn, &c_comm_copy_attr_fn))
+    c_comm_copy_attr_fn = mpif_attr_trampoline(MPIF_ATTR_COMM_COPY);
   void *c_comm_delete_attr_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)comm_delete_attr_fn, &c_comm_delete_attr_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Comm_create_keyval", "comm_delete_attr_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)comm_delete_attr_fn, &c_comm_delete_attr_fn))
+    c_comm_delete_attr_fn = mpif_attr_trampoline(MPIF_ATTR_COMM_DELETE);
   *ierror = MPI_Comm_create_keyval(
     (MPI_Comm_copy_attr_function*)c_comm_copy_attr_fn,
     (MPI_Comm_delete_attr_function*)c_comm_delete_attr_fn,
     comm_keyval,
     (void*)*extra_state
   );
+  if (*ierror == MPI_SUCCESS)
+    *ierror = mpif_register_attr_callback(*comm_keyval, MPIF_ATTR_COMM_COPY, (mpif_fortran_procedure)comm_copy_attr_fn);
+  if (*ierror == MPI_SUCCESS)
+    *ierror = mpif_register_attr_callback(*comm_keyval, MPIF_ATTR_COMM_DELETE, (mpif_fortran_procedure)comm_delete_attr_fn);
 }
 
 void mpi_comm_delete_attr_(
@@ -7338,21 +7338,21 @@ void mpi_keyval_create_(
 )
 {
   void *c_copy_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)copy_fn, &c_copy_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Keyval_create", "copy_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)copy_fn, &c_copy_fn))
+    c_copy_fn = mpif_attr_trampoline(MPIF_ATTR_COMM_COPY_10);
   void *c_delete_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)delete_fn, &c_delete_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Keyval_create", "delete_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)delete_fn, &c_delete_fn))
+    c_delete_fn = mpif_attr_trampoline(MPIF_ATTR_COMM_DELETE_10);
   *ierror = MPI_Keyval_create(
     (MPI_Copy_function*)c_copy_fn,
     (MPI_Delete_function*)c_delete_fn,
     keyval,
     (void*)(intptr_t)*extra_state
   );
+  if (*ierror == MPI_SUCCESS)
+    *ierror = mpif_register_attr_callback(*keyval, MPIF_ATTR_COMM_COPY_10, (mpif_fortran_procedure)copy_fn);
+  if (*ierror == MPI_SUCCESS)
+    *ierror = mpif_register_attr_callback(*keyval, MPIF_ATTR_COMM_DELETE_10, (mpif_fortran_procedure)delete_fn);
 }
 
 void mpi_keyval_free_(
@@ -10936,21 +10936,21 @@ void mpi_type_create_keyval_(
 )
 {
   void *c_type_copy_attr_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)type_copy_attr_fn, &c_type_copy_attr_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Type_create_keyval", "type_copy_attr_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)type_copy_attr_fn, &c_type_copy_attr_fn))
+    c_type_copy_attr_fn = mpif_attr_trampoline(MPIF_ATTR_TYPE_COPY);
   void *c_type_delete_attr_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)type_delete_attr_fn, &c_type_delete_attr_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Type_create_keyval", "type_delete_attr_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)type_delete_attr_fn, &c_type_delete_attr_fn))
+    c_type_delete_attr_fn = mpif_attr_trampoline(MPIF_ATTR_TYPE_DELETE);
   *ierror = MPI_Type_create_keyval(
     (MPI_Type_copy_attr_function*)c_type_copy_attr_fn,
     (MPI_Type_delete_attr_function*)c_type_delete_attr_fn,
     type_keyval,
     (void*)*extra_state
   );
+  if (*ierror == MPI_SUCCESS)
+    *ierror = mpif_register_attr_callback(*type_keyval, MPIF_ATTR_TYPE_COPY, (mpif_fortran_procedure)type_copy_attr_fn);
+  if (*ierror == MPI_SUCCESS)
+    *ierror = mpif_register_attr_callback(*type_keyval, MPIF_ATTR_TYPE_DELETE, (mpif_fortran_procedure)type_delete_attr_fn);
 }
 
 void mpi_type_create_resized_(
@@ -11913,21 +11913,21 @@ void mpi_win_create_keyval_(
 )
 {
   void *c_win_copy_attr_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)win_copy_attr_fn, &c_win_copy_attr_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Win_create_keyval", "win_copy_attr_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)win_copy_attr_fn, &c_win_copy_attr_fn))
+    c_win_copy_attr_fn = mpif_attr_trampoline(MPIF_ATTR_WIN_COPY);
   void *c_win_delete_attr_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)win_delete_attr_fn, &c_win_delete_attr_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Win_create_keyval", "win_delete_attr_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)win_delete_attr_fn, &c_win_delete_attr_fn))
+    c_win_delete_attr_fn = mpif_attr_trampoline(MPIF_ATTR_WIN_DELETE);
   *ierror = MPI_Win_create_keyval(
     (MPI_Win_copy_attr_function*)c_win_copy_attr_fn,
     (MPI_Win_delete_attr_function*)c_win_delete_attr_fn,
     win_keyval,
     (void*)*extra_state
   );
+  if (*ierror == MPI_SUCCESS)
+    *ierror = mpif_register_attr_callback(*win_keyval, MPIF_ATTR_WIN_COPY, (mpif_fortran_procedure)win_copy_attr_fn);
+  if (*ierror == MPI_SUCCESS)
+    *ierror = mpif_register_attr_callback(*win_keyval, MPIF_ATTR_WIN_DELETE, (mpif_fortran_procedure)win_delete_attr_fn);
 }
 
 void mpi_win_delete_attr_(

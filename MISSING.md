@@ -38,14 +38,46 @@ the Fortran procedure and hands MPI the sentinel. That covers
 `MPI_Comm_create_keyval` and the rest of the attribute machinery with the
 predefined callbacks, which is the common case; see error 4.
 
-A genuinely user-defined callback now returns `MPI_ERR_OTHER` instead of
-aborting. Supporting it needs the trampoline: MPI invokes callbacks with C ABI
-handles, while a Fortran callback expects `INTEGER` handles (`mpif.h`,
-`use mpi`) or `TYPE(MPI_Comm)` and friends (`use mpi_f08`), so each callback
-type needs a C thunk plus a registry to recover the user's procedure. This
-affects `MPI_Op_create` (user-defined reductions), `MPI_Grequest_start`,
-`MPI_Register_datarep` and the four `*_create_errhandler` routines, none of
-which have predefined callbacks at all.
+User-defined **attribute** callbacks now work too, through trampolines. MPI is
+handed a C function which converts arguments and calls the Fortran procedure:
+handles become default `INTEGER`s, which serves `mpif.h`, `use mpi` and
+`mpi_f08` alike because the f08 handle types are `bind(C)` derived types holding
+a single integer; `extra_state` and attribute values become
+`INTEGER(KIND=MPI_ADDRESS_KIND)`, or plain `INTEGER` for the MPI-1 forms; `flag`
+goes through `mpif_logical2bool`; and Fortran's `ierror` becomes the C return
+value.
+
+The trampoline finds the procedure again through the keyval, which is the one
+piece of identifying information every attribute callback receives. Registry
+entries are deliberately never removed: `MPI_Comm_free_keyval` only *marks* a
+keyval for deletion, and delete callbacks still fire afterwards for attributes
+that already exist. A keyval number MPI reuses overwrites its entry, so the
+table grows only to the number of keyvals live at once, capped at 256. Access is
+lock-free, publishing the keyval with release ordering once the procedures are
+in place.
+
+The remaining callback types receive nothing a trampoline could use to find the
+Fortran procedure, so they still report `MPI_ERR_OTHER` with a diagnostic:
+
+- `MPI_Op_create` -- `MPI_User_function` gets only the buffers, length and
+  datatype. Needs a pool of pre-generated trampolines, each closing over a slot,
+  released by `MPI_Op_free`.
+- `MPI_Grequest_start` and `MPI_Register_datarep` -- both pass `extra_state`, so
+  a box holding the Fortran procedures plus the user's own extra state can be
+  passed in its place. A generalized request's `free_fn` is called exactly once,
+  which is where its box is freed; datareps are never deregistered, so theirs
+  lives for the duration.
+- the four `*_create_errhandler` routines -- like ops, nothing identifying, so a
+  pool. Slots cannot safely be released: `MPI_Errhandler_free` only decrements a
+  reference count, and an errhandler attached to a communicator outlives it.
+
+### 1a. Duplicated handle conversions
+
+`src/mpif_callbacks.c` has its own `comm_toint` and friends, mirroring the
+`MPIF_*_toint` helpers the generator emits into `gen/mpif_functions.c` to work
+around implementations that mishandle predefined handles. The generator should
+emit an `#include` of a shared header instead of 22 static functions, after
+which the copies in `src/mpif_callbacks.c` can go.
 
 The large-count variant of this is also wrong by the generator's own admission:
 it carries a `# TODO: Check properly whether the function parameter needs
@@ -209,16 +241,23 @@ otherwise -- gfortran before 8 passed hidden lengths as `int`.
 
 ### Publishing the Fortran type information to the MPI library
 
-mpif exposes `MPI_Abi_set_fortran_info` and `MPI_Abi_set_fortran_booleans` as
-bindings but never calls them. The booleans are now known in C, from
-`src/mpif_logical.F90`, so publishing them is a few lines; the type sizes would
-need the same treatment. An implementation built without its own Fortran
-bindings leaves `MPI_INTEGER` and friends as `MPI_DATATYPE_NULL` internally
-(see `MPIR_Abi_set_fortran_info_impl` in MPICH), which is why MPICH currently
-has to be built with `--enable-fortran` even though all of its Fortran output is
-then pruned away. If mpif published its own sizes at initialisation, the
-implementation could be built with `--enable-fortran=no`, which would also
-sidestep the flang/libtool problems on macOS entirely.
+Not needed as things stand, and recorded here only so the question is not
+reopened. mpif builds against an implementation that has its own Fortran
+bindings -- MPICH is configured `--enable-fortran` -- so the implementation
+already knows the Fortran type sizes and boolean representation, and
+`test/version_c.c` asserts as much: it aborts if either
+`MPI_Abi_get_fortran_booleans` reports `is_set == 0` or
+`MPI_Abi_get_fortran_info` returns `MPI_INFO_NULL`. mpif's own boolean values
+come from Fortran directly, through the common blocks in
+`src/mpif_logical.F90`, so nothing has to be published for those either.
+
+`MPI_Abi_set_fortran_info` and `MPI_Abi_set_fortran_booleans` would only be
+needed to make mpif the *sole* provider of that information, so that the
+implementation could be built with `--enable-fortran=no`. That is worth
+remembering as an option -- it would also sidestep the flang/libtool problems on
+macOS -- but it is a change of approach rather than a missing feature, and
+MPICH's `MPIR_Abi_set_fortran_info_impl` returns `MPI_ERR_ABI` if the values are
+already set, so the two cannot simply be combined.
 
 ### Generated callback interfaces and definitions
 

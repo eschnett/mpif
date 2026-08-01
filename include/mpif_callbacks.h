@@ -37,6 +37,37 @@ int mpif_predefined_callback(mpif_fortran_procedure callback, void **result);
 // uninitialised keyval, say.
 int mpif_unsupported_callback(const char *routine, const char *argument);
 
+// User-defined attribute callbacks
+//
+// MPI is given a C trampoline instead of the user's Fortran procedure, and the
+// procedure is recorded against the keyval, which is the one piece of
+// identifying information every attribute callback receives. The trampoline
+// looks it up and converts arguments in both directions.
+//
+// The deprecated MPI-1 forms, used by MPI_Keyval_create, differ only in that
+// attribute values and extra state are default INTEGERs rather than
+// address-sized.
+
+enum mpif_attr_callback_kind {
+  MPIF_ATTR_COMM_COPY,
+  MPIF_ATTR_COMM_DELETE,
+  MPIF_ATTR_TYPE_COPY,
+  MPIF_ATTR_TYPE_DELETE,
+  MPIF_ATTR_WIN_COPY,
+  MPIF_ATTR_WIN_DELETE,
+  MPIF_ATTR_COMM_COPY_10,
+  MPIF_ATTR_COMM_DELETE_10
+};
+
+// The C trampoline to hand MPI in place of a user-defined Fortran procedure
+void *mpif_attr_trampoline(enum mpif_attr_callback_kind kind);
+
+// Record which Fortran procedure the trampoline should call for `keyval`.
+// Predefined callbacks are ignored, MPI having been given its own sentinel for
+// those. Returns an MPI error code.
+int mpif_register_attr_callback(int keyval, enum mpif_attr_callback_kind kind,
+                                mpif_fortran_procedure callback);
+
 #ifdef __cplusplus
 }
 #endif

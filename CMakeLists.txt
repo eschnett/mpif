@@ -17,7 +17,7 @@ project(
 # major/minor version number.
 set(SOVERSION 0)
 
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)   # C11 for <stdatomic.h>, used by the callback registry
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
 include(GNUInstallDirs)
 

@@ -62,6 +62,20 @@ aint_count_kinds = ["POLYDISPLACEMENT_AINT_COUNT", "POLYDISPOFFSET", "POLYDTYPE_
 
 count_kinds = ["GENERIC_DTYPE_COUNT", "NUM_BYTES", "XFER_NUM_ELEM"]
 
+# Attribute callbacks are the callbacks mpif can forward: every one of them
+# receives the keyval, which is enough for a trampoline to find the Fortran
+# procedure again. See src/mpif_callbacks.c. The other callback types have
+# nothing identifying to go on and are still rejected.
+attr_callback_kinds = Dict(["MPI_Comm_copy_attr_function" => "MPIF_ATTR_COMM_COPY",
+                            "MPI_Comm_delete_attr_function" => "MPIF_ATTR_COMM_DELETE",
+                            "MPI_Type_copy_attr_function" => "MPIF_ATTR_TYPE_COPY",
+                            "MPI_Type_delete_attr_function" => "MPIF_ATTR_TYPE_DELETE",
+                            "MPI_Win_copy_attr_function" => "MPIF_ATTR_WIN_COPY",
+                            "MPI_Win_delete_attr_function" => "MPIF_ATTR_WIN_DELETE",
+                            # Deprecated in MPI-2.0, for MPI_Keyval_create
+                            "MPI_Copy_function" => "MPIF_ATTR_COMM_COPY_10",
+                            "MPI_Delete_function" => "MPIF_ATTR_COMM_DELETE_10"])
+
 # Fortran's .TRUE. and .FALSE. are not necessarily 1 and 0 -- gfortran and flang
 # use 1, Intel uses -1 -- so the conversions below go through the helpers in
 # src/mpif_logical.c, which ask the MPI library what the representation is.
@@ -1127,18 +1141,33 @@ for key in sort(collect(keys(apis)))
                 embiggen_func = embiggen && parameter["func_type"] ∉ ["MPI_Datarep_extent_function"]
                 func_type = parameter["func_type"] * (embiggen_func ? "_c" : "")
                 push!(input_arguments, "$func_type* const $parname")
-                # Only Fortran's predefined callbacks are supported so far. The
-                # ABI spells those as sentinel addresses, so they can simply be
-                # translated; a user-defined Fortran procedure would have to be
-                # called through a trampoline converting handles and calling
-                # conventions. See MISSING.md.
-                append!(input_conversions,
-                        ["void *c_$parname;",
-                         "if (!mpif_predefined_callback((mpif_fortran_procedure)$parname, &c_$parname)) {",
-                         "  *ierror = mpif_unsupported_callback(\"$name_c\", \"$parname\");",
-                         "  return;",
-                         "}"])
-                push!(call_arguments, "($func_type*)c_$parname")
+                if func_type ∈ keys(attr_callback_kinds)
+                    # Predefined callbacks become the ABI's sentinel; a
+                    # user-defined procedure becomes a trampoline, which finds
+                    # it again through the keyval registered below.
+                    attr_kind = attr_callback_kinds[func_type]
+                    append!(input_conversions,
+                            ["void *c_$parname;",
+                             "if (!mpif_predefined_callback((mpif_fortran_procedure)$parname, &c_$parname))",
+                             "  c_$parname = mpif_attr_trampoline($attr_kind);"])
+                    push!(call_arguments, "($func_type*)c_$parname")
+                    # Only once MPI has produced the keyval to register against
+                    keyval = only(p["name"] for p in parameters if p["kind"] == "KEYVAL")
+                    append!(output_conversions,
+                            ["if (*ierror == MPI_SUCCESS)",
+                             "  *ierror = mpif_register_attr_callback(*$keyval, $attr_kind, (mpif_fortran_procedure)$parname);"])
+                else
+                    # The remaining callback types pass nothing a trampoline
+                    # could use to find the Fortran procedure again, so only the
+                    # predefined ones work. See MISSING.md.
+                    append!(input_conversions,
+                            ["void *c_$parname;",
+                             "if (!mpif_predefined_callback((mpif_fortran_procedure)$parname, &c_$parname)) {",
+                             "  *ierror = mpif_unsupported_callback(\"$name_c\", \"$parname\");",
+                             "  return;",
+                             "}"])
+                    push!(call_arguments, "($func_type*)c_$parname")
+                end
                 push!(f_declarations, "external :: $parname")
                 push!(f08_declarations, "procedure($func_type) :: $parname")
             else
