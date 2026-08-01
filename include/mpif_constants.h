@@ -376,6 +376,48 @@
       integer, parameter :: MPI_COMBINER_RESIZED        = 116
       integer, parameter :: MPI_COMBINER_VALUE_INDEX    = 117
 
+!     Deprecated in MPI-2.0 and removed from the standard in MPI-3.0,
+!     along with MPI_TYPE_HVECTOR, MPI_TYPE_HINDEXED and
+!     MPI_TYPE_STRUCT, whose INTEGER displacements they described. The
+!     ABI deliberately omits everything deprecated in MPI-3.1 or
+!     earlier, so MPI_TYPE_GET_ENVELOPE cannot return these. Legacy code
+!     still tests for them though, and both MPICH and Open MPI keep
+!     defining them in their own Fortran headers, so define them here as
+!     well rather than break code that compiles everywhere else.
+!
+!     These are mpif extensions, so they take values above 16384: the
+!     ABI reserves everything up to that for future standard constants
+!     (Section 20.3.4), and requires only that constants within a group
+!     -- here the datatype decoding constants, 101 to 117 -- be
+!     distinct. Negative values would be wrong: negative is not spare
+!     space but how the standard spells sentinels that must not collide
+!     with a valid rank or tag, as MPI_ANY_SOURCE does.
+!
+!     Above 16384 is also where other implementations put their own
+!     extension constants, so avoid 16385 and friends, which is what
+!     anyone would reach for first. 17000 plus the modern combiner keeps
+!     the correspondence readable and out of the way. A collision would
+!     matter: MPI_TYPE_GET_ENVELOPE may return another implementation's
+!     extension combiner, and legacy code would then mistake it for the
+!     deprecated form. Nothing travels the other way -- combiner is an
+!     output of MPI_TYPE_GET_ENVELOPE and the only combiner-valued
+!     parameter in the standard, so these values are never passed to
+!     MPI.
+!
+!     Deliberately not aliases of MPI_COMBINER_HVECTOR and friends, even
+!     though the standard lists those as their replacements: that is a
+!     source-migration note about what MPI_TYPE_GET_ENVELOPE returns
+!     now, not a statement that the constants are equal. MPICH gives
+!     them distinct values too. Code that tests for both -- as
+!     f77/datatype/typecntsf does -- lists the _INTEGER form first, so
+!     aliasing would send every real HVECTOR to the branch that expects
+!     INTEGER displacements from MPI_TYPE_GET_CONTENTS rather than
+!     MPI_ADDRESS_KIND ones. It would also make a SELECT CASE naming
+!     both a duplicate-label error.
+      integer, parameter :: MPI_COMBINER_HVECTOR_INTEGER  = 17105
+      integer, parameter :: MPI_COMBINER_HINDEXED_INTEGER = 17107
+      integer, parameter :: MPI_COMBINER_STRUCT_INTEGER   = 17110
+
 !     Fortran Datatype Matching
       integer, parameter :: MPIX_TYPECLASS_LOGICAL      = 191
       integer, parameter :: MPI_TYPECLASS_INTEGER       = 192
