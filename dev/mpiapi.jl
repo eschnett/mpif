@@ -131,6 +131,25 @@ struct State
     State() = new(Ref(false), Ref(false), Ref(false))
 end
 
+# Convert an attribute value that MPI returned through a `void**`.
+#
+# MPI only writes it when there is an attribute to report, so on a false flag --
+# or an error -- the pointer is still uninitialised. mpif_attr_value dereferences
+# it for the predefined keyvals (MPI_UNIVERSE_SIZE and friends are a pointer to an
+# int in C but a value in Fortran), which turns that into a wild read: it crashed
+# MPICH's f08 spawn tests, whose MTestSpawnPossible asks MPI_COMM_WORLD for
+# MPI_UNIVERSE_SIZE without knowing whether it is set. Zero it instead, which is
+# what MPICH's own Fortran binding does.
+function attr_value_conversion(parameters, parname, keyval, cast)
+    flags = [p["name"] for p in parameters if p["kind"] == "LOGICAL" && p["param_direction"] == "out"]
+    length(flags) == 1 || return ["*$parname = $(cast)mpif_attr_value(*$keyval, c_$parname);"]
+    flag = only(flags)
+    return ["if (*ierror != MPI_SUCCESS || !c_$flag)",
+            "  *$parname = 0;",
+            "else",
+            "  *$parname = $(cast)mpif_attr_value(*$keyval, c_$parname);"]
+end
+
 function ensure_comm!(state, input_conversions)
     state.have_comm[] && return
     append!(input_conversions, ["const MPI_Comm q_comm = MPIF_Comm_fromint(*comm);"])
@@ -982,8 +1001,8 @@ for key in sort(collect(keys(apis)))
                     # `only` rather than a length check: `length` is shadowed
                     # here by the parameter's own length field
                     keyval = only(p["name"] for p in parameters if p["kind"] == "KEYVAL")
-                    push!(output_conversions,
-                          "*$parname = (MPI_Fint)mpif_attr_value(*$keyval, c_$parname);")
+                    append!(output_conversions,
+                            attr_value_conversion(parameters, parname, keyval, "(MPI_Fint)"))
                 else
                     @assert false
                 end
@@ -1004,8 +1023,8 @@ for key in sort(collect(keys(apis)))
                     push!(input_conversions, "void *c_$parname;")
                     push!(call_arguments, "&c_$parname")
                     keyval = only(p["name"] for p in parameters if p["kind"] == "KEYVAL")
-                    push!(output_conversions,
-                          "*$parname = mpif_attr_value(*$keyval, c_$parname);")
+                    append!(output_conversions,
+                            attr_value_conversion(parameters, parname, keyval, ""))
                 else
                     @assert false
                 end

@@ -1320,7 +1320,10 @@ void mpi_attr_get_(
     &c_attribute_val,
     &c_flag
   );
-  *attribute_val = (MPI_Fint)mpif_attr_value(*keyval, c_attribute_val);
+  if (*ierror != MPI_SUCCESS || !c_flag)
+    *attribute_val = 0;
+  else
+    *attribute_val = (MPI_Fint)mpif_attr_value(*keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
 
@@ -2143,7 +2146,10 @@ void mpi_comm_get_attr_(
     &c_attribute_val,
     &c_flag
   );
-  *attribute_val = mpif_attr_value(*comm_keyval, c_attribute_val);
+  if (*ierror != MPI_SUCCESS || !c_flag)
+    *attribute_val = 0;
+  else
+    *attribute_val = mpif_attr_value(*comm_keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
 
@@ -11199,7 +11205,10 @@ void mpi_type_get_attr_(
     &c_attribute_val,
     &c_flag
   );
-  *attribute_val = mpif_attr_value(*type_keyval, c_attribute_val);
+  if (*ierror != MPI_SUCCESS || !c_flag)
+    *attribute_val = 0;
+  else
+    *attribute_val = mpif_attr_value(*type_keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
 
@@ -12115,7 +12124,10 @@ void mpi_win_get_attr_(
     &c_attribute_val,
     &c_flag
   );
-  *attribute_val = mpif_attr_value(*win_keyval, c_attribute_val);
+  if (*ierror != MPI_SUCCESS || !c_flag)
+    *attribute_val = 0;
+  else
+    *attribute_val = mpif_attr_value(*win_keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
 
