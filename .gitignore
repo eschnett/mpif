@@ -5,3 +5,4 @@
 build*/
 *.log
 /doc/mpi*-report.pdf
+/bug-mpich-7916/mpich-abi-attr-bug

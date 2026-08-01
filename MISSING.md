@@ -59,9 +59,27 @@ in place.
 The remaining callback types receive nothing a trampoline could use to find the
 Fortran procedure, so they still report `MPI_ERR_OTHER` with a diagnostic:
 
-- `MPI_Op_create` -- `MPI_User_function` gets only the buffers, length and
-  datatype. Needs a pool of pre-generated trampolines, each closing over a slot,
-  released by `MPI_Op_free`.
+User-defined **reduction operators** work too, by a different route.
+`MPI_User_function` is told only the buffers, the length and the datatype --
+nothing that says which operator is being applied -- so there is nothing to look
+up when it fires. `src/mpif_callbacks.c` therefore pre-generates a pool of 128
+trampoline pairs, each knowing its own slot at compile time, and `MPI_Op_create`
+takes a free one.
+
+A slot is never given back. `MPI_Op_free` only marks the op for deallocation --
+section 2.5.1 of the standard has it that "the object itself still persists
+until any pending operations are complete" -- so a nonblocking reduction started
+before the free may call the trampoline afterwards, and reusing the slot would
+send that call to a different operator's Fortran procedure. Nothing tells us
+when MPI has finished with the op, so the slot is retired instead, and a program
+may create at most 128 user-defined operators over its lifetime rather than at
+any one time. The buffers pass straight through as choice buffers, the
+datatype is converted to an `INTEGER` handle, and the length is an `INTEGER` or
+`INTEGER(KIND=MPI_COUNT_KIND)` for the large-count form. Exhausting the pool
+reports `MPI_ERR_OTHER` with a diagnostic.
+
+The rest still report `MPI_ERR_OTHER`:
+
 - `MPI_Grequest_start` and `MPI_Register_datarep` -- both pass `extra_state`, so
   a box holding the Fortran procedures plus the user's own extra state can be
   passed in its place. A generalized request's `free_fn` is called exactly once,
@@ -209,6 +227,25 @@ returned, for the respective attributes."
 77 occurrences in the f08 layer. `loc()` is a widely implemented extension but
 not standard Fortran, and comparing addresses silently fails if the argument
 arrives as a copy.
+
+## External blockers
+
+### MPICH: attributes on predefined datatypes abort in ABI builds
+
+<https://github.com/pmodels/mpich/issues/7916>
+
+`MPI_Type_set_attr` and `MPI_Type_get_attr` abort inside MPICH for any
+predefined datatype when it is built for the standard ABI:
+`MPII_Attr_delete_c_proxy` converts the handle back with
+`ABI_Handle_from_mpi`, whose datatype case reverse-searches
+`abi_datatype_builtins[]` and asserts when the handle is not found. Derived
+datatypes and communicator attributes are unaffected.
+
+Nothing to fix on this side, and nothing to work around: mpif has no way to set
+a datatype attribute other than through MPI. `f77/attr/typeattrf` and its f08
+counterpart in MPICH's own test suite fail until this is fixed upstream. The
+reproducer sent with the issue is `bug-mpich-7916/mpich-abi-attr-bug.c`; it is pure C, with
+no Fortran involved.
 
 ## Missing features
 

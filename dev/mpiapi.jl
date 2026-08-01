@@ -1156,6 +1156,32 @@ for key in sort(collect(keys(apis)))
                     append!(output_conversions,
                             ["if (*ierror == MPI_SUCCESS)",
                              "  *ierror = mpif_register_attr_callback(*$keyval, $attr_kind, (mpif_fortran_procedure)$parname);"])
+                elseif func_type ∈ ["MPI_User_function", "MPI_User_function_c"]
+                    # A reduction callback is told nothing about which operator
+                    # is being applied, so it cannot be looked up when it fires.
+                    # Take a slot from the pool of trampolines instead, each of
+                    # which knows its own slot. The slot is occupied for good;
+                    # see include/mpif_callbacks.h for why MPI_Op_free cannot
+                    # give it back.
+                    large = func_type == "MPI_User_function_c" ? 1 : 0
+                    op = only(p["name"] for p in parameters if p["kind"] == "OPERATION")
+                    # Set the handle even though the call failed. MPI leaves
+                    # output arguments undefined on error, but a program that
+                    # ignores ierror would then pass uninitialised memory to the
+                    # next reduction; MPI_OP_NULL at least fails predictably,
+                    # and at the point where the mistake is visible.
+                    append!(input_conversions,
+                            ["int slot_$parname;",
+                             "void *const c_$parname = mpif_op_reserve((mpif_fortran_procedure)$parname, $large, &slot_$parname);",
+                             "if (!c_$parname) {",
+                             "  *$op = MPIF_Op_toint(MPI_OP_NULL);",
+                             "  *ierror = MPI_ERR_OTHER;",
+                             "  return;",
+                             "}"])
+                    push!(call_arguments, "($func_type*)c_$parname")
+                    append!(output_conversions,
+                            ["if (*ierror != MPI_SUCCESS)",
+                             "  mpif_op_cancel(slot_$parname);"])
                 else
                     # The remaining callback types pass nothing a trampoline
                     # could use to find the Fortran procedure again, so only the

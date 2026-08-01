@@ -8066,9 +8066,10 @@ void mpi_op_create_(
   MPI_Fint* restrict const ierror
 )
 {
-  void *c_user_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)user_fn, &c_user_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Op_create", "user_fn");
+  int slot_user_fn;
+  void *const c_user_fn = mpif_op_reserve((mpif_fortran_procedure)user_fn, 0, &slot_user_fn);
+  if (!c_user_fn) {
+    *ierror = MPI_ERR_OTHER;
     return;
   }
   MPI_Op c_op;
@@ -8077,6 +8078,8 @@ void mpi_op_create_(
     mpif_logical2bool(*commute),
     &c_op
   );
+  if (*ierror != MPI_SUCCESS)
+    mpif_op_cancel(slot_user_fn);
   *op = MPIF_Op_toint(c_op);
 }
 
@@ -8087,9 +8090,10 @@ void mpi_op_create_c_(
   MPI_Fint* restrict const ierror
 )
 {
-  void *c_user_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)user_fn, &c_user_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Op_create_c", "user_fn");
+  int slot_user_fn;
+  void *const c_user_fn = mpif_op_reserve((mpif_fortran_procedure)user_fn, 1, &slot_user_fn);
+  if (!c_user_fn) {
+    *ierror = MPI_ERR_OTHER;
     return;
   }
   MPI_Op c_op;
@@ -8098,6 +8102,8 @@ void mpi_op_create_c_(
     mpif_logical2bool(*commute),
     &c_op
   );
+  if (*ierror != MPI_SUCCESS)
+    mpif_op_cancel(slot_user_fn);
   *op = MPIF_Op_toint(c_op);
 }
 

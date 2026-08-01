@@ -59,6 +59,27 @@ enum mpif_attr_callback_kind {
   MPIF_ATTR_COMM_DELETE_10
 };
 
+// User-defined reduction operators
+//
+// `MPI_User_function` receives only the buffers, the length and the datatype --
+// nothing that says which operator is being applied -- so the Fortran procedure
+// cannot be looked up when the callback fires. A fixed pool of trampolines is
+// pre-generated instead, each knowing its own slot, and one is handed out per
+// MPI_Op_create.
+//
+// A slot is never given back, not even by MPI_Op_free; see the comment in
+// src/mpif_callbacks.c. A program may therefore create at most MPIF_OP_SLOTS
+// user-defined operators over its lifetime, rather than at any one time.
+
+// Reserve a slot for `callback` and return the trampoline to give MPI, or NULL
+// if the pool is exhausted, in which case a diagnostic has been printed.
+// `large` selects the MPI_Count form. The slot is stored in *slot.
+void *mpif_op_reserve(mpif_fortran_procedure callback, int large, int *slot);
+
+// Give a reserved slot back, MPI_Op_create having failed. Safe only because MPI
+// never received the trampoline, so it can never call it.
+void mpif_op_cancel(int slot);
+
 // The C trampoline to hand MPI in place of a user-defined Fortran procedure
 void *mpif_attr_trampoline(enum mpif_attr_callback_kind kind);
 

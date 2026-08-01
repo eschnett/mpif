@@ -324,3 +324,288 @@ int mpif_unsupported_callback(const char *routine, const char *argument) {
           routine, argument);
   return MPI_ERR_OTHER;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// User-defined reduction operators
+//
+// A slot is occupied for the lifetime of the program, and MPI_Op_free does not
+// give it back. Freeing an op only marks it for deallocation: MPI 5.0 section
+// 2.5.1 has it that "the object itself still persists until any pending
+// operations are complete", so a nonblocking reduction started before the free
+// may call the trampoline long after. Were the slot reused in the meantime, the
+// call would arrive at some other operator's Fortran procedure. There is no way
+// to observe when MPI has finished with the op, so the slot is retired instead.
+
+enum { MPIF_OP_SLOTS = 128 };
+
+struct op_slot {
+  _Atomic int in_use;
+  mpif_fortran_procedure fn;
+};
+
+static struct op_slot op_slots[MPIF_OP_SLOTS];
+
+// The Fortran procedure takes the buffers as choice buffers, which pass
+// straight through, plus the length and the datatype handle as integers.
+typedef void (*fortran_user_fn)(void *invec, void *inoutvec, MPI_Fint *len,
+                               MPI_Fint *datatype);
+typedef void (*fortran_user_fn_c)(void *invec, void *inoutvec, MPI_Count *len,
+                                  MPI_Fint *datatype);
+
+static void call_user_fn(int slot, void *invec, void *inoutvec, int *len,
+                         MPI_Datatype *datatype) {
+  const mpif_fortran_procedure fn = op_slots[slot].fn;
+  if (!fn)
+    return;
+  MPI_Fint f_len = (MPI_Fint)*len;
+  MPI_Fint f_datatype = type_toint(*datatype);
+  ((fortran_user_fn)fn)(invec, inoutvec, &f_len, &f_datatype);
+}
+
+static void call_user_fn_c(int slot, void *invec, void *inoutvec, MPI_Count *len,
+                           MPI_Datatype *datatype) {
+  const mpif_fortran_procedure fn = op_slots[slot].fn;
+  if (!fn)
+    return;
+  MPI_Count f_len = *len;
+  MPI_Fint f_datatype = type_toint(*datatype);
+  ((fortran_user_fn_c)fn)(invec, inoutvec, &f_len, &f_datatype);
+}
+
+// One pair of trampolines per slot, each knowing its slot at compile time
+#define MPIF_DEFINE_OP_TRAMPOLINE(slot)                                        \
+  static void op_trampoline_##slot(void *invec, void *inoutvec, int *len,      \
+                                   MPI_Datatype *datatype) {                   \
+    call_user_fn(slot, invec, inoutvec, len, datatype);                        \
+  }                                                                            \
+  static void op_trampoline_c_##slot(void *invec, void *inoutvec,              \
+                                     MPI_Count *len,                           \
+                                     MPI_Datatype *datatype) {                 \
+    call_user_fn_c(slot, invec, inoutvec, len, datatype);                      \
+  }
+
+MPIF_DEFINE_OP_TRAMPOLINE(0)
+MPIF_DEFINE_OP_TRAMPOLINE(1)
+MPIF_DEFINE_OP_TRAMPOLINE(2)
+MPIF_DEFINE_OP_TRAMPOLINE(3)
+MPIF_DEFINE_OP_TRAMPOLINE(4)
+MPIF_DEFINE_OP_TRAMPOLINE(5)
+MPIF_DEFINE_OP_TRAMPOLINE(6)
+MPIF_DEFINE_OP_TRAMPOLINE(7)
+MPIF_DEFINE_OP_TRAMPOLINE(8)
+MPIF_DEFINE_OP_TRAMPOLINE(9)
+MPIF_DEFINE_OP_TRAMPOLINE(10)
+MPIF_DEFINE_OP_TRAMPOLINE(11)
+MPIF_DEFINE_OP_TRAMPOLINE(12)
+MPIF_DEFINE_OP_TRAMPOLINE(13)
+MPIF_DEFINE_OP_TRAMPOLINE(14)
+MPIF_DEFINE_OP_TRAMPOLINE(15)
+MPIF_DEFINE_OP_TRAMPOLINE(16)
+MPIF_DEFINE_OP_TRAMPOLINE(17)
+MPIF_DEFINE_OP_TRAMPOLINE(18)
+MPIF_DEFINE_OP_TRAMPOLINE(19)
+MPIF_DEFINE_OP_TRAMPOLINE(20)
+MPIF_DEFINE_OP_TRAMPOLINE(21)
+MPIF_DEFINE_OP_TRAMPOLINE(22)
+MPIF_DEFINE_OP_TRAMPOLINE(23)
+MPIF_DEFINE_OP_TRAMPOLINE(24)
+MPIF_DEFINE_OP_TRAMPOLINE(25)
+MPIF_DEFINE_OP_TRAMPOLINE(26)
+MPIF_DEFINE_OP_TRAMPOLINE(27)
+MPIF_DEFINE_OP_TRAMPOLINE(28)
+MPIF_DEFINE_OP_TRAMPOLINE(29)
+MPIF_DEFINE_OP_TRAMPOLINE(30)
+MPIF_DEFINE_OP_TRAMPOLINE(31)
+MPIF_DEFINE_OP_TRAMPOLINE(32)
+MPIF_DEFINE_OP_TRAMPOLINE(33)
+MPIF_DEFINE_OP_TRAMPOLINE(34)
+MPIF_DEFINE_OP_TRAMPOLINE(35)
+MPIF_DEFINE_OP_TRAMPOLINE(36)
+MPIF_DEFINE_OP_TRAMPOLINE(37)
+MPIF_DEFINE_OP_TRAMPOLINE(38)
+MPIF_DEFINE_OP_TRAMPOLINE(39)
+MPIF_DEFINE_OP_TRAMPOLINE(40)
+MPIF_DEFINE_OP_TRAMPOLINE(41)
+MPIF_DEFINE_OP_TRAMPOLINE(42)
+MPIF_DEFINE_OP_TRAMPOLINE(43)
+MPIF_DEFINE_OP_TRAMPOLINE(44)
+MPIF_DEFINE_OP_TRAMPOLINE(45)
+MPIF_DEFINE_OP_TRAMPOLINE(46)
+MPIF_DEFINE_OP_TRAMPOLINE(47)
+MPIF_DEFINE_OP_TRAMPOLINE(48)
+MPIF_DEFINE_OP_TRAMPOLINE(49)
+MPIF_DEFINE_OP_TRAMPOLINE(50)
+MPIF_DEFINE_OP_TRAMPOLINE(51)
+MPIF_DEFINE_OP_TRAMPOLINE(52)
+MPIF_DEFINE_OP_TRAMPOLINE(53)
+MPIF_DEFINE_OP_TRAMPOLINE(54)
+MPIF_DEFINE_OP_TRAMPOLINE(55)
+MPIF_DEFINE_OP_TRAMPOLINE(56)
+MPIF_DEFINE_OP_TRAMPOLINE(57)
+MPIF_DEFINE_OP_TRAMPOLINE(58)
+MPIF_DEFINE_OP_TRAMPOLINE(59)
+MPIF_DEFINE_OP_TRAMPOLINE(60)
+MPIF_DEFINE_OP_TRAMPOLINE(61)
+MPIF_DEFINE_OP_TRAMPOLINE(62)
+MPIF_DEFINE_OP_TRAMPOLINE(63)
+MPIF_DEFINE_OP_TRAMPOLINE(64)
+MPIF_DEFINE_OP_TRAMPOLINE(65)
+MPIF_DEFINE_OP_TRAMPOLINE(66)
+MPIF_DEFINE_OP_TRAMPOLINE(67)
+MPIF_DEFINE_OP_TRAMPOLINE(68)
+MPIF_DEFINE_OP_TRAMPOLINE(69)
+MPIF_DEFINE_OP_TRAMPOLINE(70)
+MPIF_DEFINE_OP_TRAMPOLINE(71)
+MPIF_DEFINE_OP_TRAMPOLINE(72)
+MPIF_DEFINE_OP_TRAMPOLINE(73)
+MPIF_DEFINE_OP_TRAMPOLINE(74)
+MPIF_DEFINE_OP_TRAMPOLINE(75)
+MPIF_DEFINE_OP_TRAMPOLINE(76)
+MPIF_DEFINE_OP_TRAMPOLINE(77)
+MPIF_DEFINE_OP_TRAMPOLINE(78)
+MPIF_DEFINE_OP_TRAMPOLINE(79)
+MPIF_DEFINE_OP_TRAMPOLINE(80)
+MPIF_DEFINE_OP_TRAMPOLINE(81)
+MPIF_DEFINE_OP_TRAMPOLINE(82)
+MPIF_DEFINE_OP_TRAMPOLINE(83)
+MPIF_DEFINE_OP_TRAMPOLINE(84)
+MPIF_DEFINE_OP_TRAMPOLINE(85)
+MPIF_DEFINE_OP_TRAMPOLINE(86)
+MPIF_DEFINE_OP_TRAMPOLINE(87)
+MPIF_DEFINE_OP_TRAMPOLINE(88)
+MPIF_DEFINE_OP_TRAMPOLINE(89)
+MPIF_DEFINE_OP_TRAMPOLINE(90)
+MPIF_DEFINE_OP_TRAMPOLINE(91)
+MPIF_DEFINE_OP_TRAMPOLINE(92)
+MPIF_DEFINE_OP_TRAMPOLINE(93)
+MPIF_DEFINE_OP_TRAMPOLINE(94)
+MPIF_DEFINE_OP_TRAMPOLINE(95)
+MPIF_DEFINE_OP_TRAMPOLINE(96)
+MPIF_DEFINE_OP_TRAMPOLINE(97)
+MPIF_DEFINE_OP_TRAMPOLINE(98)
+MPIF_DEFINE_OP_TRAMPOLINE(99)
+MPIF_DEFINE_OP_TRAMPOLINE(100)
+MPIF_DEFINE_OP_TRAMPOLINE(101)
+MPIF_DEFINE_OP_TRAMPOLINE(102)
+MPIF_DEFINE_OP_TRAMPOLINE(103)
+MPIF_DEFINE_OP_TRAMPOLINE(104)
+MPIF_DEFINE_OP_TRAMPOLINE(105)
+MPIF_DEFINE_OP_TRAMPOLINE(106)
+MPIF_DEFINE_OP_TRAMPOLINE(107)
+MPIF_DEFINE_OP_TRAMPOLINE(108)
+MPIF_DEFINE_OP_TRAMPOLINE(109)
+MPIF_DEFINE_OP_TRAMPOLINE(110)
+MPIF_DEFINE_OP_TRAMPOLINE(111)
+MPIF_DEFINE_OP_TRAMPOLINE(112)
+MPIF_DEFINE_OP_TRAMPOLINE(113)
+MPIF_DEFINE_OP_TRAMPOLINE(114)
+MPIF_DEFINE_OP_TRAMPOLINE(115)
+MPIF_DEFINE_OP_TRAMPOLINE(116)
+MPIF_DEFINE_OP_TRAMPOLINE(117)
+MPIF_DEFINE_OP_TRAMPOLINE(118)
+MPIF_DEFINE_OP_TRAMPOLINE(119)
+MPIF_DEFINE_OP_TRAMPOLINE(120)
+MPIF_DEFINE_OP_TRAMPOLINE(121)
+MPIF_DEFINE_OP_TRAMPOLINE(122)
+MPIF_DEFINE_OP_TRAMPOLINE(123)
+MPIF_DEFINE_OP_TRAMPOLINE(124)
+MPIF_DEFINE_OP_TRAMPOLINE(125)
+MPIF_DEFINE_OP_TRAMPOLINE(126)
+MPIF_DEFINE_OP_TRAMPOLINE(127)
+
+static MPI_User_function *const op_trampolines[MPIF_OP_SLOTS] = {
+    op_trampoline_0, op_trampoline_1, op_trampoline_2, op_trampoline_3,
+    op_trampoline_4, op_trampoline_5, op_trampoline_6, op_trampoline_7,
+    op_trampoline_8, op_trampoline_9, op_trampoline_10, op_trampoline_11,
+    op_trampoline_12, op_trampoline_13, op_trampoline_14, op_trampoline_15,
+    op_trampoline_16, op_trampoline_17, op_trampoline_18, op_trampoline_19,
+    op_trampoline_20, op_trampoline_21, op_trampoline_22, op_trampoline_23,
+    op_trampoline_24, op_trampoline_25, op_trampoline_26, op_trampoline_27,
+    op_trampoline_28, op_trampoline_29, op_trampoline_30, op_trampoline_31,
+    op_trampoline_32, op_trampoline_33, op_trampoline_34, op_trampoline_35,
+    op_trampoline_36, op_trampoline_37, op_trampoline_38, op_trampoline_39,
+    op_trampoline_40, op_trampoline_41, op_trampoline_42, op_trampoline_43,
+    op_trampoline_44, op_trampoline_45, op_trampoline_46, op_trampoline_47,
+    op_trampoline_48, op_trampoline_49, op_trampoline_50, op_trampoline_51,
+    op_trampoline_52, op_trampoline_53, op_trampoline_54, op_trampoline_55,
+    op_trampoline_56, op_trampoline_57, op_trampoline_58, op_trampoline_59,
+    op_trampoline_60, op_trampoline_61, op_trampoline_62, op_trampoline_63,
+    op_trampoline_64, op_trampoline_65, op_trampoline_66, op_trampoline_67,
+    op_trampoline_68, op_trampoline_69, op_trampoline_70, op_trampoline_71,
+    op_trampoline_72, op_trampoline_73, op_trampoline_74, op_trampoline_75,
+    op_trampoline_76, op_trampoline_77, op_trampoline_78, op_trampoline_79,
+    op_trampoline_80, op_trampoline_81, op_trampoline_82, op_trampoline_83,
+    op_trampoline_84, op_trampoline_85, op_trampoline_86, op_trampoline_87,
+    op_trampoline_88, op_trampoline_89, op_trampoline_90, op_trampoline_91,
+    op_trampoline_92, op_trampoline_93, op_trampoline_94, op_trampoline_95,
+    op_trampoline_96, op_trampoline_97, op_trampoline_98, op_trampoline_99,
+    op_trampoline_100, op_trampoline_101, op_trampoline_102, op_trampoline_103,
+    op_trampoline_104, op_trampoline_105, op_trampoline_106, op_trampoline_107,
+    op_trampoline_108, op_trampoline_109, op_trampoline_110, op_trampoline_111,
+    op_trampoline_112, op_trampoline_113, op_trampoline_114, op_trampoline_115,
+    op_trampoline_116, op_trampoline_117, op_trampoline_118, op_trampoline_119,
+    op_trampoline_120, op_trampoline_121, op_trampoline_122, op_trampoline_123,
+    op_trampoline_124, op_trampoline_125, op_trampoline_126, op_trampoline_127,
+};
+
+static MPI_User_function_c *const op_trampolines_c[MPIF_OP_SLOTS] = {
+    op_trampoline_c_0, op_trampoline_c_1, op_trampoline_c_2, op_trampoline_c_3,
+    op_trampoline_c_4, op_trampoline_c_5, op_trampoline_c_6, op_trampoline_c_7,
+    op_trampoline_c_8, op_trampoline_c_9, op_trampoline_c_10, op_trampoline_c_11,
+    op_trampoline_c_12, op_trampoline_c_13, op_trampoline_c_14, op_trampoline_c_15,
+    op_trampoline_c_16, op_trampoline_c_17, op_trampoline_c_18, op_trampoline_c_19,
+    op_trampoline_c_20, op_trampoline_c_21, op_trampoline_c_22, op_trampoline_c_23,
+    op_trampoline_c_24, op_trampoline_c_25, op_trampoline_c_26, op_trampoline_c_27,
+    op_trampoline_c_28, op_trampoline_c_29, op_trampoline_c_30, op_trampoline_c_31,
+    op_trampoline_c_32, op_trampoline_c_33, op_trampoline_c_34, op_trampoline_c_35,
+    op_trampoline_c_36, op_trampoline_c_37, op_trampoline_c_38, op_trampoline_c_39,
+    op_trampoline_c_40, op_trampoline_c_41, op_trampoline_c_42, op_trampoline_c_43,
+    op_trampoline_c_44, op_trampoline_c_45, op_trampoline_c_46, op_trampoline_c_47,
+    op_trampoline_c_48, op_trampoline_c_49, op_trampoline_c_50, op_trampoline_c_51,
+    op_trampoline_c_52, op_trampoline_c_53, op_trampoline_c_54, op_trampoline_c_55,
+    op_trampoline_c_56, op_trampoline_c_57, op_trampoline_c_58, op_trampoline_c_59,
+    op_trampoline_c_60, op_trampoline_c_61, op_trampoline_c_62, op_trampoline_c_63,
+    op_trampoline_c_64, op_trampoline_c_65, op_trampoline_c_66, op_trampoline_c_67,
+    op_trampoline_c_68, op_trampoline_c_69, op_trampoline_c_70, op_trampoline_c_71,
+    op_trampoline_c_72, op_trampoline_c_73, op_trampoline_c_74, op_trampoline_c_75,
+    op_trampoline_c_76, op_trampoline_c_77, op_trampoline_c_78, op_trampoline_c_79,
+    op_trampoline_c_80, op_trampoline_c_81, op_trampoline_c_82, op_trampoline_c_83,
+    op_trampoline_c_84, op_trampoline_c_85, op_trampoline_c_86, op_trampoline_c_87,
+    op_trampoline_c_88, op_trampoline_c_89, op_trampoline_c_90, op_trampoline_c_91,
+    op_trampoline_c_92, op_trampoline_c_93, op_trampoline_c_94, op_trampoline_c_95,
+    op_trampoline_c_96, op_trampoline_c_97, op_trampoline_c_98, op_trampoline_c_99,
+    op_trampoline_c_100, op_trampoline_c_101, op_trampoline_c_102, op_trampoline_c_103,
+    op_trampoline_c_104, op_trampoline_c_105, op_trampoline_c_106, op_trampoline_c_107,
+    op_trampoline_c_108, op_trampoline_c_109, op_trampoline_c_110, op_trampoline_c_111,
+    op_trampoline_c_112, op_trampoline_c_113, op_trampoline_c_114, op_trampoline_c_115,
+    op_trampoline_c_116, op_trampoline_c_117, op_trampoline_c_118, op_trampoline_c_119,
+    op_trampoline_c_120, op_trampoline_c_121, op_trampoline_c_122, op_trampoline_c_123,
+    op_trampoline_c_124, op_trampoline_c_125, op_trampoline_c_126, op_trampoline_c_127,
+};
+
+void *mpif_op_reserve(mpif_fortran_procedure callback, int large, int *slot) {
+  for (int i = 0; i < MPIF_OP_SLOTS; ++i) {
+    int expected = 0;
+    if (atomic_compare_exchange_strong_explicit(&op_slots[i].in_use, &expected,
+                                                1, memory_order_acq_rel,
+                                                memory_order_relaxed)) {
+      op_slots[i].fn = callback;
+      *slot = i;
+      return large ? (void *)op_trampolines_c[i] : (void *)op_trampolines[i];
+    }
+  }
+  fprintf(stderr,
+          "mpif: no room for another user-defined reduction operator; at most "
+          "%d can be created over the lifetime of the program\n",
+          (int)MPIF_OP_SLOTS);
+  *slot = -1;
+  return NULL;
+}
+
+void mpif_op_cancel(int slot) {
+  if (slot < 0 || slot >= MPIF_OP_SLOTS)
+    return;
+  op_slots[slot].fn = NULL;
+  atomic_store_explicit(&op_slots[slot].in_use, 0, memory_order_release);
+}
+
