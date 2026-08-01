@@ -78,16 +78,25 @@ datatype is converted to an `INTEGER` handle, and the length is an `INTEGER` or
 `INTEGER(KIND=MPI_COUNT_KIND)` for the large-count form. Exhausting the pool
 reports `MPI_ERR_OTHER` with a diagnostic.
 
-The rest still report `MPI_ERR_OTHER`:
+**Error handlers** work by the same route as operators, for the same reason: a
+handler is told which object raised the error and which error code, but not
+which handler is running. All four of `MPI_Comm_create_errhandler`,
+`MPI_Win_create_errhandler`, `MPI_File_create_errhandler` and
+`MPI_Session_create_errhandler` draw from one pool of 64 slots, each slot with a
+trampoline per object kind. The handle is converted to an `INTEGER` and the error
+code is copied back, since the C prototype passes it by pointer and a handler may
+change it. Slots are never released -- `MPI_Errhandler_free` only marks a handler
+for deallocation and it stays in use by everything it is attached to, and an
+error handler is more likely than most callbacks to fire long after the program
+has stopped thinking about it.
+
+Still reporting `MPI_ERR_OTHER`:
 
 - `MPI_Grequest_start` and `MPI_Register_datarep` -- both pass `extra_state`, so
   a box holding the Fortran procedures plus the user's own extra state can be
   passed in its place. A generalized request's `free_fn` is called exactly once,
   which is where its box is freed; datareps are never deregistered, so theirs
   lives for the duration.
-- the four `*_create_errhandler` routines -- like ops, nothing identifying, so a
-  pool. Slots cannot safely be released: `MPI_Errhandler_free` only decrements a
-  reference count, and an errhandler attached to a communicator outlives it.
 
 ### 1a. Duplicated handle conversions
 

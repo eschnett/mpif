@@ -609,3 +609,277 @@ void mpif_op_cancel(int slot) {
   atomic_store_explicit(&op_slots[slot].in_use, 0, memory_order_release);
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+// User-defined error handlers
+//
+// An error handler is called with the object that raised the error and the
+// error code, and nothing that says which handler is running -- the same
+// problem as reduction operators, and the same solution: a pool of
+// pre-generated trampolines, one per created handler.
+//
+// Slots are never released. MPI_Errhandler_free only marks a handler for
+// deallocation, and it stays in use by every communicator, window, file and
+// session it is still attached to -- and, unlike an operator, an error handler
+// is most likely to be called long after the program stopped thinking about it.
+// A handler is not something a program creates in a loop, so a fixed budget for
+// the lifetime of the program is not a real restriction.
+
+enum { MPIF_ERRHANDLER_SLOTS = 64 };
+
+struct errhandler_slot {
+  _Atomic int in_use;
+  mpif_fortran_procedure fn;
+};
+
+static struct errhandler_slot errhandler_slots[MPIF_ERRHANDLER_SLOTS];
+
+static MPI_Fint file_toint(MPI_File file) { return MPI_File_toint(file); }
+static MPI_Fint session_toint(MPI_Session session) {
+  return MPI_Session_toint(session);
+}
+
+// The Fortran procedure takes the handle and the error code as INTEGERs. The
+// error code is copied back: the C prototype passes it by pointer, so a handler
+// is free to change it.
+typedef void (*fortran_errhandler_fn)(MPI_Fint *handle, MPI_Fint *error_code);
+
+static void call_comm_errhandler(int slot, MPI_Comm *handle,
+                                  int *error_code) {
+  const mpif_fortran_procedure fn = errhandler_slots[slot].fn;
+  if (!fn)
+    return;
+  MPI_Fint f_handle = comm_toint(*handle), f_error_code = *error_code;
+  ((fortran_errhandler_fn)fn)(&f_handle, &f_error_code);
+  *error_code = f_error_code;
+}
+
+static void call_win_errhandler(int slot, MPI_Win *handle,
+                                  int *error_code) {
+  const mpif_fortran_procedure fn = errhandler_slots[slot].fn;
+  if (!fn)
+    return;
+  MPI_Fint f_handle = win_toint(*handle), f_error_code = *error_code;
+  ((fortran_errhandler_fn)fn)(&f_handle, &f_error_code);
+  *error_code = f_error_code;
+}
+
+static void call_file_errhandler(int slot, MPI_File *handle,
+                                  int *error_code) {
+  const mpif_fortran_procedure fn = errhandler_slots[slot].fn;
+  if (!fn)
+    return;
+  MPI_Fint f_handle = file_toint(*handle), f_error_code = *error_code;
+  ((fortran_errhandler_fn)fn)(&f_handle, &f_error_code);
+  *error_code = f_error_code;
+}
+
+static void call_session_errhandler(int slot, MPI_Session *handle,
+                                  int *error_code) {
+  const mpif_fortran_procedure fn = errhandler_slots[slot].fn;
+  if (!fn)
+    return;
+  MPI_Fint f_handle = session_toint(*handle), f_error_code = *error_code;
+  ((fortran_errhandler_fn)fn)(&f_handle, &f_error_code);
+  *error_code = f_error_code;
+}
+
+#define MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(slot)                               \
+  static void comm_errhandler_trampoline_##slot(MPI_Comm *handle,             \
+                                                int *error_code, ...) {        \
+    call_comm_errhandler(slot, handle, error_code);                           \
+  }                                                                             \
+  static void win_errhandler_trampoline_##slot(MPI_Win *handle,             \
+                                                int *error_code, ...) {        \
+    call_win_errhandler(slot, handle, error_code);                           \
+  }                                                                             \
+  static void file_errhandler_trampoline_##slot(MPI_File *handle,             \
+                                                int *error_code, ...) {        \
+    call_file_errhandler(slot, handle, error_code);                           \
+  }                                                                             \
+  static void session_errhandler_trampoline_##slot(MPI_Session *handle,             \
+                                                int *error_code, ...) {        \
+    call_session_errhandler(slot, handle, error_code);                           \
+  }
+
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(0)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(1)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(2)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(3)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(4)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(5)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(6)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(7)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(8)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(9)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(10)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(11)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(12)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(13)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(14)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(15)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(16)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(17)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(18)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(19)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(20)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(21)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(22)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(23)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(24)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(25)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(26)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(27)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(28)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(29)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(30)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(31)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(32)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(33)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(34)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(35)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(36)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(37)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(38)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(39)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(40)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(41)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(42)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(43)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(44)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(45)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(46)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(47)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(48)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(49)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(50)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(51)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(52)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(53)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(54)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(55)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(56)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(57)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(58)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(59)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(60)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(61)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(62)
+MPIF_DEFINE_ERRHANDLER_TRAMPOLINES(63)
+
+static MPI_Comm_errhandler_function *const comm_errhandler_trampolines[MPIF_ERRHANDLER_SLOTS] = {
+    comm_errhandler_trampoline_0, comm_errhandler_trampoline_1, comm_errhandler_trampoline_2, comm_errhandler_trampoline_3,
+    comm_errhandler_trampoline_4, comm_errhandler_trampoline_5, comm_errhandler_trampoline_6, comm_errhandler_trampoline_7,
+    comm_errhandler_trampoline_8, comm_errhandler_trampoline_9, comm_errhandler_trampoline_10, comm_errhandler_trampoline_11,
+    comm_errhandler_trampoline_12, comm_errhandler_trampoline_13, comm_errhandler_trampoline_14, comm_errhandler_trampoline_15,
+    comm_errhandler_trampoline_16, comm_errhandler_trampoline_17, comm_errhandler_trampoline_18, comm_errhandler_trampoline_19,
+    comm_errhandler_trampoline_20, comm_errhandler_trampoline_21, comm_errhandler_trampoline_22, comm_errhandler_trampoline_23,
+    comm_errhandler_trampoline_24, comm_errhandler_trampoline_25, comm_errhandler_trampoline_26, comm_errhandler_trampoline_27,
+    comm_errhandler_trampoline_28, comm_errhandler_trampoline_29, comm_errhandler_trampoline_30, comm_errhandler_trampoline_31,
+    comm_errhandler_trampoline_32, comm_errhandler_trampoline_33, comm_errhandler_trampoline_34, comm_errhandler_trampoline_35,
+    comm_errhandler_trampoline_36, comm_errhandler_trampoline_37, comm_errhandler_trampoline_38, comm_errhandler_trampoline_39,
+    comm_errhandler_trampoline_40, comm_errhandler_trampoline_41, comm_errhandler_trampoline_42, comm_errhandler_trampoline_43,
+    comm_errhandler_trampoline_44, comm_errhandler_trampoline_45, comm_errhandler_trampoline_46, comm_errhandler_trampoline_47,
+    comm_errhandler_trampoline_48, comm_errhandler_trampoline_49, comm_errhandler_trampoline_50, comm_errhandler_trampoline_51,
+    comm_errhandler_trampoline_52, comm_errhandler_trampoline_53, comm_errhandler_trampoline_54, comm_errhandler_trampoline_55,
+    comm_errhandler_trampoline_56, comm_errhandler_trampoline_57, comm_errhandler_trampoline_58, comm_errhandler_trampoline_59,
+    comm_errhandler_trampoline_60, comm_errhandler_trampoline_61, comm_errhandler_trampoline_62, comm_errhandler_trampoline_63,
+};
+
+static MPI_Win_errhandler_function *const win_errhandler_trampolines[MPIF_ERRHANDLER_SLOTS] = {
+    win_errhandler_trampoline_0, win_errhandler_trampoline_1, win_errhandler_trampoline_2, win_errhandler_trampoline_3,
+    win_errhandler_trampoline_4, win_errhandler_trampoline_5, win_errhandler_trampoline_6, win_errhandler_trampoline_7,
+    win_errhandler_trampoline_8, win_errhandler_trampoline_9, win_errhandler_trampoline_10, win_errhandler_trampoline_11,
+    win_errhandler_trampoline_12, win_errhandler_trampoline_13, win_errhandler_trampoline_14, win_errhandler_trampoline_15,
+    win_errhandler_trampoline_16, win_errhandler_trampoline_17, win_errhandler_trampoline_18, win_errhandler_trampoline_19,
+    win_errhandler_trampoline_20, win_errhandler_trampoline_21, win_errhandler_trampoline_22, win_errhandler_trampoline_23,
+    win_errhandler_trampoline_24, win_errhandler_trampoline_25, win_errhandler_trampoline_26, win_errhandler_trampoline_27,
+    win_errhandler_trampoline_28, win_errhandler_trampoline_29, win_errhandler_trampoline_30, win_errhandler_trampoline_31,
+    win_errhandler_trampoline_32, win_errhandler_trampoline_33, win_errhandler_trampoline_34, win_errhandler_trampoline_35,
+    win_errhandler_trampoline_36, win_errhandler_trampoline_37, win_errhandler_trampoline_38, win_errhandler_trampoline_39,
+    win_errhandler_trampoline_40, win_errhandler_trampoline_41, win_errhandler_trampoline_42, win_errhandler_trampoline_43,
+    win_errhandler_trampoline_44, win_errhandler_trampoline_45, win_errhandler_trampoline_46, win_errhandler_trampoline_47,
+    win_errhandler_trampoline_48, win_errhandler_trampoline_49, win_errhandler_trampoline_50, win_errhandler_trampoline_51,
+    win_errhandler_trampoline_52, win_errhandler_trampoline_53, win_errhandler_trampoline_54, win_errhandler_trampoline_55,
+    win_errhandler_trampoline_56, win_errhandler_trampoline_57, win_errhandler_trampoline_58, win_errhandler_trampoline_59,
+    win_errhandler_trampoline_60, win_errhandler_trampoline_61, win_errhandler_trampoline_62, win_errhandler_trampoline_63,
+};
+
+static MPI_File_errhandler_function *const file_errhandler_trampolines[MPIF_ERRHANDLER_SLOTS] = {
+    file_errhandler_trampoline_0, file_errhandler_trampoline_1, file_errhandler_trampoline_2, file_errhandler_trampoline_3,
+    file_errhandler_trampoline_4, file_errhandler_trampoline_5, file_errhandler_trampoline_6, file_errhandler_trampoline_7,
+    file_errhandler_trampoline_8, file_errhandler_trampoline_9, file_errhandler_trampoline_10, file_errhandler_trampoline_11,
+    file_errhandler_trampoline_12, file_errhandler_trampoline_13, file_errhandler_trampoline_14, file_errhandler_trampoline_15,
+    file_errhandler_trampoline_16, file_errhandler_trampoline_17, file_errhandler_trampoline_18, file_errhandler_trampoline_19,
+    file_errhandler_trampoline_20, file_errhandler_trampoline_21, file_errhandler_trampoline_22, file_errhandler_trampoline_23,
+    file_errhandler_trampoline_24, file_errhandler_trampoline_25, file_errhandler_trampoline_26, file_errhandler_trampoline_27,
+    file_errhandler_trampoline_28, file_errhandler_trampoline_29, file_errhandler_trampoline_30, file_errhandler_trampoline_31,
+    file_errhandler_trampoline_32, file_errhandler_trampoline_33, file_errhandler_trampoline_34, file_errhandler_trampoline_35,
+    file_errhandler_trampoline_36, file_errhandler_trampoline_37, file_errhandler_trampoline_38, file_errhandler_trampoline_39,
+    file_errhandler_trampoline_40, file_errhandler_trampoline_41, file_errhandler_trampoline_42, file_errhandler_trampoline_43,
+    file_errhandler_trampoline_44, file_errhandler_trampoline_45, file_errhandler_trampoline_46, file_errhandler_trampoline_47,
+    file_errhandler_trampoline_48, file_errhandler_trampoline_49, file_errhandler_trampoline_50, file_errhandler_trampoline_51,
+    file_errhandler_trampoline_52, file_errhandler_trampoline_53, file_errhandler_trampoline_54, file_errhandler_trampoline_55,
+    file_errhandler_trampoline_56, file_errhandler_trampoline_57, file_errhandler_trampoline_58, file_errhandler_trampoline_59,
+    file_errhandler_trampoline_60, file_errhandler_trampoline_61, file_errhandler_trampoline_62, file_errhandler_trampoline_63,
+};
+
+static MPI_Session_errhandler_function *const session_errhandler_trampolines[MPIF_ERRHANDLER_SLOTS] = {
+    session_errhandler_trampoline_0, session_errhandler_trampoline_1, session_errhandler_trampoline_2, session_errhandler_trampoline_3,
+    session_errhandler_trampoline_4, session_errhandler_trampoline_5, session_errhandler_trampoline_6, session_errhandler_trampoline_7,
+    session_errhandler_trampoline_8, session_errhandler_trampoline_9, session_errhandler_trampoline_10, session_errhandler_trampoline_11,
+    session_errhandler_trampoline_12, session_errhandler_trampoline_13, session_errhandler_trampoline_14, session_errhandler_trampoline_15,
+    session_errhandler_trampoline_16, session_errhandler_trampoline_17, session_errhandler_trampoline_18, session_errhandler_trampoline_19,
+    session_errhandler_trampoline_20, session_errhandler_trampoline_21, session_errhandler_trampoline_22, session_errhandler_trampoline_23,
+    session_errhandler_trampoline_24, session_errhandler_trampoline_25, session_errhandler_trampoline_26, session_errhandler_trampoline_27,
+    session_errhandler_trampoline_28, session_errhandler_trampoline_29, session_errhandler_trampoline_30, session_errhandler_trampoline_31,
+    session_errhandler_trampoline_32, session_errhandler_trampoline_33, session_errhandler_trampoline_34, session_errhandler_trampoline_35,
+    session_errhandler_trampoline_36, session_errhandler_trampoline_37, session_errhandler_trampoline_38, session_errhandler_trampoline_39,
+    session_errhandler_trampoline_40, session_errhandler_trampoline_41, session_errhandler_trampoline_42, session_errhandler_trampoline_43,
+    session_errhandler_trampoline_44, session_errhandler_trampoline_45, session_errhandler_trampoline_46, session_errhandler_trampoline_47,
+    session_errhandler_trampoline_48, session_errhandler_trampoline_49, session_errhandler_trampoline_50, session_errhandler_trampoline_51,
+    session_errhandler_trampoline_52, session_errhandler_trampoline_53, session_errhandler_trampoline_54, session_errhandler_trampoline_55,
+    session_errhandler_trampoline_56, session_errhandler_trampoline_57, session_errhandler_trampoline_58, session_errhandler_trampoline_59,
+    session_errhandler_trampoline_60, session_errhandler_trampoline_61, session_errhandler_trampoline_62, session_errhandler_trampoline_63,
+};
+
+void *mpif_errhandler_reserve(mpif_fortran_procedure callback,
+                              enum mpif_errhandler_kind kind, int *slot) {
+  for (int i = 0; i < MPIF_ERRHANDLER_SLOTS; ++i) {
+    int expected = 0;
+    if (atomic_compare_exchange_strong_explicit(&errhandler_slots[i].in_use,
+                                                &expected, 1,
+                                                memory_order_acq_rel,
+                                                memory_order_relaxed)) {
+      errhandler_slots[i].fn = callback;
+      *slot = i;
+      switch (kind) {
+      case MPIF_ERRHANDLER_COMM:
+        return (void *)comm_errhandler_trampolines[i];
+      case MPIF_ERRHANDLER_WIN:
+        return (void *)win_errhandler_trampolines[i];
+      case MPIF_ERRHANDLER_FILE:
+        return (void *)file_errhandler_trampolines[i];
+      case MPIF_ERRHANDLER_SESSION:
+        return (void *)session_errhandler_trampolines[i];
+      }
+      // An out-of-range kind is a bug in the generated code, not user error
+      mpif_errhandler_cancel(i);
+      return NULL;
+    }
+  }
+  fprintf(stderr,
+          "mpif: no room for another user-defined error handler; at most %d can "
+          "be created over the lifetime of the program\n",
+          (int)MPIF_ERRHANDLER_SLOTS);
+  *slot = -1;
+  return NULL;
+}
+
+void mpif_errhandler_cancel(int slot) {
+  if (slot < 0 || slot >= MPIF_ERRHANDLER_SLOTS)
+    return;
+  errhandler_slots[slot].fn = NULL;
+  atomic_store_explicit(&errhandler_slots[slot].in_use, 0,
+                        memory_order_release);
+}

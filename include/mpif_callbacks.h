@@ -80,6 +80,29 @@ void *mpif_op_reserve(mpif_fortran_procedure callback, int large, int *slot);
 // never received the trampoline, so it can never call it.
 void mpif_op_cancel(int slot);
 
+// User-defined error handlers
+//
+// An error handler is told which object raised the error and which error code,
+// but not which handler is running, so it needs a trampoline pool of its own.
+// Slots are never given back: MPI_Errhandler_free only marks a handler for
+// deallocation, and it stays in use by everything it is attached to.
+
+enum mpif_errhandler_kind {
+  MPIF_ERRHANDLER_COMM,
+  MPIF_ERRHANDLER_WIN,
+  MPIF_ERRHANDLER_FILE,
+  MPIF_ERRHANDLER_SESSION
+};
+
+// Reserve a slot for `callback` and return the trampoline to give MPI, or NULL
+// if the pool is exhausted, in which case a diagnostic has been printed. The
+// slot is stored in *slot.
+void *mpif_errhandler_reserve(mpif_fortran_procedure callback,
+                              enum mpif_errhandler_kind kind, int *slot);
+
+// Give a reserved slot back, MPI_*_create_errhandler having failed
+void mpif_errhandler_cancel(int slot);
+
 // The C trampoline to hand MPI in place of a user-defined Fortran procedure
 void *mpif_attr_trampoline(enum mpif_attr_callback_kind kind);
 

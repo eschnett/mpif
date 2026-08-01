@@ -1930,9 +1930,10 @@ void mpi_comm_create_errhandler_(
   MPI_Fint* restrict const ierror
 )
 {
-  void *c_comm_errhandler_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)comm_errhandler_fn, &c_comm_errhandler_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Comm_create_errhandler", "comm_errhandler_fn");
+  int slot_comm_errhandler_fn;
+  void *const c_comm_errhandler_fn = mpif_errhandler_reserve((mpif_fortran_procedure)comm_errhandler_fn, MPIF_ERRHANDLER_COMM, &slot_comm_errhandler_fn);
+  if (!c_comm_errhandler_fn) {
+    *ierror = MPI_ERR_OTHER;
     return;
   }
   MPI_Errhandler c_errhandler;
@@ -1940,6 +1941,8 @@ void mpi_comm_create_errhandler_(
     (MPI_Comm_errhandler_function*)c_comm_errhandler_fn,
     &c_errhandler
   );
+  if (*ierror != MPI_SUCCESS)
+    mpif_errhandler_cancel(slot_comm_errhandler_fn);
   *errhandler = MPIF_Errhandler_toint(c_errhandler);
 }
 
@@ -2882,9 +2885,10 @@ void mpi_file_create_errhandler_(
   MPI_Fint* restrict const ierror
 )
 {
-  void *c_file_errhandler_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)file_errhandler_fn, &c_file_errhandler_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_File_create_errhandler", "file_errhandler_fn");
+  int slot_file_errhandler_fn;
+  void *const c_file_errhandler_fn = mpif_errhandler_reserve((mpif_fortran_procedure)file_errhandler_fn, MPIF_ERRHANDLER_FILE, &slot_file_errhandler_fn);
+  if (!c_file_errhandler_fn) {
+    *ierror = MPI_ERR_OTHER;
     return;
   }
   MPI_Errhandler c_errhandler;
@@ -2892,6 +2896,8 @@ void mpi_file_create_errhandler_(
     (MPI_File_errhandler_function*)c_file_errhandler_fn,
     &c_errhandler
   );
+  if (*ierror != MPI_SUCCESS)
+    mpif_errhandler_cancel(slot_file_errhandler_fn);
   *errhandler = MPIF_Errhandler_toint(c_errhandler);
 }
 
@@ -10094,9 +10100,10 @@ void mpi_session_create_errhandler_(
   MPI_Fint* restrict const ierror
 )
 {
-  void *c_session_errhandler_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)session_errhandler_fn, &c_session_errhandler_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Session_create_errhandler", "session_errhandler_fn");
+  int slot_session_errhandler_fn;
+  void *const c_session_errhandler_fn = mpif_errhandler_reserve((mpif_fortran_procedure)session_errhandler_fn, MPIF_ERRHANDLER_SESSION, &slot_session_errhandler_fn);
+  if (!c_session_errhandler_fn) {
+    *ierror = MPI_ERR_OTHER;
     return;
   }
   MPI_Errhandler c_errhandler;
@@ -10104,6 +10111,8 @@ void mpi_session_create_errhandler_(
     (MPI_Session_errhandler_function*)c_session_errhandler_fn,
     &c_errhandler
   );
+  if (*ierror != MPI_SUCCESS)
+    mpif_errhandler_cancel(slot_session_errhandler_fn);
   *errhandler = MPIF_Errhandler_toint(c_errhandler);
 }
 
@@ -11924,9 +11933,10 @@ void mpi_win_create_errhandler_(
   MPI_Fint* restrict const ierror
 )
 {
-  void *c_win_errhandler_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)win_errhandler_fn, &c_win_errhandler_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Win_create_errhandler", "win_errhandler_fn");
+  int slot_win_errhandler_fn;
+  void *const c_win_errhandler_fn = mpif_errhandler_reserve((mpif_fortran_procedure)win_errhandler_fn, MPIF_ERRHANDLER_WIN, &slot_win_errhandler_fn);
+  if (!c_win_errhandler_fn) {
+    *ierror = MPI_ERR_OTHER;
     return;
   }
   MPI_Errhandler c_errhandler;
@@ -11934,6 +11944,8 @@ void mpi_win_create_errhandler_(
     (MPI_Win_errhandler_function*)c_win_errhandler_fn,
     &c_errhandler
   );
+  if (*ierror != MPI_SUCCESS)
+    mpif_errhandler_cancel(slot_win_errhandler_fn);
   *errhandler = MPIF_Errhandler_toint(c_errhandler);
 }
 

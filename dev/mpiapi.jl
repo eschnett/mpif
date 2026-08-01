@@ -1211,6 +1211,29 @@ for key in sort(collect(keys(apis)))
                     append!(output_conversions,
                             ["if (*ierror != MPI_SUCCESS)",
                              "  mpif_op_cancel(slot_$parname);"])
+                elseif func_type ∈ ["MPI_Comm_errhandler_function",
+                                    "MPI_Win_errhandler_function",
+                                    "MPI_File_errhandler_function",
+                                    "MPI_Session_errhandler_function"]
+                    # An error handler is told which object raised the error but
+                    # not which handler is running, so, as for reduction
+                    # operators, it needs a trampoline that knows its own slot.
+                    # The slot is occupied for good: MPI_Errhandler_free only
+                    # marks the handler for deallocation and it stays attached to
+                    # its objects, so there is no point at which releasing is
+                    # safe.
+                    errhandler_kind = uppercase(split(func_type, "_")[2])
+                    append!(input_conversions,
+                            ["int slot_$parname;",
+                             "void *const c_$parname = mpif_errhandler_reserve((mpif_fortran_procedure)$parname, MPIF_ERRHANDLER_$errhandler_kind, &slot_$parname);",
+                             "if (!c_$parname) {",
+                             "  *ierror = MPI_ERR_OTHER;",
+                             "  return;",
+                             "}"])
+                    push!(call_arguments, "($func_type*)c_$parname")
+                    append!(output_conversions,
+                            ["if (*ierror != MPI_SUCCESS)",
+                             "  mpif_errhandler_cancel(slot_$parname);"])
                 else
                     # The remaining callback types pass nothing a trampoline
                     # could use to find the Fortran procedure again, so only the
