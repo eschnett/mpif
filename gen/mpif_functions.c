@@ -8069,6 +8069,7 @@ void mpi_op_create_(
   int slot_user_fn;
   void *const c_user_fn = mpif_op_reserve((mpif_fortran_procedure)user_fn, 0, &slot_user_fn);
   if (!c_user_fn) {
+    *op = MPIF_Op_toint(MPI_OP_NULL);
     *ierror = MPI_ERR_OTHER;
     return;
   }
@@ -8093,6 +8094,7 @@ void mpi_op_create_c_(
   int slot_user_fn;
   void *const c_user_fn = mpif_op_reserve((mpif_fortran_procedure)user_fn, 1, &slot_user_fn);
   if (!c_user_fn) {
+    *op = MPIF_Op_toint(MPI_OP_NULL);
     *ierror = MPI_ERR_OTHER;
     return;
   }
