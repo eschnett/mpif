@@ -862,7 +862,36 @@ for key in sort(collect(keys(apis)))
                             push!(input_arguments, "$type* restrict const $parname")
                             if "c_parameter" ∉ suppress
                                 @assert !optional
-                                push!(call_arguments, "$parname")
+                                if name == "MPI_Info_get_string" && parname == "buflen"
+                                    # `buflen` describes the caller's `value`, and cannot
+                                    # be passed straight through: in Fortran it counts
+                                    # characters, in C it counts characters plus the
+                                    # terminating NUL. It also has to be clamped. A
+                                    # Fortran caller may pass a `buflen` larger than
+                                    # `len(value)` -- MPICH's own test suite does, in
+                                    # f90/info/infogetstrf90.f90 -- and MPI would then
+                                    # write past the end of the buffer we hand it.
+                                    # `length_value` is the hidden length argument for
+                                    # `value`, and `c_value` is one byte longer than that.
+                                    append!(input_conversions,
+                                            ["const MPI_Fint f_$parname = *$parname;",
+                                             "int c_$parname = 0;",
+                                             "if (f_$parname > 0)",
+                                             "  c_$parname = (size_t)f_$parname <= length_value",
+                                             "                  ? (int)f_$parname + 1",
+                                             "                  : (int)length_value + 1;"])
+                                    push!(call_arguments, "&c_$parname")
+                                    # MPI reports the length it needs including the NUL,
+                                    # Fortran wants it without. MPI leaves `buflen` alone
+                                    # when the key does not exist, and so must we: after
+                                    # the clamp above the value we hold is not necessarily
+                                    # the one the caller passed in.
+                                    append!(output_conversions,
+                                            ["if (c_flag)",
+                                             "  *$parname = c_$parname > 0 ? (MPI_Fint)(c_$parname - 1) : 0;"])
+                                else
+                                    push!(call_arguments, "$parname")
+                                end
                             end
                         else
                             @assert !optional
@@ -1067,21 +1096,51 @@ for key in sort(collect(keys(apis)))
                     @assert "f90_parameter" ∉ suppress
                     @assert !root_only
                     push!(input_arguments, "char* restrict const $parname")
+                    # Two different lengths, and conflating them overruns the
+                    # caller's string. `buflen` is how much room MPI needs to
+                    # write its answer. `length` is how long the caller's
+                    # CHARACTER is, which is what the result must be padded or
+                    # truncated to.
                     if length == nothing
+                        # The Fortran binding is CHARACTER*(*), so Fortran passes
+                        # the length as a hidden trailing argument, and the
+                        # caller's string is all we have to size the buffer with
                         push!(final_input_arguments, "const size_t length_$parname")
+                        push!(input_conversions, "const size_t buflen_$parname = length_$parname;")
                     elseif length ∈
                            ["MPI_MAX_ERROR_STRING", "MPI_MAX_LIBRARY_VERSION_STRING", "MPI_MAX_OBJECT_NAME", "MPI_MAX_PORT_NAME",
                             "MPI_MAX_PROCESSOR_NAME"]
-                        push!(input_conversions, "const size_t length_$parname = $length;")
+                        # The binding fixes the length -- CHARACTER*($length) --
+                        # so the caller must supply exactly that and no hidden
+                        # argument is needed. Note the minus one: the Fortran
+                        # constant is one less than the C one, a Fortran
+                        # CHARACTER having no room for a terminating NUL, so
+                        # padding to the C value writes a byte past the caller's
+                        # string.
+                        push!(input_conversions, "const size_t buflen_$parname = $length;")
+                        push!(input_conversions, "const size_t length_$parname = $length - 1;")
                     elseif length ∈ ["valuelen"]
+                        push!(input_conversions, "const size_t buflen_$parname = *$length;")
                         push!(input_conversions, "const size_t length_$parname = *$length;")
                     else
                         @show name parname length
                         @assert false
                     end
-                    push!(input_conversions, "char c_$parname[length_$parname + 1];")
+                    push!(input_conversions, "char c_$parname[buflen_$parname + 1];")
                     push!(call_arguments, "c_$parname")
-                    push!(output_conversions, "mpif_strcpy_c2f($parname, c_$parname, length_$parname, strlen(c_$parname));")
+                    # Pad or truncate to the caller's length, never to buflen
+                    copy_c2f = "mpif_strcpy_c2f($parname, c_$parname, length_$parname, strlen(c_$parname));"
+                    if name == "MPI_Info_get_string" && parname == "value"
+                        # MPI writes nothing at all into the buffer when the key does
+                        # not exist, or when `buflen` is zero, and the caller's string
+                        # has to be left untouched in both cases. `c_value` is still
+                        # uninitialised then, so copying it out would hand back garbage
+                        # -- and `strlen` would read uninitialised memory to decide how
+                        # much of it.
+                        append!(output_conversions, ["if (c_flag && f_buflen > 0)", "  $copy_c2f"])
+                    else
+                        push!(output_conversions, copy_c2f)
+                    end
                 elseif param_direction == "inout"
                     @assert "f90_parameter" ∈ suppress
                     push!(call_arguments, "NULL")
