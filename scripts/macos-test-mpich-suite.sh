@@ -5,6 +5,10 @@
 # own to iterate on them.
 #
 # Usage: scripts/macos-test-mpich-suite.sh <mpich|openmpi> <gcc|llvm>
+#
+# Set MPIF_KEEP_TESTS=1 to keep the compiled test executables, which is what a
+# debugger needs to get a backtrace out of a crashing test; see
+# ci-scripts/test-mpich-suite.sh for the other environment variables.
 
 set -euo pipefail
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)

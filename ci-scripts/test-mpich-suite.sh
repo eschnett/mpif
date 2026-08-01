@@ -29,6 +29,12 @@
 #                    oversubscribing a CI runner.
 #   MPIEXEC_ARGS     extra arguments for mpiexec, e.g. `--oversubscribe` for
 #                    Open MPI when MPIEXEC_MAXNP exceeds the available cores.
+#   MPIF_KEEP_TESTS  if non-empty, keep each test executable after it has run
+#                    instead of letting `runtests` delete it, and keep the work
+#                    directory too. Set this before chasing a crash: the
+#                    executable is what a debugger needs to turn the suite's
+#                    "test failed" into a backtrace, and by default it is gone
+#                    by the time the summary is printed.
 
 set -euo pipefail
 
@@ -61,7 +67,11 @@ if [[ -n ${MPICH_TESTS_DIR:-} ]]; then
     workdir=$(cd "${MPICH_TESTS_DIR}" && pwd)
 else
     workdir=$(mktemp -d)
-    trap 'rm -rf "${workdir}"' EXIT
+    # Keeping the executables is pointless if the directory holding them goes
+    # away when the script exits
+    if [[ -z ${MPIF_KEEP_TESTS:-} ]]; then
+        trap 'rm -rf "${workdir}"' EXIT
+    fi
 fi
 
 tarball=${workdir}/mpich-${version}.tar.gz
@@ -131,6 +141,12 @@ for language in "${languages[@]}"; do
         # ci-scripts/mpiexec-filter.sh. The suite treats anything the launcher
         # prints as unexpected test output.
         export MPIF_REAL_MPIEXEC="${mpi_prefix}/bin/mpiexec"
+        # `runtests` has no command line option for this -- it unlinks the
+        # executable and its .o right after each test unless MPITEST_CLEANUP
+        # says otherwise
+        if [[ -n ${MPIF_KEEP_TESTS:-} ]]; then
+            export MPITEST_CLEANUP=0
+        fi
         ../runtests \
             -tests=testlist \
             -mpiexec="${scriptdir}/mpiexec-filter.sh" \
@@ -152,4 +168,7 @@ done
 echo
 echo "=== MPICH Fortran test suite, ${version}, ${nprocs} cores, up to ${maxnp} processes per test"
 printf '  %s\n' "${summaries[@]}"
+if [[ -n ${MPIF_KEEP_TESTS:-} ]]; then
+    echo "  test executables kept under ${suite}"
+fi
 exit ${status}
