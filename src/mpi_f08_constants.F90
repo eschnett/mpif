@@ -12,6 +12,9 @@ module mpi_f08_constants
        MPI_OFFSET_KIND, &
        MPI_COUNT_KIND, &
        MPI_INTEGER_KIND, &
+       ! Fortran Support
+       MPI_SUBARRAYS_SUPPORTED, &
+       MPI_ASYNC_PROTECTS_NONBLOCKING, &
        ! Fortran 77 Status Size and Indices
        MPI_STATUS_SIZE, &
        MPI_SOURCE, &
@@ -251,6 +254,9 @@ module mpi_f08_constants
        MPI_OFFSET_KIND, &
        MPI_COUNT_KIND, &
        MPI_INTEGER_KIND, &
+       ! Fortran Support
+       MPI_SUBARRAYS_SUPPORTED, &
+       MPI_ASYNC_PROTECTS_NONBLOCKING, &
        ! Fortran 77 Status Size and Indices
        MPI_STATUS_SIZE, &
        MPI_SOURCE, &

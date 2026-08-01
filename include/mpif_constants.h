@@ -14,6 +14,18 @@
       integer, parameter :: MPI_COUNT_KIND      = MPI_ADDRESS_KIND
       integer, parameter :: MPI_INTEGER_KIND    = kind(0)
 
+!     Fortran Support
+!     Both are .false. because choice buffers are declared with a
+!     compiler-dependent mechanism that overrides type checking
+!     (ignore_tkr, no_arg_check) instead of with the Fortran 2018
+!     assumed-type and assumed-rank notation, and because no argument
+!     is declared ASYNCHRONOUS. The standard permits this, and requires
+!     it of mpif.h, whose interfaces are implicit. The consequence is
+!     that noncontiguous subarrays may be invalid as buffers in
+!     nonblocking calls.
+      logical, parameter :: MPI_SUBARRAYS_SUPPORTED = .false.
+      logical, parameter :: MPI_ASYNC_PROTECTS_NONBLOCKING = .false.
+
       integer, parameter :: MPI_OP_NULL         = int(z'00000020')
       integer, parameter :: MPI_SUM             = int(z'00000021')
       integer, parameter :: MPI_MIN             = int(z'00000022')

@@ -1,3 +1,5 @@
+#include <mpif_attrs.h>
+#include <mpif_callbacks.h>
 #include <mpif_logical.h>
 #include <mpif_strings.h>
 #include <mpi.h>
@@ -1313,10 +1315,10 @@ void mpi_attr_get_(
   *ierror = MPI_Attr_get(
     MPIF_Comm_fromint(*comm),
     *keyval,
-    c_attribute_val,
+    &c_attribute_val,
     &c_flag
   );
-  *attribute_val = (int)(intptr_t)c_attribute_val;
+  *attribute_val = (MPI_Fint)mpif_attr_value(*keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
 
@@ -1926,10 +1928,14 @@ void mpi_comm_create_errhandler_(
   MPI_Fint* restrict const ierror
 )
 {
-  abort();
+  void *c_comm_errhandler_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)comm_errhandler_fn, &c_comm_errhandler_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   MPI_Errhandler c_errhandler;
   *ierror = MPI_Comm_create_errhandler(
-    comm_errhandler_fn,
+    (MPI_Comm_errhandler_function*)c_comm_errhandler_fn,
     &c_errhandler
   );
   *errhandler = MPIF_Errhandler_toint(c_errhandler);
@@ -1984,11 +1990,19 @@ void mpi_comm_create_keyval_(
   MPI_Fint* restrict const ierror
 )
 {
-  abort();
-  abort();
+  void *c_comm_copy_attr_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)comm_copy_attr_fn, &c_comm_copy_attr_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
+  void *c_comm_delete_attr_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)comm_delete_attr_fn, &c_comm_delete_attr_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   *ierror = MPI_Comm_create_keyval(
-    comm_copy_attr_fn,
-    comm_delete_attr_fn,
+    (MPI_Comm_copy_attr_function*)c_comm_copy_attr_fn,
+    (MPI_Comm_delete_attr_function*)c_comm_delete_attr_fn,
     comm_keyval,
     (void*)*extra_state
   );
@@ -2124,7 +2138,7 @@ void mpi_comm_get_attr_(
     &c_attribute_val,
     &c_flag
   );
-  *attribute_val = (MPI_Aint)c_attribute_val;
+  *attribute_val = mpif_attr_value(*comm_keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
 
@@ -2866,10 +2880,14 @@ void mpi_file_create_errhandler_(
   MPI_Fint* restrict const ierror
 )
 {
-  abort();
+  void *c_file_errhandler_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)file_errhandler_fn, &c_file_errhandler_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   MPI_Errhandler c_errhandler;
   *ierror = MPI_File_create_errhandler(
-    file_errhandler_fn,
+    (MPI_File_errhandler_function*)c_file_errhandler_fn,
     &c_errhandler
   );
   *errhandler = MPIF_Errhandler_toint(c_errhandler);
@@ -5048,14 +5066,26 @@ void mpi_grequest_start_(
   MPI_Fint* restrict const ierror
 )
 {
-  abort();
-  abort();
-  abort();
+  void *c_query_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)query_fn, &c_query_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
+  void *c_free_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)free_fn, &c_free_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
+  void *c_cancel_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)cancel_fn, &c_cancel_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   MPI_Request c_request;
   *ierror = MPI_Grequest_start(
-    query_fn,
-    free_fn,
-    cancel_fn,
+    (MPI_Grequest_query_function*)c_query_fn,
+    (MPI_Grequest_free_function*)c_free_fn,
+    (MPI_Grequest_cancel_function*)c_cancel_fn,
     (void*)*extra_state,
     &c_request
   );
@@ -7303,17 +7333,25 @@ void mpi_keyval_create_(
   MPI_Copy_function* const copy_fn,
   MPI_Delete_function* const delete_fn,
   MPI_Fint* restrict const keyval,
-  const MPI_Aint* restrict const extra_state,
+  const MPI_Fint* restrict const extra_state,
   MPI_Fint* restrict const ierror
 )
 {
-  abort();
-  abort();
+  void *c_copy_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)copy_fn, &c_copy_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
+  void *c_delete_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)delete_fn, &c_delete_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   *ierror = MPI_Keyval_create(
-    copy_fn,
-    delete_fn,
+    (MPI_Copy_function*)c_copy_fn,
+    (MPI_Delete_function*)c_delete_fn,
     keyval,
-    (void*)*extra_state
+    (void*)(intptr_t)*extra_state
   );
 }
 
@@ -8028,10 +8066,14 @@ void mpi_op_create_(
   MPI_Fint* restrict const ierror
 )
 {
-  abort();
+  void *c_user_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)user_fn, &c_user_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   MPI_Op c_op;
   *ierror = MPI_Op_create(
-    user_fn,
+    (MPI_User_function*)c_user_fn,
     mpif_logical2bool(*commute),
     &c_op
   );
@@ -8045,10 +8087,14 @@ void mpi_op_create_c_(
   MPI_Fint* restrict const ierror
 )
 {
-  abort();
+  void *c_user_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)user_fn, &c_user_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   MPI_Op c_op;
   *ierror = MPI_Op_create_c(
-    user_fn,
+    (MPI_User_function_c*)c_user_fn,
     mpif_logical2bool(*commute),
     &c_op
   );
@@ -8944,14 +8990,26 @@ void mpi_register_datarep_(
 )
 {
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
-  abort();
-  abort();
-  abort();
+  void *c_read_conversion_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)read_conversion_fn, &c_read_conversion_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
+  void *c_write_conversion_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)write_conversion_fn, &c_write_conversion_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
+  void *c_dtype_file_extent_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)dtype_file_extent_fn, &c_dtype_file_extent_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   *ierror = MPI_Register_datarep(
     c_datarep,
-    read_conversion_fn,
-    write_conversion_fn,
-    dtype_file_extent_fn,
+    (MPI_Datarep_conversion_function*)c_read_conversion_fn,
+    (MPI_Datarep_conversion_function*)c_write_conversion_fn,
+    (MPI_Datarep_extent_function*)c_dtype_file_extent_fn,
     (void*)*extra_state
   );
   free(c_datarep);
@@ -8968,14 +9026,26 @@ void mpi_register_datarep_c_(
 )
 {
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
-  abort();
-  abort();
-  abort();
+  void *c_read_conversion_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)read_conversion_fn, &c_read_conversion_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
+  void *c_write_conversion_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)write_conversion_fn, &c_write_conversion_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
+  void *c_dtype_file_extent_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)dtype_file_extent_fn, &c_dtype_file_extent_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   *ierror = MPI_Register_datarep_c(
     c_datarep,
-    read_conversion_fn,
-    write_conversion_fn,
-    dtype_file_extent_fn,
+    (MPI_Datarep_conversion_function_c*)c_read_conversion_fn,
+    (MPI_Datarep_conversion_function_c*)c_write_conversion_fn,
+    (MPI_Datarep_extent_function*)c_dtype_file_extent_fn,
     (void*)*extra_state
   );
   free(c_datarep);
@@ -10014,10 +10084,14 @@ void mpi_session_create_errhandler_(
   MPI_Fint* restrict const ierror
 )
 {
-  abort();
+  void *c_session_errhandler_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)session_errhandler_fn, &c_session_errhandler_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   MPI_Errhandler c_errhandler;
   *ierror = MPI_Session_create_errhandler(
-    session_errhandler_fn,
+    (MPI_Session_errhandler_function*)c_session_errhandler_fn,
     &c_errhandler
   );
   *errhandler = MPIF_Errhandler_toint(c_errhandler);
@@ -10861,11 +10935,19 @@ void mpi_type_create_keyval_(
   MPI_Fint* restrict const ierror
 )
 {
-  abort();
-  abort();
+  void *c_type_copy_attr_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)type_copy_attr_fn, &c_type_copy_attr_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
+  void *c_type_delete_attr_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)type_delete_attr_fn, &c_type_delete_attr_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   *ierror = MPI_Type_create_keyval(
-    type_copy_attr_fn,
-    type_delete_attr_fn,
+    (MPI_Type_copy_attr_function*)c_type_copy_attr_fn,
+    (MPI_Type_delete_attr_function*)c_type_delete_attr_fn,
     type_keyval,
     (void*)*extra_state
   );
@@ -11065,7 +11147,7 @@ void mpi_type_get_attr_(
     &c_attribute_val,
     &c_flag
   );
-  *attribute_val = (MPI_Aint)c_attribute_val;
+  *attribute_val = mpif_attr_value(*type_keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
 
@@ -11809,10 +11891,14 @@ void mpi_win_create_errhandler_(
   MPI_Fint* restrict const ierror
 )
 {
-  abort();
+  void *c_win_errhandler_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)win_errhandler_fn, &c_win_errhandler_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   MPI_Errhandler c_errhandler;
   *ierror = MPI_Win_create_errhandler(
-    win_errhandler_fn,
+    (MPI_Win_errhandler_function*)c_win_errhandler_fn,
     &c_errhandler
   );
   *errhandler = MPIF_Errhandler_toint(c_errhandler);
@@ -11826,11 +11912,19 @@ void mpi_win_create_keyval_(
   MPI_Fint* restrict const ierror
 )
 {
-  abort();
-  abort();
+  void *c_win_copy_attr_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)win_copy_attr_fn, &c_win_copy_attr_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
+  void *c_win_delete_attr_fn;
+  if (!mpif_predefined_callback((mpif_fortran_procedure)win_delete_attr_fn, &c_win_delete_attr_fn)) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   *ierror = MPI_Win_create_keyval(
-    win_copy_attr_fn,
-    win_delete_attr_fn,
+    (MPI_Win_copy_attr_function*)c_win_copy_attr_fn,
+    (MPI_Win_delete_attr_function*)c_win_delete_attr_fn,
     win_keyval,
     (void*)*extra_state
   );
@@ -11954,7 +12048,7 @@ void mpi_win_get_attr_(
     &c_attribute_val,
     &c_flag
   );
-  *attribute_val = (MPI_Aint)c_attribute_val;
+  *attribute_val = mpif_attr_value(*win_keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
 

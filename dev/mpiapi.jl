@@ -119,7 +119,9 @@ f08_implementations_public = []
 f08_implementations_body = []
 
 append!(c_implementations,
-        ["#include <mpif_logical.h>",
+        ["#include <mpif_attrs.h>",
+         "#include <mpif_callbacks.h>",
+         "#include <mpif_logical.h>",
          "#include <mpif_strings.h>",
          "#include <mpi.h>",
          "#include <assert.h>",
@@ -845,7 +847,7 @@ for key in sort(collect(keys(apis)))
                         push!(f08_declarations, "$f_type$f_intent$f_optional :: $parname$f_length")
                     end
                 end
-            elseif kind in ["ATTRIBUTE_VAL_10"]
+            elseif kind in ["ATTRIBUTE_VAL_10", "EXTRA_STATE2"]
                 @assert "f90_parameter" ∉ suppress
                 @assert "c_parameter" ∉ suppress
                 @assert !large_only
@@ -859,14 +861,21 @@ for key in sort(collect(keys(apis)))
                 elseif param_direction ∈ ["inout", "out"]
                     push!(input_arguments, "MPI_Fint* restrict const $parname")
                     push!(input_conversions, "void *c_$parname;")
-                    push!(call_arguments, "c_$parname")
-                    push!(output_conversions, "*$parname = (int)(intptr_t)c_$parname;")
+                    # `&`: MPI takes a void** here, and passing the value of an
+                    # uninitialised pointer had it writing through whatever that
+                    # happened to be
+                    push!(call_arguments, "&c_$parname")
+                    # `only` rather than a length check: `length` is shadowed
+                    # here by the parameter's own length field
+                    keyval = only(p["name"] for p in parameters if p["kind"] == "KEYVAL")
+                    push!(output_conversions,
+                          "*$parname = (MPI_Fint)mpif_attr_value(*$keyval, c_$parname);")
                 else
                     @assert false
                 end
                 push!(f_declarations, "integer :: $parname")
                 push!(f08_declarations, "integer, intent($param_direction) :: $parname")
-            elseif kind in ["ATTRIBUTE_VAL", "EXTRA_STATE", "EXTRA_STATE2"]
+            elseif kind in ["ATTRIBUTE_VAL", "EXTRA_STATE"]
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
                 @assert !large_only
@@ -880,12 +889,17 @@ for key in sort(collect(keys(apis)))
                     push!(input_arguments, "MPI_Aint* restrict const $parname")
                     push!(input_conversions, "void *c_$parname;")
                     push!(call_arguments, "&c_$parname")
-                    push!(output_conversions, "*$parname = (MPI_Aint)c_$parname;")
+                    keyval = only(p["name"] for p in parameters if p["kind"] == "KEYVAL")
+                    push!(output_conversions,
+                          "*$parname = mpif_attr_value(*$keyval, c_$parname);")
                 else
                     @assert false
                 end
-                push!(f_declarations, "integer :: $parname")
-                push!(f08_declarations, "integer, intent($param_direction) :: $parname")
+                # Address-sized, matching the MPI_Aint the C side uses. A plain
+                # `integer` here would have C writing eight bytes into a
+                # four-byte variable.
+                push!(f_declarations, "integer(MPI_ADDRESS_KIND) :: $parname")
+                push!(f08_declarations, "integer(MPI_ADDRESS_KIND), intent($param_direction) :: $parname")
             elseif kind in ["OFFSET"]
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
@@ -1113,8 +1127,18 @@ for key in sort(collect(keys(apis)))
                 embiggen_func = embiggen && parameter["func_type"] ∉ ["MPI_Datarep_extent_function"]
                 func_type = parameter["func_type"] * (embiggen_func ? "_c" : "")
                 push!(input_arguments, "$func_type* const $parname")
-                push!(input_conversions, "abort();")
-                push!(call_arguments, "$parname")
+                # Only Fortran's predefined callbacks are supported so far. The
+                # ABI spells those as sentinel addresses, so they can simply be
+                # translated; a user-defined Fortran procedure would have to be
+                # called through a trampoline converting handles and calling
+                # conventions. See MISSING.md.
+                append!(input_conversions,
+                        ["void *c_$parname;",
+                         "if (!mpif_predefined_callback((mpif_fortran_procedure)$parname, &c_$parname)) {",
+                         "  *ierror = MPI_ERR_OTHER;",
+                         "  return;",
+                         "}"])
+                push!(call_arguments, "($func_type*)c_$parname")
                 push!(f_declarations, "external :: $parname")
                 push!(f08_declarations, "procedure($func_type) :: $parname")
             else

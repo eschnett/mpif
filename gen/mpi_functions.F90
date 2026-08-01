@@ -1559,7 +1559,7 @@ module mpi_functions
     external :: comm_copy_attr_fn
     external :: comm_delete_attr_fn
     integer :: comm_keyval
-    integer :: extra_state
+    integer(MPI_ADDRESS_KIND) :: extra_state
     integer :: ierror
   end subroutine MPI_Comm_create_keyval
 
@@ -1680,7 +1680,7 @@ module mpi_functions
     implicit none
     integer :: comm
     integer :: comm_keyval
-    integer :: attribute_val
+    integer(MPI_ADDRESS_KIND) :: attribute_val
     logical :: flag
     integer :: ierror
   end subroutine MPI_Comm_get_attr
@@ -1845,7 +1845,7 @@ module mpi_functions
     implicit none
     integer :: comm
     integer :: comm_keyval
-    integer :: attribute_val
+    integer(MPI_ADDRESS_KIND) :: attribute_val
     integer :: ierror
   end subroutine MPI_Comm_set_attr
 
@@ -4528,7 +4528,7 @@ module mpi_functions
     external :: query_fn
     external :: free_fn
     external :: cancel_fn
-    integer :: extra_state
+    integer(MPI_ADDRESS_KIND) :: extra_state
     integer :: request
     integer :: ierror
   end subroutine MPI_Grequest_start
@@ -8301,7 +8301,7 @@ module mpi_functions
     external :: read_conversion_fn
     external :: write_conversion_fn
     external :: dtype_file_extent_fn
-    integer :: extra_state
+    integer(MPI_ADDRESS_KIND) :: extra_state
     integer :: ierror
   end subroutine MPI_Register_datarep
 
@@ -8319,7 +8319,7 @@ module mpi_functions
     external :: read_conversion_fn
     external :: write_conversion_fn
     external :: dtype_file_extent_fn
-    integer :: extra_state
+    integer(MPI_ADDRESS_KIND) :: extra_state
     integer :: ierror
   end subroutine MPI_Register_datarep_c
 
@@ -10113,7 +10113,7 @@ module mpi_functions
     external :: type_copy_attr_fn
     external :: type_delete_attr_fn
     integer :: type_keyval
-    integer :: extra_state
+    integer(MPI_ADDRESS_KIND) :: extra_state
     integer :: ierror
   end subroutine MPI_Type_create_keyval
 
@@ -10284,7 +10284,7 @@ module mpi_functions
     implicit none
     integer :: datatype
     integer :: type_keyval
-    integer :: attribute_val
+    integer(MPI_ADDRESS_KIND) :: attribute_val
     logical :: flag
     integer :: ierror
   end subroutine MPI_Type_get_attr
@@ -10547,7 +10547,7 @@ module mpi_functions
     implicit none
     integer :: datatype
     integer :: type_keyval
-    integer :: attribute_val
+    integer(MPI_ADDRESS_KIND) :: attribute_val
     integer :: ierror
   end subroutine MPI_Type_set_attr
 
@@ -11013,7 +11013,7 @@ module mpi_functions
     external :: win_copy_attr_fn
     external :: win_delete_attr_fn
     integer :: win_keyval
-    integer :: extra_state
+    integer(MPI_ADDRESS_KIND) :: extra_state
     integer :: ierror
   end subroutine MPI_Win_create_keyval
 
@@ -11130,7 +11130,7 @@ module mpi_functions
     implicit none
     integer :: win
     integer :: win_keyval
-    integer :: attribute_val
+    integer(MPI_ADDRESS_KIND) :: attribute_val
     logical :: flag
     integer :: ierror
   end subroutine MPI_Win_get_attr
@@ -11237,7 +11237,7 @@ module mpi_functions
     implicit none
     integer :: win
     integer :: win_keyval
-    integer :: attribute_val
+    integer(MPI_ADDRESS_KIND) :: attribute_val
     integer :: ierror
   end subroutine MPI_Win_set_attr
 

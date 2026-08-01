@@ -4,16 +4,25 @@ A review of `dev/mpiapi.jl`, the generator that produces `gen/mpif_functions.c`,
 `gen/mpi_functions.F90` and `gen/mpi_f08_functions.F90` from the MPI standard's
 `apis.json`.
 
-Findings were checked against `data/apis.json`, the generated output, and the
-official ABI header, rather than by reading the generator alone. Line numbers
-refer to the state of the code when the review was written.
+Findings were checked against `data/apis.json`, the generated output, the
+official ABI header and the MPI 5.0 standard, rather than by reading the
+generator alone. Line numbers refer to the state of the code when the review was
+written.
+
+Signatures are the JSON's business: it is what the generator reads, and what any
+hand-written binding should be checked against. The standard is what makes the
+JSON legible, since its keys and kinds are otherwise undocumented -- `C_BUFFER3`
+means an address in `MPI_Alloc_mem` and a choice buffer in a datarep conversion
+callback, and only the standard says which. Keep a copy at
+`doc/mpi50-report.pdf` (git-ignored); `pdftotext -layout` makes it greppable.
 
 ## Errors
 
-### 1. Every binding that takes a callback aborts at runtime
+### 1. Callbacks: predefined ones now work, user-defined ones do not
 
-`dev/mpiapi.jl` emits `abort();` as the C-side conversion for `FUNCTION` and
-`POLYFUNCTION` parameters. Thirteen generated wrappers contain it:
+Originally `dev/mpiapi.jl` emitted `abort();` as the C-side conversion for
+`FUNCTION` and `POLYFUNCTION` parameters, so thirteen generated wrappers killed
+the process:
 
     mpi_op_create_               mpi_op_create_c_           mpi_comm_create_keyval_
     mpi_type_create_keyval_      mpi_win_create_keyval_     mpi_keyval_create_
@@ -21,15 +30,22 @@ refer to the state of the code when the review was written.
     mpi_comm_create_errhandler_  mpi_file_create_errhandler_
     mpi_win_create_errhandler_   mpi_session_create_errhandler_
 
-User-defined reductions, attribute keyvals, generalized requests, datareps and
-custom error handlers therefore compile and link, and then kill the process.
+Partly fixed. The ABI spells the predefined callbacks as sentinel addresses --
+`MPI_COMM_NULL_COPY_FN` is `((MPI_Comm_copy_attr_function*)0x0)`,
+`MPI_COMM_DUP_FN` is `0x1` -- rather than as callable functions, so no
+trampoline is needed for them: `src/mpif_callbacks.c` recognises the address of
+the Fortran procedure and hands MPI the sentinel. That covers
+`MPI_Comm_create_keyval` and the rest of the attribute machinery with the
+predefined callbacks, which is the common case; see error 4.
 
-Removing the `abort()` is not enough. The generator passes the Fortran procedure
-straight through to the C call, but MPI invokes callbacks with C ABI handles,
-while a Fortran callback expects `INTEGER` handles (`mpif.h`, `use mpi`) or
-`TYPE(MPI_Comm)` and friends (`use mpi_f08`). Each callback type needs a C
-trampoline plus a registry to recover the user's procedure, and `extra_state`
-has to be marshalled as `INTEGER(KIND=MPI_ADDRESS_KIND)`.
+A genuinely user-defined callback now returns `MPI_ERR_OTHER` instead of
+aborting. Supporting it needs the trampoline: MPI invokes callbacks with C ABI
+handles, while a Fortran callback expects `INTEGER` handles (`mpif.h`,
+`use mpi`) or `TYPE(MPI_Comm)` and friends (`use mpi_f08`), so each callback
+type needs a C thunk plus a registry to recover the user's procedure. This
+affects `MPI_Op_create` (user-defined reductions), `MPI_Grequest_start`,
+`MPI_Register_datarep` and the four `*_create_errhandler` routines, none of
+which have predefined callbacks at all.
 
 The large-count variant of this is also wrong by the generator's own admission:
 it carries a `# TODO: Check properly whether the function parameter needs
@@ -73,22 +89,90 @@ Fixed: the varargs parameter is dropped instead of the whole function, and
 
 **`gen/` must be regenerated for this to take effect** (`julia dev/mpiapi.jl`).
 
-### 4. The 13 predefined attribute callbacks are declared but never defined
+### 4. The predefined attribute callbacks were declared but never defined — fixed
 
 `include/mpif_functions.h` declares `external :: MPI_COMM_NULL_COPY_FN`,
-`MPI_COMM_DUP_FN`, `MPI_CONVERSION_FN_NULL` and the rest, but the generator
-skips every entry with a `predefined_function` attribute and nothing implements
-them: there is no Fortran symbol, and they are absent from the `mpi` and
-`mpi_f08` modules. `mpif.h` users get a link error, module users cannot name
-them at all. Because mpif prunes the implementation's Fortran library, the
-implementation's own symbols are not available as a fallback either.
+`MPI_COMM_DUP_FN`, `MPI_CONVERSION_FN_NULL` and eleven more, but the generator
+skips every entry with a `predefined_function` attribute and nothing implemented
+them, so `mpif.h` users got a link error -- `_mpi_null_copy_fn_ referenced
+from _MAIN__`. Because mpif prunes the implementation's Fortran library, its
+symbols were not available as a fallback either.
 
-### 5. `MPI_SUBARRAYS_SUPPORTED` and `MPI_ASYNC_PROTECTS_NONBLOCKING` are undefined
+Fixed: `src/mpif_attr_fns.F90` defines all fourteen as external subroutines
+(they cannot live in a module, since `mpif.h` declares them `EXTERNAL` and needs
+plain global symbols), and `src/mpif_callbacks.c` maps their addresses to the
+ABI's sentinels. Their bodies implement what the standard prescribes -- the copy
+functions report `.FALSE.` except the `DUP` variants, the delete functions do
+nothing -- but are never reached in normal use, since MPI is handed a sentinel
+rather than a procedure.
 
-Both are required constants in all three interfaces. Neither appears anywhere.
-Given the buffer handling described below, both should currently be `.FALSE.`.
+Still missing: the `mpi` and `mpi_f08` modules do not export these names, only
+`mpif.h` does. The f08 forms would additionally need separate procedures, since
+their arguments are `TYPE(MPI_Comm)` rather than `INTEGER`.
 
-### 6. `loc()` is used to detect `MPI_STATUS_IGNORE`
+### 5. `MPI_SUBARRAYS_SUPPORTED` and `MPI_ASYNC_PROTECTS_NONBLOCKING` were undefined — fixed
+
+Both are required constants in all three interfaces, and neither existed.
+
+Fixed: both are `.false.` in `include/mpif_constants.h`, which serves `mpif.h`
+and the `mpi` module, and are re-exported by `src/mpi_f08_constants.F90` for
+`mpi_f08`. They are hand-written rather than generated, along with the rest of
+the constants.
+
+`.false.` is not a wart but the standard's own second option, quoted here
+because it also settles what the buffer declarations are allowed to be:
+
+> Set the MPI_SUBARRAYS_SUPPORTED constant to .FALSE. and declare choice
+> buffers with a compiler-dependent mechanism that overrides type checking if
+> the underlying Fortran compiler does not support the Fortran 2018 assumed-type
+> and assumed-rank notation. In this case, the use of noncontiguous sub-arrays
+> as buffers in nonblocking calls may be invalid.
+
+For `mpif.h` the standard goes further and *requires* `.false.`: "In the case of
+implicit interfaces for choice buffer or nonblocking routines, the constants
+must be set to .FALSE." -- and mpif.h's interfaces are implicit, being `external`
+declarations.
+
+### 6. Attribute values were declared as plain INTEGER — fixed
+
+For the `ATTRIBUTE_VAL` and `EXTRA_STATE` kinds the generator emitted
+`MPI_Aint*` on the C side but `integer` on the Fortran side, so
+`MPI_Comm_get_attr`, `MPI_Win_get_attr`, `MPI_Type_get_attr` and the
+`*_set_attr` and keyval routines had C writing eight bytes into a four-byte
+variable. The standard calls for `INTEGER(KIND=MPI_ADDRESS_KIND)`.
+
+Fixed in the generator, and in the hand-written f08 abstract interfaces in
+`src/mpi_f08_types.F90`, where `extra_state` was already address-sized but
+`attribute_val` was not. `EXTRA_STATE2` moved to the deprecated MPI-1 branch
+alongside `ATTRIBUTE_VAL_10`, which is plain `INTEGER` on both sides and was
+already self-consistent.
+
+Nothing in `test/` touches attributes, which is why this went unnoticed;
+`f77/attr` and `f08/attr` in MPICH's suite are what would have caught it.
+
+### 7. Attribute values were returned as addresses — fixed
+
+Two problems in the attribute getters, both found by MPICH's `f77/attr` tests.
+
+`mpi_attr_get_` handed MPI the *value* of an uninitialised `void *` where a
+`void **` was wanted, so MPI wrote through whatever that happened to be: a null
+pointer in `attrmpi1f`, a garbage address and SIGBUS in `baseattrf`. One missing
+`&` in the deprecated-attribute branch; the MPI-2 branch already had it.
+
+Beyond that, the C and Fortran bindings disagree about predefined attributes: C
+returns the address of a copy of the value, Fortran returns the value. So
+`MPI_TAG_UB` and friends came back as addresses -- `Got invalid value 53848696
+for HOST`. `src/mpif_attrs.c` now converts, keyed on the keyval, which the ABI
+numbers distinctly across object types (501-507 for communicators, 601-605 for
+windows) so one table serves all four getters. `MPI_WIN_SIZE` is a pointer to an
+address-sized value rather than to an `int`, and `MPI_WIN_BASE` is the address
+itself rather than a pointer to it. Table 12.1 of the standard gives the C types
+-- `void *` for `MPI_WIN_BASE`, `MPI_Aint *` for `MPI_WIN_SIZE`, `int *` for
+`MPI_WIN_DISP_UNIT`, `MPI_WIN_CREATE_FLAVOR` and `MPI_WIN_MODEL` -- and the
+prose the rule: "In C, pointers are returned, and in Fortran, the values are
+returned, for the respective attributes."
+
+### 8. `loc()` is used to detect `MPI_STATUS_IGNORE`
 
 77 occurrences in the f08 layer. `loc()` is a widely implemented extension but
 not standard Fortran, and comparing addresses silently fails if the argument
@@ -96,17 +180,24 @@ arrives as a copy.
 
 ## Missing features
 
-### Standard-conforming choice buffers
+### Assumed-rank choice buffers
 
-The f08 bindings declare choice buffers as `integer :: buf(*)` guarded by
-`!dir$ ignore_tkr` and `!gcc$ attributes no_arg_check`. There is not one
-`TYPE(*), DIMENSION(..)` and not one `ASYNCHRONOUS` in the generated code; both
-are what the MPI-3 and later f08 bindings are defined in terms of.
+The bindings declare choice buffers as `integer :: buf(*)` guarded by
+`!dir$ ignore_tkr` and `!gcc$ attributes no_arg_check`, with no
+`TYPE(*), DIMENSION(..)` and no `ASYNCHRONOUS` anywhere. This is conforming --
+it is the standard's `.FALSE.` option, see error 5 -- so it belongs here as an
+improvement rather than an error, now that the constants advertise it.
 
-The practical consequence is that non-contiguous actual arguments are handled by
-the compiler making a temporary. That is harmless for blocking calls and wrong
-for nonblocking ones, where the temporary dies before the request completes.
-`MPI_SUBARRAYS_SUPPORTED` exists precisely to tell users this; see error 5.
+Taking the other option would mean declaring choice buffers
+`TYPE(*), DIMENSION(..), ASYNCHRONOUS` in the nonblocking, split-collective and
+persistent routines and setting both constants to `.true.`. The gain is that
+noncontiguous subarrays become valid buffers in nonblocking calls; today the
+compiler passes them by in-and-out-copy through a scratch array, which is fine
+for blocking calls and invalid for nonblocking ones, where the copy dies before
+the request completes. It would also confine mpif to compilers with Fortran 2018
+assumed-rank support, so the two mechanisms would have to coexist, selected by
+the same kind of `check_fortran_source_compiles` probe that already picks
+`ignore_tkr` over `no_arg_check`.
 
 ### `bind(C)`
 
@@ -129,11 +220,32 @@ then pruned away. If mpif published its own sizes at initialisation, the
 implementation could be built with `--enable-fortran=no`, which would also
 sidestep the flang/libtool problems on macOS entirely.
 
-### Generated callback interfaces
+### Generated callback interfaces and definitions
 
-The f08 abstract interfaces (`MPI_User_function`, `MPI_Comm_copy_attr_function`,
-...) are hand-maintained in `src/mpi_f08_types.F90`, although `apis.json`
-describes all 18. They can drift from the standard.
+Two hand-maintained pieces describe callbacks that `apis.json` already
+describes, and can therefore drift from it:
+
+- the f08 abstract interfaces (`MPI_User_function`,
+  `MPI_Comm_copy_attr_function`, ...) in `src/mpi_f08_types.F90`, all 18 of
+  which are in the JSON;
+- the predefined callbacks in `src/mpif_attr_fns.F90`, all 14 of which are in
+  the JSON as `predefined_function` entries.
+
+An audit of the latter against the JSON found the types all correct but three
+divergences worth knowing before generating them:
+
+- `MPI_NULL_DELETE_FN`'s last argument is `ierror` in the JSON, `ierr` in the
+  hand-written version. Harmless for an external subroutine with no explicit
+  interface, but a divergence.
+- `MPI_TYPE_NULL_DELETE_FN`'s `ierror` has kind `ERROR_CODE_SHOW_INTENT`, which
+  is in none of the generator's kind lists, so generating these would hit
+  `@assert false` until it is handled.
+- `MPI_CONVERSION_FN_NULL`'s `userbuf` and `filebuf` have kind `C_BUFFER3`,
+  which `aint_kinds` maps to `integer(MPI_ADDRESS_KIND)`. That is right where
+  the parameter really is an address, as in `MPI_Alloc_mem`, and wrong here: the
+  standard's binding for a conversion callback is `<TYPE> USERBUF(*)`, a choice
+  buffer. The kind alone does not say which, so the generator would need to
+  distinguish callbacks from ordinary functions.
 
 ## Verified as correct
 

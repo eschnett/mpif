@@ -3599,7 +3599,7 @@ contains
     procedure(MPI_Comm_copy_attr_function) :: comm_copy_attr_fn
     procedure(MPI_Comm_delete_attr_function) :: comm_delete_attr_fn
     integer, intent(out) :: comm_keyval
-    integer, intent(in) :: extra_state
+    integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Comm_create_keyval( &
@@ -3801,7 +3801,7 @@ contains
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: comm_keyval
-    integer, intent(out) :: attribute_val
+    integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val
     logical, intent(out) :: flag
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
@@ -4075,7 +4075,7 @@ contains
     implicit none
     type(MPI_Comm), intent(in) :: comm
     integer, intent(in) :: comm_keyval
-    integer, intent(in) :: attribute_val
+    integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Comm_set_attr( &
@@ -8426,7 +8426,7 @@ contains
     procedure(MPI_Grequest_query_function) :: query_fn
     procedure(MPI_Grequest_free_function) :: free_fn
     procedure(MPI_Grequest_cancel_function) :: cancel_fn
-    integer, intent(in) :: extra_state
+    integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
     type(MPI_Request), intent(out) :: request
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
@@ -14255,7 +14255,7 @@ contains
     procedure(MPI_Datarep_conversion_function) :: read_conversion_fn
     procedure(MPI_Datarep_conversion_function) :: write_conversion_fn
     procedure(MPI_Datarep_extent_function) :: dtype_file_extent_fn
-    integer, intent(in) :: extra_state
+    integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Register_datarep( &
@@ -14284,7 +14284,7 @@ contains
     procedure(MPI_Datarep_conversion_function_c) :: read_conversion_fn
     procedure(MPI_Datarep_conversion_function_c) :: write_conversion_fn
     procedure(MPI_Datarep_extent_function) :: dtype_file_extent_fn
-    integer, intent(in) :: extra_state
+    integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Register_datarep_c( &
@@ -17223,7 +17223,7 @@ contains
     procedure(MPI_Type_copy_attr_function) :: type_copy_attr_fn
     procedure(MPI_Type_delete_attr_function) :: type_delete_attr_fn
     integer, intent(out) :: type_keyval
-    integer, intent(in) :: extra_state
+    integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Type_create_keyval( &
@@ -17502,7 +17502,7 @@ contains
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(in) :: type_keyval
-    integer, intent(out) :: attribute_val
+    integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val
     logical, intent(out) :: flag
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
@@ -17929,7 +17929,7 @@ contains
     implicit none
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(in) :: type_keyval
-    integer, intent(in) :: attribute_val
+    integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Type_set_attr( &
@@ -18686,7 +18686,7 @@ contains
     procedure(MPI_Win_copy_attr_function) :: win_copy_attr_fn
     procedure(MPI_Win_delete_attr_function) :: win_delete_attr_fn
     integer, intent(out) :: win_keyval
-    integer, intent(in) :: extra_state
+    integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Win_create_keyval( &
@@ -18881,7 +18881,7 @@ contains
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(in) :: win_keyval
-    integer, intent(out) :: attribute_val
+    integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val
     logical, intent(out) :: flag
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
@@ -19058,7 +19058,7 @@ contains
     implicit none
     type(MPI_Win), intent(in) :: win
     integer, intent(in) :: win_keyval
-    integer, intent(in) :: attribute_val
+    integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Win_set_attr( &

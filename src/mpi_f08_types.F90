@@ -394,8 +394,8 @@ module mpi_f08_types
        type(MPI_Comm), intent(in) :: oldcomm
        integer, intent(in) :: comm_keyval
        integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer, intent(in) :: attribute_val_in
-       integer, intent(out) :: attribute_val_out
+       integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val_in
+       integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val_out
        logical, intent(out) :: flag
        integer, intent(out) :: ierror
      end subroutine MPI_Comm_copy_attr_function
@@ -409,7 +409,7 @@ module mpi_f08_types
        implicit none
        type(MPI_Comm), intent(in) :: comm
        integer, intent(in) :: comm_keyval
-       integer, intent(in) :: attribute_val
+       integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
        integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
        integer, intent(out) :: ierror
      end subroutine MPI_Comm_delete_attr_function
@@ -530,8 +530,8 @@ module mpi_f08_types
        type(MPI_Datatype), intent(in) :: oldtype
        integer, intent(in) :: type_keyval
        integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer, intent(in) :: attribute_val_in
-       integer, intent(out) :: attribute_val_out
+       integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val_in
+       integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val_out
        logical, intent(out) :: flag
        integer, intent(out) :: ierror
      end subroutine MPI_Type_copy_attr_function
@@ -545,7 +545,7 @@ module mpi_f08_types
        implicit none
        type(MPI_Datatype), intent(in) :: type
        integer, intent(in) :: type_keyval
-       integer, intent(in) :: attribute_val
+       integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
        integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
        integer, intent(out) :: ierror
      end subroutine MPI_Type_delete_attr_function
@@ -570,8 +570,8 @@ module mpi_f08_types
        type(MPI_Win), intent(in) :: oldwin
        integer, intent(in) :: win_keyval
        integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer, intent(in) :: attribute_val_in
-       integer, intent(out) :: attribute_val_out
+       integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val_in
+       integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val_out
        logical, intent(out) :: flag
        integer, intent(out) :: ierror
      end subroutine MPI_Win_copy_attr_function
@@ -585,7 +585,7 @@ module mpi_f08_types
        implicit none
        type(MPI_Win), intent(in) :: win
        integer, intent(in) :: win_keyval
-       integer, intent(in) :: attribute_val
+       integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
        integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
        integer, intent(out) :: ierror
      end subroutine MPI_Win_delete_attr_function
