@@ -380,6 +380,48 @@ the pointer there and `mpif_attr_value` already guarded against that -- so
 for that makes MPICH talk to the process manager, and `test/` runs its
 executables directly with no launcher.
 
+### 14. `MPI_Sizeof` is unusable
+
+`src/mpi_types.F90` defines the generic by hand, and every specific is wrong in
+the same three ways. Taking `mpif_sizeof_real4` as the example:
+
+    subroutine mpif_sizeof_real4(x, size, ierror)
+      real*4                      :: x(*)
+      real, intent(out)           :: size
+      real, intent(out), optional :: ierror
+
+- `size` and `ierror` are `real`. The standard's binding is `INTEGER SIZE,
+  IERROR`, and `size = 4` is assigning an integer count to a real.
+- `x` is `x(*)`, rank one, so a scalar argument matches nothing in the generic.
+  `MPI_SIZEOF` is meant to take an argument of any type *and any rank*.
+- There is no `CHARACTER` specific at all; the generic covers only `LOGICAL`,
+  `INTEGER`, `REAL` and `COMPLEX` kinds.
+
+`f90/datatype/sizeof` and `sizeof2` declare `real r1,r1v(2)` ... `character
+ch1,ch1v(6)` and call `MPI_Sizeof` on each, so they fail to compile with 15
+instances of "There is no specific subroutine for the generic 'mpi_sizeof'".
+
+`MPI_Sizeof` is deprecated in MPI-4.0 and its `mpi_f08` form was removed, but the
+`mpi` module and `mpif.h` still have it.
+
+### 15. RMA displacements are declared as default `INTEGER`
+
+`RMA_DISPLACEMENT_NNI` sits in the generator's `int_kinds`, so `MPI_Put`,
+`MPI_Get`, `MPI_Accumulate` and the rest emit
+
+    integer :: target_disp
+
+where the standard's binding is `INTEGER(KIND=MPI_ADDRESS_KIND) TARGET_DISP`.
+This is error 6 again, for a different kind: address-sized in C, four bytes in
+Fortran. It shows up as eleven instances of "Type mismatch in argument
+'target_disp'; passed INTEGER(8) to INTEGER(4)" across the `f90` window tests,
+which is the benign direction -- the compiler rejects it rather than truncating
+silently -- but a caller that follows the mpif interface and declares a plain
+`INTEGER` would pass four bytes where C reads eight.
+
+`RMA_DISPLACEMENT_NNI` should move to the address-sized list, as
+`ATTRIBUTE_VAL` and `EXTRA_STATE` did.
+
 ## External blockers
 
 ### MPICH: attributes on predefined datatypes abort in ABI builds
@@ -450,6 +492,40 @@ tests do not fail on the implementations' disagreement.
 The reproducer to send with the report is
 `bug-ompi-info-value/ompi-empty-info-value.c`; it is pure C, with no Fortran
 involved, and exits 0 on MPICH and 1 on Open MPI.
+
+### OpenMPI: `MPI_Info_create_env` changes across `MPI_Init`
+
+The info object it returns before `MPI_Init` differs from the one it returns
+after, which is what fails `infocrenvf` and `infocrenvf90` -- those compare two
+env infos created at different points and expect them to agree. On this machine:
+
+    key         before MPI_Init      after MPI_Init
+    maxprocs    0                    1
+    soft        0                    1
+    host        Redshift.local       Redshift
+    wdir        (not set)            (set)
+
+`MPI_Info_create_env` describes how the process was started, which does not
+change when MPI is initialised, so the two should agree. MPICH's do, and it
+passes the test.
+
+Not an mpif problem: a pure C program that creates an env info before and after
+`MPI_Init` and prints both shows the same divergence, with no Fortran involved.
+Not reported upstream yet.
+
+### OpenMPI on macOS: spawned intercommunicators hang
+
+Not an mpif problem either, and not really a blocker so much as a trap. Open MPI
+picks a non-loopback interface and then cannot configure the socket --
+`setsockopt(TCP_NODELAY) failed: Invalid argument (22)`, followed by its own
+warning that this "may end up hanging". It does, in any test that communicates
+across a spawned intercommunicator, and each one then burns runtests' 180-second
+timeout rather than failing, so the suite looks stuck rather than broken. A pure
+C spawn-and-send reproduces it.
+
+`scripts/macos-test-mpich-suite.sh` and the CI step both pass
+`--mca btl_tcp_if_include lo0` for Open MPI to avoid it; the CI one is guarded on
+`RUNNER_OS`, Linux needing neither the flag nor the same interface name.
 
 ### MPICH: the f08 copy of `spawnargvf90` contradicts the standard and its own f90 copy
 
