@@ -19,6 +19,8 @@
 #   <language> is one or more of f77, f90, f08; all three by default.
 #
 # Environment:
+#   CXX              C++ compiler for the suite's configure to satisfy libtool
+#                    with (default: c++). Nothing is compiled with it.
 #   MPICH_TESTS_DIR  where to download and build the suite (default: a temporary
 #                    directory, removed afterwards). Keeping it avoids
 #                    re-downloading and re-configuring on every run.
@@ -84,12 +86,21 @@ fi
 # `--enable-strictmpi` drops the tests that use MPICH extensions, which mpif
 # does not claim to provide. Fortran is enabled automatically, by detecting the
 # compilers; there is no --enable-f08. C++ is off because mpif has nothing to do
-# with it and its wrappers may well have been pruned away.
+# with it.
+#
+# MPICXX still has to be set, even with --disable-cxx: libtool configures a C++
+# tag regardless, and left to itself the suite runs AC_PATH_PROG for `mpicxx`
+# and assigns whatever it finds on PATH to CXX. That is easily an unrelated
+# MPI's wrapper, or one belonging to an MPI built without C++ support, and then
+# `$CXX -E` fails, autoconf falls back to /lib/cpp, and configure dies in the
+# C++ preprocessor sanity check. Point it at the plain C++ compiler instead;
+# nothing is compiled with it.
 if [[ ! -f Makefile ]]; then
     ./configure \
         --enable-strictmpi \
         --disable-cxx \
         MPICC="${mpi_prefix}/bin/mpicc" \
+        MPICXX="${CXX:-c++}" \
         MPIF77="${mpif_prefix}/bin/mpifort" \
         MPIFC="${mpif_prefix}/bin/mpifort" \
         MPIEXEC="${mpi_prefix}/bin/mpiexec"
