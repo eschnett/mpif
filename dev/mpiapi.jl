@@ -47,7 +47,7 @@ int_kinds = ["ACCESS_MODE", "ARGUMENT_COUNT", "ARRAY_LENGTH", "ARRAY_LENGTH_NNI"
              "COMM_COMPARISON", "COMM_SIZE", "COMM_SIZE_PI", "COORDINATE", "DEGREE", "DIMENSION", "DISTRIB_ENUM",
              "DTYPE_DISTRIBUTION", "ERROR_CLASS", "ERROR_CODE", "FILE_DESCRIPTOR", "GENERIC_DTYPE_INT", "GROUP_COMPARISON", "INDEX",
              "INFO_VALUE_LENGTH", "KEY", "KEYVAL", "KEY_INDEX", "LOCK_TYPE", "MATH", "NUM_BYTES_SMALL", "NUM_DIMS", "ORDER",
-             "PARTITION", "PROCESS_GRID_SIZE", "PROFILE_LEVEL", "RANK", "RANK_NNI", "RMA_DISPLACEMENT_NNI", "SPLIT_TYPE",
+             "PARTITION", "PROCESS_GRID_SIZE", "PROFILE_LEVEL", "RANK", "RANK_NNI", "SPLIT_TYPE",
              "STRING_LENGTH", "TAG",
              "THREAD_LEVEL", "TOPOLOGY_TYPE", "TYPECLASS", "TYPECLASS_SIZE", "UPDATE_MODE", "VERSION", "WEIGHT",
              "XFER_NUM_ELEM_NNI"]
@@ -55,8 +55,14 @@ int_aint_kinds = ["POLYDISPLACEMENT", "POLYRMA_DISPLACEMENT"]
 int_count_kinds = ["POLYDISPLACEMENT_COUNT", "POLYDTYPE_NUM_ELEM", "POLYDTYPE_NUM_ELEM_NNI", "POLYDTYPE_NUM_ELEM_PI",
                    "POLYNUM_BYTES", "POLYNUM_BYTES_NNI", "POLYNUM_PARAM_VALUES", "POLYXFER_NUM_ELEM", "POLYXFER_NUM_ELEM_NNI"]
 
+# RMA_DISPLACEMENT_NNI is the `target_disp` of MPI_Put and the nine other
+# one-sided routines. It is address-sized on both sides -- C takes an MPI_Aint
+# and the standard's Fortran binding says INTEGER(KIND=MPI_ADDRESS_KIND) -- and
+# does not embiggen, the large-count forms taking an MPI_Aint too. Not to be
+# confused with POLYRMA_DISPLACEMENT, the `disp_unit` of MPI_Win_create, which
+# really is a plain INTEGER in the small form.
 aint_kinds = ["ALLOC_MEM_NUM_BYTES", "C_BUFFER", "C_BUFFER2", "C_BUFFER3", "C_BUFFER4", "DISPLACEMENT", "LOCATION_SMALL",
-              "WIN_ATTACH_SIZE", "WINDOW_SIZE"]
+              "RMA_DISPLACEMENT_NNI", "WIN_ATTACH_SIZE", "WINDOW_SIZE"]
 aint_count_kinds = ["POLYDISPLACEMENT_AINT_COUNT", "POLYDISPOFFSET", "POLYDTYPE_PACK_SIZE", "POLYDTYPE_STRIDE_BYTES",
                     "POLYLOCATION"]
 

@@ -1357,7 +1357,7 @@ contains
     integer, intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer, intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Op), intent(in) :: op
@@ -1400,7 +1400,7 @@ contains
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer(MPI_COUNT_KIND), intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Op), intent(in) :: op
@@ -4345,7 +4345,7 @@ contains
     integer :: result_addr(*)
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     type(MPI_Win), intent(in) :: win
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
@@ -4782,7 +4782,7 @@ contains
     integer :: result_addr(*)
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     type(MPI_Op), intent(in) :: op
     type(MPI_Win), intent(in) :: win
     integer, intent(out), optional :: ierror
@@ -7831,7 +7831,7 @@ contains
     integer, intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer, intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Win), intent(in) :: win
@@ -7871,7 +7871,7 @@ contains
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer(MPI_COUNT_KIND), intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Win), intent(in) :: win
@@ -7920,7 +7920,7 @@ contains
     integer, intent(in) :: result_count
     type(MPI_Datatype), intent(in) :: result_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer, intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Op), intent(in) :: op
@@ -7974,7 +7974,7 @@ contains
     integer(MPI_COUNT_KIND), intent(in) :: result_count
     type(MPI_Datatype), intent(in) :: result_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer(MPI_COUNT_KIND), intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Op), intent(in) :: op
@@ -13369,7 +13369,7 @@ contains
     integer, intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer, intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Win), intent(in) :: win
@@ -13409,7 +13409,7 @@ contains
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer(MPI_COUNT_KIND), intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Win), intent(in) :: win
@@ -13468,7 +13468,7 @@ contains
     integer, intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer, intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Op), intent(in) :: op
@@ -13514,7 +13514,7 @@ contains
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer(MPI_COUNT_KIND), intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Op), intent(in) :: op
@@ -14510,7 +14510,7 @@ contains
     integer, intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer, intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Win), intent(in) :: win
@@ -14553,7 +14553,7 @@ contains
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer(MPI_COUNT_KIND), intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Win), intent(in) :: win
@@ -14605,7 +14605,7 @@ contains
     integer, intent(in) :: result_count
     type(MPI_Datatype), intent(in) :: result_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer, intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Op), intent(in) :: op
@@ -14662,7 +14662,7 @@ contains
     integer(MPI_COUNT_KIND), intent(in) :: result_count
     type(MPI_Datatype), intent(in) :: result_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer(MPI_COUNT_KIND), intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Op), intent(in) :: op
@@ -14710,7 +14710,7 @@ contains
     integer, intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer, intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Win), intent(in) :: win
@@ -14753,7 +14753,7 @@ contains
     integer(MPI_COUNT_KIND), intent(in) :: origin_count
     type(MPI_Datatype), intent(in) :: origin_datatype
     integer, intent(in) :: target_rank
-    integer, intent(in) :: target_disp
+    integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
     integer(MPI_COUNT_KIND), intent(in) :: target_count
     type(MPI_Datatype), intent(in) :: target_datatype
     type(MPI_Win), intent(in) :: win

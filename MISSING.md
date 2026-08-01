@@ -380,7 +380,7 @@ the pointer there and `mpif_attr_value` already guarded against that -- so
 for that makes MPICH talk to the process manager, and `test/` runs its
 executables directly with no launcher.
 
-### 14. `MPI_Sizeof` is unusable
+### 14. `MPI_Sizeof` was unusable — fixed
 
 `src/mpi_types.F90` defines the generic by hand, and every specific is wrong in
 the same three ways. Taking `mpif_sizeof_real4` as the example:
@@ -404,7 +404,19 @@ instances of "There is no specific subroutine for the generic 'mpi_sizeof'".
 `MPI_Sizeof` is deprecated in MPI-4.0 and its `mpi_f08` form was removed, but the
 `mpi` module and `mpif.h` still have it.
 
-### 15. RMA displacements are declared as default `INTEGER`
+Fixed: `size` and `ierror` are `INTEGER` in every specific, there is a scalar
+specific alongside each assumed-size one, and `CHARACTER` is covered. `sizeof`
+and both copies of `sizeof2` now report no errors.
+
+Still not covered is an argument of rank two or more, which resolves to nothing.
+A Fortran generic needs a specific per type, kind *and* rank, so full coverage
+would mean sixteen ranks apiece; MPICH's own binding generates exactly the same
+two forms per type and stops in the same place. Assumed-rank would collapse them
+into one specific each, at the cost of requiring Fortran 2018 -- the same
+trade-off recorded under "Assumed-rank choice buffers" below, and worth taking
+in one go rather than for this deprecated routine alone.
+
+### 15. RMA displacements were declared as default `INTEGER` — fixed
 
 `RMA_DISPLACEMENT_NNI` sits in the generator's `int_kinds`, so `MPI_Put`,
 `MPI_Get`, `MPI_Accumulate` and the rest emit
@@ -419,8 +431,34 @@ which is the benign direction -- the compiler rejects it rather than truncating
 silently -- but a caller that follows the mpif interface and declares a plain
 `INTEGER` would pass four bytes where C reads eight.
 
-`RMA_DISPLACEMENT_NNI` should move to the address-sized list, as
-`ATTRIBUTE_VAL` and `EXTRA_STATE` did.
+Fixed: `RMA_DISPLACEMENT_NNI` moved to `aint_kinds`, as `ATTRIBUTE_VAL` and
+`EXTRA_STATE` did, so all three interfaces now say `MPI_Aint` and
+`INTEGER(KIND=MPI_ADDRESS_KIND)`. It does not embiggen -- the large-count forms
+take an `MPI_Aint` too -- so one list entry covers both. Not to be confused with
+`POLYRMA_DISPLACEMENT`, the `disp_unit` of `MPI_Win_create`, which really is a
+plain `INTEGER` in the small form and stays in `int_aint_kinds`.
+
+### 16. The `TYPE(C_PTR)` forms of the memory-allocating routines are missing
+
+Four routines hand back a base address, and the standard makes each a generic in
+the `mpi` module and `mpif.h` with two specifics -- one taking
+`INTEGER(KIND=MPI_ADDRESS_KIND) BASEPTR`, one taking `TYPE(C_PTR) BASEPTR`:
+
+    SUBROUTINE MPI_ALLOC_MEM(SIZE, INFO, BASEPTR, IERROR)
+        INTEGER(KIND=MPI_ADDRESS_KIND) :: SIZE, BASEPTR
+    SUBROUTINE MPI_ALLOC_MEM_CPTR(SIZE, INFO, BASEPTR, IERROR)
+        TYPE(C_PTR) :: BASEPTR
+
+and likewise `MPI_WIN_ALLOCATE_CPTR`, `MPI_WIN_ALLOCATE_SHARED_CPTR` and
+`MPI_WIN_SHARED_QUERY_CPTR`. mpif generates only the address-kind form, so
+`f90/misc/alloc_mem` does not compile: "Type mismatch in argument 'baseptr';
+passed TYPE(C_PTR) to INTEGER(8)".
+
+The `_CPTR` names are the standard's way of writing an overload in an interface
+block and are not separate entry points, so this is a Fortran-side addition
+only -- the C side is already a `void*` either way. `apis.json` does not describe
+the overload, so the generator would need a list, as it has for the other
+per-argument special cases.
 
 ## External blockers
 

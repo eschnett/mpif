@@ -117,7 +117,7 @@ module mpi_functions
     integer :: origin_count
     integer :: origin_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer :: target_count
     integer :: target_datatype
     integer :: op
@@ -145,7 +145,7 @@ module mpi_functions
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer(MPI_COUNT_KIND) :: target_count
     integer :: target_datatype
     integer :: op
@@ -2016,7 +2016,7 @@ module mpi_functions
     integer :: result_addr(*)
     integer :: datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer :: win
     integer :: ierror
   end subroutine MPI_Compare_and_swap
@@ -2297,7 +2297,7 @@ module mpi_functions
     integer :: result_addr(*)
     integer :: datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer :: op
     integer :: win
     integer :: ierror
@@ -4170,7 +4170,7 @@ module mpi_functions
     integer :: origin_count
     integer :: origin_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer :: target_count
     integer :: target_datatype
     integer :: win
@@ -4196,7 +4196,7 @@ module mpi_functions
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer(MPI_COUNT_KIND) :: target_count
     integer :: target_datatype
     integer :: win
@@ -4231,7 +4231,7 @@ module mpi_functions
     integer :: result_count
     integer :: result_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer :: target_count
     integer :: target_datatype
     integer :: op
@@ -4267,7 +4267,7 @@ module mpi_functions
     integer(MPI_COUNT_KIND) :: result_count
     integer :: result_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer(MPI_COUNT_KIND) :: target_count
     integer :: target_datatype
     integer :: op
@@ -7724,7 +7724,7 @@ module mpi_functions
     integer :: origin_count
     integer :: origin_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer :: target_count
     integer :: target_datatype
     integer :: win
@@ -7750,7 +7750,7 @@ module mpi_functions
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer(MPI_COUNT_KIND) :: target_count
     integer :: target_datatype
     integer :: win
@@ -7788,7 +7788,7 @@ module mpi_functions
     integer :: origin_count
     integer :: origin_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer :: target_count
     integer :: target_datatype
     integer :: op
@@ -7818,7 +7818,7 @@ module mpi_functions
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer(MPI_COUNT_KIND) :: target_count
     integer :: target_datatype
     integer :: op
@@ -8449,7 +8449,7 @@ module mpi_functions
     integer :: origin_count
     integer :: origin_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer :: target_count
     integer :: target_datatype
     integer :: win
@@ -8477,7 +8477,7 @@ module mpi_functions
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer(MPI_COUNT_KIND) :: target_count
     integer :: target_datatype
     integer :: win
@@ -8514,7 +8514,7 @@ module mpi_functions
     integer :: result_count
     integer :: result_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer :: target_count
     integer :: target_datatype
     integer :: op
@@ -8552,7 +8552,7 @@ module mpi_functions
     integer(MPI_COUNT_KIND) :: result_count
     integer :: result_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer(MPI_COUNT_KIND) :: target_count
     integer :: target_datatype
     integer :: op
@@ -8581,7 +8581,7 @@ module mpi_functions
     integer :: origin_count
     integer :: origin_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer :: target_count
     integer :: target_datatype
     integer :: win
@@ -8609,7 +8609,7 @@ module mpi_functions
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
     integer :: target_rank
-    integer :: target_disp
+    integer(MPI_ADDRESS_KIND) :: target_disp
     integer(MPI_COUNT_KIND) :: target_count
     integer :: target_datatype
     integer :: win
