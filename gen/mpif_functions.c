@@ -2464,9 +2464,7 @@ void mpi_comm_spawn_multiple_(
       return;
     }
   }
-  size_t count_array_of_commands = 0;
-  if (q_comm_rank == 0)
-    count_array_of_commands = mpif_fcount(array_of_commands, length_array_of_commands);
+  const size_t count_array_of_commands = q_comm_rank == 0 ? (size_t)*count : 0;
   char *argv_array_of_commands[count_array_of_commands + 1];
   for (size_t n=0; n<count_array_of_commands; ++n)
     argv_array_of_commands[n] = mpif_strdup_f2c_trim(array_of_commands + n * length_array_of_commands, length_array_of_commands);

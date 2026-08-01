@@ -96,6 +96,14 @@ strip_leading_blanks = Set([("MPI_Comm_spawn", "argv"),
 argv_null_sentinels = Dict([("MPI_Comm_spawn", "argv") => "MPI_ARGV_NULL",
                             ("MPI_Comm_spawn_multiple", "array_of_argv") => "MPI_ARGVS_NULL"])
 
+# String arrays whose element count is given by another argument rather than by a
+# terminator. MPI_COMM_SPAWN's `argv` is "terminated by ... an empty string in
+# Fortran", so scanning for one is right there, but MPI_COMM_SPAWN_MULTIPLE's
+# `array_of_commands` is "programs to be executed" with `count` giving the "number
+# of commands" -- there is no terminator to find, and scanning for one reads past
+# the end of the caller's array.
+string_array_counts = Dict([("MPI_Comm_spawn_multiple", "array_of_commands") => "*count"])
+
 # Attribute callbacks are the callbacks mpif can forward: every one of them
 # receives the keyval, which is enough for a trampoline to find the Fortran
 # procedure again. See src/mpif_callbacks.c. The other callback types have
@@ -1208,11 +1216,20 @@ for key in sort(collect(keys(apis)))
                         push!(input_conversions,
                               "const int null_$parname = (const void*)$parname == (const void*)$sentinel;")
                     end
+                    counted = get(string_array_counts, (name, parname), nothing)
+                    if counted == nothing
+                        append!(input_conversions,
+                                ["size_t count_$parname = 0;",
+                                 "if ($guard)",
+                                 "  count_$parname = mpif_fcount($parname, length_$parname);"])
+                    else
+                        # Still zero away from the root, where the array is not
+                        # significant and must not be read
+                        push!(input_conversions,
+                              "const size_t count_$parname = $guard ? (size_t)$counted : 0;")
+                    end
                     append!(input_conversions,
-                            ["size_t count_$parname = 0;",
-                             "if ($guard)",
-                             "  count_$parname = mpif_fcount($parname, length_$parname);",
-                             "char *argv_$parname[count_$parname + 1];",
+                            ["char *argv_$parname[count_$parname + 1];",
                              "for (size_t n=0; n<count_$parname; ++n)",
                              "  argv_$parname[n] = $strdup_f2c($parname + n * length_$parname, length_$parname);",
                              "argv_$parname[count_$parname] = NULL;"])
