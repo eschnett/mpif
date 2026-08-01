@@ -207,8 +207,11 @@ add_library(mpifort_abi SHARED
   src/mpi_f08_constants.F90
   src/mpi_f08_types.F90
   # Implementation
+  include/mpif_logical.h
   include/mpif_strings.h
   src/mpif_constants.c
+  src/mpif_logical.F90
+  src/mpif_logical.c
   src/mpif_sizeof.c
   src/mpif_strings.c
   gen/mpif_functions.c

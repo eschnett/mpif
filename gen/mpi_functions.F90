@@ -7571,6 +7571,14 @@ module mpi_functions
     integer :: ierror
   end subroutine MPI_Parrived
 
+  subroutine MPI_Pcontrol( &
+    level &
+  )
+    use mpi_constants
+    implicit none
+    integer :: level
+  end subroutine MPI_Pcontrol
+
   subroutine MPI_Pready( &
     partition, &
     request, &

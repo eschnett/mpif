@@ -1,3 +1,4 @@
+#include <mpif_logical.h>
 #include <mpif_strings.h>
 #include <mpi.h>
 #include <assert.h>
@@ -393,7 +394,7 @@ void mpi_abi_get_fortran_booleans_(
     logical_false,
     &c_is_set
   );
-  *is_set = c_is_set ? 1 : 0;
+  *is_set = mpif_bool2logical(c_is_set);
 }
 
 void mpi_abi_get_fortran_info_(
@@ -1316,7 +1317,7 @@ void mpi_attr_get_(
     &c_flag
   );
   *attribute_val = (int)(intptr_t)c_attribute_val;
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_attr_put_(
@@ -1639,14 +1640,14 @@ void mpi_cart_create_(
 {
   int c_periods[*ndims];
   for (int dim=0; dim<*ndims; ++dim)
-    c_periods[dim] = periods[dim] != 0;
+    c_periods[dim] = mpif_logical2bool(periods[dim]);
   MPI_Comm c_comm_cart;
   *ierror = MPI_Cart_create(
     MPIF_Comm_fromint(*comm_old),
     *ndims,
     dims,
     c_periods,
-    *reorder != 0,
+    mpif_logical2bool(*reorder),
     &c_comm_cart
   );
   *comm_cart = MPIF_Comm_toint(c_comm_cart);
@@ -1670,7 +1671,7 @@ void mpi_cart_get_(
     coords
   );
   for (int dim=0; dim<*maxdims; ++dim)
-    periods[dim] = c_periods[dim] ? 1 : 0;
+    periods[dim] = mpif_bool2logical(c_periods[dim]);
 }
 
 void mpi_cart_map_(
@@ -1684,7 +1685,7 @@ void mpi_cart_map_(
 {
   int c_periods[*ndims];
   for (int dim=0; dim<*ndims; ++dim)
-    c_periods[dim] = periods[dim] != 0;
+    c_periods[dim] = mpif_logical2bool(periods[dim]);
   *ierror = MPI_Cart_map(
     MPIF_Comm_fromint(*comm),
     *ndims,
@@ -1744,7 +1745,7 @@ void mpi_cart_sub_(
   }
   int c_remain_dims[ndims];
   for (int dim=0; dim<ndims; ++dim)
-    c_remain_dims[dim] = remain_dims[dim] != 0;
+    c_remain_dims[dim] = mpif_logical2bool(remain_dims[dim]);
   MPI_Comm c_newcomm;
   *ierror = MPI_Cart_sub(
     MPIF_Comm_fromint(*comm),
@@ -2124,7 +2125,7 @@ void mpi_comm_get_attr_(
     &c_flag
   );
   *attribute_val = (MPI_Aint)c_attribute_val;
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_comm_get_errhandler_(
@@ -2537,7 +2538,7 @@ void mpi_comm_test_inter_(
     MPIF_Comm_fromint(*comm),
     &c_flag
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_compare_and_swap_(
@@ -2598,7 +2599,7 @@ void mpi_dist_graph_create_(
     destinations,
     weights,
     MPIF_Info_fromint(*info),
-    *reorder != 0,
+    mpif_logical2bool(*reorder),
     &c_comm_dist_graph
   );
   *comm_dist_graph = MPIF_Comm_toint(c_comm_dist_graph);
@@ -2628,7 +2629,7 @@ void mpi_dist_graph_create_adjacent_(
     destinations,
     destweights,
     MPIF_Info_fromint(*info),
-    *reorder != 0,
+    mpif_logical2bool(*reorder),
     &c_comm_dist_graph
   );
   *comm_dist_graph = MPIF_Comm_toint(c_comm_dist_graph);
@@ -2671,7 +2672,7 @@ void mpi_dist_graph_neighbors_count_(
     outdegree,
     &c_weighted
   );
-  *weighted = c_weighted ? 1 : 0;
+  *weighted = mpif_bool2logical(c_weighted);
 }
 
 void mpi_errhandler_free_(
@@ -2912,7 +2913,7 @@ void mpi_file_get_atomicity_(
     MPIF_File_fromint(*fh),
     &c_flag
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_file_get_byte_offset_(
@@ -3913,7 +3914,7 @@ void mpi_file_set_atomicity_(
 {
   *ierror = MPI_File_set_atomicity(
     MPIF_File_fromint(*fh),
-    *flag != 0
+    mpif_logical2bool(*flag)
   );
 }
 
@@ -4369,7 +4370,7 @@ void mpi_finalized_(
   *ierror = MPI_Finalized(
     &c_flag
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_free_mem_(
@@ -4942,7 +4943,7 @@ void mpi_graph_create_(
     *nnodes,
     index,
     edges,
-    *reorder != 0,
+    mpif_logical2bool(*reorder),
     &c_comm_graph
   );
   *comm_graph = MPIF_Comm_toint(c_comm_graph);
@@ -5952,7 +5953,7 @@ void mpi_improbe_(
     &c_message,
     (MPI_Status*)status
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
   *message = MPIF_Message_toint(c_message);
 }
 
@@ -6400,7 +6401,7 @@ void mpi_info_get_(
   );
   free(c_key);
   mpif_strcpy_c2f(value, c_value, length_value, strlen(c_value));
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_info_get_nkeys_(
@@ -6455,7 +6456,7 @@ void mpi_info_get_string_(
   );
   free(c_key);
   mpif_strcpy_c2f(value, c_value, length_value, strlen(c_value));
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_info_get_valuelen_(
@@ -6476,7 +6477,7 @@ void mpi_info_get_valuelen_(
     &c_flag
   );
   free(c_key);
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_info_set_(
@@ -6532,7 +6533,7 @@ void mpi_initialized_(
   *ierror = MPI_Initialized(
     &c_flag
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_intercomm_create_(
@@ -6596,7 +6597,7 @@ void mpi_intercomm_merge_(
   MPI_Comm c_newintracomm;
   *ierror = MPI_Intercomm_merge(
     MPIF_Comm_fromint(*intercomm),
-    *high != 0,
+    mpif_logical2bool(*high),
     &c_newintracomm
   );
   *newintracomm = MPIF_Comm_toint(c_newintracomm);
@@ -6619,7 +6620,7 @@ void mpi_iprobe_(
     &c_flag,
     (MPI_Status*)status
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_irecv_(
@@ -6875,7 +6876,7 @@ void mpi_is_thread_main_(
   *ierror = MPI_Is_thread_main(
     &c_flag
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_iscan_(
@@ -8017,7 +8018,7 @@ void mpi_op_commutative_(
     MPIF_Op_fromint(*op),
     &c_commute
   );
-  *commute = c_commute ? 1 : 0;
+  *commute = mpif_bool2logical(c_commute);
 }
 
 void mpi_op_create_(
@@ -8031,7 +8032,7 @@ void mpi_op_create_(
   MPI_Op c_op;
   *ierror = MPI_Op_create(
     user_fn,
-    *commute != 0,
+    mpif_logical2bool(*commute),
     &c_op
   );
   *op = MPIF_Op_toint(c_op);
@@ -8048,7 +8049,7 @@ void mpi_op_create_c_(
   MPI_Op c_op;
   *ierror = MPI_Op_create_c(
     user_fn,
-    *commute != 0,
+    mpif_logical2bool(*commute),
     &c_op
   );
   *op = MPIF_Op_toint(c_op);
@@ -8258,7 +8259,16 @@ void mpi_parrived_(
     *partition,
     &c_flag
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
+}
+
+void mpi_pcontrol_(
+  const MPI_Fint* restrict const level
+)
+{
+  MPI_Pcontrol(
+    *level
+  );
 }
 
 void mpi_pready_(
@@ -9026,7 +9036,7 @@ void mpi_request_get_status_(
     &c_flag,
     (MPI_Status*)status
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_request_get_status_all_(
@@ -9047,7 +9057,7 @@ void mpi_request_get_status_all_(
     &c_flag,
     (MPI_Status*)array_of_statuses
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_request_get_status_any_(
@@ -9070,7 +9080,7 @@ void mpi_request_get_status_any_(
     &c_flag,
     (MPI_Status*)status
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_request_get_status_some_(
@@ -10345,7 +10355,7 @@ void mpi_status_set_cancelled_(
 {
   *ierror = MPI_Status_set_cancelled(
     (MPI_Status*)status,
-    *flag != 0
+    mpif_logical2bool(*flag)
   );
 }
 
@@ -10442,7 +10452,7 @@ void mpi_test_(
     (MPI_Status*)status
   );
   *request = MPIF_Request_toint(c_request);
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_test_cancelled_(
@@ -10456,7 +10466,7 @@ void mpi_test_cancelled_(
     (const MPI_Status*)status,
     &c_flag
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_testall_(
@@ -10476,7 +10486,7 @@ void mpi_testall_(
     (MPI_Status*)array_of_statuses
   );
   *array_of_requests = MPIF_Request_toint(c_array_of_requests);
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_testany_(
@@ -10498,7 +10508,7 @@ void mpi_testany_(
     (MPI_Status*)status
   );
   *array_of_requests = MPIF_Request_toint(c_array_of_requests);
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_testsome_(
@@ -11056,7 +11066,7 @@ void mpi_type_get_attr_(
     &c_flag
   );
   *attribute_val = (MPI_Aint)c_attribute_val;
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_type_get_contents_(
@@ -11945,7 +11955,7 @@ void mpi_win_get_attr_(
     &c_flag
   );
   *attribute_val = (MPI_Aint)c_attribute_val;
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_win_get_errhandler_(
@@ -12173,7 +12183,7 @@ void mpi_win_test_(
     MPIF_Win_fromint(*win),
     &c_flag
   );
-  *flag = c_flag ? 1 : 0;
+  *flag = mpif_bool2logical(c_flag);
 }
 
 void mpi_win_unlock_(

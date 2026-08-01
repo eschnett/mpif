@@ -379,6 +379,7 @@ module mpi_f08_functions
     MPIF_Pack_size => MPI_Pack_size, &
     MPIF_Pack_size_c => MPI_Pack_size_c, &
     MPIF_Parrived => MPI_Parrived, &
+    MPIF_Pcontrol => MPI_Pcontrol, &
     MPIF_Pready => MPI_Pready, &
     MPIF_Pready_list => MPI_Pready_list, &
     MPIF_Pready_range => MPI_Pready_range, &
@@ -973,6 +974,7 @@ module mpi_f08_functions
   public :: MPI_Pack_size
   public :: MPI_Pack_size_c
   public :: MPI_Parrived
+  public :: MPI_Pcontrol
   public :: MPI_Pready
   public :: MPI_Pready_list
   public :: MPI_Pready_range
@@ -13129,6 +13131,18 @@ contains
     )
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Parrived
+
+  subroutine MPI_Pcontrol( &
+    level &
+  )
+    use mpi_f08_constants
+    use mpi_f08_types
+    implicit none
+    integer, intent(in) :: level
+    call MPIF_Pcontrol( &
+      level &
+    )
+  end subroutine MPI_Pcontrol
 
   subroutine MPI_Pready( &
     partition, &

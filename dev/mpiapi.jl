@@ -62,8 +62,9 @@ aint_count_kinds = ["POLYDISPLACEMENT_AINT_COUNT", "POLYDISPOFFSET", "POLYDTYPE_
 
 count_kinds = ["GENERIC_DTYPE_COUNT", "NUM_BYTES", "XFER_NUM_ELEM"]
 
-fortran_false = 0
-fortran_true = 1
+# Fortran's .TRUE. and .FALSE. are not necessarily 1 and 0 -- gfortran and flang
+# use 1, Intel uses -1 -- so the conversions below go through the helpers in
+# src/mpif_logical.c, which ask the MPI library what the representation is.
 
 struct State
     # have_fortran_booleans::Ref{Bool}
@@ -73,22 +74,6 @@ struct State
 
     State() = new(Ref(false), Ref(false), Ref(false))
 end
-
-# function ensure_fortran_booleans!(state, input_conversions)
-#     state.have_fortran_booleans[] && return
-#     append!(input_conversions, [
-#         "MPI_Fint q_logical_true, q_logical_false, q_is_set;",
-#         "{",
-#         "  const int q_ierror = MPI_Abi_get_fortran_booleans(sizeof(MPI_Fint), &q_logical_true, &q_logical_false, &q_is_set);",
-#         "  if (q_ierror != MPI_SUCCESS) {",
-#         "    *ierror = q_ierror;",
-#         "    return;",
-#         "  }",
-#         "}",
-#         "if (!q_is_set) abort();",
-#     ])
-#     state.have_fortran_booleans[] = true
-# end
 
 function ensure_comm!(state, input_conversions)
     state.have_comm[] && return
@@ -134,7 +119,8 @@ f08_implementations_public = []
 f08_implementations_body = []
 
 append!(c_implementations,
-        ["#include <mpif_strings.h>",
+        ["#include <mpif_logical.h>",
+         "#include <mpif_strings.h>",
          "#include <mpi.h>",
          "#include <assert.h>",
          "#include <stdint.h>",
@@ -928,13 +914,13 @@ for key in sort(collect(keys(apis)))
                 if param_direction == "in"
                     if length == nothing
                         push!(input_arguments, "const MPI_Fint* restrict const $parname")
-                        push!(call_arguments, "*$parname != $fortran_false")
+                        push!(call_arguments, "mpif_logical2bool(*$parname)")
                     elseif length == "ndims"
                         push!(input_arguments, "const MPI_Fint* restrict const $parname")
                         append!(input_conversions,
                                 ["int c_$parname[*ndims];",
                                  "for (int dim=0; dim<*ndims; ++dim)",
-                                 "  c_$parname[dim] = $parname[dim] != $fortran_false;"])
+                                 "  c_$parname[dim] = mpif_logical2bool($parname[dim]);"])
                         push!(call_arguments, "c_$parname")
                     elseif name == "MPI_Cart_sub" && length == "*"
                         push!(input_arguments, "const MPI_Fint* restrict const $parname")
@@ -950,7 +936,7 @@ for key in sort(collect(keys(apis)))
                                  "}",
                                  "int c_$parname[ndims];",
                                  "for (int dim=0; dim<ndims; ++dim)",
-                                 "  c_$parname[dim] = $parname[dim] != $fortran_false;"])
+                                 "  c_$parname[dim] = mpif_logical2bool($parname[dim]);"])
                         push!(call_arguments, "c_$parname")
                     else
                         @show name length
@@ -961,14 +947,14 @@ for key in sort(collect(keys(apis)))
                         push!(input_arguments, "MPI_Fint* restrict const $parname")
                         push!(input_conversions, "MPI_Fint c_$parname;")
                         push!(call_arguments, "&c_$parname")
-                        push!(output_conversions, "*$parname = c_$parname ? $fortran_true : $fortran_false;")
+                        push!(output_conversions, "*$parname = mpif_bool2logical(c_$parname);")
                     elseif length == "maxdims"
                         push!(input_arguments, "MPI_Fint* restrict const $parname")
                         append!(input_conversions, ["int c_$parname[*maxdims];"])
                         push!(call_arguments, "c_$parname")
                         append!(output_conversions,
                                 ["for (int dim=0; dim<*maxdims; ++dim)",
-                                 "  $parname[dim] = c_$parname[dim] ? $fortran_true : $fortran_false;"])
+                                 "  $parname[dim] = mpif_bool2logical(c_$parname[dim]);"])
                     else
                         @show name length
                         @assert false
