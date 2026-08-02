@@ -11,5 +11,11 @@ const intptr_t mpif_argvs_null_ptr_ __attribute__((__aligned__(16))) = (intptr_t
 const intptr_t mpif_errcodes_ignore_ptr_ __attribute__((__aligned__(16))) = (intptr_t)MPI_ERRCODES_IGNORE;
 const intptr_t mpif_status_ignore_ptr_ __attribute__((__aligned__(16))) = (intptr_t)MPI_STATUS_IGNORE;
 const intptr_t mpif_statuses_ignore_ptr_ __attribute__((__aligned__(16))) = (intptr_t)MPI_STATUSES_IGNORE;
+// mpi_f08's two status sentinels take their addresses from here rather than
+// from the two cells above; see the comment on their declarations in
+// src/mpif_f08_types.F90 for the gfortran bug that separates them. The same
+// values, so all three interfaces still name one address.
+const intptr_t mpif_f08_status_ignore_ptr_ __attribute__((__aligned__(16))) = (intptr_t)MPI_STATUS_IGNORE;
+const intptr_t mpif_f08_statuses_ignore_ptr_ __attribute__((__aligned__(16))) = (intptr_t)MPI_STATUSES_IGNORE;
 const intptr_t mpif_unweighted_ptr_ __attribute__((__aligned__(16))) = (intptr_t)MPI_UNWEIGHTED;
 const intptr_t mpif_weights_empty_ptr_ __attribute__((__aligned__(16))) = (intptr_t)MPI_WEIGHTS_EMPTY;

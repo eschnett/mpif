@@ -259,39 +259,56 @@ returned, for the respective attributes."
 not standard Fortran, and comparing addresses silently fails if the argument
 arrives as a copy.
 
-### 9. An array of statuses is declared as a single status
+### 9. An array of statuses was declared as a single status — fixed
 
 Six routines take one: `MPI_Waitall`, `MPI_Waitsome`, `MPI_Testall`,
 `MPI_Testsome`, `MPI_Request_get_status_all` and `MPI_Request_get_status_some`.
 `apis.json` gives their `array_of_statuses` the `STATUS` kind with `length` `"*"`,
-but the generator's `STATUS` branch ignores `length` and emits a scalar for both
+but the generator's `STATUS` branch ignored `length` and emitted a scalar for both
 Fortran interfaces:
 
     push!(f_declarations, "integer :: $parname(MPI_STATUS_SIZE)")
     push!(f08_declarations, "type(MPI_Status), intent($param_direction) :: $parname")
 
-They should be `integer :: $parname(MPI_STATUS_SIZE, *)` and
-`type(MPI_Status), intent(out) :: $parname(*)`.
-
-In `mpi_f08` this makes the six routines unusable: passing the array the standard
+In `mpi_f08` that made the six routines unusable: passing the array the standard
 calls for is a compile error, `Rank mismatch in argument 'array_of_statuses'
-(scalar and rank-1)`. In `mpif.h` and the `mpi` module the wrong declaration is
+(scalar and rank-1)`. In `mpif.h` and the `mpi` module the wrong declaration was
 survivable -- Fortran sequence association lets a larger actual argument through,
-and a four-request `MPI_Waitall` over receive requests returns all four statuses
-correctly -- but the interface still describes the wrong thing.
+and a four-request `MPI_Waitall` over receive requests returned all four statuses
+correctly -- but the interface still described the wrong thing.
 
-Two consequences behind that one:
+Fixed, in three parts, because the declaration alone would have made things
+worse rather than better:
 
-- The f08 wrapper sizes its temporary for one status,
-  `integer :: tmp_array_of_statuses(MPI_STATUS_SIZE)`, and converts one, while
-  the C wrapper hands MPI the caller's buffer cast to `MPI_Status*` and MPI
-  writes `count` of them. Fixing the declaration alone would leave the f08 path
-  overrunning that temporary.
-- `MPI_STATUSES_IGNORE` is never detected. It does not appear anywhere in
-  `gen/mpif_f08_functions.F90`; the generated guards all compare against
-  `MPI_STATUS_IGNORE`. Since the two sentinels are different addresses, passing
-  `MPI_STATUSES_IGNORE` fails the comparison and the wrapper converts into it --
-  and it points at the C constant, which is a null pointer.
+- The declarations are now `integer :: $parname(MPI_STATUS_SIZE, *)` and
+  `type(MPI_Status), intent(out) :: $parname(*)`.
+- The f08 temporary is an array. It was
+  `integer :: tmp_array_of_statuses(MPI_STATUS_SIZE)` -- one status -- while the
+  C wrapper hands MPI the buffer it is given and MPI fills in one status per
+  request, so everything past the first was written outside the temporary. It is
+  now `(MPI_STATUS_SIZE, count)`, taking its length from the request array's,
+  and the copy back runs over `outcount` for the `some` routines and `count` for
+  the `all` ones. Copying `count` of them for a `some` routine would overwrite
+  entries that the standard leaves to the caller.
+- `MPI_STATUSES_IGNORE` is now what the guards compare against, rather than
+  `MPI_STATUS_IGNORE`. In this ABI the two happen to be the same address --
+  `mpi.h` has `#define MPI_STATUS_IGNORE ((MPI_Status*)0)` and the same for
+  `MPI_STATUSES_IGNORE` -- so the old comparison was not actually wrong, as this
+  entry used to claim. It was arbitrary, and an ABI that distinguished them
+  would have broken it.
+
+`test/waitall_f08.f90` is the assertion; it does not compile at all against the
+old declaration. `test/waitall_f90.f90` covers the `mpi` module side and passes
+either way, by the sequence association above.
+
+One thing the fix needed that was nothing to do with the generator: naming
+`MPI_STATUSES_IGNORE` from `mpi_f08` did not link, and never had. See the
+comment on its declaration in `src/mpif_f08_types.F90` -- gfortran 15 emits a
+reference to a module variable it never defines when a Cray pointee's pointer
+shares a common block with another module's variable and the sentinel is reached
+through a re-exporting module. Both f08 status sentinels now have common blocks
+of their own, initialised from the same C constants in `src/mpif_constants.c`,
+so all three interfaces still name one address.
 
 ### 10. Info keys and values were mishandled in several ways — fixed
 
@@ -517,6 +534,45 @@ asks: "No polymorphic support for larger types is provided in Fortran when using
 mpif.h and use mpi." Note that mpif nonetheless exposes the `_c` names there, as
 ordinary separate procedures. That is an extension rather than a conformance
 problem, and removing it would break anyone already calling them, so it stands.
+
+### 18. Request indices were returned C-numbered — fixed
+
+Found while testing error 9: `MPI_Waitsome` handed back `array_of_indices`
+exactly as C wrote it, and C numbers requests from zero where Fortran numbers
+them from one. MPI-5.0 says so for each of them -- for
+`MPI_WAITANY`, "index of handle for operation that completed ... in the range
+`0`...`count-1` in C, and in the range `1`...`count` in Fortran".
+
+Six routines return one: `MPI_Waitany`, `MPI_Testany` and
+`MPI_Request_get_status_any` a scalar `index`, `MPI_Waitsome`, `MPI_Testsome` and
+`MPI_Request_get_status_some` an `array_of_indices`. The generator treated
+`INDEX` as an ordinary integer kind, so the C wrapper passed the value straight
+through. The consequence is quiet: an index used to subscript the request array
+is off by one, so a program either works on the wrong request or runs off the
+start of the array.
+
+Fixed in the C wrapper, which is where the two conventions meet. Two details
+made it more than an increment:
+
+- `MPI_UNDEFINED` is what these routines report when no request was active, and
+  it has to pass through rather than become zero. The scalar form tests for it;
+  in the array form it arrives as `outcount`, and being negative it makes the
+  loop do nothing.
+- Only the first `outcount` entries of an array are MPI's to have written -- the
+  same bound the status copy back uses. The loop is clamped to the number of
+  requests as well, so that an `outcount` left unset by a failed call cannot
+  turn the renumbering into a wild write.
+
+`INDEX` is not by itself the discriminator: `MPI_Cart_shift`'s `direction`,
+`MPI_Graph_get`'s `index` and `MPI_Session_get_nth_pset`'s `n` carry the same
+kind and are numbered alike in both languages. What the six have in common is
+taking an array of requests, which is what `request_count` in the generator
+records -- the same thing that sizes the f08 status temporary for error 9.
+
+`test/waitall_f08.f90` asserts both forms: that `MPI_Waitsome`'s indices select
+the request whose status sits beside them, and that `MPI_Waitany`'s index is in
+`1..count` and becomes `MPI_UNDEFINED` once every request is null. Putting the
+bug back fails it at the first index, which comes out as zero.
 
 ## External blockers
 
@@ -896,23 +952,17 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
 
 ### Worth doing next, roughly in order
 
-1. **Error 9, arrays of statuses.** The largest of what is left: it makes six
-   routines unusable from `mpi_f08` and accounts for most of what still fails in
-   `f08/pt2pt`. Needs the generator to honour the parameter's `length`, and the
-   f08 temporary to become an array, and `MPI_STATUSES_IGNORE` to be recognised
-   alongside `MPI_STATUS_IGNORE`. All three, or the f08 path overruns a
-   one-status buffer.
-2. **`MPI_Register_datarep`**, the last callback family. The box that generalized
+1. **`MPI_Register_datarep`**, the last callback family. The box that generalized
    requests use works here too; the difference is that datareps are never
    deregistered, so it is never freed.
-3. **Error 4's remainder**, exporting `MPI_COMM_NULL_COPY_FN` and the other
+2. **Error 4's remainder**, exporting `MPI_COMM_NULL_COPY_FN` and the other
    thirteen from the `mpi` and `mpi_f08` modules. Several `f90` attribute and
    window tests fail to compile on this alone, and the f08 forms additionally
    need their own procedures, taking `TYPE(MPI_Comm)` rather than `INTEGER`.
-4. **The PMPI interface**, which does not exist at all and which `mpif.h`
+3. **The PMPI interface**, which does not exist at all and which `mpif.h`
    currently promises four names it cannot link.
-5. **`mprobef08`** fails at run time and has not been looked at.
-6. Error 8's `loc()`, and error 1a's duplicated handle conversions, both
+4. **`mprobef08`** fails at run time and has not been looked at.
+5. Error 8's `loc()`, and error 1a's duplicated handle conversions, both
    tidying rather than breakage.
 
 One thing is worth reporting upstream and is not yet: Open MPI's
@@ -927,24 +977,31 @@ gcc, on macOS 15/arm64.
 
 |            | f77       | f90       | f08       |
 |------------|-----------|-----------|-----------|
-| MPICH      | 34 / 104  | 48 / 122  | 58 / 136  |
-| Open MPI   | 10 / 104  | 22 / 122  | 37 / 136  |
+| MPICH      | 31 / 104  | 45 / 122  | 51 / 136  |
+| Open MPI   |  7 / 104  | 19 / 122  | 28 / 136  |
 
 Failures, not passes. MPICH does worse than Open MPI here for one reason: 17 of
 its f77 failures are the assertion of external blocker "MPICH: attributes on
 predefined datatypes abort in ABI builds", which Open MPI does not have. Open
 MPI's own blockers cost it fewer tests.
 
-`test/`, mpif's own suite, is 26 of 26 on both.
+`test/`, mpif's own suite, is 28 of 28 on both.
 
-The Open MPI row was measured against commit `d0346f67` with the
-empty-info-value patch applied, and is two better in each interface than the
-`090cfcee` row it replaces (12 / 24 / 39). The MPICH row is unchanged and was
-not re-measured, nothing on that side having moved.
+Both rows were measured after errors 9 and 18, and each moved the numbers in the
+shape its fix predicts. Error 9 moved the f08 column alone, 58 to 54 on MPICH and
+37 to 30 on Open MPI: the six routines it repairs were a compile error in
+`mpi_f08` only, sequence association having carried `mpif.h` and the `mpi` module
+all along. Error 18 then moved all three columns, by three apiece except Open
+MPI's f08 by two, which is what a fix in the C wrapper does -- all three
+interfaces call the same one. `f08/pt2pt/pssendf08`, named above as the likely
+casualty of the C-numbered indices, is among the tests that now pass.
 
-`f77/datatype/typenamef` now passes, which is the pair-type fix showing up.
-`allctypesf`, the other test that crash was killing, still ends in a SIGSEGV --
-so it had a second cause, and it has not been looked at.
+The Open MPI f77 and f90 figures also carry the two-per-interface improvement
+from moving to commit `d0346f67` with the empty-info-value patch, against the
+12 / 24 / 39 measured at `090cfcee`. `f77/datatype/typenamef` now passes, which
+is the pair-type fix showing up; `allctypesf`, the other test that crash was
+killing, still ends in a SIGSEGV, so it had a second cause and has not been
+looked at.
 
 One caution about these numbers: the Open MPI run needs the loopback workaround
 that `scripts/macos-test-mpich-suite.sh` applies by default -- without it the

@@ -15174,9 +15174,10 @@ contains
     integer, intent(in) :: count
     type(MPI_Request), intent(in) :: array_of_requests(count)
     logical, intent(out) :: flag
-    type(MPI_Status), intent(out) :: array_of_statuses
+    type(MPI_Status), intent(out) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
-    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE)
+    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, count)
+    integer :: i_array_of_statuses
     integer :: tmp_ierror
     call MPIF_Request_get_status_all( &
       count, &
@@ -15185,8 +15186,10 @@ contains
       tmp_array_of_statuses, &
       tmp_ierror &
     )
-    if (loc(array_of_statuses) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_array_of_statuses, array_of_statuses)
+    if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
+      do i_array_of_statuses = 1, count
+        call MPI_Status_f2f08(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+      end do
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Request_get_status_all
@@ -15239,9 +15242,10 @@ contains
     type(MPI_Request), intent(in) :: array_of_requests(incount)
     integer, intent(out) :: outcount
     integer, intent(out) :: array_of_indices(*)
-    type(MPI_Status), intent(out) :: array_of_statuses
+    type(MPI_Status), intent(out) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
-    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE)
+    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, incount)
+    integer :: i_array_of_statuses
     integer :: tmp_ierror
     call MPIF_Request_get_status_some( &
       incount, &
@@ -15251,8 +15255,10 @@ contains
       tmp_array_of_statuses, &
       tmp_ierror &
     )
-    if (loc(array_of_statuses) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_array_of_statuses, array_of_statuses)
+    if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
+      do i_array_of_statuses = 1, outcount
+        call MPI_Status_f2f08(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+      end do
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Request_get_status_some
@@ -17426,9 +17432,10 @@ contains
     integer, intent(in) :: count
     type(MPI_Request), intent(inout) :: array_of_requests(count)
     logical, intent(out) :: flag
-    type(MPI_Status), intent(out) :: array_of_statuses
+    type(MPI_Status), intent(out) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
-    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE)
+    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, count)
+    integer :: i_array_of_statuses
     integer :: tmp_ierror
     call MPIF_Testall( &
       count, &
@@ -17437,8 +17444,10 @@ contains
       tmp_array_of_statuses, &
       tmp_ierror &
     )
-    if (loc(array_of_statuses) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_array_of_statuses, array_of_statuses)
+    if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
+      do i_array_of_statuses = 1, count
+        call MPI_Status_f2f08(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+      end do
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Testall
@@ -17491,9 +17500,10 @@ contains
     type(MPI_Request), intent(inout) :: array_of_requests(incount)
     integer, intent(out) :: outcount
     integer, intent(out) :: array_of_indices(*)
-    type(MPI_Status), intent(out) :: array_of_statuses
+    type(MPI_Status), intent(out) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
-    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE)
+    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, incount)
+    integer :: i_array_of_statuses
     integer :: tmp_ierror
     call MPIF_Testsome( &
       incount, &
@@ -17503,8 +17513,10 @@ contains
       tmp_array_of_statuses, &
       tmp_ierror &
     )
-    if (loc(array_of_statuses) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_array_of_statuses, array_of_statuses)
+    if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
+      do i_array_of_statuses = 1, outcount
+        call MPI_Status_f2f08(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+      end do
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Testsome
@@ -19061,9 +19073,10 @@ contains
     implicit none
     integer, intent(in) :: count
     type(MPI_Request), intent(inout) :: array_of_requests(count)
-    type(MPI_Status), intent(out) :: array_of_statuses
+    type(MPI_Status), intent(out) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
-    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE)
+    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, count)
+    integer :: i_array_of_statuses
     integer :: tmp_ierror
     call MPIF_Waitall( &
       count, &
@@ -19071,8 +19084,10 @@ contains
       tmp_array_of_statuses, &
       tmp_ierror &
     )
-    if (loc(array_of_statuses) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_array_of_statuses, array_of_statuses)
+    if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
+      do i_array_of_statuses = 1, count
+        call MPI_Status_f2f08(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+      end do
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Waitall
@@ -19122,9 +19137,10 @@ contains
     type(MPI_Request), intent(inout) :: array_of_requests(incount)
     integer, intent(out) :: outcount
     integer, intent(out) :: array_of_indices(*)
-    type(MPI_Status), intent(out) :: array_of_statuses
+    type(MPI_Status), intent(out) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
-    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE)
+    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, incount)
+    integer :: i_array_of_statuses
     integer :: tmp_ierror
     call MPIF_Waitsome( &
       incount, &
@@ -19134,8 +19150,10 @@ contains
       tmp_array_of_statuses, &
       tmp_ierror &
     )
-    if (loc(array_of_statuses) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_array_of_statuses, array_of_statuses)
+    if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
+      do i_array_of_statuses = 1, outcount
+        call MPI_Status_f2f08(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+      end do
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Waitsome

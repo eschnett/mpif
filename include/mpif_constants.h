@@ -290,7 +290,10 @@
       pointer (MPIF_STATUS_IGNORE_PTR, MPI_STATUS_IGNORE)
       common /MPIF_STATUS_IGNORE_PTR/ MPIF_STATUS_IGNORE_PTR
 
-      integer MPI_STATUSES_IGNORE(MPI_STATUS_SIZE)
+!     Rank two, matching the `array_of_statuses(MPI_STATUS_SIZE,*)` of the six
+!     routines that take an array of statuses. Sequence association would let a
+!     rank-one array through as well, but the shape is what the name stands for.
+      integer MPI_STATUSES_IGNORE(MPI_STATUS_SIZE, 1)
       integer(MPI_ADDRESS_KIND) MPIF_STATUSES_IGNORE_PTR
       pointer (MPIF_STATUSES_IGNORE_PTR, MPI_STATUSES_IGNORE)
       common /MPIF_STATUSES_IGNORE_PTR/ MPIF_STATUSES_IGNORE_PTR

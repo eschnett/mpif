@@ -43,3 +43,5 @@ add_mpi_test(sizeof_f90             SOURCES sizeof_f90.f90                      
 add_mpi_test(rma_disp_f08           SOURCES rma_disp_f08.f90                        LIBS MPI::MPI_Fortran)
 add_mpi_test(alloc_mem_cptr        SOURCES alloc_mem_cptr.f90                      LIBS MPI::MPI_Fortran)
 add_mpi_test(large_count_f08        SOURCES large_count_f08.f90                     LIBS MPI::MPI_Fortran)
+add_mpi_test(waitall_f90            SOURCES waitall_f90.f90                         LIBS MPI::MPI_Fortran)
+add_mpi_test(waitall_f08            SOURCES waitall_f08.f90                         LIBS MPI::MPI_Fortran)

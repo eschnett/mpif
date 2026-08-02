@@ -8389,7 +8389,7 @@ module mpif_functions
     integer :: count
     integer :: array_of_requests(count)
     logical :: flag
-    integer :: array_of_statuses(MPI_STATUS_SIZE)
+    integer :: array_of_statuses(MPI_STATUS_SIZE, *)
     integer :: ierror
   end subroutine MPI_Request_get_status_all
 
@@ -8425,7 +8425,7 @@ module mpif_functions
     integer :: array_of_requests(incount)
     integer :: outcount
     integer :: array_of_indices(*)
-    integer :: array_of_statuses(MPI_STATUS_SIZE)
+    integer :: array_of_statuses(MPI_STATUS_SIZE, *)
     integer :: ierror
   end subroutine MPI_Request_get_status_some
 
@@ -9771,7 +9771,7 @@ module mpif_functions
     integer :: count
     integer :: array_of_requests(count)
     logical :: flag
-    integer :: array_of_statuses(MPI_STATUS_SIZE)
+    integer :: array_of_statuses(MPI_STATUS_SIZE, *)
     integer :: ierror
   end subroutine MPI_Testall
 
@@ -9807,7 +9807,7 @@ module mpif_functions
     integer :: array_of_requests(incount)
     integer :: outcount
     integer :: array_of_indices(*)
-    integer :: array_of_statuses(MPI_STATUS_SIZE)
+    integer :: array_of_statuses(MPI_STATUS_SIZE, *)
     integer :: ierror
   end subroutine MPI_Testsome
 
@@ -10775,7 +10775,7 @@ module mpif_functions
     implicit none
     integer :: count
     integer :: array_of_requests(count)
-    integer :: array_of_statuses(MPI_STATUS_SIZE)
+    integer :: array_of_statuses(MPI_STATUS_SIZE, *)
     integer :: ierror
   end subroutine MPI_Waitall
 
@@ -10809,7 +10809,7 @@ module mpif_functions
     integer :: array_of_requests(incount)
     integer :: outcount
     integer :: array_of_indices(*)
-    integer :: array_of_statuses(MPI_STATUS_SIZE)
+    integer :: array_of_statuses(MPI_STATUS_SIZE, *)
     integer :: ierror
   end subroutine MPI_Waitsome
 

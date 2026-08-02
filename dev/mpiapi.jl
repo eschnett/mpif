@@ -669,6 +669,30 @@ for key in sort(collect(keys(apis)))
 
     need_embiggen = any(startswith(p["kind"], "POLY") for p in parameters)
 
+    # The routines that operate on an array of requests -- MPI_Waitall,
+    # MPI_Waitsome and the rest -- report per-request results that the parameters
+    # themselves do not say how to size or bound. Two names cover it: how many
+    # requests there are, and how many entries MPI actually filled in, which for
+    # the `some` routines is `outcount` and otherwise is all of them.
+    #
+    # `request_count` sizes the f08 status temporary (error 9) and `reported_count`
+    # bounds both the copy back out of it and the renumbering of the request
+    # indices (error 18). `request_count` being set is also the test for whether
+    # this routine deals in requests at all: MPI_Graph_get's `index` has the same
+    # INDEX kind as MPI_Waitsome's and must not be renumbered.
+    request_count = nothing
+    reported_count = nothing
+    for p in parameters
+        if p["kind"] == "REQUEST" && p["length"] != nothing
+            request_count = p["length"]
+        elseif p["kind"] == "ARRAY_LENGTH" && p["param_direction"] == "out"
+            reported_count = p["name"]
+        end
+    end
+    if reported_count == nothing
+        reported_count = request_count
+    end
+
     for embiggen in (need_embiggen ? [false, true] : [false])
         name_c = name * (embiggen ? "_c" : "")
         name_f = lowercase(name * (embiggen ? "_c" : "") * "_")
@@ -730,7 +754,7 @@ for key in sort(collect(keys(apis)))
                         push!(f08_call_temp_declarations, "integer(MPI_ADDRESS_KIND) :: tmp_$f_argname")
                         push!(f08_call_arguments, "tmp_$f_argname")
                         push!(f08_call_temp_copyouts, "$f_argname = transfer(tmp_$f_argname, C_NULL_PTR)")
-                    elseif kind == "STATUS"
+                    elseif kind == "STATUS" && length == nothing
                         push!(f08_call_temp_declarations, "integer :: tmp_$f_argname(MPI_STATUS_SIZE)")
                         if param_direction in ["in", "inout"]
                             push!(f08_call_temp_copyins, "if (loc($f_argname) /= loc(MPI_STATUS_IGNORE)) then")
@@ -741,6 +765,44 @@ for key in sort(collect(keys(apis)))
                         if param_direction in ["out", "inout"]
                             push!(f08_call_temp_copyouts, "if (loc($f_argname) /= loc(MPI_STATUS_IGNORE)) then")
                             push!(f08_call_temp_copyouts, "  call MPI_Status_f2f08(tmp_$f_argname, $f_argname)")
+                            push!(f08_call_temp_copyouts, "endif")
+                        end
+                    elseif kind == "STATUS"
+                        # An array of statuses. The temporary is as long as the
+                        # array MPI writes through, which a scalar one was not:
+                        # the C wrapper hands MPI the buffer it is given and MPI
+                        # fills in one status per request, so a one-status
+                        # temporary was overrun by every call but the shortest.
+                        #
+                        # The sentinel to recognise here is MPI_STATUSES_IGNORE
+                        # rather than MPI_STATUS_IGNORE. The ABI happens to make
+                        # both `((MPI_Status*)0)`, so the scalar name would
+                        # compare equal too; naming the right one is what keeps
+                        # that a coincidence rather than a dependency.
+                        @assert length == "*"
+                        @assert request_count != nothing
+                        push!(f08_call_temp_declarations,
+                              "integer :: tmp_$f_argname(MPI_STATUS_SIZE, $request_count)")
+                        push!(f08_call_temp_declarations, "integer :: i_$f_argname")
+                        if param_direction in ["in", "inout"]
+                            push!(f08_call_temp_copyins, "if (loc($f_argname) /= loc(MPI_STATUSES_IGNORE)) then")
+                            push!(f08_call_temp_copyins, "  do i_$f_argname = 1, $request_count")
+                            push!(f08_call_temp_copyins,
+                                  "    call MPI_Status_f082f($f_argname(i_$f_argname), tmp_$f_argname(:, i_$f_argname))")
+                            push!(f08_call_temp_copyins, "  end do")
+                            push!(f08_call_temp_copyins, "endif")
+                        end
+                        push!(f08_call_arguments, "tmp_$f_argname")
+                        if param_direction in ["out", "inout"]
+                            # Only the entries MPI filled in are copied back. For
+                            # the `some` routines that is `outcount`, which is
+                            # MPI_UNDEFINED when no request was active -- a
+                            # negative bound, so the loop simply does nothing.
+                            push!(f08_call_temp_copyouts, "if (loc($f_argname) /= loc(MPI_STATUSES_IGNORE)) then")
+                            push!(f08_call_temp_copyouts, "  do i_$f_argname = 1, $reported_count")
+                            push!(f08_call_temp_copyouts,
+                                  "    call MPI_Status_f2f08(tmp_$f_argname(:, i_$f_argname), $f_argname(i_$f_argname))")
+                            push!(f08_call_temp_copyouts, "  end do")
                             push!(f08_call_temp_copyouts, "endif")
                         end
                     else
@@ -906,8 +968,20 @@ for key in sort(collect(keys(apis)))
                     @show name parname param_direction
                     @assert false
                 end
-                push!(f_declarations, "integer :: $parname(MPI_STATUS_SIZE)")
-                push!(f08_declarations, "type(MPI_Status), intent($param_direction) :: $parname")
+                if length == nothing
+                    push!(f_declarations, "integer :: $parname(MPI_STATUS_SIZE)")
+                    push!(f08_declarations, "type(MPI_Status), intent($param_direction) :: $parname")
+                else
+                    # An array of statuses, whose length is the caller's to know:
+                    # assumed-size in both interfaces. Declaring it as a scalar
+                    # made the six routines that take one unusable from mpi_f08,
+                    # where passing the array the standard asks for is a compile
+                    # error -- "Rank mismatch in argument 'array_of_statuses'
+                    # (scalar and rank-1)".
+                    @assert length == "*"
+                    push!(f_declarations, "integer :: $parname(MPI_STATUS_SIZE, *)")
+                    push!(f08_declarations, "type(MPI_Status), intent($param_direction) :: $parname(*)")
+                end
             elseif kind in [int_kinds; int_aint_kinds; int_count_kinds; aint_kinds; aint_count_kinds; count_kinds]
                 if kind in int_kinds || (!embiggen && kind in int_aint_kinds) || (!embiggen && kind in int_count_kinds)
                     type = "MPI_Fint"
@@ -990,6 +1064,45 @@ for key in sort(collect(keys(apis)))
                                     append!(output_conversions,
                                             ["if (c_flag)",
                                              "  *$parname = c_$parname > 0 ? (MPI_Fint)(c_$parname - 1) : 0;"])
+                                elseif kind == "INDEX" && request_count != nothing
+                                    # An index into the array of requests. C
+                                    # numbers those from zero and Fortran from
+                                    # one -- MPI-5.0 says so for each of these
+                                    # routines, "in the range 0...count-1 in C,
+                                    # and in the range 1...count in Fortran" --
+                                    # so the value cannot be passed through.
+                                    #
+                                    # The INDEX kind alone does not mean this:
+                                    # MPI_Graph_get's `index` and
+                                    # MPI_Cart_shift's `direction` carry it too
+                                    # and are numbered alike in both languages.
+                                    # Taking an array of requests is what these
+                                    # have in common, which is what
+                                    # `request_count` records.
+                                    @assert length == nothing || length == "*"
+                                    push!(call_arguments, "$parname")
+                                    if length == nothing
+                                        # MPI_UNDEFINED means no request
+                                        # completed, and is not an index
+                                        append!(output_conversions,
+                                                ["if (*$parname >= 0)",
+                                                 "  ++*$parname;"])
+                                    else
+                                        # Only the entries MPI reported are its
+                                        # to renumber. MPI_UNDEFINED is negative
+                                        # here, so a call that completed nothing
+                                        # renumbers nothing; the bound is also
+                                        # clamped to the number of requests, so
+                                        # that an `outcount` left unset by a
+                                        # failed call cannot turn this into a
+                                        # wild write.
+                                        append!(output_conversions,
+                                                ["const int count = *$reported_count < *$request_count",
+                                                 "                      ? *$reported_count",
+                                                 "                      : *$request_count;",
+                                                 "for (int i=0; i<count; ++i)",
+                                                 "  ++$parname[i];"])
+                                    end
                                 else
                                     push!(call_arguments, "$parname")
                                 end

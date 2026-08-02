@@ -9184,6 +9184,8 @@ void mpi_request_get_status_any_(
     &c_flag,
     (MPI_Status*)status
   );
+  if (*index >= 0)
+    ++*index;
   *flag = mpif_bool2logical(c_flag);
 }
 
@@ -9206,6 +9208,11 @@ void mpi_request_get_status_some_(
     array_of_indices,
     (MPI_Status*)array_of_statuses
   );
+  const int count = *outcount < *incount
+                        ? *outcount
+                        : *incount;
+  for (int i=0; i<count; ++i)
+    ++array_of_indices[i];
 }
 
 void mpi_rget_(
@@ -10629,6 +10636,8 @@ void mpi_testany_(
   );
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPIF_Request_toint(c_array_of_requests[i]);
+  if (*index >= 0)
+    ++*index;
   *flag = mpif_bool2logical(c_flag);
 }
 
@@ -10653,6 +10662,11 @@ void mpi_testsome_(
   );
   for (int i=0; i<*incount; ++i)
     array_of_requests[i] = MPIF_Request_toint(c_array_of_requests[i]);
+  const int count = *outcount < *incount
+                        ? *outcount
+                        : *incount;
+  for (int i=0; i<count; ++i)
+    ++array_of_indices[i];
 }
 
 void mpi_topo_test_(
@@ -11741,6 +11755,8 @@ void mpi_waitany_(
   );
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPIF_Request_toint(c_array_of_requests[i]);
+  if (*index >= 0)
+    ++*index;
 }
 
 void mpi_waitsome_(
@@ -11764,6 +11780,11 @@ void mpi_waitsome_(
   );
   for (int i=0; i<*incount; ++i)
     array_of_requests[i] = MPIF_Request_toint(c_array_of_requests[i]);
+  const int count = *outcount < *incount
+                        ? *outcount
+                        : *incount;
+  for (int i=0; i<count; ++i)
+    ++array_of_indices[i];
 }
 
 void mpi_win_allocate_(
