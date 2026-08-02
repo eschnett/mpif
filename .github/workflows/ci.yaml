@@ -183,15 +183,17 @@ jobs:
 
       # The downloaded and autogen'ed source tree. Its key deliberately ignores
       # `fortran/`, so editing the bindings still skips the clone, the
-      # submodules and `autogen`. Saved explicitly right after preparing it,
-      # because by the end of the job the tree also holds all the build output.
+      # submodules and `autogen`. It does cover the patches the install scripts
+      # apply, which are part of the prepared tree. Saved explicitly right after
+      # preparing it, because by the end of the job the tree also holds all the
+      # build output.
       - name: Restore MPI source tree
         id: cache-mpi-src
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         uses: actions/cache/restore@v5
         with:
           path: ${{ runner.temp }}/mpi-src
-          key: mpi-src-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('ci-scripts/install-*.sh') }}
+          key: mpi-src-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('ci-scripts/install-*.sh', 'ci-scripts/*.patch') }}
 
       - name: Prepare MPI source tree
         if: steps.cache-mpi.outputs.cache-hit != 'true' && steps.cache-mpi-src.outputs.cache-hit != 'true'

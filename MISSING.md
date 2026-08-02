@@ -537,22 +537,35 @@ counterpart in MPICH's own test suite fail until this is fixed upstream. The
 reproducer sent with the issue is `bug-mpich-7916/mpich-abi-attr-bug.c`; it is pure C, with
 no Fortran involved.
 
-### OpenMPI: some built-in types are not mapped correctly
+### OpenMPI: some built-in types are not mapped correctly — fixed upstream
 
 https://github.com/open-mpi/ompi/issues/14243
 
 The Fortran types `MPI_2INTEGER`, `MPI_2REAL`, and
-`MPI_2DOUBLE_PRECISION` are not mapped correctly from their ABI handle
+`MPI_2DOUBLE_PRECISION` were not mapped correctly from their ABI handle
 to their internal OpenMPI handle.
 
-`test/predefined_types_c.c` is the probe that found it. The three pair types are
-behind `MPIF_PROBE_PAIRTYPES=1` there, off by default: the failure is a SIGSEGV
-inside `MPI_Type_get_name`, so unlike every other result the probe collects it
-cannot be caught and reported -- it takes the whole probe down, and with it the
-rest of the answers. Set the variable to check whether the upstream fix has
-landed.
+`test/predefined_types_c.c` is the probe that found it. The three pair types
+were behind `MPIF_PROBE_PAIRTYPES=1` there, off by default: the failure is a
+SIGSEGV inside `MPI_Type_get_name`, so unlike every other result the probe
+collects it cannot be caught and reported -- it takes the whole probe down, and
+with it the rest of the answers.
 
-### OpenMPI: an empty info value is rejected
+Fixed on the ABI branch, which is where the bug was: the three pair types were
+missing from `PREDEFINED_DATATYPES` in
+`ompi/mpi/bindings/ompi_bindings/consts.py`, so they got no entry in the
+generated ABI converter tables and conversion fell through to a pointer cast.
+Main was never affected. `ci-scripts/install-openmpi.sh` now pins
+`d0346f672a7698f32e9f346b5ca8681ab7887b36`, the head of the ABI pull request
+after the fix and after a rebase onto main; the previous pin,
+`090cfceee430174fdeb3ce3b00a57f29fc71a379`, predates it.
+
+Verified against a fresh build of that commit: all three now report their names
+through both the constant and the cast mpif uses, on Open MPI and on MPICH
+alike, so the probe no longer gates them behind the environment variable and
+`MPIF_PROBE_PAIRTYPES` is gone.
+
+### OpenMPI: an empty info value is rejected — fixed upstream, carried here
 
 https://github.com/open-mpi/ompi/issues/14246
 
@@ -581,13 +594,30 @@ empty key too -- and is not part of this.
 
 It reaches Fortran through the blank stripping of error 10: a value of nothing
 but spaces becomes the empty string, which is exactly what `MPI_COMM_SPAWN`'s
-`argv` requires of the same helper. Not reported upstream yet, and not worked
-around; `test/info_blanks_f08.f90` avoids asserting on it so that mpif's own
-tests do not fail on the implementations' disagreement.
+`argv` requires of the same helper. `test/info_blanks_f08.f90` avoids asserting
+on it so that mpif's own tests do not fail on the implementations' disagreement.
 
-The reproducer to send with the report is
+The reproducer sent with the issue is
 `bug-ompi-info-value/ompi-empty-info-value.c`; it is pure C, with no Fortran
 involved, and exits 0 on MPICH and 1 on Open MPI.
+
+Fixed upstream on `main` by
+[5e21b7b2](https://github.com/open-mpi/ompi/commit/5e21b7b21f8b4e52c06b5527eb344958325cbb30)
+(pull request 14247), which removes the zero-length test and leaves the empty
+*key* rejected. That is not on the ABI branch this builds from, so the fix is
+carried locally: `ci-scripts/openmpi-info-set-empty-value.patch`, applied to the
+source tree by `ci-scripts/install-openmpi.sh`.
+
+The patch is a local copy rather than the upstream `.patch` downloaded by URL,
+which is what `install-mpich.sh` does for its own fix, because the upstream one
+does not apply to the ABI branch: the branch templates the constant as
+`@MPI_MAX_INFO_VAL@` where main writes `MPI_MAX_INFO_VAL`, and the commit's other
+hunks touch a changelog and tests the branch does not have in the same state.
+Only the parameter check is carried. It is applied with `git apply`, which
+refuses fuzz, so the patch fails loudly once the branch picks the fix up rather
+than landing somewhere unintended -- and the prepared-tree stamp now includes a
+checksum of the patches and of the install script, so editing either rebuilds
+the tree instead of silently reusing an older one.
 
 ### OpenMPI: `MPI_Info_create_env` changes across `MPI_Init`
 
@@ -813,25 +843,34 @@ one directory of the suite rather than all of it:
 Set `MPIF_KEEP_TESTS=1` to stop `runtests` deleting each executable after it
 runs, which is what a debugger needs to turn "test failed" into a backtrace.
 
-### Stale build artifacts are the biggest time sink
+### Stale build artifacts were the biggest time sink
 
 Four separate "regressions" during one session turned out to be stale artifacts,
 including a `dyld: Symbol not found: ___mpi_cptr_MOD_mpi_alloc_mem_cptr` that
-looked alarming and meant nothing. Two mechanisms:
+looked alarming and meant nothing. The rule that removes the whole class: **the
+three scripts above delete their build directory and start over every time.**
+There is nothing to clean by hand, and no state to reason about.
 
-- `runtests` rebuilds a test only when its executable is **missing**. An
+- `scripts/macos-build-mpif.sh` removes `build-<variant>` and the mpif
+  installation.
+- `scripts/macos-test-mpif.sh` removes `build-<variant>-tests`.
+- `scripts/macos-test-mpich-suite.sh` unpacks the suite again and reconfigures
+  it, so `mpi/tests-<variant>/mpich-<version>` is new on every run.
+
+What survives is downloaded source only -- the MPI source tree under
+`mpi/src-<variant>`, whose reuse the install script's stamp guards, and the
+MPICH tarball. Both cost a download and no correctness.
+
+The cost is a few minutes per run, which buys back far more than it spends:
+
+- `runtests` rebuilds a test only when its executable is **missing**, so an
   executable left from an older mpif is relinked, or simply rerun, against the
-  new library. After anything that changes symbol names -- a module rename above
-  all -- clear the suite tree before believing a result:
-
-      S=mpi/tests-<variant>-gcc/mpich-5.0.1/test/mpi
-      find $S -name '*.o' -delete; find $S -name '*.mod' -delete
-      rm -rf $S/util/.libs $S/util/*.la      # libmtest_f08.a and friends
-      # and the test executables themselves, which have no extension
-
-  The `util/` libraries matter as much as the tests: `libmtest_f08.a` holds
-  `MTest_Init` and is compiled against mpif's modules.
-
+  new library. Selective cleaning is what this section used to prescribe, and it
+  is easy to get subtly wrong -- deleting libtool's `.o` files while leaving the
+  `.lo` stamps that stand for them breaks `util/libmtest_f77.la` with
+  `ar: .libs/mtest_f77.o: No such file or directory`, and every test in the suite
+  then "fails to build". The `util/` libraries matter as much as the tests:
+  `libmtest_f08.a` holds `MTest_Init` and is compiled against mpif's modules.
 - `ctest` on its own does **not** rebuild. `ctest --test-dir build-<variant>-tests`
   will happily rerun a binary built against a previous mpif and report a pass.
   Use `scripts/macos-test-mpif.sh`, which reconfigures and rebuilds first.
@@ -876,20 +915,20 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
 6. Error 8's `loc()`, and error 1a's duplicated handle conversions, both
    tidying rather than breakage.
 
-Two things are worth reporting upstream and are not yet: the Open MPI empty info
-value, which has a reproducer ready at
-`bug-ompi-info-value/ompi-empty-info-value.c`, and Open MPI's
-`MPI_Info_create_env` changing across `MPI_Init`.
+One thing is worth reporting upstream and is not yet: Open MPI's
+`MPI_Info_create_env` changing across `MPI_Init`. The empty info value has since
+been reported and fixed, and is carried as a local patch until the ABI branch
+picks it up.
 
 ### Suite baseline
 
 Recorded so that a change can be told from the background noise. Both variants,
-gcc, on macOS 15/arm64, with the suite tree cleaned first.
+gcc, on macOS 15/arm64.
 
 |            | f77       | f90       | f08       |
 |------------|-----------|-----------|-----------|
 | MPICH      | 34 / 104  | 48 / 122  | 58 / 136  |
-| Open MPI   | 12 / 104  | 24 / 122  | 39 / 136  |
+| Open MPI   | 10 / 104  | 22 / 122  | 37 / 136  |
 
 Failures, not passes. MPICH does worse than Open MPI here for one reason: 17 of
 its f77 failures are the assertion of external blocker "MPICH: attributes on
@@ -898,8 +937,16 @@ MPI's own blockers cost it fewer tests.
 
 `test/`, mpif's own suite, is 26 of 26 on both.
 
-Two cautions about these numbers. They were taken with the suite tree cleaned as
-described above, and are meaningless otherwise. And the Open MPI run needs the
-loopback workaround that `scripts/macos-test-mpich-suite.sh` now applies by
-default -- without it the spawn tests hang rather than fail, each burning
-`runtests`' 180-second timeout, and the run appears stuck.
+The Open MPI row was measured against commit `d0346f67` with the
+empty-info-value patch applied, and is two better in each interface than the
+`090cfcee` row it replaces (12 / 24 / 39). The MPICH row is unchanged and was
+not re-measured, nothing on that side having moved.
+
+`f77/datatype/typenamef` now passes, which is the pair-type fix showing up.
+`allctypesf`, the other test that crash was killing, still ends in a SIGSEGV --
+so it had a second cause, and it has not been looked at.
+
+One caution about these numbers: the Open MPI run needs the loopback workaround
+that `scripts/macos-test-mpich-suite.sh` applies by default -- without it the
+spawn tests hang rather than fail, each burning `runtests`' 180-second timeout,
+and the run appears stuck.

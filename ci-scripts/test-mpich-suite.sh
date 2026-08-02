@@ -22,8 +22,10 @@
 #   CXX              C++ compiler for the suite's configure to satisfy libtool
 #                    with (default: c++). Nothing is compiled with it.
 #   MPICH_TESTS_DIR  where to download and build the suite (default: a temporary
-#                    directory, removed afterwards). Keeping it avoids
-#                    re-downloading and re-configuring on every run.
+#                    directory, removed afterwards). Only the downloaded tarball
+#                    is reused: the suite itself is unpacked, configured and
+#                    built from scratch on every run, so keeping this directory
+#                    saves the download and nothing else.
 #   MPIEXEC_MAXNP    largest number of processes to give a test (default 4).
 #                    Tests asking for more are skipped rather than
 #                    oversubscribing a CI runner.
@@ -34,7 +36,8 @@
 #                    directory too. Set this before chasing a crash: the
 #                    executable is what a debugger needs to turn the suite's
 #                    "test failed" into a backtrace, and by default it is gone
-#                    by the time the summary is printed.
+#                    by the time the summary is printed. What is kept lasts
+#                    until the next run, which unpacks the suite again.
 
 set -euo pipefail
 
@@ -81,9 +84,17 @@ if [[ ! -f ${tarball} ]]; then
     curl -fsSL -o "${tarball}" \
          "https://www.mpich.org/static/downloads/${version}/mpich-${version}.tar.gz"
 fi
-if [[ ! -d ${suite} ]]; then
-    tar xzf "${tarball}" -C "${workdir}" "mpich-${version}/test/mpi"
-fi
+# Always unpack a fresh copy. `runtests` rebuilds a test only when its
+# executable is missing, so a tree left from an earlier run relinks -- or simply
+# reruns -- executables built against an older mpif or an older MPI, and the
+# result is a pass or a failure that says nothing about what is installed now.
+# Selectively deleting the stale pieces is what this used to ask of the caller,
+# and it is easy to get wrong: leaving libtool's `.lo` stamps behind while
+# removing the `.o` files they stand for breaks `util/libmtest_f77.la` with
+# `ar: .libs/mtest_f77.o: No such file or directory`. Unpacking again costs a
+# few seconds, and `configure` a couple of minutes.
+rm -rf "${workdir}/mpich-${version}"
+tar xzf "${tarball}" -C "${workdir}" "mpich-${version}/test/mpi"
 
 cd "${suite}"
 
@@ -105,16 +116,14 @@ fi
 # `$CXX -E` fails, autoconf falls back to /lib/cpp, and configure dies in the
 # C++ preprocessor sanity check. Point it at the plain C++ compiler instead;
 # nothing is compiled with it.
-if [[ ! -f Makefile ]]; then
-    ./configure \
-        --enable-strictmpi \
-        --disable-cxx \
-        MPICC="${mpi_prefix}/bin/mpicc" \
-        MPICXX="${CXX:-c++}" \
-        MPIF77="${mpif_prefix}/bin/mpifort" \
-        MPIFC="${mpif_prefix}/bin/mpifort" \
-        MPIEXEC="${mpi_prefix}/bin/mpiexec"
-fi
+./configure \
+    --enable-strictmpi \
+    --disable-cxx \
+    MPICC="${mpi_prefix}/bin/mpicc" \
+    MPICXX="${CXX:-c++}" \
+    MPIF77="${mpif_prefix}/bin/mpifort" \
+    MPIFC="${mpif_prefix}/bin/mpifort" \
+    MPIEXEC="${mpi_prefix}/bin/mpiexec"
 
 # `runtests` compiles each test on demand, runs it, and prints a summary -- but
 # exits 0 whether or not tests failed, so the summary is what has to be checked.

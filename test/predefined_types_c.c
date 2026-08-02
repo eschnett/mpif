@@ -154,22 +154,17 @@ int main(int argc, char **argv) {
   failures += probe("MPI_CHARACTER", MPI_CHARACTER, 1, with_toint);
   failures += probe("MPI_DOUBLE_COMPLEX", MPI_DOUBLE_COMPLEX, 1, with_toint);
 
-  // The pair types, which is where this probe found its bug: Open MPI 5
-  // dereferences MPI_2INTEGER's ABI value (0x232) as an internal pointer and
-  // crashes, which is what kills f77/datatype/typenamef and allctypesf. That is
-  // https://github.com/open-mpi/ompi/issues/14243, and it is a SIGSEGV inside
-  // MPI_Type_get_name, so it cannot be caught and reported the way every other
-  // result here can -- it takes the whole probe down with it. Off by default so
-  // that the suite still reports the results above on Open MPI; set
-  // MPIF_PROBE_PAIRTYPES=1 to check whether the upstream fix has landed.
-  if (getenv("MPIF_PROBE_PAIRTYPES") == NULL) {
-    printf("pair types skipped; set MPIF_PROBE_PAIRTYPES=1 to include them, but\n"
-           " note they crash Open MPI 5 -- see ompi issue 14243\n");
-  } else {
-    failures += probe("MPI_2INTEGER", MPI_2INTEGER, 1, with_toint);
-    failures += probe("MPI_2REAL", MPI_2REAL, 1, with_toint);
-    failures += probe("MPI_2DOUBLE_PRECISION", MPI_2DOUBLE_PRECISION, 1, with_toint);
-  }
+  // The pair types, which is where this probe found its bug: Open MPI
+  // dereferenced MPI_2INTEGER's ABI value (0x232) as an internal pointer and
+  // crashed, which is what killed f77/datatype/typenamef and allctypesf. That
+  // was https://github.com/open-mpi/ompi/issues/14243 -- a SIGSEGV inside
+  // MPI_Type_get_name, so unlike every other result here it could not be caught
+  // and reported and took the whole probe down with it, and these three were
+  // behind MPIF_PROBE_PAIRTYPES until it was fixed. They are unconditional now
+  // that the ABI branch ci-scripts/install-openmpi.sh builds carries the fix.
+  failures += probe("MPI_2INTEGER", MPI_2INTEGER, 1, with_toint);
+  failures += probe("MPI_2REAL", MPI_2REAL, 1, with_toint);
+  failures += probe("MPI_2DOUBLE_PRECISION", MPI_2DOUBLE_PRECISION, 1, with_toint);
 
   // A derived type, for contrast: its handle is a real one, so no short-circuit
   // applies and this should work whatever the answer above

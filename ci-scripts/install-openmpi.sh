@@ -19,12 +19,15 @@
 #                     a tree prepared for this commit, the download and
 #                     `autogen.pl` steps are skipped -- this is what CI caches.
 #   MPI_PREPARE_ONLY  set to 1 to only prepare the source tree (download,
-#                     bindings, autogen) and stop before configuring; <prefix>
-#                     is then not needed.
+#                     patches, bindings, autogen) and stop before configuring;
+#                     <prefix> is then not needed.
 
 set -euo pipefail
 
-OMPI_COMMIT=090cfceee430174fdeb3ce3b00a57f29fc71a379
+# The head of https://github.com/open-mpi/ompi/pull/13280, the branch that adds
+# the MPI standard ABI. It is a pull request rather than a branch of the main
+# repository, so the commit is fetched by hash below rather than by name.
+OMPI_COMMIT=d0346f672a7698f32e9f346b5ca8681ab7887b36
 
 prefix=${1:-}
 prepare_only=${MPI_PREPARE_ONLY:-0}
@@ -37,6 +40,13 @@ scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 repodir=$(cd "${scriptdir}/.." && pwd)
 nprocs=$(getconf _NPROCESSORS_ONLN)
 
+# Upstream fixes that have not reached the ABI branch yet, applied to the source
+# tree below. Each patch says in its own preamble what it is and why it is here;
+# see also "External blockers" in MISSING.md.
+patches=(
+    "${scriptdir}/openmpi-info-set-empty-value.patch"
+)
+
 if [[ -n ${MPI_SRC_DIR:-} ]]; then
     mkdir -p "${MPI_SRC_DIR}"
     srcdir=$(cd "${MPI_SRC_DIR}" && pwd)
@@ -47,8 +57,10 @@ fi
 
 tree=${srcdir}/ompi
 # The stamp records what the prepared tree contains, so anything that changes
-# that tree -- other than the bindings themselves -- belongs in its name.
-stamp=${srcdir}/prepared-${OMPI_COMMIT}
+# that tree -- other than the bindings themselves -- belongs in its name. That
+# includes the patches above and this script: without the checksum, editing
+# either would silently reuse a tree prepared before the change.
+stamp=${srcdir}/prepared-${OMPI_COMMIT}-$(cat "${BASH_SOURCE[0]}" "${patches[@]}" | cksum | cut -d' ' -f1)
 
 # Copy in the Fortran/C handle conversion functions. Only the contents of this
 # file vary from run to run, so this happens on every run, including when the
@@ -69,6 +81,15 @@ else
     git fetch --quiet --depth 1 origin "${OMPI_COMMIT}"
     git checkout --quiet "${OMPI_COMMIT}"
     git submodule update --init --recursive
+
+    # Carry the upstream fixes the ABI branch does not have yet. `git apply`
+    # rather than `patch`, because it refuses to apply with fuzz: once the
+    # branch picks a fix up, or moves the code it touches, the patch stops
+    # applying and says so here rather than landing somewhere unintended.
+    for patch in "${patches[@]}"; do
+        echo "Applying $(basename "${patch}")"
+        git apply "${patch}"
+    done
 
     # Add the Fortran/C handle conversion functions to the ABI library
     install_bindings
