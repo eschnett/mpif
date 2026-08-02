@@ -333,6 +333,45 @@ layer:
 For scale, `apis.json` has 150 routines with a choice buffer and 222 buffer
 parameters between them.
 
+### A known-failures list for the MPICH suite
+
+The suite is run everywhere and can fail nothing, because some of its tests are
+expected to fail and nothing records which. `ci-scripts/test-mpich-suite.sh`
+exits nonzero whenever any test fails, so every caller has to swallow it:
+
+- `.github/workflows/ci.yaml` marks the step `continue-on-error: true`;
+- every `docker/*.dockerfile` follows the script with
+  `|| echo "... not fatal yet"`;
+- `scripts/macos-build.sh` prints the same message.
+
+All three carry a TODO pointing at the others. What they are waiting for is a
+checked-in list of the tests that are expected to fail, and a comparison against
+it: the run then fails only on a test that fails and is not on the list, and the
+three workarounds become plain commands.
+
+Worth getting right at the outset:
+
+- **Compare names, not counts.** The counts in "Suite baseline" below hide a
+  swap -- one test starting to fail while another starts passing leaves the
+  total unchanged. That is the whole reason the baseline has to be read by hand
+  today.
+- **Fail on an unexpected pass too.** Otherwise the list rots: a test fixed
+  upstream, or by mpif, silently stays on it and stops guarding anything.
+- **The list is per variant.** Failures differ by implementation and by
+  toolchain -- `alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08` and
+  `vw_inplacef08` fail under gfortran and pass under flang; the MPICH datatype
+  attribute blocker is MPICH's alone; the Open MPI spawn tests need the loopback
+  workaround. Four lists, or one list with a variant column.
+- **Give every entry a reason.** Each expected failure should name the blocker
+  or missing feature above that accounts for it, so that the list doubles as the
+  triage record and an entry cannot be added just to make the build green.
+- **`runtests` already emits machine-readable output.** It takes `-xmlfile=`,
+  `-tapfile=` and `-junitfile=`, so the comparison needs no parsing of the
+  human-readable summary that the script greps today.
+
+The entries in "Suite baseline" are the raw material: the failures are already
+enumerated there for MPICH/gcc, and attributed.
+
 ### The PMPI profiling interface
 
 There is none. `nm` on the built library finds no `pmpi_` symbol at all, for any
@@ -676,7 +715,10 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    conversion functions had exactly this fault and were corrected when
    `MPI_Register_datarep` learned to forward its callbacks; this is the same
    one-line change plus a test.
-3. The large-count function-parameter test, error 1 above, which is a guess with
+3. **A known-failures list for the MPICH suite**, so that CI, the docker builds
+   and `scripts/macos-build.sh` can fail on a regression instead of reporting
+   and carrying on. All three currently swallow the result.
+4. The large-count function-parameter test, error 1 above, which is a guess with
    a one-name exception list rather than a check.
 
 One thing is worth reporting upstream and is not yet: Open MPI's
