@@ -100,13 +100,22 @@ trampolines can matter:
   `MPI_ERR_UNSUPPORTED_DATAREP`, "Only native data representation currently
   supported". So even a datarep MPICH accepts can never be used, and the extent
   callback never fires either.
-- Open MPI is briefer. `ompi/mca/io/ompio/io_ompio_component.c`'s
-  `register_datarep` is `return OMPI_ERROR;` and nothing else.
+- Open MPI is worse than briefer: it accepts the call and does nothing.
+  `ompi/mca/io/ompio/io_ompio_component.c`'s `register_datarep` is
+  `return OMPI_ERROR;` and nothing else, but that line is dead code --
+  `mca_io_base_register_datarep` calls `io_register_datarep` only on components
+  whose type version is `2, 0, 0`, and `ompio` registers itself as
+  `MCA_IO_BASE_VERSION_3_0_0`. No component is ever consulted, `ret` stays
+  `OMPI_SUCCESS`, and `MPI_Register_datarep` is a silent no-op. Registering the
+  same datarep twice therefore also succeeds, where MPICH reports
+  `MPI_ERR_DUP_DATAREP`. Worth reporting upstream, and not yet.
 
 That is the whole feature, not an edge of it, so there is nothing to work around
 and nothing to report: both are honest about it in the error message. What mpif
 can be held to is that it no longer refuses the call before MPI sees it, which
-is what `test/datarep_f08.f90` asserts on the one combination ROMIO accepts, and
+is what `test/datarep_f08.f90` asserts on the one combination ROMIO accepts --
+and that is all it asserts, since anything past registration diverges between
+the two implementations -- and
 that the trampolines marshal correctly, which `test/datarep_c.c` asserts by
 calling them directly. The second is the substitute for an end-to-end test and
 should be replaced by one if an implementation ever grows the feature.
