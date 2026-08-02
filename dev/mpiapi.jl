@@ -675,11 +675,12 @@ for key in sort(collect(keys(apis)))
     # requests there are, and how many entries MPI actually filled in, which for
     # the `some` routines is `outcount` and otherwise is all of them.
     #
-    # `request_count` sizes the f08 status temporary (error 9) and `reported_count`
-    # bounds both the copy back out of it and the renumbering of the request
-    # indices (error 18). `request_count` being set is also the test for whether
-    # this routine deals in requests at all: MPI_Graph_get's `index` has the same
-    # INDEX kind as MPI_Waitsome's and must not be renumbered.
+    # `request_count` sizes the f08 status temporary and `reported_count` bounds
+    # both the copy back out of it and the renumbering of the request indices
+    # from C's zero-based to Fortran's one-based. `request_count` being set is
+    # also the test for whether this routine deals in requests at all:
+    # MPI_Graph_get's `index` has the same INDEX kind as MPI_Waitsome's and must
+    # not be renumbered.
     request_count = nothing
     reported_count = nothing
     for p in parameters
@@ -1586,7 +1587,7 @@ for key in sort(collect(keys(apis)))
                 else
                     # The remaining callback types pass nothing a trampoline
                     # could use to find the Fortran procedure again, so only the
-                    # predefined ones work. See MISSING.md.
+                    # predefined ones work.
                     append!(input_conversions,
                             ["void *c_$parname;",
                              "if (!mpif_predefined_callback((mpif_fortran_procedure)$parname, &c_$parname)) {",

@@ -41,7 +41,7 @@
 // working as the ABI adds more.
 //
 // TODO: the generator should emit its helpers into a shared header so this file
-// can include them instead; see MISSING.md section 1a.
+// can include them instead.
 
 enum { MPIF_PREDEFINED_HANDLE_MAX = 0x1000 };
 
@@ -161,8 +161,7 @@ void mpi_type_ub_(const MPI_Fint *datatype, MPI_Fint *displacement,
 
 #include <mpif_callbacks.h>
 
-// TODO: share these with the generated wrappers instead of repeating them; see
-// MISSING.md section 1a.
+// TODO: share these with the generated wrappers instead of repeating them.
 static MPI_Comm comm_fromint(MPI_Fint comm) {
   switch (comm) {
   case (MPI_Fint)(intptr_t)MPI_COMM_NULL:

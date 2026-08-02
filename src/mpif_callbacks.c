@@ -321,7 +321,7 @@ int mpif_unsupported_callback(const char *routine, const char *argument) {
           "mpif: %s: a user-defined Fortran procedure was passed as %s, "
           "which mpif cannot forward to MPI yet; returning MPI_ERR_OTHER. "
           "Only the predefined callbacks such as MPI_COMM_NULL_COPY_FN work "
-          "at the moment; see MISSING.md.\n",
+          "at the moment.\n",
           routine, argument);
   return MPI_ERR_OTHER;
 }

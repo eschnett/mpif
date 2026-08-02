@@ -41,8 +41,8 @@ repodir=$(cd "${scriptdir}/.." && pwd)
 nprocs=$(getconf _NPROCESSORS_ONLN)
 
 # Upstream fixes that have not reached the ABI branch yet, applied to the source
-# tree below. Each patch says in its own preamble what it is and why it is here;
-# see also "External blockers" in MISSING.md.
+# tree below. Each patch says in its own preamble what it is, where it comes from
+# and why it is still needed here.
 patches=(
     "${scriptdir}/openmpi-info-set-empty-value.patch"
 )

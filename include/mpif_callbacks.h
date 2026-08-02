@@ -27,7 +27,7 @@ typedef void (*mpif_fortran_procedure)(void);
 // If `callback` is one of Fortran's predefined callbacks, store the ABI value
 // that stands for it in `*result` and return 1. Return 0 for anything else,
 // which is a user-defined callback and not supported yet -- that would need a
-// trampoline converting handles and calling conventions; see MISSING.md.
+// trampoline converting handles and calling conventions.
 int mpif_predefined_callback(mpif_fortran_procedure callback, void **result);
 
 // Complain about a user-defined callback that cannot be forwarded, and return

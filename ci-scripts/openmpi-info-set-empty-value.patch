@@ -6,8 +6,7 @@ upstream on `main` by
     https://github.com/open-mpi/ompi/commit/5e21b7b21f8b4e52c06b5527eb344958325cbb30
 
 which is not on the ABI branch this build takes its source from. Carried here
-until that branch picks it up; see "OpenMPI: an empty info value is rejected"
-in MISSING.md.
+until that branch picks it up.
 
 This is the upstream commit's change to `info_set.c.in` and nothing else. It is
 a local copy rather than the upstream `.patch` downloaded by URL -- as

@@ -13,7 +13,7 @@
 ! every element past the first was written outside it. Hence the per-element
 ! checks below rather than a look at statuses(1).
 !
-! It also covers error 18, the indices those routines report: MPI_Waitsome's
+! It also covers the indices those routines report: MPI_Waitsome's
 ! `array_of_indices` and MPI_Waitany's scalar `index` came straight from C,
 ! numbered from zero, where Fortran numbers requests from one.
 !
@@ -88,7 +88,7 @@ program waitall_f08
      if (outcount == MPI_UNDEFINED) stop 8
      if (outcount < 1 .or. outcount > 2*n) stop 9
      ! Status i belongs to request indices(i), and those are 1-based in Fortran
-     ! where C counts from zero -- error 18, which was passing them through. Only
+     ! where C counts from zero; mpif used to pass them through unchanged. Only
      ! the receives, the first n requests, have a tag to check: a send's status
      ! carries none, and Open MPI leaves it alone where MPICH fills it in.
      do i = 1, outcount
@@ -107,8 +107,8 @@ program waitall_f08
   call check_recvbuf(11)
   print '("MPI_Waitsome with an array of statuses: ok")'
 
-  ! MPI_Waitany, for the scalar half of error 18. Its index is 1-based too, and
-  ! MPI_UNDEFINED once nothing is left to wait for.
+  ! MPI_Waitany, the scalar form of the same renumbering. Its index is 1-based
+  ! too, and MPI_UNDEFINED once nothing is left to wait for.
 
   call post(reqs)
   do i = 1, 2*n

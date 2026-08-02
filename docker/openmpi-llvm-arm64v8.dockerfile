@@ -127,8 +127,8 @@ RUN ctest --test-dir build-openmpi-llvm-tests --output-on-failure
 #
 #TODO Report rather than fail while the failures are untriaged, the same as the
 #TODO continue-on-error in .github/workflows/ci.yaml and the message in
-#TODO scripts/macos-build.sh. Turn this into a plain command once the counts in
-#TODO MISSING.md's "Suite baseline" reach zero.
+#TODO scripts/macos-build.sh. Turn this into a plain command once the suite
+#TODO passes clean.
 
 WORKDIR /cactus/mpif
 RUN <<EOF
