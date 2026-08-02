@@ -3,6 +3,7 @@ module mpi
   use mpif_types
   use mpif_functions
   use mpif_cptr
+  use mpif_attr_fns
 
   implicit none
   public

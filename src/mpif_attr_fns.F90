@@ -11,11 +11,31 @@
 ! calls one directly, which is legal if pointless.
 !
 ! These must not live in a module: mpif.h declares them EXTERNAL, so they have
-! to be plain global symbols.
+! to be plain global symbols. The module below does not define them either -- it
+! declares the same names EXTERNAL a second time, which is how they reach the
+! mpi module, whose users cannot see mpif.h's declarations. Both declarations
+! come from one header so that the two cannot drift apart.
 !
 ! The copy callbacks report .FALSE., meaning the attribute is not propagated,
 ! except for the DUP variants which copy it. The delete callbacks do nothing.
 ! All report MPI_SUCCESS.
+
+! The mpi module gets these names from here. MPI-5.0 requires them of mpif.h and
+! of the mpi module alike -- Appendix A.5 lists them under "Predefined functions"
+! with COMM_COPY_ATTR_FUNCTION and friends as their Fortran types -- and mpif
+! used to declare them for mpif.h only, so `use mpi` left them undeclared and any
+! program naming one failed to compile.
+!
+! mpi_f08 is not served from here. Its handles are derived types, so it needs
+! procedures of its own; see src/mpif_f08_attr_fns.F90.
+
+module mpif_attr_fns
+  implicit none
+  public
+  save
+
+  include "mpif_attr_fns.h"
+end module mpif_attr_fns
 
 ! Deprecated in MPI-2.0, for MPI_Keyval_create. Attribute values and extra
 ! state are plain default integers in these, not address-sized.

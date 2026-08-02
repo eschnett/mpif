@@ -1,17 +1,4 @@
-      external :: MPI_NULL_COPY_FN
-      external :: MPI_DUP_FN
-      external :: MPI_NULL_DELETE_FN
-      external :: MPI_COMM_NULL_COPY_FN
-      external :: MPI_COMM_DUP_FN
-      external :: MPI_COMM_NULL_DELETE_FN
-      external :: MPI_TYPE_NULL_COPY_FN
-      external :: MPI_TYPE_DUP_FN
-      external :: MPI_TYPE_NULL_DELETE_FN
-      external :: MPI_WIN_NULL_COPY_FN
-      external :: MPI_WIN_DUP_FN
-      external :: MPI_WIN_NULL_DELETE_FN
-      external :: MPI_CONVERSION_FN_NULL
-      external :: MPI_CONVERSION_FN_NULL_C
+      include "mpif_attr_fns.h"
 
       double precision, external :: MPI_Wtick, PMPI_Wtick
       double precision, external :: MPI_Wtime, PMPI_Wtime

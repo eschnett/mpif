@@ -16,11 +16,6 @@ program comm_get_attr_f08
   integer(MPI_ADDRESS_KIND) :: val
   logical :: flag
 
-  ! mpif provides these as external subroutines (src/mpif_attr_fns.F90) rather
-  ! than as entities of the mpi_f08 module, so they need declaring here
-  procedure(MPI_Comm_copy_attr_function) :: MPI_COMM_NULL_COPY_FN
-  procedure(MPI_Comm_delete_attr_function) :: MPI_COMM_NULL_DELETE_FN
-
   call MPI_Init()
 
   ! A keyval that exists but has no attribute attached: flag is false, and the

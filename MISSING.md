@@ -48,24 +48,13 @@ it carries a `# TODO: Check properly whether the function parameter needs
 embiggening`, with a hardcoded exception list containing only
 `MPI_Datarep_extent_function`.
 
-### 3. The predefined attribute callbacks are not exported from the modules
-
-`MPI_COMM_NULL_COPY_FN`, `MPI_COMM_DUP_FN`, `MPI_CONVERSION_FN_NULL` and eleven
-more are defined in `src/mpif_attr_fns.F90` as external subroutines and reach
-`mpif.h` users, which declares them `EXTERNAL`. The `mpi` and `mpi_f08` modules
-do not export them at all, and several `f90` attribute and window tests in
-MPICH's suite fail to compile on that alone.
-
-The f08 forms need separate procedures rather than a re-export, since their
-arguments are `TYPE(MPI_Comm)` and friends rather than `INTEGER`.
-
-### 4. `loc()` is used to detect `MPI_STATUS_IGNORE`
+### 3. `loc()` is used to detect `MPI_STATUS_IGNORE`
 
 77 occurrences in the f08 layer. `loc()` is a widely implemented extension but
 not standard Fortran, and comparing addresses silently fails if the argument
 arrives as a copy.
 
-### 5. `MPI_Sizeof` does not cover rank two and above
+### 4. `MPI_Sizeof` does not cover rank two and above
 
 `src/mpif_types.F90` defines the generic by hand, with a scalar and an
 assumed-size specific per type and kind. An argument of rank two or more resolves
@@ -419,14 +408,10 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
 1. **`MPI_Register_datarep`**, the last callback family. The box that generalized
    requests use works here too; the difference is that datareps are never
    deregistered, so it is never freed.
-2. **The predefined attribute callbacks**, which the `mpi` and `mpi_f08` modules
-   do not export. Several `f90` attribute and window tests fail to compile on
-   this alone, and the f08 forms additionally need their own procedures, taking
-   `TYPE(MPI_Comm)` rather than `INTEGER`.
-3. **The PMPI interface**, which does not exist at all and which `mpif.h`
+2. **The PMPI interface**, which does not exist at all and which `mpif.h`
    currently promises four names it cannot link.
-4. **`mprobef08`** fails at run time and has not been looked at.
-5. The `loc()` detection of `MPI_STATUS_IGNORE`, and the duplicated handle
+3. **`mprobef08`** fails at run time and has not been looked at.
+4. The `loc()` detection of `MPI_STATUS_IGNORE`, and the duplicated handle
    conversions, both tidying rather than breakage.
 
 One thing is worth reporting upstream and is not yet: Open MPI's
@@ -439,17 +424,25 @@ variants, on macOS 15/arm64, with gcc 15 and with clang/flang 22.
 
 |                | f77       | f90       | f08       |
 |----------------|-----------|-----------|-----------|
-| MPICH, gcc     | 31 / 104  | 45 / 122  | 51 / 136  |
-| MPICH, llvm    | 31 / 104  | 45 / 122  | 47 / 136  |
-| Open MPI, gcc  |  7 / 104  | 19 / 122  | 28 / 136  |
-| Open MPI, llvm |  7 / 104  | 19 / 122  | 24 / 136  |
+| MPICH, gcc     | 31 / 104  | 39 / 122  | 47 / 136  |
+| MPICH, llvm    | 31 / 104  | 39 / 122  | 43 / 136  |
+| Open MPI, gcc  |  7 / 104  | 12 / 122  | 23 / 136  |
+| Open MPI, llvm |  7 / 104  | 12 / 122  | 19 / 136  |
 
 Failures, not passes. MPICH does worse than Open MPI here for one reason: 17 of
 its f77 failures are the assertion of external blocker "MPICH: attributes on
 predefined datatypes abort in ABI builds", which Open MPI does not have. Open
 MPI's own blockers cost it fewer tests.
 
-`test/`, mpif's own suite, is 28 of 28 on all four.
+`test/`, mpif's own suite, is 31 of 31 on all four.
+
+Exporting the predefined attribute callbacks from the `mpi` and `mpi_f08`
+modules moved f90 and f08 and left f77 exactly where it was, which is the
+confirmation that it was the modules at fault: `mpif.h` had always declared them.
+Six f90 tests and four f08 tests went green on both implementations --
+`attrmpi1f90`, `commattr2f90`, `commattr3f90`, `commattr4f90`, `typeattr3f90`,
+`winattr2f90`, and the `f08` counterparts of four of those -- and nothing
+regressed.
 
 The toolchains agree exactly on f77 and f90, and differ by four tests in f08,
 where flang does better than gfortran. It is the same four on both MPI

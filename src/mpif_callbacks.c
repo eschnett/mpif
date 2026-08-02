@@ -27,6 +27,28 @@ extern void mpi_win_null_delete_fn_(void);
 extern void mpi_conversion_fn_null_(void);
 extern void mpi_conversion_fn_null_c_(void);
 
+// And mpi_f08's, from src/mpif_f08_attr_fns.F90. Separate procedures because a
+// handle there is a derived type rather than an INTEGER, so they are separate
+// addresses and need their own entries.
+//
+// Attribute callbacks would survive without them: an address this table does not
+// know is treated as user-defined and given a trampoline, and these bodies do
+// what the sentinel does, so the observable behaviour is the same. Recognising
+// them anyway is what the ABI intends, spends no keyval registry slot on a
+// callback MPI already knows, and is the only route that will work for the two
+// conversion functions once MPI_Register_datarep forwards callbacks at all.
+extern void mpif_f08_comm_null_copy_fn_(void);
+extern void mpif_f08_comm_dup_fn_(void);
+extern void mpif_f08_comm_null_delete_fn_(void);
+extern void mpif_f08_type_null_copy_fn_(void);
+extern void mpif_f08_type_dup_fn_(void);
+extern void mpif_f08_type_null_delete_fn_(void);
+extern void mpif_f08_win_null_copy_fn_(void);
+extern void mpif_f08_win_dup_fn_(void);
+extern void mpif_f08_win_null_delete_fn_(void);
+extern void mpif_f08_conversion_fn_null_(void);
+extern void mpif_f08_conversion_fn_null_c_(void);
+
 struct predefined_callback {
   mpif_fortran_procedure fortran;
   void *abi;
@@ -55,6 +77,22 @@ static const struct predefined_callback predefined_callbacks[] = {
 
     {mpi_conversion_fn_null_, (void *)MPI_CONVERSION_FN_NULL},
     {mpi_conversion_fn_null_c_, (void *)MPI_CONVERSION_FN_NULL_C},
+
+    // mpi_f08's, which stand for the same ABI sentinels
+    {mpif_f08_comm_null_copy_fn_, (void *)MPI_COMM_NULL_COPY_FN},
+    {mpif_f08_comm_dup_fn_, (void *)MPI_COMM_DUP_FN},
+    {mpif_f08_comm_null_delete_fn_, (void *)MPI_COMM_NULL_DELETE_FN},
+
+    {mpif_f08_type_null_copy_fn_, (void *)MPI_TYPE_NULL_COPY_FN},
+    {mpif_f08_type_dup_fn_, (void *)MPI_TYPE_DUP_FN},
+    {mpif_f08_type_null_delete_fn_, (void *)MPI_TYPE_NULL_DELETE_FN},
+
+    {mpif_f08_win_null_copy_fn_, (void *)MPI_WIN_NULL_COPY_FN},
+    {mpif_f08_win_dup_fn_, (void *)MPI_WIN_DUP_FN},
+    {mpif_f08_win_null_delete_fn_, (void *)MPI_WIN_NULL_DELETE_FN},
+
+    {mpif_f08_conversion_fn_null_, (void *)MPI_CONVERSION_FN_NULL},
+    {mpif_f08_conversion_fn_null_c_, (void *)MPI_CONVERSION_FN_NULL_C},
 };
 
 int mpif_predefined_callback(mpif_fortran_procedure callback, void **result) {

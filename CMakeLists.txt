@@ -207,6 +207,7 @@ add_library(mpifort_abi SHARED
   src/mpi_f08.F90
   src/mpif_f08_constants.F90
   src/mpif_f08_types.F90
+  src/mpif_f08_attr_fns.F90
   # Implementation
   include/mpif_attrs.h
   include/mpif_callbacks.h
@@ -247,6 +248,7 @@ endif()
 target_link_libraries(mpifort_abi PRIVATE MPI::MPI_C)
 list(APPEND public_headers
   include/mpif.h
+  include/mpif_attr_fns.h
   include/mpif_constants.h
   include/mpif_functions.h
 )
@@ -265,8 +267,10 @@ install(TARGETS mpifort_abi EXPORT mpifort_abiTargets
 )
 
 install(FILES
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_attr_fns.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_constants.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_cptr.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_attr_fns.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_constants.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_functions.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_types.mod
