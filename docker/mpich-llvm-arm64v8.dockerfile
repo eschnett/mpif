@@ -35,6 +35,10 @@ RUN <<EOF
         locales
         make
         patch
+        # perl is for MPICH's test suite at the end: `runtests` is a Perl script
+        # that uses more than perl-base ships. curl above already fetches the
+        # suite's tarball, and clang++ covers libtool's C++ tag
+        perl
         python3
     )
     apt-get --yes --no-install-recommends install "${packages[@]}"
@@ -107,3 +111,32 @@ RUN cmake --build build-mpich-llvm-tests
 
 # Run tests
 RUN ctest --test-dir build-mpich-llvm-tests --output-on-failure
+
+
+
+################################################################################
+# MPICH's Fortran test suite
+
+# MPICH ships around 300 Fortran tests covering all three interfaces mpif
+# implements, and turns all of them off when its own build targets the standard
+# ABI, because the ABI has no Fortran bindings -- which is precisely the gap
+# mpif fills. Far broader coverage than test/; see ci-scripts/test-mpich-suite.sh
+# for the details. The suite is downloaded, built and run under a temporary
+# directory that the script removes afterwards, so none of it stays in the image.
+#
+#TODO Report rather than fail while the failures are untriaged, the same as the
+#TODO continue-on-error in .github/workflows/ci.yaml and the message in
+#TODO scripts/macos-build.sh. Turn this into a plain command once the counts in
+#TODO MISSING.md's "Suite baseline" reach zero.
+
+WORKDIR /cactus/mpif
+RUN <<EOF
+    set -e
+    # The tests themselves find mpif and MPI through the rpath the wrapper
+    # compilers add; mpiexec and the launcher's own helpers do not
+    export LD_LIBRARY_PATH=${mpi_prefix}/lib:${mpif_prefix}/lib
+    # MPICH's mpiexec needs no persuasion to run as root, and the suite asks
+    # for at most MPIEXEC_MAXNP (4) processes
+    ci-scripts/test-mpich-suite.sh ${mpi_prefix} ${mpif_prefix} ||
+        echo "MPICH's Fortran test suite reported failures, which is not fatal yet -- see above"
+EOF
