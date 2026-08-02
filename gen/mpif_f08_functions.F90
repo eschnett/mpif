@@ -1,3 +1,1366 @@
+module mpif_f08_raw
+  use mpif_constants
+  use mpif_f08_types, only: MPI_Status
+  implicit none
+  public
+  save
+
+  interface
+
+     subroutine MPI_File_read( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read
+
+     subroutine MPI_File_read_c( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_c
+
+     subroutine MPI_File_read_all( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_all
+
+     subroutine MPI_File_read_all_c( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_all_c
+
+     subroutine MPI_File_read_all_end( &
+       fh, &
+       buf, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_all_end
+
+     subroutine MPI_File_read_at( &
+       fh, &
+       offset, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       integer(MPI_OFFSET_KIND) :: offset
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_at
+
+     subroutine MPI_File_read_at_c( &
+       fh, &
+       offset, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       integer(MPI_OFFSET_KIND) :: offset
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_at_c
+
+     subroutine MPI_File_read_at_all( &
+       fh, &
+       offset, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       integer(MPI_OFFSET_KIND) :: offset
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_at_all
+
+     subroutine MPI_File_read_at_all_c( &
+       fh, &
+       offset, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       integer(MPI_OFFSET_KIND) :: offset
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_at_all_c
+
+     subroutine MPI_File_read_at_all_end( &
+       fh, &
+       buf, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_at_all_end
+
+     subroutine MPI_File_read_ordered( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_ordered
+
+     subroutine MPI_File_read_ordered_c( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_ordered_c
+
+     subroutine MPI_File_read_ordered_end( &
+       fh, &
+       buf, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_ordered_end
+
+     subroutine MPI_File_read_shared( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_shared
+
+     subroutine MPI_File_read_shared_c( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_read_shared_c
+
+     subroutine MPI_File_write( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write
+
+     subroutine MPI_File_write_c( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_c
+
+     subroutine MPI_File_write_all( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_all
+
+     subroutine MPI_File_write_all_c( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_all_c
+
+     subroutine MPI_File_write_all_end( &
+       fh, &
+       buf, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_all_end
+
+     subroutine MPI_File_write_at( &
+       fh, &
+       offset, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       integer(MPI_OFFSET_KIND) :: offset
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_at
+
+     subroutine MPI_File_write_at_c( &
+       fh, &
+       offset, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       integer(MPI_OFFSET_KIND) :: offset
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_at_c
+
+     subroutine MPI_File_write_at_all( &
+       fh, &
+       offset, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       integer(MPI_OFFSET_KIND) :: offset
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_at_all
+
+     subroutine MPI_File_write_at_all_c( &
+       fh, &
+       offset, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       integer(MPI_OFFSET_KIND) :: offset
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_at_all_c
+
+     subroutine MPI_File_write_at_all_end( &
+       fh, &
+       buf, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_at_all_end
+
+     subroutine MPI_File_write_ordered( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_ordered
+
+     subroutine MPI_File_write_ordered_c( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_ordered_c
+
+     subroutine MPI_File_write_ordered_end( &
+       fh, &
+       buf, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_ordered_end
+
+     subroutine MPI_File_write_shared( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_shared
+
+     subroutine MPI_File_write_shared_c( &
+       fh, &
+       buf, &
+       count, &
+       datatype, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: fh
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_File_write_shared_c
+
+     subroutine MPI_Get_count( &
+       status, &
+       datatype, &
+       count, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: datatype
+       integer :: count
+       integer :: ierror
+     end subroutine MPI_Get_count
+
+     subroutine MPI_Get_count_c( &
+       status, &
+       datatype, &
+       count, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: datatype
+       integer(MPI_COUNT_KIND) :: count
+       integer :: ierror
+     end subroutine MPI_Get_count_c
+
+     subroutine MPI_Get_elements( &
+       status, &
+       datatype, &
+       count, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: datatype
+       integer :: count
+       integer :: ierror
+     end subroutine MPI_Get_elements
+
+     subroutine MPI_Get_elements_c( &
+       status, &
+       datatype, &
+       count, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: datatype
+       integer(MPI_COUNT_KIND) :: count
+       integer :: ierror
+     end subroutine MPI_Get_elements_c
+
+     subroutine MPI_Get_elements_x( &
+       status, &
+       datatype, &
+       count, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: datatype
+       integer(MPI_COUNT_KIND) :: count
+       integer :: ierror
+     end subroutine MPI_Get_elements_x
+
+     subroutine MPI_Improbe( &
+       source, &
+       tag, &
+       comm, &
+       flag, &
+       message, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: source
+       integer :: tag
+       integer :: comm
+       logical :: flag
+       integer :: message
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Improbe
+
+     subroutine MPI_Iprobe( &
+       source, &
+       tag, &
+       comm, &
+       flag, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: source
+       integer :: tag
+       integer :: comm
+       logical :: flag
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Iprobe
+
+     subroutine MPI_Mprobe( &
+       source, &
+       tag, &
+       comm, &
+       message, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: source
+       integer :: tag
+       integer :: comm
+       integer :: message
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Mprobe
+
+     subroutine MPI_Mrecv( &
+       buf, &
+       count, &
+       datatype, &
+       message, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       integer :: message
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Mrecv
+
+     subroutine MPI_Mrecv_c( &
+       buf, &
+       count, &
+       datatype, &
+       message, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       integer :: message
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Mrecv_c
+
+     subroutine MPI_Probe( &
+       source, &
+       tag, &
+       comm, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: source
+       integer :: tag
+       integer :: comm
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Probe
+
+     subroutine MPI_Recv( &
+       buf, &
+       count, &
+       datatype, &
+       source, &
+       tag, &
+       comm, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       integer :: source
+       integer :: tag
+       integer :: comm
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Recv
+
+     subroutine MPI_Recv_c( &
+       buf, &
+       count, &
+       datatype, &
+       source, &
+       tag, &
+       comm, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       integer :: source
+       integer :: tag
+       integer :: comm
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Recv_c
+
+     subroutine MPI_Request_get_status( &
+       request, &
+       flag, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: request
+       logical :: flag
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Request_get_status
+
+     subroutine MPI_Request_get_status_all( &
+       count, &
+       array_of_requests, &
+       flag, &
+       array_of_statuses, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: count
+       integer :: array_of_requests(count)
+       logical :: flag
+       type(MPI_Status) :: array_of_statuses(*)
+       integer :: ierror
+     end subroutine MPI_Request_get_status_all
+
+     subroutine MPI_Request_get_status_any( &
+       count, &
+       array_of_requests, &
+       index, &
+       flag, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: count
+       integer :: array_of_requests(count)
+       integer :: index
+       logical :: flag
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Request_get_status_any
+
+     subroutine MPI_Request_get_status_some( &
+       incount, &
+       array_of_requests, &
+       outcount, &
+       array_of_indices, &
+       array_of_statuses, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: incount
+       integer :: array_of_requests(incount)
+       integer :: outcount
+       integer :: array_of_indices(*)
+       type(MPI_Status) :: array_of_statuses(*)
+       integer :: ierror
+     end subroutine MPI_Request_get_status_some
+
+     subroutine MPI_Sendrecv( &
+       sendbuf, &
+       sendcount, &
+       sendtype, &
+       dest, &
+       sendtag, &
+       recvbuf, &
+       recvcount, &
+       recvtype, &
+       source, &
+       recvtag, &
+       comm, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcount
+       integer :: sendtype
+       integer :: dest
+       integer :: sendtag
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcount
+       integer :: recvtype
+       integer :: source
+       integer :: recvtag
+       integer :: comm
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Sendrecv
+
+     subroutine MPI_Sendrecv_c( &
+       sendbuf, &
+       sendcount, &
+       sendtype, &
+       dest, &
+       sendtag, &
+       recvbuf, &
+       recvcount, &
+       recvtype, &
+       source, &
+       recvtag, &
+       comm, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcount
+       integer :: sendtype
+       integer :: dest
+       integer :: sendtag
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcount
+       integer :: recvtype
+       integer :: source
+       integer :: recvtag
+       integer :: comm
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Sendrecv_c
+
+     subroutine MPI_Sendrecv_replace( &
+       buf, &
+       count, &
+       datatype, &
+       dest, &
+       sendtag, &
+       source, &
+       recvtag, &
+       comm, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer :: count
+       integer :: datatype
+       integer :: dest
+       integer :: sendtag
+       integer :: source
+       integer :: recvtag
+       integer :: comm
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Sendrecv_replace
+
+     subroutine MPI_Sendrecv_replace_c( &
+       buf, &
+       count, &
+       datatype, &
+       dest, &
+       sendtag, &
+       source, &
+       recvtag, &
+       comm, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       !dir$ ignore_tkr(trk) buf
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer(MPI_COUNT_KIND) :: count
+       integer :: datatype
+       integer :: dest
+       integer :: sendtag
+       integer :: source
+       integer :: recvtag
+       integer :: comm
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Sendrecv_replace_c
+
+     subroutine MPI_Status_get_error( &
+       status, &
+       err, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: err
+       integer :: ierror
+     end subroutine MPI_Status_get_error
+
+     subroutine MPI_Status_get_source( &
+       status, &
+       source, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: source
+       integer :: ierror
+     end subroutine MPI_Status_get_source
+
+     subroutine MPI_Status_get_tag( &
+       status, &
+       tag, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: tag
+       integer :: ierror
+     end subroutine MPI_Status_get_tag
+
+     subroutine MPI_Status_set_cancelled( &
+       status, &
+       flag, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       logical :: flag
+       integer :: ierror
+     end subroutine MPI_Status_set_cancelled
+
+     subroutine MPI_Status_set_elements( &
+       status, &
+       datatype, &
+       count, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: datatype
+       integer :: count
+       integer :: ierror
+     end subroutine MPI_Status_set_elements
+
+     subroutine MPI_Status_set_elements_c( &
+       status, &
+       datatype, &
+       count, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: datatype
+       integer(MPI_COUNT_KIND) :: count
+       integer :: ierror
+     end subroutine MPI_Status_set_elements_c
+
+     subroutine MPI_Status_set_elements_x( &
+       status, &
+       datatype, &
+       count, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: datatype
+       integer(MPI_COUNT_KIND) :: count
+       integer :: ierror
+     end subroutine MPI_Status_set_elements_x
+
+     subroutine MPI_Status_set_error( &
+       status, &
+       err, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: err
+       integer :: ierror
+     end subroutine MPI_Status_set_error
+
+     subroutine MPI_Status_set_source( &
+       status, &
+       source, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: source
+       integer :: ierror
+     end subroutine MPI_Status_set_source
+
+     subroutine MPI_Status_set_tag( &
+       status, &
+       tag, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       integer :: tag
+       integer :: ierror
+     end subroutine MPI_Status_set_tag
+
+     subroutine MPI_Test( &
+       request, &
+       flag, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: request
+       logical :: flag
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Test
+
+     subroutine MPI_Test_cancelled( &
+       status, &
+       flag, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       type(MPI_Status) :: status
+       logical :: flag
+       integer :: ierror
+     end subroutine MPI_Test_cancelled
+
+     subroutine MPI_Testall( &
+       count, &
+       array_of_requests, &
+       flag, &
+       array_of_statuses, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: count
+       integer :: array_of_requests(count)
+       logical :: flag
+       type(MPI_Status) :: array_of_statuses(*)
+       integer :: ierror
+     end subroutine MPI_Testall
+
+     subroutine MPI_Testany( &
+       count, &
+       array_of_requests, &
+       index, &
+       flag, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: count
+       integer :: array_of_requests(count)
+       integer :: index
+       logical :: flag
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Testany
+
+     subroutine MPI_Testsome( &
+       incount, &
+       array_of_requests, &
+       outcount, &
+       array_of_indices, &
+       array_of_statuses, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: incount
+       integer :: array_of_requests(incount)
+       integer :: outcount
+       integer :: array_of_indices(*)
+       type(MPI_Status) :: array_of_statuses(*)
+       integer :: ierror
+     end subroutine MPI_Testsome
+
+     subroutine MPI_Wait( &
+       request, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: request
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Wait
+
+     subroutine MPI_Waitall( &
+       count, &
+       array_of_requests, &
+       array_of_statuses, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: count
+       integer :: array_of_requests(count)
+       type(MPI_Status) :: array_of_statuses(*)
+       integer :: ierror
+     end subroutine MPI_Waitall
+
+     subroutine MPI_Waitany( &
+       count, &
+       array_of_requests, &
+       index, &
+       status, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: count
+       integer :: array_of_requests(count)
+       integer :: index
+       type(MPI_Status) :: status
+       integer :: ierror
+     end subroutine MPI_Waitany
+
+     subroutine MPI_Waitsome( &
+       incount, &
+       array_of_requests, &
+       outcount, &
+       array_of_indices, &
+       array_of_statuses, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Status
+       implicit none
+       integer :: incount
+       integer :: array_of_requests(incount)
+       integer :: outcount
+       integer :: array_of_indices(*)
+       type(MPI_Status) :: array_of_statuses(*)
+       integer :: ierror
+     end subroutine MPI_Waitsome
+
+  end interface
+
+end module mpif_f08_raw
+
 module mpif_f08_functions
   use mpi, only: &
     MPIF_Abi_get_fortran_booleans => MPI_Abi_get_fortran_booleans, &
@@ -164,27 +1527,12 @@ module mpif_f08_functions
     MPIF_File_iwrite_shared_c => MPI_File_iwrite_shared_c, &
     MPIF_File_open => MPI_File_open, &
     MPIF_File_preallocate => MPI_File_preallocate, &
-    MPIF_File_read => MPI_File_read, &
-    MPIF_File_read_c => MPI_File_read_c, &
-    MPIF_File_read_all => MPI_File_read_all, &
-    MPIF_File_read_all_c => MPI_File_read_all_c, &
     MPIF_File_read_all_begin => MPI_File_read_all_begin, &
     MPIF_File_read_all_begin_c => MPI_File_read_all_begin_c, &
-    MPIF_File_read_all_end => MPI_File_read_all_end, &
-    MPIF_File_read_at => MPI_File_read_at, &
-    MPIF_File_read_at_c => MPI_File_read_at_c, &
-    MPIF_File_read_at_all => MPI_File_read_at_all, &
-    MPIF_File_read_at_all_c => MPI_File_read_at_all_c, &
     MPIF_File_read_at_all_begin => MPI_File_read_at_all_begin, &
     MPIF_File_read_at_all_begin_c => MPI_File_read_at_all_begin_c, &
-    MPIF_File_read_at_all_end => MPI_File_read_at_all_end, &
-    MPIF_File_read_ordered => MPI_File_read_ordered, &
-    MPIF_File_read_ordered_c => MPI_File_read_ordered_c, &
     MPIF_File_read_ordered_begin => MPI_File_read_ordered_begin, &
     MPIF_File_read_ordered_begin_c => MPI_File_read_ordered_begin_c, &
-    MPIF_File_read_ordered_end => MPI_File_read_ordered_end, &
-    MPIF_File_read_shared => MPI_File_read_shared, &
-    MPIF_File_read_shared_c => MPI_File_read_shared_c, &
     MPIF_File_seek => MPI_File_seek, &
     MPIF_File_seek_shared => MPI_File_seek_shared, &
     MPIF_File_set_atomicity => MPI_File_set_atomicity, &
@@ -193,27 +1541,12 @@ module mpif_f08_functions
     MPIF_File_set_size => MPI_File_set_size, &
     MPIF_File_set_view => MPI_File_set_view, &
     MPIF_File_sync => MPI_File_sync, &
-    MPIF_File_write => MPI_File_write, &
-    MPIF_File_write_c => MPI_File_write_c, &
-    MPIF_File_write_all => MPI_File_write_all, &
-    MPIF_File_write_all_c => MPI_File_write_all_c, &
     MPIF_File_write_all_begin => MPI_File_write_all_begin, &
     MPIF_File_write_all_begin_c => MPI_File_write_all_begin_c, &
-    MPIF_File_write_all_end => MPI_File_write_all_end, &
-    MPIF_File_write_at => MPI_File_write_at, &
-    MPIF_File_write_at_c => MPI_File_write_at_c, &
-    MPIF_File_write_at_all => MPI_File_write_at_all, &
-    MPIF_File_write_at_all_c => MPI_File_write_at_all_c, &
     MPIF_File_write_at_all_begin => MPI_File_write_at_all_begin, &
     MPIF_File_write_at_all_begin_c => MPI_File_write_at_all_begin_c, &
-    MPIF_File_write_at_all_end => MPI_File_write_at_all_end, &
-    MPIF_File_write_ordered => MPI_File_write_ordered, &
-    MPIF_File_write_ordered_c => MPI_File_write_ordered_c, &
     MPIF_File_write_ordered_begin => MPI_File_write_ordered_begin, &
     MPIF_File_write_ordered_begin_c => MPI_File_write_ordered_begin_c, &
-    MPIF_File_write_ordered_end => MPI_File_write_ordered_end, &
-    MPIF_File_write_shared => MPI_File_write_shared, &
-    MPIF_File_write_shared_c => MPI_File_write_shared_c, &
     MPIF_Finalize => MPI_Finalize, &
     MPIF_Finalized => MPI_Finalized, &
     MPIF_Free_mem => MPI_Free_mem, &
@@ -230,11 +1563,6 @@ module mpif_f08_functions
     MPIF_Get_accumulate => MPI_Get_accumulate, &
     MPIF_Get_accumulate_c => MPI_Get_accumulate_c, &
     MPIF_Get_address => MPI_Get_address, &
-    MPIF_Get_count => MPI_Get_count, &
-    MPIF_Get_count_c => MPI_Get_count_c, &
-    MPIF_Get_elements => MPI_Get_elements, &
-    MPIF_Get_elements_c => MPI_Get_elements_c, &
-    MPIF_Get_elements_x => MPI_Get_elements_x, &
     MPIF_Get_hw_resource_info => MPI_Get_hw_resource_info, &
     MPIF_Get_library_version => MPI_Get_library_version, &
     MPIF_Get_processor_name => MPI_Get_processor_name, &
@@ -283,7 +1611,6 @@ module mpif_f08_functions
     MPIF_Igather_c => MPI_Igather_c, &
     MPIF_Igatherv => MPI_Igatherv, &
     MPIF_Igatherv_c => MPI_Igatherv_c, &
-    MPIF_Improbe => MPI_Improbe, &
     MPIF_Imrecv => MPI_Imrecv, &
     MPIF_Imrecv_c => MPI_Imrecv_c, &
     MPIF_Ineighbor_allgather => MPI_Ineighbor_allgather, &
@@ -313,7 +1640,6 @@ module mpif_f08_functions
     MPIF_Intercomm_create => MPI_Intercomm_create, &
     MPIF_Intercomm_create_from_groups => MPI_Intercomm_create_from_groups, &
     MPIF_Intercomm_merge => MPI_Intercomm_merge, &
-    MPIF_Iprobe => MPI_Iprobe, &
     MPIF_Irecv => MPI_Irecv, &
     MPIF_Irecv_c => MPI_Irecv_c, &
     MPIF_Ireduce => MPI_Ireduce, &
@@ -342,9 +1668,6 @@ module mpif_f08_functions
     MPIF_Keyval_create => MPI_Keyval_create, &
     MPIF_Keyval_free => MPI_Keyval_free, &
     MPIF_Lookup_name => MPI_Lookup_name, &
-    MPIF_Mprobe => MPI_Mprobe, &
-    MPIF_Mrecv => MPI_Mrecv, &
-    MPIF_Mrecv_c => MPI_Mrecv_c, &
     MPIF_Neighbor_allgather => MPI_Neighbor_allgather, &
     MPIF_Neighbor_allgather_c => MPI_Neighbor_allgather_c, &
     MPIF_Neighbor_allgather_init => MPI_Neighbor_allgather_init, &
@@ -384,7 +1707,6 @@ module mpif_f08_functions
     MPIF_Pready_list => MPI_Pready_list, &
     MPIF_Pready_range => MPI_Pready_range, &
     MPIF_Precv_init => MPI_Precv_init, &
-    MPIF_Probe => MPI_Probe, &
     MPIF_Psend_init => MPI_Psend_init, &
     MPIF_Publish_name => MPI_Publish_name, &
     MPIF_Put => MPI_Put, &
@@ -392,8 +1714,6 @@ module mpif_f08_functions
     MPIF_Query_thread => MPI_Query_thread, &
     MPIF_Raccumulate => MPI_Raccumulate, &
     MPIF_Raccumulate_c => MPI_Raccumulate_c, &
-    MPIF_Recv => MPI_Recv, &
-    MPIF_Recv_c => MPI_Recv_c, &
     MPIF_Recv_init => MPI_Recv_init, &
     MPIF_Recv_init_c => MPI_Recv_init_c, &
     MPIF_Reduce => MPI_Reduce, &
@@ -416,10 +1736,6 @@ module mpif_f08_functions
     MPIF_Remove_error_code => MPI_Remove_error_code, &
     MPIF_Remove_error_string => MPI_Remove_error_string, &
     MPIF_Request_free => MPI_Request_free, &
-    MPIF_Request_get_status => MPI_Request_get_status, &
-    MPIF_Request_get_status_all => MPI_Request_get_status_all, &
-    MPIF_Request_get_status_any => MPI_Request_get_status_any, &
-    MPIF_Request_get_status_some => MPI_Request_get_status_some, &
     MPIF_Rget => MPI_Rget, &
     MPIF_Rget_c => MPI_Rget_c, &
     MPIF_Rget_accumulate => MPI_Rget_accumulate, &
@@ -446,10 +1762,6 @@ module mpif_f08_functions
     MPIF_Send_c => MPI_Send_c, &
     MPIF_Send_init => MPI_Send_init, &
     MPIF_Send_init_c => MPI_Send_init_c, &
-    MPIF_Sendrecv => MPI_Sendrecv, &
-    MPIF_Sendrecv_c => MPI_Sendrecv_c, &
-    MPIF_Sendrecv_replace => MPI_Sendrecv_replace, &
-    MPIF_Sendrecv_replace_c => MPI_Sendrecv_replace_c, &
     MPIF_Session_attach_buffer => MPI_Session_attach_buffer, &
     MPIF_Session_attach_buffer_c => MPI_Session_attach_buffer_c, &
     MPIF_Session_call_errhandler => MPI_Session_call_errhandler, &
@@ -472,21 +1784,6 @@ module mpif_f08_functions
     MPIF_Ssend_init_c => MPI_Ssend_init_c, &
     MPIF_Start => MPI_Start, &
     MPIF_Startall => MPI_Startall, &
-    MPIF_Status_get_error => MPI_Status_get_error, &
-    MPIF_Status_get_source => MPI_Status_get_source, &
-    MPIF_Status_get_tag => MPI_Status_get_tag, &
-    MPIF_Status_set_cancelled => MPI_Status_set_cancelled, &
-    MPIF_Status_set_elements => MPI_Status_set_elements, &
-    MPIF_Status_set_elements_c => MPI_Status_set_elements_c, &
-    MPIF_Status_set_elements_x => MPI_Status_set_elements_x, &
-    MPIF_Status_set_error => MPI_Status_set_error, &
-    MPIF_Status_set_source => MPI_Status_set_source, &
-    MPIF_Status_set_tag => MPI_Status_set_tag, &
-    MPIF_Test => MPI_Test, &
-    MPIF_Test_cancelled => MPI_Test_cancelled, &
-    MPIF_Testall => MPI_Testall, &
-    MPIF_Testany => MPI_Testany, &
-    MPIF_Testsome => MPI_Testsome, &
     MPIF_Topo_test => MPI_Topo_test, &
     MPIF_Type_commit => MPI_Type_commit, &
     MPIF_Type_contiguous => MPI_Type_contiguous, &
@@ -543,10 +1840,6 @@ module mpif_f08_functions
     MPIF_Unpack_external => MPI_Unpack_external, &
     MPIF_Unpack_external_c => MPI_Unpack_external_c, &
     MPIF_Unpublish_name => MPI_Unpublish_name, &
-    MPIF_Wait => MPI_Wait, &
-    MPIF_Waitall => MPI_Waitall, &
-    MPIF_Waitany => MPI_Waitany, &
-    MPIF_Waitsome => MPI_Waitsome, &
     MPIF_Win_allocate => MPI_Win_allocate, &
     MPIF_Win_allocate_c => MPI_Win_allocate_c, &
     MPIF_Win_allocate_shared => MPI_Win_allocate_shared, &
@@ -591,6 +1884,77 @@ module mpif_f08_functions
     MPIF_Wtick => MPI_Wtick, &
     MPIF_Wtime => MPI_Wtime, &
     MPI_VERSION
+  use mpif_f08_raw, only: &
+    MPIF_File_read => MPI_File_read, &
+    MPIF_File_read_c => MPI_File_read_c, &
+    MPIF_File_read_all => MPI_File_read_all, &
+    MPIF_File_read_all_c => MPI_File_read_all_c, &
+    MPIF_File_read_all_end => MPI_File_read_all_end, &
+    MPIF_File_read_at => MPI_File_read_at, &
+    MPIF_File_read_at_c => MPI_File_read_at_c, &
+    MPIF_File_read_at_all => MPI_File_read_at_all, &
+    MPIF_File_read_at_all_c => MPI_File_read_at_all_c, &
+    MPIF_File_read_at_all_end => MPI_File_read_at_all_end, &
+    MPIF_File_read_ordered => MPI_File_read_ordered, &
+    MPIF_File_read_ordered_c => MPI_File_read_ordered_c, &
+    MPIF_File_read_ordered_end => MPI_File_read_ordered_end, &
+    MPIF_File_read_shared => MPI_File_read_shared, &
+    MPIF_File_read_shared_c => MPI_File_read_shared_c, &
+    MPIF_File_write => MPI_File_write, &
+    MPIF_File_write_c => MPI_File_write_c, &
+    MPIF_File_write_all => MPI_File_write_all, &
+    MPIF_File_write_all_c => MPI_File_write_all_c, &
+    MPIF_File_write_all_end => MPI_File_write_all_end, &
+    MPIF_File_write_at => MPI_File_write_at, &
+    MPIF_File_write_at_c => MPI_File_write_at_c, &
+    MPIF_File_write_at_all => MPI_File_write_at_all, &
+    MPIF_File_write_at_all_c => MPI_File_write_at_all_c, &
+    MPIF_File_write_at_all_end => MPI_File_write_at_all_end, &
+    MPIF_File_write_ordered => MPI_File_write_ordered, &
+    MPIF_File_write_ordered_c => MPI_File_write_ordered_c, &
+    MPIF_File_write_ordered_end => MPI_File_write_ordered_end, &
+    MPIF_File_write_shared => MPI_File_write_shared, &
+    MPIF_File_write_shared_c => MPI_File_write_shared_c, &
+    MPIF_Get_count => MPI_Get_count, &
+    MPIF_Get_count_c => MPI_Get_count_c, &
+    MPIF_Get_elements => MPI_Get_elements, &
+    MPIF_Get_elements_c => MPI_Get_elements_c, &
+    MPIF_Get_elements_x => MPI_Get_elements_x, &
+    MPIF_Improbe => MPI_Improbe, &
+    MPIF_Iprobe => MPI_Iprobe, &
+    MPIF_Mprobe => MPI_Mprobe, &
+    MPIF_Mrecv => MPI_Mrecv, &
+    MPIF_Mrecv_c => MPI_Mrecv_c, &
+    MPIF_Probe => MPI_Probe, &
+    MPIF_Recv => MPI_Recv, &
+    MPIF_Recv_c => MPI_Recv_c, &
+    MPIF_Request_get_status => MPI_Request_get_status, &
+    MPIF_Request_get_status_all => MPI_Request_get_status_all, &
+    MPIF_Request_get_status_any => MPI_Request_get_status_any, &
+    MPIF_Request_get_status_some => MPI_Request_get_status_some, &
+    MPIF_Sendrecv => MPI_Sendrecv, &
+    MPIF_Sendrecv_c => MPI_Sendrecv_c, &
+    MPIF_Sendrecv_replace => MPI_Sendrecv_replace, &
+    MPIF_Sendrecv_replace_c => MPI_Sendrecv_replace_c, &
+    MPIF_Status_get_error => MPI_Status_get_error, &
+    MPIF_Status_get_source => MPI_Status_get_source, &
+    MPIF_Status_get_tag => MPI_Status_get_tag, &
+    MPIF_Status_set_cancelled => MPI_Status_set_cancelled, &
+    MPIF_Status_set_elements => MPI_Status_set_elements, &
+    MPIF_Status_set_elements_c => MPI_Status_set_elements_c, &
+    MPIF_Status_set_elements_x => MPI_Status_set_elements_x, &
+    MPIF_Status_set_error => MPI_Status_set_error, &
+    MPIF_Status_set_source => MPI_Status_set_source, &
+    MPIF_Status_set_tag => MPI_Status_set_tag, &
+    MPIF_Test => MPI_Test, &
+    MPIF_Test_cancelled => MPI_Test_cancelled, &
+    MPIF_Testall => MPI_Testall, &
+    MPIF_Testany => MPI_Testany, &
+    MPIF_Testsome => MPI_Testsome, &
+    MPIF_Wait => MPI_Wait, &
+    MPIF_Waitall => MPI_Waitall, &
+    MPIF_Waitany => MPI_Waitany, &
+    MPIF_Waitsome => MPI_Waitsome
   implicit none
   private
   save
@@ -6615,19 +7979,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read
 
@@ -6650,19 +8010,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_c( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_c
 
@@ -6685,19 +8041,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_all( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_all
 
@@ -6720,19 +8072,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_all_c( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_all_c
 
@@ -6807,17 +8155,13 @@ contains
     integer :: buf(*)
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_all_end( &
       fh%MPI_VAL, &
       buf, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_all_end
 
@@ -6842,7 +8186,6 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_at( &
       fh%MPI_VAL, &
@@ -6850,12 +8193,9 @@ contains
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_at
 
@@ -6880,7 +8220,6 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_at_c( &
       fh%MPI_VAL, &
@@ -6888,12 +8227,9 @@ contains
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_at_c
 
@@ -6918,7 +8254,6 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_at_all( &
       fh%MPI_VAL, &
@@ -6926,12 +8261,9 @@ contains
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_at_all
 
@@ -6956,7 +8288,6 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_at_all_c( &
       fh%MPI_VAL, &
@@ -6964,12 +8295,9 @@ contains
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_at_all_c
 
@@ -7050,17 +8378,13 @@ contains
     integer :: buf(*)
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_at_all_end( &
       fh%MPI_VAL, &
       buf, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_at_all_end
 
@@ -7083,19 +8407,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_ordered( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_ordered
 
@@ -7118,19 +8438,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_ordered_c( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_ordered_c
 
@@ -7205,17 +8521,13 @@ contains
     integer :: buf(*)
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_ordered_end( &
       fh%MPI_VAL, &
       buf, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_ordered_end
 
@@ -7238,19 +8550,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_shared( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_shared
 
@@ -7273,19 +8581,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_read_shared_c( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_shared_c
 
@@ -7483,19 +8787,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write
 
@@ -7518,19 +8818,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_c( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_c
 
@@ -7553,19 +8849,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_all( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_all
 
@@ -7588,19 +8880,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_all_c( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_all_c
 
@@ -7675,17 +8963,13 @@ contains
     integer :: buf(*)
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_all_end( &
       fh%MPI_VAL, &
       buf, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_all_end
 
@@ -7710,7 +8994,6 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_at( &
       fh%MPI_VAL, &
@@ -7718,12 +9001,9 @@ contains
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_at
 
@@ -7748,7 +9028,6 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_at_c( &
       fh%MPI_VAL, &
@@ -7756,12 +9035,9 @@ contains
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_at_c
 
@@ -7786,7 +9062,6 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_at_all( &
       fh%MPI_VAL, &
@@ -7794,12 +9069,9 @@ contains
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_at_all
 
@@ -7824,7 +9096,6 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_at_all_c( &
       fh%MPI_VAL, &
@@ -7832,12 +9103,9 @@ contains
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_at_all_c
 
@@ -7918,17 +9186,13 @@ contains
     integer :: buf(*)
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_at_all_end( &
       fh%MPI_VAL, &
       buf, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_at_all_end
 
@@ -7951,19 +9215,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_ordered( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_ordered
 
@@ -7986,19 +9246,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_ordered_c( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_ordered_c
 
@@ -8073,17 +9329,13 @@ contains
     integer :: buf(*)
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_ordered_end( &
       fh%MPI_VAL, &
       buf, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_ordered_end
 
@@ -8106,19 +9358,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_shared( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_shared
 
@@ -8141,19 +9389,15 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_File_write_shared_c( &
       fh%MPI_VAL, &
       buf, &
       count, &
       datatype%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_shared_c
 
@@ -8802,13 +10046,9 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(out) :: count
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Get_count( &
-      tmp_status, &
+      status, &
       datatype%MPI_VAL, &
       count, &
       tmp_ierror &
@@ -8829,13 +10069,9 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(out) :: count
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Get_count_c( &
-      tmp_status, &
+      status, &
       datatype%MPI_VAL, &
       count, &
       tmp_ierror &
@@ -8856,13 +10092,9 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(out) :: count
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Get_elements( &
-      tmp_status, &
+      status, &
       datatype%MPI_VAL, &
       count, &
       tmp_ierror &
@@ -8883,13 +10115,9 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(out) :: count
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Get_elements_c( &
-      tmp_status, &
+      status, &
       datatype%MPI_VAL, &
       count, &
       tmp_ierror &
@@ -8910,13 +10138,9 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(out) :: count
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Get_elements_x( &
-      tmp_status, &
+      status, &
       datatype%MPI_VAL, &
       count, &
       tmp_ierror &
@@ -10487,7 +11711,6 @@ contains
     type(MPI_Message), intent(out) :: message
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Improbe( &
       source, &
@@ -10495,12 +11718,9 @@ contains
       comm%MPI_VAL, &
       flag, &
       message%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Improbe
 
@@ -11418,19 +12638,15 @@ contains
     logical, intent(out) :: flag
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Iprobe( &
       source, &
       tag, &
       comm%MPI_VAL, &
       flag, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Iprobe
 
@@ -12528,19 +13744,15 @@ contains
     type(MPI_Message), intent(out) :: message
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Mprobe( &
       source, &
       tag, &
       comm%MPI_VAL, &
       message%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Mprobe
 
@@ -12563,19 +13775,15 @@ contains
     type(MPI_Message), intent(inout) :: message
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Mrecv( &
       buf, &
       count, &
       datatype%MPI_VAL, &
       message%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Mrecv
 
@@ -12598,19 +13806,15 @@ contains
     type(MPI_Message), intent(inout) :: message
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Mrecv_c( &
       buf, &
       count, &
       datatype%MPI_VAL, &
       message%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Mrecv_c
 
@@ -14036,18 +15240,14 @@ contains
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Probe( &
       source, &
       tag, &
       comm%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Probe
 
@@ -14329,7 +15529,6 @@ contains
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Recv( &
       buf, &
@@ -14338,12 +15537,9 @@ contains
       source, &
       tag, &
       comm%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Recv
 
@@ -14370,7 +15566,6 @@ contains
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Recv_c( &
       buf, &
@@ -14379,12 +15574,9 @@ contains
       source, &
       tag, &
       comm%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Recv_c
 
@@ -15147,17 +16339,13 @@ contains
     logical, intent(out) :: flag
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Request_get_status( &
       request%MPI_VAL, &
       flag, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Request_get_status
 
@@ -15176,23 +16364,14 @@ contains
     logical, intent(out) :: flag
     type(MPI_Status) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
-    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, count)
-    integer :: i_array_of_statuses
     integer :: tmp_ierror
     call MPIF_Request_get_status_all( &
       count, &
       array_of_requests%MPI_VAL, &
       flag, &
-      tmp_array_of_statuses, &
+      array_of_statuses, &
       tmp_ierror &
     )
-    if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
-      do i_array_of_statuses = 1, count
-        call mpif_status_f2f08_noerror(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
-        if (tmp_ierror == MPI_ERR_IN_STATUS) &
-          array_of_statuses(i_array_of_statuses)%MPI_ERROR = tmp_array_of_statuses(MPI_ERROR, i_array_of_statuses)
-      end do
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Request_get_status_all
 
@@ -15213,19 +16392,15 @@ contains
     logical, intent(out) :: flag
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Request_get_status_any( &
       count, &
       array_of_requests%MPI_VAL, &
       index, &
       flag, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Request_get_status_any
 
@@ -15246,24 +16421,15 @@ contains
     integer, intent(out) :: array_of_indices(*)
     type(MPI_Status) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
-    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, incount)
-    integer :: i_array_of_statuses
     integer :: tmp_ierror
     call MPIF_Request_get_status_some( &
       incount, &
       array_of_requests%MPI_VAL, &
       outcount, &
       array_of_indices, &
-      tmp_array_of_statuses, &
+      array_of_statuses, &
       tmp_ierror &
     )
-    if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
-      do i_array_of_statuses = 1, outcount
-        call mpif_status_f2f08_noerror(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
-        if (tmp_ierror == MPI_ERR_IN_STATUS) &
-          array_of_statuses(i_array_of_statuses)%MPI_ERROR = tmp_array_of_statuses(MPI_ERROR, i_array_of_statuses)
-      end do
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Request_get_status_some
 
@@ -16400,7 +17566,6 @@ contains
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Sendrecv( &
       sendbuf, &
@@ -16414,12 +17579,9 @@ contains
       source, &
       recvtag, &
       comm%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Sendrecv
 
@@ -16458,7 +17620,6 @@ contains
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Sendrecv_c( &
       sendbuf, &
@@ -16472,12 +17633,9 @@ contains
       source, &
       recvtag, &
       comm%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Sendrecv_c
 
@@ -16508,7 +17666,6 @@ contains
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Sendrecv_replace( &
       buf, &
@@ -16519,12 +17676,9 @@ contains
       source, &
       recvtag, &
       comm%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Sendrecv_replace
 
@@ -16555,7 +17709,6 @@ contains
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Sendrecv_replace_c( &
       buf, &
@@ -16566,12 +17719,9 @@ contains
       source, &
       recvtag, &
       comm%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Sendrecv_replace_c
 
@@ -17113,13 +18263,9 @@ contains
     type(MPI_Status), intent(in) :: status
     integer, intent(out) :: err
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Status_get_error( &
-      tmp_status, &
+      status, &
       err, &
       tmp_ierror &
     )
@@ -17137,13 +18283,9 @@ contains
     type(MPI_Status), intent(in) :: status
     integer, intent(out) :: source
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Status_get_source( &
-      tmp_status, &
+      status, &
       source, &
       tmp_ierror &
     )
@@ -17161,13 +18303,9 @@ contains
     type(MPI_Status), intent(in) :: status
     integer, intent(out) :: tag
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Status_get_tag( &
-      tmp_status, &
+      status, &
       tag, &
       tmp_ierror &
     )
@@ -17185,19 +18323,12 @@ contains
     type(MPI_Status), intent(inout) :: status
     logical, intent(in) :: flag
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Status_set_cancelled( &
-      tmp_status, &
+      status, &
       flag, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_cancelled
 
@@ -17214,20 +18345,13 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(in) :: count
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Status_set_elements( &
-      tmp_status, &
+      status, &
       datatype%MPI_VAL, &
       count, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_elements
 
@@ -17244,20 +18368,13 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(in) :: count
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Status_set_elements_c( &
-      tmp_status, &
+      status, &
       datatype%MPI_VAL, &
       count, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_elements_c
 
@@ -17274,20 +18391,13 @@ contains
     type(MPI_Datatype), intent(in) :: datatype
     integer(MPI_COUNT_KIND), intent(in) :: count
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Status_set_elements_x( &
-      tmp_status, &
+      status, &
       datatype%MPI_VAL, &
       count, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_elements_x
 
@@ -17302,19 +18412,12 @@ contains
     type(MPI_Status), intent(inout) :: status
     integer, intent(in) :: err
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Status_set_error( &
-      tmp_status, &
+      status, &
       err, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_error
 
@@ -17329,19 +18432,12 @@ contains
     type(MPI_Status), intent(inout) :: status
     integer, intent(in) :: source
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Status_set_source( &
-      tmp_status, &
+      status, &
       source, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_source
 
@@ -17356,19 +18452,12 @@ contains
     type(MPI_Status), intent(inout) :: status
     integer, intent(in) :: tag
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Status_set_tag( &
-      tmp_status, &
+      status, &
       tag, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_tag
 
@@ -17385,17 +18474,13 @@ contains
     logical, intent(out) :: flag
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Test( &
       request%MPI_VAL, &
       flag, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Test
 
@@ -17410,13 +18495,9 @@ contains
     type(MPI_Status), intent(in) :: status
     logical, intent(out) :: flag
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f082f(status, tmp_status)
-    endif
     call MPIF_Test_cancelled( &
-      tmp_status, &
+      status, &
       flag, &
       tmp_ierror &
     )
@@ -17438,23 +18519,14 @@ contains
     logical, intent(out) :: flag
     type(MPI_Status) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
-    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, count)
-    integer :: i_array_of_statuses
     integer :: tmp_ierror
     call MPIF_Testall( &
       count, &
       array_of_requests%MPI_VAL, &
       flag, &
-      tmp_array_of_statuses, &
+      array_of_statuses, &
       tmp_ierror &
     )
-    if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
-      do i_array_of_statuses = 1, count
-        call mpif_status_f2f08_noerror(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
-        if (tmp_ierror == MPI_ERR_IN_STATUS) &
-          array_of_statuses(i_array_of_statuses)%MPI_ERROR = tmp_array_of_statuses(MPI_ERROR, i_array_of_statuses)
-      end do
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Testall
 
@@ -17475,19 +18547,15 @@ contains
     logical, intent(out) :: flag
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Testany( &
       count, &
       array_of_requests%MPI_VAL, &
       index, &
       flag, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Testany
 
@@ -17508,24 +18576,15 @@ contains
     integer, intent(out) :: array_of_indices(*)
     type(MPI_Status) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
-    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, incount)
-    integer :: i_array_of_statuses
     integer :: tmp_ierror
     call MPIF_Testsome( &
       incount, &
       array_of_requests%MPI_VAL, &
       outcount, &
       array_of_indices, &
-      tmp_array_of_statuses, &
+      array_of_statuses, &
       tmp_ierror &
     )
-    if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
-      do i_array_of_statuses = 1, outcount
-        call mpif_status_f2f08_noerror(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
-        if (tmp_ierror == MPI_ERR_IN_STATUS) &
-          array_of_statuses(i_array_of_statuses)%MPI_ERROR = tmp_array_of_statuses(MPI_ERROR, i_array_of_statuses)
-      end do
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Testsome
 
@@ -19057,16 +20116,12 @@ contains
     type(MPI_Request), intent(inout) :: request
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Wait( &
       request%MPI_VAL, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Wait
 
@@ -19083,22 +20138,13 @@ contains
     type(MPI_Request), intent(inout) :: array_of_requests(count)
     type(MPI_Status) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
-    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, count)
-    integer :: i_array_of_statuses
     integer :: tmp_ierror
     call MPIF_Waitall( &
       count, &
       array_of_requests%MPI_VAL, &
-      tmp_array_of_statuses, &
+      array_of_statuses, &
       tmp_ierror &
     )
-    if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
-      do i_array_of_statuses = 1, count
-        call mpif_status_f2f08_noerror(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
-        if (tmp_ierror == MPI_ERR_IN_STATUS) &
-          array_of_statuses(i_array_of_statuses)%MPI_ERROR = tmp_array_of_statuses(MPI_ERROR, i_array_of_statuses)
-      end do
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Waitall
 
@@ -19117,18 +20163,14 @@ contains
     integer, intent(out) :: index
     type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
-    integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
     call MPIF_Waitany( &
       count, &
       array_of_requests%MPI_VAL, &
       index, &
-      tmp_status, &
+      status, &
       tmp_ierror &
     )
-    if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call mpif_status_f2f08_noerror(tmp_status, status)
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Waitany
 
@@ -19149,24 +20191,15 @@ contains
     integer, intent(out) :: array_of_indices(*)
     type(MPI_Status) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
-    integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, incount)
-    integer :: i_array_of_statuses
     integer :: tmp_ierror
     call MPIF_Waitsome( &
       incount, &
       array_of_requests%MPI_VAL, &
       outcount, &
       array_of_indices, &
-      tmp_array_of_statuses, &
+      array_of_statuses, &
       tmp_ierror &
     )
-    if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
-      do i_array_of_statuses = 1, outcount
-        call mpif_status_f2f08_noerror(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
-        if (tmp_ierror == MPI_ERR_IN_STATUS) &
-          array_of_statuses(i_array_of_statuses)%MPI_ERROR = tmp_array_of_statuses(MPI_ERROR, i_array_of_statuses)
-      end do
-    endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Waitsome
 

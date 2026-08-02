@@ -622,13 +622,31 @@ append!(f_interfaces,
          "  interface",
          ])
 
+# A second set of interfaces to the C entry points, for the routines that take a
+# status. They differ from the mpi module's only in spelling those eight integers
+# TYPE(MPI_Status) rather than INTEGER(MPI_STATUS_SIZE), which is what lets the
+# f08 wrappers pass the caller's own status to C instead of converting it into a
+# temporary first. Two Fortran views of one C symbol, in two modules: legal,
+# since a program uses `mpi` or `mpi_f08` and not both for the same call, and
+# free on the C side, whose wrapper takes MPI_Fint* and casts it to MPI_Status*
+# either way.
+f08_raw_interfaces = ["module mpif_f08_raw",
+                      "  use mpif_constants",
+                      "  use mpif_f08_types, only: MPI_Status",
+                      "  implicit none",
+                      "  public",
+                      "  save",
+                      "",
+                      "  interface",
+                      ]
+f08_raw_uses = []
+
 append!(f08_implementations_useonly,
         ["module mpif_f08_functions",
          "  use mpi, only: &",
          ])
 append!(f08_implementations_public,
-        ["    MPI_VERSION",
-         "  implicit none",
+        ["  implicit none",
          "  private",
          "  save",
          "",
@@ -709,6 +727,10 @@ for key in sort(collect(keys(apis)))
         output_conversions = []
         f_arguments = []
         f_declarations = []
+        # The same declarations as the mpi module's interface, except that a
+        # status is TYPE(MPI_Status). See `mpif_f08_raw` below.
+        f_raw_declarations = []
+        has_status = false
         f08_arguments = []
         f08_declarations = []
         f08_call_temp_declarations = []
@@ -755,71 +777,13 @@ for key in sort(collect(keys(apis)))
                         push!(f08_call_temp_declarations, "integer(MPI_ADDRESS_KIND) :: tmp_$f_argname")
                         push!(f08_call_arguments, "tmp_$f_argname")
                         push!(f08_call_temp_copyouts, "$f_argname = transfer(tmp_$f_argname, C_NULL_PTR)")
-                    elseif kind == "STATUS" && length == nothing
-                        push!(f08_call_temp_declarations, "integer :: tmp_$f_argname(MPI_STATUS_SIZE)")
-                        if param_direction in ["in", "inout"]
-                            push!(f08_call_temp_copyins, "if (loc($f_argname) /= loc(MPI_STATUS_IGNORE)) then")
-                            push!(f08_call_temp_copyins, "  call MPI_Status_f082f($f_argname, tmp_$f_argname)")
-                            push!(f08_call_temp_copyins, "endif")
-                        end
-                        push!(f08_call_arguments, "tmp_$f_argname")
-                        if param_direction in ["out", "inout"]
-                            # Not MPI_Status_f2f08: MPI does not set the error
-                            # field for a call that returns one status, so the
-                            # temporary's is whatever was on the stack and must
-                            # not reach the caller. See mpif_status_f2f08_noerror
-                            # in src/mpif_f08_types.F90.
-                            push!(f08_call_temp_copyouts, "if (loc($f_argname) /= loc(MPI_STATUS_IGNORE)) then")
-                            push!(f08_call_temp_copyouts, "  call mpif_status_f2f08_noerror(tmp_$f_argname, $f_argname)")
-                            push!(f08_call_temp_copyouts, "endif")
-                        end
                     elseif kind == "STATUS"
-                        # An array of statuses. The temporary is as long as the
-                        # array MPI writes through, which a scalar one was not:
-                        # the C wrapper hands MPI the buffer it is given and MPI
-                        # fills in one status per request, so a one-status
-                        # temporary was overrun by every call but the shortest.
-                        #
-                        # The sentinel to recognise here is MPI_STATUSES_IGNORE
-                        # rather than MPI_STATUS_IGNORE. The ABI happens to make
-                        # both `((MPI_Status*)0)`, so the scalar name would
-                        # compare equal too; naming the right one is what keeps
-                        # that a coincidence rather than a dependency.
-                        @assert length == "*"
-                        @assert request_count != nothing
-                        push!(f08_call_temp_declarations,
-                              "integer :: tmp_$f_argname(MPI_STATUS_SIZE, $request_count)")
-                        push!(f08_call_temp_declarations, "integer :: i_$f_argname")
-                        if param_direction in ["in", "inout"]
-                            push!(f08_call_temp_copyins, "if (loc($f_argname) /= loc(MPI_STATUSES_IGNORE)) then")
-                            push!(f08_call_temp_copyins, "  do i_$f_argname = 1, $request_count")
-                            push!(f08_call_temp_copyins,
-                                  "    call MPI_Status_f082f($f_argname(i_$f_argname), tmp_$f_argname(:, i_$f_argname))")
-                            push!(f08_call_temp_copyins, "  end do")
-                            push!(f08_call_temp_copyins, "endif")
-                        end
-                        push!(f08_call_arguments, "tmp_$f_argname")
-                        if param_direction in ["out", "inout"]
-                            # Only the entries MPI filled in are copied back. For
-                            # the `some` routines that is `outcount`, which is
-                            # MPI_UNDEFINED when no request was active -- a
-                            # negative bound, so the loop simply does nothing.
-                            # These are the routines the standard allows to set
-                            # the error field, and only when they report
-                            # MPI_ERR_IN_STATUS: "The field is updated if and
-                            # only if such function returns with an error code of
-                            # MPI_ERR_IN_STATUS." So it is copied here, and by
-                            # nothing else.
-                            push!(f08_call_temp_copyouts, "if (loc($f_argname) /= loc(MPI_STATUSES_IGNORE)) then")
-                            push!(f08_call_temp_copyouts, "  do i_$f_argname = 1, $reported_count")
-                            push!(f08_call_temp_copyouts,
-                                  "    call mpif_status_f2f08_noerror(tmp_$f_argname(:, i_$f_argname), $f_argname(i_$f_argname))")
-                            push!(f08_call_temp_copyouts, "    if (tmp_ierror == MPI_ERR_IN_STATUS) &")
-                            push!(f08_call_temp_copyouts,
-                                  "      $f_argname(i_$f_argname)%MPI_ERROR = tmp_$f_argname(MPI_ERROR, i_$f_argname)")
-                            push!(f08_call_temp_copyouts, "  end do")
-                            push!(f08_call_temp_copyouts, "endif")
-                        end
+                        # Straight through: no temporary, no conversion, and no
+                        # loc() to keep MPI_STATUS_IGNORE out of one. The
+                        # sentinel is a TYPE(MPI_Status) at the C constant's
+                        # address, so forwarding it hands C the pointer it
+                        # already recognises.
+                        push!(f08_call_arguments, "$f_argname")
                     else
                         push!(f08_call_arguments, "$f_argname")
                     end
@@ -1634,6 +1598,29 @@ for key in sort(collect(keys(apis)))
 
         input_arguments = [input_arguments; final_input_arguments]
 
+        # A status is eight default INTEGERs either way -- the ABI fixes
+        # MPI_Status as three named ints followed by five more, and mpif fixes
+        # MPI_STATUS_SIZE at 8 with MPI_SOURCE, MPI_TAG and MPI_ERROR at 1, 2 and
+        # 3 -- so the f08 layer can hand the caller's own status to C instead of
+        # converting into an INTEGER array first. What it cannot do is pass one
+        # through the mpi module's interface, which says INTEGER. So the
+        # status-taking routines get a second interface to the same C entry
+        # point, in `mpif_f08_raw`, differing only in how it spells those eight
+        # integers, and the f08 wrappers call that.
+        #
+        # Without it every f08 status went through a temporary, which cost three
+        # defects: a one-status temporary that arrays overran, an MPI_ERROR
+        # copied back from uninitialised stack, and a `loc()` comparison per call
+        # to keep MPI_STATUS_IGNORE out of the conversion.
+        f_raw_declarations = map(f_declarations) do decl
+            m = match(r"^integer :: (\w+)\(MPI_STATUS_SIZE\)$", decl)
+            m !== nothing && return "type(MPI_Status) :: $(m[1])"
+            m = match(r"^integer :: (\w+)\(MPI_STATUS_SIZE, \*\)$", decl)
+            m !== nothing && return "type(MPI_Status) :: $(m[1])(*)"
+            return decl
+        end
+        has_status = f_raw_declarations != f_declarations
+
         push!(c_implementations, "")
         push!(f_interfaces, "")
         push!(f08_implementations_body, "")
@@ -1681,7 +1668,33 @@ for key in sort(collect(keys(apis)))
             push!(f_interfaces, "    $decl")
         end
 
-        push!(f08_implementations_useonly, "    $f08_name_f => $f08_name, &")
+        # The second interface to the same C entry point, for the f08 layer
+        if has_status
+            push!(f08_raw_interfaces, "")
+            push!(f08_raw_interfaces, "     $f_unit $f_name( &")
+            for (n, arg) in enumerate(f_arguments)
+                comma = n < length(f_arguments) ? "," : ""
+                push!(f08_raw_interfaces, "       $arg$comma &")
+            end
+            if f_unit == "function"
+                push!(f08_raw_interfaces, "     ) result(result)")
+            else
+                push!(f08_raw_interfaces, "     )")
+            end
+            push!(f08_raw_interfaces, "       use mpif_constants")
+            push!(f08_raw_interfaces, "       import :: MPI_Status")
+            push!(f08_raw_interfaces, "       implicit none")
+            if f_unit == "function"
+                push!(f08_raw_interfaces, "       $f_return_type :: result")
+            end
+            for decl in f_raw_declarations
+                push!(f08_raw_interfaces, "       $decl")
+            end
+            push!(f08_raw_interfaces, "     end $f_unit $f_name")
+            push!(f08_raw_uses, "    $f08_name_f => $f08_name, &")
+        else
+            push!(f08_implementations_useonly, "    $f08_name_f => $f08_name, &")
+        end
         push!(f08_implementations_public, "  public :: $f08_name")
         # Only overload when Fortran can actually tell the two apart. A POLY kind
         # that goes from default INTEGER to an address- or count-sized one does
@@ -1822,7 +1835,28 @@ for name in sort(f08_large_count_pairs)
              ""])
 end
 
-f08_implementations = [f08_implementations_useonly; f08_implementations_public;
+append!(f08_raw_interfaces,
+        ["",
+         "  end interface",
+         "",
+         "end module mpif_f08_raw",
+         "",
+         ])
+
+# `MPI_VERSION` closes the `use mpi` list, having no trailing continuation; the
+# last of the raw renames closes its own the same way.
+f08_raw_use_block = []
+if !isempty(f08_raw_uses)
+    f08_raw_uses[end] = replace(f08_raw_uses[end], r", &$" => "")
+    f08_raw_use_block = ["  use mpif_f08_raw, only: &"; f08_raw_uses]
+end
+
+# The raw interfaces come first in the file: mpif_f08_functions uses them.
+f08_implementations = [f08_raw_interfaces;
+                       f08_implementations_useonly;
+                       ["    MPI_VERSION"];
+                       f08_raw_use_block;
+                       f08_implementations_public;
                        f08_generic_interfaces; f08_implementations_body]
 
 println("Writing \"gen/mpif_functions.c\"...")

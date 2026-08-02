@@ -1,6 +1,33 @@
 #include <mpi.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+
+// The f08 bindings hand MPI the caller's own TYPE(MPI_Status) rather than
+// converting it into an INTEGER array first, which is sound only because the two
+// are the same eight integers in the same order. Both halves are guaranteed --
+// the layout is the ABI's, the constants are mpif's, in
+// include/mpif_constants.h -- so this is not a hopeful assumption, but it is one
+// that a future edit could break silently. Fail the build instead.
+//
+// MPI_Fint, not int. The wrapper is handed a Fortran INTEGER array and casts it
+// to MPI_Status*, so what has to hold is that the struct is eight Fortran
+// integers -- and MPI_Fint is what a Fortran INTEGER is called on this side.
+// Against `int` these would be near-tautologies, the ABI having declared the
+// struct as eight ints: they would catch padding and nothing else. Against
+// MPI_Fint they catch the case that would actually break the cast, a Fortran
+// whose default INTEGER is not the size of a C int.
+//
+// The indices are Fortran's, counting from one; the offsets are C's, counting
+// bytes from zero.
+_Static_assert(sizeof(MPI_Status) == 8 * sizeof(MPI_Fint),
+               "MPI_STATUS_SIZE is 8 in include/mpif_constants.h");
+_Static_assert(offsetof(MPI_Status, MPI_SOURCE) == (1 - 1) * sizeof(MPI_Fint),
+               "MPI_SOURCE is 1 in include/mpif_constants.h");
+_Static_assert(offsetof(MPI_Status, MPI_TAG) == (2 - 1) * sizeof(MPI_Fint),
+               "MPI_TAG is 2 in include/mpif_constants.h");
+_Static_assert(offsetof(MPI_Status, MPI_ERROR) == (3 - 1) * sizeof(MPI_Fint),
+               "MPI_ERROR is 3 in include/mpif_constants.h");
 
 // Each cell below is the pointee of a Cray pointer declared in a COMMON block
 // of the same name -- see include/mpif_constants.h and src/mpif_f08_types.F90 --

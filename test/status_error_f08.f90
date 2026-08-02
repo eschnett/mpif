@@ -81,18 +81,28 @@ program status_error_f08
   if (status%MPI_ERROR /= sentinel) stop 11
   print '("MPI_Improbe leaves status%MPI_ERROR alone: ok")'
 
-  ! And an array of statuses, where the rule is the other way round: these are
-  ! the routines allowed to set the field, but only when they report
-  ! MPI_ERR_IN_STATUS. A successful MPI_Waitall must leave it alone too.
+  ! An array of statuses is the exception the standard names: these are the
+  ! routines allowed to set the error field. It says "if and only if such
+  ! function returns with an error code of MPI_ERR_IN_STATUS", and MPICH is more
+  ! eager than that -- a successful MPI_Waitall sets every MPI_ERROR to
+  ! MPI_SUCCESS. That is the implementation's business, not mpif's: the array
+  ! goes to MPI as the caller's own, exactly as it does from mpif.h and the mpi
+  ! module, which have always behaved this way. So the assertion here is that the
+  ! rest of the status is right, not that the error field survived.
+  !
+  ! It is worth knowing that this changed. While the f08 layer converted through
+  ! a temporary it could and did preserve the field, making mpi_f08 quieter than
+  ! its own mpi module. Passing the status through gives up that difference, and
+  ! consistency between the three interfaces is the better bargain.
 
   call MPI_Isend(sendbuf, 1, MPI_INTEGER, 0, 4, MPI_COMM_SELF, reqs(1))
   call MPI_Irecv(recvbuf, 1, MPI_INTEGER, 0, 4, MPI_COMM_SELF, reqs(2))
-  statuses(:)%MPI_ERROR = sentinel
   call MPI_Waitall(2, reqs, statuses)
-  if (statuses(1)%MPI_ERROR /= sentinel) stop 12
-  if (statuses(2)%MPI_ERROR /= sentinel) stop 13
-  if (statuses(2)%MPI_TAG /= 4) stop 14
-  print '("a successful MPI_Waitall leaves status%MPI_ERROR alone: ok")'
+  if (statuses(2)%MPI_TAG /= 4) stop 12
+  if (statuses(2)%MPI_SOURCE /= 0) stop 13
+  call MPI_Get_count(statuses(2), MPI_INTEGER, count)
+  if (count /= 1) stop 14
+  print '("MPI_Waitall fills in the array it is given: ok")'
 
   print '("status_error_f08: all ok")'
 

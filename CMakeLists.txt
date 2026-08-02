@@ -273,6 +273,7 @@ install(FILES
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_attr_fns.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_constants.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_functions.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_raw.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_types.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_functions.mod
