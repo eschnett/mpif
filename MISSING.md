@@ -34,18 +34,10 @@ pass `extra_state` too. The difference is that datareps are never deregistered,
 so the box would live for the duration of the program rather than being freed by
 a `free_fn`.
 
-### 2. Duplicated handle conversions
+### 2. The large-count function-parameter test
 
-`src/mpif_callbacks.c` has its own `comm_toint` and friends, mirroring the
-`MPIF_*_toint` helpers the generator emits into `gen/mpif_functions.c` to work
-around implementations that mishandle predefined handles. The generator should
-emit an `#include` of a shared header instead of 22 static functions, after
-which the copies in `src/mpif_callbacks.c` and `src/mpif_removed.c` can go; both
-carry a TODO pointing here in spirit.
-
-The large-count variant of this is also wrong by the generator's own admission:
-it carries a `# TODO: Check properly whether the function parameter needs
-embiggening`, with a hardcoded exception list containing only
+The generator carries a `# TODO: Check properly whether the function parameter
+needs embiggening`, with a hardcoded exception list containing only
 `MPI_Datarep_extent_function`.
 
 ### 3. `MPI_Sizeof` does not cover rank two and above
@@ -236,6 +228,57 @@ assumed-rank support, so the two mechanisms would have to coexist, selected by
 the same kind of `check_fortran_source_compiles` probe that already picks
 `ignore_tkr` over `no_arg_check`.
 
+Both implementations take that option, and both draw the line in the same place
+as mpif does -- `.TRUE.` in `mpi_f08` only, `.FALSE.` in the `mpi` module and
+`mpif.h`, which the standard allows and which is why
+`include/mpif_constants.h`'s `.false.` stays right whatever happens here.
+
+- MPICH sets both `.true.` unconditionally in
+  `src/binding/fortran/use_mpi_f08/mpi_f08_compile_constants.f90`, and `.FALSE.`
+  in `use_mpi/mpifnoext.h`.
+- Open MPI decides at configure time: `config/ompi_setup_mpi_fortran.m4` starts
+  both at `.false.` and raises them to `.true.` only if `OMPI_FORTRAN_HAVE_TS`,
+  its TS 29113 probe, succeeds. `ompi/include/mpif-config.h.in` hardcodes
+  `.false.`.
+
+Their implementations are the same shape, and it is the shape mpif would have to
+grow, because the interesting work is not the Fortran declaration but what C
+does with the descriptor it then receives:
+
+- MPICH has 291 `MPIR_*_cdesc` entry points in
+  `use_mpi_f08/wrappers_c/f08_cdesc.c`, about 7,900 lines, over a 107-line
+  `cdesc.c`. Each takes a `CFI_cdesc_t *`, and where `!CFI_is_contiguous(buf)`
+  it calls `cdesc_create_datatype`, which walks the descriptor's dimensions and
+  builds an `MPI_Type_create_hvector` chain per stride, passes count 1, and
+  frees the temporary immediately after the call -- safe for a nonblocking call
+  because the request holds its own reference.
+- Open MPI has 144 `*_ts.c.in` templates and a 138-line
+  `use-mpi-f08/base/ts.c`, whose `OMPI_CFI_2_C` does the same job.
+
+Everything either of them calls is public C API, so mpif can do it without help
+from the implementation. What mpif would have to change beyond writing that
+layer:
+
+- The route to C. An f08 wrapper currently calls the `mpi` module's binding,
+  which calls the C symbol: `MPI_Send` -> `MPIF_Send` -> `mpi_send_`. An
+  assumed-rank dummy cannot go that way, since the f90 layer's dummy is
+  `integer :: buf(*)` and passing to it reintroduces the copy. The 150 routines
+  with a choice buffer would need `bind(C)` interfaces straight to new C entry
+  points taking `CFI_cdesc_t *`, which pulls in the `bind(C)` entry below for
+  those routines.
+- The sentinels. `MPI_BOTTOM` and `MPI_IN_PLACE` reach C as plain addresses
+  today; behind a descriptor the recognition moves into the cdesc wrapper, as
+  MPICH's comparison against `&MPIR_F08_MPI_BOTTOM` shows. "Buffer sentinels
+  reach C intact" below would have to be re-verified on the new path rather than
+  inherited.
+- `ASYNCHRONOUS` is the cheap half and the data is already in hand: `apis.json`
+  marks 142 buffer parameters across 96 routines `asynchronous`, and
+  `dev/mpiapi.jl` never reads the field -- the word appears nowhere in `gen/` or
+  `include/`.
+
+For scale, `apis.json` has 150 routines with a choice buffer and 222 buffer
+parameters between them.
+
 ### The PMPI profiling interface
 
 There is none. `nm` on the built library finds no `pmpi_` symbol at all, for any
@@ -383,6 +426,38 @@ Recorded so that they do not get re-investigated:
   in `src/mpif_types.F90`. `MPI_Status_f2f08` and `MPI_Status_f082f` are
   implemented and public in `src/mpif_f08_types.F90`.
 - `ierror` is `OPTIONAL` throughout the f08 bindings.
+- **Predefined handles need no help from mpif.** The wrappers call
+  `MPI_Comm_toint` and the rest directly. They used to go through 22 generated
+  `MPIF_*_toint` shims that short-circuited the predefined handles first, under
+  the comment "Work around broken MPI implementations [only MPICH]", with
+  hand-written copies of the same idea in `src/mpif_callbacks.c` and
+  `src/mpif_removed.c`. Neither implementation needs that:
+
+  - MPICH short-circuits any handle whose value is `> 0 && < 4096` before
+    touching its handle tables, in `src/binding/abi/c_binding_abi.c`. Every
+    predefined handle the ABI defines is in `0x20 .. 0x2eb`, so that covers all
+    of them, and it is stock 5.0.1 -- 20 occurrences of the test in the pristine
+    tarball, not something `ci-scripts/install-mpich.sh` patches in.
+  - Open MPI does the same by a different route: all 22 of its converters,
+    `ompi/mpi/c/*_{to,from}int_abi.c`, call `ompi_abi_handle_int_is_predefined`
+    first, which is `OMPI_ABI_HANDLE_BASE_OFFSET > handle_int` with that offset
+    16385. Not one of the 22 is missing it.
+
+  Checked before removing, on MPICH: a C probe round-tripped all 103 predefined
+  handles in `mpi_abi.h` through `MPI_<Handle>_toint` and
+  `MPI_<Handle>_fromint`, before and after `MPI_Init`, with zero failures. Then
+  the shims were replaced by direct calls and everything rebuilt: `test/` stayed
+  34 of 34 and the MPICH suite stayed at 3 / 11 / 18 with an identical failure
+  set, entry for entry. Open MPI was read rather than run, none being installed
+  at the time.
+
+  What this trades away is worth knowing. mpif now requires the implementation's
+  converters to handle predefined handles, which the standard requires of them,
+  where before it coped with one that did not. `src/mpif_removed.c` used to
+  record a real symptom -- "forwarding MPI_INTEGER straight to MPI_Type_fromint
+  yields an invalid datatype", the constructor then failing and the garbage
+  aborting inside `MPI_Type_toint` -- without saying which version did that. If
+  it comes back, this is the paragraph to reread.
 - **The f08 intents match Appendix A.4.** Every one of the 584 bindings that A.4
   and `gen/mpif_f08_functions.F90` have in common was compared argument by
   argument, and `dev/check-f08-intents.py` is the comparison, so it can be run
@@ -540,7 +615,8 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    deregistered, so it is never freed.
 2. **The PMPI interface**, which does not exist at all and which `mpif.h`
    currently promises four names it cannot link.
-3. The duplicated handle conversions, tidying rather than breakage.
+3. The large-count function-parameter test, error 2 above, which is a guess with
+   a one-name exception list rather than a check.
 
 One thing is worth reporting upstream and is not yet: Open MPI's
 `MPI_Info_create_env` changing across `MPI_Init`.

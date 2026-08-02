@@ -140,29 +140,6 @@ static struct attr_entry *find_attr_entry(int keyval) {
   return NULL;
 }
 
-// Handle conversions. These mirror the MPIF_*_toint helpers that the generator
-// emits into gen/mpif_functions.c, which work around MPI implementations whose
-// own conversions mishandle predefined handles -- and MPI_COMM_SELF in
-// particular does carry attributes, so the workaround matters here too.
-// TODO: the generator should include a shared header instead of emitting its
-// own copies, at which point these go away.
-
-static MPI_Fint comm_toint(MPI_Comm comm) {
-  switch ((intptr_t)comm) {
-  case (intptr_t)MPI_COMM_NULL:
-  case (intptr_t)MPI_COMM_WORLD:
-  case (intptr_t)MPI_COMM_SELF:
-    return (MPI_Fint)(intptr_t)comm;
-  }
-  return MPI_Comm_toint(comm);
-}
-
-static MPI_Fint type_toint(MPI_Datatype datatype) {
-  return MPI_Type_toint(datatype);
-}
-
-static MPI_Fint win_toint(MPI_Win win) { return MPI_Win_toint(win); }
-
 // How the Fortran procedures are called. Handles arrive as default INTEGERs,
 // which suits `use mpi` and mpif.h directly and mpi_f08 too, its handle types
 // being bind(C) derived types holding one integer.
@@ -223,38 +200,38 @@ static int call_delete_attr(MPI_Fint handle, int keyval, void *attribute_val,
 static int comm_copy_attr(MPI_Comm oldcomm, int keyval, void *extra_state,
                           void *attribute_val_in, void *attribute_val_out,
                           int *flag) {
-  return call_copy_attr(comm_toint(oldcomm), keyval, extra_state,
+  return call_copy_attr(MPI_Comm_toint(oldcomm), keyval, extra_state,
                         attribute_val_in, attribute_val_out, flag);
 }
 
 static int comm_delete_attr(MPI_Comm comm, int keyval, void *attribute_val,
                             void *extra_state) {
-  return call_delete_attr(comm_toint(comm), keyval, attribute_val, extra_state);
+  return call_delete_attr(MPI_Comm_toint(comm), keyval, attribute_val, extra_state);
 }
 
 static int type_copy_attr(MPI_Datatype oldtype, int keyval, void *extra_state,
                           void *attribute_val_in, void *attribute_val_out,
                           int *flag) {
-  return call_copy_attr(type_toint(oldtype), keyval, extra_state,
+  return call_copy_attr(MPI_Type_toint(oldtype), keyval, extra_state,
                         attribute_val_in, attribute_val_out, flag);
 }
 
 static int type_delete_attr(MPI_Datatype datatype, int keyval,
                             void *attribute_val, void *extra_state) {
-  return call_delete_attr(type_toint(datatype), keyval, attribute_val,
+  return call_delete_attr(MPI_Type_toint(datatype), keyval, attribute_val,
                           extra_state);
 }
 
 static int win_copy_attr(MPI_Win oldwin, int keyval, void *extra_state,
                          void *attribute_val_in, void *attribute_val_out,
                          int *flag) {
-  return call_copy_attr(win_toint(oldwin), keyval, extra_state,
+  return call_copy_attr(MPI_Win_toint(oldwin), keyval, extra_state,
                         attribute_val_in, attribute_val_out, flag);
 }
 
 static int win_delete_attr(MPI_Win win, int keyval, void *attribute_val,
                            void *extra_state) {
-  return call_delete_attr(win_toint(win), keyval, attribute_val, extra_state);
+  return call_delete_attr(MPI_Win_toint(win), keyval, attribute_val, extra_state);
 }
 
 // The MPI-1 forms, whose attribute values and extra state are default integers
@@ -266,7 +243,7 @@ static int comm_copy_attr_10(MPI_Comm oldcomm, int keyval, void *extra_state,
   if (!entry || !entry->copy_fn)
     return MPI_ERR_OTHER;
 
-  MPI_Fint f_comm = comm_toint(oldcomm), f_keyval = keyval;
+  MPI_Fint f_comm = MPI_Comm_toint(oldcomm), f_keyval = keyval;
   MPI_Fint f_flag = 0, f_ierr = MPI_SUCCESS;
   MPI_Fint f_extra_state = (MPI_Fint)(intptr_t)extra_state;
   MPI_Fint f_val_in = (MPI_Fint)(intptr_t)attribute_val_in, f_val_out = 0;
@@ -285,7 +262,7 @@ static int comm_delete_attr_10(MPI_Comm comm, int keyval, void *attribute_val,
   if (!entry || !entry->delete_fn)
     return MPI_ERR_OTHER;
 
-  MPI_Fint f_comm = comm_toint(comm), f_keyval = keyval, f_ierr = MPI_SUCCESS;
+  MPI_Fint f_comm = MPI_Comm_toint(comm), f_keyval = keyval, f_ierr = MPI_SUCCESS;
   MPI_Fint f_val = (MPI_Fint)(intptr_t)attribute_val;
   MPI_Fint f_extra_state = (MPI_Fint)(intptr_t)extra_state;
 
@@ -397,7 +374,7 @@ static void call_user_fn(int slot, void *invec, void *inoutvec, int *len,
   if (!fn)
     return;
   MPI_Fint f_len = (MPI_Fint)*len;
-  MPI_Fint f_datatype = type_toint(*datatype);
+  MPI_Fint f_datatype = MPI_Type_toint(*datatype);
   ((fortran_user_fn)fn)(invec, inoutvec, &f_len, &f_datatype);
 }
 
@@ -407,7 +384,7 @@ static void call_user_fn_c(int slot, void *invec, void *inoutvec, MPI_Count *len
   if (!fn)
     return;
   MPI_Count f_len = *len;
-  MPI_Fint f_datatype = type_toint(*datatype);
+  MPI_Fint f_datatype = MPI_Type_toint(*datatype);
   ((fortran_user_fn_c)fn)(invec, inoutvec, &f_len, &f_datatype);
 }
 
@@ -673,11 +650,6 @@ struct errhandler_slot {
 
 static struct errhandler_slot errhandler_slots[MPIF_ERRHANDLER_SLOTS];
 
-static MPI_Fint file_toint(MPI_File file) { return MPI_File_toint(file); }
-static MPI_Fint session_toint(MPI_Session session) {
-  return MPI_Session_toint(session);
-}
-
 // The Fortran procedure takes the handle and the error code as INTEGERs. The
 // error code is copied back: the C prototype passes it by pointer, so a handler
 // is free to change it.
@@ -688,7 +660,7 @@ static void call_comm_errhandler(int slot, MPI_Comm *handle,
   const mpif_fortran_procedure fn = errhandler_slots[slot].fn;
   if (!fn)
     return;
-  MPI_Fint f_handle = comm_toint(*handle), f_error_code = *error_code;
+  MPI_Fint f_handle = MPI_Comm_toint(*handle), f_error_code = *error_code;
   ((fortran_errhandler_fn)fn)(&f_handle, &f_error_code);
   *error_code = f_error_code;
 }
@@ -698,7 +670,7 @@ static void call_win_errhandler(int slot, MPI_Win *handle,
   const mpif_fortran_procedure fn = errhandler_slots[slot].fn;
   if (!fn)
     return;
-  MPI_Fint f_handle = win_toint(*handle), f_error_code = *error_code;
+  MPI_Fint f_handle = MPI_Win_toint(*handle), f_error_code = *error_code;
   ((fortran_errhandler_fn)fn)(&f_handle, &f_error_code);
   *error_code = f_error_code;
 }
@@ -708,7 +680,7 @@ static void call_file_errhandler(int slot, MPI_File *handle,
   const mpif_fortran_procedure fn = errhandler_slots[slot].fn;
   if (!fn)
     return;
-  MPI_Fint f_handle = file_toint(*handle), f_error_code = *error_code;
+  MPI_Fint f_handle = MPI_File_toint(*handle), f_error_code = *error_code;
   ((fortran_errhandler_fn)fn)(&f_handle, &f_error_code);
   *error_code = f_error_code;
 }
@@ -718,7 +690,7 @@ static void call_session_errhandler(int slot, MPI_Session *handle,
   const mpif_fortran_procedure fn = errhandler_slots[slot].fn;
   if (!fn)
     return;
-  MPI_Fint f_handle = session_toint(*handle), f_error_code = *error_code;
+  MPI_Fint f_handle = MPI_Session_toint(*handle), f_error_code = *error_code;
   ((fortran_errhandler_fn)fn)(&f_handle, &f_error_code);
   *error_code = f_error_code;
 }

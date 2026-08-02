@@ -29,34 +29,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// Handle conversions.
-//
-// These have to short-circuit predefined handles the way the generated
-// MPIF_Type_fromint and MPIF_Type_toint do, because some implementations
-// mishandle them -- forwarding MPI_INTEGER straight to MPI_Type_fromint yields
-// an invalid datatype, the constructor below then fails, and converting the
-// resulting garbage back aborts inside MPI_Type_toint. Every predefined handle
-// the ABI defines is a small integer, well below the addresses a real handle
-// carries, so a range test covers them all without enumerating them, and keeps
-// working as the ABI adds more.
-//
-// TODO: the generator should emit its helpers into a shared header so this file
-// can include them instead.
-
-enum { MPIF_PREDEFINED_HANDLE_MAX = 0x1000 };
-
-static MPI_Datatype type_fromint(MPI_Fint datatype) {
-  if ((uintptr_t)(intptr_t)datatype < MPIF_PREDEFINED_HANDLE_MAX)
-    return (MPI_Datatype)(intptr_t)datatype;
-  return MPI_Type_fromint(datatype);
-}
-
-static MPI_Fint type_toint(MPI_Datatype datatype) {
-  if ((uintptr_t)datatype < MPIF_PREDEFINED_HANDLE_MAX)
-    return (MPI_Fint)(intptr_t)datatype;
-  return MPI_Type_toint(datatype);
-}
-
 // MPI_TYPE_HVECTOR -> MPI_TYPE_CREATE_HVECTOR
 // MPI_TYPE_HINDEXED -> MPI_TYPE_CREATE_HINDEXED
 // MPI_TYPE_STRUCT -> MPI_TYPE_CREATE_STRUCT
@@ -69,10 +41,10 @@ void mpi_type_hvector_(const MPI_Fint *count, const MPI_Fint *blocklength,
                        MPI_Fint *newtype, MPI_Fint *ierror) {
   MPI_Datatype c_newtype;
   *ierror = MPI_Type_create_hvector(*count, *blocklength, (MPI_Aint)*stride,
-                                    type_fromint(*oldtype), &c_newtype);
+                                    MPI_Type_fromint(*oldtype), &c_newtype);
   // Only convert on success: on failure c_newtype holds nothing meaningful, and
   // MPI_Type_toint aborts when handed an invalid datatype.
-  *newtype = *ierror == MPI_SUCCESS ? type_toint(c_newtype)
+  *newtype = *ierror == MPI_SUCCESS ? MPI_Type_toint(c_newtype)
                                     : (MPI_Fint)(intptr_t)MPI_DATATYPE_NULL;
 }
 
@@ -86,11 +58,11 @@ void mpi_type_hindexed_(const MPI_Fint *count,
     c_displacements[i] = (MPI_Aint)array_of_displacements[i];
   MPI_Datatype c_newtype;
   *ierror = MPI_Type_create_hindexed(*count, array_of_blocklengths,
-                                     c_displacements, type_fromint(*oldtype),
+                                     c_displacements, MPI_Type_fromint(*oldtype),
                                      &c_newtype);
   // Only convert on success: on failure c_newtype holds nothing meaningful, and
   // MPI_Type_toint aborts when handed an invalid datatype.
-  *newtype = *ierror == MPI_SUCCESS ? type_toint(c_newtype)
+  *newtype = *ierror == MPI_SUCCESS ? MPI_Type_toint(c_newtype)
                                     : (MPI_Fint)(intptr_t)MPI_DATATYPE_NULL;
 }
 
@@ -103,14 +75,14 @@ void mpi_type_struct_(const MPI_Fint *count,
   MPI_Datatype c_types[*count];
   for (int i = 0; i < *count; ++i) {
     c_displacements[i] = (MPI_Aint)array_of_displacements[i];
-    c_types[i] = type_fromint(array_of_types[i]);
+    c_types[i] = MPI_Type_fromint(array_of_types[i]);
   }
   MPI_Datatype c_newtype;
   *ierror = MPI_Type_create_struct(*count, array_of_blocklengths,
                                    c_displacements, c_types, &c_newtype);
   // Only convert on success: on failure c_newtype holds nothing meaningful, and
   // MPI_Type_toint aborts when handed an invalid datatype.
-  *newtype = *ierror == MPI_SUCCESS ? type_toint(c_newtype)
+  *newtype = *ierror == MPI_SUCCESS ? MPI_Type_toint(c_newtype)
                                     : (MPI_Fint)(intptr_t)MPI_DATATYPE_NULL;
 }
 
@@ -133,21 +105,21 @@ void mpi_address_(const void *location, MPI_Fint *address, MPI_Fint *ierror) {
 void mpi_type_extent_(const MPI_Fint *datatype, MPI_Fint *extent,
                       MPI_Fint *ierror) {
   MPI_Aint lb, c_extent;
-  *ierror = MPI_Type_get_extent(type_fromint(*datatype), &lb, &c_extent);
+  *ierror = MPI_Type_get_extent(MPI_Type_fromint(*datatype), &lb, &c_extent);
   *extent = (MPI_Fint)c_extent;
 }
 
 void mpi_type_lb_(const MPI_Fint *datatype, MPI_Fint *displacement,
                   MPI_Fint *ierror) {
   MPI_Aint lb, extent;
-  *ierror = MPI_Type_get_extent(type_fromint(*datatype), &lb, &extent);
+  *ierror = MPI_Type_get_extent(MPI_Type_fromint(*datatype), &lb, &extent);
   *displacement = (MPI_Fint)lb;
 }
 
 void mpi_type_ub_(const MPI_Fint *datatype, MPI_Fint *displacement,
                   MPI_Fint *ierror) {
   MPI_Aint lb, extent;
-  *ierror = MPI_Type_get_extent(type_fromint(*datatype), &lb, &extent);
+  *ierror = MPI_Type_get_extent(MPI_Type_fromint(*datatype), &lb, &extent);
   *displacement = (MPI_Fint)(lb + extent);
 }
 
@@ -160,17 +132,6 @@ void mpi_type_ub_(const MPI_Fint *datatype, MPI_Fint *displacement,
 // serves this too.
 
 #include <mpif_callbacks.h>
-
-// TODO: share these with the generated wrappers instead of repeating them.
-static MPI_Comm comm_fromint(MPI_Fint comm) {
-  switch (comm) {
-  case (MPI_Fint)(intptr_t)MPI_COMM_NULL:
-  case (MPI_Fint)(intptr_t)MPI_COMM_WORLD:
-  case (MPI_Fint)(intptr_t)MPI_COMM_SELF:
-    return (MPI_Comm)(intptr_t)comm;
-  }
-  return MPI_Comm_fromint(comm);
-}
 
 void mpi_errhandler_create_(void (*function)(void), MPI_Fint *errhandler,
                             MPI_Fint *ierror) {
@@ -192,13 +153,13 @@ void mpi_errhandler_create_(void (*function)(void), MPI_Fint *errhandler,
 
 void mpi_errhandler_set_(const MPI_Fint *comm, const MPI_Fint *errhandler,
                          MPI_Fint *ierror) {
-  *ierror = MPI_Comm_set_errhandler(comm_fromint(*comm),
+  *ierror = MPI_Comm_set_errhandler(MPI_Comm_fromint(*comm),
                                     MPI_Errhandler_fromint(*errhandler));
 }
 
 void mpi_errhandler_get_(const MPI_Fint *comm, MPI_Fint *errhandler,
                          MPI_Fint *ierror) {
   MPI_Errhandler c_errhandler;
-  *ierror = MPI_Comm_get_errhandler(comm_fromint(*comm), &c_errhandler);
+  *ierror = MPI_Comm_get_errhandler(MPI_Comm_fromint(*comm), &c_errhandler);
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
