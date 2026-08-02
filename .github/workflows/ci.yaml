@@ -278,10 +278,13 @@ jobs:
       # `use mpi_f08`, and disables all of them for the standard ABI because the
       # ABI has no Fortran bindings -- which is what mpif supplies. Far broader
       # coverage than test/, so worth running even before every test passes.
-      #TODO Remove continue-on-error once the failures have been triaged; until
-      #TODO then this reports without being able to fail the build.
+      # The failures that are expected are listed in
+      # ci-scripts/mpich-suite-xfail.txt with a reason apiece, and the step fails
+      # on a difference from that list rather than on a failure -- in either
+      # direction, so a test that starts passing is caught too. A variant with no
+      # `triaged` line there is reported and cannot fail, which is how the
+      # variants nobody has measured yet stay honest.
       - name: Run MPICH's Fortran test suite
-        continue-on-error: true
         run: |
           # Open MPI refuses to oversubscribe by default, and the runners have
           # fewer cores than the suite asks processes for

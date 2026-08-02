@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # Run MPICH's Fortran test suite against one locally built variant. Part of
-# macos-build.sh, which does not let its failures fail the build; run it on its
-# own to iterate on them.
+# macos-build.sh, and it fails the build if the suite differs from
+# ci-scripts/mpich-suite-xfail.txt -- which lists the failures that are expected
+# -- in either direction. Run it on its own to iterate on a difference.
 #
 # Usage: scripts/macos-test-mpich-suite.sh <mpich|openmpi> <gcc|llvm>
 #

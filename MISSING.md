@@ -333,45 +333,6 @@ layer:
 For scale, `apis.json` has 150 routines with a choice buffer and 222 buffer
 parameters between them.
 
-### A known-failures list for the MPICH suite
-
-The suite is run everywhere and can fail nothing, because some of its tests are
-expected to fail and nothing records which. `ci-scripts/test-mpich-suite.sh`
-exits nonzero whenever any test fails, so every caller has to swallow it:
-
-- `.github/workflows/ci.yaml` marks the step `continue-on-error: true`;
-- every `docker/*.dockerfile` follows the script with
-  `|| echo "... not fatal yet"`;
-- `scripts/macos-build.sh` prints the same message.
-
-All three carry a TODO pointing at the others. What they are waiting for is a
-checked-in list of the tests that are expected to fail, and a comparison against
-it: the run then fails only on a test that fails and is not on the list, and the
-three workarounds become plain commands.
-
-Worth getting right at the outset:
-
-- **Compare names, not counts.** The counts in "Suite baseline" below hide a
-  swap -- one test starting to fail while another starts passing leaves the
-  total unchanged. That is the whole reason the baseline has to be read by hand
-  today.
-- **Fail on an unexpected pass too.** Otherwise the list rots: a test fixed
-  upstream, or by mpif, silently stays on it and stops guarding anything.
-- **The list is per variant.** Failures differ by implementation and by
-  toolchain -- `alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08` and
-  `vw_inplacef08` fail under gfortran and pass under flang; the MPICH datatype
-  attribute blocker is MPICH's alone; the Open MPI spawn tests need the loopback
-  workaround. Four lists, or one list with a variant column.
-- **Give every entry a reason.** Each expected failure should name the blocker
-  or missing feature above that accounts for it, so that the list doubles as the
-  triage record and an entry cannot be added just to make the build green.
-- **`runtests` already emits machine-readable output.** It takes `-xmlfile=`,
-  `-tapfile=` and `-junitfile=`, so the comparison needs no parsing of the
-  human-readable summary that the script greps today.
-
-The entries in "Suite baseline" are the raw material: the failures are already
-enumerated there for MPICH/gcc, and attributed.
-
 ### The PMPI profiling interface
 
 There is none. `nm` on the built library finds no `pmpi_` symbol at all, for any
@@ -633,6 +594,24 @@ implementation from source, so it costs a good deal more than the others. It is
 what to run when `find_package(MPI)` starts reporting that
 `mpi/<mpi>-<toolchain>/include` does not exist.
 
+The suite has failures that are expected, so what fails a run is a difference
+from `ci-scripts/mpich-suite-xfail.txt` rather than a failure --- in either
+direction, so a test that starts passing is caught as well as one that starts
+failing, and the list cannot rot into a blanket exception. The file names every
+expected failure with the reason it is there, "untriaged" included, and the
+comparison is by name because counts hide a swap. `.github/workflows/ci.yaml`,
+every `docker/*.dockerfile` and `scripts/macos-build.sh` all gate on it; none of
+them swallows the result any more.
+
+A variant with no `triaged` line in that file is compared and reported but
+cannot fail the run, which is how the three nobody has measured stay honest
+rather than being papered over. Only `mpich/gcc/darwin` is triaged today. The
+variant is detected rather than passed in -- Open MPI by the `ompi_info` it
+installs and MPICH by `mpiexec.hydra`, the toolchain from what mpif's own
+`mpifort` reports, the OS from `uname` -- and a component it cannot work out
+becomes `unknown`, which matches no entry, so the run is loudly wrong rather
+than quietly lenient.
+
 One check needs no build at all:
 
     python3 dev/check-f08-intents.py   # gen/ against MPI-5.0 Appendix A.4
@@ -715,9 +694,12 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    conversion functions had exactly this fault and were corrected when
    `MPI_Register_datarep` learned to forward its callbacks; this is the same
    one-line change plus a test.
-3. **A known-failures list for the MPICH suite**, so that CI, the docker builds
-   and `scripts/macos-build.sh` can fail on a regression instead of reporting
-   and carrying on. All three currently swallow the result.
+3. **Triaging the 22 untriaged suite failures**, and the three variants nobody
+   has measured. `ci-scripts/mpich-suite-xfail.txt` names each one and says what
+   it does; the clusters are the obvious way in -- three abort in MPICH's own ABI
+   handle table at `mpi_abi_util.h:143`, four more at the assertion next to it,
+   three report a window attribute copied by `MPI_WIN_NULL_COPY_FN`, and four
+   fail with no output of their own.
 4. The large-count function-parameter test, error 1 above, which is a guess with
    a one-name exception list rather than a check.
 
@@ -744,8 +726,11 @@ Open MPI -- 17 of its f77 failures were that one assertion -- and its
 disappearance is most of the distance between the MPICH/gcc row and the
 MPICH/llvm row below it, not anything about the toolchains.
 
-The MPICH/gcc row was measured after the f08 intent fixes, and every failure in
-it is attributable to something already recorded here:
+The MPICH/gcc row is the one `ci-scripts/mpich-suite-xfail.txt` enumerates, and
+that file is now the record: it names every failure with its reason, so the list
+below is a summary of it rather than the other way round. Twenty-two of them say
+"untriaged", which is the honest count -- an earlier version of this section
+claimed all were attributable, and that was an overstatement.
 
 - f77 (4): `allctypesf`, `bsendf`, `greqf`, `winattrf`.
 - f90 (12): `bsendf90`, `profile1f90` and `wtimef90` fail to build, the last two
@@ -773,6 +758,9 @@ predates the intent work, which did not touch either.
 
 Nothing in the row is an intent failure -- there is no "INTENT mismatch" or
 "variable definition context" anywhere in the log.
+
+The 35 failures across the three languages are 34 entries in the list, one test
+appearing twice at different process counts; 22 of the 34 are untriaged.
 
 `test/`, mpif's own suite, was 32 of 32 on all four and is now 36 of 36, with
 `callback_intents_f08`, `cancel_intent_f08`, `datarep_f08` and `datarep_c`

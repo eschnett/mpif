@@ -116,10 +116,10 @@ RUN ctest --test-dir build-mpich-gcc-tests --output-on-failure
 # for the details. The suite is downloaded, built and run under a temporary
 # directory that the script removes afterwards, so none of it stays in the image.
 #
-#TODO Report rather than fail while the failures are untriaged, the same as the
-#TODO continue-on-error in .github/workflows/ci.yaml and the message in
-#TODO scripts/macos-build.sh. Turn this into a plain command once the suite
-#TODO passes clean.
+# The failures that are expected are listed in ci-scripts/mpich-suite-xfail.txt
+# with a reason apiece, and this fails on a difference from that list rather
+# than on a failure. A variant with no `triaged` line there is reported and
+# cannot fail the build.
 
 WORKDIR /cactus/mpif
 RUN <<EOF
@@ -129,6 +129,5 @@ RUN <<EOF
     export LD_LIBRARY_PATH=${mpi_prefix}/lib:${mpif_prefix}/lib
     # MPICH's mpiexec needs no persuasion to run as root, and the suite asks
     # for at most MPIEXEC_MAXNP (4) processes
-    ci-scripts/test-mpich-suite.sh ${mpi_prefix} ${mpif_prefix} ||
-        echo "MPICH's Fortran test suite reported failures, which is not fatal yet -- see above"
+    ci-scripts/test-mpich-suite.sh ${mpi_prefix} ${mpif_prefix}
 EOF

@@ -13,12 +13,9 @@ here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 "${here}/macos-build-mpif.sh" "$@"
 "${here}/macos-test-mpif.sh" "$@"
 
-# MPICH's suite still has untriaged failures, so it reports without failing the
-# build -- the same as the CI step, so that a local run and a CI run agree on
-# what "passing" means.
-#TODO Let this fail the build once the failures have been triaged, together
-#TODO with the continue-on-error in .github/workflows/ci.yaml
-if ! "${here}/macos-test-mpich-suite.sh" "$@"; then
-    echo "$(basename "$0"): MPICH's Fortran test suite reported failures," \
-         "which is not fatal yet -- see above" >&2
-fi
+# MPICH's suite has failures that are expected -- on blockers in the
+# implementations and on features mpif does not have yet -- so what fails the
+# build is a difference from ci-scripts/mpich-suite-xfail.txt rather than a
+# failure. The CI step and the docker builds use the same list, so a local run
+# and a CI run agree on what "passing" means.
+"${here}/macos-test-mpich-suite.sh" "$@"
