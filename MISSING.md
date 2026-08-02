@@ -791,3 +791,115 @@ Recorded so that they do not get re-investigated:
   in `src/mpif_types.F90`. `MPI_Status_f2f08` and `MPI_Status_f082f` are
   implemented and public in `src/mpif_f08_types.F90`.
 - `ierror` is `OPTIONAL` throughout the f08 bindings.
+
+## Working on this
+
+How to reproduce and verify what is above, and the traps that cost the most time.
+
+### Building and testing
+
+    bash scripts/macos-build-mpif.sh   <mpich|openmpi> <gcc|llvm>   # build and install mpif
+    bash scripts/macos-test-mpif.sh    <mpich|openmpi> <gcc|llvm>   # test/, rebuilt from scratch
+    bash scripts/macos-test-mpich-suite.sh <mpich|openmpi> <gcc|llvm>  # MPICH's Fortran suite
+
+`test/` is mpif's own and should be entirely green; the MPICH suite is the broad
+one, and the counts it reports are recorded under "Suite baseline" below. To run
+one directory of the suite rather than all of it:
+
+    cd mpi/tests-<variant>-gcc/mpich-5.0.1/test/mpi/f90/rma
+    MPIF_REAL_MPIEXEC=<mpi-prefix>/bin/mpiexec ../../runtests -tests=testlist \
+        -mpiexec=<repo>/ci-scripts/mpiexec-filter.sh -maxnp=4
+
+Set `MPIF_KEEP_TESTS=1` to stop `runtests` deleting each executable after it
+runs, which is what a debugger needs to turn "test failed" into a backtrace.
+
+### Stale build artifacts are the biggest time sink
+
+Four separate "regressions" during one session turned out to be stale artifacts,
+including a `dyld: Symbol not found: ___mpi_cptr_MOD_mpi_alloc_mem_cptr` that
+looked alarming and meant nothing. Two mechanisms:
+
+- `runtests` rebuilds a test only when its executable is **missing**. An
+  executable left from an older mpif is relinked, or simply rerun, against the
+  new library. After anything that changes symbol names -- a module rename above
+  all -- clear the suite tree before believing a result:
+
+      S=mpi/tests-<variant>-gcc/mpich-5.0.1/test/mpi
+      find $S -name '*.o' -delete; find $S -name '*.mod' -delete
+      rm -rf $S/util/.libs $S/util/*.la      # libmtest_f08.a and friends
+      # and the test executables themselves, which have no extension
+
+  The `util/` libraries matter as much as the tests: `libmtest_f08.a` holds
+  `MTest_Init` and is compiled against mpif's modules.
+
+- `ctest` on its own does **not** rebuild. `ctest --test-dir build-<variant>-tests`
+  will happily rerun a binary built against a previous mpif and report a pass.
+  Use `scripts/macos-test-mpif.sh`, which reconfigures and rebuilds first.
+
+### Verifying a fix
+
+Every fix recorded above was checked by putting the bug back: revert the change,
+rebuild, and confirm the new test fails -- ideally with the same message the
+original failure gave. This has caught two tests that passed either way and
+were therefore worthless, `test/comm_get_attr_f08.f90` among them, where a
+user-defined keyval turned out not to reproduce the bug at all and
+`MPI_APPNUM` was needed instead.
+
+For a bug that lives in the generator, revert by editing `dev/mpiapi.jl` and
+rerunning `julia dev/mpiapi.jl`; never edit `gen/` directly.
+
+For memory errors, note that ASan is close to useless here: the faulting write is
+usually inside libmpi, which is not instrumented, and is often a hand-rolled copy
+loop rather than an intercepted libc call. A guard page works instead -- `mmap`
+two pages, `mprotect` the second `PROT_NONE`, and place the buffer so its last
+byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
+`array_of_commands` scan were both pinned down.
+
+### Worth doing next, roughly in order
+
+1. **Error 9, arrays of statuses.** The largest of what is left: it makes six
+   routines unusable from `mpi_f08` and accounts for most of what still fails in
+   `f08/pt2pt`. Needs the generator to honour the parameter's `length`, and the
+   f08 temporary to become an array, and `MPI_STATUSES_IGNORE` to be recognised
+   alongside `MPI_STATUS_IGNORE`. All three, or the f08 path overruns a
+   one-status buffer.
+2. **`MPI_Register_datarep`**, the last callback family. The box that generalized
+   requests use works here too; the difference is that datareps are never
+   deregistered, so it is never freed.
+3. **Error 4's remainder**, exporting `MPI_COMM_NULL_COPY_FN` and the other
+   thirteen from the `mpi` and `mpi_f08` modules. Several `f90` attribute and
+   window tests fail to compile on this alone, and the f08 forms additionally
+   need their own procedures, taking `TYPE(MPI_Comm)` rather than `INTEGER`.
+4. **The PMPI interface**, which does not exist at all and which `mpif.h`
+   currently promises four names it cannot link.
+5. **`mprobef08`** fails at run time and has not been looked at.
+6. Error 8's `loc()`, and error 1a's duplicated handle conversions, both
+   tidying rather than breakage.
+
+Two things are worth reporting upstream and are not yet: the Open MPI empty info
+value, which has a reproducer ready at
+`bug-ompi-info-value/ompi-empty-info-value.c`, and Open MPI's
+`MPI_Info_create_env` changing across `MPI_Init`.
+
+### Suite baseline
+
+Recorded so that a change can be told from the background noise. Both variants,
+gcc, on macOS 15/arm64, with the suite tree cleaned first.
+
+|            | f77       | f90       | f08       |
+|------------|-----------|-----------|-----------|
+| MPICH      | 34 / 104  | 48 / 122  | 58 / 136  |
+| Open MPI   | 12 / 104  | 24 / 122  | 39 / 136  |
+
+Failures, not passes. MPICH does worse than Open MPI here for one reason: 17 of
+its f77 failures are the assertion of external blocker "MPICH: attributes on
+predefined datatypes abort in ABI builds", which Open MPI does not have. Open
+MPI's own blockers cost it fewer tests.
+
+`test/`, mpif's own suite, is 26 of 26 on both.
+
+Two cautions about these numbers. They were taken with the suite tree cleaned as
+described above, and are meaningless otherwise. And the Open MPI run needs the
+loopback workaround that `scripts/macos-test-mpich-suite.sh` now applies by
+default -- without it the spawn tests hang rather than fail, each burning
+`runtests`' 180-second timeout, and the run appears stuck.
