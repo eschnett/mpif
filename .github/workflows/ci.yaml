@@ -34,10 +34,7 @@ jobs:
         # images have been retired and `macos-15-intel` is not a valid label, so
         # x86-64 macOS would mean a larger runner, which is billed even for
         # public repositories.
-        #TODO os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
-        #TODO mpi: [mpich, openmpi]
-        #TODO toolchain: [gcc, llvm]
-        os: [ubuntu-24.04-arm]
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
         mpi: [mpich, openmpi]
         toolchain: [gcc, llvm]
 
