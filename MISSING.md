@@ -80,6 +80,53 @@ in one go rather than for this deprecated routine alone. `MPI_Sizeof` is
 deprecated in MPI-4.0 and its `mpi_f08` form was removed, but the `mpi` module
 and `mpif.h` still have it.
 
+### 6. The sentinels' alignment is pinned at 16 bytes
+
+https://github.com/eschnett/mpif/issues/2
+
+Every sentinel cell in `src/mpif_constants.c` carries
+`__attribute__((__aligned__(16)))`, and on x86 that is too little as soon as the
+Fortran side is compiled for a machine with wider vectors. GNU ld then warns,
+once per sentinel:
+
+    ld: warning: alignment 16 of normal symbol `mpif_statuses_ignore_ptr_' in
+    libmpifort_abi.so is smaller than 32 used by the common definition in
+    /tmp/ccvWTiTw.o
+
+The attribute is not arbitrary, though nothing in the file says so: gfortran
+aligns a COMMON block to the target's `BIGGEST_ALIGNMENT`, which is more than
+the natural alignment of the 8-byte cell inside it. Compiling the block on its
+own shows the request -- `nm -m` reports `(common) (alignment 2^4)` -- so 16 is
+what the C definition has to match, and without the attribute it would be 8 and
+mismatch by the same rule.
+
+What 16 does not cover is x86, where `BIGGEST_ALIGNMENT` follows the vector ISA:
+128 bits by default, 256 with AVX, 512 with AVX-512. aarch64 pins it at 128 and
+never warns, which is why this went unseen here. The report came from an EESSI
+build for `x86_64/amd/zen3` whose wrapper compiles with `-march=native`; Zen3 has
+AVX2, so the caller's object asked for 32.
+
+Nothing is actually misaligned. The cell holds an address, the Cray pointee lives
+elsewhere, and no vector instruction ever touches it; the linker keeps the
+definition's alignment and the program runs. It is noise, but noise on every link
+and on every sentinel.
+
+Worth doing, roughly in order of preference:
+
+- Raise the attribute to 64, the widest `BIGGEST_ALIGNMENT` x86 defines today, so
+  that it holds however either side is compiled.
+- Or use `__BIGGEST_ALIGNMENT__`, which is the same quantity gfortran uses and
+  says so. It covers the reporter's case, since a build that compiles mpif for
+  the same architecture gets the same number on both sides -- but not a
+  generically built library used by a `-march=native` caller.
+- Either way, say in the file why the attribute is there. Its absence is what
+  made this look like a magic number.
+
+The reporter works around it with `-fno-align-commons` in their wrapper's default
+flags, which does work. It is gfortran-specific, and in a wrapper it also changes
+the alignment of the caller's own COMMON blocks, so it is not the fix to adopt
+here.
+
 ## External blockers
 
 ### MPICH: attributes on predefined datatypes abort in ABI builds
