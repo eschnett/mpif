@@ -42,6 +42,48 @@ and `mpif.h` still have it.
 
 ## External blockers
 
+### MPICH: the generalized request tests require `extra_state` to alias the caller's variable
+
+`greqf`, `greqf90` and `greqf08` each set `extrastate = 1`, start a generalized
+request whose `free_fn` does `extrastate = extrastate - 1`, wait on it, and then
+require the *caller's* variable to read 0. The f08 one goes so far as to call
+`dummyupdate(extrastate)` first, to stop the compiler remembering what was
+stored -- so the dependency is deliberate, not an accident of the test.
+
+The standard does not say that. `extra_state` is `IN` in the
+`MPI_GREQUEST_START` parameter table and `INTENT(IN)` in its f08 binding; the
+callbacks are "passed the extra_state argument that was associated with the
+request by the starting call MPI_GREQUEST_START" (section 13.2), which describes
+a value being handed over; and the C prototypes all take `void *extra_state` by
+value, so a C callback provably cannot write back to the caller's variable at
+all -- only through it. Chapter 19, Support for Fortran, says nothing about
+`extra_state` anywhere, so there is no Fortran-specific licence either. The one
+phrase that points the other way, "extra_state can be used to maintain
+user-defined state for the request", means in C what it says: point it at
+something.
+
+What makes the tests pass under MPICH's own binding is how that binding is
+built rather than a decision about semantics. `mpi_grequest_start_` in
+`src/binding/fortran/mpif_h/fortran_binding.c` passes the Fortran actual
+argument's address straight through as the C `extra_state` value and hands the
+Fortran procedures to MPI unwrapped, so a callback's `extrastate` dummy lands on
+the caller's variable as a side effect.
+
+mpif copies instead, so the three tests fail. They report "Free routine not
+called", which is wrong and worth knowing before chasing it: the test sets
+`freefncall = 0`, declares `common /fnccalls/ freefncall` in `free_fn`, and then
+never increments it, so the counter is always zero and the diagnostic always
+takes that branch. The real assertion is the `extrastate .ne. 0` above it, and
+`free_fn` does run. Matching the tests would mean holding a pointer into the
+caller's frame for the lifetime of the request, which is a dangling pointer as
+soon as the request outlives the scope it was started in -- a hazard MPICH's
+binding has and mpif would be adopting on purpose. `test/grequest_f08.f90` asserts the opposite
+of what MPICH's tests assert, and deliberately.
+
+This is the same shape as the `spawnargvf90` entry below: a suite test that
+codifies its own implementation rather than the standard. Nothing to fix on this
+side.
+
 ### Registered datareps are not implemented, by either implementation
 
 `MPI_Register_datarep` forwards its Fortran callbacks correctly now, and nothing
@@ -647,7 +689,7 @@ variants, on macOS 15/arm64, with gcc 15 and with clang/flang 22.
 
 |                | f77       | f90       | f08       |
 |----------------|-----------|-----------|-----------|
-| MPICH, gcc     |  3 / 104  | 11 / 122  | 18 / 136  |
+| MPICH, gcc     |  4 / 104  | 12 / 122  | 19 / 136  |
 | MPICH, llvm    | 31 / 104  | 39 / 122  | 42 / 136  |
 | Open MPI, gcc  |  7 / 104  | 12 / 122  | 22 / 136  |
 | Open MPI, llvm |  7 / 104  | 12 / 122  | 18 / 136  |
@@ -663,17 +705,22 @@ MPICH/llvm row below it, not anything about the toolchains.
 The MPICH/gcc row was measured after the f08 intent fixes, and every failure in
 it is attributable to something already recorded here:
 
-- f77 (3): `allctypesf`, `bsendf`, `winattrf`.
-- f90 (11): `bsendf90`, `profile1f90` and `wtimef90` fail to build, the last two
+- f77 (4): `allctypesf`, `bsendf`, `greqf`, `winattrf`.
+- f90 (12): `bsendf90`, `profile1f90` and `wtimef90` fail to build, the last two
   on the missing PMPI interface; then `allctypesf90`, `attrlangf90`,
-  `createf90`, `createf90types` (twice), `fandcattrf90`, `trf90`, `winattrf90`.
-- f08 (18): `attrmpi1f08`, `profile1f90`, `statusconv` and `wtimef90` fail to
+  `createf90`, `createf90types` (twice), `fandcattrf90`, `greqf90`, `trf90`,
+  `winattrf90`.
+- f08 (19): `attrmpi1f08`, `profile1f90`, `statusconv` and `wtimef90` fail to
   build; then `allctypesf08`, `alltoallwf08`, `attrlangf08`, `createf08`,
-  `fandcattrf08`, `nonblocking_inpf08`, `nonblockingf08`, `spawnargvf03`,
-  `spawnargvf90`, `test14`, `test15`, `trf08`, `vw_inplacef08`, `winattrf08`.
+  `fandcattrf08`, `greqf08`, `nonblocking_inpf08`, `nonblockingf08`,
+  `spawnargvf03`, `spawnargvf90`, `test14`, `test15`, `trf08`, `vw_inplacef08`,
+  `winattrf08`.
 
-`spawnargvf90` and `spawnargvf03` are the MPICH inconsistency described above,
-and `alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08` and `vw_inplacef08`
+`greqf`, `greqf90` and `greqf08` are the `extra_state` blocker above, and are
+the only three the intent and callback work moved: a run immediately before
+copying `extra_state` into the box gave 3 / 11 / 18 with a failure set otherwise
+identical, entry for entry. `spawnargvf90` and `spawnargvf03` are the MPICH
+inconsistency described above, and `alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08` and `vw_inplacef08`
 are the four that flang passes and gfortran does not. `statusconv` is a C file
 using MPICH's own `MPI_F08_status` spelling rather than the ABI's
 `MPI_F08_Status`. `attrmpi1f08` hands `MPI_Keyval_create`, the MPI-1 form whose
@@ -683,9 +730,7 @@ whose attribute is address-sized: "Type mismatch in argument
 predates the intent work, which did not touch either.
 
 Nothing in the row is an intent failure -- there is no "INTENT mismatch" or
-"variable definition context" anywhere in the log. The datarep work moved
-nothing: this is the same 3 / 11 / 18, with the same failure set entry for
-entry, as the run before it.
+"variable definition context" anywhere in the log.
 
 `test/`, mpif's own suite, was 32 of 32 on all four and is now 36 of 36, with
 `callback_intents_f08`, `cancel_intent_f08`, `datarep_f08` and `datarep_c`

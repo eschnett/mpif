@@ -2,10 +2,17 @@
 ! passes MPI a box of its own holding the Fortran procedures and hands the
 ! caller's extra state on from there; see src/mpif_callbacks.c.
 !
-! The callbacks update module variables so the test can check each one ran, and
-! free_fn also updates extra_state itself: the standard declares extra_state
-! without an INTENT in all three interfaces, and the update is expected to reach
-! the caller's variable.
+! The callbacks update module variables so the test can check each one ran.
+!
+! free_fn also assigns to its own extra_state dummy, and the caller's variable
+! has to be *unchanged* afterwards. That is what MPI-5.0 describes: extra_state
+! is IN at MPI_GREQUEST_START, the callbacks are "passed the extra_state
+! argument that was associated with the request by the starting call" (section
+! 13.2), and the C prototypes take it by value, so a C callback could not write
+! back to the caller even in principle. mpif therefore copies it into the box.
+! MPICH's own greqf, greqf90 and greqf08 require the opposite; see "MPICH: the
+! generalized request tests require extra_state to alias the caller's variable"
+! in MISSING.md.
 
 module grequest_callbacks
   use mpi_f08
@@ -78,9 +85,9 @@ program grequest_f08
   ! What query_fn put there, carried back through the wait
   if (status%MPI_SOURCE /= 7) stop 6
   if (status%MPI_TAG /= 11) stop 7
-  ! What free_fn did to the caller's own variable
-  if (extra_state /= 41) stop 8
-  print '("query/free: ok, extra_state is ", i0)', extra_state
+  ! free_fn assigned to its dummy; the caller's variable is not its to change
+  if (extra_state /= 42) stop 8
+  print '("query/free: ok, extra_state is still ", i0)', extra_state
 
   ! And the cancel path, which MPICH's greqf does not reach
   query_calls = 0
@@ -94,7 +101,7 @@ program grequest_f08
   call MPI_Grequest_complete(request)
   call MPI_Wait(request, MPI_STATUS_IGNORE)
   if (free_calls /= 1) stop 11
-  if (extra_state /= 99) stop 12
+  if (extra_state /= 100) stop 12
   print '("cancel: ok, called once with complete=.false.")'
 
   print '("grequest_f08: all ok")'

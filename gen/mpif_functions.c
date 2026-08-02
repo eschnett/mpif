@@ -4718,12 +4718,12 @@ void mpi_grequest_start_(
   MPI_Grequest_query_function* const query_fn,
   MPI_Grequest_free_function* const free_fn,
   MPI_Grequest_cancel_function* const cancel_fn,
-  MPI_Aint* restrict const extra_state,
+  const MPI_Aint* restrict const extra_state,
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const ierror
 )
 {
-  void *const box = mpif_grequest_reserve((mpif_fortran_procedure)query_fn, (mpif_fortran_procedure)free_fn, (mpif_fortran_procedure)cancel_fn, extra_state);
+  void *const box = mpif_grequest_reserve((mpif_fortran_procedure)query_fn, (mpif_fortran_procedure)free_fn, (mpif_fortran_procedure)cancel_fn, *extra_state);
   if (!box) {
     *ierror = MPI_ERR_OTHER;
     return;

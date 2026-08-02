@@ -35,10 +35,9 @@ module callback_intents_f08_fns
   implicit none
 
   ! Counts the two callbacks that are registered and run for real. It is a
-  ! module variable rather than `extra_state` because MPI hands an attribute
-  ! callback its extra state by value -- `void *extra_state` in C -- so anything
-  ! written there is lost. The generalized request callbacks are the ones whose
-  ! `extra_state` does travel back, which test/grequest_f08.f90 covers.
+  ! module variable rather than `extra_state` because MPI hands a callback its
+  ! extra state by value -- `void *extra_state` in C -- so anything written
+  ! there is lost, for every callback family and not only these two.
   integer :: ncalls = 0
 
 contains

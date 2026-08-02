@@ -845,21 +845,13 @@ for key in sort(collect(keys(apis)))
                 @assert !optional
                 @assert !root_only
                 if param_direction == "in"
-                    if name == "MPI_Grequest_start"
+                    if name ∈ ["MPI_Grequest_start", "MPI_Register_datarep", "MPI_Register_datarep_c"]
                         # MPI carries mpif's box here rather than the caller's
                         # value, so that the trampolines can find the Fortran
-                        # procedures. The caller's variable is passed on to them
-                        # by address, which is why it is not declared const: the
-                        # standard gives the grequest callbacks an `extra_state`
-                        # with no INTENT, and a `free_fn` that updates it is
-                        # expected to be seen by the caller.
-                        push!(input_arguments, "MPI_Aint* restrict const $parname")
-                        push!(call_arguments, "box")
-                    elseif name ∈ ["MPI_Register_datarep", "MPI_Register_datarep_c"]
-                        # The box again, for the same reason. Here the caller's
-                        # value is copied into it rather than aliased, so this
-                        # one stays const: the box outlives the caller's
-                        # variable, a datarep never being deregistered.
+                        # procedures. The caller's value is copied into the box,
+                        # which is what the standard describes -- `extra_state`
+                        # is IN, and the callbacks are passed the argument that
+                        # was registered rather than the variable it came from.
                         push!(input_arguments, "const MPI_Aint* restrict const $parname")
                         push!(call_arguments, "box")
                     else
@@ -1250,7 +1242,7 @@ for key in sort(collect(keys(apis)))
                         extra_state = only(p["name"] for p in parameters if p["kind"] == "EXTRA_STATE")
                         procedures = join(["(mpif_fortran_procedure)$f" for f in fns], ", ")
                         append!(input_conversions,
-                                ["void *const box = mpif_grequest_reserve($procedures, $extra_state);",
+                                ["void *const box = mpif_grequest_reserve($procedures, *$extra_state);",
                                  "if (!box) {",
                                  "  *ierror = MPI_ERR_OTHER;",
                                  "  return;",

@@ -905,14 +905,15 @@ void mpif_errhandler_cancel(int slot) {
 // when one fires. Unlike a reduction operator, no pool of trampolines is needed:
 // `extra_state` is mpif's to choose, so one trampoline per callback suffices and
 // the box it receives says which Fortran procedures to call. See
-// include/mpif_callbacks.h for the lifetime argument.
+// include/mpif_callbacks.h for the lifetime argument and for why `extra_state`
+// is copied into the box rather than aliased.
 
 struct grequest_box {
   mpif_fortran_procedure query_fn;
   mpif_fortran_procedure free_fn;
   mpif_fortran_procedure cancel_fn;
-  // The caller's Fortran variable, aliased rather than copied; see the header
-  MPI_Aint *extra_state;
+  // The registered value, copied rather than aliased; see the header
+  MPI_Aint extra_state;
 };
 
 // The Fortran callbacks, as declared in MPI-5.0 section 13.2. `status` is passed
@@ -932,7 +933,7 @@ typedef void (*fortran_grequest_cancel_fn)(MPI_Aint *extra_state,
 void *mpif_grequest_reserve(mpif_fortran_procedure query_fn,
                             mpif_fortran_procedure free_fn,
                             mpif_fortran_procedure cancel_fn,
-                            MPI_Aint *extra_state) {
+                            MPI_Aint extra_state) {
   struct grequest_box *const box = malloc(sizeof *box);
   if (!box) {
     fprintf(stderr, "mpif: MPI_Grequest_start: out of memory allocating the "
@@ -951,7 +952,7 @@ void mpif_grequest_cancel(void *box) { free(box); }
 int mpif_grequest_query_trampoline(void *extra_state, MPI_Status *status) {
   const struct grequest_box *const box = extra_state;
   MPI_Fint f_ierror = MPI_SUCCESS;
-  ((fortran_grequest_query_fn)box->query_fn)(box->extra_state, status,
+  ((fortran_grequest_query_fn)box->query_fn)(&box->extra_state, status,
                                              &f_ierror);
   return f_ierror;
 }
@@ -959,7 +960,7 @@ int mpif_grequest_query_trampoline(void *extra_state, MPI_Status *status) {
 int mpif_grequest_free_trampoline(void *extra_state) {
   struct grequest_box *const box = extra_state;
   MPI_Fint f_ierror = MPI_SUCCESS;
-  ((fortran_grequest_free_fn)box->free_fn)(box->extra_state, &f_ierror);
+  ((fortran_grequest_free_fn)box->free_fn)(&box->extra_state, &f_ierror);
   // The last callback this request will make, so the box goes with it
   free(box);
   return f_ierror;
@@ -969,7 +970,7 @@ int mpif_grequest_cancel_trampoline(void *extra_state, int complete) {
   const struct grequest_box *const box = extra_state;
   MPI_Fint f_complete = mpif_bool2logical(complete);
   MPI_Fint f_ierror = MPI_SUCCESS;
-  ((fortran_grequest_cancel_fn)box->cancel_fn)(box->extra_state, &f_complete,
+  ((fortran_grequest_cancel_fn)box->cancel_fn)(&box->extra_state, &f_complete,
                                                &f_ierror);
   return f_ierror;
 }

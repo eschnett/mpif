@@ -108,9 +108,9 @@ void mpif_errhandler_cancel(int slot);
 // A generalized request's three callbacks are told only `extra_state`, so there
 // is nothing to look up when one fires -- the same problem reduction operators
 // have. No pool is needed here, though: `extra_state` is mpif's to choose, so it
-// gives MPI a box holding the three Fortran procedures and passes the caller's
-// own extra state on from there. There is therefore no limit on how many
-// generalized requests a program may have.
+// gives MPI a box holding the three Fortran procedures and the caller's extra
+// state. There is therefore no limit on how many generalized requests a program
+// may have.
 //
 // The box belongs to one request and is released by the free trampoline. MPI-5.0
 // section 13.2 has it that "free_fn will be invoked only once per request by a
@@ -120,15 +120,24 @@ void mpif_errhandler_cancel(int slot);
 // Allocate the box to hand MPI as `extra_state`, or return NULL if out of
 // memory, in which case a diagnostic has been printed.
 //
-// `extra_state` is the address of the caller's Fortran variable rather than a
-// copy of its value, so that the callbacks alias it. The standard declares
-// `extra_state` without an INTENT in all three grequest callback interfaces --
-// unlike the attribute callbacks, where it is INTENT(IN) and mpif passes a copy
-// -- and a `free_fn` that updates it is expected to be seen by the caller.
+// `extra_state` is copied into the box, so a callback that assigns to its own
+// `extra_state` dummy changes the box's copy and nothing the caller can see.
+// That is what MPI-5.0 describes: `extra_state` is IN at MPI_GREQUEST_START,
+// the callbacks are "passed the extra_state argument that was associated with
+// the request by the starting call" (section 13.2), and the C prototypes take
+// it by value, so a C callback provably cannot write back to the caller. The
+// chapter on Fortran support says nothing that would make Fortran different.
+//
+// MPICH's own greqf, greqf90 and greqf08 disagree, requiring a `free_fn`'s
+// update to reach the caller, and fail here. See "MPICH: the generalized
+// request tests require extra_state to alias the caller's variable" in
+// MISSING.md; passing them would mean holding a pointer into the caller's
+// frame for the lifetime of the request, which is also a dangling pointer as
+// soon as the request outlives the scope it was started in.
 void *mpif_grequest_reserve(mpif_fortran_procedure query_fn,
                             mpif_fortran_procedure free_fn,
                             mpif_fortran_procedure cancel_fn,
-                            MPI_Aint *extra_state);
+                            MPI_Aint extra_state);
 
 // Release the box again, MPI_Grequest_start having failed. Safe only because MPI
 // never received it, so no callback can fire.
