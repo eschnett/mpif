@@ -124,6 +124,7 @@ module mpif_f08_types
   save
 
   public :: MPI_Status_f2f08
+  public :: mpif_status_f2f08_noerror
   public :: MPI_Status_f082f
 
   ! Handles
@@ -772,6 +773,34 @@ contains
     f08_status%MPI_internal(1:5) = f_status(4:8)
     if (present(ierror)) ierror = MPI_SUCCESS
   end subroutine MPI_Status_f2f08
+
+  ! MPI_Status_f2f08 without the error field, which the generated f08 wrappers
+  ! use to copy a status back out of the temporary they hand to C.
+  !
+  ! MPI-5.0 section 3.2.5: "In general, message-passing calls do not modify the
+  ! value of the error code field of status variables. This field may be updated
+  ! only by the functions in Section 3.7.5 that return multiple statuses. The
+  ! field is updated if and only if such function returns with an error code of
+  ! MPI_ERR_IN_STATUS."
+  !
+  ! mpif cannot leave the field alone by doing nothing, the way an MPI written in
+  ! C does. Its f08 wrappers pass MPI a temporary rather than the caller's status,
+  ! so a field MPI does not write holds whatever was on the stack, and copying the
+  ! whole temporary back put that in the caller's status. That is what failed
+  ! MPICH's mprobef08, which sets status%MPI_ERROR to a sentinel before each call
+  ! and requires it to survive; mprobef and mprobef90 passed all along, mpif.h and
+  ! the mpi module handing MPI the caller's own array.
+  !
+  ! The multi-status routines are the exception the standard names, and their
+  ! wrappers copy the field in themselves when the call reports
+  ! MPI_ERR_IN_STATUS.
+  subroutine mpif_status_f2f08_noerror(f_status, f08_status)
+    integer, intent(in) :: f_status(MPI_STATUS_SIZE)
+    type(MPI_Status), intent(inout) :: f08_status
+    f08_status%MPI_SOURCE = f_status(MPI_SOURCE)
+    f08_status%MPI_TAG = f_status(MPI_TAG)
+    f08_status%MPI_internal(1:5) = f_status(4:8)
+  end subroutine mpif_status_f2f08_noerror
 
   subroutine MPI_Status_f082f(f08_status, f_status, ierror)
     type(MPI_Status), intent(in) :: f08_status

@@ -764,8 +764,13 @@ for key in sort(collect(keys(apis)))
                         end
                         push!(f08_call_arguments, "tmp_$f_argname")
                         if param_direction in ["out", "inout"]
+                            # Not MPI_Status_f2f08: MPI does not set the error
+                            # field for a call that returns one status, so the
+                            # temporary's is whatever was on the stack and must
+                            # not reach the caller. See mpif_status_f2f08_noerror
+                            # in src/mpif_f08_types.F90.
                             push!(f08_call_temp_copyouts, "if (loc($f_argname) /= loc(MPI_STATUS_IGNORE)) then")
-                            push!(f08_call_temp_copyouts, "  call MPI_Status_f2f08(tmp_$f_argname, $f_argname)")
+                            push!(f08_call_temp_copyouts, "  call mpif_status_f2f08_noerror(tmp_$f_argname, $f_argname)")
                             push!(f08_call_temp_copyouts, "endif")
                         end
                     elseif kind == "STATUS"
@@ -799,10 +804,19 @@ for key in sort(collect(keys(apis)))
                             # the `some` routines that is `outcount`, which is
                             # MPI_UNDEFINED when no request was active -- a
                             # negative bound, so the loop simply does nothing.
+                            # These are the routines the standard allows to set
+                            # the error field, and only when they report
+                            # MPI_ERR_IN_STATUS: "The field is updated if and
+                            # only if such function returns with an error code of
+                            # MPI_ERR_IN_STATUS." So it is copied here, and by
+                            # nothing else.
                             push!(f08_call_temp_copyouts, "if (loc($f_argname) /= loc(MPI_STATUSES_IGNORE)) then")
                             push!(f08_call_temp_copyouts, "  do i_$f_argname = 1, $reported_count")
                             push!(f08_call_temp_copyouts,
-                                  "    call MPI_Status_f2f08(tmp_$f_argname(:, i_$f_argname), $f_argname(i_$f_argname))")
+                                  "    call mpif_status_f2f08_noerror(tmp_$f_argname(:, i_$f_argname), $f_argname(i_$f_argname))")
+                            push!(f08_call_temp_copyouts, "    if (tmp_ierror == MPI_ERR_IN_STATUS) &")
+                            push!(f08_call_temp_copyouts,
+                                  "      $f_argname(i_$f_argname)%MPI_ERROR = tmp_$f_argname(MPI_ERROR, i_$f_argname)")
                             push!(f08_call_temp_copyouts, "  end do")
                             push!(f08_call_temp_copyouts, "endif")
                         end
@@ -969,9 +983,23 @@ for key in sort(collect(keys(apis)))
                     @show name parname param_direction
                     @assert false
                 end
+                # No INTENT on a status MPI fills in, which is what the
+                # standard's own binding says: "TYPE(MPI_Status) :: status", and
+                # "TYPE(MPI_Status) :: array_of_statuses(*)". INTENT(IN) and
+                # INTENT(INOUT) it does give, to the query and set routines, so
+                # only the `out` direction loses its intent here.
+                #
+                # INTENT(OUT) is not a harmless embellishment. It tells the
+                # compiler the incoming value is dead, and a caller that sets
+                # status%MPI_ERROR before the call -- which is exactly what the
+                # standard lets it do, MPI not being allowed to touch that field
+                # -- has that store deleted at -O2. MPICH's mprobef08 does it and
+                # failed on it; at -O0 the same program passes, which is why
+                # mpif's own tests did not catch this.
+                f08_status_intent = param_direction == "out" ? "" : ", intent($param_direction)"
                 if length == nothing
                     push!(f_declarations, "integer :: $parname(MPI_STATUS_SIZE)")
-                    push!(f08_declarations, "type(MPI_Status), intent($param_direction) :: $parname")
+                    push!(f08_declarations, "type(MPI_Status)$f08_status_intent :: $parname")
                 else
                     # An array of statuses, whose length is the caller's to know:
                     # assumed-size in both interfaces. Declaring it as a scalar
@@ -981,7 +1009,7 @@ for key in sort(collect(keys(apis)))
                     # (scalar and rank-1)".
                     @assert length == "*"
                     push!(f_declarations, "integer :: $parname(MPI_STATUS_SIZE, *)")
-                    push!(f08_declarations, "type(MPI_Status), intent($param_direction) :: $parname(*)")
+                    push!(f08_declarations, "type(MPI_Status)$f08_status_intent :: $parname(*)")
                 end
             elseif kind in [int_kinds; int_aint_kinds; int_count_kinds; aint_kinds; aint_count_kinds; count_kinds]
                 if kind in int_kinds || (!embiggen && kind in int_aint_kinds) || (!embiggen && kind in int_count_kinds)

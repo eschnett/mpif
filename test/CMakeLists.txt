@@ -45,6 +45,14 @@ add_mpi_test(alloc_mem_cptr        SOURCES alloc_mem_cptr.f90                   
 add_mpi_test(large_count_f08        SOURCES large_count_f08.f90                     LIBS MPI::MPI_Fortran)
 add_mpi_test(attr_fns_f90           SOURCES attr_fns_f90.f90                        LIBS MPI::MPI_Fortran)
 add_mpi_test(attr_fns_f08           SOURCES attr_fns_f08.f90                        LIBS MPI::MPI_Fortran)
+add_mpi_test(status_error_f08       SOURCES status_error_f08.f90                    LIBS MPI::MPI_Fortran)
+# This one has to be optimised to assert what it is for. It sets
+# status%MPI_ERROR before each call and requires the value to survive, and the
+# way that breaks is a caller-side dead store: an INTENT(OUT) status in the
+# binding tells the compiler the incoming value cannot be read, so the store is
+# deleted -- at -O2, and not at the -O0 the rest of these tests are built with.
+# MPICH's mprobef08 caught it only because its suite compiles with -O2.
+target_compile_options(status_error_f08 PRIVATE $<$<COMPILE_LANGUAGE:Fortran>:-O2>)
 add_mpi_test(sentinel_alignment_c   SOURCES sentinel_alignment_c.c                  LIBS MPI::MPI_Fortran MPI::MPI_C)
 add_mpi_test(waitall_f90            SOURCES waitall_f90.f90                         LIBS MPI::MPI_Fortran)
 add_mpi_test(waitall_f08            SOURCES waitall_f08.f90                         LIBS MPI::MPI_Fortran)

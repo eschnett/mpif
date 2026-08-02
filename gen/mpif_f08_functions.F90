@@ -6613,7 +6613,7 @@ contains
     integer :: buf(*)
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -6626,7 +6626,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read
@@ -6648,7 +6648,7 @@ contains
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -6661,7 +6661,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_c
@@ -6683,7 +6683,7 @@ contains
     integer :: buf(*)
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -6696,7 +6696,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_all
@@ -6718,7 +6718,7 @@ contains
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -6731,7 +6731,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_all_c
@@ -6805,7 +6805,7 @@ contains
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -6816,7 +6816,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_all_end
@@ -6840,7 +6840,7 @@ contains
     integer :: buf(*)
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -6854,7 +6854,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_at
@@ -6878,7 +6878,7 @@ contains
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -6892,7 +6892,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_at_c
@@ -6916,7 +6916,7 @@ contains
     integer :: buf(*)
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -6930,7 +6930,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_at_all
@@ -6954,7 +6954,7 @@ contains
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -6968,7 +6968,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_at_all_c
@@ -7048,7 +7048,7 @@ contains
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7059,7 +7059,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_at_all_end
@@ -7081,7 +7081,7 @@ contains
     integer :: buf(*)
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7094,7 +7094,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_ordered
@@ -7116,7 +7116,7 @@ contains
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7129,7 +7129,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_ordered_c
@@ -7203,7 +7203,7 @@ contains
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7214,7 +7214,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_ordered_end
@@ -7236,7 +7236,7 @@ contains
     integer :: buf(*)
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7249,7 +7249,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_shared
@@ -7271,7 +7271,7 @@ contains
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7284,7 +7284,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_read_shared_c
@@ -7481,7 +7481,7 @@ contains
     integer :: buf(*)
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7494,7 +7494,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write
@@ -7516,7 +7516,7 @@ contains
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7529,7 +7529,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_c
@@ -7551,7 +7551,7 @@ contains
     integer :: buf(*)
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7564,7 +7564,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_all
@@ -7586,7 +7586,7 @@ contains
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7599,7 +7599,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_all_c
@@ -7673,7 +7673,7 @@ contains
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7684,7 +7684,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_all_end
@@ -7708,7 +7708,7 @@ contains
     integer :: buf(*)
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7722,7 +7722,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_at
@@ -7746,7 +7746,7 @@ contains
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7760,7 +7760,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_at_c
@@ -7784,7 +7784,7 @@ contains
     integer :: buf(*)
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7798,7 +7798,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_at_all
@@ -7822,7 +7822,7 @@ contains
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7836,7 +7836,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_at_all_c
@@ -7916,7 +7916,7 @@ contains
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7927,7 +7927,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_at_all_end
@@ -7949,7 +7949,7 @@ contains
     integer :: buf(*)
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7962,7 +7962,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_ordered
@@ -7984,7 +7984,7 @@ contains
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -7997,7 +7997,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_ordered_c
@@ -8071,7 +8071,7 @@ contains
     !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -8082,7 +8082,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_ordered_end
@@ -8104,7 +8104,7 @@ contains
     integer :: buf(*)
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -8117,7 +8117,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_shared
@@ -8139,7 +8139,7 @@ contains
     integer :: buf(*)
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -8152,7 +8152,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_File_write_shared_c
@@ -10485,7 +10485,7 @@ contains
     type(MPI_Comm), intent(in) :: comm
     logical, intent(out) :: flag
     type(MPI_Message), intent(out) :: message
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -10499,7 +10499,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Improbe
@@ -11416,7 +11416,7 @@ contains
     integer, intent(in) :: tag
     type(MPI_Comm), intent(in) :: comm
     logical, intent(out) :: flag
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -11429,7 +11429,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Iprobe
@@ -12526,7 +12526,7 @@ contains
     integer, intent(in) :: tag
     type(MPI_Comm), intent(in) :: comm
     type(MPI_Message), intent(out) :: message
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -12539,7 +12539,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Mprobe
@@ -12561,7 +12561,7 @@ contains
     integer, intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Message), intent(inout) :: message
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -12574,7 +12574,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Mrecv
@@ -12596,7 +12596,7 @@ contains
     integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
     type(MPI_Message), intent(inout) :: message
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -12609,7 +12609,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Mrecv_c
@@ -14034,7 +14034,7 @@ contains
     integer, intent(in) :: source
     integer, intent(in) :: tag
     type(MPI_Comm), intent(in) :: comm
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -14046,7 +14046,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Probe
@@ -14327,7 +14327,7 @@ contains
     integer, intent(in) :: source
     integer, intent(in) :: tag
     type(MPI_Comm), intent(in) :: comm
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -14342,7 +14342,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Recv
@@ -14368,7 +14368,7 @@ contains
     integer, intent(in) :: source
     integer, intent(in) :: tag
     type(MPI_Comm), intent(in) :: comm
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -14383,7 +14383,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Recv_c
@@ -15145,7 +15145,7 @@ contains
     implicit none
     type(MPI_Request), intent(in) :: request
     logical, intent(out) :: flag
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -15156,7 +15156,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Request_get_status
@@ -15174,7 +15174,7 @@ contains
     integer, intent(in) :: count
     type(MPI_Request), intent(in) :: array_of_requests(count)
     logical, intent(out) :: flag
-    type(MPI_Status), intent(out) :: array_of_statuses(*)
+    type(MPI_Status) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
     integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, count)
     integer :: i_array_of_statuses
@@ -15188,7 +15188,9 @@ contains
     )
     if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
       do i_array_of_statuses = 1, count
-        call MPI_Status_f2f08(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+        call mpif_status_f2f08_noerror(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+        if (tmp_ierror == MPI_ERR_IN_STATUS) &
+          array_of_statuses(i_array_of_statuses)%MPI_ERROR = tmp_array_of_statuses(MPI_ERROR, i_array_of_statuses)
       end do
     endif
     if (present(ierror)) ierror = tmp_ierror
@@ -15209,7 +15211,7 @@ contains
     type(MPI_Request), intent(in) :: array_of_requests(count)
     integer, intent(out) :: index
     logical, intent(out) :: flag
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -15222,7 +15224,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Request_get_status_any
@@ -15242,7 +15244,7 @@ contains
     type(MPI_Request), intent(in) :: array_of_requests(incount)
     integer, intent(out) :: outcount
     integer, intent(out) :: array_of_indices(*)
-    type(MPI_Status), intent(out) :: array_of_statuses(*)
+    type(MPI_Status) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
     integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, incount)
     integer :: i_array_of_statuses
@@ -15257,7 +15259,9 @@ contains
     )
     if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
       do i_array_of_statuses = 1, outcount
-        call MPI_Status_f2f08(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+        call mpif_status_f2f08_noerror(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+        if (tmp_ierror == MPI_ERR_IN_STATUS) &
+          array_of_statuses(i_array_of_statuses)%MPI_ERROR = tmp_array_of_statuses(MPI_ERROR, i_array_of_statuses)
       end do
     endif
     if (present(ierror)) ierror = tmp_ierror
@@ -16394,7 +16398,7 @@ contains
     integer, intent(in) :: source
     integer, intent(in) :: recvtag
     type(MPI_Comm), intent(in) :: comm
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -16414,7 +16418,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Sendrecv
@@ -16452,7 +16456,7 @@ contains
     integer, intent(in) :: source
     integer, intent(in) :: recvtag
     type(MPI_Comm), intent(in) :: comm
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -16472,7 +16476,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Sendrecv_c
@@ -16502,7 +16506,7 @@ contains
     integer, intent(in) :: source
     integer, intent(in) :: recvtag
     type(MPI_Comm), intent(in) :: comm
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -16519,7 +16523,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Sendrecv_replace
@@ -16549,7 +16553,7 @@ contains
     integer, intent(in) :: source
     integer, intent(in) :: recvtag
     type(MPI_Comm), intent(in) :: comm
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -16566,7 +16570,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Sendrecv_replace_c
@@ -17192,7 +17196,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_cancelled
@@ -17222,7 +17226,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_elements
@@ -17252,7 +17256,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_elements_c
@@ -17282,7 +17286,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_elements_x
@@ -17309,7 +17313,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_error
@@ -17336,7 +17340,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_source
@@ -17363,7 +17367,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Status_set_tag
@@ -17379,7 +17383,7 @@ contains
     implicit none
     type(MPI_Request), intent(inout) :: request
     logical, intent(out) :: flag
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -17390,7 +17394,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Test
@@ -17432,7 +17436,7 @@ contains
     integer, intent(in) :: count
     type(MPI_Request), intent(inout) :: array_of_requests(count)
     logical, intent(out) :: flag
-    type(MPI_Status), intent(out) :: array_of_statuses(*)
+    type(MPI_Status) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
     integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, count)
     integer :: i_array_of_statuses
@@ -17446,7 +17450,9 @@ contains
     )
     if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
       do i_array_of_statuses = 1, count
-        call MPI_Status_f2f08(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+        call mpif_status_f2f08_noerror(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+        if (tmp_ierror == MPI_ERR_IN_STATUS) &
+          array_of_statuses(i_array_of_statuses)%MPI_ERROR = tmp_array_of_statuses(MPI_ERROR, i_array_of_statuses)
       end do
     endif
     if (present(ierror)) ierror = tmp_ierror
@@ -17467,7 +17473,7 @@ contains
     type(MPI_Request), intent(inout) :: array_of_requests(count)
     integer, intent(out) :: index
     logical, intent(out) :: flag
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -17480,7 +17486,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Testany
@@ -17500,7 +17506,7 @@ contains
     type(MPI_Request), intent(inout) :: array_of_requests(incount)
     integer, intent(out) :: outcount
     integer, intent(out) :: array_of_indices(*)
-    type(MPI_Status), intent(out) :: array_of_statuses(*)
+    type(MPI_Status) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
     integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, incount)
     integer :: i_array_of_statuses
@@ -17515,7 +17521,9 @@ contains
     )
     if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
       do i_array_of_statuses = 1, outcount
-        call MPI_Status_f2f08(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+        call mpif_status_f2f08_noerror(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+        if (tmp_ierror == MPI_ERR_IN_STATUS) &
+          array_of_statuses(i_array_of_statuses)%MPI_ERROR = tmp_array_of_statuses(MPI_ERROR, i_array_of_statuses)
       end do
     endif
     if (present(ierror)) ierror = tmp_ierror
@@ -19047,7 +19055,7 @@ contains
     use mpif_f08_types
     implicit none
     type(MPI_Request), intent(inout) :: request
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -19057,7 +19065,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Wait
@@ -19073,7 +19081,7 @@ contains
     implicit none
     integer, intent(in) :: count
     type(MPI_Request), intent(inout) :: array_of_requests(count)
-    type(MPI_Status), intent(out) :: array_of_statuses(*)
+    type(MPI_Status) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
     integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, count)
     integer :: i_array_of_statuses
@@ -19086,7 +19094,9 @@ contains
     )
     if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
       do i_array_of_statuses = 1, count
-        call MPI_Status_f2f08(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+        call mpif_status_f2f08_noerror(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+        if (tmp_ierror == MPI_ERR_IN_STATUS) &
+          array_of_statuses(i_array_of_statuses)%MPI_ERROR = tmp_array_of_statuses(MPI_ERROR, i_array_of_statuses)
       end do
     endif
     if (present(ierror)) ierror = tmp_ierror
@@ -19105,7 +19115,7 @@ contains
     integer, intent(in) :: count
     type(MPI_Request), intent(inout) :: array_of_requests(count)
     integer, intent(out) :: index
-    type(MPI_Status), intent(out) :: status
+    type(MPI_Status) :: status
     integer, intent(out), optional :: ierror
     integer :: tmp_status(MPI_STATUS_SIZE)
     integer :: tmp_ierror
@@ -19117,7 +19127,7 @@ contains
       tmp_ierror &
     )
     if (loc(status) /= loc(MPI_STATUS_IGNORE)) then
-      call MPI_Status_f2f08(tmp_status, status)
+      call mpif_status_f2f08_noerror(tmp_status, status)
     endif
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Waitany
@@ -19137,7 +19147,7 @@ contains
     type(MPI_Request), intent(inout) :: array_of_requests(incount)
     integer, intent(out) :: outcount
     integer, intent(out) :: array_of_indices(*)
-    type(MPI_Status), intent(out) :: array_of_statuses(*)
+    type(MPI_Status) :: array_of_statuses(*)
     integer, intent(out), optional :: ierror
     integer :: tmp_array_of_statuses(MPI_STATUS_SIZE, incount)
     integer :: i_array_of_statuses
@@ -19152,7 +19162,9 @@ contains
     )
     if (loc(array_of_statuses) /= loc(MPI_STATUSES_IGNORE)) then
       do i_array_of_statuses = 1, outcount
-        call MPI_Status_f2f08(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+        call mpif_status_f2f08_noerror(tmp_array_of_statuses(:, i_array_of_statuses), array_of_statuses(i_array_of_statuses))
+        if (tmp_ierror == MPI_ERR_IN_STATUS) &
+          array_of_statuses(i_array_of_statuses)%MPI_ERROR = tmp_array_of_statuses(MPI_ERROR, i_array_of_statuses)
       end do
     endif
     if (present(ierror)) ierror = tmp_ierror

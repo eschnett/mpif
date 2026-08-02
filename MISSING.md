@@ -48,11 +48,123 @@ it carries a `# TODO: Check properly whether the function parameter needs
 embiggening`, with a hardcoded exception list containing only
 `MPI_Datarep_extent_function`.
 
-### 3. `loc()` is used to detect `MPI_STATUS_IGNORE`
+### 3. The f08 layer copies every status, and `loc()` follows from that
 
-77 occurrences in the f08 layer. `loc()` is a widely implemented extension but
-not standard Fortran, and comparing addresses silently fails if the argument
-arrives as a copy.
+An f08 wrapper does not call C. It calls the `mpi` module's generated procedure
+-- `MPIF_Mprobe => MPI_Mprobe` -- whose interface declares
+`integer :: status(MPI_STATUS_SIZE)`. A `TYPE(MPI_Status)` cannot be passed to
+that dummy, so the wrapper declares an INTEGER temporary, converts into it,
+calls, and converts back. The copy is there to cross a Fortran interface, not
+because the bits need rearranging.
+
+They do not. The conversion is the identity: the ABI fixes `MPI_Status` as
+
+    typedef struct {
+        int MPI_SOURCE;
+        int MPI_TAG;
+        int MPI_ERROR;
+        int MPI_internal[5];
+    } MPI_Status;
+
+and mpif fixes `MPI_STATUS_SIZE = 8` with `MPI_SOURCE = 1`, `MPI_TAG = 2`,
+`MPI_ERROR = 3`, so `MPI_Status_f2f08` moves element 1 to `MPI_SOURCE`, 2 to
+`MPI_TAG`, 3 to `MPI_ERROR` and 4:8 to `MPI_internal` -- the struct's own order.
+Both halves are guaranteed rather than observed: the layout is the ABI's, the
+constants are mpif's. The generalized request trampoline already relies on it,
+passing one status address through untouched to serve
+`INTEGER STATUS(MPI_STATUS_SIZE)` and the `bind(C)` `TYPE(MPI_Status)` alike.
+
+The copy has cost three defects so far, two of them already fixed:
+
+- the temporary sized for one status, which every array-of-statuses call overran;
+- `status%MPI_ERROR` arriving as whatever was on the stack, because a field MPI
+  deliberately does not write still gets copied back;
+- all 77 `loc()` comparisons in the f08 layer. Every one of them is
+  `loc(MPI_STATUS_IGNORE)` (71) or `loc(MPI_STATUSES_IGNORE)` (6), and they exist
+  only because the wrapper has to decide whether to convert. `loc()` is a widely
+  implemented extension rather than standard Fortran, and comparing addresses
+  fails silently if the argument arrives as a copy.
+
+And one that is still there, in the sixteen routines that take a status the other
+way round -- the nine `intent(in)` ones such as `MPI_Get_count` and
+`MPI_Test_cancelled`, and the seven `intent(inout)` ones such as
+`MPI_Status_set_cancelled`.
+
+MPI does not set `status%MPI_ERROR` for a call that returns a single status, so
+after `MPI_Wait` that component is undefined unless the caller set it, which is
+the normal case. Fortran 2023 19.6.1 paragraph 4: "A derived-type scalar object
+is defined if and only if all of its nonpointer components are defined." The
+status is therefore an undefined object, and referencing it is invalid.
+
+An MPI written in C may still take it `INTENT(IN)`, which is what the standard's
+own binding does, because it reads only the fields it needs and never touches the
+undefined one. mpif cannot: its wrapper converts the whole status through
+`MPI_Status_f082f`, which reads all eight elements. Every `MPI_Get_count` on a
+status straight from `MPI_Wait` references an undefined component.
+
+The intents are not what is wrong -- they match the standard, and dropping them
+would fix nothing, since reading an undefined component is invalid whatever the
+intent says. The copy is what is wrong, for the third time. Passing the status
+through removes the reference along with everything else in this list.
+
+Worth being exact about the `out` direction too, since it is what made
+`mprobef08` fail and it is now fixed. `INTENT(OUT)` was not merely superfluous
+there. Fortran 2023 8.5.10 paragraph 3 says a nonpointer `INTENT(OUT)` dummy
+"becomes undefined on invocation of the procedure", and paragraph 6 says every
+subobject inherits the attribute, so the caller's `MPI_ERROR` was destroyed
+before the call began -- which is why gfortran was entitled to delete the store
+at -O2. Add the rule that MPI must not define that component, and 19.6.1
+paragraph 4 makes the whole status undefined on return: `INTENT(OUT)` and MPI's
+own rule cannot both hold. The standard's binding gives these no intent at all,
+and now so does mpif.
+
+#### The plan
+
+Stop routing status through the `mpi` module, and the copy, the temporaries and
+the `loc()` guards all go together.
+
+1. **Emit an f08-side interface to the C entry point** for each routine that
+   takes a status, identical to the `mpi` module's except that status parameters
+   are `TYPE(MPI_Status)` -- and `(*)` for the six that take an array. Everything
+   else the wrapper already passes in the right terms: handles go as
+   `comm%MPI_VAL`, an INTEGER, so only status changes. Two Fortran spellings of
+   one C symbol, in two modules, which is legal because a program uses one module
+   or the other, and which costs C nothing: the wrapper takes `MPI_Fint*` and
+   casts it to `MPI_Status*` already.
+
+   Two mechanisms are available and the choice is open. An ordinary interface
+   body named `MPI_Mprobe` maps to `mpi_mprobe_` by the usual name mangling, as
+   the `mpi` module's does. `BIND(C, name="mpi_mprobe_")` names the symbol
+   outright, needs no assumption about trailing underscores, and would be a first
+   step towards the `bind(C)` entry under "Missing features" -- but it is a
+   change of calling convention for these routines and wants checking against the
+   hidden character length argument that the generated wrappers rely on
+   elsewhere.
+
+2. **Pass the caller's status straight through.** Delete the temporary, the
+   copy-in, the copy-back and `mpif_status_f2f08_noerror`, which exists only to
+   work around the copy. `MPI_Status_f2f08` and `MPI_Status_f082f` stay: they are
+   the standard's own conversion routines and are the user's to call.
+
+3. **Let the sentinels forward themselves.** `MPI_STATUS_IGNORE` and
+   `MPI_STATUSES_IGNORE` are already `TYPE(MPI_Status)` at the C constant's
+   address, so passing them through hands C the pointer it recognises, and the 77
+   `loc()` guards can go with the copy that needed them. The Cray pointer
+   declarations stay as they are, gfortran bug and all.
+
+4. **Assert the layout at build time** rather than leaving it as a comment. A
+   `static_assert` in C on `sizeof(MPI_Status) == 8 * sizeof(int)` and on the
+   offsets of the three named fields, checked against the same constants
+   `include/mpif_constants.h` declares, turns a guarantee into something that
+   fails the build if either side ever moves. `ci-scripts/check-headers.sh` is
+   the precedent for this kind of check.
+
+What is not yet established is whether the `mpi` module's interfaces do anything
+else for the f08 layer that would have to be replaced. Handles and the sentinels
+are accounted for; the string, buffer and callback kinds should be checked before
+the first routine is converted, since the answer decides whether this is a change
+to the STATUS branch of the generator alone or to the way f08 wrappers are
+emitted at all.
 
 ### 4. `MPI_Sizeof` does not cover rank two and above
 
@@ -386,6 +498,14 @@ The cost is a few minutes per run, which buys back far more than it spends:
 
 ### Verifying a fix
 
+`test/` is built `-O0`, and that hides a whole class of defect: anything whose
+symptom is the *caller's* code being optimised differently. An INTENT the
+standard does not give a dummy argument is the example that has already bitten --
+INTENT(OUT) on a status let gfortran delete the caller's store to
+`status%MPI_ERROR`, which no -O0 test could see. `test/status_error_f08.f90` is
+therefore compiled `-O2` on purpose. Consider the same for any test whose
+assertion is about what the caller is allowed to assume.
+
 Every fix recorded above was checked by putting the bug back: revert the change,
 rebuild, and confirm the new test fails -- ideally with the same message the
 original failure gave. This has caught two tests that passed either way and
@@ -410,9 +530,18 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    deregistered, so it is never freed.
 2. **The PMPI interface**, which does not exist at all and which `mpif.h`
    currently promises four names it cannot link.
-3. **`mprobef08`** fails at run time and has not been looked at.
-4. The `loc()` detection of `MPI_STATUS_IGNORE`, and the duplicated handle
-   conversions, both tidying rather than breakage.
+3. **Passing status through instead of copying it**, error 3 above, which has a
+   plan written out. It is the only item here that removes a class of defect
+   rather than a single one: it retires the 77 `loc()` calls, the last two
+   temporaries in the f08 layer, and the two bugs those temporaries have already
+   caused.
+4. **Audit the f08 intents against the standard.** Two have been wrong so far,
+   both found by accident rather than by looking: INTENT(IN) on the generalized
+   request callbacks' `extra_state`, and INTENT(OUT) on every status a routine
+   fills in. Appendix A.4 is the list to check against, and the generator emits
+   intents from `param_direction` without knowing that the standard sometimes
+   gives none.
+5. The duplicated handle conversions, tidying rather than breakage.
 
 One thing is worth reporting upstream and is not yet: Open MPI's
 `MPI_Info_create_env` changing across `MPI_Init`.
@@ -424,17 +553,25 @@ variants, on macOS 15/arm64, with gcc 15 and with clang/flang 22.
 
 |                | f77       | f90       | f08       |
 |----------------|-----------|-----------|-----------|
-| MPICH, gcc     | 31 / 104  | 39 / 122  | 47 / 136  |
-| MPICH, llvm    | 31 / 104  | 39 / 122  | 43 / 136  |
-| Open MPI, gcc  |  7 / 104  | 12 / 122  | 23 / 136  |
-| Open MPI, llvm |  7 / 104  | 12 / 122  | 19 / 136  |
+| MPICH, gcc     | 31 / 104  | 39 / 122  | 46 / 136  |
+| MPICH, llvm    | 31 / 104  | 39 / 122  | 42 / 136  |
+| Open MPI, gcc  |  7 / 104  | 12 / 122  | 22 / 136  |
+| Open MPI, llvm |  7 / 104  | 12 / 122  | 18 / 136  |
 
 Failures, not passes. MPICH does worse than Open MPI here for one reason: 17 of
 its f77 failures are the assertion of external blocker "MPICH: attributes on
 predefined datatypes abort in ABI builds", which Open MPI does not have. Open
 MPI's own blockers cost it fewer tests.
 
-`test/`, mpif's own suite, is 31 of 31 on all four.
+`test/`, mpif's own suite, is 32 of 32 on all four.
+
+`mprobef08` accounts for the last f08 failure removed, one on each variant. It
+had two causes, and the second is the interesting one: mpif declared
+`TYPE(MPI_Status), INTENT(OUT)` where the standard declares plain
+`TYPE(MPI_Status)`, and INTENT(OUT) tells the compiler that the caller's stored
+`status%MPI_ERROR` cannot be read, so at -O2 the store is deleted before the call
+happens. The suite compiles with -O2 and caught it; `test/` compiles with -O0 and
+did not.
 
 Exporting the predefined attribute callbacks from the `mpi` and `mpi_f08`
 modules moved f90 and f08 and left f77 exactly where it was, which is the
