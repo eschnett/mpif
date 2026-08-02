@@ -38,7 +38,7 @@ jobs:
         #TODO mpi: [mpich, openmpi]
         #TODO toolchain: [gcc, llvm]
         os: [ubuntu-24.04-arm]
-        mpi: [mpich]
+        mpi: [mpich, openmpi]
         toolchain: [gcc]
 
     env:
