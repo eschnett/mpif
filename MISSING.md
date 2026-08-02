@@ -1,13 +1,14 @@
 # Missing features and known errors
 
-A review of `dev/mpiapi.jl`, the generator that produces `gen/mpif_functions.c`,
-`gen/mpif_functions.F90` and `gen/mpif_f08_functions.F90` from the MPI standard's
-`apis.json`.
+A working note on `dev/mpiapi.jl`, the generator that produces
+`gen/mpif_functions.c`, `gen/mpif_functions.F90` and
+`gen/mpif_f08_functions.F90` from the MPI standard's `apis.json`, and on what
+mpif still gets wrong or does not do. Entries are removed once they are resolved,
+so this file is only ever the outstanding list; nothing in the source tree refers
+to it.
 
-Findings were checked against `data/apis.json`, the generated output, the
-official ABI header and the MPI 5.0 standard, rather than by reading the
-generator alone. Line numbers refer to the state of the code when the review was
-written.
+Findings are checked against `data/apis.json`, the generated output, the official
+ABI header and the MPI 5.0 standard, rather than by reading the generator alone.
 
 Signatures are the JSON's business: it is what the generator reads, and what any
 hand-written binding should be checked against. The standard is what makes the
@@ -18,561 +19,66 @@ callback, and only the standard says which. Keep a copy at
 
 ## Errors
 
-### 1. Callbacks: all but `MPI_Register_datarep` now work
+### 1. `MPI_Register_datarep` cannot forward its callbacks
 
-Originally `dev/mpiapi.jl` emitted `abort();` as the C-side conversion for
-`FUNCTION` and `POLYFUNCTION` parameters, so thirteen generated wrappers killed
-the process:
+The last callback family that does not work; every other one does, through the
+trampolines in `src/mpif_callbacks.c`. `MPI_Register_datarep` and
+`MPI_Register_datarep_c` report `MPI_ERR_OTHER` for a user-defined conversion or
+extent callback, with a diagnostic. `MPI_CONVERSION_FN_NULL` already works, being
+predefined.
 
-    mpi_op_create_               mpi_op_create_c_           mpi_comm_create_keyval_
-    mpi_type_create_keyval_      mpi_win_create_keyval_     mpi_keyval_create_
-    mpi_grequest_start_          mpi_register_datarep_      mpi_register_datarep_c_
-    mpi_comm_create_errhandler_  mpi_file_create_errhandler_
-    mpi_win_create_errhandler_   mpi_session_create_errhandler_
+The route is the one generalized requests take: those callbacks are told only
+`extra_state`, which is mpif's to choose, so it hands MPI a box holding the
+Fortran procedures and one trampoline apiece is enough. The datarep callbacks
+pass `extra_state` too. The difference is that datareps are never deregistered,
+so the box would live for the duration of the program rather than being freed by
+a `free_fn`.
 
-Partly fixed. The ABI spells the predefined callbacks as sentinel addresses --
-`MPI_COMM_NULL_COPY_FN` is `((MPI_Comm_copy_attr_function*)0x0)`,
-`MPI_COMM_DUP_FN` is `0x1` -- rather than as callable functions, so no
-trampoline is needed for them: `src/mpif_callbacks.c` recognises the address of
-the Fortran procedure and hands MPI the sentinel. That covers
-`MPI_Comm_create_keyval` and the rest of the attribute machinery with the
-predefined callbacks, which is the common case; see error 4.
-
-User-defined **attribute** callbacks now work too, through trampolines. MPI is
-handed a C function which converts arguments and calls the Fortran procedure:
-handles become default `INTEGER`s, which serves `mpif.h`, `use mpi` and
-`mpi_f08` alike because the f08 handle types are `bind(C)` derived types holding
-a single integer; `extra_state` and attribute values become
-`INTEGER(KIND=MPI_ADDRESS_KIND)`, or plain `INTEGER` for the MPI-1 forms; `flag`
-goes through `mpif_logical2bool`; and Fortran's `ierror` becomes the C return
-value.
-
-The trampoline finds the procedure again through the keyval, which is the one
-piece of identifying information every attribute callback receives. Registry
-entries are deliberately never removed: `MPI_Comm_free_keyval` only *marks* a
-keyval for deletion, and delete callbacks still fire afterwards for attributes
-that already exist. A keyval number MPI reuses overwrites its entry, so the
-table grows only to the number of keyvals live at once, capped at 256. Access is
-lock-free, publishing the keyval with release ordering once the procedures are
-in place.
-
-User-defined **reduction operators** work too, by a different route.
-`MPI_User_function` is told only the buffers, the length and the datatype --
-nothing that says which operator is being applied -- so there is nothing to look
-up when it fires. `src/mpif_callbacks.c` therefore pre-generates a pool of 128
-trampoline pairs, each knowing its own slot at compile time, and `MPI_Op_create`
-takes a free one.
-
-A slot is never given back. `MPI_Op_free` only marks the op for deallocation --
-section 2.5.1 of the standard has it that "the object itself still persists
-until any pending operations are complete" -- so a nonblocking reduction started
-before the free may call the trampoline afterwards, and reusing the slot would
-send that call to a different operator's Fortran procedure. Nothing tells us
-when MPI has finished with the op, so the slot is retired instead, and a program
-may create at most 128 user-defined operators over its lifetime rather than at
-any one time. The buffers pass straight through as choice buffers, the
-datatype is converted to an `INTEGER` handle, and the length is an `INTEGER` or
-`INTEGER(KIND=MPI_COUNT_KIND)` for the large-count form. Exhausting the pool
-reports `MPI_ERR_OTHER` with a diagnostic.
-
-**Error handlers** work by the same route as operators, for the same reason: a
-handler is told which object raised the error and which error code, but not
-which handler is running. All four of `MPI_Comm_create_errhandler`,
-`MPI_Win_create_errhandler`, `MPI_File_create_errhandler` and
-`MPI_Session_create_errhandler` draw from one pool of 64 slots, each slot with a
-trampoline per object kind. The handle is converted to an `INTEGER` and the error
-code is copied back, since the C prototype passes it by pointer and a handler may
-change it. Slots are never released -- `MPI_Errhandler_free` only marks a handler
-for deallocation and it stays in use by everything it is attached to, and an
-error handler is more likely than most callbacks to fire long after the program
-has stopped thinking about it.
-
-**Generalized request callbacks** work too, and cost no pool at all. `query_fn`,
-`free_fn` and `cancel_fn` are told only `extra_state`, so there is again nothing
-to look up when one fires -- but `extra_state` is mpif's to choose, so it hands
-MPI a box holding the three Fortran procedures and one trampoline apiece is
-enough. There is therefore no limit on how many generalized requests a program
-may have. The box belongs to one request and the free trampoline releases it,
-which is safe because "free_fn will be invoked only once per request by a correct
-program" and "the request is not deallocated until after free_fn completes".
-
-Two details differ from the other families. The box holds the *address* of the
-caller's `extra_state` rather than a copy of its value, so that the callbacks
-alias it: MPI-5.0 declares `extra_state` with no INTENT in all three grequest
-interfaces, unlike the attribute callbacks where it is INTENT(IN) and a copy is
-right, and MPICH's `greqf` requires a `free_fn` that decrements it to be visible
-to the caller afterwards. And `status` passes through untouched, the C
-`MPI_Status` being three `int`s followed by five more and `MPI_STATUS_SIZE` being
-8, so one address serves `INTEGER STATUS(MPI_STATUS_SIZE)` and the `bind(C)`
-`TYPE(MPI_Status)` alike.
-
-The f08 abstract interfaces for these three had picked up intents the standard
-does not give them, `INTENT(IN) :: extra_state` in particular. That made a
-conforming callback fail to compile -- "INTENT mismatch in argument
-'extra_state'" -- whenever it was a module procedure rather than an external one,
-so the intents are now omitted, matching the standard exactly.
-
-Still reporting `MPI_ERR_OTHER`:
-
-- `MPI_Register_datarep`, whose conversion and extent callbacks also pass
-  `extra_state` and can take the same treatment as the generalized requests
-  above. Datareps are never deregistered, so a box would live for the duration
-  rather than being freed. `MPI_CONVERSION_FN_NULL` already works, being
-  predefined.
-
-### 1a. Duplicated handle conversions
+### 2. Duplicated handle conversions
 
 `src/mpif_callbacks.c` has its own `comm_toint` and friends, mirroring the
 `MPIF_*_toint` helpers the generator emits into `gen/mpif_functions.c` to work
 around implementations that mishandle predefined handles. The generator should
 emit an `#include` of a shared header instead of 22 static functions, after
-which the copies in `src/mpif_callbacks.c` can go.
+which the copies in `src/mpif_callbacks.c` and `src/mpif_removed.c` can go; both
+carry a TODO pointing here in spirit.
 
 The large-count variant of this is also wrong by the generator's own admission:
 it carries a `# TODO: Check properly whether the function parameter needs
 embiggening`, with a hardcoded exception list containing only
 `MPI_Datarep_extent_function`.
 
-### 2. Fortran `.TRUE.` was hardcoded as 1 — fixed
+### 3. The predefined attribute callbacks are not exported from the modules
 
-`fortran_true = 1` / `fortran_false = 0` were baked into the generator. Inputs
-used `!= 0`, which is safe, but outputs wrote a literal `1`, so every `LOGICAL`
-out argument -- `flag` in `MPI_Test` and `MPI_Iprobe`, `MPI_Comm_test_inter`,
-`MPI_Finalized`, `commute`, ... -- was wrong on a compiler whose `.TRUE.` is not
-1. Intel Fortran uses -1.
+`MPI_COMM_NULL_COPY_FN`, `MPI_COMM_DUP_FN`, `MPI_CONVERSION_FN_NULL` and eleven
+more are defined in `src/mpif_attr_fns.F90` as external subroutines and reach
+`mpif.h` users, which declares them `EXTERNAL`. The `mpi` and `mpi_f08` modules
+do not export them at all, and several `f90` attribute and window tests in
+MPICH's suite fail to compile on that alone.
 
-Fixed: the conversions now go through `mpif_bool2logical` and
-`mpif_logical2bool` in `src/mpif_logical.c`, which read the values from two
-common blocks that `src/mpif_logical.F90` initialises with
-`transfer(.true., 0)` and `transfer(.false., 0)`. This is the same arrangement
-as `MPI_BOTTOM` and the other sentinels, with the direction reversed: there C
-defines the common block and Fortran reads it, here Fortran defines it and C
-reads it.
+The f08 forms need separate procedures rather than a re-export, since their
+arguments are `TYPE(MPI_Comm)` and friends rather than `INTEGER`.
 
-Taking the values from Fortran rather than from
-`MPI_Abi_get_fortran_booleans` is deliberate. The library reports whatever
-Fortran layer published its values, which need not have been built with the same
-compiler as mpif, and reports nothing at all when the implementation has no
-Fortran bindings of its own. The compiler that builds mpif is the one whose
-representation the user's `LOGICAL` arguments actually arrive in.
-
-Now that these values are available in C, mpif could also publish them with
-`MPI_Abi_set_fortran_booleans`; see "Missing features".
-
-### 3. `MPI_Pcontrol` was missing entirely — fixed
-
-The generator skipped any function with a `VARARGS` parameter.
-`MPI_Pcontrol(level, ...)` is the only one, and its Fortran binding takes just
-`level`, so the function is perfectly expressible. It had no binding at all.
-
-Fixed: the varargs parameter is dropped instead of the whole function, and
-`PROFILE_LEVEL` was added to `int_kinds` so that `level` is recognised.
-
-**`gen/` must be regenerated for this to take effect** (`julia dev/mpiapi.jl`).
-
-### 4. The predefined attribute callbacks were declared but never defined — fixed
-
-`include/mpif_functions.h` declares `external :: MPI_COMM_NULL_COPY_FN`,
-`MPI_COMM_DUP_FN`, `MPI_CONVERSION_FN_NULL` and eleven more, but the generator
-skips every entry with a `predefined_function` attribute and nothing implemented
-them, so `mpif.h` users got a link error -- `_mpi_null_copy_fn_ referenced
-from _MAIN__`. Because mpif prunes the implementation's Fortran library, its
-symbols were not available as a fallback either.
-
-Fixed: `src/mpif_attr_fns.F90` defines all fourteen as external subroutines
-(they cannot live in a module, since `mpif.h` declares them `EXTERNAL` and needs
-plain global symbols), and `src/mpif_callbacks.c` maps their addresses to the
-ABI's sentinels. Their bodies implement what the standard prescribes -- the copy
-functions report `.FALSE.` except the `DUP` variants, the delete functions do
-nothing -- but are never reached in normal use, since MPI is handed a sentinel
-rather than a procedure.
-
-Still missing: the `mpi` and `mpi_f08` modules do not export these names, only
-`mpif.h` does. The f08 forms would additionally need separate procedures, since
-their arguments are `TYPE(MPI_Comm)` rather than `INTEGER`.
-
-### 5. `MPI_SUBARRAYS_SUPPORTED` and `MPI_ASYNC_PROTECTS_NONBLOCKING` were undefined — fixed
-
-Both are required constants in all three interfaces, and neither existed.
-
-Fixed: both are `.false.` in `include/mpif_constants.h`, which serves `mpif.h`
-and the `mpi` module, and are re-exported by `src/mpif_f08_constants.F90` for
-`mpi_f08`. They are hand-written rather than generated, along with the rest of
-the constants.
-
-`.false.` is not a wart but the standard's own second option, quoted here
-because it also settles what the buffer declarations are allowed to be:
-
-> Set the MPI_SUBARRAYS_SUPPORTED constant to .FALSE. and declare choice
-> buffers with a compiler-dependent mechanism that overrides type checking if
-> the underlying Fortran compiler does not support the Fortran 2018 assumed-type
-> and assumed-rank notation. In this case, the use of noncontiguous sub-arrays
-> as buffers in nonblocking calls may be invalid.
-
-For `mpif.h` the standard goes further and *requires* `.false.`: "In the case of
-implicit interfaces for choice buffer or nonblocking routines, the constants
-must be set to .FALSE." -- and mpif.h's interfaces are implicit, being `external`
-declarations.
-
-### 6. Attribute values were declared as plain INTEGER — fixed
-
-For the `ATTRIBUTE_VAL` and `EXTRA_STATE` kinds the generator emitted
-`MPI_Aint*` on the C side but `integer` on the Fortran side, so
-`MPI_Comm_get_attr`, `MPI_Win_get_attr`, `MPI_Type_get_attr` and the
-`*_set_attr` and keyval routines had C writing eight bytes into a four-byte
-variable. The standard calls for `INTEGER(KIND=MPI_ADDRESS_KIND)`.
-
-Fixed in the generator, and in the hand-written f08 abstract interfaces in
-`src/mpif_f08_types.F90`, where `extra_state` was already address-sized but
-`attribute_val` was not. `EXTRA_STATE2` moved to the deprecated MPI-1 branch
-alongside `ATTRIBUTE_VAL_10`, which is plain `INTEGER` on both sides and was
-already self-consistent.
-
-Nothing in `test/` touches attributes, which is why this went unnoticed;
-`f77/attr` and `f08/attr` in MPICH's suite are what would have caught it.
-
-### 7. Attribute values were returned as addresses — fixed
-
-Two problems in the attribute getters, both found by MPICH's `f77/attr` tests.
-
-`mpi_attr_get_` handed MPI the *value* of an uninitialised `void *` where a
-`void **` was wanted, so MPI wrote through whatever that happened to be: a null
-pointer in `attrmpi1f`, a garbage address and SIGBUS in `baseattrf`. One missing
-`&` in the deprecated-attribute branch; the MPI-2 branch already had it.
-
-Beyond that, the C and Fortran bindings disagree about predefined attributes: C
-returns the address of a copy of the value, Fortran returns the value. So
-`MPI_TAG_UB` and friends came back as addresses -- `Got invalid value 53848696
-for HOST`. `src/mpif_attrs.c` now converts, keyed on the keyval, which the ABI
-numbers distinctly across object types (501-507 for communicators, 601-605 for
-windows) so one table serves all four getters. `MPI_WIN_SIZE` is a pointer to an
-address-sized value rather than to an `int`, and `MPI_WIN_BASE` is the address
-itself rather than a pointer to it. Table 12.1 of the standard gives the C types
--- `void *` for `MPI_WIN_BASE`, `MPI_Aint *` for `MPI_WIN_SIZE`, `int *` for
-`MPI_WIN_DISP_UNIT`, `MPI_WIN_CREATE_FLAVOR` and `MPI_WIN_MODEL` -- and the
-prose the rule: "In C, pointers are returned, and in Fortran, the values are
-returned, for the respective attributes."
-
-### 8. `loc()` is used to detect `MPI_STATUS_IGNORE`
+### 4. `loc()` is used to detect `MPI_STATUS_IGNORE`
 
 77 occurrences in the f08 layer. `loc()` is a widely implemented extension but
 not standard Fortran, and comparing addresses silently fails if the argument
 arrives as a copy.
 
-### 9. An array of statuses was declared as a single status — fixed
+### 5. `MPI_Sizeof` does not cover rank two and above
 
-Six routines take one: `MPI_Waitall`, `MPI_Waitsome`, `MPI_Testall`,
-`MPI_Testsome`, `MPI_Request_get_status_all` and `MPI_Request_get_status_some`.
-`apis.json` gives their `array_of_statuses` the `STATUS` kind with `length` `"*"`,
-but the generator's `STATUS` branch ignored `length` and emitted a scalar for both
-Fortran interfaces:
+`src/mpif_types.F90` defines the generic by hand, with a scalar and an
+assumed-size specific per type and kind. An argument of rank two or more resolves
+to nothing.
 
-    push!(f_declarations, "integer :: $parname(MPI_STATUS_SIZE)")
-    push!(f08_declarations, "type(MPI_Status), intent($param_direction) :: $parname")
-
-In `mpi_f08` that made the six routines unusable: passing the array the standard
-calls for is a compile error, `Rank mismatch in argument 'array_of_statuses'
-(scalar and rank-1)`. In `mpif.h` and the `mpi` module the wrong declaration was
-survivable -- Fortran sequence association lets a larger actual argument through,
-and a four-request `MPI_Waitall` over receive requests returned all four statuses
-correctly -- but the interface still described the wrong thing.
-
-Fixed, in three parts, because the declaration alone would have made things
-worse rather than better:
-
-- The declarations are now `integer :: $parname(MPI_STATUS_SIZE, *)` and
-  `type(MPI_Status), intent(out) :: $parname(*)`.
-- The f08 temporary is an array. It was
-  `integer :: tmp_array_of_statuses(MPI_STATUS_SIZE)` -- one status -- while the
-  C wrapper hands MPI the buffer it is given and MPI fills in one status per
-  request, so everything past the first was written outside the temporary. It is
-  now `(MPI_STATUS_SIZE, count)`, taking its length from the request array's,
-  and the copy back runs over `outcount` for the `some` routines and `count` for
-  the `all` ones. Copying `count` of them for a `some` routine would overwrite
-  entries that the standard leaves to the caller.
-- `MPI_STATUSES_IGNORE` is now what the guards compare against, rather than
-  `MPI_STATUS_IGNORE`. In this ABI the two happen to be the same address --
-  `mpi.h` has `#define MPI_STATUS_IGNORE ((MPI_Status*)0)` and the same for
-  `MPI_STATUSES_IGNORE` -- so the old comparison was not actually wrong, as this
-  entry used to claim. It was arbitrary, and an ABI that distinguished them
-  would have broken it.
-
-`test/waitall_f08.f90` is the assertion; it does not compile at all against the
-old declaration. `test/waitall_f90.f90` covers the `mpi` module side and passes
-either way, by the sequence association above.
-
-One thing the fix needed that was nothing to do with the generator: naming
-`MPI_STATUSES_IGNORE` from `mpi_f08` did not link, and never had. See the
-comment on its declaration in `src/mpif_f08_types.F90` -- gfortran 15 emits a
-reference to a module variable it never defines when a Cray pointee's pointer
-shares a common block with another module's variable and the sentinel is reached
-through a re-exporting module. Both f08 status sentinels now have common blocks
-of their own, initialised from the same C constants in `src/mpif_constants.c`,
-so all three interfaces still name one address.
-
-### 10. Info keys and values were mishandled in several ways — fixed
-
-Four separate defects in the info getters, all found by `f77/info`, `f90/info`
-and `f08/info` in MPICH's suite, plus one shared with `MPI_Comm_spawn`:
-
-- `MPI_Info_get_string`'s `buflen` was passed straight through, but Fortran
-  counts characters and C counts characters plus the terminating NUL, so the
-  value came back truncated by one and the returned length was one too large.
-- The same argument was used to size the C buffer without being clamped to the
-  caller's `CHARACTER`, so a `buflen` larger than `len(value)` -- which MPICH's
-  own `infogetstrf90` passes -- had MPI writing past the end of a stack array.
-- `MPI_Info_get` and `MPI_Info_get_string` copied their internal buffer out even
-  when the key did not exist, or when `buflen` was zero. MPI writes nothing in
-  those cases, so this handed back an uninitialised buffer and ran `strlen` over
-  it. The standard is explicit for `MPI_INFO_GET`: "otherwise it sets flag to
-  false and leaves value unchanged".
-- Leading blanks were not stripped from info keys and values. MPI-5.0 section 10
-  requires it -- "In Fortran, leading and trailing spaces are stripped from both"
-  -- so ` See Below` was stored with its space and a later lookup of `See Below`
-  missed.
-
-Fixed. The leading-blank stripping is deliberately per argument rather than a
-change to `mpif_strdup_f2c`: the standard asks for it only for info keys and
-values and for `MPI_COMM_SPAWN`'s `command` and `argv` (which
-`MPI_COMM_SPAWN_MULTIPLE` inherits by being "identical to MPI_COMM_SPAWN except
-that there are multiple executable specifications"), while
-`MPI_ADD_ERROR_STRING` is specified to strip trailing blanks only and the
-standard says nothing at all about port names, service names, file names or
-datareps. `dev/mpiapi.jl` carries the list as `strip_leading_blanks` and selects
-`mpif_strdup_f2c_trim`; note that MPICH's own binding strips both ends of every
-string, which is more than the standard requires.
-
-### 11. The spawn argument vectors were unusable — fixed
-
-`MPI_ARGV_NULL` and `MPI_ARGVS_NULL` were declared `integer` in
-`include/mpif_constants.h`. They stand in for `argv` and `array_of_argv`, which
-are `CHARACTER` in Fortran, so passing them did not compile at all --
-`Type mismatch in argument 'argv'; passed INTEGER(4) to CHARACTER(*)`, which is
-what killed `f77/spawn/spawnf` and `spawnmult2f` and their f90 and f08
-counterparts. They are now `character*1 MPI_ARGV_NULL(1)` and
-`character*1 MPI_ARGVS_NULL(1,1)`, the shapes MPI-5.0's rationale permits.
-
-Correcting the type alone would have traded a compile error for a crash. The
-Cray pointer puts these arrays at the address of the C constants, which are
-`(char**)0`, and unlike `MPI_ERRCODES_IGNORE` -- forwarded to C untouched -- an
-argument vector has to be converted element by element, so the conversion read
-address zero. The wrappers now recognise them by address and pass the C constant
-through. The comparison is against the constant rather than against `NULL`, since
-the standard only says `MPI_ARGVS_NULL` is "likely to be `(char ***)0`".
-
-Separately, `MPI_Comm_spawn_multiple`'s `array_of_commands` was scanned for a
-blank-terminated entry, as `argv` correctly is. It has no terminator: `count`
-gives the "number of commands", so the scan ran off the end of the caller's array
-and `mpif_fcount` faulted. It now takes the count from `count`.
-
-### 12. `MPI_STATUS_IGNORE` was `INTEGER` in `mpi_f08` — fixed
-
-`mpif_f08_constants.F90` re-exported the `INTEGER` arrays that `mpif.h` and the
-`mpi` module declare, so the sentinel could not be passed to a
-`TYPE(MPI_Status)` dummy argument and every f08 spawn test failed to compile.
-
-The two interfaces need different declarations of one name, so `mpi_f08` can no
-longer re-export: `MPI_STATUS_IGNORE` and `MPI_STATUSES_IGNORE` are now declared
-in `src/mpif_f08_types.F90`, where `MPI_Status` exists, with the same Cray pointer
-into the same common block. All three interfaces still name one address. The
-generated wrappers already compared `loc(status)` against the sentinel, so
-nothing else changed -- but see error 9 for `MPI_STATUSES_IGNORE`, which is still
-not detected anywhere.
-
-### 13. Attribute values were converted when MPI had not set one — fixed
-
-`mpi_attr_get_`, `mpi_comm_get_attr_`, `mpi_type_get_attr_` and
-`mpi_win_get_attr_` called `mpif_attr_value` unconditionally. MPI writes
-`attribute_val` only when there is an attribute to report, so on a false flag the
-`void *` was still whatever the stack held -- and for the predefined keyvals the
-conversion dereferences it, `MPI_UNIVERSE_SIZE` and friends being a pointer to an
-`int` in C but a value in Fortran. That is a wild read; it crashed MPICH's f08
-spawn tests, whose `MTestSpawnPossible` asks `MPI_COMM_WORLD` for
-`MPI_UNIVERSE_SIZE` without knowing whether it is set.
-
-Fixed: zero on a false flag or an error, which is what MPICH's own Fortran
-binding does. Note that a user-defined keyval does not show the bug -- MPI nulls
-the pointer there and `mpif_attr_value` already guarded against that -- so
-`test/comm_get_attr_f08.f90` uses `MPI_APPNUM`. Not `MPI_UNIVERSE_SIZE`: asking
-for that makes MPICH talk to the process manager, and `test/` runs its
-executables directly with no launcher.
-
-### 14. `MPI_Sizeof` was unusable — fixed
-
-`src/mpif_types.F90` defines the generic by hand, and every specific is wrong in
-the same three ways. Taking `mpif_sizeof_real4` as the example:
-
-    subroutine mpif_sizeof_real4(x, size, ierror)
-      real*4                      :: x(*)
-      real, intent(out)           :: size
-      real, intent(out), optional :: ierror
-
-- `size` and `ierror` are `real`. The standard's binding is `INTEGER SIZE,
-  IERROR`, and `size = 4` is assigning an integer count to a real.
-- `x` is `x(*)`, rank one, so a scalar argument matches nothing in the generic.
-  `MPI_SIZEOF` is meant to take an argument of any type *and any rank*.
-- There is no `CHARACTER` specific at all; the generic covers only `LOGICAL`,
-  `INTEGER`, `REAL` and `COMPLEX` kinds.
-
-`f90/datatype/sizeof` and `sizeof2` declare `real r1,r1v(2)` ... `character
-ch1,ch1v(6)` and call `MPI_Sizeof` on each, so they fail to compile with 15
-instances of "There is no specific subroutine for the generic 'mpi_sizeof'".
-
-`MPI_Sizeof` is deprecated in MPI-4.0 and its `mpi_f08` form was removed, but the
-`mpi` module and `mpif.h` still have it.
-
-Fixed: `size` and `ierror` are `INTEGER` in every specific, there is a scalar
-specific alongside each assumed-size one, and `CHARACTER` is covered. `sizeof`
-and both copies of `sizeof2` now report no errors.
-
-Still not covered is an argument of rank two or more, which resolves to nothing.
 A Fortran generic needs a specific per type, kind *and* rank, so full coverage
 would mean sixteen ranks apiece; MPICH's own binding generates exactly the same
 two forms per type and stops in the same place. Assumed-rank would collapse them
 into one specific each, at the cost of requiring Fortran 2018 -- the same
 trade-off recorded under "Assumed-rank choice buffers" below, and worth taking
-in one go rather than for this deprecated routine alone.
-
-### 15. RMA displacements were declared as default `INTEGER` — fixed
-
-`RMA_DISPLACEMENT_NNI` sits in the generator's `int_kinds`, so `MPI_Put`,
-`MPI_Get`, `MPI_Accumulate` and the rest emit
-
-    integer :: target_disp
-
-where the standard's binding is `INTEGER(KIND=MPI_ADDRESS_KIND) TARGET_DISP`.
-This is error 6 again, for a different kind: address-sized in C, four bytes in
-Fortran. It shows up as eleven instances of "Type mismatch in argument
-'target_disp'; passed INTEGER(8) to INTEGER(4)" across the `f90` window tests,
-which is the benign direction -- the compiler rejects it rather than truncating
-silently -- but a caller that follows the mpif interface and declares a plain
-`INTEGER` would pass four bytes where C reads eight.
-
-Fixed: `RMA_DISPLACEMENT_NNI` moved to `aint_kinds`, as `ATTRIBUTE_VAL` and
-`EXTRA_STATE` did, so all three interfaces now say `MPI_Aint` and
-`INTEGER(KIND=MPI_ADDRESS_KIND)`. It does not embiggen -- the large-count forms
-take an `MPI_Aint` too -- so one list entry covers both. Not to be confused with
-`POLYRMA_DISPLACEMENT`, the `disp_unit` of `MPI_Win_create`, which really is a
-plain `INTEGER` in the small form and stays in `int_aint_kinds`.
-
-### 16. The `TYPE(C_PTR)` forms of the memory-allocating routines were missing — fixed
-
-Four routines hand back a base address, and the standard makes each a generic in
-the `mpi` module and `mpif.h` with two specifics -- one taking
-`INTEGER(KIND=MPI_ADDRESS_KIND) BASEPTR`, one taking `TYPE(C_PTR) BASEPTR`:
-
-    SUBROUTINE MPI_ALLOC_MEM(SIZE, INFO, BASEPTR, IERROR)
-        INTEGER(KIND=MPI_ADDRESS_KIND) :: SIZE, BASEPTR
-    SUBROUTINE MPI_ALLOC_MEM_CPTR(SIZE, INFO, BASEPTR, IERROR)
-        TYPE(C_PTR) :: BASEPTR
-
-and likewise `MPI_WIN_ALLOCATE_CPTR`, `MPI_WIN_ALLOCATE_SHARED_CPTR` and
-`MPI_WIN_SHARED_QUERY_CPTR`. mpif generates only the address-kind form, so
-`f90/misc/alloc_mem` does not compile: "Type mismatch in argument 'baseptr';
-passed TYPE(C_PTR) to INTEGER(8)".
-
-The `_CPTR` names are the standard's way of writing an overload in an interface
-block and are not separate entry points, so this is a Fortran-side addition
-only -- the C side is already a `void*` either way.
-
-mpi_f08 had the opposite half of the same bug: there the standard has *only* the
-`TYPE(C_PTR)` form, and mpif emitted the address-kind one.
-
-Fixed. The f08 declaration is generated, `baseptr` becoming `TYPE(C_PTR)` with a
-`transfer` from the address-sized integer the C wrapper writes. The mpi module's
-overload is hand-written in `src/mpif_cptr.F90`, which calls the generated
-address-kind interface under a renamed alias, with the generics gathered in
-`src/mpi.F90`. The large-count variants are covered too; mpif spells those as
-separate names rather than further overloads, so each has its own generic.
-
-Where the generics live is forced, and was worth establishing by experiment:
-
-- A generic declared inside `mpif_cptr` *shadows* the use-associated specific
-  rather than extending it, so the address-kind form stops resolving.
-- A specific from one module and a same-named generic from another are an
-  ambiguous reference at the point of use.
-- A generic naming one of its own specifics, in a scope where both are visible,
-  works -- and is what the standard's own interface block for `MPI_ALLOC_MEM`
-  writes. Hence `interface MPI_Alloc_mem; procedure MPI_Alloc_mem; procedure
-  MPI_Alloc_mem_cptr; end interface` in `src/mpi.F90`.
-
-`mpif.h` needed nothing: its interfaces are implicit, so a `TYPE(C_PTR)` actual
-argument already reached the same C wrapper unchecked.
-
-### 17. `mpi_f08` did not overload the large-count procedures — fixed
-
-MPI-4.0 added large counts "via separate additional MPI procedures in C (suffixed
-with `_c`) and via interface polymorphism in Fortran when using USE mpi_f08". So
-in `mpi_f08` the base name has to accept an `INTEGER(KIND=MPI_COUNT_KIND)` count
-as well as a default `INTEGER` one. mpif generated `MPI_Send` and `MPI_Send_c` as
-two unrelated names with no generic tying them together, so a conforming program
-did not compile: "Type mismatch in argument 'count'; passed INTEGER(8) to
-INTEGER(4)", which is what stopped `f08/pt2pt/pt2pt_largef08`.
-
-Fixed: the generator emits a generic per base name, gathering the small-count
-procedure and its `_c` companion. 153 of them.
-
-Not all 159 `_c` procedures get one, and the rule matters:
-
-- A generic is only possible where Fortran can tell the two apart. `POLY` kinds
-  that go from default `INTEGER` to an address- or count-sized one qualify; those
-  that go from `MPI_ADDRESS_KIND` to `MPI_COUNT_KIND` do not, because mpif defines
-  `MPI_COUNT_KIND` as `MPI_ADDRESS_KIND` and the large form then has a signature
-  identical to the small one. `MPI_Type_get_extent`, `MPI_Type_get_true_extent`,
-  `MPI_Type_create_resized` and `MPI_File_get_type_extent` are of that sort, and
-  gfortran rejects a generic over them with "Ambiguous interfaces in generic
-  interface". MPICH's generator applies the same test, comparing the two kinds'
-  sizes; see `real_poly_kinds` in its `maint/local_python/binding_f08.py`.
-- That test also excludes the two the standard exempts by name, "the explicit
-  Fortran procedures MPI_Op_create_c and MPI_Register_datarep_c", whose only
-  `POLY` parameter is a callback: "interface polymorphism cannot be used to
-  differentiate between the two different user callback prototypes despite their
-  different type signatures".
-
-The `mpi` module and `mpif.h` are left alone, which is also what the standard
-asks: "No polymorphic support for larger types is provided in Fortran when using
-mpif.h and use mpi." Note that mpif nonetheless exposes the `_c` names there, as
-ordinary separate procedures. That is an extension rather than a conformance
-problem, and removing it would break anyone already calling them, so it stands.
-
-### 18. Request indices were returned C-numbered — fixed
-
-Found while testing error 9: `MPI_Waitsome` handed back `array_of_indices`
-exactly as C wrote it, and C numbers requests from zero where Fortran numbers
-them from one. MPI-5.0 says so for each of them -- for
-`MPI_WAITANY`, "index of handle for operation that completed ... in the range
-`0`...`count-1` in C, and in the range `1`...`count` in Fortran".
-
-Six routines return one: `MPI_Waitany`, `MPI_Testany` and
-`MPI_Request_get_status_any` a scalar `index`, `MPI_Waitsome`, `MPI_Testsome` and
-`MPI_Request_get_status_some` an `array_of_indices`. The generator treated
-`INDEX` as an ordinary integer kind, so the C wrapper passed the value straight
-through. The consequence is quiet: an index used to subscript the request array
-is off by one, so a program either works on the wrong request or runs off the
-start of the array.
-
-Fixed in the C wrapper, which is where the two conventions meet. Two details
-made it more than an increment:
-
-- `MPI_UNDEFINED` is what these routines report when no request was active, and
-  it has to pass through rather than become zero. The scalar form tests for it;
-  in the array form it arrives as `outcount`, and being negative it makes the
-  loop do nothing.
-- Only the first `outcount` entries of an array are MPI's to have written -- the
-  same bound the status copy back uses. The loop is clamped to the number of
-  requests as well, so that an `outcount` left unset by a failed call cannot
-  turn the renumbering into a wild write.
-
-`INDEX` is not by itself the discriminator: `MPI_Cart_shift`'s `direction`,
-`MPI_Graph_get`'s `index` and `MPI_Session_get_nth_pset`'s `n` carry the same
-kind and are numbered alike in both languages. What the six have in common is
-taking an array of requests, which is what `request_count` in the generator
-records -- the same thing that sizes the f08 status temporary for error 9.
-
-`test/waitall_f08.f90` asserts both forms: that `MPI_Waitsome`'s indices select
-the request whose status sits beside them, and that `MPI_Waitany`'s index is in
-`1..count` and becomes `MPI_UNDEFINED` once every request is null. Putting the
-bug back fails it at the first index, which comes out as zero.
+in one go rather than for this deprecated routine alone. `MPI_Sizeof` is
+deprecated in MPI-4.0 and its `mpi_f08` form was removed, but the `mpi` module
+and `mpif.h` still have it.
 
 ## External blockers
 
@@ -593,87 +99,41 @@ counterpart in MPICH's own test suite fail until this is fixed upstream. The
 reproducer sent with the issue is `bug-mpich-7916/mpich-abi-attr-bug.c`; it is pure C, with
 no Fortran involved.
 
-### OpenMPI: some built-in types are not mapped correctly — fixed upstream
-
-https://github.com/open-mpi/ompi/issues/14243
-
-The Fortran types `MPI_2INTEGER`, `MPI_2REAL`, and
-`MPI_2DOUBLE_PRECISION` were not mapped correctly from their ABI handle
-to their internal OpenMPI handle.
-
-`test/predefined_types_c.c` is the probe that found it. The three pair types
-were behind `MPIF_PROBE_PAIRTYPES=1` there, off by default: the failure is a
-SIGSEGV inside `MPI_Type_get_name`, so unlike every other result the probe
-collects it cannot be caught and reported -- it takes the whole probe down, and
-with it the rest of the answers.
-
-Fixed on the ABI branch, which is where the bug was: the three pair types were
-missing from `PREDEFINED_DATATYPES` in
-`ompi/mpi/bindings/ompi_bindings/consts.py`, so they got no entry in the
-generated ABI converter tables and conversion fell through to a pointer cast.
-Main was never affected. `ci-scripts/install-openmpi.sh` now pins
-`d0346f672a7698f32e9f346b5ca8681ab7887b36`, the head of the ABI pull request
-after the fix and after a rebase onto main; the previous pin,
-`090cfceee430174fdeb3ce3b00a57f29fc71a379`, predates it.
-
-Verified against a fresh build of that commit: all three now report their names
-through both the constant and the cast mpif uses, on Open MPI and on MPICH
-alike, so the probe no longer gates them behind the environment variable and
-`MPIF_PROBE_PAIRTYPES` is gone.
-
-### OpenMPI: an empty info value is rejected — fixed upstream, carried here
+### OpenMPI: an empty info value is rejected — carried as a local patch
 
 https://github.com/open-mpi/ompi/issues/14246
 
-`MPI_Info_set(info, "key", "")` returns `MPI_ERR_INFO_VALUE` (33) under OpenMPI
+`MPI_Info_set(info, "key", "")` returned `MPI_ERR_INFO_VALUE` (33) under Open MPI
 and `MPI_SUCCESS` under MPICH. The ABI defines that class as "Value longer than
-MPI_MAX_INFO_VAL", and the standard uses empty info values meaningfully elsewhere
--- a memory allocation kinds value "corresponding to the empty string represents
-no memory allocation kinds" -- so an empty value looks legitimate and OpenMPI's
-refusal looks wrong.
-
-Worse, the standard gives the empty value a defined meaning on two reserved keys.
-For both `"mpi_memory_alloc_kinds"` and `"mpi_assert_memory_alloc_kinds"`: "A
-value corresponding to the empty string represents no memory allocation kinds."
-Under Open MPI there is no way to say that through an info object.
-
-The cause is a zero-length test sitting alongside the NULL and over-long ones in
-`ompi/mpi/c/info_set.c.in`:
-
-    value_length = (value) ? (int)strlen (value) : 0;
-    if ((NULL == value) || (0 == value_length) ||
-        (@MPI_MAX_INFO_VAL@ <= value_length)) {
-
-Open MPI's own doc comment on that function states only the length rule. The
-zero-length *key* check just above is a separate question -- MPICH rejects an
-empty key too -- and is not part of this.
-
-It reaches Fortran through the blank stripping of error 10: a value of nothing
-but spaces becomes the empty string, which is exactly what `MPI_COMM_SPAWN`'s
-`argv` requires of the same helper. `test/info_blanks_f08.f90` avoids asserting
-on it so that mpif's own tests do not fail on the implementations' disagreement.
-
-The reproducer sent with the issue is
-`bug-ompi-info-value/ompi-empty-info-value.c`; it is pure C, with no Fortran
-involved, and exits 0 on MPICH and 1 on Open MPI.
+MPI_MAX_INFO_VAL", and the standard gives the empty value a defined meaning on
+two reserved keys -- for both `"mpi_memory_alloc_kinds"` and
+`"mpi_assert_memory_alloc_kinds"`, "A value corresponding to the empty string
+represents no memory allocation kinds" -- so there was no way to say that through
+an info object.
 
 Fixed upstream on `main` by
 [5e21b7b2](https://github.com/open-mpi/ompi/commit/5e21b7b21f8b4e52c06b5527eb344958325cbb30)
-(pull request 14247), which removes the zero-length test and leaves the empty
-*key* rejected. That is not on the ABI branch this builds from, so the fix is
-carried locally: `ci-scripts/openmpi-info-set-empty-value.patch`, applied to the
-source tree by `ci-scripts/install-openmpi.sh`.
+(pull request 14247), which removes the zero-length test on the value and leaves
+the empty *key* rejected. That commit is not on the ABI branch mpif builds from,
+so it is carried locally as `ci-scripts/openmpi-info-set-empty-value.patch`,
+applied by `ci-scripts/install-openmpi.sh`. **Drop the patch once the ABI branch
+picks the fix up**; `git apply` refuses fuzz, so it will fail loudly rather than
+land somewhere unintended, and the prepared-tree stamp covers the patches, so
+removing it re-prepares rather than reusing an older tree.
 
 The patch is a local copy rather than the upstream `.patch` downloaded by URL,
 which is what `install-mpich.sh` does for its own fix, because the upstream one
 does not apply to the ABI branch: the branch templates the constant as
 `@MPI_MAX_INFO_VAL@` where main writes `MPI_MAX_INFO_VAL`, and the commit's other
 hunks touch a changelog and tests the branch does not have in the same state.
-Only the parameter check is carried. It is applied with `git apply`, which
-refuses fuzz, so the patch fails loudly once the branch picks the fix up rather
-than landing somewhere unintended -- and the prepared-tree stamp now includes a
-checksum of the patches and of the install script, so editing either rebuilds
-the tree instead of silently reusing an older one.
+
+It reaches Fortran through the stripping of leading and trailing blanks that the
+standard requires of info keys and values: a value of nothing but spaces becomes
+the empty string. `test/info_blanks_f08.f90` avoids asserting on it so that
+mpif's own tests do not fail on an implementation that has not taken the fix.
+The reproducer sent with the issue is
+`bug-ompi-info-value/ompi-empty-info-value.c`; it is pure C, and exits 0 on
+MPICH and 1 on an unpatched Open MPI.
 
 ### OpenMPI: `MPI_Info_create_env` changes across `MPI_Init`
 
@@ -728,8 +188,9 @@ keep failing while mpif follows the standard. Nothing to fix on this side.
 The bindings declare choice buffers as `integer :: buf(*)` guarded by
 `!dir$ ignore_tkr` and `!gcc$ attributes no_arg_check`, with no
 `TYPE(*), DIMENSION(..)` and no `ASYNCHRONOUS` anywhere. This is conforming --
-it is the standard's `.FALSE.` option, see error 5 -- so it belongs here as an
-improvement rather than an error, now that the constants advertise it.
+it is the standard's `.FALSE.` option, which `MPI_SUBARRAYS_SUPPORTED` and
+`MPI_ASYNC_PROTECTS_NONBLOCKING` advertise -- so it belongs here as an
+improvement rather than an error.
 
 Taking the other option would mean declaring choice buffers
 `TYPE(*), DIMENSION(..), ASYNCHRONOUS` in the nonblocking, split-collective and
@@ -867,11 +328,14 @@ Recorded so that they do not get re-investigated:
   them to a C probe with the wrappers' calling convention: both arrive as
   `base=0x0`.
 
-  The addressing being right is only half of it, though, and this entry used to
-  claim more than it should have. A sentinel also has to have a type the caller
-  can pass (error 11), and any wrapper that does not simply forward it has to
-  recognise it rather than dereference it -- which is still not done for
-  `MPI_STATUSES_IGNORE` (error 9).
+  The addressing is only half of it: a sentinel also has to have a type the
+  caller can pass, and any wrapper that does not simply forward it has to
+  recognise it rather than dereference it. Both hold now. `mpi_f08`'s two status
+  sentinels are the exception to the shared arrangement above -- they have common
+  blocks of their own, for the gfortran bug described where they are declared in
+  `src/mpif_f08_types.F90` -- but `src/mpif_constants.c` initialises those from
+  the same C constants, so the addresses still agree across all three
+  interfaces.
 - `MPI_Wtime`, `MPI_Wtick`, `MPI_Aint_add` and `MPI_Aint_diff` are hand-written
   rather than generated, and are present. `MPI_Sizeof` is a hand-written generic
   in `src/mpif_types.F90`. `MPI_Status_f2f08` and `MPI_Status_f082f` are
@@ -955,20 +419,18 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
 1. **`MPI_Register_datarep`**, the last callback family. The box that generalized
    requests use works here too; the difference is that datareps are never
    deregistered, so it is never freed.
-2. **Error 4's remainder**, exporting `MPI_COMM_NULL_COPY_FN` and the other
-   thirteen from the `mpi` and `mpi_f08` modules. Several `f90` attribute and
-   window tests fail to compile on this alone, and the f08 forms additionally
-   need their own procedures, taking `TYPE(MPI_Comm)` rather than `INTEGER`.
+2. **The predefined attribute callbacks**, which the `mpi` and `mpi_f08` modules
+   do not export. Several `f90` attribute and window tests fail to compile on
+   this alone, and the f08 forms additionally need their own procedures, taking
+   `TYPE(MPI_Comm)` rather than `INTEGER`.
 3. **The PMPI interface**, which does not exist at all and which `mpif.h`
    currently promises four names it cannot link.
 4. **`mprobef08`** fails at run time and has not been looked at.
-5. Error 8's `loc()`, and error 1a's duplicated handle conversions, both
-   tidying rather than breakage.
+5. The `loc()` detection of `MPI_STATUS_IGNORE`, and the duplicated handle
+   conversions, both tidying rather than breakage.
 
 One thing is worth reporting upstream and is not yet: Open MPI's
-`MPI_Info_create_env` changing across `MPI_Init`. The empty info value has since
-been reported and fixed, and is carried as a local patch until the ABI branch
-picks it up.
+`MPI_Info_create_env` changing across `MPI_Init`.
 
 ### Suite baseline
 
@@ -986,22 +448,6 @@ predefined datatypes abort in ABI builds", which Open MPI does not have. Open
 MPI's own blockers cost it fewer tests.
 
 `test/`, mpif's own suite, is 28 of 28 on both.
-
-Both rows were measured after errors 9 and 18, and each moved the numbers in the
-shape its fix predicts. Error 9 moved the f08 column alone, 58 to 54 on MPICH and
-37 to 30 on Open MPI: the six routines it repairs were a compile error in
-`mpi_f08` only, sequence association having carried `mpif.h` and the `mpi` module
-all along. Error 18 then moved all three columns, by three apiece except Open
-MPI's f08 by two, which is what a fix in the C wrapper does -- all three
-interfaces call the same one. `f08/pt2pt/pssendf08`, named above as the likely
-casualty of the C-numbered indices, is among the tests that now pass.
-
-The Open MPI f77 and f90 figures also carry the two-per-interface improvement
-from moving to commit `d0346f67` with the empty-info-value patch, against the
-12 / 24 / 39 measured at `090cfcee`. `f77/datatype/typenamef` now passes, which
-is the pair-type fix showing up; `allctypesf`, the other test that crash was
-killing, still ends in a SIGSEGV, so it had a second cause and has not been
-looked at.
 
 One caution about these numbers: the Open MPI run needs the loopback workaround
 that `scripts/macos-test-mpich-suite.sh` applies by default -- without it the
