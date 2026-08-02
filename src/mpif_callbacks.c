@@ -35,8 +35,10 @@ extern void mpi_conversion_fn_null_c_(void);
 // know is treated as user-defined and given a trampoline, and these bodies do
 // what the sentinel does, so the observable behaviour is the same. Recognising
 // them anyway is what the ABI intends, spends no keyval registry slot on a
-// callback MPI already knows, and is the only route that will work for the two
-// conversion functions once MPI_Register_datarep forwards callbacks at all.
+// callback MPI already knows, and is the only route that works for the two
+// datarep conversion functions: MPI_CONVERSION_FN_NULL means "no conversion is
+// needed", which only MPI can act on, so it has to arrive as the sentinel
+// rather than as a trampoline that would faithfully call an empty body.
 extern void mpif_f08_comm_null_copy_fn_(void);
 extern void mpif_f08_comm_dup_fn_(void);
 extern void mpif_f08_comm_null_delete_fn_(void);
@@ -969,5 +971,138 @@ int mpif_grequest_cancel_trampoline(void *extra_state, int complete) {
   MPI_Fint f_ierror = MPI_SUCCESS;
   ((fortran_grequest_cancel_fn)box->cancel_fn)(box->extra_state, &f_complete,
                                                &f_ierror);
+  return f_ierror;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// User-defined datarep conversion and extent callbacks
+//
+// The generalized request arrangement again -- a box in place of `extra_state`,
+// one trampoline per callback -- with the two differences the header sets out:
+// the box is never freed, there being no way to deregister a datarep, and
+// `extra_state` is copied rather than aliased.
+
+struct datarep_box {
+  mpif_fortran_procedure read_fn;
+  mpif_fortran_procedure write_fn;
+  mpif_fortran_procedure extent_fn;
+  // The registered value, not the caller's variable; see the header
+  MPI_Aint extra_state;
+};
+
+// The Fortran callbacks, as MPI-5.0 section 15.5.3 declares them.
+//
+// `userbuf` and `filebuf` are passed straight through as the addresses MPI
+// gives, which is what both Fortran spellings of a buffer want: mpif.h and the
+// mpi module declare them `<TYPE> USERBUF(*)`, whose actual argument is the
+// address, and mpi_f08 declares them TYPE(C_PTR), VALUE, which is the same
+// pointer in the same register. Everything else is by reference, as Fortran
+// wants, so the trampoline copies each into a local of the Fortran type first.
+typedef void (*fortran_datarep_conversion_fn)(void *userbuf,
+                                              MPI_Fint *datatype,
+                                              MPI_Fint *count, void *filebuf,
+                                              MPI_Offset *position,
+                                              MPI_Aint *extra_state,
+                                              MPI_Fint *ierror);
+typedef void (*fortran_datarep_conversion_fn_c)(void *userbuf,
+                                                MPI_Fint *datatype,
+                                                MPI_Count *count, void *filebuf,
+                                                MPI_Offset *position,
+                                                MPI_Aint *extra_state,
+                                                MPI_Fint *ierror);
+typedef void (*fortran_datarep_extent_fn)(MPI_Fint *datatype, MPI_Aint *extent,
+                                          MPI_Aint *extra_state,
+                                          MPI_Fint *ierror);
+
+void *mpif_datarep_reserve(mpif_fortran_procedure read_fn,
+                           mpif_fortran_procedure write_fn,
+                           mpif_fortran_procedure extent_fn,
+                           MPI_Aint extra_state) {
+  struct datarep_box *const box = malloc(sizeof *box);
+  if (!box) {
+    fprintf(stderr, "mpif: MPI_Register_datarep: out of memory allocating the "
+                    "callback state; returning MPI_ERR_OTHER\n");
+    return NULL;
+  }
+  box->read_fn = read_fn;
+  box->write_fn = write_fn;
+  box->extent_fn = extent_fn;
+  box->extra_state = extra_state;
+  return box;
+}
+
+void mpif_datarep_cancel(void *box) { free(box); }
+
+static int call_datarep_conversion(mpif_fortran_procedure fn,
+                                   struct datarep_box *box, void *userbuf,
+                                   MPI_Datatype datatype, int count,
+                                   void *filebuf, MPI_Offset position) {
+  MPI_Fint f_datatype = MPI_Type_toint(datatype), f_count = count;
+  MPI_Offset f_position = position;
+  MPI_Fint f_ierror = MPI_SUCCESS;
+  ((fortran_datarep_conversion_fn)fn)(userbuf, &f_datatype, &f_count, filebuf,
+                                      &f_position, &box->extra_state,
+                                      &f_ierror);
+  return f_ierror;
+}
+
+static int call_datarep_conversion_c(mpif_fortran_procedure fn,
+                                     struct datarep_box *box, void *userbuf,
+                                     MPI_Datatype datatype, MPI_Count count,
+                                     void *filebuf, MPI_Offset position) {
+  MPI_Fint f_datatype = MPI_Type_toint(datatype);
+  MPI_Count f_count = count;
+  MPI_Offset f_position = position;
+  MPI_Fint f_ierror = MPI_SUCCESS;
+  ((fortran_datarep_conversion_fn_c)fn)(userbuf, &f_datatype, &f_count, filebuf,
+                                        &f_position, &box->extra_state,
+                                        &f_ierror);
+  return f_ierror;
+}
+
+int mpif_datarep_read_trampoline(void *userbuf, MPI_Datatype datatype,
+                                 int count, void *filebuf, MPI_Offset position,
+                                 void *extra_state) {
+  struct datarep_box *const box = extra_state;
+  return call_datarep_conversion(box->read_fn, box, userbuf, datatype, count,
+                                 filebuf, position);
+}
+
+int mpif_datarep_write_trampoline(void *userbuf, MPI_Datatype datatype,
+                                  int count, void *filebuf, MPI_Offset position,
+                                  void *extra_state) {
+  struct datarep_box *const box = extra_state;
+  return call_datarep_conversion(box->write_fn, box, userbuf, datatype, count,
+                                 filebuf, position);
+}
+
+int mpif_datarep_read_trampoline_c(void *userbuf, MPI_Datatype datatype,
+                                   MPI_Count count, void *filebuf,
+                                   MPI_Offset position, void *extra_state) {
+  struct datarep_box *const box = extra_state;
+  return call_datarep_conversion_c(box->read_fn, box, userbuf, datatype, count,
+                                   filebuf, position);
+}
+
+int mpif_datarep_write_trampoline_c(void *userbuf, MPI_Datatype datatype,
+                                    MPI_Count count, void *filebuf,
+                                    MPI_Offset position, void *extra_state) {
+  struct datarep_box *const box = extra_state;
+  return call_datarep_conversion_c(box->write_fn, box, userbuf, datatype, count,
+                                   filebuf, position);
+}
+
+int mpif_datarep_extent_trampoline(MPI_Datatype datatype, MPI_Aint *extent,
+                                   void *extra_state) {
+  struct datarep_box *const box = extra_state;
+  MPI_Fint f_datatype = MPI_Type_toint(datatype);
+  MPI_Aint f_extent = 0;
+  MPI_Fint f_ierror = MPI_SUCCESS;
+  ((fortran_datarep_extent_fn)box->extent_fn)(&f_datatype, &f_extent,
+                                              &box->extra_state, &f_ierror);
+  // MPI leaves the extent undefined on error, so write it back only on success
+  // rather than handing MPI whatever the callback left in the local.
+  if (f_ierror == MPI_SUCCESS)
+    *extent = f_extent;
   return f_ierror;
 }

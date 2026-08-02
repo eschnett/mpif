@@ -21,7 +21,9 @@
 ! except where mpif's abstract interface still diverges in *type* rather than
 ! intent: MPI_User_function and the two datarep conversion functions take their
 ! buffers as INTEGER(KIND=MPI_ADDRESS_KIND) where the standard gives
-! TYPE(C_PTR), VALUE. Those follow mpif, since that is what is being checked.
+! TYPE(C_PTR), VALUE. That is MPI_User_function alone now; the datarep
+! conversion functions were corrected when MPI_Register_datarep learned to
+! forward its callbacks.
 !
 ! MPI_Copy_function and MPI_Delete_function are the deprecated MPI-1 forms, which
 ! A.4 does not list for mpi_f08; mpif provides them for MPI_Keyval_create, so
@@ -29,6 +31,7 @@
 
 module callback_intents_f08_fns
   use mpi_f08
+  use, intrinsic :: iso_c_binding, only: C_PTR
   implicit none
 
   ! Counts the two callbacks that are registered and run for real. It is a
@@ -110,10 +113,10 @@ contains
 
   subroutine datarep_conversion_fn(userbuf, datatype, count, filebuf, &
        position, extra_state, ierror)
-    integer(MPI_ADDRESS_KIND) :: userbuf
+    type(C_PTR), value :: userbuf
     type(MPI_Datatype) :: datatype
     integer :: count
-    integer(MPI_ADDRESS_KIND) :: filebuf
+    type(C_PTR), value :: filebuf
     integer(MPI_OFFSET_KIND) :: position
     integer(MPI_ADDRESS_KIND) :: extra_state
     integer :: ierror
@@ -121,10 +124,10 @@ contains
 
   subroutine datarep_conversion_fn_c(userbuf, datatype, count, filebuf, &
        position, extra_state, ierror)
-    integer(MPI_ADDRESS_KIND) :: userbuf
+    type(C_PTR), value :: userbuf
     type(MPI_Datatype) :: datatype
     integer(MPI_COUNT_KIND) :: count
-    integer(MPI_ADDRESS_KIND) :: filebuf
+    type(C_PTR), value :: filebuf
     integer(MPI_OFFSET_KIND) :: position
     integer(MPI_ADDRESS_KIND) :: extra_state
     integer :: ierror

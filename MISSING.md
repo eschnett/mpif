@@ -19,28 +19,13 @@ callback, and only the standard says which. Keep a copy at
 
 ## Errors
 
-### 1. `MPI_Register_datarep` cannot forward its callbacks
-
-The last callback family that does not work; every other one does, through the
-trampolines in `src/mpif_callbacks.c`. `MPI_Register_datarep` and
-`MPI_Register_datarep_c` report `MPI_ERR_OTHER` for a user-defined conversion or
-extent callback, with a diagnostic. `MPI_CONVERSION_FN_NULL` already works, being
-predefined.
-
-The route is the one generalized requests take: those callbacks are told only
-`extra_state`, which is mpif's to choose, so it hands MPI a box holding the
-Fortran procedures and one trampoline apiece is enough. The datarep callbacks
-pass `extra_state` too. The difference is that datareps are never deregistered,
-so the box would live for the duration of the program rather than being freed by
-a `free_fn`.
-
-### 2. The large-count function-parameter test
+### 1. The large-count function-parameter test
 
 The generator carries a `# TODO: Check properly whether the function parameter
 needs embiggening`, with a hardcoded exception list containing only
 `MPI_Datarep_extent_function`.
 
-### 3. `MPI_Sizeof` does not cover rank two and above
+### 2. `MPI_Sizeof` does not cover rank two and above
 
 `src/mpif_types.F90` defines the generic by hand, with a scalar and an
 assumed-size specific per type and kind. An argument of rank two or more resolves
@@ -56,6 +41,33 @@ deprecated in MPI-4.0 and its `mpi_f08` form was removed, but the `mpi` module
 and `mpif.h` still have it.
 
 ## External blockers
+
+### Registered datareps are not implemented, by either implementation
+
+`MPI_Register_datarep` forwards its Fortran callbacks correctly now, and nothing
+will ever call them. Both implementations decline the feature before mpif's
+trampolines can matter:
+
+- MPICH's ROMIO rejects a non-NULL conversion function outright --
+  `src/mpi/romio/mpi-io/io_impl.c` returns `MPI_ERR_CONVERSION` with "Read and
+  Write datarep conversions are currently not supported by MPI-IO" if either
+  `read_conversion_fn` or `write_conversion_fn` is non-NULL. It will register a
+  datarep whose conversions are both `MPI_CONVERSION_FN_NULL` and whose extent
+  function is real, but `MPI_File_set_view` then refuses the name: the same file
+  accepts only `native`, `external32` and `internal`, anything else being
+  `MPI_ERR_UNSUPPORTED_DATAREP`, "Only native data representation currently
+  supported". So even a datarep MPICH accepts can never be used, and the extent
+  callback never fires either.
+- Open MPI is briefer. `ompi/mca/io/ompio/io_ompio_component.c`'s
+  `register_datarep` is `return OMPI_ERROR;` and nothing else.
+
+That is the whole feature, not an edge of it, so there is nothing to work around
+and nothing to report: both are honest about it in the error message. What mpif
+can be held to is that it no longer refuses the call before MPI sees it, which
+is what `test/datarep_f08.f90` asserts on the one combination ROMIO accepts, and
+that the trampolines marshal correctly, which `test/datarep_c.c` asserts by
+calling them directly. The second is the substitute for an end-to-end test and
+should be replaced by one if an implementation ever grows the feature.
 
 ### MPICH: attributes on predefined datatypes abort in ABI builds — carried as a local patch
 
@@ -610,12 +622,19 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
 
 ### Worth doing next, roughly in order
 
-1. **`MPI_Register_datarep`**, the last callback family. The box that generalized
-   requests use works here too; the difference is that datareps are never
-   deregistered, so it is never freed.
-2. **The PMPI interface**, which does not exist at all and which `mpif.h`
+1. **The PMPI interface**, which does not exist at all and which `mpif.h`
    currently promises four names it cannot link.
-3. The large-count function-parameter test, error 2 above, which is a guess with
+2. **`MPI_User_function`'s buffers in `mpi_f08`**, which are declared
+   `INTEGER(KIND=MPI_ADDRESS_KIND)` by reference where the standard gives
+   `TYPE(C_PTR), VALUE`. The trampoline passes the buffer address, as it must
+   for the `<TYPE> INVEC(*)` of `mpif.h`, so an f08 reduction callback written
+   against mpif's own interface reads the first bytes of the buffer as an
+   address. It has never been caught because nothing exercises it: no f08 test
+   in MPICH's suite calls `MPI_Op_create`, and mpif has none either. The datarep
+   conversion functions had exactly this fault and were corrected when
+   `MPI_Register_datarep` learned to forward its callbacks; this is the same
+   one-line change plus a test.
+3. The large-count function-parameter test, error 1 above, which is a guess with
    a one-name exception list rather than a check.
 
 One thing is worth reporting upstream and is not yet: Open MPI's
@@ -664,13 +683,13 @@ whose attribute is address-sized: "Type mismatch in argument
 predates the intent work, which did not touch either.
 
 Nothing in the row is an intent failure -- there is no "INTENT mismatch" or
-"variable definition context" anywhere in the log. What this run does not
-establish is a difference, since there is no measurement of the same suite
-immediately before the fixes to subtract; it establishes that the failures that
-remain are all accounted for.
+"variable definition context" anywhere in the log. The datarep work moved
+nothing: this is the same 3 / 11 / 18, with the same failure set entry for
+entry, as the run before it.
 
-`test/`, mpif's own suite, was 32 of 32 on all four and is now 34 of 34 with
-`callback_intents_f08` and `cancel_intent_f08` added, measured on MPICH/gcc.
+`test/`, mpif's own suite, was 32 of 32 on all four and is now 36 of 36, with
+`callback_intents_f08`, `cancel_intent_f08`, `datarep_f08` and `datarep_c`
+added. All of it has been run on MPICH/gcc only, where the 36 are green.
 
 Passing the f08 status through to C instead of converting it moved nothing, and
 was not meant to: it removes the temporary, the conversion and all 77 `loc()`

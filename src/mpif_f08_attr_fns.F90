@@ -21,11 +21,9 @@
 ! dummy argument's characteristics, so a mismatch is a compile error rather than
 ! a difference of opinion. A.4 agrees, giving these thirteen bindings no intents
 ! either; its one MPI_TYPE_NULL_DELETE_FN INTENT(OUT) is discussed where the
-! abstract interfaces are. That the two datarep conversion functions take their
-! buffers as INTEGER(KIND=MPI_ADDRESS_KIND) rather than the TYPE(C_PTR), VALUE
-! the standard gives them is a divergence of type rather than intent; the
-! abstract interface is what is wrong there, and correcting it is a separate
-! job.
+! abstract interfaces are. The two datarep conversion functions take their
+! buffers as TYPE(C_PTR), VALUE, as the standard gives them and as the
+! trampoline in src/mpif_callbacks.c passes them.
 !
 ! The bodies never run in the normal course of things, for the same reason as in
 ! src/mpif_attr_fns.F90: MPI is handed a sentinel, not a procedure. They do what
@@ -171,12 +169,13 @@ module mpif_f08_attr_fns
      subroutine mpif_f08_conversion_fn_null(userbuf, datatype, count, filebuf, &
           position, extra_state, ierror)
        use mpif_f08_constants
+       use, intrinsic :: iso_c_binding, only: C_PTR
        import :: MPI_Datatype
        implicit none
-       integer(MPI_ADDRESS_KIND) :: userbuf
+       type(C_PTR), value :: userbuf
        type(MPI_Datatype) :: datatype
        integer :: count
-       integer(MPI_ADDRESS_KIND) :: filebuf
+       type(C_PTR), value :: filebuf
        integer(MPI_OFFSET_KIND) :: position
        integer(MPI_ADDRESS_KIND) :: extra_state
        integer :: ierror
@@ -185,12 +184,13 @@ module mpif_f08_attr_fns
      subroutine mpif_f08_conversion_fn_null_c(userbuf, datatype, count, filebuf, &
           position, extra_state, ierror)
        use mpif_f08_constants
+       use, intrinsic :: iso_c_binding, only: C_PTR
        import :: MPI_Datatype
        implicit none
-       integer(MPI_ADDRESS_KIND) :: userbuf
+       type(C_PTR), value :: userbuf
        type(MPI_Datatype) :: datatype
        integer(MPI_COUNT_KIND) :: count
-       integer(MPI_ADDRESS_KIND) :: filebuf
+       type(C_PTR), value :: filebuf
        integer(MPI_OFFSET_KIND) :: position
        integer(MPI_ADDRESS_KIND) :: extra_state
        integer :: ierror
@@ -341,11 +341,12 @@ subroutine mpif_f08_conversion_fn_null(userbuf, datatype, count, filebuf, &
      position, extra_state, ierror)
   use mpif_f08_types, only: MPI_Datatype
   use mpif_f08_constants, only: MPI_ADDRESS_KIND, MPI_COUNT_KIND, MPI_OFFSET_KIND
+  use, intrinsic :: iso_c_binding, only: C_PTR
   implicit none
-  integer(MPI_ADDRESS_KIND) :: userbuf
+  type(C_PTR), value :: userbuf
   type(MPI_Datatype) :: datatype
   integer :: count
-  integer(MPI_ADDRESS_KIND) :: filebuf
+  type(C_PTR), value :: filebuf
   integer(MPI_OFFSET_KIND) :: position
   integer(MPI_ADDRESS_KIND) :: extra_state
   integer :: ierror
@@ -355,11 +356,12 @@ subroutine mpif_f08_conversion_fn_null_c(userbuf, datatype, count, filebuf, &
      position, extra_state, ierror)
   use mpif_f08_types, only: MPI_Datatype
   use mpif_f08_constants, only: MPI_ADDRESS_KIND, MPI_COUNT_KIND, MPI_OFFSET_KIND
+  use, intrinsic :: iso_c_binding, only: C_PTR
   implicit none
-  integer(MPI_ADDRESS_KIND) :: userbuf
+  type(C_PTR), value :: userbuf
   type(MPI_Datatype) :: datatype
   integer(MPI_COUNT_KIND) :: count
-  integer(MPI_ADDRESS_KIND) :: filebuf
+  type(C_PTR), value :: filebuf
   integer(MPI_OFFSET_KIND) :: position
   integer(MPI_ADDRESS_KIND) :: extra_state
   integer :: ierror

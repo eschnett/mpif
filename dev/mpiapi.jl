@@ -118,6 +118,15 @@ grequest_trampolines = Dict(["MPI_Grequest_query_function" => "mpif_grequest_que
                              "MPI_Grequest_free_function" => "mpif_grequest_free_trampoline",
                              "MPI_Grequest_cancel_function" => "mpif_grequest_cancel_trampoline"])
 
+# The datarep callbacks take the same route, with the box keyed by parameter
+# name rather than by type: the two conversion callbacks share a `func_type` and
+# differ only in which of them is being registered.
+datarep_trampolines = Dict(["read_conversion_fn" => "mpif_datarep_read_trampoline",
+                            "write_conversion_fn" => "mpif_datarep_write_trampoline",
+                            "dtype_file_extent_fn" => "mpif_datarep_extent_trampoline"])
+datarep_func_types = ["MPI_Datarep_conversion_function", "MPI_Datarep_conversion_function_c",
+                      "MPI_Datarep_extent_function"]
+
 # Attribute callbacks are the callbacks mpif can forward: every one of them
 # receives the keyval, which is enough for a trampoline to find the Fortran
 # procedure again. See src/mpif_callbacks.c. The other callback types have
@@ -846,6 +855,13 @@ for key in sort(collect(keys(apis)))
                         # expected to be seen by the caller.
                         push!(input_arguments, "MPI_Aint* restrict const $parname")
                         push!(call_arguments, "box")
+                    elseif name ∈ ["MPI_Register_datarep", "MPI_Register_datarep_c"]
+                        # The box again, for the same reason. Here the caller's
+                        # value is copied into it rather than aliased, so this
+                        # one stays const: the box outlives the caller's
+                        # variable, a datarep never being deregistered.
+                        push!(input_arguments, "const MPI_Aint* restrict const $parname")
+                        push!(call_arguments, "box")
                     else
                         push!(input_arguments, "const MPI_Aint* restrict const $parname")
                         push!(call_arguments, "(void*)*$parname")
@@ -1244,10 +1260,50 @@ for key in sort(collect(keys(apis)))
                                  "  mpif_grequest_cancel(box);"])
                     end
                     push!(call_arguments, grequest_trampolines[func_type])
+                elseif func_type ∈ datarep_func_types
+                    # The generalized request route again: `extra_state` is
+                    # mpif's to choose, so a box carrying the three Fortran
+                    # procedures goes in its place and one trampoline apiece
+                    # finds them. The box is emitted once, with the first of the
+                    # three, since the procedures and the box are one unit.
+                    #
+                    # The differences from a generalized request are in
+                    # src/mpif_callbacks.c: the box is never freed, a datarep
+                    # being registered for the duration of the program, and
+                    # `extra_state` is copied into it rather than aliased.
+                    if parname == "read_conversion_fn"
+                        fns = [p["name"] for p in parameters if p["kind"] ∈ ["FUNCTION", "POLYFUNCTION"]]
+                        extra_state = only(p["name"] for p in parameters if p["kind"] == "EXTRA_STATE")
+                        procedures = join(["(mpif_fortran_procedure)$f" for f in fns], ", ")
+                        append!(input_conversions,
+                                ["void *const box = mpif_datarep_reserve($procedures, *$extra_state);",
+                                 "if (!box) {",
+                                 "  *ierror = MPI_ERR_OTHER;",
+                                 "  return;",
+                                 "}"])
+                        append!(output_conversions,
+                                ["if (*ierror != MPI_SUCCESS)",
+                                 "  mpif_datarep_cancel(box);"])
+                    end
+                    # MPI_CONVERSION_FN_NULL has to reach MPI as the sentinel it
+                    # is rather than as a trampoline: the standard gives it the
+                    # meaning "no conversion is needed", which only MPI can act
+                    # on. Anything else is user-defined and gets the trampoline.
+                    trampoline = datarep_trampolines[parname]
+                    embiggened = endswith(func_type, "_c")
+                    append!(input_conversions,
+                            ["void *c_$parname;",
+                             "if (!mpif_predefined_callback((mpif_fortran_procedure)$parname, &c_$parname))",
+                             "  c_$parname = (void*)$(embiggened ? trampoline * "_c" : trampoline);"])
+                    push!(call_arguments, "($func_type*)c_$parname")
                 else
-                    # The remaining callback types pass nothing a trampoline
-                    # could use to find the Fortran procedure again, so only the
-                    # predefined ones work.
+                    # Nothing reaches this any more: every callback family in
+                    # `apis.json` is handled above, and `mpif_unsupported_callback`
+                    # appears nowhere in the generated output. It stays as the
+                    # landing place for a callback type a later version of the
+                    # JSON might add, which gets a diagnostic naming the routine
+                    # and the argument rather than a wrong call, and works
+                    # already if the procedure passed is a predefined one.
                     append!(input_conversions,
                             ["void *c_$parname;",
                              "if (!mpif_predefined_callback((mpif_fortran_procedure)$parname, &c_$parname)) {",

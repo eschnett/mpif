@@ -139,6 +139,50 @@ int mpif_grequest_query_trampoline(void *extra_state, MPI_Status *status);
 int mpif_grequest_free_trampoline(void *extra_state);
 int mpif_grequest_cancel_trampoline(void *extra_state, int complete);
 
+// User-defined datarep conversion and extent callbacks
+//
+// The same arrangement as the generalized request callbacks, and for the same
+// reason: a datarep's callbacks are told only `extra_state`, which is mpif's to
+// choose, so MPI gets a box holding the Fortran procedures and one trampoline
+// apiece is enough. The two conversion callbacks share a signature, so they get
+// a trampoline each rather than one that has to guess which it is serving.
+//
+// Two things differ from the grequest box. The datarep is registered for the
+// duration of the program -- MPI-5.0 has no call that undoes
+// MPI_Register_datarep -- so the box is never freed. That is not a leak to be
+// fixed later: there is no point at which freeing it would be safe, and the
+// number of boxes is the number of datareps a program registers.
+//
+// And `extra_state` is copied into the box rather than aliased, where the
+// grequest box holds the address of the caller's variable. Aliasing is what
+// lets a grequest `free_fn` be seen by the caller, but it would be a dangling
+// pointer here, the box outliving any scope the caller registered from.
+// MPI-5.0 gives MPI_Register_datarep's own `extra_state` INTENT(IN), so there
+// is nothing to report back: the callbacks get the value that was registered.
+void *mpif_datarep_reserve(mpif_fortran_procedure read_fn,
+                           mpif_fortran_procedure write_fn,
+                           mpif_fortran_procedure extent_fn,
+                           MPI_Aint extra_state);
+
+// Release the box again, MPI_Register_datarep having failed. Safe only because
+// MPI never received it, so no callback can fire.
+void mpif_datarep_cancel(void *box);
+
+int mpif_datarep_read_trampoline(void *userbuf, MPI_Datatype datatype,
+                                 int count, void *filebuf, MPI_Offset position,
+                                 void *extra_state);
+int mpif_datarep_write_trampoline(void *userbuf, MPI_Datatype datatype,
+                                  int count, void *filebuf, MPI_Offset position,
+                                  void *extra_state);
+int mpif_datarep_read_trampoline_c(void *userbuf, MPI_Datatype datatype,
+                                   MPI_Count count, void *filebuf,
+                                   MPI_Offset position, void *extra_state);
+int mpif_datarep_write_trampoline_c(void *userbuf, MPI_Datatype datatype,
+                                    MPI_Count count, void *filebuf,
+                                    MPI_Offset position, void *extra_state);
+int mpif_datarep_extent_trampoline(MPI_Datatype datatype, MPI_Aint *extent,
+                                   void *extra_state);
+
 // The C trampoline to hand MPI in place of a user-defined Fortran procedure
 void *mpif_attr_trampoline(enum mpif_attr_callback_kind kind);
 

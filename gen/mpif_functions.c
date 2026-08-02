@@ -8662,29 +8662,30 @@ void mpi_register_datarep_(
 )
 {
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
+  void *const box = mpif_datarep_reserve((mpif_fortran_procedure)read_conversion_fn, (mpif_fortran_procedure)write_conversion_fn, (mpif_fortran_procedure)dtype_file_extent_fn, *extra_state);
+  if (!box) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   void *c_read_conversion_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)read_conversion_fn, &c_read_conversion_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Register_datarep", "read_conversion_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)read_conversion_fn, &c_read_conversion_fn))
+    c_read_conversion_fn = (void*)mpif_datarep_read_trampoline;
   void *c_write_conversion_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)write_conversion_fn, &c_write_conversion_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Register_datarep", "write_conversion_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)write_conversion_fn, &c_write_conversion_fn))
+    c_write_conversion_fn = (void*)mpif_datarep_write_trampoline;
   void *c_dtype_file_extent_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)dtype_file_extent_fn, &c_dtype_file_extent_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Register_datarep", "dtype_file_extent_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)dtype_file_extent_fn, &c_dtype_file_extent_fn))
+    c_dtype_file_extent_fn = (void*)mpif_datarep_extent_trampoline;
   *ierror = MPI_Register_datarep(
     c_datarep,
     (MPI_Datarep_conversion_function*)c_read_conversion_fn,
     (MPI_Datarep_conversion_function*)c_write_conversion_fn,
     (MPI_Datarep_extent_function*)c_dtype_file_extent_fn,
-    (void*)*extra_state
+    box
   );
   free(c_datarep);
+  if (*ierror != MPI_SUCCESS)
+    mpif_datarep_cancel(box);
 }
 
 void mpi_register_datarep_c_(
@@ -8698,29 +8699,30 @@ void mpi_register_datarep_c_(
 )
 {
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
+  void *const box = mpif_datarep_reserve((mpif_fortran_procedure)read_conversion_fn, (mpif_fortran_procedure)write_conversion_fn, (mpif_fortran_procedure)dtype_file_extent_fn, *extra_state);
+  if (!box) {
+    *ierror = MPI_ERR_OTHER;
+    return;
+  }
   void *c_read_conversion_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)read_conversion_fn, &c_read_conversion_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Register_datarep_c", "read_conversion_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)read_conversion_fn, &c_read_conversion_fn))
+    c_read_conversion_fn = (void*)mpif_datarep_read_trampoline_c;
   void *c_write_conversion_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)write_conversion_fn, &c_write_conversion_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Register_datarep_c", "write_conversion_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)write_conversion_fn, &c_write_conversion_fn))
+    c_write_conversion_fn = (void*)mpif_datarep_write_trampoline_c;
   void *c_dtype_file_extent_fn;
-  if (!mpif_predefined_callback((mpif_fortran_procedure)dtype_file_extent_fn, &c_dtype_file_extent_fn)) {
-    *ierror = mpif_unsupported_callback("MPI_Register_datarep_c", "dtype_file_extent_fn");
-    return;
-  }
+  if (!mpif_predefined_callback((mpif_fortran_procedure)dtype_file_extent_fn, &c_dtype_file_extent_fn))
+    c_dtype_file_extent_fn = (void*)mpif_datarep_extent_trampoline;
   *ierror = MPI_Register_datarep_c(
     c_datarep,
     (MPI_Datarep_conversion_function_c*)c_read_conversion_fn,
     (MPI_Datarep_conversion_function_c*)c_write_conversion_fn,
     (MPI_Datarep_extent_function*)c_dtype_file_extent_fn,
-    (void*)*extra_state
+    box
   );
   free(c_datarep);
+  if (*ierror != MPI_SUCCESS)
+    mpif_datarep_cancel(box);
 }
 
 void mpi_remove_error_class_(

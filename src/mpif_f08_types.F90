@@ -403,10 +403,13 @@ module mpif_f08_types
   ! `extra_state` it deliberately does not: a callback may update it -- MPICH's
   ! greqf test requires a `free_fn` that decrements it to be seen by the caller.
   !
-  ! What is still wrong here is the *type* of a few arguments, not their intent:
-  ! the datarep conversion functions and MPI_User_function take their buffers as
-  ! INTEGER(KIND=MPI_ADDRESS_KIND) where the standard gives TYPE(C_PTR), VALUE.
-  ! Correcting that is a separate job.
+  ! What is still wrong here is the *type* of two arguments, not their intent:
+  ! MPI_User_function takes `invec` and `inoutvec` as
+  ! INTEGER(KIND=MPI_ADDRESS_KIND) where the standard gives TYPE(C_PTR), VALUE,
+  ! and by reference at that, so a callback would read the first bytes of the
+  ! buffer as an address. The datarep conversion functions had the same fault
+  ! and no longer do; see the comment on them below. Correcting MPI_User_function
+  ! is a separate job, recorded in MISSING.md.
 
   public :: MPI_Copy_function
   abstract interface
@@ -504,15 +507,25 @@ module mpif_f08_types
 
   public :: MPI_Datarep_conversion_function
   public :: MPI_Datarep_conversion_function_c
+  ! TYPE(C_PTR), VALUE for the two buffers, which is what MPI-5.0 A.4 gives them
+  ! and, unusually, is also what makes them work. They used to be
+  ! INTEGER(KIND=MPI_ADDRESS_KIND) by reference, which asks for the address of a
+  ! variable holding the buffer address; the trampoline in src/mpif_callbacks.c
+  ! passes the buffer address itself, because that is what mpif.h's and the mpi
+  ! module's `<TYPE> USERBUF(*)` wants and there is only one C entry point behind
+  ! all three interfaces. A pointer passed by value and an assumed-size array's
+  ! address are the same thing in the same register, so C_PTR is what reconciles
+  ! them.
   abstract interface
      subroutine MPI_Datarep_conversion_function(userbuf, datatype, count, filebuf, position, extra_state, ierror)
        use mpif_f08_constants
+       use, intrinsic :: iso_c_binding, only: C_PTR
        import :: MPI_Datatype
        implicit none
-       integer(MPI_ADDRESS_KIND) :: userbuf
+       type(C_PTR), value :: userbuf
        type(MPI_Datatype) :: datatype
        integer :: count
-       integer(MPI_ADDRESS_KIND) :: filebuf
+       type(C_PTR), value :: filebuf
        integer(MPI_OFFSET_KIND) :: position
        integer(MPI_ADDRESS_KIND) :: extra_state
        integer :: ierror
@@ -520,12 +533,13 @@ module mpif_f08_types
 
      subroutine MPI_Datarep_conversion_function_c(userbuf, datatype, count, filebuf, position, extra_state, ierror)
        use mpif_f08_constants
+       use, intrinsic :: iso_c_binding, only: C_PTR
        import :: MPI_Datatype
        implicit none
-       integer(MPI_ADDRESS_KIND) :: userbuf
+       type(C_PTR), value :: userbuf
        type(MPI_Datatype) :: datatype
        integer(MPI_COUNT_KIND) :: count
-       integer(MPI_ADDRESS_KIND) :: filebuf
+       type(C_PTR), value :: filebuf
        integer(MPI_OFFSET_KIND) :: position
        integer(MPI_ADDRESS_KIND) :: extra_state
        integer :: ierror

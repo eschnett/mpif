@@ -45,6 +45,8 @@ add_mpi_test(alloc_mem_cptr        SOURCES alloc_mem_cptr.f90                   
 add_mpi_test(large_count_f08        SOURCES large_count_f08.f90                     LIBS MPI::MPI_Fortran)
 add_mpi_test(attr_fns_f90           SOURCES attr_fns_f90.f90                        LIBS MPI::MPI_Fortran)
 add_mpi_test(attr_fns_f08           SOURCES attr_fns_f08.f90                        LIBS MPI::MPI_Fortran)
+add_mpi_test(datarep_f08            SOURCES datarep_f08.f90                         LIBS MPI::MPI_Fortran)
+add_mpi_test(datarep_c              SOURCES datarep_c.c datarep_subf90.f90          LIBS MPI::MPI_Fortran MPI::MPI_C)
 add_mpi_test(callback_intents_f08   SOURCES callback_intents_f08.f90                LIBS MPI::MPI_Fortran)
 add_mpi_test(cancel_intent_f08      SOURCES cancel_intent_f08.f90                   LIBS MPI::MPI_Fortran)
 add_mpi_test(status_error_f08       SOURCES status_error_f08.f90                    LIBS MPI::MPI_Fortran)
