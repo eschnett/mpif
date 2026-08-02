@@ -481,20 +481,36 @@ One thing is worth reporting upstream and is not yet: Open MPI's
 
 ### Suite baseline
 
-Recorded so that a change can be told from the background noise. Both variants,
-gcc, on macOS 15/arm64.
+Recorded so that a change can be told from the background noise. All four
+variants, on macOS 15/arm64, with gcc 15 and with clang/flang 22.
 
-|            | f77       | f90       | f08       |
-|------------|-----------|-----------|-----------|
-| MPICH      | 31 / 104  | 45 / 122  | 51 / 136  |
-| Open MPI   |  7 / 104  | 19 / 122  | 28 / 136  |
+|                | f77       | f90       | f08       |
+|----------------|-----------|-----------|-----------|
+| MPICH, gcc     | 31 / 104  | 45 / 122  | 51 / 136  |
+| MPICH, llvm    | 31 / 104  | 45 / 122  | 47 / 136  |
+| Open MPI, gcc  |  7 / 104  | 19 / 122  | 28 / 136  |
+| Open MPI, llvm |  7 / 104  | 19 / 122  | 24 / 136  |
 
 Failures, not passes. MPICH does worse than Open MPI here for one reason: 17 of
 its f77 failures are the assertion of external blocker "MPICH: attributes on
 predefined datatypes abort in ABI builds", which Open MPI does not have. Open
 MPI's own blockers cost it fewer tests.
 
-`test/`, mpif's own suite, is 28 of 28 on both.
+`test/`, mpif's own suite, is 28 of 28 on all four.
+
+The toolchains agree exactly on f77 and f90, and differ by four tests in f08,
+where flang does better than gfortran. It is the same four on both MPI
+implementations, and none fail under flang that pass under gfortran:
+
+    alltoallwf08   nonblockingf08   nonblocking_inpf08   vw_inplacef08
+
+Their shape is a lead rather than a diagnosis. All four are nonblocking or
+in-place collectives, which is exactly the case "Assumed-rank choice buffers"
+above describes: with `MPI_SUBARRAYS_SUPPORTED` false, a noncontiguous actual
+argument reaches the wrapper as a compiler-made copy, and for a nonblocking call
+that copy dies before the request completes. Two compilers need not make the same
+copy, so a difference here is more likely to be about what each chooses to copy
+than about mpif. Worth confirming before reading anything into it.
 
 One caution about these numbers: the Open MPI run needs the loopback workaround
 that `scripts/macos-test-mpich-suite.sh` applies by default -- without it the
