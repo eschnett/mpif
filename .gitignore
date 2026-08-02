@@ -4,6 +4,7 @@
 /mpi/
 build*/
 *.log
+/doc/Fortran-*.pdf
 /doc/mpi*-report.pdf
 /bug-mpich-7916/mpich-abi-attr-bug
 /bug-ompi-info-value/ompi-empty-info-value
