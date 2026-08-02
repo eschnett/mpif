@@ -747,6 +747,12 @@ for key in sort(collect(keys(apis)))
             root_only = parameter["root_only"]
             suppress = split(parameter["suppress"])
 
+            # The f08 declaration follows the standard's own binding, which is
+            # not always what the direction alone would give. `MPI_Cancel` is
+            # the one place where the two part company; see below.
+            f08_param_direction = param_direction
+            cancel_request = name == "MPI_Cancel" && parname == "request"
+
             if "f90_parameter" ∉ suppress
                 if !large_only || embiggen
                     push!(f_arguments, "$parname")
@@ -769,7 +775,16 @@ for key in sort(collect(keys(apis)))
                         f_argname = parname
                     end
                     if kind ∈ keys(kind2type)
-                        push!(f08_call_arguments, "$f_argname%MPI_VAL")
+                        if cancel_request
+                            # A copy, because the C wrapper writes the handle
+                            # back and `request` is INTENT(IN) here: a component
+                            # of an INTENT(IN) dummy is not definable.
+                            push!(f08_call_temp_declarations, "integer :: tmp_$f_argname")
+                            push!(f08_call_temp_copyins, "tmp_$f_argname = $f_argname%MPI_VAL")
+                            push!(f08_call_arguments, "tmp_$f_argname")
+                        else
+                            push!(f08_call_arguments, "$f_argname%MPI_VAL")
+                        end
                     elseif kind == "C_BUFFER" && param_direction == "out"
                         # The C wrapper writes the address into an address-sized
                         # integer; a TYPE(C_PTR) is the same bits, so `transfer`
@@ -816,9 +831,17 @@ for key in sort(collect(keys(apis)))
                 else
                     @assert false
                 end
-                if false && kind == "LOGICAL_VOID"
+                if kind == "LOGICAL_VOID"
+                    # `void*` in C, but a plain LOGICAL in both Fortran
+                    # bindings: MPI-5.0 gives `MPI_Abi_get_fortran_booleans` and
+                    # `MPI_Abi_set_fortran_booleans` "LOGICAL, INTENT(OUT) ::
+                    # logical_true, logical_false" in A.4.14 and "LOGICAL
+                    # LOGICAL_TRUE, LOGICAL_FALSE" in A.5.14. These are the two
+                    # routines by which Fortran and MPI agree on what a LOGICAL
+                    # looks like, so a choice buffer would be the wrong shape
+                    # for them -- the value really is one default LOGICAL.
                     push!(f_declarations, "logical :: $parname")
-                    push!(f08_declarations, "logical, intent($param_direction) :: $parname")
+                    push!(f08_declarations, "logical, intent($f08_param_direction) :: $parname")
                 else
                     push!(f_declarations, "!dir\$ ignore_tkr(trk) $parname")
                     push!(f_declarations, "!gcc\$ attributes no_arg_check :: $parname")
@@ -832,10 +855,17 @@ for key in sort(collect(keys(apis)))
                 @assert "f90_parameter" ∉ suppress
                 @assert !large_only
                 @assert !optional
-                if name == "MPI_Cancel" && parname == "request"
+                if cancel_request
                     @assert kind == "REQUEST"
                     @assert param_direction == "in"
-                    # `MPI_Cancel` modifies the request
+                    # `MPI_Cancel` takes `MPI_Request*` in C, so the C wrapper
+                    # needs the inout treatment -- a temporary, converted in and
+                    # written back. That is a property of the C entry point and
+                    # not of the argument: MPI_Cancel marks a request, it does
+                    # not replace the handle, and MPI-5.0 A.4.1 accordingly
+                    # gives the f08 binding "TYPE(MPI_Request), INTENT(IN) ::
+                    # request". `f08_param_direction` stays `in` so that a
+                    # caller may pass a request it holds INTENT(IN) itself.
                     param_direction = "inout"
                 end
                 if param_direction == "in"
@@ -928,7 +958,7 @@ for key in sort(collect(keys(apis)))
                 end
                 f_length = length == nothing ? "" : "($length)"
                 push!(f_declarations, "integer :: $parname$f_length")
-                push!(f08_declarations, "type(MPI_$(kind2type[kind])), intent($param_direction) :: $parname$f_length")
+                push!(f08_declarations, "type(MPI_$(kind2type[kind])), intent($f08_param_direction) :: $parname$f_length")
             elseif kind == "STATUS"
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress

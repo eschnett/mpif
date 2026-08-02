@@ -15,12 +15,8 @@ module mpif_functions
     use mpif_constants
     implicit none
     integer :: logical_size
-    !dir$ ignore_tkr(trk) logical_true
-    !gcc$ attributes no_arg_check :: logical_true
-    integer :: logical_true(*)
-    !dir$ ignore_tkr(trk) logical_false
-    !gcc$ attributes no_arg_check :: logical_false
-    integer :: logical_false(*)
+    logical :: logical_true
+    logical :: logical_false
     logical :: is_set
     integer :: ierror
   end subroutine MPI_Abi_get_fortran_booleans
@@ -66,12 +62,8 @@ module mpif_functions
     use mpif_constants
     implicit none
     integer :: logical_size
-    !dir$ ignore_tkr(trk) logical_true
-    !gcc$ attributes no_arg_check :: logical_true
-    integer :: logical_true(*)
-    !dir$ ignore_tkr(trk) logical_false
-    !gcc$ attributes no_arg_check :: logical_false
-    integer :: logical_false(*)
+    logical :: logical_true
+    logical :: logical_false
     integer :: ierror
   end subroutine MPI_Abi_set_fortran_booleans
 

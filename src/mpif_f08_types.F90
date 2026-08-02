@@ -380,6 +380,33 @@ module mpif_f08_types
   type(MPI_Datatype), parameter, public :: MPI_COMPLEX32               = MPI_Datatype(MPIF_COMPLEX32              )
 
   ! Procedures
+  !
+  ! No INTENT on any argument of any callback, which is how MPI-5.0 declares
+  ! every one of them: the ABSTRACT INTERFACEs it gives in section 7.7.2 and
+  ! elsewhere, and collects in Appendix A.1.3, are plain
+  ! "TYPE(MPI_Comm) :: oldcomm", "INTEGER :: comm_keyval, ierror". The one
+  ! exception in the whole standard is MPI_TYPE_NULL_DELETE_FN in A.4.13, whose
+  ! `ierror` is INTENT(OUT) where its own abstract interface
+  ! MPI_Type_delete_attr_function gives none; that is an inconsistency in the
+  ! standard rather than a rule, and it is not followed here.
+  !
+  ! The omission is not cosmetic. INTENT is part of a dummy argument's
+  ! characteristics, so a user callback whose interface is explicit -- a module
+  ! procedure, which is the normal way to write one -- has to match the abstract
+  ! interface exactly to be passed as a PROCEDURE(...) dummy. A callback written
+  ! the way the standard writes it, with no intents, then fails to compile with
+  ! "INTENT mismatch in argument 'extra_state'" against an interface that
+  ! declares them. That is what the generalized request callbacks did until the
+  ! intents came off, and it was equally true of every other callback here.
+  !
+  ! Where the direction genuinely matters the standard says so in prose, and for
+  ! `extra_state` it deliberately does not: a callback may update it -- MPICH's
+  ! greqf test requires a `free_fn` that decrements it to be seen by the caller.
+  !
+  ! What is still wrong here is the *type* of a few arguments, not their intent:
+  ! the datarep conversion functions and MPI_User_function take their buffers as
+  ! INTEGER(KIND=MPI_ADDRESS_KIND) where the standard gives TYPE(C_PTR), VALUE.
+  ! Correcting that is a separate job.
 
   public :: MPI_Copy_function
   abstract interface
@@ -387,13 +414,13 @@ module mpif_f08_types
        use mpif_f08_constants
        import :: MPI_Comm
        implicit none
-       type(MPI_Comm), intent(in) :: oldcomm
-       integer, intent(in) :: keyval
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer, intent(in) :: attribute_val_in
-       integer, intent(out) :: attribute_val_out
-       logical, intent(out) :: flag
-       integer, intent(out) :: ierror
+       type(MPI_Comm) :: oldcomm
+       integer :: keyval
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer :: attribute_val_in
+       integer :: attribute_val_out
+       logical :: flag
+       integer :: ierror
      end subroutine MPI_Copy_function
   end interface
 
@@ -403,11 +430,11 @@ module mpif_f08_types
        use mpif_f08_constants
        import :: MPI_Comm
        implicit none
-       type(MPI_Comm), intent(in) :: comm
-       integer, intent(in) :: keyval
-       integer, intent(in) :: attribute_val
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer, intent(out) :: ierror
+       type(MPI_Comm) :: comm
+       integer :: keyval
+       integer :: attribute_val
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer :: ierror
      end subroutine MPI_Delete_function
   end interface
 
@@ -418,20 +445,20 @@ module mpif_f08_types
        use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
-       integer(MPI_ADDRESS_KIND), intent(in) :: invec
-       integer(MPI_ADDRESS_KIND), intent(in) :: inoutvec
-       integer, intent(in) :: len
-       type(MPI_Datatype), intent(in) :: datatype
+       integer(MPI_ADDRESS_KIND) :: invec
+       integer(MPI_ADDRESS_KIND) :: inoutvec
+       integer :: len
+       type(MPI_Datatype) :: datatype
      end subroutine MPI_User_function
 
      subroutine MPI_User_function_c(invec, inoutvec, len, datatype)
        use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
-       integer(MPI_ADDRESS_KIND), intent(in) :: invec
-       integer(MPI_ADDRESS_KIND), intent(in) :: inoutvec
-       integer(MPI_COUNT_KIND), intent(in) :: len
-       type(MPI_Datatype), intent(in) :: datatype
+       integer(MPI_ADDRESS_KIND) :: invec
+       integer(MPI_ADDRESS_KIND) :: inoutvec
+       integer(MPI_COUNT_KIND) :: len
+       type(MPI_Datatype) :: datatype
      end subroutine MPI_User_function_c
   end interface
 
@@ -441,13 +468,13 @@ module mpif_f08_types
        use mpif_f08_constants
        import :: MPI_Comm
        implicit none
-       type(MPI_Comm), intent(in) :: oldcomm
-       integer, intent(in) :: comm_keyval
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val_in
-       integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val_out
-       logical, intent(out) :: flag
-       integer, intent(out) :: ierror
+       type(MPI_Comm) :: oldcomm
+       integer :: comm_keyval
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer(MPI_ADDRESS_KIND) :: attribute_val_in
+       integer(MPI_ADDRESS_KIND) :: attribute_val_out
+       logical :: flag
+       integer :: ierror
      end subroutine MPI_Comm_copy_attr_function
   end interface
 
@@ -457,11 +484,11 @@ module mpif_f08_types
        use mpif_f08_constants
        import :: MPI_Comm
        implicit none
-       type(MPI_Comm), intent(in) :: comm
-       integer, intent(in) :: comm_keyval
-       integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer, intent(out) :: ierror
+       type(MPI_Comm) :: comm
+       integer :: comm_keyval
+       integer(MPI_ADDRESS_KIND) :: attribute_val
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer :: ierror
      end subroutine MPI_Comm_delete_attr_function
   end interface
 
@@ -470,8 +497,8 @@ module mpif_f08_types
      subroutine MPI_Comm_errhandler_function(comm, error_code)
        import :: MPI_Comm
        implicit none
-       type(MPI_Comm), intent(in) :: comm
-       integer, intent(in) :: error_code
+       type(MPI_Comm) :: comm
+       integer :: error_code
      end subroutine MPI_Comm_errhandler_function
   end interface
 
@@ -482,26 +509,26 @@ module mpif_f08_types
        use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
-       integer(MPI_ADDRESS_KIND), intent(in) :: userbuf
-       type(MPI_Datatype), intent(in) :: datatype
-       integer, intent(in) :: count
-       integer(MPI_ADDRESS_KIND), intent(in) :: filebuf
-       integer(MPI_OFFSET_KIND), intent(in) :: position
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer, intent(in) :: ierror
+       integer(MPI_ADDRESS_KIND) :: userbuf
+       type(MPI_Datatype) :: datatype
+       integer :: count
+       integer(MPI_ADDRESS_KIND) :: filebuf
+       integer(MPI_OFFSET_KIND) :: position
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer :: ierror
      end subroutine MPI_Datarep_conversion_function
 
      subroutine MPI_Datarep_conversion_function_c(userbuf, datatype, count, filebuf, position, extra_state, ierror)
        use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
-       integer(MPI_ADDRESS_KIND), intent(in) :: userbuf
-       type(MPI_Datatype), intent(in) :: datatype
-       integer(MPI_COUNT_KIND), intent(in) :: count
-       integer(MPI_ADDRESS_KIND), intent(in) :: filebuf
-       integer(MPI_OFFSET_KIND), intent(in) :: position
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer, intent(in) :: ierror
+       integer(MPI_ADDRESS_KIND) :: userbuf
+       type(MPI_Datatype) :: datatype
+       integer(MPI_COUNT_KIND) :: count
+       integer(MPI_ADDRESS_KIND) :: filebuf
+       integer(MPI_OFFSET_KIND) :: position
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer :: ierror
      end subroutine MPI_Datarep_conversion_function_c
   end interface
 
@@ -511,10 +538,10 @@ module mpif_f08_types
        use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
-       type(MPI_Datatype), intent(in) :: datatype
-       integer(MPI_ADDRESS_KIND), intent(out) :: extent
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer, intent(in) :: ierror
+       type(MPI_Datatype) :: datatype
+       integer(MPI_ADDRESS_KIND) :: extent
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer :: ierror
      end subroutine MPI_Datarep_extent_function
   end interface
 
@@ -523,22 +550,13 @@ module mpif_f08_types
      subroutine MPI_File_errhandler_function(file, error_code)
        import :: MPI_File
        implicit none
-       type(MPI_File), intent(in) :: file
-       integer, intent(in) :: error_code
+       type(MPI_File) :: file
+       integer :: error_code
      end subroutine MPI_File_errhandler_function
   end interface
 
   public :: MPI_Grequest_query_function
   abstract interface
-     ! No INTENT on any argument of the three generalized request callbacks: that
-     ! is how MPI-5.0 section 13.2 declares them, and it is deliberate for
-     ! `extra_state`, which a callback may update -- the standard's own wording
-     ! is that the request's state lives there, and MPICH's greqf test requires a
-     ! `free_fn` that decrements it to be seen by the caller. An INTENT(IN) here
-     ! makes a conforming callback fail to compile with "INTENT mismatch in
-     ! argument 'extra_state'", so the intents are omitted rather than guessed.
-     ! Contrast the attribute callbacks above, where the standard does say
-     ! INTENT(IN) and mpif passes a copy.
      subroutine MPI_Grequest_query_function(extra_state, status, ierror)
        use mpif_f08_constants
        import :: MPI_Status
@@ -575,8 +593,8 @@ module mpif_f08_types
      subroutine MPI_Session_errhandler_function(session, error_code)
        import :: MPI_Session
        implicit none
-       type(MPI_Session), intent(in) :: session
-       integer, intent(in) :: error_code
+       type(MPI_Session) :: session
+       integer :: error_code
      end subroutine MPI_Session_errhandler_function
   end interface
 
@@ -586,13 +604,13 @@ module mpif_f08_types
        use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
-       type(MPI_Datatype), intent(in) :: oldtype
-       integer, intent(in) :: type_keyval
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val_in
-       integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val_out
-       logical, intent(out) :: flag
-       integer, intent(out) :: ierror
+       type(MPI_Datatype) :: oldtype
+       integer :: type_keyval
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer(MPI_ADDRESS_KIND) :: attribute_val_in
+       integer(MPI_ADDRESS_KIND) :: attribute_val_out
+       logical :: flag
+       integer :: ierror
      end subroutine MPI_Type_copy_attr_function
   end interface
 
@@ -602,11 +620,11 @@ module mpif_f08_types
        use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
-       type(MPI_Datatype), intent(in) :: type
-       integer, intent(in) :: type_keyval
-       integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer, intent(out) :: ierror
+       type(MPI_Datatype) :: type
+       integer :: type_keyval
+       integer(MPI_ADDRESS_KIND) :: attribute_val
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer :: ierror
      end subroutine MPI_Type_delete_attr_function
   end interface
 
@@ -615,8 +633,8 @@ module mpif_f08_types
      subroutine MPI_Win_errhandler_function(win, error_code)
        import :: MPI_Win
        implicit none
-       type(MPI_Win), intent(in) :: win
-       integer, intent(in) :: error_code
+       type(MPI_Win) :: win
+       integer :: error_code
      end subroutine MPI_Win_errhandler_function
   end interface
 
@@ -626,13 +644,13 @@ module mpif_f08_types
        use mpif_f08_constants
        import :: MPI_Win
        implicit none
-       type(MPI_Win), intent(in) :: oldwin
-       integer, intent(in) :: win_keyval
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val_in
-       integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val_out
-       logical, intent(out) :: flag
-       integer, intent(out) :: ierror
+       type(MPI_Win) :: oldwin
+       integer :: win_keyval
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer(MPI_ADDRESS_KIND) :: attribute_val_in
+       integer(MPI_ADDRESS_KIND) :: attribute_val_out
+       logical :: flag
+       integer :: ierror
      end subroutine MPI_Win_copy_attr_function
   end interface
 
@@ -642,11 +660,11 @@ module mpif_f08_types
        use mpif_f08_constants
        import :: MPI_Win
        implicit none
-       type(MPI_Win), intent(in) :: win
-       integer, intent(in) :: win_keyval
-       integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
-       integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
-       integer, intent(out) :: ierror
+       type(MPI_Win) :: win
+       integer :: win_keyval
+       integer(MPI_ADDRESS_KIND) :: attribute_val
+       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer :: ierror
      end subroutine MPI_Win_delete_attr_function
   end interface
 

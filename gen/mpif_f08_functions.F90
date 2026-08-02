@@ -3328,12 +3328,8 @@ contains
     use mpif_f08_types
     implicit none
     integer, intent(in) :: logical_size
-    !dir$ ignore_tkr(tkr) logical_true
-    !gcc$ attributes no_arg_check :: logical_true
-    integer :: logical_true(*)
-    !dir$ ignore_tkr(tkr) logical_false
-    !gcc$ attributes no_arg_check :: logical_false
-    integer :: logical_false(*)
+    logical, intent(out) :: logical_true
+    logical, intent(out) :: logical_false
     logical, intent(out) :: is_set
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
@@ -3411,12 +3407,8 @@ contains
     use mpif_f08_types
     implicit none
     integer, intent(in) :: logical_size
-    !dir$ ignore_tkr(tkr) logical_true
-    !gcc$ attributes no_arg_check :: logical_true
-    integer :: logical_true(*)
-    !dir$ ignore_tkr(tkr) logical_false
-    !gcc$ attributes no_arg_check :: logical_false
-    integer :: logical_false(*)
+    logical, intent(in) :: logical_true
+    logical, intent(in) :: logical_false
     integer, intent(out), optional :: ierror
     integer :: tmp_ierror
     call MPIF_Abi_set_fortran_booleans( &
@@ -5231,11 +5223,13 @@ contains
     use mpif_f08_constants
     use mpif_f08_types
     implicit none
-    type(MPI_Request), intent(inout) :: request
+    type(MPI_Request), intent(in) :: request
     integer, intent(out), optional :: ierror
+    integer :: tmp_request
     integer :: tmp_ierror
+    tmp_request = request%MPI_VAL
     call MPIF_Cancel( &
-      request%MPI_VAL, &
+      tmp_request, &
       tmp_ierror &
     )
     if (present(ierror)) ierror = tmp_ierror

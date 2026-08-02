@@ -48,29 +48,7 @@ it carries a `# TODO: Check properly whether the function parameter needs
 embiggening`, with a hardcoded exception list containing only
 `MPI_Datarep_extent_function`.
 
-### 3. The f08 intents are not checked against the standard
-
-The generator derives every f08 intent from the parameter's `param_direction` in
-`apis.json`. The standard's own bindings do not always agree, and nothing checks:
-Appendix A.4 lists them routine by routine, and comparing the two is mechanical.
-
-Two divergences have been found so far, both by accident rather than by looking,
-and both were real defects rather than cosmetic:
-
-- `INTENT(IN)` on the generalized request callbacks' `extra_state`, where the
-  standard gives none. A conforming callback then failed to compile whenever it
-  was a module procedure, "INTENT mismatch in argument 'extra_state'".
-- `INTENT(OUT)` on every status a routine fills in, where the standard gives
-  none. That one destroyed the caller's `status%MPI_ERROR` before the call
-  began, and gfortran was entitled to delete the caller's store at -O2.
-
-The pattern in both is the same: the standard omits an intent deliberately, in
-places where the direction of the data does not tell the whole story, and a
-generator that reads only the direction cannot know. Neither was found by
-reasoning about the bindings, which is the argument for doing the comparison
-rather than waiting for the third one.
-
-### 4. `MPI_Sizeof` does not cover rank two and above
+### 3. `MPI_Sizeof` does not cover rank two and above
 
 `src/mpif_types.F90` defines the generic by hand, with a scalar and an
 assumed-size specific per type and kind. An argument of rank two or more resolves
@@ -239,6 +217,14 @@ it is the standard's `.FALSE.` option, which `MPI_SUBARRAYS_SUPPORTED` and
 `MPI_ASYNC_PROTECTS_NONBLOCKING` advertise -- so it belongs here as an
 improvement rather than an error.
 
+This is also the one place where the f08 intents diverge from Appendix A.4, and
+deliberately: the standard gives an input choice buffer
+`TYPE(*), DIMENSION(..), INTENT(IN)` and mpif gives it no intent at all, in 207
+arguments across the bindings. Omitting it is what lets a wrapper hand the buffer
+on to a dummy that has none, and it forbids nothing a conforming program may do.
+`dev/check-f08-intents.py` counts these and passes them over; taking the
+assumed-rank option would bring the intents with it.
+
 Taking the other option would mean declaring choice buffers
 `TYPE(*), DIMENSION(..), ASYNCHRONOUS` in the nonblocking, split-collective and
 persistent routines and setting both constants to `.true.`. The gain is that
@@ -328,6 +314,15 @@ divergences worth knowing before generating them:
   buffer. The kind alone does not say which, so the generator would need to
   distinguish callbacks from ordinary functions.
 
+The intents in the abstract interfaces are no longer among the divergences:
+there are none, in any of the 18, which is how MPI-5.0 declares every callback
+it has. What is still wrong is the *type* of three of their arguments, and it is
+the same mistake in both places -- `MPI_User_function`'s `invec` and `inoutvec`
+and the datarep conversion functions' `userbuf` and `filebuf` are
+`integer(MPI_ADDRESS_KIND)` where the standard gives `TYPE(C_PTR), VALUE`. A
+generator would have to fix that at the same time, since
+`src/mpif_f08_attr_fns.F90` copies whatever the abstract interfaces say.
+
 ## Namespace
 
 Only what the MPI standard defines may be spelled `MPI_` or `mpi_`; everything
@@ -388,6 +383,60 @@ Recorded so that they do not get re-investigated:
   in `src/mpif_types.F90`. `MPI_Status_f2f08` and `MPI_Status_f082f` are
   implemented and public in `src/mpif_f08_types.F90`.
 - `ierror` is `OPTIONAL` throughout the f08 bindings.
+- **The f08 intents match Appendix A.4.** Every one of the 584 bindings that A.4
+  and `gen/mpif_f08_functions.F90` have in common was compared argument by
+  argument, and `dev/check-f08-intents.py` is the comparison, so it can be run
+  again after any change to the generator. It also checks that the argument
+  names and their order agree, and that A.4 was read correctly at all: in the
+  appendix every argument is declared exactly once, so a parse that leaves one
+  undeclared has misread the page and the run fails rather than reporting a
+  clean bill.
+
+  The audit found three divergences, all now fixed and all real:
+
+  - `INTENT(INOUT)` on `MPI_Cancel`'s request, where A.4.1 gives `INTENT(IN)`.
+    The C entry point takes `MPI_Request*`, which is a property of the C
+    binding: `MPI_Cancel` marks a request, it does not replace the handle. The
+    wrapper now copies into a temporary. Before that, a caller holding a request
+    `INTENT(IN)` and forwarding it did not compile -- "Dummy argument 'request'
+    with INTENT(IN) in variable definition context", which is
+    `test/cancel_intent_f08.f90`.
+  - Intents on all 18 f08 callback abstract interfaces, where the standard gives
+    none anywhere: its ABSTRACT INTERFACEs, in section 7.7.2 and collected in
+    A.1.3, are plain `TYPE(MPI_Comm) :: oldcomm`. This is the generalized
+    request `extra_state` defect over again, and it was general rather than
+    confined to those three callbacks -- the comment claiming the attribute
+    callbacks were different was simply wrong. INTENT is part of a dummy
+    argument's characteristics, so a callback copied out of the standard could
+    not be passed as a `PROCEDURE(...)` dummy at all once its interface was
+    explicit: "INTENT mismatch in argument 'extra_state'".
+    `test/callback_intents_f08.f90` writes one callback per interface the way
+    the standard writes it and passes each to the dummy a generated wrapper
+    declares, so the assertion is made at compile time.
+  - `MPI_Abi_get_fortran_booleans` and `MPI_Abi_set_fortran_booleans` declared
+    `logical_true` and `logical_false` as choice buffers, where A.4.14 and
+    A.5.14 both give a plain `LOGICAL`. These are the two routines by which
+    Fortran and MPI agree on what a `LOGICAL` looks like, so the value really is
+    one default `LOGICAL` and a choice buffer was the wrong shape for it. The
+    generator had the right code for this all along, behind an `if false &&`.
+    This one has no test of its own and should not get one: `no_arg_check`
+    disables the checking that would tell the two declarations apart, so a test
+    would pass either way, which is what makes a test worthless here.
+    `test/version_f08.f90` already calls it with plain `LOGICAL` actuals.
+
+  The 207 remaining differences are all the same one, and expected: an input
+  choice buffer is `INTENT(IN)` in the standard and has no intent here. See
+  "Assumed-rank choice buffers".
+
+  Two smaller things the comparison turned up, neither a defect. `mpi_f08` has
+  six routines A.4 does not list -- `MPI_Attr_delete`, `MPI_Attr_get`,
+  `MPI_Attr_put`, `MPI_Keyval_create`, `MPI_Keyval_free`, all MPI-1 forms that
+  A.4.16 does not carry into `mpi_f08`, and `MPI_F_sync_reg`, which is not in the
+  standard at all. And A.4 gives `MPI_TYPE_NULL_DELETE_FN`'s `ierror`
+  `INTENT(OUT)` where its own abstract interface
+  `MPI_Type_delete_attr_function` gives none and where the other twelve
+  predefined callbacks give none; that is an inconsistency in the standard, and
+  mpif follows the abstract interface.
 
 ## Working on this
 
@@ -409,6 +458,21 @@ one directory of the suite rather than all of it:
 
 Set `MPIF_KEEP_TESTS=1` to stop `runtests` deleting each executable after it
 runs, which is what a debugger needs to turn "test failed" into a backtrace.
+
+Neither of the first two scripts installs the MPI they build against; that is
+`scripts/macos-install-mpi.sh <mpich|openmpi> <gcc|llvm>`, and it builds the
+implementation from source, so it costs a good deal more than the others. It is
+what to run when `find_package(MPI)` starts reporting that
+`mpi/<mpi>-<toolchain>/include` does not exist.
+
+One check needs no build at all:
+
+    python3 dev/check-f08-intents.py   # gen/ against MPI-5.0 Appendix A.4
+
+It reads `doc/mpi50-report.pdf` through `pdftotext -layout` and compares every
+f08 binding's intents, argument names and argument order with the appendix,
+exiting nonzero on anything it cannot account for. Run it after changing how the
+generator declares an argument.
 
 ### Stale build artifacts were the biggest time sink
 
@@ -476,8 +540,7 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    deregistered, so it is never freed.
 2. **The PMPI interface**, which does not exist at all and which `mpif.h`
    currently promises four names it cannot link.
-3. **The intent audit against Appendix A.4**, error 3 above.
-4. The duplicated handle conversions, tidying rather than breakage.
+3. The duplicated handle conversions, tidying rather than breakage.
 
 One thing is worth reporting upstream and is not yet: Open MPI's
 `MPI_Info_create_env` changing across `MPI_Init`.
@@ -489,22 +552,49 @@ variants, on macOS 15/arm64, with gcc 15 and with clang/flang 22.
 
 |                | f77       | f90       | f08       |
 |----------------|-----------|-----------|-----------|
-| MPICH, gcc     | 31 / 104  | 39 / 122  | 46 / 136  |
+| MPICH, gcc     |  3 / 104  | 11 / 122  | 18 / 136  |
 | MPICH, llvm    | 31 / 104  | 39 / 122  | 42 / 136  |
 | Open MPI, gcc  |  7 / 104  | 12 / 122  | 22 / 136  |
 | Open MPI, llvm |  7 / 104  | 12 / 122  | 18 / 136  |
 
-Failures, not passes. MPICH does worse than Open MPI here for one reason: 17 of
-its f77 failures are the assertion of external blocker "MPICH: attributes on
-predefined datatypes abort in ABI builds", which Open MPI does not have. Open
-MPI's own blockers cost it fewer tests.
+Failures, not passes. **Only the MPICH/gcc row is current**; the other three
+predate the patch for external blocker "MPICH: attributes on predefined
+datatypes abort in ABI builds" and the f08 intent fixes, and have not been
+measured since. That blocker is what used to make MPICH look so much worse than
+Open MPI -- 17 of its f77 failures were that one assertion -- and its
+disappearance is most of the distance between the MPICH/gcc row and the
+MPICH/llvm row below it, not anything about the toolchains.
 
-**The two MPICH rows predate the patch for that blocker and have not been
-measured since.** Those 17 f77 failures, and whatever the f90 and f08 rows owe
-to the same assertion, should be gone; the table says what the numbers were
-before, not what they are.
+The MPICH/gcc row was measured after the f08 intent fixes, and every failure in
+it is attributable to something already recorded here:
 
-`test/`, mpif's own suite, is 32 of 32 on all four.
+- f77 (3): `allctypesf`, `bsendf`, `winattrf`.
+- f90 (11): `bsendf90`, `profile1f90` and `wtimef90` fail to build, the last two
+  on the missing PMPI interface; then `allctypesf90`, `attrlangf90`,
+  `createf90`, `createf90types` (twice), `fandcattrf90`, `trf90`, `winattrf90`.
+- f08 (18): `attrmpi1f08`, `profile1f90`, `statusconv` and `wtimef90` fail to
+  build; then `allctypesf08`, `alltoallwf08`, `attrlangf08`, `createf08`,
+  `fandcattrf08`, `nonblocking_inpf08`, `nonblockingf08`, `spawnargvf03`,
+  `spawnargvf90`, `test14`, `test15`, `trf08`, `vw_inplacef08`, `winattrf08`.
+
+`spawnargvf90` and `spawnargvf03` are the MPICH inconsistency described above,
+and `alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08` and `vw_inplacef08`
+are the four that flang passes and gfortran does not. `statusconv` is a C file
+using MPICH's own `MPI_F08_status` spelling rather than the ABI's
+`MPI_F08_Status`. `attrmpi1f08` hands `MPI_Keyval_create`, the MPI-1 form whose
+callbacks take a plain INTEGER attribute, the MPI-2 `MPI_COMM_NULL_COPY_FN`,
+whose attribute is address-sized: "Type mismatch in argument
+'attribute_val_in' (INTEGER(4)/INTEGER(8))". That is a mismatch of type and
+predates the intent work, which did not touch either.
+
+Nothing in the row is an intent failure -- there is no "INTENT mismatch" or
+"variable definition context" anywhere in the log. What this run does not
+establish is a difference, since there is no measurement of the same suite
+immediately before the fixes to subtract; it establishes that the failures that
+remain are all accounted for.
+
+`test/`, mpif's own suite, was 32 of 32 on all four and is now 34 of 34 with
+`callback_intents_f08` and `cancel_intent_f08` added, measured on MPICH/gcc.
 
 Passing the f08 status through to C instead of converting it moved nothing, and
 was not meant to: it removes the temporary, the conversion and all 77 `loc()`
