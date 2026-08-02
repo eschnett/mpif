@@ -87,7 +87,7 @@ and `mpif.h` still have it.
 
 ## External blockers
 
-### MPICH: attributes on predefined datatypes abort in ABI builds
+### MPICH: attributes on predefined datatypes abort in ABI builds — carried as a local patch
 
 <https://github.com/pmodels/mpich/issues/7916>
 
@@ -96,13 +96,55 @@ predefined datatype when it is built for the standard ABI:
 `MPII_Attr_delete_c_proxy` converts the handle back with
 `ABI_Handle_from_mpi`, whose datatype case reverse-searches
 `abi_datatype_builtins[]` and asserts when the handle is not found. Derived
-datatypes and communicator attributes are unaffected.
+datatypes and communicator attributes are unaffected. The reproducer sent with
+the issue is `bug-mpich-7916/mpich-abi-attr-bug.c`; it is pure C, with no
+Fortran involved.
 
-Nothing to fix on this side, and nothing to work around: mpif has no way to set
-a datatype attribute other than through MPI. `f77/attr/typeattrf` and its f08
-counterpart in MPICH's own test suite fail until this is fixed upstream. The
-reproducer sent with the issue is `bug-mpich-7916/mpich-abi-attr-bug.c`; it is pure C, with
-no Fortran involved.
+The table is searched and comes up empty because there are two of them.
+`src/binding/abi/mpi_abi_util.c`, which defines `abi_datatype_builtins[]`,
+`abi_op_builtins[]` and the `ABI_init_builtins()` that fills them, is listed in
+`mpi_abi_sources`, and that is compiled into both `libmpi_abi` and
+`libpmpi_abi`. Where weak symbols are unavailable those really are two
+libraries, so each gets its own copy: `MPI_Init` is in `libmpi_abi` and fills
+that one, while `libpmpi_abi`, which holds the implementation and therefore the
+attribute proxies, keeps a table of zeros. The forward direction never notices,
+because the entry points that convert an incoming handle are in `libmpi_abi` --
+which is why setting the attribute works and only the callback aborts.
+
+That makes it a macOS problem in practice. `configure` asks for weak symbols and
+gives up on them, since `#pragma weak PFoo = Foo` makes gcc ICE on Mach-O
+(`internal compiler error: in assemble_alias`), so `NEEDSPLIB=yes` and the
+separate profiling library gets built. A Linux build has weak symbols, one
+library and one table, and cannot hit this.
+
+Fixed upstream on `main` by
+[2eb9a812](https://github.com/pmodels/mpich/commit/2eb9a812025d5b22703fd35398714ba1c9e4f218)
+("abi: double inclusion of mpi_abi_util.c under noweak", 2026-06-13), which
+moves the file into a new `mpi_abi_core_sources` that goes into the profiling
+library alone. The commit predates the issue by seven weeks and does not
+reference it, and the issue is still open; nothing has been released with the
+fix, 5.0.1 being the latest tag. It is therefore carried locally as
+`ci-scripts/mpich-abi-util-one-copy.patch`, applied by
+`ci-scripts/install-mpich.sh`. **Drop the patch once a release picks the fix
+up**; `git apply` refuses fuzz, so it will fail loudly rather than land
+somewhere unintended, and the prepared-tree stamp covers the patches, so
+removing it re-prepares rather than reusing an older tree.
+
+The patch is a local copy rather than the upstream commit downloaded by URL,
+which is what this script does for its other fix, because the upstream one does
+not apply to 5.0.1: `main` has renamed the convenience-library variables in
+`Makefile.am` (`@mpllib@` to `@mpl_lib@` and so on) and dropped
+`fortran_binding_abi.c` from `mpi_abi_sources`, and both change the context the
+commit's hunks expect. The change itself is unaltered.
+
+Two other routes were considered and rejected. There is no configure switch that
+does away with the second library: `NEEDSPLIB` is derived from whether weak
+symbols work rather than asked for, weak aliases cannot be made to work on
+Mach-O, and dropping `libpmpi_abi` would take the `PMPI_` entry points with it,
+which the ABI requires. Calling `ABI_init_builtins()` from
+`ABI_Datatype_from_mpi` itself would also work, and would need no `automake`
+rerun, but it papers over the duplication rather than removing it and diverges
+from what upstream did.
 
 ### OpenMPI: an empty info value is rejected — carried as a local patch
 
@@ -456,6 +498,11 @@ Failures, not passes. MPICH does worse than Open MPI here for one reason: 17 of
 its f77 failures are the assertion of external blocker "MPICH: attributes on
 predefined datatypes abort in ABI builds", which Open MPI does not have. Open
 MPI's own blockers cost it fewer tests.
+
+**The two MPICH rows predate the patch for that blocker and have not been
+measured since.** Those 17 f77 failures, and whatever the f90 and f08 rows owe
+to the same assertion, should be gone; the table says what the numbers were
+before, not what they are.
 
 `test/`, mpif's own suite, is 32 of 32 on all four.
 

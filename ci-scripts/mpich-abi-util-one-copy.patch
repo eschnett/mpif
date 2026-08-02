@@ -1,0 +1,84 @@
+Build mpi_abi_util.c into the profiling library only
+
+MPICH issue 7916, <https://github.com/pmodels/mpich/issues/7916>, fixed upstream
+on `main` by
+
+    https://github.com/pmodels/mpich/commit/2eb9a812025d5b22703fd35398714ba1c9e4f218
+
+("abi: double inclusion of mpi_abi_util.c under noweak", 2026-06-13), which is
+not in 5.0.1 -- the latest release, and the one this build takes its source
+from. Carried here until a release picks it up.
+
+`mpi_abi_util.c` defines the tables that translate between ABI handles and
+MPICH's own, `abi_datatype_builtins[]` and `abi_op_builtins[]`, and the
+`ABI_init_builtins()` that fills them. It was listed in `mpi_abi_sources`, which
+is compiled into both `libmpi_abi` and `libpmpi_abi`, so on a platform without
+weak symbol support -- macOS, where a `#pragma weak` alias makes gcc ICE and
+`configure` therefore builds a separate profiling library -- each library got
+its own copy of the tables. `MPI_Init` lives in `libmpi_abi` and initialised
+that library's copy; `libpmpi_abi`, which holds the implementation, kept a table
+of zeros.
+
+The forward direction never noticed, because the ABI entry points that convert
+an incoming handle are in `libmpi_abi`. The reverse direction is used from
+inside the implementation, by the attribute proxies in `src/mpi/attr/attrutil.c`
+handing the callback its handle back, and there `ABI_Datatype_from_mpi` searched
+the zeroed table, failed, and hit its `MPIR_Assert(0)`. That aborts
+`MPI_Type_set_attr` and `MPI_Type_get_attr` for every predefined datatype;
+derived datatypes take the pointer path and communicators have no table at all,
+so both were unaffected.
+
+The fix puts the file in a new `mpi_abi_core_sources`, which goes into the
+profiling library alone, leaving one copy of each table for both libraries to
+share.
+
+This is a local copy rather than the upstream `.patch` downloaded by URL -- as
+this script does for its other fix -- because the upstream one does not apply to
+5.0.1: `main` has since renamed the convenience-library variables in
+`Makefile.am` (`@mpllib@` to `@mpl_lib@` and so on), which changes the context of
+the first hunk, and dropped `fortran_binding_abi.c` from `mpi_abi_sources`, which
+changes the context in `src/binding/abi/Makefile.mk`. The change itself is the
+upstream commit's, unaltered.
+
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -125,6 +125,7 @@
+ mpi_fc_modules =
+ mpi_cxx_sources =
+ mpi_core_sources =
++mpi_abi_core_sources =
+ mpifort_convenience_libs =
+
+ lib_LTLIBRARIES =
+@@ -166,7 +167,7 @@
+ # dropping mpi_fc_sources and mpi_cxx_sources from libmpmpi since they
+ # don't contribute any PMPI symbols.
+ lib_LTLIBRARIES += lib/lib@PMPIABILIBNAME@.la
+-lib_lib@PMPIABILIBNAME@_la_SOURCES = $(mpi_abi_sources) $(mpi_f77_sources) $(mpi_core_sources)
++lib_lib@PMPIABILIBNAME@_la_SOURCES = $(mpi_abi_sources) $(mpi_f77_sources) $(mpi_core_sources) $(mpi_abi_core_sources)
+ lib_lib@PMPIABILIBNAME@_la_LDFLAGS = $(external_ldflags) $(ABI_ABIVERSIONFLAGS)
+ lib_lib@PMPIABILIBNAME@_la_CPPFLAGS = $(AM_CPPFLAGS) -DF77_USE_PMPI $(abi_cppflags)
+ lib_lib@PMPIABILIBNAME@_la_LIBADD = $(external_libs) $(pmpi_convenience_libs) $(abi_convenience_libs)
+@@ -184,7 +185,7 @@
+ else !BUILD_PROFILING_LIB
+
+ lib_LTLIBRARIES += lib/lib@MPIABILIBNAME@.la
+-lib_lib@MPIABILIBNAME@_la_SOURCES = $(mpi_abi_sources) $(mpi_core_sources)
++lib_lib@MPIABILIBNAME@_la_SOURCES = $(mpi_abi_sources) $(mpi_core_sources) $(mpi_abi_core_sources)
+ lib_lib@MPIABILIBNAME@_la_LDFLAGS = $(external_ldflags) $(ABI_ABIVERSIONFLAGS)
+ lib_lib@MPIABILIBNAME@_la_CPPFLAGS = $(AM_CPPFLAGS) $(abi_cppflags)
+ lib_lib@MPIABILIBNAME@_la_LIBADD = $(external_libs) $(pmpi_convenience_libs) $(abi_convenience_libs)
+--- a/src/binding/abi/Makefile.mk
++++ b/src/binding/abi/Makefile.mk
+@@ -8,8 +8,10 @@
+ include_HEADERS += src/binding/abi/mpi_abi.h
+
+ mpi_abi_sources += \
+-    src/binding/abi/mpi_abi_util.c \
+     src/binding/abi/c_binding_abi.c \
+     src/binding/abi/io_abi.c
+
++mpi_abi_core_sources += \
++    src/binding/abi/mpi_abi_util.c
++
+ endif BUILD_ABI_LIB

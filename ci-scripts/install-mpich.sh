@@ -39,6 +39,15 @@ scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 repodir=$(cd "${scriptdir}/.." && pwd)
 nprocs=$(getconf _NPROCESSORS_ONLN)
 
+# Upstream fixes that are on `main` but not in the release above, applied to the
+# source tree below. Each patch says in its own preamble what it is, where it
+# comes from and why it is still needed here. The fix downloaded by URL as
+# ${MPICH_PATCH_COMMIT} is the same idea; these are the ones whose upstream
+# commit does not apply to this release.
+patches=(
+    "${scriptdir}/mpich-abi-util-one-copy.patch"
+)
+
 if [[ -n ${MPI_SRC_DIR:-} ]]; then
     mkdir -p "${MPI_SRC_DIR}"
     srcdir=$(cd "${MPI_SRC_DIR}" && pwd)
@@ -50,9 +59,10 @@ fi
 tree=${srcdir}/mpich-${MPICH_VERSION}
 # The stamp records what the prepared tree contains, so anything that changes
 # that tree -- other than the bindings themselves -- belongs in its name. That
-# includes this script, since it patches the tree: without the checksum, editing
-# the patches below would silently reuse a tree prepared by an older version.
-stamp=${srcdir}/prepared-${MPICH_VERSION}-${MPICH_PATCH_COMMIT}-$(cksum <"${BASH_SOURCE[0]}" | cut -d' ' -f1)
+# includes the patches above and this script, since it patches the tree too:
+# without the checksum, editing either would silently reuse a tree prepared by an
+# older version.
+stamp=${srcdir}/prepared-${MPICH_VERSION}-${MPICH_PATCH_COMMIT}-$(cat "${BASH_SOURCE[0]}" "${patches[@]}" | cksum | cut -d' ' -f1)
 
 # Copy in the Fortran/C handle conversion functions. Only the contents of this
 # file vary from run to run, so this happens on every run, including when the
@@ -77,6 +87,16 @@ else
     curl -fsSL -o mpich.patch \
          "https://github.com/pmodels/mpich/commit/${MPICH_PATCH_COMMIT}.patch"
     patch -p1 <mpich.patch
+
+    # Carry the upstream fixes this release does not have yet. `git apply`
+    # rather than `patch`, because it refuses to apply with fuzz: once a release
+    # picks a fix up, or moves the code it touches, the patch stops applying and
+    # says so here rather than landing somewhere unintended. This runs before
+    # the bindings are hooked in below, which edits one of the same files.
+    for patch in "${patches[@]}"; do
+        echo "Applying $(basename "${patch}")"
+        git apply "${patch}"
+    done
 
     # Add the Fortran/C handle conversion functions to the ABI library
     install_bindings
