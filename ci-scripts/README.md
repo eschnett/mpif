@@ -91,9 +91,13 @@ matches the MPICH the recipe here knows how to build.
 
 ## Where else these are used
 
-- `.github/workflows/ci.yaml` -- twelve variants, and the authority on what mpif
-  supports.
-- `docker/*.dockerfile` -- six Linux variants: MPICH and Open MPI, gcc and flang,
-  on amd64, arm64v8 and the arm32v7 that CI has no runner for.
+- `.github/workflows/ci.yaml` -- twelve variants natively, and the authority on
+  what mpif supports, plus one built in a container: the 32-bit i386 one, which a
+  matrix entry cannot express because the suite's variant key ends in `uname -m`
+  and a `-m32` build on an x86_64 runner still says `x86_64`.
+- `docker/*.dockerfile` -- seven Linux variants: MPICH and Open MPI, gcc and
+  flang, on amd64, arm64v8, the i386 that CI runs in a container, and the arm32v7
+  that CI has no runner for and that qemu makes too slow to run per push. The two
+  32-bit ones are MPICH-only, Open MPI having dropped 32-bit environments.
 - `scripts/macos-*.sh` -- the same recipes locally; see "Working on this" in
   MISSING.md.

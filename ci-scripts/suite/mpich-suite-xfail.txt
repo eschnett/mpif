@@ -99,7 +99,9 @@ xfail */*/*/*/*                f90  allctypesf90       # uses MPI_LB and MPI_UB,
 xfail */gcc/*/*/*              f08  alltoallwf08       # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
 xfail */*/*/*/*                f08  attrlangf08        # attributes set in Fortran are not visible to C as a pointer; MISSING.md "Fortran-set attribute values"
 xfail */*/*/*/*                f90  attrlangf90        # attributes set in Fortran are not visible to C as a pointer; MISSING.md "Fortran-set attribute values"
-xfail */*/*/*/*                f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8)
+xfail */*/*/*/arm64            f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds
+xfail */*/*/*/aarch64          f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds
+xfail */*/*/*/x86_64           f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds
 xfail mpich/*/*/*/*            f77  bsendf             # attaches 400 bytes, under the ABI's MPI_BSEND_OVERHEAD of 512; MISSING.md "suite tests that cannot pass"
 xfail mpich/*/*/*/*            f90  bsendf90           # attaches 400 bytes, under the ABI's MPI_BSEND_OVERHEAD of 512; MISSING.md "suite tests that cannot pass"
 xfail mpich/*/*/*/*            f08  createf08          # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"

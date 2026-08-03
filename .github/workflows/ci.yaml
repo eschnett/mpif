@@ -340,3 +340,69 @@ jobs:
                   fi
               done
           done
+
+  # The 32-bit variant, which the job above cannot express. The suite's
+  # expected-failure list is keyed on `uname -m` among other things, and a `-m32`
+  # build on an x86_64 runner still reports `x86_64` -- so it would share a row
+  # with the 64-bit build, which is the one collision that key exists to prevent.
+  # A 32-bit userland reports a 32-bit `uname`; a 32-bit compiler flag does not.
+  # (Ubuntu's i386 multiarch package set is also a whitelist that has no
+  # `libhwloc-dev:i386`.)
+  #
+  # So this runs the container instead, which is where the 32-bit variants are
+  # described anyway. `linux/386` executes natively on the x86_64 kernel -- no
+  # qemu -- so it costs about what the jobs above cost. The dockerfile builds
+  # MPICH, builds and installs mpif, runs test/ and then runs the suite, all as
+  # `RUN` steps, so a build that succeeds is a test run that passed.
+  #
+  # MPICH only, and not for cost: Open MPI's release notes say "32-bit
+  # environments are no longer supported". See MISSING.md. gcc only because
+  # flang has no 32-bit x86 Fortran runtime to speak of.
+  #
+  # `docker/mpich-gcc-arm32v7.dockerfile` is the other 32-bit ABI and is not here:
+  # every instruction is emulated, and MPICH from source plus ~300 suite tests
+  # does not fit this timeout. Worth adding on a schedule.
+  container:
+    name: ${{ matrix.variant }} (container)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [mpich-gcc-i386]
+        include:
+          - variant: mpich-gcc-i386
+            platform: linux/386
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # For the GitHub Actions cache backend below, which the default `docker`
+      # driver does not support.
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # The image is not pushed or loaded: the build itself is the test. Layer
+      # caching stands in for the three caches the job above keeps, and the
+      # dockerfile is ordered for it -- the suite's files arrive in the last
+      # `COPY`, so editing the expected-failures list reuses the MPICH layer
+      # instead of rebuilding it. `mode=max` because the layer worth reusing is
+      # an intermediate one; the final image is thrown away.
+      #
+      # That competes for the repository's 10 GB of Actions cache with the three
+      # caches the job above keeps per variant. If it starts evicting them --
+      # visible as MPI cache misses on runs that changed nothing the key covers --
+      # drop the `cache-to` line and let this job rebuild MPICH each time. It is a
+      # native build, so that costs minutes rather than the hour it would cost
+      # under qemu.
+      - name: Build and test in a ${{ matrix.platform }} container
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/${{ matrix.variant }}.dockerfile
+          platforms: ${{ matrix.platform }}
+          push: false
+          cache-from: type=gha,scope=${{ matrix.variant }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.variant }}

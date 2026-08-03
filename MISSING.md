@@ -77,6 +77,22 @@ that neither routine ever takes the `_c` path rather than leaving it to be notic
 that nothing does, since a header declaring the name makes it look as though
 something should.
 
+### OpenMPI: 32-bit environments are not supported
+
+Its own release notes say so, in one line: "32-bit environments are no longer
+supported", `docs/release-notes/platform.rst`. An older statement two files over
+survives from before that decision and is worth not being misled by --
+`docs/release-notes/compilers.rst` still says "32-bit platforms are only supported
+with a recent compiler that supports C11 atomics", which reads as a supported
+platform with a condition on it, where the note in `platform.rst` is the current
+answer.
+
+So the 32-bit variants are MPICH-only, and that is a scope limit rather than
+something to work around: `docker/mpich-gcc-i386.dockerfile` and
+`docker/mpich-gcc-arm32v7.dockerfile` have no Open MPI counterparts and should not
+get one. Nothing on this side is implicated -- mpif's own 32-bit defects are fixed
+and recorded under "`MPI_Count` is `int64_t` where `MPI_Aint` is a pointer" below.
+
 ### MPICH: partitioned communication is not implemented
 
 `MPI_Psend_init` aborts inside MPI whatever the bindings do: `MPID_Psend_init` is
@@ -521,6 +537,14 @@ than with the standard.
   cannot typecheck, and does not: "Interface mismatch in dummy procedure
   'copy_fn': Type mismatch in argument 'attribute_val_in'
   (INTEGER(4)/INTEGER(8))". It fails to build.
+
+  On a 32-bit platform it builds and passes, since an address-sized INTEGER *is*
+  a plain INTEGER there and the two kinds in that message are one kind. So this
+  is the one entry in `ci-scripts/suite/mpich-suite-xfail.txt` enumerated per
+  64-bit architecture -- `arm64`, `aarch64`, `x86_64` -- rather than by `*`: the
+  selector matches a component exactly or by `*` and has no negation, and the
+  arm32v7 run reported the test as an unexpected pass while it was `*`, which is
+  the mechanism working.
 - **`statusconv`** has a C file declaring
   `void c_f08_status_(MPI_F08_status *f08_status)`. The ABI spells that type
   `MPI_F08_Status`, with a capital S; `MPI_F08_status` is MPICH's own name for
@@ -1301,6 +1325,14 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    Linux one is odd in that the test passes on Ubuntu 26.04 and fails on 24.04.
    Start where the spawn eleven were solved: the "## Test output" block in the
    run's tap file.
+4. **Triage the two 32-bit variants**, `mpich/gcc/linux/13/i686` and the arm32v7
+   one, neither of which has a `triaged` line in
+   `ci-scripts/suite/mpich-suite-xfail.txt` yet, so both are reported and cannot
+   fail a run. The i386 one is the one to do first, since
+   `.github/workflows/ci.yaml` runs it on every push and it runs natively; the
+   arm32v7 one is emulated and local-only. Do not carry either list over to the
+   other: they are different 32-bit ABIs, a 64-bit type being eight-byte aligned
+   on armhf and four-byte on i386.
 
 Two things are decided and not on this list, so that they are not picked up by
 mistake: assumed-rank choice buffers are not being taken for now, and `MPI_Sizeof`
@@ -1355,6 +1387,17 @@ there fail, on the abort recorded under "a spawned child is not reachable over T
 on the x86_64 runners", and subtracting them is what would make those rows equal to
 their aarch64 twins. Two attempts to remove them -- the interface, then the warning
 -- were both refuted by CI, which is what the rows are for.
+
+The table has no 32-bit row, and both 32-bit variants are untriaged. What one run
+of `mpich/gcc/linux/26.04/armv7l` reported, after the kinds were fixed: the whole
+suite ran, and the only differences from the list were the five `flaky` entries
+going both ways -- `nonblocking_inpf` and `nonblocking_inpf90` passing,
+`typecntsf`, `typecntsf90` and `typecntsf08` failing, all of which the list excuses
+either way -- plus `attrmpi1f08` passing, which is the entry now enumerated per
+64-bit architecture above. So nothing 32-bit-specific is outstanding on that
+variant, on one measurement. `mpich/gcc/linux/13/i686` has not been measured at
+all; the first CI run of it is the measurement. Do not carry one list to the other,
+the two being different 32-bit ABIs.
 
 Fifty-four entries cover them, for fifty-two distinct language-and-test pairs --
 five of them `flaky` rather than `xfail`. All but two are accounted for, each
