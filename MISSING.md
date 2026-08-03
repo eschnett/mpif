@@ -420,7 +420,7 @@ deliberately: the standard gives an input choice buffer
 `TYPE(*), DIMENSION(..), INTENT(IN)` and mpif gives it no intent at all, in 207
 arguments across the bindings. Omitting it is what lets a wrapper hand the buffer
 on to a dummy that has none, and it forbids nothing a conforming program may do.
-`dev/check-f08-bindings.py` counts these and passes them over; taking the
+`dev/check-f08-bindings.jl` counts these and passes them over; taking the
 assumed-rank option would bring the intents with it.
 
 Taking the other option would mean declaring choice buffers
@@ -574,7 +574,7 @@ them, where all four used to be `integer(MPI_ADDRESS_KIND)` by reference.
 
 What is left is the risk of drift, and it is smaller than it was: the argument for
 generating these two pieces was that nothing checked them, and now
-`dev/check-f08-bindings.py` does -- the abstract interfaces against A.1.3 and the
+`dev/check-f08-bindings.jl` does -- the abstract interfaces against A.1.3 and the
 f08 predefined callbacks against A.4, on the same terms as the generated
 wrappers. That is where the argument-name slip above was found. `mpif.h`'s and the
 `mpi` module's own predefined callbacks, in `src/mpif_attr_fns.F90`, are the one
@@ -718,7 +718,7 @@ Recorded so that they do not get re-investigated:
   common was compared argument by argument; so were the 18 callback
   `ABSTRACT INTERFACE`s of `src/mpif_f08_types.F90` against A.1.3 and the 11
   predefined callbacks of `src/mpif_f08_attr_fns.F90` against A.4.
-  `dev/check-f08-bindings.py` is the comparison, so it can be run again after any
+  `dev/check-f08-bindings.jl` is the comparison, so it can be run again after any
   change to the generator or to either hand-written file. It compares intents,
   declared types, `VALUE`, and the argument names and their order, and it checks
   that the appendix was read correctly at all: there every argument is declared
@@ -785,7 +785,7 @@ Recorded so that they do not get re-investigated:
     whatever it is handed; the f08 wrapper hands it an address-sized temporary
     and converts with `transfer`, as the `C_BUFFER` one already did.
 
-    `test/buffer_detach.f90` asserts both halves, and `dev/check-f08-bindings.py`
+    `test/buffer_detach.f90` asserts both halves, and `dev/check-f08-bindings.jl`
     reported the six every run until this was fixed -- and did not before, because
     it compared intents and not types: `buffer_addr` has `INTENT(OUT)` on both
     sides. Extending it to types is what turned this from something noticed by
@@ -854,7 +854,7 @@ than quietly lenient.
 
 One check needs no build at all:
 
-    python3 dev/check-f08-bindings.py   # every mpi_f08 declaration against MPI-5.0
+    julia dev/check-f08-bindings.jl   # every mpi_f08 declaration against MPI-5.0
 
 It reads `doc/mpi50-report.pdf` through `pdftotext -layout` and compares intents,
 declared types, `VALUE`, argument names and argument order against the appendix
@@ -867,6 +867,12 @@ compares is what got it there each time: comparing types found the
 had passed, and comparing the hand-written declarations at all found
 `MPI_Type_delete_attr_function`'s argument name. Run it after changing how any f08
 argument is declared, generated or not.
+
+It is Julia because `dev/mpiapi.jl` is, the two being the same job from opposite
+ends -- one writes the declarations, the other checks them -- and a dev directory
+with one language in it needs no explaining. It was Python first; the port was
+checked by running both over the same tree, on a clean tree and with three defects
+put back, and taking byte-identical output as the standard to meet.
 
 ### Stale build artifacts were the biggest time sink
 
