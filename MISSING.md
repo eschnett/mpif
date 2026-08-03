@@ -677,6 +677,16 @@ Recorded so that they do not get re-investigated:
   yields an invalid datatype", the constructor then failing and the garbage
   aborting inside `MPI_Type_toint` -- without saying which version did that. If
   it comes back, this is the paragraph to reread.
+- **No phantom `_c` bindings.** The generated f08 output has 159 `_c` forms and
+  Appendix A.4 has the same 159, every generated one being in the appendix, so
+  nothing here repeats the ABI header's invention of an `MPI_Psend_init_c`. Nor
+  does any `_c` form add nothing: comparing each against its base, argument by
+  argument and by declared type, no pair is indistinguishable -- which also means
+  no generic interface pairs two specifics a compiler could not tell apart. The
+  two whose *argument lists* differ from their base, `MPI_Type_get_contents_c`
+  and `MPI_Type_get_envelope_c`, differ in A.4 in the same way, gaining a count
+  of large counts. `MPI_Psend_init` and `MPI_Precv_init` correctly have no `_c`
+  form at all, and `dev/mpiapi.jl` asserts they never gain one.
 - **The f08 intents match Appendix A.4.** Every one of the 584 bindings that A.4
   and `gen/mpif_f08_functions.F90` have in common was compared argument by
   argument, and `dev/check-f08-bindings.py` is the comparison, so it can be run
