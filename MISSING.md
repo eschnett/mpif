@@ -4,8 +4,9 @@ A working note on `dev/mpiapi.jl`, the generator that produces
 `gen/mpif_functions.c`, `gen/mpif_functions.F90` and
 `gen/mpif_f08_functions.F90` from the MPI standard's `apis.json`, and on what
 mpif still gets wrong or does not do. Entries are removed once they are resolved,
-so this file is only ever the outstanding list; nothing in the source tree refers
-to it.
+so this file is only ever the outstanding list -- plus the decisions not to do
+something, which stay, since an unrecorded decision is indistinguishable from an
+oversight. Nothing in the source tree refers to it.
 
 Findings are checked against `data/apis.json`, the generated output, the official
 ABI header and the MPI 5.0 standard, rather than by reading the generator alone.
@@ -19,20 +20,9 @@ is an address in `MPI_Alloc_mem` and `C_BUFFER2` a choice buffer in
 
 ## Errors
 
-### 1. `MPI_Sizeof` does not cover rank two and above
-
-`src/mpif_types.F90` defines the generic by hand, with a scalar and an
-assumed-size specific per type and kind. An argument of rank two or more resolves
-to nothing.
-
-A Fortran generic needs a specific per type, kind *and* rank, so full coverage
-would mean sixteen ranks apiece; MPICH's own binding generates exactly the same
-two forms per type and stops in the same place. Assumed-rank would collapse them
-into one specific each, at the cost of requiring Fortran 2018 -- the same
-trade-off recorded under "Assumed-rank choice buffers" below, and worth taking
-in one go rather than for this deprecated routine alone. `MPI_Sizeof` is
-deprecated in MPI-4.0 and its `mpi_f08` form was removed, but the `mpi` module
-and `mpif.h` still have it.
+None outstanding. Every entry that was here has been fixed, and the ones worth not
+re-investigating are under "Verified as correct" below. What remains in this file
+is features mpif does not have, blockers outside it, and decisions.
 
 ## External blockers
 
@@ -417,6 +407,14 @@ on to a dummy that has none, and it forbids nothing a conforming program may do.
 `dev/check-f08-bindings.jl` counts these and passes them over; taking the
 assumed-rank option would bring the intents with it.
 
+**Not being taken for the time being** -- a decision, so that the question is not
+reopened by whoever reads the rest of this section and finds it inviting. The
+`.FALSE.` option conforms, both implementations offer the same one to `mpif.h` and
+the `mpi` module, and the cost of the other is a second mechanism to carry
+alongside this one for compilers without Fortran 2018. Everything below is what
+taking it would involve, kept because the shape of the work is worth knowing and
+because the reasons could change; nothing below is a plan.
+
 Taking the other option would mean declaring choice buffers
 `TYPE(*), DIMENSION(..), ASYNCHRONOUS` in the nonblocking, split-collective and
 persistent routines and setting both constants to `.true.`. The gain is that
@@ -650,6 +648,21 @@ Recorded so that they do not get re-investigated:
   rather than generated, and are present. `MPI_Sizeof` is a hand-written generic
   in `src/mpif_types.F90`. `MPI_Status_f2f08` and `MPI_Status_f082f` are
   implemented and public in `src/mpif_f08_types.F90`.
+- **`MPI_Sizeof` stays as it is, covering rank zero and rank one.**
+  `src/mpif_types.F90` gives the generic a scalar and an assumed-size specific per
+  type and kind, so an argument of rank two or more resolves to nothing. That is
+  the deliberate stopping place, not an oversight: a Fortran generic needs a
+  specific per type, kind *and* rank, so covering every rank would mean sixteen
+  specifics apiece, and assumed-rank -- which would collapse them to one each --
+  is not being taken (see "Assumed-rank choice buffers"). MPICH's own binding
+  generates exactly these two forms per type and stops in the same place, and
+  `MPI_Sizeof` is deprecated in MPI-4.0 with its `mpi_f08` form removed, so the
+  routine that would pay for the mechanism is the one least worth it. `mpif.h` and
+  the `mpi` module keep it because the standard still has it there.
+
+  Recorded here rather than as an error so that the question is not reopened.
+  Should assumed-rank ever be taken for choice buffers, this comes with it for
+  nothing and is worth doing then.
 - **A user-defined reduction operator receives its buffers, from all three
   interfaces.** `MPI_User_function`'s `invec` and `inoutvec` were
   `INTEGER(KIND=MPI_ADDRESS_KIND)` by reference in `mpi_f08`, where MPI-5.0
@@ -968,9 +981,11 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    on x86_64 alone, three reporting an empty window name and three a type name of
    the wrong length under Open MPI, `attrlangf*` and `fandcattrf*` (no output of
    their own, a crash under Open MPI), `test14`/`test15`, and `i_fcoll_test`.
-3. **`MPI_Sizeof` for rank two and above**, error 1 above, which wants
-   assumed-rank and is therefore the same decision as "Assumed-rank choice
-   buffers".
+
+Two things are decided and not on this list, so that they are not picked up by
+mistake: assumed-rank choice buffers are not being taken for now, and `MPI_Sizeof`
+stays as it is, covering rank zero and rank one. Both are recorded where they
+belong -- the first in its own section, the second under "Verified as correct".
 
 One thing is worth reporting upstream and is not yet: Open MPI's
 `MPI_Info_create_env` changing across `MPI_Init`.
@@ -1085,6 +1100,12 @@ argument reaches the wrapper as a compiler-made copy, and for a nonblocking call
 that copy dies before the request completes. Two compilers need not make the same
 copy, so a difference here is more likely to be about what each chooses to copy
 than about mpif. Worth confirming before reading anything into it.
+
+If that lead ever is confirmed, these four are a cost of declining assumed-rank
+rather than a defect to fix -- four suite tests that pass a noncontiguous subarray
+to a nonblocking call, which `MPI_SUBARRAYS_SUPPORTED == .FALSE.` tells a program
+not to do. `ci-scripts/mpich-suite-xfail.txt` carries them as `*/gcc/*/*` with
+that symptom either way.
 
 One caution about these numbers: the Open MPI run needs the loopback workaround
 that `scripts/macos-test-mpich-suite.sh` applies by default -- without it the
