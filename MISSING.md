@@ -313,6 +313,38 @@ C spawn-and-send reproduces it.
 `--mca btl_tcp_if_include lo0` for Open MPI to avoid it; the CI one is guarded on
 `RUNNER_OS`, Linux needing neither the flag nor the same interface name.
 
+### MPICH: suite tests that cannot pass against a conforming binding
+
+Four of the suite's tests ask for something MPI-5.0 does not have, or something
+only MPICH provides. None of them can pass here, and none is a defect on this
+side; `ci-scripts/mpich-suite-xfail.txt` carries each with a reason pointing at
+this entry. The `spawnargvf90` entry below is a fifth of the same species,
+separate only because it is a disagreement between two copies of one test rather
+than with the standard.
+
+- **`allctypesf`, `allctypesf90`, `allctypesf08`** run every predefined datatype
+  past `MPI_Type_get_name`, `MPI_LB` and `MPI_UB` among them. Those two were
+  removed in MPI-3.0 and appear nowhere in the ABI header -- `grep MPI_LB
+  mpi.h` finds nothing -- so mpif does not define them either, and the test
+  reports "Datatype MPI_LB not available in Fortran". Under `mpi_f08` it gets as
+  far as "For datatype MPI_LB found name MPI_DATATYPE_NULL", which is the
+  undeclared name defaulting to zero.
+- **`attrmpi1f08`** hands `MPI_COMM_NULL_COPY_FN` to `MPI_Keyval_create`. The
+  first is the MPI-2 callback, whose attribute arguments are address-sized; the
+  second is the MPI-1 routine, whose callbacks take plain INTEGERs. Mixing them
+  cannot typecheck, and does not: "Interface mismatch in dummy procedure
+  'copy_fn': Type mismatch in argument 'attribute_val_in'
+  (INTEGER(4)/INTEGER(8))". It fails to build.
+- **`statusconv`** has a C file declaring
+  `void c_f08_status_(MPI_F08_status *f08_status)`. The ABI spells that type
+  `MPI_F08_Status`, with a capital S; `MPI_F08_status` is MPICH's own name for
+  it. It fails to build, in C, before Fortran is involved.
+- **`profile1f90`** does `use :: mpi_f08, my_noname => mpi_send_f08ts`.
+  `mpi_send_f08ts` is MPICH's implementation-specific specific name for the
+  choice-buffer form; section 19.1.5 of the standard defines the `_f08` and `_f`
+  schemes and nothing that obliges an implementation to provide this one. It
+  fails to build, and would need the PMPI interface as well.
+
 ### MPICH: the f08 copy of `spawnargvf90` contradicts the standard and its own f90 copy
 
 Both copies spawn with `inargv(5) = " Ss"`. The f90 one expects the child to see
@@ -815,9 +847,10 @@ way, is what is exact.
 | openmpi/llvm/linux/aarch64   |   5 |  10 |  16 |
 
 Fifty-nine entries cover them, for fifty-six distinct tests -- five of them
-`flaky` rather than `xfail`. Twenty-seven entries, covering twenty-two tests,
-still say "untriaged"; the first pass through them accounted for nineteen,
-resolved two into mpif bugs and one into an MPICH one. The earlier version of this section had four rows and
+`flaky` rather than `xfail`. Thirty-two are accounted for, each either by an
+entry here or by a reason that stands on its own, and twenty-seven covering
+twenty-two tests still say "untriaged". The first pass through them resolved two
+into mpif bugs and one into an MPICH one. The earlier version of this section had four rows and
 claimed every failure was attributable, both of which were wrong: MPICH looked
 far worse than Open MPI only because those rows predated the handle-table patch,
 and most of the failures had never been diagnosed.

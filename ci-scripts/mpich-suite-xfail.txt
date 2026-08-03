@@ -39,15 +39,16 @@
 # tests differ the other way. Without it those would read as unexpected passes on
 # whichever runner went second.
 #
-# Everything here was measured in one CI run across all twelve variants, except
-# mpich/gcc/darwin/arm64, which also matches a local run on a different machine
-# and different compilers. One measurement is thin evidence for a flaky test, so
-# expect some churn: a flaky entry shows up as an unexpected pass, which is the
-# mechanism working rather than failing.
+# Measured across all twelve variants in CI, with mpich/gcc/darwin/arm64 also
+# matching a local run on a different machine and different compilers. Five
+# entries are `flaky` rather than `xfail` because two runs disagreed about them,
+# in a pattern matching neither architecture nor toolchain.
 #
 # Where a reason names an entry in MISSING.md, that entry is the record; where it
 # says "untriaged", nobody has looked yet, and the symptom is quoted so that
-# looking can start from something.
+# looking can start from something. Every reason that is not "untriaged" is
+# either in MISSING.md or self-contained here -- that is the property to keep
+# when adding an entry.
 
 triaged mpich/gcc/darwin/arm64
 triaged mpich/gcc/linux/x86_64
@@ -62,55 +63,63 @@ triaged openmpi/llvm/darwin/arm64
 triaged openmpi/llvm/linux/x86_64
 triaged openmpi/llvm/linux/aarch64
 
-# --- Recorded in MISSING.md ----------------------------------------------------
+# --- Accounted for -------------------------------------------------------------
 #
-# Each has an entry there saying why it cannot pass here.
+# Each of these has an entry in MISSING.md, or a reason here that stands on its
+# own -- a test asking for something the standard removed, or something only one
+# implementation provides. Nothing in this section is mpif waiting to be fixed
+# except where the reason says so.
 #
+xfail */*/*/*             f77  allctypesf         # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
+xfail */*/*/*             f08  allctypesf08       # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
+xfail */*/*/*             f90  allctypesf90       # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
+xfail */gcc/*/*           f08  alltoallwf08       # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
 xfail */*/*/*             f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8)
 xfail */*/*/*             f90  bsendf90           # MISSING.md error 1: buffer_addr is an INTEGER where the standard gives a pointer
+xfail mpich/*/*/*         f08  createf08          # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
+xfail mpich/*/*/*         f90  createf90          # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
+xfail mpich/*/*/*         f90  createf90types     # MISSING.md "MPICH: MPI_Type_create_f90_*"; the test reports it as "Unable to find a real type"
 xfail */*/*/*             f77  greqf              # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
 xfail */*/*/*             f08  greqf08            # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
 xfail */*/*/*             f90  greqf90            # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
 xfail openmpi/*/*/*       f77  infocrenvf         # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
 xfail openmpi/*/*/*       f08  infocrenvf90       # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
 xfail openmpi/*/*/*       f90  infocrenvf90       # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
+flaky mpich/*/*/*         f77  nonblocking_inpf   # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
+xfail */gcc/*/*           f08  nonblocking_inpf08 # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
+flaky mpich/*/*/*         f90  nonblocking_inpf90 # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
+xfail */gcc/*/*           f08  nonblockingf08     # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
 xfail */*/*/*             f08  profile1f90        # needs PMPI, and mpi_send_f08ts, an MPICH-specific specific name
 xfail */*/*/*             f90  profile1f90        # needs PMPI, and mpi_send_f08ts, an MPICH-specific specific name
 xfail */*/*/*             f08  spawnargvf03       # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
 xfail */*/*/*             f08  spawnargvf90       # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
 xfail */*/*/*             f08  statusconv         # C file spelling the ABI's MPI_F08_Status as MPICH's MPI_F08_status
+xfail mpich/*/*/*         f08  trf08              # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
+xfail mpich/*/*/*         f90  trf90              # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
+flaky mpich/*/*/*         f77  typecntsf          # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
+flaky mpich/*/*/*         f08  typecntsf08        # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
+flaky mpich/*/*/*         f90  typecntsf90        # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
+xfail */gcc/*/*           f08  vw_inplacef08      # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
 xfail */*/*/*             f08  wtimef90           # no PMPI: "Function 'pmpi_wtick' has no IMPLICIT type"
 xfail */*/*/*             f90  wtimef90           # no PMPI: "Function 'pmpi_wtick' has no IMPLICIT type"
 
 # --- Untriaged -----------------------------------------------------------------
 #
-# Nobody has diagnosed these. Each says what it does, so that whoever picks
-# one up starts from the symptom rather than from a rerun, and the clusters
-# are the obvious places to start: three report MPI_LB missing, three a
-# window attribute copied by MPI_WIN_NULL_COPY_FN, three an empty window
-# name, three a type name of the wrong length, seven abort inside MPICH's
-# own ABI handle table, and eleven Open MPI spawn tests print "No Errors"
-# and are rejected anyway on x86_64 alone.
+# Nobody has diagnosed these. Each says what it does, so that whoever picks one
+# up starts from the symptom rather than from a rerun. The clusters are the way
+# in: eleven Open MPI spawn tests print "No Errors" and are rejected anyway on
+# x86_64 alone, three report an empty window name and three a type name of the
+# wrong length under Open MPI, and four fail with no output of their own or a
+# crash.
 #
-xfail */*/*/*             f77  allctypesf         # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
-xfail */*/*/*             f08  allctypesf08       # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
-xfail */*/*/*             f90  allctypesf90       # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
-xfail */gcc/*/*           f08  alltoallwf08       # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
 xfail */*/*/*             f08  attrlangf08        # untriaged: fails with no output of its own
 xfail */*/*/*             f90  attrlangf90        # untriaged: fails with no output of its own
 xfail mpich/*/*/*         f77  bsendf             # untriaged: "internal_Buffer_attach: Invalid buffer pointer"
-xfail mpich/*/*/*         f08  createf08          # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
-xfail mpich/*/*/*         f90  createf90          # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
-xfail mpich/*/*/*         f90  createf90types     # MISSING.md "MPICH: MPI_Type_create_f90_*"; the test reports it as "Unable to find a real type"
 xfail */*/*/*             f08  fandcattrf08       # untriaged: crashes under Open MPI ("Process received signal"); no output under MPICH
 xfail */*/*/*             f90  fandcattrf90       # untriaged: crashes under Open MPI ("Process received signal"); no output under MPICH
 xfail */*/linux/*         f08  i_fcoll_test       # untriaged: prints "No Errors" and is still rejected; passes only on mpich/gcc/darwin
 xfail */llvm/*/*          f08  i_fcoll_test       # untriaged: prints "No Errors" and is still rejected; passes only on mpich/gcc/darwin
 xfail openmpi/*/*/*       f08  i_fcoll_test       # untriaged: prints "No Errors" and is still rejected; passes only on mpich/gcc/darwin
-flaky mpich/*/*/*         f77  nonblocking_inpf   # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
-xfail */gcc/*/*           f08  nonblocking_inpf08 # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
-flaky mpich/*/*/*         f90  nonblocking_inpf90 # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
-xfail */gcc/*/*           f08  nonblockingf08     # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
 xfail openmpi/*/*/x86_64  f77  spawnargvf         # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
 xfail openmpi/*/*/x86_64  f90  spawnargvf03       # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
 xfail openmpi/*/*/x86_64  f90  spawnargvf90       # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
@@ -124,16 +133,9 @@ xfail openmpi/*/*/x86_64  f08  spawnmultf90       # untriaged: prints "No Errors
 xfail openmpi/*/*/x86_64  f90  spawnmultf90       # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
 xfail */*/*/*             f08  test14             # untriaged: "Found 27 errors"
 xfail */*/*/*             f08  test15             # untriaged: "Found 9 errors"
-xfail mpich/*/*/*         f08  trf08              # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
-xfail mpich/*/*/*         f90  trf90              # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
-flaky mpich/*/*/*         f77  typecntsf          # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
-flaky mpich/*/*/*         f08  typecntsf08        # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
-flaky mpich/*/*/*         f90  typecntsf90        # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
 xfail openmpi/*/*/*       f77  typesnamef         # untriaged: "(type2) Expected length 0, got 17"
 xfail openmpi/*/*/*       f08  typesnamef08       # untriaged: "(type2) Expected length 0, got 17"
 xfail openmpi/*/*/*       f90  typesnamef90       # untriaged: "(type2) Expected length 0, got 17"
-xfail */gcc/*/*           f08  vw_inplacef08      # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
 xfail openmpi/*/*/*       f77  winnamef           # untriaged: "Did not get empty name from new window"
 xfail openmpi/*/*/*       f08  winnamef08         # untriaged: "Did not get empty name from new window"
 xfail openmpi/*/*/*       f90  winnamef90         # untriaged: "Did not get empty name from new window"
-
