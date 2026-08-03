@@ -61,8 +61,31 @@ int_count_kinds = ["POLYDISPLACEMENT_COUNT", "POLYDTYPE_NUM_ELEM", "POLYDTYPE_NU
 # does not embiggen, the large-count forms taking an MPI_Aint too. Not to be
 # confused with POLYRMA_DISPLACEMENT, the `disp_unit` of MPI_Win_create, which
 # really is a plain INTEGER in the small form.
-aint_kinds = ["ALLOC_MEM_NUM_BYTES", "C_BUFFER", "C_BUFFER2", "C_BUFFER3", "C_BUFFER4", "DISPLACEMENT", "LOCATION_SMALL",
+#
+# `C_BUFFER` is here and `C_BUFFER2` is not. The four `C_BUFFER*` kinds are one
+# question asked four times -- is this parameter an address or a buffer -- and the
+# answer is not the same for all four, so all four are recorded here rather than
+# rediscovered at each use:
+#
+# - `C_BUFFER` is `baseptr` of MPI_Alloc_mem and the three MPI_Win_allocate*
+#   routines, an address in both bindings: A.5 gives it
+#   INTEGER(KIND=MPI_ADDRESS_KIND), paired with a TYPE(C_PTR) overload (see
+#   src/mpif_cptr.F90), and A.4 gives it TYPE(C_PTR).
+# - `C_BUFFER2` is `buffer_addr` of MPI_Buffer_detach, MPI_Comm_detach_buffer and
+#   MPI_Session_detach_buffer. A.4 gives it TYPE(C_PTR) as well, but A.5 gives it
+#   `<type> BUFFER_ADDR(*)` -- a choice buffer -- so it is handled with the
+#   `BUFFER` kind below and is not an integer in either binding.
+# - `C_BUFFER3` (the datarep conversion callbacks' `userbuf` and `filebuf`) and
+#   `C_BUFFER4` (MPI_User_function's `invec` and `inoutvec`) are choice buffers
+#   too, and stay here only because nothing generated reaches them: both belong
+#   to callbacks, whose interfaces are hand-written in `src/mpif_f08_types.F90`.
+#   See "Generated callback interfaces and definitions" in MISSING.md.
+aint_kinds = ["ALLOC_MEM_NUM_BYTES", "C_BUFFER", "C_BUFFER3", "C_BUFFER4", "DISPLACEMENT", "LOCATION_SMALL",
               "RMA_DISPLACEMENT_NNI", "WIN_ATTACH_SIZE", "WINDOW_SIZE"]
+
+# The two whose mpi_f08 declaration is TYPE(C_PTR), whatever the mpi module's is.
+# The wrapper passes an address-sized temporary to C either way and converts.
+cptr_out_kinds = ["C_BUFFER", "C_BUFFER2"]
 aint_count_kinds = ["POLYDISPLACEMENT_AINT_COUNT", "POLYDISPOFFSET", "POLYDTYPE_PACK_SIZE", "POLYDTYPE_STRIDE_BYTES",
                     "POLYLOCATION"]
 
@@ -451,10 +474,14 @@ for key in sort(collect(keys(apis)))
                         else
                             push!(f08_call_arguments, "$f_argname%MPI_VAL")
                         end
-                    elseif kind == "C_BUFFER" && param_direction == "out"
+                    elseif kind ∈ cptr_out_kinds && param_direction == "out"
                         # The C wrapper writes the address into an address-sized
                         # integer; a TYPE(C_PTR) is the same bits, so `transfer`
-                        # is the conversion.
+                        # is the conversion. `C_BUFFER2`'s dummy in the mpi
+                        # module's interface is a choice buffer rather than an
+                        # integer, which `ignore_tkr` makes this temporary an
+                        # acceptable actual argument for -- the C entry point
+                        # writes an address through whatever it is handed.
                         push!(f08_call_temp_declarations, "integer(MPI_ADDRESS_KIND) :: tmp_$f_argname")
                         push!(f08_call_arguments, "tmp_$f_argname")
                         push!(f08_call_temp_copyouts, "$f_argname = transfer(tmp_$f_argname, C_NULL_PTR)")
@@ -471,12 +498,13 @@ for key in sort(collect(keys(apis)))
                 end
             end
 
-            if kind ∈ ["BUFFER", "LOGICAL_VOID"]
+            if kind ∈ ["BUFFER", "C_BUFFER2", "LOGICAL_VOID"]
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
                 @assert !large_only
                 @assert length == nothing
                 @assert !optional
+                @assert kind != "C_BUFFER2" || param_direction == "out"
                 if param_direction == "in"
                     if name ∈ ["MPI_Buffer_attach", "MPI_Comm_attach_buffer", "MPI_Free_mem", "MPI_Precv_init",
                                "MPI_Session_attach_buffer", "MPI_Win_attach", "MPI_Win_create"]
@@ -508,6 +536,19 @@ for key in sort(collect(keys(apis)))
                     # for them -- the value really is one default LOGICAL.
                     push!(f_declarations, "logical :: $parname")
                     push!(f08_declarations, "logical, intent($f08_param_direction) :: $parname")
+                elseif kind == "C_BUFFER2"
+                    # `buffer_addr`, where the two bindings disagree and neither
+                    # is an integer: A.5 gives `<type> BUFFER_ADDR(*)`, a choice
+                    # buffer, and A.4 gives `TYPE(C_PTR), INTENT(OUT)`. One C
+                    # entry point serves both, because it writes the detached
+                    # address through the pointer Fortran hands it either way:
+                    # the mpi module's caller gets it written into the variable
+                    # it passed, and the f08 wrapper passes an address-sized
+                    # temporary and converts it with `transfer` above.
+                    push!(f_declarations, "!dir\$ ignore_tkr(trk) $parname")
+                    push!(f_declarations, "!gcc\$ attributes no_arg_check :: $parname")
+                    push!(f_declarations, "integer :: $parname(*)")
+                    push!(f08_declarations, "type(C_PTR), intent($f08_param_direction) :: $parname")
                 else
                     push!(f_declarations, "!dir\$ ignore_tkr(trk) $parname")
                     push!(f_declarations, "!gcc\$ attributes no_arg_check :: $parname")
@@ -1462,7 +1503,7 @@ for key in sort(collect(keys(apis)))
         end
         push!(f08_implementations_body, "    use mpif_f08_constants")
         push!(f08_implementations_body, "    use mpif_f08_types")
-        if any(p -> p["kind"] == "C_BUFFER" && p["param_direction"] == "out", parameters)
+        if any(p -> p["kind"] ∈ cptr_out_kinds && p["param_direction"] == "out", parameters)
             push!(f08_implementations_body, "    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR")
         end
         push!(f08_implementations_body, "    implicit none")

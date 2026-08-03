@@ -1200,7 +1200,9 @@ module mpif_functions
   )
     use mpif_constants
     implicit none
-    integer(MPI_ADDRESS_KIND) :: buffer_addr
+    !dir$ ignore_tkr(trk) buffer_addr
+    !gcc$ attributes no_arg_check :: buffer_addr
+    integer :: buffer_addr(*)
     integer :: size
     integer :: ierror
   end subroutine MPI_Buffer_detach
@@ -1212,7 +1214,9 @@ module mpif_functions
   )
     use mpif_constants
     implicit none
-    integer(MPI_ADDRESS_KIND) :: buffer_addr
+    !dir$ ignore_tkr(trk) buffer_addr
+    !gcc$ attributes no_arg_check :: buffer_addr
+    integer :: buffer_addr(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
   end subroutine MPI_Buffer_detach_c
@@ -1576,7 +1580,9 @@ module mpif_functions
     use mpif_constants
     implicit none
     integer :: comm
-    integer(MPI_ADDRESS_KIND) :: buffer_addr
+    !dir$ ignore_tkr(trk) buffer_addr
+    !gcc$ attributes no_arg_check :: buffer_addr
+    integer :: buffer_addr(*)
     integer :: size
     integer :: ierror
   end subroutine MPI_Comm_detach_buffer
@@ -1590,7 +1596,9 @@ module mpif_functions
     use mpif_constants
     implicit none
     integer :: comm
-    integer(MPI_ADDRESS_KIND) :: buffer_addr
+    !dir$ ignore_tkr(trk) buffer_addr
+    !gcc$ attributes no_arg_check :: buffer_addr
+    integer :: buffer_addr(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
   end subroutine MPI_Comm_detach_buffer_c
@@ -9338,7 +9346,9 @@ module mpif_functions
     use mpif_constants
     implicit none
     integer :: session
-    integer(MPI_ADDRESS_KIND) :: buffer_addr
+    !dir$ ignore_tkr(trk) buffer_addr
+    !gcc$ attributes no_arg_check :: buffer_addr
+    integer :: buffer_addr(*)
     integer :: size
     integer :: ierror
   end subroutine MPI_Session_detach_buffer
@@ -9352,7 +9362,9 @@ module mpif_functions
     use mpif_constants
     implicit none
     integer :: session
-    integer(MPI_ADDRESS_KIND) :: buffer_addr
+    !dir$ ignore_tkr(trk) buffer_addr
+    !gcc$ attributes no_arg_check :: buffer_addr
+    integer :: buffer_addr(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
   end subroutine MPI_Session_detach_buffer_c

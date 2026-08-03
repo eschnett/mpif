@@ -5152,16 +5152,19 @@ contains
   )
     use mpif_f08_constants
     use mpif_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
-    integer(MPI_ADDRESS_KIND), intent(out) :: buffer_addr
+    type(C_PTR), intent(out) :: buffer_addr
     integer, intent(out) :: size
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
     integer :: tmp_ierror
     call MPIF_Buffer_detach( &
-      buffer_addr, &
+      tmp_buffer_addr, &
       size, &
       tmp_ierror &
     )
+    buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Buffer_detach
 
@@ -5172,16 +5175,19 @@ contains
   )
     use mpif_f08_constants
     use mpif_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
-    integer(MPI_ADDRESS_KIND), intent(out) :: buffer_addr
+    type(C_PTR), intent(out) :: buffer_addr
     integer(MPI_COUNT_KIND), intent(out) :: size
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
     integer :: tmp_ierror
     call MPIF_Buffer_detach_c( &
-      buffer_addr, &
+      tmp_buffer_addr, &
       size, &
       tmp_ierror &
     )
+    buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Buffer_detach_c
 
@@ -5766,18 +5772,21 @@ contains
   )
     use mpif_f08_constants
     use mpif_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     type(MPI_Comm), intent(in) :: comm
-    integer(MPI_ADDRESS_KIND), intent(out) :: buffer_addr
+    type(C_PTR), intent(out) :: buffer_addr
     integer, intent(out) :: size
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
     integer :: tmp_ierror
     call MPIF_Comm_detach_buffer( &
       comm%MPI_VAL, &
-      buffer_addr, &
+      tmp_buffer_addr, &
       size, &
       tmp_ierror &
     )
+    buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Comm_detach_buffer
 
@@ -5789,18 +5798,21 @@ contains
   )
     use mpif_f08_constants
     use mpif_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     type(MPI_Comm), intent(in) :: comm
-    integer(MPI_ADDRESS_KIND), intent(out) :: buffer_addr
+    type(C_PTR), intent(out) :: buffer_addr
     integer(MPI_COUNT_KIND), intent(out) :: size
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
     integer :: tmp_ierror
     call MPIF_Comm_detach_buffer_c( &
       comm%MPI_VAL, &
-      buffer_addr, &
+      tmp_buffer_addr, &
       size, &
       tmp_ierror &
     )
+    buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Comm_detach_buffer_c
 
@@ -17817,18 +17829,21 @@ contains
   )
     use mpif_f08_constants
     use mpif_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     type(MPI_Session), intent(in) :: session
-    integer(MPI_ADDRESS_KIND), intent(out) :: buffer_addr
+    type(C_PTR), intent(out) :: buffer_addr
     integer, intent(out) :: size
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
     integer :: tmp_ierror
     call MPIF_Session_detach_buffer( &
       session%MPI_VAL, &
-      buffer_addr, &
+      tmp_buffer_addr, &
       size, &
       tmp_ierror &
     )
+    buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Session_detach_buffer
 
@@ -17840,18 +17855,21 @@ contains
   )
     use mpif_f08_constants
     use mpif_f08_types
+    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
     implicit none
     type(MPI_Session), intent(in) :: session
-    integer(MPI_ADDRESS_KIND), intent(out) :: buffer_addr
+    type(C_PTR), intent(out) :: buffer_addr
     integer(MPI_COUNT_KIND), intent(out) :: size
     integer, intent(out), optional :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
     integer :: tmp_ierror
     call MPIF_Session_detach_buffer_c( &
       session%MPI_VAL, &
-      buffer_addr, &
+      tmp_buffer_addr, &
       size, &
       tmp_ierror &
     )
+    buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
     if (present(ierror)) ierror = tmp_ierror
   end subroutine MPI_Session_detach_buffer_c
 

@@ -75,7 +75,8 @@ xfail */*/*/*             f08  allctypesf08       # uses MPI_LB and MPI_UB, remo
 xfail */*/*/*             f90  allctypesf90       # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
 xfail */gcc/*/*           f08  alltoallwf08       # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
 xfail */*/*/*             f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8)
-xfail */*/*/*             f90  bsendf90           # MISSING.md error 1: buffer_addr is an INTEGER where the standard gives a pointer
+xfail mpich/*/*/*         f77  bsendf             # attaches 400 bytes, under the ABI's MPI_BSEND_OVERHEAD of 512; MISSING.md "suite tests that cannot pass"
+xfail mpich/*/*/*         f90  bsendf90           # attaches 400 bytes, under the ABI's MPI_BSEND_OVERHEAD of 512; MISSING.md "suite tests that cannot pass"
 xfail mpich/*/*/*         f08  createf08          # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
 xfail mpich/*/*/*         f90  createf90          # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
 xfail mpich/*/*/*         f90  createf90types     # MISSING.md "MPICH: MPI_Type_create_f90_*"; the test reports it as "Unable to find a real type"
@@ -114,7 +115,6 @@ xfail */*/*/*             f90  wtimef90           # no PMPI: "Function 'pmpi_wti
 #
 xfail */*/*/*             f08  attrlangf08        # untriaged: fails with no output of its own
 xfail */*/*/*             f90  attrlangf90        # untriaged: fails with no output of its own
-xfail mpich/*/*/*         f77  bsendf             # untriaged: "internal_Buffer_attach: Invalid buffer pointer"
 xfail */*/*/*             f08  fandcattrf08       # untriaged: crashes under Open MPI ("Process received signal"); no output under MPICH
 xfail */*/*/*             f90  fandcattrf90       # untriaged: crashes under Open MPI ("Process received signal"); no output under MPICH
 xfail */*/linux/*         f08  i_fcoll_test       # untriaged: prints "No Errors" and is still rejected; passes only on mpich/gcc/darwin

@@ -1202,7 +1202,7 @@ void mpi_buffer_attach_c_(
 }
 
 void mpi_buffer_detach_(
-  MPI_Aint* restrict const buffer_addr,
+  void* restrict const buffer_addr,
   MPI_Fint* restrict const size,
   MPI_Fint* restrict const ierror
 )
@@ -1214,7 +1214,7 @@ void mpi_buffer_detach_(
 }
 
 void mpi_buffer_detach_c_(
-  MPI_Aint* restrict const buffer_addr,
+  void* restrict const buffer_addr,
   MPI_Count* restrict const size,
   MPI_Fint* restrict const ierror
 )
@@ -1668,7 +1668,7 @@ void mpi_comm_delete_attr_(
 
 void mpi_comm_detach_buffer_(
   const MPI_Fint* restrict const comm,
-  MPI_Aint* restrict const buffer_addr,
+  void* restrict const buffer_addr,
   MPI_Fint* restrict const size,
   MPI_Fint* restrict const ierror
 )
@@ -1682,7 +1682,7 @@ void mpi_comm_detach_buffer_(
 
 void mpi_comm_detach_buffer_c_(
   const MPI_Fint* restrict const comm,
-  MPI_Aint* restrict const buffer_addr,
+  void* restrict const buffer_addr,
   MPI_Count* restrict const size,
   MPI_Fint* restrict const ierror
 )
@@ -9783,7 +9783,7 @@ void mpi_session_create_errhandler_(
 
 void mpi_session_detach_buffer_(
   const MPI_Fint* restrict const session,
-  MPI_Aint* restrict const buffer_addr,
+  void* restrict const buffer_addr,
   MPI_Fint* restrict const size,
   MPI_Fint* restrict const ierror
 )
@@ -9797,7 +9797,7 @@ void mpi_session_detach_buffer_(
 
 void mpi_session_detach_buffer_c_(
   const MPI_Fint* restrict const session,
-  MPI_Aint* restrict const buffer_addr,
+  void* restrict const buffer_addr,
   MPI_Count* restrict const size,
   MPI_Fint* restrict const ierror
 )

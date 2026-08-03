@@ -12,51 +12,20 @@ ABI header and the MPI 5.0 standard, rather than by reading the generator alone.
 
 Signatures are the JSON's business: it is what the generator reads, and what any
 hand-written binding should be checked against. The standard is what makes the
-JSON legible, since its keys and kinds are otherwise undocumented -- `C_BUFFER3`
-means an address in `MPI_Alloc_mem` and a choice buffer in a datarep conversion
-callback, and only the standard says which. Keep a copy at
+JSON legible, since its keys and kinds are otherwise undocumented -- `C_BUFFER`
+is an address in `MPI_Alloc_mem` and `C_BUFFER2` a choice buffer in
+`MPI_Buffer_detach`, and only the standard says which. Keep a copy at
 `doc/mpi50-report.pdf` (git-ignored); `pdftotext -layout` makes it greppable.
 
 ## Errors
 
-### 1. `buffer_addr` is an address-sized INTEGER where the standard gives a pointer
-
-`MPI_Buffer_detach`, `MPI_Comm_detach_buffer` and `MPI_Session_detach_buffer` all
-return the detached buffer through `buffer_addr`, and all three declare it
-`integer(MPI_ADDRESS_KIND)` in every binding. MPI-5.0 gives it
-`TYPE(C_PTR), INTENT(OUT)` in `mpi_f08` and `<type> BUFFER_ADDR(*)` -- a choice
-buffer -- in `mpif.h` and the `mpi` module. Neither is an integer.
-
-MPICH's `bsendf90` catches it, and fails to build on all twelve variants:
-
-    call mpi_buffer_detach(dummy_buf, dummy_size, ierr)
-    Error: Type mismatch in argument 'buffer_addr' at (1);
-           passed CHARACTER(1) to INTEGER(8)
-
-The generator already knows how to emit `TYPE(C_PTR)` for this, in the
-`C_BUFFER` branch that `MPI_Alloc_mem` and the three `MPI_Win_allocate*` routines
-go through. These three miss it because `apis.json` gives their parameter the
-kind `C_BUFFER2` rather than `C_BUFFER`, and the branch tests for `C_BUFFER`
-alone. `C_BUFFER4` is the same story for `MPI_User_function`'s `invec` and
-`inoutvec`, recorded under "Worth doing next"; `C_BUFFER3` was the datarep
-conversion functions, now fixed. So the four `C_BUFFER*` kinds are one question
-asked four times -- is this parameter an address or a buffer -- and the generator
-answers it only for the first.
-
-`dev/check-f08-bindings.py` reports all six every run -- three routines and their
-`_c` variants -- and did not before, because it compared intents and not types:
-`buffer_addr` has `INTENT(OUT)` on both sides. Extending it to types is what
-turned this from something noticed by accident into something the tool states.
-It also found the `MPI_Psend_init` count that way, which nobody had noticed at
-all.
-
-### 2. The large-count function-parameter test
+### 1. The large-count function-parameter test
 
 The generator carries a `# TODO: Check properly whether the function parameter
 needs embiggening`, with a hardcoded exception list containing only
 `MPI_Datarep_extent_function`.
 
-### 3. `MPI_Sizeof` does not cover rank two and above
+### 2. `MPI_Sizeof` does not cover rank two and above
 
 `src/mpif_types.F90` defines the generic by hand, with a scalar and an
 assumed-size specific per type and kind. An argument of rank two or more resolves
@@ -375,13 +344,31 @@ C spawn-and-send reproduces it.
 
 ### MPICH: suite tests that cannot pass against a conforming binding
 
-Four of the suite's tests ask for something MPI-5.0 does not have, or something
+Five of the suite's tests ask for something MPI-5.0 does not have, or something
 only MPICH provides. None of them can pass here, and none is a defect on this
 side; `ci-scripts/mpich-suite-xfail.txt` carries each with a reason pointing at
-this entry. The `spawnargvf90` entry below is a fifth of the same species,
+this entry. The `spawnargvf90` entry below is a sixth of the same species,
 separate only because it is a disagreement between two copies of one test rather
 than with the standard.
 
+- **`bsendf`, `bsendf90`** attach a `character dummy_buf(400)` and say why in a
+  comment: "we test a basic buffered send of 10 INTEGERs and assume a buffer of
+  400 CHARACTERs are sufficient to account for MPI_BSEND_OVERHEAD". Against the
+  standard ABI it is not. `MPI_BSEND_OVERHEAD` is 512 there -- a bound over all
+  implementations, where MPICH's own value is 96 and Open MPI's 128 -- and an ABI
+  build of MPICH checks against the ABI's number, so attaching 400 bytes fails
+  before anything is sent: "Buffer size of 400 is smaller than
+  MPI_BSEND_OVERHEAD (512)". The test would have to ask the constant rather than
+  guess it. This one is MPICH-only, and not because MPICH is stricter than the
+  ABI asks: Open MPI's `mca_pml_base_bsend_attach` has no size check beyond
+  `size <= 0`, which is why `bsendf` has always passed there and why `bsendf90`
+  is expected to now that it builds.
+
+  `bsendf90` was previously an mpif defect on top of this -- it failed to build
+  at all, on all twelve variants, on the `buffer_addr` declaration recorded under
+  "The f08 intents match Appendix A.4". Fixing that is what let it get as far as
+  the attach, and its expected failure is now MPICH-only and identical to
+  `bsendf`'s.
 - **`allctypesf`, `allctypesf90`, `allctypesf08`** run every predefined datatype
   past `MPI_Type_get_name`, `MPI_LB` and `MPI_UB` among them. Those two were
   removed in MPI-3.0 and appear nowhere in the ABI header -- `grep MPI_LB
@@ -574,7 +561,9 @@ divergences worth knowing before generating them:
   the parameter really is an address, as in `MPI_Alloc_mem`, and wrong here: the
   standard's binding for a conversion callback is `<TYPE> USERBUF(*)`, a choice
   buffer. The kind alone does not say which, so the generator would need to
-  distinguish callbacks from ordinary functions.
+  distinguish callbacks from ordinary functions -- unlike `C_BUFFER2`, where the
+  kind does say, and where the answer now sits beside `aint_kinds` rather than
+  being rediscovered at each use.
 
 The intents in the abstract interfaces are no longer among the divergences:
 there are none, in any of the 18, which is how MPI-5.0 declares every callback
@@ -696,7 +685,7 @@ Recorded so that they do not get re-investigated:
   undeclared has misread the page and the run fails rather than reporting a
   clean bill.
 
-  The audit found three divergences, all now fixed and all real:
+  The audit found four divergences, all now fixed and all real:
 
   - `INTENT(INOUT)` on `MPI_Cancel`'s request, where A.4.1 gives `INTENT(IN)`.
     The C entry point takes `MPI_Request*`, which is a property of the C
@@ -727,6 +716,34 @@ Recorded so that they do not get re-investigated:
     disables the checking that would tell the two declarations apart, so a test
     would pass either way, which is what makes a test worthless here.
     `test/version_f08.f90` already calls it with plain `LOGICAL` actuals.
+  - `buffer_addr` of `MPI_Buffer_detach`, `MPI_Comm_detach_buffer` and
+    `MPI_Session_detach_buffer` declared `integer(MPI_ADDRESS_KIND)` in all six
+    bindings -- the three routines and their `_c` forms -- where A.4 gives
+    `TYPE(C_PTR), INTENT(OUT)` and A.5 gives `<type> BUFFER_ADDR(*)`, a choice
+    buffer. Neither is an integer, so this was wrong in both bindings at once:
+    an `mpi_f08` caller could not pass the `TYPE(C_PTR)` the standard asks for,
+    and an `mpi` module caller could not pass anything but an address-sized
+    integer -- which is what failed to build MPICH's `bsendf90`, "Type mismatch
+    in argument 'buffer_addr' at (1); passed CHARACTER(1) to INTEGER(8)".
+
+    `apis.json` gives the parameter the kind `C_BUFFER2` and the generator read
+    that as an address. The four `C_BUFFER*` kinds are one question asked four
+    times -- is this parameter an address or a buffer -- and the answers now sit
+    together at `aint_kinds` in `dev/mpiapi.jl`: `C_BUFFER` is an address in the
+    `mpi` module and a `TYPE(C_PTR)` in `mpi_f08`, `C_BUFFER2` is a choice buffer
+    and a `TYPE(C_PTR)`, and `C_BUFFER3` and `C_BUFFER4` are choice buffers that
+    nothing generated reaches, both belonging to callbacks. One C entry point
+    still serves both bindings, taking `void*` and writing the address through
+    whatever it is handed; the f08 wrapper hands it an address-sized temporary
+    and converts with `transfer`, as the `C_BUFFER` one already did.
+
+    `test/buffer_detach.f90` asserts both halves, and `dev/check-f08-bindings.py`
+    reported the six every run until this was fixed -- and did not before, because
+    it compared intents and not types: `buffer_addr` has `INTENT(OUT)` on both
+    sides. Extending it to types is what turned this from something noticed by
+    accident into something the tool states, and it found the `MPI_Psend_init`
+    count the same way. Only the A.4 half is checked by the tool, the appendix it
+    reads being the `mpi_f08` one; the A.5 choice buffer has the test alone.
 
   The 207 remaining differences are all the same one, and expected: an input
   choice buffer is `INTENT(IN)` in the standard and has no intent here. See
@@ -793,9 +810,10 @@ One check needs no build at all:
 
 It reads `doc/mpi50-report.pdf` through `pdftotext -layout` and compares every
 f08 binding's intents, declared types, argument names and argument order with the
-appendix, exiting nonzero on anything it cannot account for. Comparing types is
-what found the `MPI_Psend_init` count and what reports error 1; comparing intents
-alone had passed both. Run it after changing how the
+appendix, exiting nonzero on anything it cannot account for. It reports no
+unexplained divergence today, and comparing types is what got it there: that is
+what found the `MPI_Psend_init` count and the six `buffer_addr` declarations, both
+of which comparing intents alone had passed. Run it after changing how the
 generator declares an argument.
 
 ### Stale build artifacts were the biggest time sink
@@ -871,16 +889,13 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    conversion functions had exactly this fault and were corrected when
    `MPI_Register_datarep` learned to forward its callbacks; this is the same
    one-line change plus a test.
-3. **Fixing the six `buffer_addr` declarations**, error 1 above, which
-   `dev/check-f08-bindings.py` now reports every run.
-4. **Triaging the 22 suite failures still untriaged.**
+3. **Triaging the 24 suite failures still untriaged.**
    `ci-scripts/mpich-suite-xfail.txt` names each with its symptom. What is left
    is: eleven Open MPI spawn tests that print "No Errors" and are rejected anyway
    on x86_64 alone, three reporting an empty window name and three a type name of
    the wrong length under Open MPI, `attrlangf*` and `fandcattrf*` (no output of
-   their own, a crash under Open MPI), `test14`/`test15`, `i_fcoll_test`, and
-   `bsendf`.
-5. The large-count function-parameter test, error 2 above, which is a guess with
+   their own, a crash under Open MPI), `test14`/`test15`, and `i_fcoll_test`.
+4. The large-count function-parameter test, error 1 above, which is a guess with
    a one-name exception list rather than a check.
 
 One thing is worth reporting upstream and is not yet: Open MPI's
@@ -909,18 +924,26 @@ way, is what is exact.
 | mpich/llvm/darwin/arm64      |   3 |  11 |  15 |
 | mpich/llvm/linux/x86_64      |   4 |  12 |  16 |
 | mpich/llvm/linux/aarch64     |   4 |  12 |  16 |
-| openmpi/gcc/darwin/arm64     |   5 |  10 |  20 |
-| openmpi/gcc/linux/x86_64     |   8 |  15 |  23 |
-| openmpi/gcc/linux/aarch64    |   5 |  10 |  20 |
-| openmpi/llvm/darwin/arm64    |   5 |  10 |  16 |
-| openmpi/llvm/linux/x86_64    |   8 |  15 |  19 |
-| openmpi/llvm/linux/aarch64   |   5 |  10 |  16 |
+| openmpi/gcc/darwin/arm64     |   5 |   9 |  20 |
+| openmpi/gcc/linux/x86_64     |   8 |  14 |  23 |
+| openmpi/gcc/linux/aarch64    |   5 |   9 |  20 |
+| openmpi/llvm/darwin/arm64    |   5 |   9 |  16 |
+| openmpi/llvm/linux/x86_64    |   8 |  14 |  19 |
+| openmpi/llvm/linux/aarch64   |   5 |   9 |  16 |
 
-Fifty-nine entries cover them, for fifty-six distinct tests -- five of them
-`flaky` rather than `xfail`. Thirty-two are accounted for, each either by an
-entry here or by a reason that stands on its own, and twenty-seven covering
-twenty-two tests still say "untriaged". The first pass through them resolved two
-into mpif bugs and one into an MPICH one. The earlier version of this section had four rows and
+Every Open MPI f90 row is one lower than the run it comes from: `bsendf90` used
+to fail to build everywhere and now builds, and fails only on MPICH -- see
+"suite tests that cannot pass against a conforming binding". That is inferred
+rather than measured, from `bsendf`, which is the same test with the same
+400-byte buffer and has always been expected to fail on MPICH alone; CI is what
+confirms it, on all four Open MPI variants at once. The MPICH rows are measured,
+`mpich/gcc/darwin/arm64` reporting no differences after the change.
+
+Fifty-nine entries cover them, for fifty-seven distinct language-and-test pairs
+-- five of them `flaky` rather than `xfail`. Thirty-three are accounted for, each
+either by an entry here or by a reason that stands on its own, and twenty-six
+covering twenty-four pairs still say "untriaged". The passes through them have
+resolved two into mpif bugs and two into MPICH ones. The earlier version of this section had four rows and
 claimed every failure was attributable, both of which were wrong: MPICH looked
 far worse than Open MPI only because those rows predated the handle-table patch,
 and most of the failures had never been diagnosed.
@@ -949,9 +972,10 @@ expect some churn: a flaky entry surfaces as an unexpected pass, which is the
 mechanism working rather than failing. Three entries are already marked as seen
 on one variant only and therefore suspect.
 
-`test/`, mpif's own suite, was 32 of 32 and is now 36 of 36, with
-`callback_intents_f08`, `cancel_intent_f08`, `datarep_f08` and `datarep_c`
-added. Green on all twelve variants in CI.
+`test/`, mpif's own suite, was 32 of 32 and is now 38 of 38, `buffer_detach`
+being the most recent addition. Green on all twelve variants in CI up to
+`waitall_f08`; `buffer_detach` has been run on `mpich/gcc/darwin/arm64` and
+`openmpi/gcc/darwin/arm64` only, the other ten being CI's to confirm.
 
 Passing the f08 status through to C instead of converting it moved nothing, and
 was not meant to: it removes the temporary, the conversion and all 77 `loc()`
