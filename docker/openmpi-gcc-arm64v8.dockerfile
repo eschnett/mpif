@@ -53,7 +53,11 @@ EOF
 
 WORKDIR /cactus/mpif
 COPY fortran ./fortran
-COPY ci-scripts ./ci-scripts
+# Only what this build recipe reads: the install scripts, the prune lists and the
+# patches. The MPICH suite's three files live in ci-scripts/suite and arrive at the
+# end, so that editing the expected-failures list does not rebuild the MPI. See
+# ci-scripts/README.md.
+COPY ci-scripts/*.sh ci-scripts/*.txt ci-scripts/*.patch ./ci-scripts/
 
 ENV mpi_prefix=/openmpi-mpiabi-gcc
 RUN ci-scripts/install-openmpi.sh ${mpi_prefix}
@@ -113,16 +117,17 @@ RUN ctest --test-dir build-openmpi-gcc-tests --output-on-failure
 # MPICH ships around 300 Fortran tests covering all three interfaces mpif
 # implements, and turns all of them off when its own build targets the standard
 # ABI, because the ABI has no Fortran bindings -- which is precisely the gap
-# mpif fills. Far broader coverage than test/; see ci-scripts/test-mpich-suite.sh
+# mpif fills. Far broader coverage than test/; see ci-scripts/suite/test-mpich-suite.sh
 # for the details. The suite is downloaded, built and run under a temporary
 # directory that the script removes afterwards, so none of it stays in the image.
 #
-# The failures that are expected are listed in ci-scripts/mpich-suite-xfail.txt
+# The failures that are expected are listed in ci-scripts/suite/mpich-suite-xfail.txt
 # with a reason apiece, and this fails on a difference from that list rather
 # than on a failure. A variant with no `triaged` line there is reported and
 # cannot fail the build.
 
 WORKDIR /cactus/mpif
+COPY --parents ci-scripts/suite .
 RUN <<EOF
     set -e
     # The tests themselves find mpif and MPI through the rpath the wrapper
@@ -132,5 +137,5 @@ RUN <<EOF
     # at all -- and a docker build is root, on however many cores the daemon
     # happens to give it
     export MPIEXEC_ARGS="--oversubscribe --allow-run-as-root"
-    ci-scripts/test-mpich-suite.sh ${mpi_prefix} ${mpif_prefix}
+    ci-scripts/suite/test-mpich-suite.sh ${mpi_prefix} ${mpif_prefix}
 EOF

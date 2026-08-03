@@ -109,7 +109,7 @@ without being in that table.
 That is the same function and the same table as the blocker below on attributes
 for predefined datatypes, so the two are one defect in the ABI's datatype
 conversion rather than two. It also explains a cluster in
-`ci-scripts/mpich-suite-xfail.txt`: the seven entries whose symptom is
+`ci-scripts/suite/mpich-suite-xfail.txt`: the seven entries whose symptom is
 "Assertion failed in file src/binding/abi/mpi_abi_util.h at line 140" are that
 function's `MPIR_Assert(0)`, reached when the reverse search finds nothing.
 
@@ -392,7 +392,7 @@ C spawn-and-send reproduces it.
 
 Five of the suite's tests ask for something MPI-5.0 does not have, or something
 only MPICH provides. None of them can pass here, and none is a defect on this
-side; `ci-scripts/mpich-suite-xfail.txt` carries each with a reason pointing at
+side; `ci-scripts/suite/mpich-suite-xfail.txt` carries each with a reason pointing at
 this entry. The `spawnargvf90` entry below is a sixth of the same species,
 separate only because it is a disagreement between two copies of one test rather
 than with the standard.
@@ -496,7 +496,7 @@ slices, so nothing arrives at all. Both tests declare the array `ASYNCHRONOUS`,
 which is the program's half of the contract, and then neither consults
 `MPI_SUBARRAYS_SUPPORTED` before relying on it -- so they cannot pass against a
 conforming `.FALSE.` implementation, and they are in
-`ci-scripts/mpich-suite-xfail.txt` with that reason rather than as untriaged.
+`ci-scripts/suite/mpich-suite-xfail.txt` with that reason rather than as untriaged.
 
 Taking the other option would mean declaring choice buffers
 `TYPE(*), DIMENSION(..), ASYNCHRONOUS` in the nonblocking, split-collective and
@@ -1014,7 +1014,7 @@ one directory of the suite rather than all of it:
 
     cd mpi/tests-<variant>-gcc/mpich-5.0.1/test/mpi/f90/rma
     MPIF_REAL_MPIEXEC=<mpi-prefix>/bin/mpiexec ../../runtests -tests=testlist \
-        -mpiexec=<repo>/ci-scripts/mpiexec-filter.sh -maxnp=4
+        -mpiexec=<repo>/ci-scripts/suite/mpiexec-filter.sh -maxnp=4
 
 Set `MPIF_KEEP_TESTS=1` to stop `runtests` deleting each executable after it
 runs, which is what a debugger needs to turn "test failed" into a backtrace.
@@ -1026,7 +1026,7 @@ what to run when `find_package(MPI)` starts reporting that
 `mpi/<mpi>-<toolchain>/include` does not exist.
 
 The suite has failures that are expected, so what fails a run is a difference
-from `ci-scripts/mpich-suite-xfail.txt` rather than a failure --- in either
+from `ci-scripts/suite/mpich-suite-xfail.txt` rather than a failure --- in either
 direction, so a test that starts passing is caught as well as one that starts
 failing, and the list cannot rot into a blanket exception. The file names every
 expected failure with the reason it is there, "untriaged" included, and the
@@ -1133,7 +1133,7 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
 2. **The PMPI interface**, which does not exist at all and which `mpif.h`
    currently promises four names it cannot link.
 3. **Triaging the 12 suite failures still untriaged.**
-   `ci-scripts/mpich-suite-xfail.txt` names each with its symptom. What is left is
+   `ci-scripts/suite/mpich-suite-xfail.txt` names each with its symptom. What is left is
    the eleven Open MPI spawn tests that print "No Errors" on x86_64 and are
    rejected anyway, and `i_fcoll_test` on Linux and under flang. For the spawn
    eleven the mechanism is known -- `runtests` fails a test for *any* unexpected
@@ -1153,7 +1153,7 @@ and the lost nonblocking collective write on macOS. Two have reproducers in
 ### Suite baseline
 
 All twelve variants, from the CI run of `baa7f65`, as failures out of 104 f77,
-122 f90 and 136 f08 tests. `ci-scripts/mpich-suite-xfail.txt` is the authority: it names
+122 f90 and 136 f08 tests. `ci-scripts/suite/mpich-suite-xfail.txt` is the authority: it names
 every one of these with its reason, and the suite run fails on any difference
 from it. The table is for telling a change from the background noise at a
 glance.
@@ -1273,7 +1273,7 @@ than about mpif. Worth confirming before reading anything into it.
 If that lead ever is confirmed, these four are a cost of declining assumed-rank
 rather than a defect to fix -- four suite tests that pass a noncontiguous subarray
 to a nonblocking call, which `MPI_SUBARRAYS_SUPPORTED == .FALSE.` tells a program
-not to do. `ci-scripts/mpich-suite-xfail.txt` carries them as `*/gcc/*/*` with
+not to do. `ci-scripts/suite/mpich-suite-xfail.txt` carries them as `*/gcc/*/*` with
 that symptom either way.
 
 One caution about these numbers: the Open MPI run needs the loopback workaround

@@ -16,7 +16,7 @@
 #
 # Some of its tests are expected to fail -- on blockers in the implementations,
 # on features mpif does not have yet, and on tests that codify their own
-# implementation rather than the standard. ci-scripts/mpich-suite-xfail.txt says
+# implementation rather than the standard. mpich-suite-xfail.txt beside this script says
 # which, and this script fails only on a difference from that list, in either
 # direction. See the head of that file for the format and the reasoning.
 #
@@ -38,7 +38,7 @@
 #   MPIEXEC_ARGS     extra arguments for mpiexec, e.g. `--oversubscribe` for
 #                    Open MPI when MPIEXEC_MAXNP exceeds the available cores.
 #   MPIF_SUITE_VARIANT
-#                    which row of ci-scripts/mpich-suite-xfail.txt applies, as
+#                    which row of mpich-suite-xfail.txt applies, as
 #                    <mpi>/<toolchain>/<os>/<arch>. Detected by default and rarely
 #                    worth setting; an undetectable variant is reported and
 #                    cannot fail the run.
@@ -65,14 +65,18 @@ if [[ ${#languages[@]} -eq 0 ]]; then
 fi
 
 scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# The MPI install scripts are the directory above: this one and the two files it
+# reads live apart from them so that editing the expected-failures list cannot
+# invalidate a cached MPI build. See the comment in .github/workflows/ci.yaml.
+installdir=$(cd "${scriptdir}/.." && pwd)
 nprocs=$(getconf _NPROCESSORS_ONLN)
 maxnp=${MPIEXEC_MAXNP:-4}
 
 # Take the version from the install script, so the suite always matches the
 # MPICH we know how to build rather than drifting away from it
-version=$(sed -n 's/^MPICH_VERSION=//p' "${scriptdir}/install-mpich.sh")
+version=$(sed -n 's/^MPICH_VERSION=//p' "${installdir}/install-mpich.sh")
 if [[ -z ${version} ]]; then
-    echo "error: cannot read MPICH_VERSION from ${scriptdir}/install-mpich.sh" >&2
+    echo "error: cannot read MPICH_VERSION from ${installdir}/install-mpich.sh" >&2
     exit 1
 fi
 
@@ -213,7 +217,7 @@ for language in "${languages[@]}"; do
             export MPITEST_MPIEXECARG="${MPIEXEC_ARGS}"
         fi
         # Run mpiexec through a filter that drops launcher banners; see
-        # ci-scripts/mpiexec-filter.sh. The suite treats anything the launcher
+        # mpiexec-filter.sh beside this script. The suite treats anything the launcher
         # prints as unexpected test output.
         export MPIF_REAL_MPIEXEC="${mpi_prefix}/bin/mpiexec"
         # `runtests` has no command line option for this -- it unlinks the

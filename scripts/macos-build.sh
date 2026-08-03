@@ -15,7 +15,7 @@ here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # MPICH's suite has failures that are expected -- on blockers in the
 # implementations and on features mpif does not have yet -- so what fails the
-# build is a difference from ci-scripts/mpich-suite-xfail.txt rather than a
+# build is a difference from ci-scripts/suite/mpich-suite-xfail.txt rather than a
 # failure. The CI step and the docker builds use the same list, so a local run
 # and a CI run agree on what "passing" means.
 "${here}/macos-test-mpich-suite.sh" "$@"

@@ -167,16 +167,20 @@ jobs:
       # Three caches, from coarsest to finest. The MPI installation is all that
       # is needed for a run that changes neither the bindings nor the build
       # scripts; the other two only come into play when it misses.
-      # Hashing all of ci-scripts/ is safe precisely because that directory
-      # holds only what CI and the Docker images use: a new script there is
-      # covered automatically, and the local build scripts in scripts/ cannot
-      # invalidate this cache.
+      #
+      # `ci-scripts/*` and not `ci-scripts/**`: the single `*` stops at that
+      # directory's own files, which are exactly what building and installing an
+      # MPI reads, and skips `ci-scripts/suite/`, which is read only after the MPI
+      # exists and cannot change it. Hashing that too meant one triaged suite
+      # failure rebuilt MPI on all twelve variants. A pattern rather than a list of
+      # filenames, so that a new install input is covered without an edit here;
+      # `ci-scripts/README.md` has the rest of the reasoning.
       - name: Cache MPI installation
         id: cache-mpi
         uses: actions/cache@v5
         with:
           path: ${{ runner.temp }}/opt/mpi
-          key: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('ci-scripts/**', 'fortran/**') }}
+          key: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('ci-scripts/*', 'fortran/**') }}
 
       # The downloaded and autogen'ed source tree. Its key deliberately ignores
       # `fortran/`, so editing the bindings still skips the clone, the
@@ -279,7 +283,7 @@ jobs:
       # ABI has no Fortran bindings -- which is what mpif supplies. Far broader
       # coverage than test/, so worth running even before every test passes.
       # The failures that are expected are listed in
-      # ci-scripts/mpich-suite-xfail.txt with a reason apiece, and the step fails
+      # ci-scripts/suite/mpich-suite-xfail.txt with a reason apiece, and the step fails
       # on a difference from that list rather than on a failure -- in either
       # direction, so a test that starts passing is caught too. A variant with no
       # `triaged` line there is reported and cannot fail, which is how the
@@ -304,7 +308,7 @@ jobs:
               fi
               export MPIEXEC_ARGS="${args}"
           fi
-          ci-scripts/test-mpich-suite.sh "${MPI_PREFIX}" "${MPIF_PREFIX}"
+          ci-scripts/suite/test-mpich-suite.sh "${MPI_PREFIX}" "${MPIF_PREFIX}"
 
       # CMake keeps the compiler and linker output of its own checks -- such as
       # the one behind `missing: MPI_C_WORKS` -- in these files, and reports

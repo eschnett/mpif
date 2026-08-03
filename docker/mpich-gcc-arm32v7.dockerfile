@@ -52,7 +52,11 @@ EOF
 
 WORKDIR /cactus/mpif
 COPY fortran ./fortran
-COPY ci-scripts ./ci-scripts
+# Only what this build recipe reads: the install scripts, the prune lists and the
+# patches. The MPICH suite's three files live in ci-scripts/suite and arrive at the
+# end, so that editing the expected-failures list does not rebuild the MPI. See
+# ci-scripts/README.md.
+COPY ci-scripts/*.sh ci-scripts/*.txt ci-scripts/*.patch ./ci-scripts/
 
 ENV mpi_prefix=/mpich-mpiabi-gcc
 RUN ci-scripts/install-mpich.sh ${mpi_prefix}
@@ -112,16 +116,17 @@ RUN ctest --test-dir build-mpich-gcc-tests --output-on-failure
 # MPICH ships around 300 Fortran tests covering all three interfaces mpif
 # implements, and turns all of them off when its own build targets the standard
 # ABI, because the ABI has no Fortran bindings -- which is precisely the gap
-# mpif fills. Far broader coverage than test/; see ci-scripts/test-mpich-suite.sh
+# mpif fills. Far broader coverage than test/; see ci-scripts/suite/test-mpich-suite.sh
 # for the details. The suite is downloaded, built and run under a temporary
 # directory that the script removes afterwards, so none of it stays in the image.
 #
-# The failures that are expected are listed in ci-scripts/mpich-suite-xfail.txt
+# The failures that are expected are listed in ci-scripts/suite/mpich-suite-xfail.txt
 # with a reason apiece, and this fails on a difference from that list rather
 # than on a failure. A variant with no `triaged` line there is reported and
 # cannot fail the build.
 
 WORKDIR /cactus/mpif
+COPY --parents ci-scripts/suite .
 RUN <<EOF
     set -e
     # The tests themselves find mpif and MPI through the rpath the wrapper
@@ -129,5 +134,5 @@ RUN <<EOF
     export LD_LIBRARY_PATH=${mpi_prefix}/lib:${mpif_prefix}/lib
     # MPICH's mpiexec needs no persuasion to run as root, and the suite asks
     # for at most MPIEXEC_MAXNP (4) processes
-    ci-scripts/test-mpich-suite.sh ${mpi_prefix} ${mpif_prefix}
+    ci-scripts/suite/test-mpich-suite.sh ${mpi_prefix} ${mpif_prefix}
 EOF

@@ -2,14 +2,14 @@
 
 # Run MPICH's Fortran test suite against one locally built variant. Part of
 # macos-build.sh, and it fails the build if the suite differs from
-# ci-scripts/mpich-suite-xfail.txt -- which lists the failures that are expected
+# ci-scripts/suite/mpich-suite-xfail.txt -- which lists the failures that are expected
 # -- in either direction. Run it on its own to iterate on a difference.
 #
 # Usage: scripts/macos-test-mpich-suite.sh <mpich|openmpi> <gcc|llvm>
 #
 # Set MPIF_KEEP_TESTS=1 to keep the compiled test executables, which is what a
 # debugger needs to get a backtrace out of a crashing test; see
-# ci-scripts/test-mpich-suite.sh for the other environment variables.
+# ci-scripts/suite/test-mpich-suite.sh for the other environment variables.
 
 set -euo pipefail
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -47,4 +47,4 @@ if [[ ${mpi} == openmpi ]]; then
     export MPIEXEC_ARGS="${MPIEXEC_ARGS:---oversubscribe --mca btl_tcp_if_include lo0}"
 fi
 
-exec "${repodir}/ci-scripts/test-mpich-suite.sh" "${mpi_prefix}" "${mpif_prefix}"
+exec "${repodir}/ci-scripts/suite/test-mpich-suite.sh" "${mpi_prefix}" "${mpif_prefix}"
