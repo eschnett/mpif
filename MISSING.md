@@ -198,17 +198,27 @@ The gap is not a caller error. MPI-5.0 requires "an empty array_of_datatypes" fo
 datatype from `MPI_TYPE_CREATE_F90_*`, so a caller passing `max_datatypes = 1` and
 getting `ndtypes == 0` has done nothing wrong -- and MPICH's own
 `test/mpi/f90/f90types/createf90types.c` does exactly that,
-`MPI_Type_get_contents(dtype, 2, 0, 1, ints, 0, &outtype)`. That is what took
-`createf90types` from passing on macOS to aborting on three of CI's four MPICH
-Linux variants, once the entry above stopped handing it `MPI_DATATYPE_NULL` to bail
-on.
+`MPI_Type_get_contents(dtype, 2, 0, 1, ints, 0, &outtype)`. That is what started
+aborting once the entry above stopped handing `createf90types` a
+`MPI_DATATYPE_NULL` to bail out on, on some MPICH Linux variant or other every run
+-- see below for why "which one" has no answer.
 
 **Reading uninitialised memory is why this assert has looked intermittent.** It is
 the recorded symptom of the `flaky` entries `typecntsf`, `typecntsf90` and
-`typecntsf08`, and it is why `createf90types` fails under gcc on Linux x86_64 and
-both Linux aarch64 toolchains while passing on macOS and on
-`mpich/llvm/linux/24.04/x86_64`. Nothing about the platform decides it; what was on
-the heap does.
+`typecntsf08`, and two consecutive CI runs settled it for `createf90types` by
+disagreeing about which variants it fails on:
+
+    30846819244    mpich/gcc/linux/24.04/x86_64, mpich/gcc/linux/24.04/aarch64,
+                   mpich/llvm/linux/24.04/aarch64
+    30855216157    mpich/llvm/linux/24.04/x86_64 -- and the three above passed
+
+Same test, same assert, a different set of variants each time, with nothing
+relevant changed between them. So it is not a property of the toolchain or the
+architecture, and the first run's pattern was worth no conclusion at all: reading
+one run as "gcc on Linux plus llvm on aarch64" is the mistake this defect invites,
+and it was made here before the second run refuted it. What was on the heap decides
+it. That is also why `createf90types` must not be excused per variant if it ever
+needs excusing again.
 
 `ci-scripts/mpich-abi-type-get-contents.patch` initialises a pure-out handle array
 to the null handle before the call, so the surplus converts to `ABI_DATATYPE_NULL`,
@@ -231,6 +241,17 @@ from a contiguous type that has one and prints all four, so it demonstrates the
 defect on a platform where the garbage happens not to abort. On macOS before the
 patch the three surplus entries came back as `201326592` where the ABI's null is
 `512`.
+
+CI run 30861875404 is the confirmation, all thirteen jobs green, and it settled more
+than `createf90types`: **every one of the five `flaky` entries passed on all six
+MPICH variants**, where the two runs before it had `typecntsf`, `typecntsf90` or
+`typecntsf08` failing on four variants between them. That is the same assert going
+away for the same reason, so those five are candidates for removal rather than
+flakiness anybody still has to live with -- their reasons in
+`ci-scripts/suite/mpich-suite-xfail.txt` now say so. Give it two or three more runs
+before deleting them: `flaky` was a statement of ignorance about a
+nondeterministic failure, and one green run is not yet the evidence that the
+nondeterminism is gone.
 
 ### MPICH: `ABI_Datatype_from_mpi` asserts on a datatype predefined only internally
 
@@ -1638,10 +1659,15 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    `ci-scripts/suite/mpich-suite-xfail.txt` yet, so both are reported and cannot
    fail a run. The i386 one is the one to do first, since
    `.github/workflows/ci.yaml` runs it on every push and it runs natively; the
-   arm32v7 one is emulated and local-only. Do not carry either list over to the
-   other: they are different 32-bit ABIs, a 64-bit type being eight-byte aligned
-   on armhf and four-byte on i386.
-5. **The mpi_f08 specific procedure names**, last because it is the largest and
+   arm32v7 one is emulated and local-only. It is ready for it: run 30861875404 is
+   the first to report it under its own key and it came out with no differences, so
+   the line can go in as soon as a second run agrees. Do not carry either list over
+   to the other: they are different 32-bit ABIs, a 64-bit type being eight-byte
+   aligned on armhf and four-byte on i386.
+5. **Delete the five `flaky` entries**, if two or three more runs keep agreeing
+   with 30861875404 that they pass. They were the `MPI_Type_get_contents` defect
+   all along; see that entry.
+6. **The mpi_f08 specific procedure names**, last because it is the largest and
    buys the least: it would let a tools layer interpose the f08 wrappers, which
    `mpif.h` and the `mpi` module already allow, and it would flip no test either
    way. Its own entry above says why, and why it cannot be separated from
