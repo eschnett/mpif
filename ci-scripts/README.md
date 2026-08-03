@@ -22,9 +22,18 @@ it: the runner, the list of expected failures and the `mpiexec` filter. Keeping
 them in a directory of their own is what lets both caches say "the MPI build
 depends on `ci-scripts/` and not on `ci-scripts/suite/`":
 
-- `.github/workflows/ci.yaml` hashes `ci-scripts/*` and `fortran/**` into the key
-  for the MPI installation cache. The single `*` stops at this directory's own
-  files.
+- `.github/workflows/ci.yaml` hashes this directory and `fortran/**` into the key
+  for the MPI installation cache, excluding `suite/` and this README:
+
+      hashFiles('ci-scripts/**', '!ci-scripts/suite/**', '!ci-scripts/README.md', 'fortran/**')
+
+  Not `ci-scripts/*`, which looks like it stops at this directory's own files and
+  does not: that pattern matches the *directory* `suite`, and `@actions/glob`
+  expands a matched directory to all of its descendants, so the suite's files stay
+  in the key and every edit to the expected-failures list rebuilds MPI on twelve
+  variants. It took a CI run to notice, and the way to tell is in the log: the
+  cache step prints the key, so if a suite-only commit changes that hash, the
+  pattern is wrong again.
 - each `docker/*.dockerfile` copies `ci-scripts/*.sh ci-scripts/*.txt
   ci-scripts/*.patch` before the MPI build, and `ci-scripts/suite` only at the end,
   after the MPI and mpif are both built.
@@ -34,9 +43,13 @@ names its inputs rots silently: a new install input left out of it would be serv
 an MPI built without it. A pattern covers a new file automatically, and in Docker
 a file that is somehow missing fails the build rather than the run.
 
-This is worth keeping right. When it was wrong -- both the key and the `COPY` took
-all of `ci-scripts/**` -- editing one reason in `mpich-suite-xfail.txt` rebuilt MPI
-on all twelve CI variants and rebuilt every Docker image from the MPI up.
+This is worth keeping right, and it has been wrong twice. First both the key and
+the `COPY` took all of `ci-scripts/**`, so editing one reason in
+`mpich-suite-xfail.txt` rebuilt MPI on all twelve CI variants and rebuilt every
+Docker image from the MPI up. Then the key was narrowed to `ci-scripts/*`, which
+fixed nothing for the reason above, while the Docker half really was fixed -- the
+same intention expressed twice, right in one place and wrong in the other, and only
+a CI run told them apart.
 
 So: a new file that the MPI build reads belongs here, and a new file that only the
 suite needs belongs in `suite/`. Putting a suite file here costs a rebuild;

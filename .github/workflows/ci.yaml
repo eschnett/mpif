@@ -168,19 +168,29 @@ jobs:
       # is needed for a run that changes neither the bindings nor the build
       # scripts; the other two only come into play when it misses.
       #
-      # `ci-scripts/*` and not `ci-scripts/**`: the single `*` stops at that
-      # directory's own files, which are exactly what building and installing an
-      # MPI reads, and skips `ci-scripts/suite/`, which is read only after the MPI
-      # exists and cannot change it. Hashing that too meant one triaged suite
-      # failure rebuilt MPI on all twelve variants. A pattern rather than a list of
-      # filenames, so that a new install input is covered without an edit here;
-      # `ci-scripts/README.md` has the rest of the reasoning.
+      # What building and installing an MPI reads, and nothing else: everything in
+      # `ci-scripts/` except `ci-scripts/suite/`, which is read only after the MPI
+      # exists and cannot change it, and except the README, which nothing reads.
+      # Hashing the suite too meant one triaged suite failure rebuilt MPI on all
+      # twelve variants.
+      #
+      # The exclusions are why this is not simply `ci-scripts/*`. That pattern
+      # matches the *directory* `ci-scripts/suite`, and `@actions/glob` expands a
+      # matched directory to all of its descendants -- `implicitDescendants`
+      # defaults to true -- so the single `*` excluded nothing and the suite's files
+      # stayed in the key. That was measured, not guessed: the hash the caches
+      # carried is reproduced exactly by hashing `ci-scripts/*` with the suite's
+      # three files included, 19 files rather than 16.
+      #
+      # Patterns rather than a list of filenames, so that a new install input is
+      # covered without an edit here; `ci-scripts/README.md` has the rest of the
+      # reasoning.
       - name: Cache MPI installation
         id: cache-mpi
         uses: actions/cache@v5
         with:
           path: ${{ runner.temp }}/opt/mpi
-          key: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('ci-scripts/*', 'fortran/**') }}
+          key: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}-${{ hashFiles('ci-scripts/**', '!ci-scripts/suite/**', '!ci-scripts/README.md', 'fortran/**') }}
 
       # The downloaded and autogen'ed source tree. Its key deliberately ignores
       # `fortran/`, so editing the bindings still skips the clone, the
