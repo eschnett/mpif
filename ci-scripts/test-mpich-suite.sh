@@ -39,7 +39,7 @@
 #                    Open MPI when MPIEXEC_MAXNP exceeds the available cores.
 #   MPIF_SUITE_VARIANT
 #                    which row of ci-scripts/mpich-suite-xfail.txt applies, as
-#                    <mpi>/<toolchain>/<os>. Detected by default and rarely
+#                    <mpi>/<toolchain>/<os>/<arch>. Detected by default and rarely
 #                    worth setting; an undetectable variant is reported and
 #                    cannot fail the run.
 #   MPIF_KEEP_TESTS  if non-empty, keep each test executable after it has run
@@ -90,8 +90,9 @@ fi
 
 # Which row of the expected-failures list applies. Detected rather than passed
 # in, so that every caller gets it right without having to remember: the MPI is
-# told apart by a launcher only one of them installs, and the toolchain by what
-# mpif's own wrapper reports. An undetectable component becomes "unknown", which
+# told apart by a launcher only one of them installs, the toolchain by what mpif's
+# own wrapper reports, and the OS and architecture by uname. The architecture is
+# in the key because the two Linux runners disagree about eleven spawn tests. An undetectable component becomes "unknown", which
 # matches no entry and no `triaged` line, so the run reports and cannot fail --
 # loudly wrong rather than quietly lenient.
 if [[ -n ${MPIF_SUITE_VARIANT:-} ]]; then
@@ -109,7 +110,7 @@ else
         *flang*|*Flang*) variant_toolchain=llvm ;;
         *)               variant_toolchain=unknown ;;
     esac
-    variant=${variant_mpi}/${variant_toolchain}/$(uname -s | tr '[:upper:]' '[:lower:]')
+    variant=${variant_mpi}/${variant_toolchain}/$(uname -s | tr '[:upper:]' '[:lower:]')/$(uname -m)
 fi
 
 xfail_file=${scriptdir}/mpich-suite-xfail.txt
@@ -121,8 +122,8 @@ fi
 # Whether a difference from the list may fail the run for this variant
 if awk -v variant="${variant}" '
         function matches(sel,   s, v, i) {
-            if (split(sel, s, "/") != 3 || split(variant, v, "/") != 3) return 0
-            for (i = 1; i <= 3; i++) if (s[i] != "*" && s[i] != v[i]) return 0
+            if (split(sel, s, "/") != 4 || split(variant, v, "/") != 4) return 0
+            for (i = 1; i <= 4; i++) if (s[i] != "*" && s[i] != v[i]) return 0
             return 1
         }
         { sub(/#.*/, "") }
@@ -251,8 +252,8 @@ for language in "${languages[@]}"; do
         differences+=("${language}: ${kind} ${test}")
     done < <(awk -v variant="${variant}" -v lang="${language}" -v tap="${tap}" '
         function matches(sel,   s, v, i) {
-            if (split(sel, s, "/") != 3 || split(variant, v, "/") != 3) return 0
-            for (i = 1; i <= 3; i++) if (s[i] != "*" && s[i] != v[i]) return 0
+            if (split(sel, s, "/") != 4 || split(variant, v, "/") != 4) return 0
+            for (i = 1; i <= 4; i++) if (s[i] != "*" && s[i] != v[i]) return 0
             return 1
         }
         # The expected-failures list first, then the TAP file

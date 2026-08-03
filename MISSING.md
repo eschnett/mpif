@@ -44,7 +44,9 @@ and `mpif.h` still have it.
 
 ### MPICH: the generalized request tests require `extra_state` to alias the caller's variable
 
-`greqf`, `greqf90` and `greqf08` each set `extrastate = 1`, start a generalized
+`greqf`, `greqf90` and `greqf08` -- MPICH's tests, but run against both
+implementations, so they fail on all twelve variants -- each set
+`extrastate = 1`, start a generalized
 request whose `free_fn` does `extrastate = extrastate - 1`, wait on it, and then
 require the *caller's* variable to read 0. The f08 one goes so far as to call
 `dummyupdate(extrastate)` first, to stop the compiler remembering what was
@@ -703,12 +705,14 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    conversion functions had exactly this fault and were corrected when
    `MPI_Register_datarep` learned to forward its callbacks; this is the same
    one-line change plus a test.
-3. **Triaging the 22 untriaged suite failures**, and the three variants nobody
-   has measured. `ci-scripts/mpich-suite-xfail.txt` names each one and says what
-   it does; the clusters are the obvious way in -- three abort in MPICH's own ABI
-   handle table at `mpi_abi_util.h:143`, four more at the assertion next to it,
-   three report a window attribute copied by `MPI_WIN_NULL_COPY_FN`, and four
-   fail with no output of their own.
+3. **Triaging the 41 untriaged suite failures.** All twelve variants are
+   measured and gated now, so this is diagnosis rather than discovery.
+   `ci-scripts/mpich-suite-xfail.txt` names each with its symptom, and the
+   clusters are the way in: seven abort inside MPICH's own ABI handle table,
+   eleven Open MPI spawn tests print "No Errors" and are rejected anyway on
+   x86_64 alone, and three each report `MPI_LB` missing, a window attribute
+   copied by `MPI_WIN_NULL_COPY_FN`, an empty window name, and a type name of
+   the wrong length.
 4. The large-count function-parameter test, error 1 above, which is a guess with
    a one-name exception list rather than a check.
 
@@ -717,63 +721,60 @@ One thing is worth reporting upstream and is not yet: Open MPI's
 
 ### Suite baseline
 
-Recorded so that a change can be told from the background noise. All four
-variants, on macOS 15/arm64, with gcc 15 and with clang/flang 22.
+All twelve variants, from one CI run, as failures out of 104 f77, 122 f90 and
+136 f08 tests. `ci-scripts/mpich-suite-xfail.txt` is the authority: it names
+every one of these with its reason, and the suite run fails on any difference
+from it. The table is for telling a change from the background noise at a
+glance.
 
-|                | f77       | f90       | f08       |
-|----------------|-----------|-----------|-----------|
-| MPICH, gcc     |  4 / 104  | 12 / 122  | 19 / 136  |
-| MPICH, llvm    | 31 / 104  | 39 / 122  | 42 / 136  |
-| Open MPI, gcc  |  7 / 104  | 12 / 122  | 22 / 136  |
-| Open MPI, llvm |  7 / 104  | 12 / 122  | 18 / 136  |
+| variant                      | f77 | f90 | f08 |
+|------------------------------|-----|-----|-----|
+| mpich/gcc/darwin/arm64       |   4 |  12 |  19 |
+| mpich/gcc/linux/x86_64       |   5 |  12 |  20 |
+| mpich/gcc/linux/aarch64      |   5 |  12 |  20 |
+| mpich/llvm/darwin/arm64      |   4 |  12 |  16 |
+| mpich/llvm/linux/x86_64      |   5 |  13 |  16 |
+| mpich/llvm/linux/aarch64     |   4 |  13 |  16 |
+| openmpi/gcc/darwin/arm64     |   6 |  11 |  21 |
+| openmpi/gcc/linux/x86_64     |   9 |  16 |  24 |
+| openmpi/gcc/linux/aarch64    |   6 |  11 |  21 |
+| openmpi/llvm/darwin/arm64    |   6 |  11 |  17 |
+| openmpi/llvm/linux/x86_64    |   9 |  16 |  20 |
+| openmpi/llvm/linux/aarch64   |   6 |  11 |  17 |
 
-Failures, not passes. **Only the MPICH/gcc row is current**; the other three
-predate the patch for external blocker "MPICH: attributes on predefined
-datatypes abort in ABI builds" and the f08 intent fixes, and have not been
-measured since. That blocker is what used to make MPICH look so much worse than
-Open MPI -- 17 of its f77 failures were that one assertion -- and its
-disappearance is most of the distance between the MPICH/gcc row and the
-MPICH/llvm row below it, not anything about the toolchains.
+Sixty-one entries cover them, for fifty-nine distinct tests; forty-six of the
+entries, covering forty-one tests, say "untriaged". The earlier version of this section had four rows and
+claimed every failure was attributable, both of which were wrong: MPICH looked
+far worse than Open MPI only because those rows predated the handle-table patch,
+and most of the failures had never been diagnosed.
 
-The MPICH/gcc row is the one `ci-scripts/mpich-suite-xfail.txt` enumerates, and
-that file is now the record: it names every failure with its reason, so the list
-below is a summary of it rather than the other way round. Twenty-two of them say
-"untriaged", which is the honest count -- an earlier version of this section
-claimed all were attributable, and that was an overstatement.
+Three things the twelve-way measurement settled that guesswork had got wrong:
 
-- f77 (4): `allctypesf`, `bsendf`, `greqf`, `winattrf`.
-- f90 (12): `bsendf90`, `profile1f90` and `wtimef90` fail to build, the last two
-  on the missing PMPI interface; then `allctypesf90`, `attrlangf90`,
-  `createf90`, `createf90types` (twice), `fandcattrf90`, `greqf90`, `trf90`,
-  `winattrf90`.
-- f08 (19): `attrmpi1f08`, `profile1f90`, `statusconv` and `wtimef90` fail to
-  build; then `allctypesf08`, `alltoallwf08`, `attrlangf08`, `createf08`,
-  `fandcattrf08`, `greqf08`, `nonblocking_inpf08`, `nonblockingf08`,
-  `spawnargvf03`, `spawnargvf90`, `test14`, `test15`, `trf08`, `vw_inplacef08`,
-  `winattrf08`.
+- **The architecture belongs in the key.** Eleven Open MPI spawn tests fail on
+  `linux/x86_64` and pass on `linux/aarch64`, and two MPICH tests differ the
+  other way. Keyed on `mpi/toolchain/os` alone, each set would read as an
+  unexpected pass on whichever runner ran second.
+- **`alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08` and `vw_inplacef08`
+  are a gcc problem, not an MPICH one.** They fail under gcc on *both*
+  implementations and pass under llvm on both, so the selector is `*/gcc/*/*`.
+  This section used to call them "the four that flang passes and gfortran does
+  not" and guess they were about compiler-made buffer copies for noncontiguous
+  subarrays; under MPICH they abort inside `mpi_abi_util.h:140`, which is not
+  that. The guess is withdrawn; the symptom is recorded.
+- **`mpich/gcc/darwin/arm64` transfers between machines.** Its list was measured
+  here, on MacPorts gcc 15.2 with twelve cores, and CI's macos-15 runner --
+  Homebrew compilers, about three cores -- reports no differences against it.
+  That is the evidence that the key needs nothing finer than architecture.
 
-`greqf`, `greqf90` and `greqf08` are the `extra_state` blocker above, and are
-the only three the intent and callback work moved: a run immediately before
-copying `extra_state` into the box gave 3 / 11 / 18 with a failure set otherwise
-identical, entry for entry. `spawnargvf90` and `spawnargvf03` are the MPICH
-inconsistency described above, and `alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08` and `vw_inplacef08`
-are the four that flang passes and gfortran does not. `statusconv` is a C file
-using MPICH's own `MPI_F08_status` spelling rather than the ABI's
-`MPI_F08_Status`. `attrmpi1f08` hands `MPI_Keyval_create`, the MPI-1 form whose
-callbacks take a plain INTEGER attribute, the MPI-2 `MPI_COMM_NULL_COPY_FN`,
-whose attribute is address-sized: "Type mismatch in argument
-'attribute_val_in' (INTEGER(4)/INTEGER(8))". That is a mismatch of type and
-predates the intent work, which did not touch either.
+Every variant is declared `triaged`, so any difference now fails the run.
+That rests on a single measurement each, which is thin for a flaky test, so
+expect some churn: a flaky entry surfaces as an unexpected pass, which is the
+mechanism working rather than failing. Three entries are already marked as seen
+on one variant only and therefore suspect.
 
-Nothing in the row is an intent failure -- there is no "INTENT mismatch" or
-"variable definition context" anywhere in the log.
-
-The 35 failures across the three languages are 34 entries in the list, one test
-appearing twice at different process counts; 22 of the 34 are untriaged.
-
-`test/`, mpif's own suite, was 32 of 32 on all four and is now 36 of 36, with
+`test/`, mpif's own suite, was 32 of 32 and is now 36 of 36, with
 `callback_intents_f08`, `cancel_intent_f08`, `datarep_f08` and `datarep_c`
-added. All of it has been run on MPICH/gcc only, where the 36 are green.
+added. Green on all twelve variants in CI.
 
 Passing the f08 status through to C instead of converting it moved nothing, and
 was not meant to: it removes the temporary, the conversion and all 77 `loc()`

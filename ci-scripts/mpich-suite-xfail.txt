@@ -11,80 +11,124 @@
 #
 # Two kinds of line, both ignoring anything after a `#`:
 #
-#   triaged <mpi>/<toolchain>/<os>
+#   triaged <mpi>/<toolchain>/<os>/<arch>
 #       Declares that this variant's failures are all listed below, so the run
 #       may fail on a difference. A variant with no `triaged` line is still
-#       compared and reported, but cannot fail the build -- that is how a
-#       variant nobody has measured yet stays honest rather than being papered
-#       over with a blanket exception.
+#       compared and reported, but cannot fail the build -- that is how a variant
+#       nobody has measured yet stays honest rather than being papered over with
+#       a blanket exception.
 #
-#   xfail <mpi>/<toolchain>/<os> <language> <test>   # why
+#   xfail <mpi>/<toolchain>/<os>/<arch> <language> <test>   # why
 #       One expected failure. `*` matches any one component of the variant.
 #       The reason is not decoration: an entry that cannot say why it is here is
 #       an untriaged failure being hidden, and should say *that*.
 #
 # <mpi> is mpich or openmpi, <toolchain> gcc or llvm, <os> the lowercased
-# `uname -s` -- darwin or linux. <language> is f77, f90 or f08.
+# `uname -s` and <arch> `uname -m` -- so darwin/arm64, linux/x86_64 or
+# linux/aarch64. <language> is f77, f90 or f08.
 #
-# Where a reason names an entry in MISSING.md, that entry is the record; where
-# it says "untriaged", nobody has looked yet, and the symptom is quoted so that
+# The architecture is part of the key because the two Linux runners disagree:
+# eleven Open MPI spawn tests fail on x86_64 and pass on aarch64, and two MPICH
+# tests differ the other way. Without it those would read as unexpected passes on
+# whichever runner went second.
+#
+# Everything here was measured in one CI run across all twelve variants, except
+# mpich/gcc/darwin/arm64, which also matches a local run on a different machine
+# and different compilers. One measurement is thin evidence for a flaky test, so
+# expect some churn: a flaky entry shows up as an unexpected pass, which is the
+# mechanism working rather than failing.
+#
+# Where a reason names an entry in MISSING.md, that entry is the record; where it
+# says "untriaged", nobody has looked yet, and the symptom is quoted so that
 # looking can start from something.
 
-triaged mpich/gcc/darwin
+triaged mpich/gcc/darwin/arm64
+triaged mpich/gcc/linux/x86_64
+triaged mpich/gcc/linux/aarch64
+triaged mpich/llvm/darwin/arm64
+triaged mpich/llvm/linux/x86_64
+triaged mpich/llvm/linux/aarch64
+triaged openmpi/gcc/darwin/arm64
+triaged openmpi/gcc/linux/x86_64
+triaged openmpi/gcc/linux/aarch64
+triaged openmpi/llvm/darwin/arm64
+triaged openmpi/llvm/linux/x86_64
+triaged openmpi/llvm/linux/aarch64
 
-# --- The blockers MISSING.md records -----------------------------------------
-
-xfail mpich/*/*  f77  greqf          # extra_state is copied, not aliased; MISSING.md "MPICH: the generalized request tests"
-xfail mpich/*/*  f90  greqf90        # same
-xfail mpich/*/*  f08  greqf08        # same
-
-xfail mpich/*/*  f08  spawnargvf90   # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
-xfail mpich/*/*  f08  spawnargvf03   # same
-
-# --- The missing PMPI interface ----------------------------------------------
+# --- Recorded in MISSING.md ----------------------------------------------------
 #
-# MISSING.md "The PMPI profiling interface". These do not build: mpif.h promises
-# four PMPI names it cannot link, and the modules do not declare them at all.
-
-xfail mpich/*/*  f90  wtimef90       # no PMPI: "Function 'pmpi_wtick' has no IMPLICIT type"
-xfail mpich/*/*  f08  wtimef90       # same
-xfail mpich/*/*  f90  profile1f90    # uses mpi_send_f08ts, an MPICH-specific specific name
-xfail mpich/*/*  f08  profile1f90    # same
-
-# --- Tests that codify MPICH's own bindings ----------------------------------
-
-xfail mpich/*/*  f90  bsendf90       # passes a CHARACTER to MPI_Buffer_detach's buffer_addr, which the standard makes TYPE(C_PTR)
-xfail mpich/*/*  f08  statusconv     # C file spelling the ABI's MPI_F08_Status as MPICH's MPI_F08_status
-xfail mpich/*/*  f08  attrmpi1f08    # hands the MPI-2 MPI_COMM_NULL_COPY_FN to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8)
-
-# --- Untriaged ---------------------------------------------------------------
+# Each has an entry there saying why it cannot pass here.
 #
-# Nobody has diagnosed these. Each says what it does, so that whoever picks one
-# up starts from the symptom rather than from a rerun. Several cluster, and the
-# clusters are the obvious places to start: three abort inside MPICH's own ABI
-# handle table, and four more hit the assertion next to it.
+xfail */*/*/*        f08  attrmpi1f08          # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8)
+xfail */*/*/*        f90  bsendf90             # passes a CHARACTER to MPI_Buffer_detach's buffer_addr, which the standard makes TYPE(C_PTR)
+xfail */*/*/*        f77  greqf                # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
+xfail */*/*/*        f08  greqf08              # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
+xfail */*/*/*        f90  greqf90              # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
+xfail openmpi/*/*/*  f77  infocrenvf           # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
+xfail openmpi/*/*/*  f08  infocrenvf90         # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
+xfail openmpi/*/*/*  f90  infocrenvf90         # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
+xfail */*/*/*        f08  profile1f90          # needs PMPI, and mpi_send_f08ts, an MPICH-specific specific name
+xfail */*/*/*        f90  profile1f90          # needs PMPI, and mpi_send_f08ts, an MPICH-specific specific name
+xfail */*/*/*        f08  spawnargvf03         # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
+xfail */*/*/*        f08  spawnargvf90         # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
+xfail */*/*/*        f08  statusconv           # C file spelling the ABI's MPI_F08_Status as MPICH's MPI_F08_status
+xfail */*/*/*        f08  wtimef90             # no PMPI: "Function 'pmpi_wtick' has no IMPLICIT type"
+xfail */*/*/*        f90  wtimef90             # no PMPI: "Function 'pmpi_wtick' has no IMPLICIT type"
 
-xfail mpich/*/*  f77  allctypesf     # untriaged: MPICH asserts, mpi_abi_util.h:143 HANDLE_INDEX(in) < MPIR_DATATYPE_PREALLOC
-xfail mpich/*/*  f90  allctypesf90   # untriaged: same assertion
-xfail mpich/*/*  f08  allctypesf08   # untriaged: reports MPI_LB as MPI_DATATYPE_NULL and MPI_UB as MPI_PACKED
+# --- Untriaged -----------------------------------------------------------------
+#
+# Nobody has diagnosed these. Each says what it does, so that whoever picks
+# one up starts from the symptom rather than from a rerun, and the clusters
+# are the obvious places to start: three report MPI_LB missing, three a
+# window attribute copied by MPI_WIN_NULL_COPY_FN, three an empty window
+# name, three a type name of the wrong length, seven abort inside MPICH's
+# own ABI handle table, and eleven Open MPI spawn tests print "No Errors"
+# and are rejected anyway on x86_64 alone.
+#
+xfail */*/*/*               f77  allctypesf           # untriaged: "Datatype MPI_LB not available in Fortran"
+xfail */*/*/*               f08  allctypesf08         # untriaged: "Datatype MPI_LB not available in Fortran"
+xfail */*/*/*               f90  allctypesf90         # untriaged: "Datatype MPI_LB not available in Fortran"
+xfail */gcc/*/*             f08  alltoallwf08         # untriaged: gcc only, on both MPIs; MPICH asserts at mpi_abi_util.h:140
+xfail */*/*/*               f08  attrlangf08          # untriaged: fails with no output of its own
+xfail */*/*/*               f90  attrlangf90          # untriaged: fails with no output of its own
+xfail mpich/*/*/*           f77  bsendf               # untriaged: "internal_Buffer_attach: Invalid buffer pointer"
+xfail mpich/*/*/*           f08  createf08            # untriaged: "internal_Type_get_envelope: Invalid datatype"
+xfail mpich/*/*/*           f90  createf90            # untriaged: "internal_Type_get_envelope: Invalid datatype"
+xfail mpich/*/*/*           f90  createf90types       # untriaged: "Unable to find a real type for (p=3,r=10) in REAL"
+xfail */*/*/*               f08  fandcattrf08         # untriaged: crashes under Open MPI ("Process received signal"); no output under MPICH
+xfail */*/*/*               f90  fandcattrf90         # untriaged: crashes under Open MPI ("Process received signal"); no output under MPICH
+xfail */*/linux/*           f08  i_fcoll_test         # untriaged: prints "No Errors" and is still rejected; passes only on mpich/gcc/darwin
+xfail */llvm/*/*            f08  i_fcoll_test         # untriaged: prints "No Errors" and is still rejected; passes only on mpich/gcc/darwin
+xfail openmpi/*/*/*         f08  i_fcoll_test         # untriaged: prints "No Errors" and is still rejected; passes only on mpich/gcc/darwin
+xfail mpich/llvm/*/x86_64   f77  nonblocking_inpf     # untriaged: MPICH asserts at mpi_abi_util.h:140; seen on one variant only, so possibly flaky
+xfail */gcc/*/*             f08  nonblocking_inpf08   # untriaged: gcc only, on both MPIs; MPICH asserts at mpi_abi_util.h:140
+xfail mpich/llvm/*/x86_64   f90  nonblocking_inpf90   # untriaged: MPICH asserts at mpi_abi_util.h:140; seen on one variant only, so possibly flaky
+xfail */gcc/*/*             f08  nonblockingf08       # untriaged: gcc only, on both MPIs; MPICH asserts at mpi_abi_util.h:140
+xfail openmpi/*/*/x86_64    f77  spawnargvf           # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
+xfail openmpi/*/*/x86_64    f90  spawnargvf03         # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
+xfail openmpi/*/*/x86_64    f90  spawnargvf90         # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
+xfail openmpi/*/*/x86_64    f77  spawnf               # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
+xfail openmpi/*/*/x86_64    f08  spawnf90             # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
+xfail openmpi/*/*/x86_64    f90  spawnf90             # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
+xfail openmpi/*/*/x86_64    f77  spawnmultf           # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
+xfail openmpi/*/*/x86_64    f08  spawnmultf03         # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
+xfail openmpi/*/*/x86_64    f90  spawnmultf03         # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
+xfail openmpi/*/*/x86_64    f08  spawnmultf90         # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
+xfail openmpi/*/*/x86_64    f90  spawnmultf90         # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
+xfail */*/*/*               f08  test14               # untriaged: "Found 27 errors"
+xfail */*/*/*               f08  test15               # untriaged: "Found 9 errors"
+xfail mpich/*/*/*           f08  trf08                # untriaged: "internal_Type_contiguous: Invalid datatype"
+xfail mpich/*/*/*           f90  trf90                # untriaged: "internal_Type_contiguous: Invalid datatype"
+xfail mpich/gcc/linux/*     f77  typecntsf            # untriaged: MPICH asserts at mpi_abi_util.h:140
+xfail mpich/llvm/*/aarch64  f90  typecntsf90          # untriaged: MPICH asserts at mpi_abi_util.h:143; seen on one variant only, so possibly flaky
+xfail openmpi/*/*/*         f77  typesnamef           # untriaged: "(type2) Expected length 0, got 17"
+xfail openmpi/*/*/*         f08  typesnamef08         # untriaged: "(type2) Expected length 0, got 17"
+xfail openmpi/*/*/*         f90  typesnamef90         # untriaged: "(type2) Expected length 0, got 17"
+xfail */gcc/*/*             f08  vw_inplacef08        # untriaged: gcc only, on both MPIs; MPICH asserts at mpi_abi_util.h:140
+xfail */*/*/*               f77  winattrf             # untriaged: "output attr value was copied in MPI_WIN_NULL_COPY_FN"
+xfail */*/*/*               f08  winattrf08           # untriaged: "output attr value was copied in MPI_WIN_NULL_COPY_FN"
+xfail */*/*/*               f90  winattrf90           # untriaged: "output attr value was copied in MPI_WIN_NULL_COPY_FN"
+xfail openmpi/*/*/*         f77  winnamef             # untriaged: "Did not get empty name from new window"
+xfail openmpi/*/*/*         f08  winnamef08           # untriaged: "Did not get empty name from new window"
+xfail openmpi/*/*/*         f90  winnamef90           # untriaged: "Did not get empty name from new window"
 
-xfail mpich/gcc/*  f08  alltoallwf08       # untriaged: MPICH asserts, mpi_abi_util.h:140; passes under flang
-xfail mpich/gcc/*  f08  nonblockingf08     # untriaged: same assertion; passes under flang
-xfail mpich/gcc/*  f08  nonblocking_inpf08 # untriaged: same assertion; passes under flang
-xfail mpich/gcc/*  f08  vw_inplacef08      # untriaged: same assertion; passes under flang
-
-xfail mpich/*/*  f77  bsendf         # untriaged: "internal_Buffer_attach: Invalid buffer pointer"
-xfail mpich/*/*  f90  createf90      # untriaged: "internal_Type_get_envelope: Invalid datatype"
-xfail mpich/*/*  f08  createf08      # untriaged: same
-xfail mpich/*/*  f90  trf90          # untriaged: "internal_Type_contiguous: Invalid datatype"
-xfail mpich/*/*  f08  trf08          # untriaged: same
-xfail mpich/*/*  f90  createf90types # untriaged: "Unable to find a real type for (p=3,r=10) in REAL"
-xfail mpich/*/*  f77  winattrf       # untriaged: "output attr value was copied in MPI_WIN_NULL_COPY_FN"
-xfail mpich/*/*  f90  winattrf90     # untriaged: same
-xfail mpich/*/*  f08  winattrf08     # untriaged: same
-xfail mpich/*/*  f90  attrlangf90    # untriaged: fails with no output of its own
-xfail mpich/*/*  f08  attrlangf08    # untriaged: same
-xfail mpich/*/*  f90  fandcattrf90   # untriaged: fails with no output of its own
-xfail mpich/*/*  f08  fandcattrf08   # untriaged: same
-xfail mpich/*/*  f08  test14         # untriaged: "Found 27 errors"
-xfail mpich/*/*  f08  test15         # untriaged: "Found 9 errors"
