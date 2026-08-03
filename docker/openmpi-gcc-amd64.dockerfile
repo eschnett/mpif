@@ -143,7 +143,11 @@ RUN <<EOF
     export LD_LIBRARY_PATH=${mpi_prefix}/lib:${mpif_prefix}/lib
     # Open MPI refuses to oversubscribe by default, and refuses to run as root
     # at all -- and a docker build is root, on however many cores the daemon
-    # happens to give it
-    export MPIEXEC_ARGS="--oversubscribe --allow-run-as-root"
+    # happens to give it. `btl_tcp_if_include lo` keeps it on the loopback
+    # interface, which is all a single host needs: given a choice it picks
+    # another one and then warns that it cannot reach a spawned child over it,
+    # and `runtests` counts the warning as test output. See the same flag in
+    # .github/workflows/ci.yaml.
+    export MPIEXEC_ARGS="--oversubscribe --allow-run-as-root --mca btl_tcp_if_include lo"
     ci-scripts/suite/test-mpich-suite.sh ${mpi_prefix} ${mpif_prefix}
 EOF

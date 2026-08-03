@@ -42,12 +42,15 @@
 # linux/26.04/aarch64. <language> is f77, f90 or f08.
 #
 # Both of the last two are in the key because environments that agree on
-# everything else still disagree. The architecture: eleven Open MPI spawn tests
-# fail on x86_64 and pass on aarch64, and two MPICH tests differ the other way.
-# The OS version: the Docker images run Ubuntu 26.04 where CI's runners run 24.04,
-# and they part company over MPI_Dist_graph_create and i_fcoll_test; this
-# repository's own macOS is 26 where the runners are 15. Without those components
-# each pair would read as an unexpected pass on whichever ran second.
+# everything else still disagree -- and not always over the thing the component
+# names. The architecture went in for eleven Open MPI spawn tests that failed on
+# x86_64 and passed on aarch64, which turned out to be about a docker0 bridge one
+# runner image has and the other does not; two MPICH tests differ the other way
+# and keep it there. The OS version went in for the Docker images, which run
+# Ubuntu 26.04 where CI's runners run 24.04 and part company over
+# MPI_Dist_graph_create and i_fcoll_test, and because this repository's own macOS
+# is 26 where the runners are 15. Read either component as "a different
+# environment" rather than as a claim about the ISA or the release.
 #
 # The version is deliberately coarse. A full macOS version, or a distribution's
 # point release, would churn every time a runner image is refreshed and expire
@@ -146,31 +149,19 @@ xfail */*/*/*/*                f90  wtimef90           # no PMPI: "Function 'pmp
 # --- Untriaged -----------------------------------------------------------------
 #
 # Nobody has diagnosed these. Each says what it does, so that whoever picks one
-# up starts from the symptom rather than from a rerun. What is left is two
-# clusters: eleven Open MPI spawn tests that print "No Errors" on x86_64 and are
-# rejected anyway, and i_fcoll_test everywhere except macOS, where the cause is
-# known and is above.
+# up starts from the symptom rather than from a rerun. What is left is
+# i_fcoll_test, on CI's Linux runners and under flang on macOS; the same test on
+# macOS with Open MPI has a cause, and it is above.
 #
-# For the spawn eleven the mechanism is known and the datum is not.
-# `runtests`' TestNormal rejects a test that prints anything the suite does not
-# expect, *even alongside* "No Errors" -- check_result counts every unmatched line
-# as stray output and expect_clean_output then fails the test. Open MPI says one
-# thing on every run of its own accord, the deprecated `schizo_proxy` block, and
-# `ci-scripts/mpiexec-filter.sh` drops exactly that. So something else reaches the
-# suite on x86_64 alone. Which line it is has never been written down, and it is
-# in every CI run: the tap file for the language names the test and quotes its
-# output under "## Test output". Read that before rerunning anything.
+# The eleven Open MPI spawn tests that used to be here were not a defect at all.
+# They printed "No Errors" and were rejected on a warning that Open MPI added to
+# their output -- it could not reach a spawned child over the docker0 bridge that
+# GitHub's x86_64 runners have and its arm64 runners do not. Keeping Open MPI on
+# the loopback interface removes it; see .github/workflows/ci.yaml. Worth
+# remembering as the shape of the thing: `runtests` fails a test for *any*
+# unexpected output line, even beside "No Errors", so a launcher that says
+# anything at all fails everything. The output is quoted in each run's tap file
+# under "## Test output", which is where to look first.
 #
 xfail */*/linux/24.04/*        f08  i_fcoll_test       # untriaged: fails on CI's 24.04 runners, cause unknown; it passes on 26.04, and the macOS cause above does not apply
 xfail mpich/llvm/darwin/*/*    f08  i_fcoll_test       # untriaged: fails under flang and passes under gfortran on the same MPI, which is the odd part
-xfail openmpi/*/*/*/x86_64     f77  spawnargvf         # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
-xfail openmpi/*/*/*/x86_64     f90  spawnargvf03       # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
-xfail openmpi/*/*/*/x86_64     f90  spawnargvf90       # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
-xfail openmpi/*/*/*/x86_64     f77  spawnf             # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
-xfail openmpi/*/*/*/x86_64     f08  spawnf90           # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
-xfail openmpi/*/*/*/x86_64     f90  spawnf90           # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
-xfail openmpi/*/*/*/x86_64     f77  spawnmultf         # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
-xfail openmpi/*/*/*/x86_64     f08  spawnmultf03       # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
-xfail openmpi/*/*/*/x86_64     f90  spawnmultf03       # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
-xfail openmpi/*/*/*/x86_64     f08  spawnmultf90       # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
-xfail openmpi/*/*/*/x86_64     f90  spawnmultf90       # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only

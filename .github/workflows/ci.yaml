@@ -294,17 +294,32 @@ jobs:
           # fewer cores than the suite asks processes for
           if [[ ${{ matrix.mpi }} == openmpi ]]; then
               args=--oversubscribe
-              # On macOS Open MPI picks a non-loopback interface and then fails
-              # to configure the socket -- "setsockopt(TCP_NODELAY) failed:
-              # Invalid argument (22)", followed by its own warning that this
-              # "may end up hanging". It does, in every test that communicates
-              # across a spawned intercommunicator, and each one then burns
-              # runtests' 180-second timeout rather than failing. The interface
-              # is lo0 on macOS and lo on Linux, but Linux does not need this at
-              # all, so it is not worth naming there. See
+              # Keep Open MPI on the loopback interface. Everything here runs on
+              # one host, and left to itself Open MPI picks a non-loopback
+              # interface and then cannot use it, in a different way on each OS:
+              #
+              #   macOS      "setsockopt(TCP_NODELAY) failed: Invalid argument
+              #              (22)", and its own warning that this "may end up
+              #              hanging" -- which it does, in every test that
+              #              communicates across a spawned intercommunicator,
+              #              each then burning runtests' 180-second timeout.
+              #
+              #   Linux      on the x86_64 runners, which have Docker installed
+              #              and so a docker0 bridge at 172.17.0.1, a spawned
+              #              child cannot be reached over it: "WARNING: Open MPI
+              #              failed to TCP connect to a peer MPI process ...
+              #              connect() to 172.17.0.1:1026 failed". The tests
+              #              themselves still print "No Errors"; they fail
+              #              because `runtests` counts the warning as output. The
+              #              arm64 runners have no Docker, no docker0 and no
+              #              warning, which is why this looked architectural.
+              #
+              # The interface is lo0 on macOS and lo on Linux. See
               # scripts/macos-test-mpich-suite.sh, which does the same locally.
               if [[ ${RUNNER_OS} == macOS ]]; then
                   args="${args} --mca btl_tcp_if_include lo0"
+              else
+                  args="${args} --mca btl_tcp_if_include lo"
               fi
               export MPIEXEC_ARGS="${args}"
           fi

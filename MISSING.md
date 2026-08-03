@@ -374,19 +374,46 @@ for `i_fcoll_test` on `openmpi/*/darwin/*` only; the same test also fails on eve
 Linux variant and under flang on macOS, and those are still untriaged, with the
 aio message conspicuously absent from the reason.
 
-### OpenMPI on macOS: spawned intercommunicators hang
+### OpenMPI: left to itself it picks an interface it cannot use
 
-Not an mpif problem either, and not really a blocker so much as a trap. Open MPI
-picks a non-loopback interface and then cannot configure the socket --
-`setsockopt(TCP_NODELAY) failed: Invalid argument (22)`, followed by its own
-warning that this "may end up hanging". It does, in any test that communicates
-across a spawned intercommunicator, and each one then burns runtests' 180-second
-timeout rather than failing, so the suite looks stuck rather than broken. A pure
-C spawn-and-send reproduces it.
+Not an mpif problem, and not really a blocker so much as a trap -- but the trap
+sprang twice, in different ways, and the second one had eleven suite tests
+attributed to the architecture for months.
 
-`scripts/macos-test-mpich-suite.sh` and the CI step both pass
-`--mca btl_tcp_if_include lo0` for Open MPI to avoid it; the CI one is guarded on
-`RUNNER_OS`, Linux needing neither the flag nor the same interface name.
+Everything here runs on one host, and Open MPI given a free choice of interface
+takes a non-loopback one and then fails on it:
+
+- **macOS**: it cannot configure the socket -- `setsockopt(TCP_NODELAY) failed:
+  Invalid argument (22)`, followed by its own warning that this "may end up
+  hanging". It does, in any test that communicates across a spawned
+  intercommunicator, and each one then burns runtests' 180-second timeout rather
+  than failing, so the suite looks stuck rather than broken. A pure C
+  spawn-and-send reproduces it.
+- **Linux on GitHub's x86_64 runners**: those images have Docker installed, hence
+  a `docker0` bridge at 172.17.0.1, and a spawned child cannot be reached over it:
+
+      WARNING: Open MPI failed to TCP connect to a peer MPI process.  This
+      should not happen.
+      Your Open MPI job may now hang or fail.
+        Message:    connect() to 172.17.0.1:1026 failed
+
+  Nothing hangs and nothing is wrong with the tests -- each of the eleven prints
+  "No Errors" -- but `runtests` fails a test for *any* output it did not expect,
+  even beside "No Errors", so the warning alone failed them. The arm64 runners have
+  no Docker, no `docker0` and no warning, which is why this looked like an
+  architecture difference and sat under `openmpi/*/*/x86_64` as untriaged.
+
+`--mca btl_tcp_if_include lo0` on macOS and `lo` on Linux is the whole cure, and
+it is now passed in all three places that run the suite: the CI step,
+`scripts/macos-test-mpich-suite.sh` and each `docker/openmpi-*.dockerfile`. The
+eleven entries are gone from `ci-scripts/suite/mpich-suite-xfail.txt`, which is a
+prediction CI checks: if the flag does not take, they come back as unexpected
+failures rather than staying quietly excused.
+
+The arithmetic that says the diagnosis is right: subtracting the eleven leaves the
+two Open MPI x86_64 rows in the baseline below identical to their aarch64 twins,
+5 / 9 / 20 under gcc and 5 / 9 / 16 under llvm, which is what "the same
+implementation on the same OS" should look like.
 
 ### MPICH: suite tests that cannot pass against a conforming binding
 
@@ -1173,13 +1200,12 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    and how its lifetime is tied to the attribute -- that is the whole of the work.
 2. **The PMPI interface**, which does not exist at all and which `mpif.h`
    currently promises four names it cannot link.
-3. **Triaging the 12 suite failures still untriaged.**
-   `ci-scripts/suite/mpich-suite-xfail.txt` names each with its symptom. What is left is
-   the eleven Open MPI spawn tests that print "No Errors" on x86_64 and are
-   rejected anyway, and `i_fcoll_test` on Linux and under flang. For the spawn
-   eleven the mechanism is known -- `runtests` fails a test for *any* unexpected
-   output line, even beside "No Errors" -- and the missing datum is which line,
-   which every CI run records in its tap file and nobody has copied out.
+3. **`i_fcoll_test`, the last two untriaged entries**, on CI's Linux runners and
+   under flang on macOS. `ci-scripts/suite/mpich-suite-xfail.txt` has the symptom.
+   The macOS Open MPI case is solved and above; these two are not that, and the
+   Linux one is odd in that the test passes on Ubuntu 26.04 and fails on 24.04.
+   Start where the spawn eleven were solved: the "## Test output" block in the
+   run's tap file.
 
 Two things are decided and not on this list, so that they are not picked up by
 mistake: assumed-rank choice buffers are not being taken for now, and `MPI_Sizeof`
@@ -1206,20 +1232,20 @@ come from, `typecntsf` failed on `mpich/gcc/linux/aarch64` and passed on
 rows as approximate to that extent; the list, which excuses those five either
 way, is what is exact.
 
-| variant                      | f77 | f90 | f08 |
-|------------------------------|-----|-----|-----|
-| mpich/gcc/darwin/arm64       |   3 |  11 |  18 |
-| mpich/gcc/linux/x86_64       |   3 |  12 |  19 |
-| mpich/gcc/linux/aarch64      |   4 |  11 |  20 |
-| mpich/llvm/darwin/arm64      |   3 |  11 |  15 |
-| mpich/llvm/linux/x86_64      |   4 |  12 |  16 |
-| mpich/llvm/linux/aarch64     |   4 |  12 |  16 |
-| openmpi/gcc/darwin/arm64     |   5 |   9 |  20 |
-| openmpi/gcc/linux/x86_64     |   8 |  14 |  23 |
-| openmpi/gcc/linux/aarch64    |   5 |   9 |  20 |
-| openmpi/llvm/darwin/arm64    |   5 |   9 |  16 |
-| openmpi/llvm/linux/x86_64    |   8 |  14 |  19 |
-| openmpi/llvm/linux/aarch64   |   5 |   9 |  16 |
+| variant                          | f77 | f90 | f08 |
+|----------------------------------|-----|-----|-----|
+| mpich/gcc/darwin/15/arm64        |   3 |  11 |  18 |
+| mpich/gcc/linux/24.04/x86_64     |   3 |  12 |  19 |
+| mpich/gcc/linux/24.04/aarch64    |   4 |  11 |  20 |
+| mpich/llvm/darwin/15/arm64       |   3 |  11 |  15 |
+| mpich/llvm/linux/24.04/x86_64    |   4 |  12 |  16 |
+| mpich/llvm/linux/24.04/aarch64   |   4 |  12 |  16 |
+| openmpi/gcc/darwin/15/arm64      |   5 |   9 |  20 |
+| openmpi/gcc/linux/24.04/x86_64   |   5 |   9 |  20 |
+| openmpi/gcc/linux/24.04/aarch64  |   5 |   9 |  20 |
+| openmpi/llvm/darwin/15/arm64     |   5 |   9 |  16 |
+| openmpi/llvm/linux/24.04/x86_64  |   5 |   9 |  16 |
+| openmpi/llvm/linux/24.04/aarch64 |   5 |   9 |  16 |
 
 Every Open MPI f90 row is one lower than the run it comes from: `bsendf90` used
 to fail to build everywhere and now builds, and fails only on MPICH -- see
@@ -1227,34 +1253,45 @@ to fail to build everywhere and now builds, and fails only on MPICH -- see
 rather than measured, from `bsendf`, which is the same test with the same
 400-byte buffer and has always been expected to fail on MPICH alone; CI is what
 confirms it, on all four Open MPI variants at once. The MPICH rows are measured,
-`mpich/gcc/darwin/arm64` reporting no differences after the change.
+`mpich/gcc/darwin/26/arm64` reporting no differences after the change.
 
-Sixty-five entries cover them, for sixty-three distinct language-and-test pairs
--- five of them `flaky` rather than `xfail`. Fifty-two are accounted for, each
-either by an entry here or by a reason that stands on its own, and thirteen
-covering twelve pairs still say "untriaged": eleven Open MPI spawn tests on x86_64
-and two thirds of `i_fcoll_test`. The rows above are CI's, so they do not count the
-six `dgraph` entries, which belong to a Docker variant.
+The two Open MPI x86_64 rows are likewise ahead of the run they come from, by the
+eleven spawn tests that the loopback flag should remove -- see "left to itself it
+picks an interface it cannot use". That is what makes them equal to their aarch64
+twins, and CI is what confirms it.
 
-The passes through them have resolved three into mpif bugs, two into MPICH ones,
-three into Open MPI ones, two into a decision and one into a test asserting more
-than the standard says -- the `dgraph` pair, where Open MPI is within its rights.
-The most recent pass took twenty-four untriaged pairs down to twelve, and every one it resolved came from
-running the test rather than reading it: the four attribute tests turned out to
+Fifty-four entries cover them, for fifty-two distinct language-and-test pairs --
+five of them `flaky` rather than `xfail`. All but two are accounted for, each
+either by an entry here or by a reason that stands on its own; the two are
+`i_fcoll_test` on CI's Linux runners and under flang on macOS. The rows above are
+CI's, so they do not count the six `dgraph` entries, which belong to a Docker
+variant.
+
+Triage has taken twenty-four untriaged pairs down to two, and resolved them into
+three mpif bugs, two MPICH ones, three Open MPI ones, a decision, a test asserting
+more than the standard says -- the `dgraph` pair, where Open MPI is within its
+rights -- and eleven that were never failures at all, the spawn tests that a
+launcher warning was failing for them. Every one came from running the test rather
+than reading it, or from reading what the run printed: the four attribute tests
 crash in a C frame that names the defect, `test14` and `test15` sit in a directory
-whose thirteen passing neighbours say what the mechanism is, and the two Open MPI
-name cases and the aio one reproduce in C in a dozen lines. The earlier version of
-this section had four rows and
+whose thirteen passing neighbours say what the mechanism is, the two Open MPI name
+cases and the aio one reproduce in C in a dozen lines, and the spawn eleven needed
+nothing but the "## Test output" block that every CI run had been recording all
+along. The earlier version of this section had four rows and
 claimed every failure was attributable, both of which were wrong: MPICH looked
 far worse than Open MPI only because those rows predated the handle-table patch,
 and most of the failures had never been diagnosed.
 
 Three things the twelve-way measurement settled that guesswork had got wrong:
 
-- **The architecture belongs in the key.** Eleven Open MPI spawn tests fail on
-  `linux/x86_64` and pass on `linux/aarch64`, and two MPICH tests differ the
-  other way. Keyed on `mpi/toolchain/os` alone, each set would read as an
-  unexpected pass on whichever runner ran second.
+- **The architecture belongs in the key**, though not for the reason it was put
+  there. Eleven Open MPI spawn tests failed on `linux/x86_64` and passed on
+  `linux/aarch64`, and two MPICH tests differ the other way; keyed on
+  `mpi/toolchain/os` alone, each set would read as an unexpected pass on whichever
+  runner ran second. The spawn eleven turned out to be about a `docker0` bridge
+  that one runner image has and the other does not, so read the component as "a
+  different environment" and not as a claim about the ISA. The two MPICH tests
+  keep it in the key.
 - **`alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08` and `vw_inplacef08`
   are a gcc problem, not an MPICH one.** They fail under gcc on *both*
   implementations and pass under llvm on both, so the selector is `*/gcc/*/*`.
