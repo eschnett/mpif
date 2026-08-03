@@ -42,6 +42,13 @@ end module mpif_attr_fns
 
 ! Deprecated in MPI-2.0, for MPI_Keyval_create. Attribute values and extra
 ! state are plain default integers in these, not address-sized.
+!
+! Two of the three spell the last argument IERR and the third IERROR, which is
+! what A.5 does -- IERR for MPI_NULL_COPY_FN and MPI_DUP_FN, IERROR for
+! MPI_NULL_DELETE_FN -- and what `apis.json` records. An inconsistency in the
+! standard rather than one to tidy up here: these are external subprograms, so
+! the names are documentation, and the documentation should say what the standard
+! says.
 
 subroutine MPI_NULL_COPY_FN(oldcomm, keyval, extra_state, &
      attribute_val_in, attribute_val_out, flag, ierr)
@@ -72,12 +79,12 @@ subroutine MPI_DUP_FN(oldcomm, keyval, extra_state, &
   ierr = MPI_SUCCESS
 end subroutine MPI_DUP_FN
 
-subroutine MPI_NULL_DELETE_FN(comm, keyval, attribute_val, extra_state, ierr)
+subroutine MPI_NULL_DELETE_FN(comm, keyval, attribute_val, extra_state, ierror)
   use mpif_constants, only: MPI_SUCCESS
   implicit none
   integer, intent(in) :: comm, keyval, attribute_val, extra_state
-  integer, intent(out) :: ierr
-  ierr = MPI_SUCCESS
+  integer, intent(out) :: ierror
+  ierror = MPI_SUCCESS
 end subroutine MPI_NULL_DELETE_FN
 
 ! Communicator attributes

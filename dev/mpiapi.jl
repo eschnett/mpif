@@ -44,9 +44,19 @@ kind2type = Dict(["COMMUNICATOR" => "Comm",
 # DISPOFFSET_SMALL
 
 # `XFER_NUM_ELEM_NNI` is deliberately not here; see `count_kinds` below.
+#
+# `ERROR_CODE_SHOW_INTENT` is a plain INTEGER like `ERROR_CODE`, and belongs to
+# one argument in the whole standard: MPI_TYPE_NULL_DELETE_FN's `ierror`, where
+# A.4 shows INTENT(OUT) and the abstract interface it has to match,
+# MPI_Type_delete_attr_function, shows none. The suffix is about that display and
+# not about the type. mpif follows the abstract interface -- see
+# `dev/check-f08-bindings.jl`, which exempts exactly this one intent -- so the
+# kind carries no intent here either; a callback's arguments get none, which is a
+# property of callbacks rather than of this kind.
 int_kinds = ["ACCESS_MODE", "ARGUMENT_COUNT", "ARRAY_LENGTH", "ARRAY_LENGTH_NNI", "ARRAY_LENGTH_PI", "ASSERT", "COLOR", "COMBINER",
              "COMM_COMPARISON", "COMM_SIZE", "COMM_SIZE_PI", "COORDINATE", "DEGREE", "DIMENSION", "DISTRIB_ENUM",
-             "DTYPE_DISTRIBUTION", "ERROR_CLASS", "ERROR_CODE", "FILE_DESCRIPTOR", "GENERIC_DTYPE_INT", "GROUP_COMPARISON", "INDEX",
+             "DTYPE_DISTRIBUTION", "ERROR_CLASS", "ERROR_CODE", "ERROR_CODE_SHOW_INTENT", "FILE_DESCRIPTOR",
+             "GENERIC_DTYPE_INT", "GROUP_COMPARISON", "INDEX",
              "INFO_VALUE_LENGTH", "KEY", "KEYVAL", "KEY_INDEX", "LOCK_TYPE", "MATH", "NUM_BYTES_SMALL", "NUM_DIMS", "ORDER",
              "PARTITION", "PROCESS_GRID_SIZE", "PROFILE_LEVEL", "RANK", "RANK_NNI", "SPLIT_TYPE",
              "STRING_LENGTH", "TAG",
@@ -62,10 +72,10 @@ int_count_kinds = ["POLYDISPLACEMENT_COUNT", "POLYDTYPE_NUM_ELEM", "POLYDTYPE_NU
 # confused with POLYRMA_DISPLACEMENT, the `disp_unit` of MPI_Win_create, which
 # really is a plain INTEGER in the small form.
 #
-# `C_BUFFER` is here and `C_BUFFER2` is not. The four `C_BUFFER*` kinds are one
+# Of the four `C_BUFFER*` kinds only `C_BUFFER` belongs here. They are one
 # question asked four times -- is this parameter an address or a buffer -- and the
-# answer is not the same for all four, so all four are recorded here rather than
-# rediscovered at each use:
+# answer is not the same for all four, so the answer for each is written down here
+# rather than rediscovered at each use:
 #
 # - `C_BUFFER` is `baseptr` of MPI_Alloc_mem and the three MPI_Win_allocate*
 #   routines, an address in both bindings: A.5 gives it
@@ -73,19 +83,34 @@ int_count_kinds = ["POLYDISPLACEMENT_COUNT", "POLYDTYPE_NUM_ELEM", "POLYDTYPE_NU
 #   src/mpif_cptr.F90), and A.4 gives it TYPE(C_PTR).
 # - `C_BUFFER2` is `buffer_addr` of MPI_Buffer_detach, MPI_Comm_detach_buffer and
 #   MPI_Session_detach_buffer. A.4 gives it TYPE(C_PTR) as well, but A.5 gives it
-#   `<type> BUFFER_ADDR(*)` -- a choice buffer -- so it is handled with the
-#   `BUFFER` kind below and is not an integer in either binding.
+#   `<type> BUFFER_ADDR(*)` -- a choice buffer -- so it is not an integer in
+#   either binding.
 # - `C_BUFFER3` (the datarep conversion callbacks' `userbuf` and `filebuf`) and
-#   `C_BUFFER4` (MPI_User_function's `invec` and `inoutvec`) are choice buffers
-#   too, and stay here only because nothing generated reaches them: both belong
-#   to callbacks, whose interfaces are hand-written in `src/mpif_f08_types.F90`.
-#   See "Generated callback interfaces and definitions" in MISSING.md.
-aint_kinds = ["ALLOC_MEM_NUM_BYTES", "C_BUFFER", "C_BUFFER3", "C_BUFFER4", "DISPLACEMENT", "LOCATION_SMALL",
+#   `C_BUFFER4` (MPI_User_function's `invec` and `inoutvec`) are choice buffers in
+#   A.5 too, and `TYPE(C_PTR), VALUE` in A.1.3 -- the callbacks receive the buffer
+#   address itself, which is why VALUE and an assumed-size array's address are the
+#   same thing here.
+#
+# All three of the latter are therefore handled with the `BUFFER` kind below.
+aint_kinds = ["ALLOC_MEM_NUM_BYTES", "C_BUFFER", "DISPLACEMENT", "LOCATION_SMALL",
               "RMA_DISPLACEMENT_NNI", "WIN_ATTACH_SIZE", "WINDOW_SIZE"]
 
 # The two whose mpi_f08 declaration is TYPE(C_PTR), whatever the mpi module's is.
 # The wrapper passes an address-sized temporary to C either way and converts.
 cptr_out_kinds = ["C_BUFFER", "C_BUFFER2"]
+
+# The kinds that are a choice buffer in the mpi module and mpif.h and a
+# TYPE(C_PTR) in mpi_f08. `C_BUFFER2` is an ordinary out parameter and gets
+# INTENT(OUT); the other two are a callback's buffers and are passed by VALUE.
+cptr_buffer_kinds = ["C_BUFFER2", "C_BUFFER3", "C_BUFFER4"]
+
+# The kinds that only ever appear on a callback or a predefined function, both of
+# which are dropped below. Asserted where they are dropped, so that "nothing
+# generated reaches these" is checked on every run: the entries above and the
+# ERROR_CODE_SHOW_INTENT one are right for a callback and would need looking at
+# again if `apis.json` ever put one of these kinds on an ordinary routine.
+callback_only_kinds = ["C_BUFFER3", "C_BUFFER4", "ERROR_CODE_SHOW_INTENT"]
+
 aint_count_kinds = ["POLYDISPLACEMENT_AINT_COUNT", "POLYDISPOFFSET", "POLYDTYPE_PACK_SIZE", "POLYDTYPE_STRIDE_BYTES",
                     "POLYLOCATION"]
 
@@ -351,10 +376,22 @@ for key in sort(collect(keys(apis)))
 
     # Callbacks are just prototypes, not functions
     callback = attributes["callback"]
-    callback && continue
     # Predefined functions are constants
     predefined_function = attributes["predefined_function"]
-    predefined_function != nothing && continue
+    if callback || predefined_function != nothing
+        continue
+    end
+
+    # Three kinds belong to callbacks and predefined functions alone, and the
+    # answers recorded for them at the top of this file are the answers for a
+    # callback: `C_BUFFER3` and `C_BUFFER4` are buffers rather than addresses, and
+    # `ERROR_CODE_SHOW_INTENT` is an INTEGER whose displayed INTENT mpif does not
+    # follow. Nothing generated reaches any of them, and this is where that is
+    # checked -- an ordinary routine acquiring one would need those answers looked
+    # at again, not applied quietly.
+    for p in parameters
+        @assert p["kind"] ∉ callback_only_kinds
+    end
 
     # Varargs cannot be forwarded from Fortran, and the standard's Fortran
     # bindings do not have them either -- MPI_Pcontrol is the only function
@@ -498,7 +535,7 @@ for key in sort(collect(keys(apis)))
                 end
             end
 
-            if kind ∈ ["BUFFER", "C_BUFFER2", "LOGICAL_VOID"]
+            if kind ∈ ["BUFFER"; cptr_buffer_kinds; "LOGICAL_VOID"]
                 @assert "c_parameter" ∉ suppress
                 @assert "f90_parameter" ∉ suppress
                 @assert !large_only
@@ -536,19 +573,30 @@ for key in sort(collect(keys(apis)))
                     # for them -- the value really is one default LOGICAL.
                     push!(f_declarations, "logical :: $parname")
                     push!(f08_declarations, "logical, intent($f08_param_direction) :: $parname")
-                elseif kind == "C_BUFFER2"
-                    # `buffer_addr`, where the two bindings disagree and neither
-                    # is an integer: A.5 gives `<type> BUFFER_ADDR(*)`, a choice
-                    # buffer, and A.4 gives `TYPE(C_PTR), INTENT(OUT)`. One C
-                    # entry point serves both, because it writes the detached
-                    # address through the pointer Fortran hands it either way:
-                    # the mpi module's caller gets it written into the variable
-                    # it passed, and the f08 wrapper passes an address-sized
-                    # temporary and converts it with `transfer` above.
+                elseif kind ∈ cptr_buffer_kinds
+                    # A choice buffer in the mpi module and mpif.h, a TYPE(C_PTR)
+                    # in mpi_f08. `C_BUFFER2` is `buffer_addr`, where the two
+                    # bindings disagree and neither is an integer: A.5 gives
+                    # `<type> BUFFER_ADDR(*)` and A.4 gives
+                    # `TYPE(C_PTR), INTENT(OUT)`. One C entry point serves both,
+                    # because it writes the detached address through the pointer
+                    # Fortran hands it either way: the mpi module's caller gets it
+                    # written into the variable it passed, and the f08 wrapper
+                    # passes an address-sized temporary and converts it with
+                    # `transfer` above.
+                    #
+                    # `C_BUFFER3` and `C_BUFFER4` are a callback's buffers, which
+                    # A.1.3 declares `TYPE(C_PTR), VALUE`: there the address is
+                    # the argument rather than something written through it, and
+                    # by value it lands in the same register as the address of the
+                    # assumed-size array A.5 asks for. Nothing generated reaches
+                    # these two, callbacks being dropped above, which is asserted
+                    # there rather than assumed here.
                     push!(f_declarations, "!dir\$ ignore_tkr(trk) $parname")
                     push!(f_declarations, "!gcc\$ attributes no_arg_check :: $parname")
                     push!(f_declarations, "integer :: $parname(*)")
-                    push!(f08_declarations, "type(C_PTR), intent($f08_param_direction) :: $parname")
+                    f08_cptr = kind == "C_BUFFER2" ? "type(C_PTR), intent($f08_param_direction)" : "type(C_PTR), value"
+                    push!(f08_declarations, "$f08_cptr :: $parname")
                 else
                     push!(f_declarations, "!dir\$ ignore_tkr(trk) $parname")
                     push!(f_declarations, "!gcc\$ attributes no_arg_check :: $parname")

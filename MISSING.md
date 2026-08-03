@@ -547,23 +547,35 @@ describes, and can therefore drift from it:
 - the predefined callbacks in `src/mpif_attr_fns.F90`, all 14 of which are in
   the JSON as `predefined_function` entries.
 
-An audit of the latter against the JSON found the types all correct but three
-divergences worth knowing before generating them:
+An audit of the latter against the JSON found the types all correct and three
+divergences, all now corrected. They were what stood between the JSON and these
+two pieces being generated, so what is left of that job is the generating:
 
-- `MPI_NULL_DELETE_FN`'s last argument is `ierror` in the JSON, `ierr` in the
-  hand-written version. Harmless for an external subroutine with no explicit
-  interface, but a divergence.
+- `MPI_NULL_DELETE_FN`'s last argument was `ierr` where the JSON says `ierror`,
+  and A.5 with it -- `MPI_NULL_DELETE_FN(COMM, KEYVAL, ATTRIBUTE_VAL,
+  EXTRA_STATE, IERROR)` against `IERR` for `MPI_NULL_COPY_FN` and `MPI_DUP_FN`
+  two lines above. So the standard is inconsistent across its own three MPI-1
+  callbacks and the JSON is faithful to it; mpif now is too, all three names
+  matching, which for external subprograms is a matter of documentation rather
+  than of linkage.
 - `MPI_TYPE_NULL_DELETE_FN`'s `ierror` has kind `ERROR_CODE_SHOW_INTENT`, which
-  is in none of the generator's kind lists, so generating these would hit
-  `@assert false` until it is handled.
-- `MPI_CONVERSION_FN_NULL`'s `userbuf` and `filebuf` have kind `C_BUFFER3`,
-  which `aint_kinds` maps to `integer(MPI_ADDRESS_KIND)`. That is right where
-  the parameter really is an address, as in `MPI_Alloc_mem`, and wrong here: the
-  standard's binding for a conversion callback is `<TYPE> USERBUF(*)`, a choice
-  buffer. The kind alone does not say which, so the generator would need to
-  distinguish callbacks from ordinary functions -- unlike `C_BUFFER2`, where the
-  kind does say, and where the answer now sits beside `aint_kinds` rather than
-  being rediscovered at each use.
+  was in none of the generator's kind lists, so generating these would have hit
+  `@assert false`. It is now in `int_kinds` beside `ERROR_CODE`, which is all it
+  is: the suffix is about A.4 showing an INTENT(OUT) that the abstract interface
+  does not, and mpif follows the abstract interface. Whether a callback's
+  arguments carry intents at all is a question about callbacks and not about this
+  kind -- they do not, in any of the 18.
+- `MPI_CONVERSION_FN_NULL`'s `userbuf` and `filebuf` have kind `C_BUFFER3`, which
+  `aint_kinds` mapped to `integer(MPI_ADDRESS_KIND)`. That is right where the
+  parameter really is an address, as in `MPI_Alloc_mem`, and wrong here: A.5 gives
+  a conversion callback `<TYPE> USERBUF(*)`, a choice buffer, and A.1.3 gives
+  `TYPE(C_PTR), VALUE`. `C_BUFFER3` and `C_BUFFER4` have moved out of
+  `aint_kinds` to join `C_BUFFER2` among the kinds that are a choice buffer in the
+  `mpi` module and a `TYPE(C_PTR)` in `mpi_f08`. The earlier worry that "the kind
+  alone does not say which" turned out to be unfounded: these two kinds appear on
+  callbacks and nowhere else, so they do say. `dev/mpiapi.jl` asserts exactly that
+  where it drops callbacks and predefined functions, so the claim is checked on
+  every run rather than believed, and `gen/` is byte-identical across the change.
 
 The abstract interfaces themselves are no longer among the divergences, in either
 respect. Their intents went first -- there are none, in any of the 18, which is
@@ -579,7 +591,8 @@ f08 predefined callbacks against A.4, on the same terms as the generated
 wrappers. That is where the argument-name slip above was found. `mpif.h`'s and the
 `mpi` module's own predefined callbacks, in `src/mpif_attr_fns.F90`, are the one
 set still checked by nothing but the audit recorded here; A.5 gives them, so the
-same tool could reach them. `src/mpif_f08_attr_fns.F90` also copies whatever the
+same tool could reach them, and the `ierr`/`ierror` correction above is the kind of
+thing it would have said rather than left to an audit. `src/mpif_f08_attr_fns.F90` also copies whatever the
 abstract interfaces say, and `test/callback_intents_f08.f90` holds those two
 together at compile time, one callback per interface written the way the standard
 writes it.
