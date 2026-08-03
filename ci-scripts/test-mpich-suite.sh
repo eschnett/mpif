@@ -192,6 +192,7 @@ fi
 status=0
 summaries=()
 differences=()
+flakynotes=()
 for language in "${languages[@]}"; do
     if [[ ! -d ${language} ]]; then
         echo "error: the suite has no ${language} directory" >&2
@@ -249,7 +250,10 @@ for language in "${languages[@]}"; do
     # neither an unexpected failure nor an unexpected pass. Names repeat when
     # the same test runs at several process counts; failing once is failing.
     while read -r kind test; do
-        differences+=("${language}: ${kind} ${test}")
+        case ${kind} in
+            flaky,*) flakynotes+=("${language}: ${kind} ${test}") ;;
+            *)       differences+=("${language}: ${kind} ${test}") ;;
+        esac
     done < <(awk -v variant="${variant}" -v lang="${language}" -v tap="${tap}" '
         function matches(sel,   s, v, i) {
             if (split(sel, s, "/") != 4 || split(variant, v, "/") != 4) return 0
@@ -260,6 +264,7 @@ for language in "${languages[@]}"; do
         FILENAME != tap {
             sub(/#.*/, "")
             if ($1 == "xfail" && matches($2) && $3 == lang) expected[$4] = 1
+            if ($1 == "flaky" && matches($2) && $3 == lang) flaky[$4] = 1
             next
         }
         # `ok N - <dir>/<name> <np> # ...`, and the name is the basename
@@ -274,12 +279,16 @@ for language in "${languages[@]}"; do
         }
         END {
             for (name in failed)
-                if (!(name in expected)) print "unexpected failure:", name
+                if (!(name in expected) && !(name in flaky)) print "unexpected failure:", name
             # A name that both failed and passed -- the same test at two process
             # counts -- has failed, so the expectation held; do not report it
             # passing as well.
             for (name in expected)
                 if ((name in passed) && !(name in failed)) print "unexpectedly passes:", name
+            # Flaky entries are reported for visibility and judged neither way
+            for (name in flaky)
+                if (name in failed) print "flaky, failed this time:", name
+                else if (name in passed) print "flaky, passed this time:", name
         }
     ' "${xfail_file}" "${tap}")
 done
@@ -293,6 +302,9 @@ fi
 
 echo
 echo "=== Against ${xfail_file##*/}, variant ${variant}"
+if [[ ${#flakynotes[@]} -gt 0 ]]; then
+    printf '  %s\n' "${flakynotes[@]}"
+fi
 if [[ ${#differences[@]} -eq 0 ]]; then
     echo "  no differences: every failure is expected and every expectation held"
 else

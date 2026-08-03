@@ -27,9 +27,10 @@
 !
 ! The bodies never run in the normal course of things, for the same reason as in
 ! src/mpif_attr_fns.F90: MPI is handed a sentinel, not a procedure. They do what
-! the standard prescribes anyway -- the copy callbacks report .FALSE. except the
-! DUP variants, the delete callbacks do nothing, the conversion functions do
-! nothing -- in case a program calls one directly.
+! the standard prescribes anyway -- the copy callbacks report .FALSE. and touch
+! nothing else except the DUP variants, which copy; the delete callbacks do
+! nothing; the conversion functions do nothing -- in case a program calls one
+! directly, which MPICH's winattrf does.
 
 module mpif_f08_attr_fns
   use mpif_f08_types
@@ -211,7 +212,10 @@ subroutine mpif_f08_comm_null_copy_fn(oldcomm, comm_keyval, extra_state, &
   integer(MPI_ADDRESS_KIND) :: attribute_val_out
   logical :: flag
   integer :: ierror
-  attribute_val_out = 0
+  ! Nothing is written to attribute_val_out: MPI-5.0 has it that this "is a
+  ! function that does nothing other than returning flag = 0 and MPI_SUCCESS",
+  ! and MPICH's winattrf calls it directly and requires the argument to come back
+  ! untouched. The DUP variants below do copy, which is what makes them DUP.
   flag = .false.
   ierror = MPI_SUCCESS
 end subroutine mpif_f08_comm_null_copy_fn
@@ -245,7 +249,10 @@ subroutine mpif_f08_type_null_copy_fn(oldtype, type_keyval, extra_state, &
   integer(MPI_ADDRESS_KIND) :: attribute_val_out
   logical :: flag
   integer :: ierror
-  attribute_val_out = 0
+  ! Nothing is written to attribute_val_out: MPI-5.0 has it that this "is a
+  ! function that does nothing other than returning flag = 0 and MPI_SUCCESS",
+  ! and MPICH's winattrf calls it directly and requires the argument to come back
+  ! untouched. The DUP variants below do copy, which is what makes them DUP.
   flag = .false.
   ierror = MPI_SUCCESS
 end subroutine mpif_f08_type_null_copy_fn
@@ -279,7 +286,10 @@ subroutine mpif_f08_win_null_copy_fn(oldwin, win_keyval, extra_state, &
   integer(MPI_ADDRESS_KIND) :: attribute_val_out
   logical :: flag
   integer :: ierror
-  attribute_val_out = 0
+  ! Nothing is written to attribute_val_out: MPI-5.0 has it that this "is a
+  ! function that does nothing other than returning flag = 0 and MPI_SUCCESS",
+  ! and MPICH's winattrf calls it directly and requires the argument to come back
+  ! untouched. The DUP variants below do copy, which is what makes them DUP.
   flag = .false.
   ierror = MPI_SUCCESS
 end subroutine mpif_f08_win_null_copy_fn

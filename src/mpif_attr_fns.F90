@@ -17,8 +17,11 @@
 ! come from one header so that the two cannot drift apart.
 !
 ! The copy callbacks report .FALSE., meaning the attribute is not propagated,
-! except for the DUP variants which copy it. The delete callbacks do nothing.
-! All report MPI_SUCCESS.
+! and touch nothing else -- the standard has each of them "does nothing other
+! than returning flag = 0 and MPI_SUCCESS", so attribute_val_out is left as the
+! caller had it, which MPICH's winattrf checks. The DUP variants copy it, which
+! is what makes them DUP. The delete callbacks do nothing. All report
+! MPI_SUCCESS.
 
 ! The mpi module gets these names from here. MPI-5.0 requires them of mpif.h and
 ! of the mpi module alike -- Appendix A.5 lists them under "Predefined functions"
@@ -48,7 +51,10 @@ subroutine MPI_NULL_COPY_FN(oldcomm, keyval, extra_state, &
   integer, intent(out) :: attribute_val_out
   logical, intent(out) :: flag
   integer, intent(out) :: ierr
-  attribute_val_out = 0
+  ! Nothing is written to attribute_val_out: MPI-5.0 has it that this "is a
+  ! function that does nothing other than returning flag = 0 and MPI_SUCCESS",
+  ! and MPICH's winattrf calls it directly and requires the argument to come back
+  ! untouched. The DUP variants below do copy, which is what makes them DUP.
   flag = .false.
   ierr = MPI_SUCCESS
 end subroutine MPI_NULL_COPY_FN
@@ -85,7 +91,10 @@ subroutine MPI_COMM_NULL_COPY_FN(oldcomm, comm_keyval, extra_state, &
   integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val_out
   logical, intent(out) :: flag
   integer, intent(out) :: ierror
-  attribute_val_out = 0
+  ! Nothing is written to attribute_val_out: MPI-5.0 has it that this "is a
+  ! function that does nothing other than returning flag = 0 and MPI_SUCCESS",
+  ! and MPICH's winattrf calls it directly and requires the argument to come back
+  ! untouched. The DUP variants below do copy, which is what makes them DUP.
   flag = .false.
   ierror = MPI_SUCCESS
 end subroutine MPI_COMM_NULL_COPY_FN
@@ -125,7 +134,10 @@ subroutine MPI_TYPE_NULL_COPY_FN(oldtype, type_keyval, extra_state, &
   integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val_out
   logical, intent(out) :: flag
   integer, intent(out) :: ierror
-  attribute_val_out = 0
+  ! Nothing is written to attribute_val_out: MPI-5.0 has it that this "is a
+  ! function that does nothing other than returning flag = 0 and MPI_SUCCESS",
+  ! and MPICH's winattrf calls it directly and requires the argument to come back
+  ! untouched. The DUP variants below do copy, which is what makes them DUP.
   flag = .false.
   ierror = MPI_SUCCESS
 end subroutine MPI_TYPE_NULL_COPY_FN
@@ -165,7 +177,10 @@ subroutine MPI_WIN_NULL_COPY_FN(oldwin, win_keyval, extra_state, &
   integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val_out
   logical, intent(out) :: flag
   integer, intent(out) :: ierror
-  attribute_val_out = 0
+  ! Nothing is written to attribute_val_out: MPI-5.0 has it that this "is a
+  ! function that does nothing other than returning flag = 0 and MPI_SUCCESS",
+  ! and MPICH's winattrf calls it directly and requires the argument to come back
+  ! untouched. The DUP variants below do copy, which is what makes them DUP.
   flag = .false.
   ierror = MPI_SUCCESS
 end subroutine MPI_WIN_NULL_COPY_FN

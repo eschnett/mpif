@@ -19,13 +19,43 @@ callback, and only the standard says which. Keep a copy at
 
 ## Errors
 
-### 1. The large-count function-parameter test
+### 1. `buffer_addr` is an address-sized INTEGER where the standard gives a pointer
+
+`MPI_Buffer_detach`, `MPI_Comm_detach_buffer` and `MPI_Session_detach_buffer` all
+return the detached buffer through `buffer_addr`, and all three declare it
+`integer(MPI_ADDRESS_KIND)` in every binding. MPI-5.0 gives it
+`TYPE(C_PTR), INTENT(OUT)` in `mpi_f08` and `<type> BUFFER_ADDR(*)` -- a choice
+buffer -- in `mpif.h` and the `mpi` module. Neither is an integer.
+
+MPICH's `bsendf90` catches it, and fails to build on all twelve variants:
+
+    call mpi_buffer_detach(dummy_buf, dummy_size, ierr)
+    Error: Type mismatch in argument 'buffer_addr' at (1);
+           passed CHARACTER(1) to INTEGER(8)
+
+The generator already knows how to emit `TYPE(C_PTR)` for this, in the
+`C_BUFFER` branch that `MPI_Alloc_mem` and the three `MPI_Win_allocate*` routines
+go through. These three miss it because `apis.json` gives their parameter the
+kind `C_BUFFER2` rather than `C_BUFFER`, and the branch tests for `C_BUFFER`
+alone. `C_BUFFER4` is the same story for `MPI_User_function`'s `invec` and
+`inoutvec`, recorded under "Worth doing next"; `C_BUFFER3` was the datarep
+conversion functions, now fixed. So the four `C_BUFFER*` kinds are one question
+asked four times -- is this parameter an address or a buffer -- and the generator
+answers it only for the first.
+
+**This is the kind of defect `dev/check-f08-intents.py` cannot see**, because it
+compares intents and not types: `buffer_addr` has `INTENT(OUT)` in both, so the
+audit passed it. Extending the checker to compare declared types as well would
+find the rest of this family in one pass, and is the obvious next thing to do
+with it.
+
+### 2. The large-count function-parameter test
 
 The generator carries a `# TODO: Check properly whether the function parameter
 needs embiggening`, with a hardcoded exception list containing only
 `MPI_Datarep_extent_function`.
 
-### 2. `MPI_Sizeof` does not cover rank two and above
+### 3. `MPI_Sizeof` does not cover rank two and above
 
 `src/mpif_types.F90` defines the generic by hand, with a scalar and an
 assumed-size specific per type and kind. An argument of rank two or more resolves
@@ -41,6 +71,38 @@ deprecated in MPI-4.0 and its `mpi_f08` form was removed, but the `mpi` module
 and `mpif.h` still have it.
 
 ## External blockers
+
+### MPICH: `MPI_Type_create_f90_*` returns a datatype the ABI cannot use
+
+`MPI_Type_create_f90_real`, `MPI_Type_create_f90_integer` and
+`MPI_Type_create_f90_complex` all report `MPI_SUCCESS` and hand back a handle
+that `MPI_Type_toint` turns into 512 -- `0x200`, which is `MPI_DATATYPE_NULL`.
+Anything done with it then fails: `MPI_Type_contiguous` and
+`MPI_Type_get_envelope` both report "Invalid datatype".
+
+Pure C, no Fortran involved; the reproducer is
+`bug-mpich-f90-datatypes/mpich-abi-f90-datatype-bug.c`, which round-trips each of
+the three and, for contrast, a predefined type and a derived one -- both of which
+survive.
+
+The ABI wrapper in `src/binding/abi/c_binding_abi.c` looks right: it calls
+`internal_Type_create_f90_real` and converts the result with
+`ABI_Datatype_from_mpi`. The conversion is where it goes wrong.
+`ABI_Datatype_from_mpi`, in `src/binding/abi/mpi_abi_util.h`, treats a datatype
+MPICH considers predefined by reverse-searching `abi_datatype_builtins[]` for it,
+and the datatypes `MPI_Type_create_f90_*` returns are predefined internally
+without being in that table.
+
+That is the same function and the same table as the blocker below on attributes
+for predefined datatypes, so the two are one defect in the ABI's datatype
+conversion rather than two. It also explains a cluster in
+`ci-scripts/mpich-suite-xfail.txt`: the seven entries whose symptom is
+"Assertion failed in file src/binding/abi/mpi_abi_util.h at line 140" are that
+function's `MPIR_Assert(0)`, reached when the reverse search finds nothing.
+
+`trf90`, `trf08`, `createf90`, `createf08` and `createf90types` fail on this, on
+every MPICH variant. Nothing to fix on this side. Not reported upstream yet, and
+worth reporting together with the attribute one.
 
 ### MPICH: the generalized request tests require `extra_state` to alias the caller's variable
 
@@ -705,15 +767,18 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    conversion functions had exactly this fault and were corrected when
    `MPI_Register_datarep` learned to forward its callbacks; this is the same
    one-line change plus a test.
-3. **Triaging the 41 untriaged suite failures.** All twelve variants are
-   measured and gated now, so this is diagnosis rather than discovery.
-   `ci-scripts/mpich-suite-xfail.txt` names each with its symptom, and the
-   clusters are the way in: seven abort inside MPICH's own ABI handle table,
-   eleven Open MPI spawn tests print "No Errors" and are rejected anyway on
-   x86_64 alone, and three each report `MPI_LB` missing, a window attribute
-   copied by `MPI_WIN_NULL_COPY_FN`, an empty window name, and a type name of
-   the wrong length.
-4. The large-count function-parameter test, error 1 above, which is a guess with
+3. **Comparing declared types, not just intents.** `dev/check-f08-intents.py`
+   would have caught error 1 above had it compared types, and the four
+   `C_BUFFER*` kinds suggest there is more of that family to find. Both sides are
+   already parsed, so this is a small extension to a working tool.
+4. **Triaging the 22 suite failures still untriaged.**
+   `ci-scripts/mpich-suite-xfail.txt` names each with its symptom. What is left
+   is: eleven Open MPI spawn tests that print "No Errors" and are rejected anyway
+   on x86_64 alone, three reporting an empty window name and three a type name of
+   the wrong length under Open MPI, `attrlangf*` and `fandcattrf*` (no output of
+   their own, a crash under Open MPI), `test14`/`test15`, `i_fcoll_test`, and
+   `bsendf`.
+5. The large-count function-parameter test, error 2 above, which is a guess with
    a one-name exception list rather than a check.
 
 One thing is worth reporting upstream and is not yet: Open MPI's
@@ -727,9 +792,14 @@ every one of these with its reason, and the suite run fails on any difference
 from it. The table is for telling a change from the background noise at a
 glance.
 
+Only the mpich/gcc/darwin/arm64 row is measured since `MPI_WIN_NULL_COPY_FN`
+stopped writing `attribute_val_out`; the other eleven predate it and each drops
+one failure per language, `winattrf`, `winattrf90` and `winattrf08` having failed
+everywhere. The next CI run settles them.
+
 | variant                      | f77 | f90 | f08 |
 |------------------------------|-----|-----|-----|
-| mpich/gcc/darwin/arm64       |   4 |  12 |  19 |
+| mpich/gcc/darwin/arm64       |   3 |  11 |  18 |
 | mpich/gcc/linux/x86_64       |   5 |  12 |  20 |
 | mpich/gcc/linux/aarch64      |   5 |  12 |  20 |
 | mpich/llvm/darwin/arm64      |   4 |  12 |  16 |
@@ -742,8 +812,10 @@ glance.
 | openmpi/llvm/linux/x86_64    |   9 |  16 |  20 |
 | openmpi/llvm/linux/aarch64   |   6 |  11 |  17 |
 
-Sixty-one entries cover them, for fifty-nine distinct tests; forty-six of the
-entries, covering forty-one tests, say "untriaged". The earlier version of this section had four rows and
+Fifty-nine entries cover them, for fifty-six distinct tests -- five of them
+`flaky` rather than `xfail`. Twenty-seven entries, covering twenty-two tests,
+still say "untriaged"; the first pass through them accounted for nineteen,
+resolved two into mpif bugs and one into an MPICH one. The earlier version of this section had four rows and
 claimed every failure was attributable, both of which were wrong: MPICH looked
 far worse than Open MPI only because those rows predated the handle-table patch,
 and most of the failures had never been diagnosed.
