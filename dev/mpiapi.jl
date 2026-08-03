@@ -199,6 +199,10 @@ attr_callback_kinds = Dict(["MPI_Comm_copy_attr_function" => "MPIF_ATTR_COMM_COP
                             "MPI_Copy_function" => "MPIF_ATTR_COMM_COPY_10",
                             "MPI_Delete_function" => "MPIF_ATTR_COMM_DELETE_10"])
 
+# The callback prototypes, by the name a `func_type` gives. Keyed on the name
+# rather than on `apis`' own key, which is the name lowercased but need not be.
+callback_prototypes = Dict(a["name"] => a for a in values(apis) if a["attributes"]["callback"])
+
 # Fortran's .TRUE. and .FALSE. are not necessarily 1 and 0 -- gfortran and flang
 # use 1, Intel uses -1 -- so the conversions below go through the helpers in
 # src/mpif_logical.c, which ask the MPI library what the representation is.
@@ -1263,8 +1267,28 @@ for key in sort(collect(keys(apis)))
                 @assert !optional
                 @assert !root_only
                 @assert param_direction == "in"
-                # TODO: Check properly whether the function parameter needs embiggening
-                embiggen_func = embiggen && parameter["func_type"] ∉ ["MPI_Datarep_extent_function"]
+                # Whether the callback type gains the `_c` suffix in the large form
+                # is what `POLYFUNCTION` against `FUNCTION` says, the `POLY` prefix
+                # meaning "plain in the small form, large in the `_c` form"
+                # throughout this file. MPI_Register_datarep is where the
+                # distinction does visible work: its two conversion functions are
+                # POLYFUNCTION and its extent function is FUNCTION, so
+                # MPI_Register_datarep_c takes MPI_Datarep_conversion_function_c
+                # twice and MPI_Datarep_extent_function unchanged, which is what
+                # A.4 gives it. MPI_Op_create_c is the only other case, and its
+                # user_fn is POLYFUNCTION.
+                #
+                # Cross-checked against the prototype's own parameters, since that
+                # is where a second form comes from at all: a callback has a `_c`
+                # form exactly when one of its arguments embiggens, by the same
+                # test `need_embiggen` applies to a routine. This replaces a
+                # hardcoded exception for MPI_Datarep_extent_function, which was
+                # the one FUNCTION among them and so was really this rule written
+                # out for a single case.
+                prototype = callback_prototypes[parameter["func_type"]]
+                @assert (kind == "POLYFUNCTION") ==
+                        any(startswith(p["kind"], "POLY") for p in prototype["parameters"])
+                embiggen_func = embiggen && kind == "POLYFUNCTION"
                 func_type = parameter["func_type"] * (embiggen_func ? "_c" : "")
                 push!(input_arguments, "$func_type* const $parname")
                 if func_type ∈ keys(attr_callback_kinds)

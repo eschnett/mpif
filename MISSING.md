@@ -19,13 +19,7 @@ is an address in `MPI_Alloc_mem` and `C_BUFFER2` a choice buffer in
 
 ## Errors
 
-### 1. The large-count function-parameter test
-
-The generator carries a `# TODO: Check properly whether the function parameter
-needs embiggening`, with a hardcoded exception list containing only
-`MPI_Datarep_extent_function`.
-
-### 2. `MPI_Sizeof` does not cover rank two and above
+### 1. `MPI_Sizeof` does not cover rank two and above
 
 `src/mpif_types.F90` defines the generic by hand, with a scalar and an
 assumed-size specific per type and kind. An argument of rank two or more resolves
@@ -726,6 +720,24 @@ Recorded so that they do not get re-investigated:
   and `MPI_Type_get_envelope_c`, differ in A.4 in the same way, gaining a count
   of large counts. `MPI_Psend_init` and `MPI_Precv_init` correctly have no `_c`
   form at all, and `dev/mpiapi.jl` asserts they never gain one.
+- **A function parameter embiggens when `apis.json` says `POLYFUNCTION`.** Which
+  is to say the JSON answers this like every other question of the kind, the
+  `POLY` prefix meaning "plain in the small form, large in the `_c` form"
+  throughout the generator. `MPI_Register_datarep` is the only routine where the
+  distinction is visible: its two conversion functions are `POLYFUNCTION` and its
+  extent function is `FUNCTION`, so `MPI_Register_datarep_c` takes
+  `MPI_Datarep_conversion_function_c` twice and `MPI_Datarep_extent_function`
+  unchanged -- which is what A.4 gives it, and what `MPI_Op_create_c`'s
+  `POLYFUNCTION` user_fn gives there.
+
+  This was a `# TODO: Check properly` and a hardcoded exception list holding the
+  one name `MPI_Datarep_extent_function`, which was this rule written out for the
+  single case where it bites. The generator now reads the kind, and cross-checks
+  it against the prototype's own parameters -- a callback has a `_c` form exactly
+  when one of its arguments embiggens, by the same test `need_embiggen` applies to
+  a routine -- so the two statements in the JSON have to agree on all 19 function
+  parameters or the run stops. `gen/` came out byte-identical, and dropping the
+  `FUNCTION` case changes it, so the rule is both right and load-bearing.
 - **The f08 declarations match the appendices, all three sets of them.** Every
   one of the 584 bindings that A.4 and `gen/mpif_f08_functions.F90` have in
   common was compared argument by argument; so were the 18 callback
@@ -956,8 +968,9 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    on x86_64 alone, three reporting an empty window name and three a type name of
    the wrong length under Open MPI, `attrlangf*` and `fandcattrf*` (no output of
    their own, a crash under Open MPI), `test14`/`test15`, and `i_fcoll_test`.
-3. The large-count function-parameter test, error 1 above, which is a guess with
-   a one-name exception list rather than a check.
+3. **`MPI_Sizeof` for rank two and above**, error 1 above, which wants
+   assumed-rank and is therefore the same decision as "Assumed-rank choice
+   buffers".
 
 One thing is worth reporting upstream and is not yet: Open MPI's
 `MPI_Info_create_env` changing across `MPI_Init`.
