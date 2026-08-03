@@ -345,6 +345,15 @@ for key in sort(collect(keys(apis)))
 
     need_embiggen = any(startswith(p["kind"], "POLY") for p in parameters)
 
+    # `_c` is generated for the `POLY...` kinds and only those, which is why
+    # MPI_Psend_init and MPI_Precv_init get one form and not two: their count is
+    # `XFER_NUM_ELEM_NNI`, already a count, so there is nothing for a large form
+    # to add. The ABI header declares an `MPI_Psend_init_c` all the same, which is
+    # a bug in the header -- MPI-5.0 defines no such name, in any language -- so
+    # nothing here may generate a wrapper for it or call it. Asserted rather than
+    # left to be noticed, since the header makes it look as though it exists.
+    @assert !(name ∈ ["MPI_Psend_init", "MPI_Precv_init"] && need_embiggen)
+
     # The routines that operate on an array of requests -- MPI_Waitall,
     # MPI_Waitsome and the rest -- report per-request results that the parameters
     # themselves do not say how to size or bound. Two names cover it: how many
@@ -690,14 +699,15 @@ for key in sort(collect(keys(apis)))
                             if "f90_parameter" ∉ suppress
                                 push!(input_arguments, "const $type* restrict const $parname")
                                 # `XFER_NUM_ELEM_NNI` is MPI_Psend_init's and
-                                # MPI_Precv_init's count and nothing else: a
-                                # count in Fortran, where the C entry point they
-                                # can be given takes an `int`. The ABI header
-                                # declares MPI_Psend_init_c beside it and calling
-                                # that would be the clean answer, but MPICH
-                                # exports no such symbol, so narrow -- and refuse
-                                # what will not fit rather than wrapping round to
-                                # a plausible-looking small count. See MISSING.md.
+                                # MPI_Precv_init's count and nothing else. Both
+                                # take an MPI_Count in C, in MPI-5.0 and in what
+                                # MPICH actually implements; the ABI header
+                                # declares them `int` and is wrong. Compiled
+                                # against that header the call site narrows to 32
+                                # bits whatever is done here, so refuse a count
+                                # that will not fit rather than let it wrap round
+                                # to a plausible-looking small one. The guard goes
+                                # when the header is corrected. See MISSING.md.
                                 if kind == "XFER_NUM_ELEM_NNI"
                                     append!(input_conversions,
                                             ["if (*$parname > INT_MAX) {",

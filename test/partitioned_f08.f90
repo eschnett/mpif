@@ -16,7 +16,9 @@
 ! real call aborts inside MPI before mpif's argument handling could be judged
 ! either way. The calls sit behind a branch that is never taken, which is enough:
 ! the compiler checks the interface regardless, and that is what was wrong.
-! See "MPICH: partitioned communication is not implemented" in MISSING.md.
+! See "MPICH: partitioned communication is not implemented" in MISSING.md, and
+! "The ABI header gets the partitioned-communication count wrong, twice" for why
+! the count cannot yet be a large one in practice.
 
 program partitioned_f08
   use mpi_f08

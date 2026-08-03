@@ -73,29 +73,53 @@ and `mpif.h` still have it.
 
 ## External blockers
 
-### MPICH: partitioned communication is not implemented, and its large-count C entry points do not exist
+### The ABI header gets the partitioned-communication count wrong, twice
 
-Two separate gaps, both met while giving `MPI_Psend_init` and `MPI_Precv_init` the
-count the standard gives them.
+`MPI_Psend_init` and `MPI_Precv_init` take an `MPI_Count` count. MPI-5.0's C
+binding is
 
-`MPI_Psend_init` aborts inside MPI: `MPID_Psend_init` is an `MPIR_Assert(0)` at
-`src/mpid/ch3/src/mpid_part.c:12`, so the ch3 device this build uses implements
-none of partitioned communication. Nothing on this side can be judged by running
-it, which is why `test/partitioned_f08.f90` asserts at compile time and never
-executes its calls.
+    int MPI_Psend_init(const void *buf, int partitions, MPI_Count count,
+                       MPI_Datatype datatype, int dest, int tag, MPI_Comm comm,
+                       MPI_Info info, MPI_Request *request)
 
-And `MPI_Psend_init_c` and `MPI_Precv_init_c` do not exist. The ABI header
-declares both -- `int MPI_Psend_init_c(const void *, int, MPI_Count, ...)` -- but
-`nm` on `libmpi_abi` finds only the `int`-count forms, and
-`src/binding/abi/c_binding_abi.c` defines no `_c` variant of either. That matters
-because the standard's *Fortran* binding for these two takes
-`INTEGER(KIND=MPI_COUNT_KIND)` and has no `_c` form of its own, so the natural
-route -- one Fortran binding onto the large-count C entry point -- is closed. The
-wrapper narrows to `int` instead and returns `MPI_ERR_ARG` for a count that will
-not fit, rather than wrapping round to a plausible-looking small one. **Call the
-`_c` entry points once MPICH provides them**, and the guard goes away with them;
-the generator emits it for the kind `XFER_NUM_ELEM_NNI`, which is those two
-counts and nothing else.
+and MPICH implements exactly that, in `src/binding/abi/c_binding_abi.c`. The
+header mpif installs -- the MPI Forum's ABI stubs, from
+<https://github.com/mpi-forum/mpi-abi-stubs>, which
+`ci-scripts/install-mpi-header.sh` fetches -- declares the count `int` instead,
+and then declares an `MPI_Psend_init_c` and an `MPI_Precv_init_c` taking
+`MPI_Count`. **Neither name exists in MPI-5.0**: the string appears nowhere in
+the standard, in any language, because a routine whose only form already takes a
+count has nothing for a `_c` form to add. That is also why Appendix A.4 lists one
+Fortran binding for each and not two.
+
+So the header is wrong in both directions, and the two errors hide each other: it
+makes the base form look small and offers a large form that does not exist.
+Nothing in mpif may generate or call the phantom names, and `dev/mpiapi.jl`
+asserts that neither routine ever takes the `_c` path rather than leaving it to be
+noticed, since the header makes it look as though it should.
+
+The consequence for the generated wrapper is worse than a missing large count.
+`mpi_psend_init_` takes the count from Fortran as an `MPI_Count` and passes it to
+`MPI_Psend_init`, which the header declares as taking an `int`, so the call site
+materialises 32 bits where the callee reads 64. Small counts survive because the
+compiler extends the value into the register, but that is the compiler being
+helpful rather than anything guaranteed. The wrapper therefore refuses a count
+that does not fit in an `int`, with `MPI_ERR_ARG`, instead of letting it wrap
+round to a plausible-looking small one.
+
+**The fix is a patch to the header**, which mpif already patches:
+`fortran/mpi.h.patch` adds the handle-conversion declarations the stubs omit, and
+correcting these two prototypes and deleting the two phantoms belongs beside it.
+The guard in the generator goes when that lands. Reporting it upstream to
+mpi-abi-stubs is worth doing too, and has not been done.
+
+### MPICH: partitioned communication is not implemented
+
+`MPI_Psend_init` aborts inside MPI whatever the bindings do: `MPID_Psend_init` is
+an `MPIR_Assert(0)` at `src/mpid/ch3/src/mpid_part.c:12`, so the ch3 device this
+build uses implements none of partitioned communication. Nothing on this side can
+be judged by running it, which is why `test/partitioned_f08.f90` asserts at
+compile time and never executes its calls.
 
 ### MPICH: `MPI_Type_create_f90_*` returns a datatype the ABI cannot use
 
