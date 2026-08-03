@@ -4,7 +4,6 @@
 #include <mpif_strings.h>
 #include <mpi.h>
 #include <assert.h>
-#include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8043,10 +8042,6 @@ void mpi_precv_init_(
   MPI_Fint* restrict const ierror
 )
 {
-  if (*count > INT_MAX) {
-    *ierror = MPI_ERR_ARG;
-    return;
-  }
   MPI_Request c_request;
   *ierror = MPI_Precv_init(
     buf,
@@ -8091,10 +8086,6 @@ void mpi_psend_init_(
   MPI_Fint* restrict const ierror
 )
 {
-  if (*count > INT_MAX) {
-    *ierror = MPI_ERR_ARG;
-    return;
-  }
   MPI_Request c_request;
   *ierror = MPI_Psend_init(
     buf,
