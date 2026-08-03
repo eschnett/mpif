@@ -4,6 +4,7 @@
 #include <mpif_strings.h>
 #include <mpi.h>
 #include <assert.h>
+#include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8032,7 +8033,7 @@ void mpi_pready_range_(
 void mpi_precv_init_(
   void* restrict const buf,
   const MPI_Fint* restrict const partitions,
-  const MPI_Fint* restrict const count,
+  const MPI_Count* restrict const count,
   const MPI_Fint* restrict const datatype,
   const MPI_Fint* restrict const source,
   const MPI_Fint* restrict const tag,
@@ -8042,6 +8043,10 @@ void mpi_precv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  if (*count > INT_MAX) {
+    *ierror = MPI_ERR_ARG;
+    return;
+  }
   MPI_Request c_request;
   *ierror = MPI_Precv_init(
     buf,
@@ -8076,7 +8081,7 @@ void mpi_probe_(
 void mpi_psend_init_(
   const void* restrict const buf,
   const MPI_Fint* restrict const partitions,
-  const MPI_Fint* restrict const count,
+  const MPI_Count* restrict const count,
   const MPI_Fint* restrict const datatype,
   const MPI_Fint* restrict const dest,
   const MPI_Fint* restrict const tag,
@@ -8086,6 +8091,10 @@ void mpi_psend_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  if (*count > INT_MAX) {
+    *ierror = MPI_ERR_ARG;
+    return;
+  }
   MPI_Request c_request;
   *ierror = MPI_Psend_init(
     buf,

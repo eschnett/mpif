@@ -43,11 +43,12 @@ conversion functions, now fixed. So the four `C_BUFFER*` kinds are one question
 asked four times -- is this parameter an address or a buffer -- and the generator
 answers it only for the first.
 
-**This is the kind of defect `dev/check-f08-intents.py` cannot see**, because it
-compares intents and not types: `buffer_addr` has `INTENT(OUT)` in both, so the
-audit passed it. Extending the checker to compare declared types as well would
-find the rest of this family in one pass, and is the obvious next thing to do
-with it.
+`dev/check-f08-bindings.py` reports all six every run -- three routines and their
+`_c` variants -- and did not before, because it compared intents and not types:
+`buffer_addr` has `INTENT(OUT)` on both sides. Extending it to types is what
+turned this from something noticed by accident into something the tool states.
+It also found the `MPI_Psend_init` count that way, which nobody had noticed at
+all.
 
 ### 2. The large-count function-parameter test
 
@@ -71,6 +72,30 @@ deprecated in MPI-4.0 and its `mpi_f08` form was removed, but the `mpi` module
 and `mpif.h` still have it.
 
 ## External blockers
+
+### MPICH: partitioned communication is not implemented, and its large-count C entry points do not exist
+
+Two separate gaps, both met while giving `MPI_Psend_init` and `MPI_Precv_init` the
+count the standard gives them.
+
+`MPI_Psend_init` aborts inside MPI: `MPID_Psend_init` is an `MPIR_Assert(0)` at
+`src/mpid/ch3/src/mpid_part.c:12`, so the ch3 device this build uses implements
+none of partitioned communication. Nothing on this side can be judged by running
+it, which is why `test/partitioned_f08.f90` asserts at compile time and never
+executes its calls.
+
+And `MPI_Psend_init_c` and `MPI_Precv_init_c` do not exist. The ABI header
+declares both -- `int MPI_Psend_init_c(const void *, int, MPI_Count, ...)` -- but
+`nm` on `libmpi_abi` finds only the `int`-count forms, and
+`src/binding/abi/c_binding_abi.c` defines no `_c` variant of either. That matters
+because the standard's *Fortran* binding for these two takes
+`INTEGER(KIND=MPI_COUNT_KIND)` and has no `_c` form of its own, so the natural
+route -- one Fortran binding onto the large-count C entry point -- is closed. The
+wrapper narrows to `int` instead and returns `MPI_ERR_ARG` for a count that will
+not fit, rather than wrapping round to a plausible-looking small one. **Call the
+`_c` entry points once MPICH provides them**, and the guard goes away with them;
+the generator emits it for the kind `XFER_NUM_ELEM_NNI`, which is those two
+counts and nothing else.
 
 ### MPICH: `MPI_Type_create_f90_*` returns a datatype the ABI cannot use
 
@@ -373,7 +398,7 @@ deliberately: the standard gives an input choice buffer
 `TYPE(*), DIMENSION(..), INTENT(IN)` and mpif gives it no intent at all, in 207
 arguments across the bindings. Omitting it is what lets a wrapper hand the buffer
 on to a dummy that has none, and it forbids nothing a conforming program may do.
-`dev/check-f08-intents.py` counts these and passes them over; taking the
+`dev/check-f08-bindings.py` counts these and passes them over; taking the
 assumed-rank option would bring the intents with it.
 
 Taking the other option would mean declaring choice buffers
@@ -619,7 +644,7 @@ Recorded so that they do not get re-investigated:
   it comes back, this is the paragraph to reread.
 - **The f08 intents match Appendix A.4.** Every one of the 584 bindings that A.4
   and `gen/mpif_f08_functions.F90` have in common was compared argument by
-  argument, and `dev/check-f08-intents.py` is the comparison, so it can be run
+  argument, and `dev/check-f08-bindings.py` is the comparison, so it can be run
   again after any change to the generator. It also checks that the argument
   names and their order agree, and that A.4 was read correctly at all: in the
   appendix every argument is declared exactly once, so a parse that leaves one
@@ -719,11 +744,13 @@ than quietly lenient.
 
 One check needs no build at all:
 
-    python3 dev/check-f08-intents.py   # gen/ against MPI-5.0 Appendix A.4
+    python3 dev/check-f08-bindings.py   # gen/ against MPI-5.0 Appendix A.4
 
 It reads `doc/mpi50-report.pdf` through `pdftotext -layout` and compares every
-f08 binding's intents, argument names and argument order with the appendix,
-exiting nonzero on anything it cannot account for. Run it after changing how the
+f08 binding's intents, declared types, argument names and argument order with the
+appendix, exiting nonzero on anything it cannot account for. Comparing types is
+what found the `MPI_Psend_init` count and what reports error 1; comparing intents
+alone had passed both. Run it after changing how the
 generator declares an argument.
 
 ### Stale build artifacts were the biggest time sink
@@ -799,10 +826,8 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    conversion functions had exactly this fault and were corrected when
    `MPI_Register_datarep` learned to forward its callbacks; this is the same
    one-line change plus a test.
-3. **Comparing declared types, not just intents.** `dev/check-f08-intents.py`
-   would have caught error 1 above had it compared types, and the four
-   `C_BUFFER*` kinds suggest there is more of that family to find. Both sides are
-   already parsed, so this is a small extension to a working tool.
+3. **Fixing the six `buffer_addr` declarations**, error 1 above, which
+   `dev/check-f08-bindings.py` now reports every run.
 4. **Triaging the 22 suite failures still untriaged.**
    `ci-scripts/mpich-suite-xfail.txt` names each with its symptom. What is left
    is: eleven Open MPI spawn tests that print "No Errors" and are rejected anyway

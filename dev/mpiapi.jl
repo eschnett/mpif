@@ -43,14 +43,14 @@ kind2type = Dict(["COMMUNICATOR" => "Comm",
 
 # DISPOFFSET_SMALL
 
+# `XFER_NUM_ELEM_NNI` is deliberately not here; see `count_kinds` below.
 int_kinds = ["ACCESS_MODE", "ARGUMENT_COUNT", "ARRAY_LENGTH", "ARRAY_LENGTH_NNI", "ARRAY_LENGTH_PI", "ASSERT", "COLOR", "COMBINER",
              "COMM_COMPARISON", "COMM_SIZE", "COMM_SIZE_PI", "COORDINATE", "DEGREE", "DIMENSION", "DISTRIB_ENUM",
              "DTYPE_DISTRIBUTION", "ERROR_CLASS", "ERROR_CODE", "FILE_DESCRIPTOR", "GENERIC_DTYPE_INT", "GROUP_COMPARISON", "INDEX",
              "INFO_VALUE_LENGTH", "KEY", "KEYVAL", "KEY_INDEX", "LOCK_TYPE", "MATH", "NUM_BYTES_SMALL", "NUM_DIMS", "ORDER",
              "PARTITION", "PROCESS_GRID_SIZE", "PROFILE_LEVEL", "RANK", "RANK_NNI", "SPLIT_TYPE",
              "STRING_LENGTH", "TAG",
-             "THREAD_LEVEL", "TOPOLOGY_TYPE", "TYPECLASS", "TYPECLASS_SIZE", "UPDATE_MODE", "VERSION", "WEIGHT",
-             "XFER_NUM_ELEM_NNI"]
+             "THREAD_LEVEL", "TOPOLOGY_TYPE", "TYPECLASS", "TYPECLASS_SIZE", "UPDATE_MODE", "VERSION", "WEIGHT"]
 int_aint_kinds = ["POLYDISPLACEMENT", "POLYRMA_DISPLACEMENT"]
 int_count_kinds = ["POLYDISPLACEMENT_COUNT", "POLYDTYPE_NUM_ELEM", "POLYDTYPE_NUM_ELEM_NNI", "POLYDTYPE_NUM_ELEM_PI",
                    "POLYNUM_BYTES", "POLYNUM_BYTES_NNI", "POLYNUM_PARAM_VALUES", "POLYXFER_NUM_ELEM", "POLYXFER_NUM_ELEM_NNI"]
@@ -66,7 +66,17 @@ aint_kinds = ["ALLOC_MEM_NUM_BYTES", "C_BUFFER", "C_BUFFER2", "C_BUFFER3", "C_BU
 aint_count_kinds = ["POLYDISPLACEMENT_AINT_COUNT", "POLYDISPOFFSET", "POLYDTYPE_PACK_SIZE", "POLYDTYPE_STRIDE_BYTES",
                     "POLYLOCATION"]
 
-count_kinds = ["GENERIC_DTYPE_COUNT", "NUM_BYTES", "XFER_NUM_ELEM"]
+# The kinds that are always a count, as against the `POLY...` ones that are a
+# plain INTEGER in the small form and a count in the `_c` form. The `POLY`
+# prefix is the whole of the distinction: `POLYXFER_NUM_ELEM_NNI` is the count of
+# 147 ordinary transfers, and `XFER_NUM_ELEM_NNI` without it belongs to
+# MPI_Psend_init and MPI_Precv_init alone, which have no `_c` form because their
+# one form already takes a count. MPI-5.0 gives both
+# "INTEGER(KIND=MPI_COUNT_KIND), INTENT(IN) :: count", partitioned communication
+# having arrived in MPI-4.0, after large counts. `XFER_NUM_ELEM` is the
+# deprecated `_x` routines, which take a count for the same reason.
+count_kinds = ["GENERIC_DTYPE_COUNT", "NUM_BYTES", "XFER_NUM_ELEM", "XFER_NUM_ELEM_NNI"]
+
 
 # Fortran string arguments whose leading blanks have to be stripped along with
 # their trailing ones. MPI specifies this per argument rather than uniformly, so
@@ -242,6 +252,7 @@ append!(c_implementations,
          "#include <mpif_strings.h>",
          "#include <mpi.h>",
          "#include <assert.h>",
+         "#include <limits.h>",
          "#include <stdint.h>",
          "#include <stdlib.h>",
          "#include <string.h>",
@@ -678,6 +689,22 @@ for key in sort(collect(keys(apis)))
                         if length == nothing
                             if "f90_parameter" ∉ suppress
                                 push!(input_arguments, "const $type* restrict const $parname")
+                                # `XFER_NUM_ELEM_NNI` is MPI_Psend_init's and
+                                # MPI_Precv_init's count and nothing else: a
+                                # count in Fortran, where the C entry point they
+                                # can be given takes an `int`. The ABI header
+                                # declares MPI_Psend_init_c beside it and calling
+                                # that would be the clean answer, but MPICH
+                                # exports no such symbol, so narrow -- and refuse
+                                # what will not fit rather than wrapping round to
+                                # a plausible-looking small count. See MISSING.md.
+                                if kind == "XFER_NUM_ELEM_NNI"
+                                    append!(input_conversions,
+                                            ["if (*$parname > INT_MAX) {",
+                                             "  *ierror = MPI_ERR_ARG;",
+                                             "  return;",
+                                             "}"])
+                                end
                                 push!(call_arguments, "*$parname")
                             else
                                 push!(call_arguments, "0")

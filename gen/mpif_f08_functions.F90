@@ -15195,7 +15195,7 @@ contains
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: partitions
-    integer, intent(in) :: count
+    integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(in) :: source
     integer, intent(in) :: tag
@@ -15264,7 +15264,7 @@ contains
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer, intent(in) :: partitions
-    integer, intent(in) :: count
+    integer(MPI_COUNT_KIND), intent(in) :: count
     type(MPI_Datatype), intent(in) :: datatype
     integer, intent(in) :: dest
     integer, intent(in) :: tag

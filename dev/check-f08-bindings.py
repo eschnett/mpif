@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Check the generated mpi_f08 intents against MPI-5.0 Appendix A.4.
+"""Check the generated mpi_f08 declarations against MPI-5.0 Appendix A.4.
 
 The generator derives every f08 INTENT from the parameter's `param_direction`
 in `data/apis.json`, and the standard's own bindings do not always agree. Where
@@ -11,13 +11,19 @@ real defects: INTENT(OUT) on a status destroyed the caller's `status%MPI_ERROR`
 before the call, and INTENT(IN) on a callback's `extra_state` stopped a
 conforming callback from compiling at all.
 
+The declared *type* is checked the same way and for the same reason. Intents
+alone missed `MPI_Buffer_detach`'s `buffer_addr`, which is INTENT(OUT) on both
+sides and TYPE(C_PTR) in the standard against INTEGER(KIND=MPI_ADDRESS_KIND)
+here -- a caller cannot pass what the standard says to pass. Comparing types
+costs nothing extra, both declarations having been parsed already.
+
 So compare the two, routine by routine, rather than waiting for the third one.
 Appendix A.4 lists the bindings and `pdftotext -layout` makes them greppable;
 what comes out is regular enough to parse, and the parse checks itself -- every
 routine's argument list has to be exactly covered by its declarations, and this
 exits nonzero if any is not.
 
-Usage:  python3 dev/check-f08-intents.py [doc/mpi50-report.pdf]
+Usage:  python3 dev/check-f08-bindings.py [doc/mpi50-report.pdf]
 
 Keep a copy of the standard at doc/mpi50-report.pdf; it is git-ignored.
 
@@ -118,7 +124,30 @@ def attributes(lhs):
     return {
         "intent": m.group(1).upper().replace(" ", "").replace("INOUT", "INOUT") if m else None,
         "type": lhs.strip(),
+        "base": base_type(lhs),
     }
+
+
+def base_type(lhs):
+    """The declaration with the attributes and the spelling differences taken out.
+
+    The two sides say the same thing in different words -- `INTEGER(KIND=
+    MPI_COUNT_KIND)` against `integer(MPI_COUNT_KIND)`, `CHARACTER(LEN=*)`
+    against `character*(*)` -- so a textual comparison has to be given the
+    vocabulary first. What is left is the type and its kind, which is what a
+    caller has to match.
+    """
+    t = lhs.lower()
+    # attributes are not part of the type; intent is compared separately
+    for attr in ("intent", "optional", "asynchronous", "value", "pointer",
+                 "allocatable", "target", "external", "dimension"):
+        t = re.sub(rf",\s*{attr}\s*(\([^)]*\))?", "", t)
+    t = re.sub(r"^\s*(use|import)\b.*", "", t)
+    t = t.replace("kind=", "").replace("len=", "")
+    # `character*(*)` and `character(*)` are the same declaration
+    t = re.sub(r"character\s*\*\s*\(", "character(", t)
+    t = re.sub(r"\s+", "", t)
+    return t.strip(",")
 
 
 def parse_standard(pdf):
@@ -221,19 +250,29 @@ def main():
             print(f"ARGS   {name}: A.4 {s['args']}, generated {g['args']}")
             continue
         for p in g["args"]:
-            si, gi = s["params"][p]["intent"], g["params"][p]["intent"]
-            if si == gi:
-                continue
-            if "DIMENSION(..)" in s["params"][p]["type"] and gi is None:
+            sp, gp = s["params"][p], g["params"][p]
+            # A choice buffer is `TYPE(*), DIMENSION(..)` in the standard and
+            # `integer :: buf(*)` here, deliberately, so neither its type nor its
+            # missing intent is a finding. Count them and move on.
+            if "DIMENSION(..)" in sp["type"]:
                 buffers += 1
                 continue
-            problems += 1
-            print(
-                f"INTENT {name} / {p}: A.4 says {si or 'no intent'}, "
-                f"generated says {gi or 'no intent'}"
-                f"\n         A.4:       {s['params'][p]['type']}"
-                f"\n         generated: {g['params'][p]['type']}"
-            )
+            if sp["intent"] != gp["intent"]:
+                problems += 1
+                print(
+                    f"INTENT {name} / {p}: A.4 says {sp['intent'] or 'no intent'}, "
+                    f"generated says {gp['intent'] or 'no intent'}"
+                    f"\n         A.4:       {sp['type']}"
+                    f"\n         generated: {gp['type']}"
+                )
+            if sp["base"] != gp["base"]:
+                problems += 1
+                print(
+                    f"TYPE   {name} / {p}: A.4 says {sp['base']}, "
+                    f"generated says {gp['base']}"
+                    f"\n         A.4:       {sp['type']}"
+                    f"\n         generated: {gp['type']}"
+                )
 
     print()
     if buffers:

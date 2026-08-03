@@ -7629,7 +7629,7 @@ module mpif_functions
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: partitions
-    integer :: count
+    integer(MPI_COUNT_KIND) :: count
     integer :: datatype
     integer :: source
     integer :: tag
@@ -7673,7 +7673,7 @@ module mpif_functions
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: partitions
-    integer :: count
+    integer(MPI_COUNT_KIND) :: count
     integer :: datatype
     integer :: dest
     integer :: tag
