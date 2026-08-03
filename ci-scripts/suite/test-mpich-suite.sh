@@ -224,6 +224,7 @@ fi
 status=0
 summaries=()
 differences=()
+unexpected=()
 flakynotes=()
 for language in "${languages[@]}"; do
     if [[ ! -d ${language} ]]; then
@@ -283,8 +284,15 @@ for language in "${languages[@]}"; do
     # the same test runs at several process counts; failing once is failing.
     while read -r kind test; do
         case ${kind} in
-            flaky,*) flakynotes+=("${language}: ${kind} ${test}") ;;
-            *)       differences+=("${language}: ${kind} ${test}") ;;
+            flaky,*)     flakynotes+=("${language}: ${kind} ${test}") ;;
+            unexpected)
+                # `read` leaves the name at the end of ${test}, as in
+                # "failure: spawnf"; "unexpectedly passes" gives a different
+                # ${kind} and is not dumped, there being no output to show
+                differences+=("${language}: ${kind} ${test}")
+                unexpected+=("${language} ${test##* } ${tap}")
+                ;;
+            *)           differences+=("${language}: ${kind} ${test}") ;;
         esac
     done < <(awk -v variant="${variant}" -v lang="${language}" -v tap="${tap}" '
         function matches(sel,   s, v, i) {
@@ -346,6 +354,27 @@ else
     echo "  yet -- add it with the reason, or fix it. A test that unexpectedly"
     echo "  passes has been fixed: remove its line, so that the list keeps"
     echo "  guarding what it claims to."
+
+    # What each unexpected failure actually printed, in full. `runtests` reports
+    # this on its own console too, and stops at ten lines with "... ..." -- which
+    # is how a diagnosis comes to be about the first ten lines of a longer story:
+    # eleven Open MPI spawn tests were read as failing on a warning, and the fatal
+    # error two lines past the cut was the real one. The TAP file has all of it,
+    # and this is read from there.
+    for entry in "${unexpected[@]}"; do
+        read -r language test tapfile <<<"${entry}"
+        echo
+        echo "--- ${language} ${test}, as recorded in ${tapfile##*/}"
+        awk -v want="${test}" '
+            /^(ok|not ok) / {
+                split($0, part, " - ")
+                split(part[2], word, " ")
+                n = split(word[1], path, "/")
+                show = (path[n] == want)
+            }
+            show
+        ' "${tapfile}" | sed 's/^/  /'
+    done
     if [[ ${triaged} -eq 1 ]]; then
         status=1
     fi

@@ -398,39 +398,49 @@ passed in all three places that run the suite: the CI step,
 
 ### OpenMPI: a spawned child is not reachable over TCP on the x86_64 runners
 
-Which is the other half, and what actually failed the eleven Open MPI spawn tests
-that spent months attributed to the architecture. Open MPI says:
+This is what fails the eleven Open MPI spawn tests that spent months attributed to
+the architecture. Each of them spawns children, prints "No Errors" -- so the test's
+own logic passes -- and then the job dies:
 
-    WARNING: Open MPI failed to TCP connect to a peer MPI process.  This
-    should not happen.
-    Your Open MPI job may now hang or fail.
-      Message:    connect() to 127.0.0.1:1025 failed
+    [runner:00000] *** An error occurred in Socket closed
+    [runner:00000] *** reported by process [3394764801,0]
+    [runner:00000] *** on a NULL communicator
+    [runner:00000] *** MPI_ERRORS_ARE_FATAL (processes in this communicator will
+    [runner:00000] ***    now abort, and MPI will try to terminate your MPI job)
 
-It neither hangs nor fails. All eleven print "No Errors", and every non-spawn test
-behaves exactly as it does on the arm64 runners -- subtract the eleven and the two
-x86_64 rows equal their aarch64 twins, 5 / 9 / 20 under gcc and 5 / 9 / 16 under
-llvm. What failed them is that `runtests` rejects a test for *any* output it did
-not expect, even beside "No Errors".
+preceded, when Open MPI is allowed to say so, by a warning that it "failed to TCP
+connect to a peer MPI process" at `connect() to 127.0.0.1:1025 failed`. So the
+child is not reachable where the parent looks, and the teardown of the spawned
+intercommunicator is where that becomes fatal.
 
-The interface was a red herring, and worth recording as one: with `docker0` in
-play the warning named 172.17.0.1 and looked like a bridge problem, so the
-loopback flag above was expected to cure it. It did not -- the same warning came
-back naming 127.0.0.1, which is to say the spawned child is not listening where
-the parent looks, whatever interface is on offer. Why only the x86_64 runners is
-not established; the arm64 ones, with the same Open MPI built from the same
-commit, never warn.
+Why only the x86_64 runners is not established. The arm64 ones, with the same Open
+MPI built from the same pinned commit and the same mpif, do not warn and do not
+abort; subtract the eleven and the two x86_64 rows equal their aarch64 twins,
+5 / 9 / 20 under gcc and 5 / 9 / 16 under llvm. Nothing Fortran-specific is in
+sight, and nothing on this side can be held to it, but it has not been reproduced
+in C either, for want of an x86_64 Linux Open MPI to hand.
 
-So the fix is to stop the warning rather than the connect:
-`--mca btl_base_warn_peer_error 0`, Open MPI's own knob for it -- "turn on warning
-messages when peers disconnect unexpectedly", a debugging aid that is on by
-default. It is passed in the same three places. Turning it off cannot hide a broken
-test: a connect failure that mattered would fail the test on its own output, which
-is what the suite compares.
+Two wrong turns are worth recording, because both were confident and both were
+CI's to refute.
 
-The eleven entries are gone from `ci-scripts/suite/mpich-suite-xfail.txt` rather
-than given a reason, which makes each run a check on this: if the warning is not
-what failed them, they come back as unexpected failures instead of staying quietly
-excused.
+The first was the interface. With `docker0` in play the warning named 172.17.0.1
+and looked like a bridge problem; the loopback flag in the entry above was
+expected to cure it. It did not -- the warning came back naming 127.0.0.1.
+
+The second was the warning itself. Silencing it with
+`--mca btl_base_warn_peer_error 0` -- Open MPI's own knob, on by default -- was
+supposed to leave eleven passing tests passing, on the evidence that their output
+was "No Errors" plus that warning and nothing else. It was not nothing else:
+`runtests` prints at most ten lines of a test's output and then "... ...", and the
+abort above began at line eleven. Silencing the warning only uncovered it, and the
+tests failed just the same. **A diagnosis from `runtests`' console report is a
+diagnosis of the first ten lines** -- which is now fixed at the source rather than
+remembered: `ci-scripts/suite/test-mpich-suite.sh` prints the whole recorded output
+of every unexpected failure, from the TAP file, which is not truncated.
+
+So the eleven are expected failures again, in
+`ci-scripts/suite/mpich-suite-xfail.txt` under `openmpi/*/*/*/x86_64`, with the
+abort as the reason rather than the warning.
 
 The arithmetic that says the diagnosis is right: subtracting the eleven leaves the
 two Open MPI x86_64 rows in the baseline below identical to their aarch64 twins,
@@ -1263,10 +1273,10 @@ way, is what is exact.
 | mpich/llvm/linux/24.04/x86_64    |   4 |  12 |  16 |
 | mpich/llvm/linux/24.04/aarch64   |   4 |  12 |  16 |
 | openmpi/gcc/darwin/15/arm64      |   5 |   9 |  20 |
-| openmpi/gcc/linux/24.04/x86_64   |   5 |   9 |  20 |
+| openmpi/gcc/linux/24.04/x86_64   |   8 |  14 |  23 |
 | openmpi/gcc/linux/24.04/aarch64  |   5 |   9 |  20 |
 | openmpi/llvm/darwin/15/arm64     |   5 |   9 |  16 |
-| openmpi/llvm/linux/24.04/x86_64  |   5 |   9 |  16 |
+| openmpi/llvm/linux/24.04/x86_64  |   8 |  14 |  19 |
 | openmpi/llvm/linux/24.04/aarch64 |   5 |   9 |  16 |
 
 Every Open MPI f90 row is one lower than the run it comes from: `bsendf90` used
@@ -1277,12 +1287,11 @@ rather than measured, from `bsendf`, which is the same test with the same
 confirms it, on all four Open MPI variants at once. The MPICH rows are measured,
 `mpich/gcc/darwin/26/arm64` reporting no differences after the change.
 
-The two Open MPI x86_64 rows are likewise ahead of the run they come from, by the
-eleven spawn tests that a launcher warning was failing -- see "a spawned child is
-not reachable over TCP on the x86_64 runners". That is what makes them equal to
-their aarch64 twins, and CI is what confirms it. It has already refuted one
-attempt: the first guess was that the `docker0` bridge was to blame, and keeping
-Open MPI on loopback moved the warning to 127.0.0.1 rather than removing it.
+The two Open MPI x86_64 rows are the measured ones again: the eleven spawn tests
+there fail, on the abort recorded under "a spawned child is not reachable over TCP
+on the x86_64 runners", and subtracting them is what would make those rows equal to
+their aarch64 twins. Two attempts to remove them -- the interface, then the warning
+-- were both refuted by CI, which is what the rows are for.
 
 Fifty-four entries cover them, for fifty-two distinct language-and-test pairs --
 five of them `flaky` rather than `xfail`. All but two are accounted for, each

@@ -320,25 +320,6 @@ jobs:
               else
                   args="${args} --mca btl_tcp_if_include lo"
               fi
-              # And do not warn when a TCP connect to a peer fails. On the x86_64
-              # runners Open MPI cannot reach a *spawned* child over TCP, on
-              # loopback as much as over docker0, and says so:
-              #
-              #     WARNING: Open MPI failed to TCP connect to a peer MPI process.
-              #     Your Open MPI job may now hang or fail.
-              #       Message:    connect() to 127.0.0.1:1025 failed
-              #
-              # It neither hangs nor fails: all eleven spawn tests print
-              # "No Errors", and every non-spawn test behaves exactly as on the
-              # arm64 runners, which do not warn at all. But `runtests` fails a
-              # test for any output it did not expect, even beside "No Errors", so
-              # the warning alone failed them. Open MPI's own knob for it is
-              # `btl_base_warn_peer_error`, whose description is "turn on warning
-              # messages when peers disconnect unexpectedly" -- a debugging aid,
-              # on by default. Turning it off does not hide a broken test: a
-              # connect failure that mattered would fail the test on its own
-              # output.
-              args="${args} --mca btl_base_warn_peer_error 0"
               export MPIEXEC_ARGS="${args}"
           fi
           ci-scripts/suite/test-mpich-suite.sh "${MPI_PREFIX}" "${MPIF_PREFIX}"

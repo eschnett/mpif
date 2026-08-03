@@ -43,14 +43,14 @@
 #
 # Both of the last two are in the key because environments that agree on
 # everything else still disagree -- and not always over the thing the component
-# names. The architecture went in for eleven Open MPI spawn tests that failed on
-# x86_64 and passed on aarch64, which turned out to be a launcher warning the
-# x86_64 runners produce and the arm64 ones do not, for reasons not established;
-# two MPICH tests differ the other way and keep it there. The OS version went in for the Docker images, which run
-# Ubuntu 26.04 where CI's runners run 24.04 and part company over
-# MPI_Dist_graph_create and i_fcoll_test, and because this repository's own macOS
-# is 26 where the runners are 15. Read either component as "a different
-# environment" rather than as a claim about the ISA or the release.
+# names. The architecture went in for eleven Open MPI spawn tests that fail on
+# x86_64 and pass on aarch64 -- a spawned child that Open MPI cannot reach over TCP
+# there and can here, for reasons not established. Two MPICH tests differ the other
+# way and keep it in the key. The OS version went in for the Docker
+# images, which run Ubuntu 26.04 where CI's runners run 24.04 and part company over
+# MPI_Dist_graph_create and i_fcoll_test, and because this repository's own macOS is
+# 26 where the runners are 15. Read either component as "a different environment"
+# rather than as a claim about the instruction set or the release.
 #
 # The version is deliberately coarse. A full macOS version, or a distribution's
 # point release, would churn every time a runner image is refreshed and expire
@@ -128,6 +128,17 @@ xfail */*/*/*/*                f08  profile1f90        # needs PMPI, and mpi_sen
 xfail */*/*/*/*                f90  profile1f90        # needs PMPI, and mpi_send_f08ts, an MPICH-specific specific name
 xfail */*/*/*/*                f08  spawnargvf03       # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
 xfail */*/*/*/*                f08  spawnargvf90       # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
+xfail openmpi/*/*/*/x86_64     f77  spawnargvf         # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
+xfail openmpi/*/*/*/x86_64     f77  spawnf             # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
+xfail openmpi/*/*/*/x86_64     f77  spawnmultf         # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
+xfail openmpi/*/*/*/x86_64     f90  spawnargvf03       # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
+xfail openmpi/*/*/*/x86_64     f90  spawnargvf90       # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
+xfail openmpi/*/*/*/x86_64     f90  spawnf90           # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
+xfail openmpi/*/*/*/x86_64     f90  spawnmultf03       # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
+xfail openmpi/*/*/*/x86_64     f90  spawnmultf90       # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
+xfail openmpi/*/*/*/x86_64     f08  spawnf90           # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
+xfail openmpi/*/*/*/x86_64     f08  spawnmultf03       # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
+xfail openmpi/*/*/*/x86_64     f08  spawnmultf90       # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
 xfail */*/*/*/*                f08  statusconv         # C file spelling the ABI's MPI_F08_Status as MPICH's MPI_F08_status
 xfail */*/*/*/*                f08  test14             # noncontiguous subarray to a nonblocking call, which MPI_SUBARRAYS_SUPPORTED == .FALSE. forbids
 xfail */*/*/*/*                f08  test15             # noncontiguous subarray to a nonblocking call, which MPI_SUBARRAYS_SUPPORTED == .FALSE. forbids
@@ -153,16 +164,11 @@ xfail */*/*/*/*                f90  wtimef90           # no PMPI: "Function 'pmp
 # i_fcoll_test, on CI's Linux runners and under flang on macOS; the same test on
 # macOS with Open MPI has a cause, and it is above.
 #
-# The eleven Open MPI spawn tests that used to be here were not a defect at all.
-# They printed "No Errors" and were rejected on a warning Open MPI added to their
-# output: it cannot TCP connect to a spawned child on GitHub's x86_64 runners, and
-# says so without anything going wrong. `--mca btl_base_warn_peer_error 0` stops
-# it; see .github/workflows/ci.yaml and MISSING.md. Worth remembering as the shape
-# of the thing: `runtests` fails a test for *any* unexpected output line, even
-# beside "No Errors", so a launcher that says anything at all fails everything. The
-# output is quoted in each run's tap file under "## Test output", which is where to
-# look first -- it is what solved these, after a first guess at the interface was
-# refuted by a CI run.
+# Read the whole of a test's output before diagnosing it. `runtests` prints ten
+# lines and then "... ...", and the eleven Open MPI spawn tests above cost two
+# wrong fixes to that cut: what looked like a harmless warning was the first ten
+# lines of an abort. This script now prints the full output of every unexpected
+# failure, from the TAP file, which is not truncated.
 #
 xfail */*/linux/24.04/*        f08  i_fcoll_test       # untriaged: fails on CI's 24.04 runners, cause unknown; it passes on 26.04, and the macOS cause above does not apply
 xfail mpich/llvm/darwin/*/*    f08  i_fcoll_test       # untriaged: fails under flang and passes under gfortran on the same MPI, which is the odd part
