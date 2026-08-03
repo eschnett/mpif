@@ -96,7 +96,7 @@ triaged openmpi/gcc/linux/26.04/aarch64
 xfail */*/*/*/*                f77  allctypesf         # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
 xfail */*/*/*/*                f08  allctypesf08       # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
 xfail */*/*/*/*                f90  allctypesf90       # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
-xfail */gcc/*/*/*              f08  alltoallwf08       # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
+xfail */gcc/*/*/*              f08  alltoallwf08       # gcc only, on both MPIs; MISSING.md "ABI_Datatype_from_mpi asserts on a datatype predefined only internally"
 xfail */*/*/*/*                f08  attrlangf08        # attributes set in Fortran are not visible to C as a pointer; MISSING.md "Fortran-set attribute values"
 xfail */*/*/*/*                f90  attrlangf90        # attributes set in Fortran are not visible to C as a pointer; MISSING.md "Fortran-set attribute values"
 xfail */*/*/*/arm64            f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds
@@ -104,9 +104,6 @@ xfail */*/*/*/aarch64          f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL
 xfail */*/*/*/x86_64           f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds
 xfail mpich/*/*/*/*            f77  bsendf             # attaches 400 bytes, under the ABI's MPI_BSEND_OVERHEAD of 512; MISSING.md "suite tests that cannot pass"
 xfail mpich/*/*/*/*            f90  bsendf90           # attaches 400 bytes, under the ABI's MPI_BSEND_OVERHEAD of 512; MISSING.md "suite tests that cannot pass"
-xfail mpich/*/*/*/*            f08  createf08          # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
-xfail mpich/*/*/*/*            f90  createf90          # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
-xfail mpich/*/*/*/*            f90  createf90types     # MISSING.md "MPICH: MPI_Type_create_f90_*"; the test reports it as "Unable to find a real type"
 xfail openmpi/gcc/linux/26.04/aarch64 f77  dgraph_unwgtf      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/gcc/linux/26.04/aarch64 f08  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/gcc/linux/26.04/aarch64 f90  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
@@ -122,10 +119,10 @@ xfail openmpi/*/darwin/*/*     f08  i_fcoll_test       # Open MPI on macOS loses
 xfail openmpi/*/*/*/*          f77  infocrenvf         # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
 xfail openmpi/*/*/*/*          f08  infocrenvf90       # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
 xfail openmpi/*/*/*/*          f90  infocrenvf90       # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
-flaky mpich/*/*/*/*            f77  nonblocking_inpf   # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
-xfail */gcc/*/*/*              f08  nonblocking_inpf08 # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
-flaky mpich/*/*/*/*            f90  nonblocking_inpf90 # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
-xfail */gcc/*/*/*              f08  nonblockingf08     # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
+flaky mpich/*/*/*/*            f77  nonblocking_inpf   # MISSING.md "ABI_Datatype_from_mpi asserts"; the assert fires or not from run to run
+xfail */gcc/*/*/*              f08  nonblocking_inpf08 # gcc only, on both MPIs; MISSING.md "ABI_Datatype_from_mpi asserts on a datatype predefined only internally"
+flaky mpich/*/*/*/*            f90  nonblocking_inpf90 # MISSING.md "ABI_Datatype_from_mpi asserts"; the assert fires or not from run to run
+xfail */gcc/*/*/*              f08  nonblockingf08     # gcc only, on both MPIs; MISSING.md "ABI_Datatype_from_mpi asserts on a datatype predefined only internally"
 xfail */*/*/*/*                f08  profile1f90        # needs PMPI, and mpi_send_f08ts, an MPICH-specific specific name
 xfail */*/*/*/*                f90  profile1f90        # needs PMPI, and mpi_send_f08ts, an MPICH-specific specific name
 xfail */*/*/*/*                f08  spawnargvf03       # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
@@ -144,15 +141,13 @@ xfail openmpi/*/*/*/x86_64     f08  spawnmultf90       # Open MPI cannot TCP con
 xfail */*/*/*/*                f08  statusconv         # C file spelling the ABI's MPI_F08_Status as MPICH's MPI_F08_status
 xfail */*/*/*/*                f08  test14             # noncontiguous subarray to a nonblocking call, which MPI_SUBARRAYS_SUPPORTED == .FALSE. forbids
 xfail */*/*/*/*                f08  test15             # noncontiguous subarray to a nonblocking call, which MPI_SUBARRAYS_SUPPORTED == .FALSE. forbids
-xfail mpich/*/*/*/*            f08  trf08              # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
-xfail mpich/*/*/*/*            f90  trf90              # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
-flaky mpich/*/*/*/*            f77  typecntsf          # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
-flaky mpich/*/*/*/*            f08  typecntsf08        # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
-flaky mpich/*/*/*/*            f90  typecntsf90        # MISSING.md "MPI_Type_create_f90_*" -- the ABI_Datatype_from_mpi assert fires or not from run to run
+flaky mpich/*/*/*/*            f77  typecntsf          # MISSING.md "ABI_Datatype_from_mpi asserts"; the assert fires or not from run to run
+flaky mpich/*/*/*/*            f08  typecntsf08        # MISSING.md "ABI_Datatype_from_mpi asserts"; the assert fires or not from run to run
+flaky mpich/*/*/*/*            f90  typecntsf90        # MISSING.md "ABI_Datatype_from_mpi asserts"; the assert fires or not from run to run
 xfail openmpi/*/*/*/*          f77  typesnamef         # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"
 xfail openmpi/*/*/*/*          f08  typesnamef08       # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"
 xfail openmpi/*/*/*/*          f90  typesnamef90       # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"
-xfail */gcc/*/*/*              f08  vw_inplacef08      # gcc only, on both MPIs; MISSING.md "MPI_Type_create_f90_*" -- same ABI_Datatype_from_mpi assert
+xfail */gcc/*/*/*              f08  vw_inplacef08      # gcc only, on both MPIs; MISSING.md "ABI_Datatype_from_mpi asserts on a datatype predefined only internally"
 xfail openmpi/*/*/*/*          f77  winnamef           # Open MPI gives a fresh window a name; MISSING.md "object names" -- reported upstream
 xfail openmpi/*/*/*/*          f08  winnamef08         # Open MPI gives a fresh window a name; MISSING.md "object names" -- reported upstream
 xfail openmpi/*/*/*/*          f90  winnamef90         # Open MPI gives a fresh window a name; MISSING.md "object names" -- reported upstream

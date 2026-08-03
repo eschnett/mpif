@@ -39,13 +39,16 @@ scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 repodir=$(cd "${scriptdir}/.." && pwd)
 nprocs=$(getconf _NPROCESSORS_ONLN)
 
-# Upstream fixes that are on `main` but not in the release above, applied to the
-# source tree below. Each patch says in its own preamble what it is, where it
-# comes from and why it is still needed here. The fix downloaded by URL as
-# ${MPICH_PATCH_COMMIT} is the same idea; these are the ones whose upstream
-# commit does not apply to this release.
+# Fixes applied to the source tree below. Each patch says in its own preamble
+# what it is, where it comes from and why it is still needed here. Most are
+# upstream fixes that are on `main` but not in the release above -- the fix
+# downloaded by URL as ${MPICH_PATCH_COMMIT} is the same idea, and these are the
+# ones whose upstream commit does not apply to this release. The f90-datatypes
+# one is not an upstream backport but a local fix for a defect not reported
+# upstream yet, and its preamble says so.
 patches=(
     "${scriptdir}/mpich-abi-util-one-copy.patch"
+    "${scriptdir}/mpich-abi-f90-datatypes.patch"
 )
 
 if [[ -n ${MPI_SRC_DIR:-} ]]; then
