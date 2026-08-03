@@ -145,11 +145,11 @@ module mpif_f08_attr_fns
        integer :: ierror
      end subroutine mpif_f08_comm_null_delete_fn
 
-     subroutine mpif_f08_type_null_delete_fn(type, type_keyval, attribute_val, extra_state, ierror)
+     subroutine mpif_f08_type_null_delete_fn(datatype, type_keyval, attribute_val, extra_state, ierror)
        use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
-       type(MPI_Datatype) :: type
+       type(MPI_Datatype) :: datatype
        integer :: type_keyval
        integer(MPI_ADDRESS_KIND) :: attribute_val
        integer(MPI_ADDRESS_KIND) :: extra_state
@@ -323,11 +323,11 @@ subroutine mpif_f08_comm_null_delete_fn(comm, comm_keyval, attribute_val, extra_
   ierror = MPI_SUCCESS
 end subroutine mpif_f08_comm_null_delete_fn
 
-subroutine mpif_f08_type_null_delete_fn(type, type_keyval, attribute_val, extra_state, ierror)
+subroutine mpif_f08_type_null_delete_fn(datatype, type_keyval, attribute_val, extra_state, ierror)
   use mpif_f08_types, only: MPI_Datatype
   use mpif_f08_constants, only: MPI_ADDRESS_KIND, MPI_SUCCESS
   implicit none
-  type(MPI_Datatype) :: type
+  type(MPI_Datatype) :: datatype
   integer :: type_keyval
   integer(MPI_ADDRESS_KIND) :: attribute_val
   integer(MPI_ADDRESS_KIND) :: extra_state

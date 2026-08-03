@@ -570,11 +570,19 @@ respect. Their intents went first -- there are none, in any of the 18, which is
 how MPI-5.0 declares every callback it has -- and the last of their types
 followed: `MPI_User_function`'s `invec` and `inoutvec` and the datarep conversion
 functions' `userbuf` and `filebuf` are `TYPE(C_PTR), VALUE` as the standard gives
-them, where all four used to be `integer(MPI_ADDRESS_KIND)` by reference. What is
-left is only the risk of drift, which is the argument for generating them:
-`src/mpif_f08_attr_fns.F90` copies whatever the abstract interfaces say, and
-`test/callback_intents_f08.f90` is what holds the two together today, one
-callback per interface written the way the standard writes it.
+them, where all four used to be `integer(MPI_ADDRESS_KIND)` by reference.
+
+What is left is the risk of drift, and it is smaller than it was: the argument for
+generating these two pieces was that nothing checked them, and now
+`dev/check-f08-bindings.py` does -- the abstract interfaces against A.1.3 and the
+f08 predefined callbacks against A.4, on the same terms as the generated
+wrappers. That is where the argument-name slip above was found. `mpif.h`'s and the
+`mpi` module's own predefined callbacks, in `src/mpif_attr_fns.F90`, are the one
+set still checked by nothing but the audit recorded here; A.5 gives them, so the
+same tool could reach them. `src/mpif_f08_attr_fns.F90` also copies whatever the
+abstract interfaces say, and `test/callback_intents_f08.f90` holds those two
+together at compile time, one callback per interface written the way the standard
+writes it.
 
 ## Namespace
 
@@ -705,14 +713,25 @@ Recorded so that they do not get re-investigated:
   and `MPI_Type_get_envelope_c`, differ in A.4 in the same way, gaining a count
   of large counts. `MPI_Psend_init` and `MPI_Precv_init` correctly have no `_c`
   form at all, and `dev/mpiapi.jl` asserts they never gain one.
-- **The f08 intents match Appendix A.4.** Every one of the 584 bindings that A.4
-  and `gen/mpif_f08_functions.F90` have in common was compared argument by
-  argument, and `dev/check-f08-bindings.py` is the comparison, so it can be run
-  again after any change to the generator. It also checks that the argument
-  names and their order agree, and that A.4 was read correctly at all: in the
-  appendix every argument is declared exactly once, so a parse that leaves one
-  undeclared has misread the page and the run fails rather than reporting a
-  clean bill.
+- **The f08 declarations match the appendices, all three sets of them.** Every
+  one of the 584 bindings that A.4 and `gen/mpif_f08_functions.F90` have in
+  common was compared argument by argument; so were the 18 callback
+  `ABSTRACT INTERFACE`s of `src/mpif_f08_types.F90` against A.1.3 and the 11
+  predefined callbacks of `src/mpif_f08_attr_fns.F90` against A.4.
+  `dev/check-f08-bindings.py` is the comparison, so it can be run again after any
+  change to the generator or to either hand-written file. It compares intents,
+  declared types, `VALUE`, and the argument names and their order, and it checks
+  that the appendix was read correctly at all: there every argument is declared
+  exactly once, so a parse that leaves one undeclared has misread the page and
+  the run fails rather than reporting a clean bill.
+
+  The two hand-written sets are the ones worth having in it. Nothing else holds
+  them to the standard, which is how `MPI_User_function`'s buffers stayed wrong
+  until someone wrote a reduction callback; adding them found a second divergence
+  in the same pass, `MPI_Type_delete_attr_function`'s first argument being `type`
+  where A.1.3 and `apis.json` both say `datatype` -- harmless, a dummy argument's
+  name not being part of its characteristics, and fixed, along with the same slip
+  in `MPI_TYPE_NULL_DELETE_FN`.
 
   The audit found four divergences, all now fixed and all real:
 
@@ -835,15 +854,19 @@ than quietly lenient.
 
 One check needs no build at all:
 
-    python3 dev/check-f08-bindings.py   # gen/ against MPI-5.0 Appendix A.4
+    python3 dev/check-f08-bindings.py   # every mpi_f08 declaration against MPI-5.0
 
-It reads `doc/mpi50-report.pdf` through `pdftotext -layout` and compares every
-f08 binding's intents, declared types, argument names and argument order with the
-appendix, exiting nonzero on anything it cannot account for. It reports no
-unexplained divergence today, and comparing types is what got it there: that is
-what found the `MPI_Psend_init` count and the six `buffer_addr` declarations, both
-of which comparing intents alone had passed. Run it after changing how the
-generator declares an argument.
+It reads `doc/mpi50-report.pdf` through `pdftotext -layout` and compares intents,
+declared types, `VALUE`, argument names and argument order against the appendix
+that gives them -- `gen/mpif_f08_functions.F90` against A.4, the callback abstract
+interfaces of `src/mpif_f08_types.F90` against A.1.3, and the predefined callbacks
+of `src/mpif_f08_attr_fns.F90` against A.4 -- exiting nonzero on anything it
+cannot account for. It reports no unexplained divergence today. Widening what it
+compares is what got it there each time: comparing types found the
+`MPI_Psend_init` count and the six `buffer_addr` declarations, which intents alone
+had passed, and comparing the hand-written declarations at all found
+`MPI_Type_delete_attr_function`'s argument name. Run it after changing how any f08
+argument is declared, generated or not.
 
 ### Stale build artifacts were the biggest time sink
 

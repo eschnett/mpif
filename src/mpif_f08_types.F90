@@ -639,11 +639,11 @@ module mpif_f08_types
 
   public :: MPI_Type_delete_attr_function
   abstract interface
-     subroutine MPI_Type_delete_attr_function(type, type_keyval, attribute_val, extra_state, ierror)
+     subroutine MPI_Type_delete_attr_function(datatype, type_keyval, attribute_val, extra_state, ierror)
        use mpif_f08_constants
        import :: MPI_Datatype
        implicit none
-       type(MPI_Datatype) :: type
+       type(MPI_Datatype) :: datatype
        integer :: type_keyval
        integer(MPI_ADDRESS_KIND) :: attribute_val
        integer(MPI_ADDRESS_KIND) :: extra_state
