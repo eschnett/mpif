@@ -1,10 +1,37 @@
 --- a/mpi.h
 +++ b/mpi.h
-@@ -1899,7 +1899,74 @@
- int PMPI_T_source_get_info(int source_index, char *name, int *name_len, char *desc, int *desc_len, MPI_T_source_order *ordering, MPI_Count *ticks_per_second, MPI_Count *max_ticks, MPI_Info *info);
+@@ -941,11 +941,9 @@
+ int MPI_Pready(int partition, MPI_Request request);
+ int MPI_Pready_list(int length, const int array_of_partitions[], MPI_Request request);
+ int MPI_Pready_range(int partition_low, int partition_high, MPI_Request request);
+-int MPI_Precv_init(void *buf, int partitions, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Info info, MPI_Request *request);
+-int MPI_Precv_init_c(void *buf, int partitions, MPI_Count count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Info info, MPI_Request *request);
++int MPI_Precv_init(void *buf, int partitions, MPI_Count count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Info info, MPI_Request *request);
+ int MPI_Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
+-int MPI_Psend_init(const void *buf, int partitions, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Info info, MPI_Request *request);
+-int MPI_Psend_init_c(const void *buf, int partitions, MPI_Count count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Info info, MPI_Request *request);
++int MPI_Psend_init(const void *buf, int partitions, MPI_Count count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Info info, MPI_Request *request);
+ int MPI_Publish_name(const char *service_name, MPI_Info info, const char *port_name);
+ int MPI_Put(const void *origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Win win);
+ int MPI_Put_c(const void *origin_addr, MPI_Count origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, MPI_Count target_count, MPI_Datatype target_datatype, MPI_Win win);
+@@ -1609,11 +1607,9 @@
+ int PMPI_Pready(int partition, MPI_Request request);
+ int PMPI_Pready_list(int length, const int array_of_partitions[], MPI_Request request);
+ int PMPI_Pready_range(int partition_low, int partition_high, MPI_Request request);
+-int PMPI_Precv_init(void *buf, int partitions, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Info info, MPI_Request *request);
+-int PMPI_Precv_init_c(void *buf, int partitions, MPI_Count count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Info info, MPI_Request *request);
++int PMPI_Precv_init(void *buf, int partitions, MPI_Count count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Info info, MPI_Request *request);
+ int PMPI_Probe(int source, int tag, MPI_Comm comm, MPI_Status *status);
+-int PMPI_Psend_init(const void *buf, int partitions, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Info info, MPI_Request *request);
+-int PMPI_Psend_init_c(const void *buf, int partitions, MPI_Count count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Info info, MPI_Request *request);
++int PMPI_Psend_init(const void *buf, int partitions, MPI_Count count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Info info, MPI_Request *request);
+ int PMPI_Publish_name(const char *service_name, MPI_Info info, const char *port_name);
+ int PMPI_Put(const void *origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Win win);
+ int PMPI_Put_c(const void *origin_addr, MPI_Count origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, MPI_Count target_count, MPI_Datatype target_datatype, MPI_Win win);
+@@ -1896,6 +1892,73 @@
  int PMPI_T_source_get_num(int *num_sources);
  int PMPI_T_source_get_timestamp(int source_index, MPI_Count *timestamp);
-+
+ 
 +/* Fortran declarations */
 +
 +typedef int MPI_Fint;
@@ -71,7 +98,7 @@
 +MPI_Fint MPI_Type_c2f(MPI_Datatype datatype);
 +MPI_Win MPI_Win_f2c(MPI_Fint win);
 +MPI_Fint MPI_Win_c2f(MPI_Win win);
- 
++
  #if defined(__cplusplus)
  }
  #endif

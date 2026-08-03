@@ -252,7 +252,6 @@ append!(c_implementations,
          "#include <mpif_strings.h>",
          "#include <mpi.h>",
          "#include <assert.h>",
-         "#include <limits.h>",
          "#include <stdint.h>",
          "#include <stdlib.h>",
          "#include <string.h>",
@@ -698,23 +697,6 @@ for key in sort(collect(keys(apis)))
                         if length == nothing
                             if "f90_parameter" ∉ suppress
                                 push!(input_arguments, "const $type* restrict const $parname")
-                                # `XFER_NUM_ELEM_NNI` is MPI_Psend_init's and
-                                # MPI_Precv_init's count and nothing else. Both
-                                # take an MPI_Count in C, in MPI-5.0 and in what
-                                # MPICH actually implements; the ABI header
-                                # declares them `int` and is wrong. Compiled
-                                # against that header the call site narrows to 32
-                                # bits whatever is done here, so refuse a count
-                                # that will not fit rather than let it wrap round
-                                # to a plausible-looking small one. The guard goes
-                                # when the header is corrected. See MISSING.md.
-                                if kind == "XFER_NUM_ELEM_NNI"
-                                    append!(input_conversions,
-                                            ["if (*$parname > INT_MAX) {",
-                                             "  *ierror = MPI_ERR_ARG;",
-                                             "  return;",
-                                             "}"])
-                                end
                                 push!(call_arguments, "*$parname")
                             else
                                 push!(call_arguments, "0")

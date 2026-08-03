@@ -73,7 +73,7 @@ and `mpif.h` still have it.
 
 ## External blockers
 
-### The ABI header gets the partitioned-communication count wrong, twice
+### The ABI header gets the partitioned-communication count wrong, twice — carried as a local patch
 
 `MPI_Psend_init` and `MPI_Precv_init` take an `MPI_Count` count. MPI-5.0's C
 binding is
@@ -82,36 +82,47 @@ binding is
                        MPI_Datatype datatype, int dest, int tag, MPI_Comm comm,
                        MPI_Info info, MPI_Request *request)
 
-and MPICH implements exactly that, in `src/binding/abi/c_binding_abi.c`. The
-header mpif installs -- the MPI Forum's ABI stubs, from
-<https://github.com/mpi-forum/mpi-abi-stubs>, which
-`ci-scripts/install-mpi-header.sh` fetches -- declares the count `int` instead,
-and then declares an `MPI_Psend_init_c` and an `MPI_Precv_init_c` taking
-`MPI_Count`. **Neither name exists in MPI-5.0**: the string appears nowhere in
-the standard, in any language, because a routine whose only form already takes a
-count has nothing for a `_c` form to add. That is also why Appendix A.4 lists one
-Fortran binding for each and not two.
+and both implementations agree with it. MPICH declares and defines exactly that in
+`src/binding/abi/c_binding_abi.c`. Open MPI generates it from a type class that
+exists to say so:
 
-So the header is wrong in both directions, and the two errors hide each other: it
-makes the base form look small and offers a large form that does not exist.
-Nothing in mpif may generate or call the phantom names, and `dev/mpiapi.jl`
-asserts that neither routine ever takes the `_c` path rather than leaving it to be
-noticed, since the header makes it look as though it should.
+    @Type.add_type('PARTITIONED_COUNT')
+    class TypePartitionedCount(Type):
+        def type_text(self, enable_count=False):
+            return 'MPI_Count'
 
-The consequence for the generated wrapper is worse than a missing large count.
-`mpi_psend_init_` takes the count from Fortran as an `MPI_Count` and passes it to
-`MPI_Psend_init`, which the header declares as taking an `int`, so the call site
-materialises 32 bits where the callee reads 64. Small counts survive because the
-compiler extends the value into the register, but that is the compiler being
-helpful rather than anything guaranteed. The wrapper therefore refuses a count
-that does not fit in an `int`, with `MPI_ERR_ARG`, instead of letting it wrap
-round to a plausible-looking small one.
+-- `MPI_Count` whatever `enable_count` is, where the `DISP` class immediately
+below it returns `'MPI_Aint' if enable_count else 'int'`, which is what a type
+that really does have two forms looks like.
 
-**The fix is a patch to the header**, which mpif already patches:
-`fortran/mpi.h.patch` adds the handle-conversion declarations the stubs omit, and
-correcting these two prototypes and deleting the two phantoms belongs beside it.
-The guard in the generator goes when that lands. Reporting it upstream to
-mpi-abi-stubs is worth doing too, and has not been done.
+The header mpif installs is alone in disagreeing. It comes from the MPI Forum's
+ABI stubs, <https://github.com/mpi-forum/mpi-abi-stubs>, fetched by
+`ci-scripts/install-mpi-header.sh`, and it declares the count `int` and then
+declares `MPI_Psend_init_c` and `MPI_Precv_init_c` taking `MPI_Count`, along with
+their `PMPI_` counterparts. **Neither name exists in MPI-5.0**: the string appears
+nowhere in the standard, in any language, and neither implementation defines one,
+because a routine whose only form already takes a count has nothing for a `_c`
+form to add. That is also why Appendix A.4 lists one Fortran binding for each and
+not two.
+
+The two errors hid each other -- the base form looked small, and a large form was
+offered that does not exist -- and between them they made the generated wrapper
+unsafe rather than merely limited: it took the count from Fortran as an
+`MPI_Count` and passed it to a prototype declaring `int`, so the call site
+materialised 32 bits where the callee reads 64. Small counts survived because the
+compiler extends the value into the register, which is the compiler being helpful
+rather than anything guaranteed.
+
+`fortran/mpi.h.patch` therefore corrects the four base prototypes and deletes the
+four phantom declarations, alongside the Fortran handle-conversion declarations
+the stubs omit that it already carried. **Drop those hunks once the stubs header
+is fixed**; `patch` will report them as already applied. Not reported upstream
+yet, and worth reporting.
+
+Nothing in mpif may generate or call the phantom names. `dev/mpiapi.jl` asserts
+that neither routine ever takes the `_c` path rather than leaving it to be noticed
+that nothing does, since a header declaring the name makes it look as though
+something should.
 
 ### MPICH: partitioned communication is not implemented
 

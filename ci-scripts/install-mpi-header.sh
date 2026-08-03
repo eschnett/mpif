@@ -4,8 +4,11 @@
 # whatever `mpi.h` the implementation shipped.
 #
 # The header comes from the MPI Forum's ABI stubs repository, patched by
-# `fortran/mpi.h.patch` (which adds the Fortran/C handle conversion
-# declarations that the stubs header omits).
+# `fortran/mpi.h.patch`, which adds the Fortran/C handle conversion declarations
+# the stubs header omits and corrects the partitioned-communication prototypes it
+# gets wrong -- an `int` count where MPI-5.0 and both implementations have an
+# MPI_Count, plus MPI_Psend_init_c and MPI_Precv_init_c, which the standard does
+# not define at all. See MISSING.md.
 #
 # Usage: install-mpi-header.sh <prefix>
 
