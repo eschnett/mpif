@@ -403,13 +403,9 @@ module mpif_f08_types
   ! `extra_state` it deliberately does not: a callback may update it -- MPICH's
   ! greqf test requires a `free_fn` that decrements it to be seen by the caller.
   !
-  ! What is still wrong here is the *type* of two arguments, not their intent:
-  ! MPI_User_function takes `invec` and `inoutvec` as
-  ! INTEGER(KIND=MPI_ADDRESS_KIND) where the standard gives TYPE(C_PTR), VALUE,
-  ! and by reference at that, so a callback would read the first bytes of the
-  ! buffer as an address. The datarep conversion functions had the same fault
-  ! and no longer do; see the comment on them below. Correcting MPI_User_function
-  ! is a separate job, recorded in MISSING.md.
+  ! The buffers of MPI_User_function and of the datarep conversion functions are
+  ! TYPE(C_PTR), VALUE, which is what the standard gives them and also what makes
+  ! them work; see the comment on MPI_User_function below.
 
   public :: MPI_Copy_function
   abstract interface
@@ -443,23 +439,36 @@ module mpif_f08_types
 
   public :: MPI_User_function
   public :: MPI_User_function_c
+  ! TYPE(C_PTR), VALUE for the two buffers, exactly as for the datarep conversion
+  ! functions below and for the same two reasons. MPI-5.0 gives them
+  ! "TYPE(C_PTR), VALUE :: invec, inoutvec" -- in section 6.9.5, where the
+  ! reduction callbacks are declared, and again in section 19.1.6 -- and that is
+  ! also the only declaration a callback can be written against: the trampoline
+  ! in src/mpif_callbacks.c passes the buffer address itself, because mpif.h and
+  ! the mpi module want the address of `<type> INVEC(LEN)` and there is one C
+  ! entry point behind all three interfaces. An INTEGER(KIND=MPI_ADDRESS_KIND)
+  ! dummy, which is what these two used to be, asks instead for the address of a
+  ! variable holding the buffer address, so an f08 reduction callback read the
+  ! first bytes of the data as a pointer. test/op_create.f90 is the assertion.
   abstract interface
      subroutine MPI_User_function(invec, inoutvec, len, datatype)
        use mpif_f08_constants
+       use, intrinsic :: iso_c_binding, only: C_PTR
        import :: MPI_Datatype
        implicit none
-       integer(MPI_ADDRESS_KIND) :: invec
-       integer(MPI_ADDRESS_KIND) :: inoutvec
+       type(C_PTR), value :: invec
+       type(C_PTR), value :: inoutvec
        integer :: len
        type(MPI_Datatype) :: datatype
      end subroutine MPI_User_function
 
      subroutine MPI_User_function_c(invec, inoutvec, len, datatype)
        use mpif_f08_constants
+       use, intrinsic :: iso_c_binding, only: C_PTR
        import :: MPI_Datatype
        implicit none
-       integer(MPI_ADDRESS_KIND) :: invec
-       integer(MPI_ADDRESS_KIND) :: inoutvec
+       type(C_PTR), value :: invec
+       type(C_PTR), value :: inoutvec
        integer(MPI_COUNT_KIND) :: len
        type(MPI_Datatype) :: datatype
      end subroutine MPI_User_function_c

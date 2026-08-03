@@ -565,14 +565,16 @@ divergences worth knowing before generating them:
   kind does say, and where the answer now sits beside `aint_kinds` rather than
   being rediscovered at each use.
 
-The intents in the abstract interfaces are no longer among the divergences:
-there are none, in any of the 18, which is how MPI-5.0 declares every callback
-it has. What is still wrong is the *type* of three of their arguments, and it is
-the same mistake in both places -- `MPI_User_function`'s `invec` and `inoutvec`
-and the datarep conversion functions' `userbuf` and `filebuf` are
-`integer(MPI_ADDRESS_KIND)` where the standard gives `TYPE(C_PTR), VALUE`. A
-generator would have to fix that at the same time, since
-`src/mpif_f08_attr_fns.F90` copies whatever the abstract interfaces say.
+The abstract interfaces themselves are no longer among the divergences, in either
+respect. Their intents went first -- there are none, in any of the 18, which is
+how MPI-5.0 declares every callback it has -- and the last of their types
+followed: `MPI_User_function`'s `invec` and `inoutvec` and the datarep conversion
+functions' `userbuf` and `filebuf` are `TYPE(C_PTR), VALUE` as the standard gives
+them, where all four used to be `integer(MPI_ADDRESS_KIND)` by reference. What is
+left is only the risk of drift, which is the argument for generating them:
+`src/mpif_f08_attr_fns.F90` copies whatever the abstract interfaces say, and
+`test/callback_intents_f08.f90` is what holds the two together today, one
+callback per interface written the way the standard writes it.
 
 ## Namespace
 
@@ -633,6 +635,33 @@ Recorded so that they do not get re-investigated:
   rather than generated, and are present. `MPI_Sizeof` is a hand-written generic
   in `src/mpif_types.F90`. `MPI_Status_f2f08` and `MPI_Status_f082f` are
   implemented and public in `src/mpif_f08_types.F90`.
+- **A user-defined reduction operator receives its buffers, from all three
+  interfaces.** `MPI_User_function`'s `invec` and `inoutvec` were
+  `INTEGER(KIND=MPI_ADDRESS_KIND)` by reference in `mpi_f08`, where MPI-5.0
+  section 6.9.5 gives `TYPE(C_PTR), VALUE`; they now agree, in both the small and
+  the large-count abstract interface. One indirection was the whole defect: the
+  trampoline in `src/mpif_callbacks.c` passes the buffer address, as it must for
+  the `<type> INVEC(LEN)` of `mpif.h` and the `mpi` module, and an
+  address-sized-integer dummy asks for the address of a variable holding that
+  address, so an f08 callback read the first bytes of the data as a pointer. The
+  trampoline itself was right and is unchanged.
+
+  Why nothing caught it is worth recording, because the obvious answer is wrong.
+  MPICH's suite does exercise `MPI_Op_create` from `mpi_f08` -- `reducelocalf08`,
+  `uallreducef08`, `exscanf08` and `redscatf08` -- and all four pass, before and
+  after. They declare the callback `external` and write it `integer invec(*)`, so
+  there is no explicit interface to check against `PROCEDURE(MPI_User_function)`
+  and the abstract interface never comes into it; what they test is the
+  trampoline. Only a callback with an explicit interface -- a module procedure,
+  which is how the standard's own example writes one -- meets the declaration at
+  all. `test/op_create.f90` is that callback, and it fails to compile without the
+  fix: "Interface mismatch in dummy procedure 'user_fn': Type mismatch in
+  argument 'invec' (INTEGER(8)/TYPE(c_ptr))". It then does the reduction, which
+  is the other half -- that the buffers really are the data.
+
+  `test/callback_intents_f08.f90` had `user_fn` written against mpif's
+  declaration rather than the standard's, which is the one place its "written the
+  way the standard writes it" claim did not hold; corrected with the same change.
 - `ierror` is `OPTIONAL` throughout the f08 bindings.
 - **Predefined handles need no help from mpif.** The wrappers call
   `MPI_Comm_toint` and the rest directly. They used to go through 22 generated
@@ -879,23 +908,13 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
 
 1. **The PMPI interface**, which does not exist at all and which `mpif.h`
    currently promises four names it cannot link.
-2. **`MPI_User_function`'s buffers in `mpi_f08`**, which are declared
-   `INTEGER(KIND=MPI_ADDRESS_KIND)` by reference where the standard gives
-   `TYPE(C_PTR), VALUE`. The trampoline passes the buffer address, as it must
-   for the `<TYPE> INVEC(*)` of `mpif.h`, so an f08 reduction callback written
-   against mpif's own interface reads the first bytes of the buffer as an
-   address. It has never been caught because nothing exercises it: no f08 test
-   in MPICH's suite calls `MPI_Op_create`, and mpif has none either. The datarep
-   conversion functions had exactly this fault and were corrected when
-   `MPI_Register_datarep` learned to forward its callbacks; this is the same
-   one-line change plus a test.
-3. **Triaging the 24 suite failures still untriaged.**
+2. **Triaging the 24 suite failures still untriaged.**
    `ci-scripts/mpich-suite-xfail.txt` names each with its symptom. What is left
    is: eleven Open MPI spawn tests that print "No Errors" and are rejected anyway
    on x86_64 alone, three reporting an empty window name and three a type name of
    the wrong length under Open MPI, `attrlangf*` and `fandcattrf*` (no output of
    their own, a crash under Open MPI), `test14`/`test15`, and `i_fcoll_test`.
-4. The large-count function-parameter test, error 1 above, which is a guess with
+3. The large-count function-parameter test, error 1 above, which is a guess with
    a one-name exception list rather than a check.
 
 One thing is worth reporting upstream and is not yet: Open MPI's
@@ -972,10 +991,10 @@ expect some churn: a flaky entry surfaces as an unexpected pass, which is the
 mechanism working rather than failing. Three entries are already marked as seen
 on one variant only and therefore suspect.
 
-`test/`, mpif's own suite, was 32 of 32 and is now 38 of 38, `buffer_detach`
-being the most recent addition. Green on all twelve variants in CI up to
-`waitall_f08`; `buffer_detach` has been run on `mpich/gcc/darwin/arm64` and
-`openmpi/gcc/darwin/arm64` only, the other ten being CI's to confirm.
+`test/`, mpif's own suite, was 32 of 32 and is now 39 of 39, `buffer_detach` and
+`op_create` being the most recent additions. Green on all twelve variants in CI up
+to `waitall_f08`; the two new ones have been run on `mpich/gcc/darwin/arm64` and
+`openmpi/gcc/darwin/arm64`, the other ten being CI's to confirm.
 
 Passing the f08 status through to C instead of converting it moved nothing, and
 was not meant to: it removes the temporary, the conversion and all 77 `loc()`

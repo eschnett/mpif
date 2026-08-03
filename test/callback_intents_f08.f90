@@ -66,15 +66,15 @@ contains
   end subroutine delete_fn
 
   subroutine user_fn(invec, inoutvec, len, datatype)
-    integer(MPI_ADDRESS_KIND) :: invec
-    integer(MPI_ADDRESS_KIND) :: inoutvec
+    type(C_PTR), value :: invec
+    type(C_PTR), value :: inoutvec
     integer :: len
     type(MPI_Datatype) :: datatype
   end subroutine user_fn
 
   subroutine user_fn_c(invec, inoutvec, len, datatype)
-    integer(MPI_ADDRESS_KIND) :: invec
-    integer(MPI_ADDRESS_KIND) :: inoutvec
+    type(C_PTR), value :: invec
+    type(C_PTR), value :: inoutvec
     integer(MPI_COUNT_KIND) :: len
     type(MPI_Datatype) :: datatype
   end subroutine user_fn_c

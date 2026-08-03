@@ -60,5 +60,6 @@ add_mpi_test(status_error_f08       SOURCES status_error_f08.f90                
 target_compile_options(status_error_f08 PRIVATE $<$<COMPILE_LANGUAGE:Fortran>:-O2>)
 add_mpi_test(sentinel_alignment_c   SOURCES sentinel_alignment_c.c                  LIBS MPI::MPI_Fortran MPI::MPI_C)
 add_mpi_test(buffer_detach          SOURCES buffer_detach.f90                       LIBS MPI::MPI_Fortran)
+add_mpi_test(op_create              SOURCES op_create.f90                           LIBS MPI::MPI_Fortran)
 add_mpi_test(waitall_f90            SOURCES waitall_f90.f90                         LIBS MPI::MPI_Fortran)
 add_mpi_test(waitall_f08            SOURCES waitall_f08.f90                         LIBS MPI::MPI_Fortran)
