@@ -213,7 +213,13 @@ struct State
     have_comm_rank::Ref{Bool}
     have_comm_size::Ref{Bool}
 
-    State() = new(Ref(false), Ref(false), Ref(false))
+    # "" while the MPI wrappers are being emitted and "P" while the PMPI ones
+    # are, so that the probes the helpers below emit call PMPI_Comm_size in the
+    # PMPI copy. A tool counting MPI_Comm_size calls should not be shown calls
+    # the program never made.
+    prefix::String
+
+    State(prefix) = new(Ref(false), Ref(false), Ref(false), prefix)
 end
 
 # Convert an attribute value that MPI returned through a `void**`.
@@ -247,7 +253,7 @@ function ensure_comm_size!(state, input_conversions)
     append!(input_conversions,
             ["int q_comm_size;",
              "{",
-             "  const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);",
+             "  const int q_ierror = $(state.prefix)MPI_Comm_size(q_comm, &q_comm_size);",
              "  if (q_ierror != MPI_SUCCESS) {",
              "    *ierror = q_ierror;",
              "    return;",
@@ -262,7 +268,7 @@ function ensure_comm_rank!(state, input_conversions)
     append!(input_conversions,
             ["int q_comm_rank;",
              "{",
-             "  const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);",
+             "  const int q_ierror = $(state.prefix)MPI_Comm_rank(q_comm, &q_comm_rank);",
              "  if (q_ierror != MPI_SUCCESS) {",
              "    *ierror = q_ierror;",
              "    return;",
@@ -298,7 +304,10 @@ f08_explicit_large_count = ["MPI_Op_create", "MPI_Register_datarep"]
 f08_implementations_body = []
 
 append!(c_implementations,
-        ["#include <mpif_attrs.h>",
+        ["// Fortran-callable entry points, MPI_ and PMPI_ alike. See",
+         "// dev/mpiapi.jl; do not edit.",
+         "",
+         "#include <mpif_attrs.h>",
          "#include <mpif_callbacks.h>",
          "#include <mpif_logical.h>",
          "#include <mpif_strings.h>",
@@ -320,10 +329,35 @@ append!(c_implementations,
          "#define MPI_Attr_put MPI_Comm_set_attr",
          "#define MPI_Keyval_create MPI_Comm_create_keyval",
          "#define MPI_Keyval_free MPI_Comm_free_keyval",
+         "",
+         "// And again for the PMPI wrappers: the defines above say nothing about",
+         "// the token PMPI_Attr_delete. The ABI header declares all five PMPI_",
+         "// names, and Open MPI defines none of them, so the redirection is as",
+         "// necessary here as it is above.",
+         "",
+         "#undef PMPI_Attr_delete",
+         "#undef PMPI_Attr_get",
+         "#undef PMPI_Attr_put",
+         "#undef PMPI_Keyval_create",
+         "#undef PMPI_Keyval_free",
+         "#define PMPI_Attr_delete PMPI_Comm_delete_attr",
+         "#define PMPI_Attr_get PMPI_Comm_get_attr",
+         "#define PMPI_Attr_put PMPI_Comm_set_attr",
+         "#define PMPI_Keyval_create PMPI_Comm_create_keyval",
+         "#define PMPI_Keyval_free PMPI_Comm_free_keyval",
 ])
 
+# The PMPI interfaces sit in this module beside the MPI ones, so `use mpi` sees
+# both and mpif.h's `external :: PMPI_Wtime` finally has something to link to.
+# They are not renames of their neighbours: MPI_Send and PMPI_Send are two
+# Fortran names for two different C symbols, `mpi_send_` and `pmpi_send_`, and an
+# interface block's own name is what the linker sees, none of these being
+# BIND(C). A `PMPI_Send => MPI_Send` rename would call the wrong one, silently.
 append!(f_interfaces,
-        ["module mpif_functions",
+        ["! Interfaces to the Fortran-callable C entry points, MPI_ and PMPI_ alike.",
+         "! See dev/mpiapi.jl; do not edit.",
+         "",
+         "module mpif_functions",
          "  implicit none",
          "  public",
          "  save",
@@ -339,7 +373,10 @@ append!(f_interfaces,
 # since a program uses `mpi` or `mpi_f08` and not both for the same call, and
 # free on the C side, whose wrapper takes MPI_Fint* and casts it to MPI_Status*
 # either way.
-f08_raw_interfaces = ["module mpif_f08_raw",
+f08_raw_interfaces = ["! The mpi_f08 wrappers, MPI_ and PMPI_ alike, over a second set of interfaces",
+                      "! to the same C entry points. See dev/mpiapi.jl; do not edit.",
+                      "",
+                      "module mpif_f08_raw",
                       "  use mpif_constants",
                       "  use mpif_f08_types, only: MPI_Status",
                       "  implicit none",
@@ -442,14 +479,41 @@ for key in sort(collect(keys(apis)))
         reported_count = request_count
     end
 
-    for embiggen in (need_embiggen ? [false, true] : [false])
-        name_c = name * (embiggen ? "_c" : "")
-        name_f = lowercase(name * (embiggen ? "_c" : "") * "_")
-        f_name = name * (embiggen ? "_c" : "")
+    # Every routine is emitted twice, once under its MPI name and once under its
+    # PMPI one. MPI-5.0 section 15.2 requires every MPI procedure to be reachable
+    # under a second name that a profiling tool does not replace, and section
+    # 19.1.5 says it again for Fortran: "for all MPI procedures, a second
+    # procedure with the same calling conventions shall be supplied, except that
+    # the name is modified by prefixing with the letter 'P'". The specific
+    # procedure names behind those "are not specified by this standard", so the
+    # only rule the two copies have to obey is that they differ.
+    #
+    # A second turn of the same loop rather than a second pass or a rewrite of
+    # the first copy's text: the two differ in their names and in nothing else,
+    # and here the name and the code that carries it are the same expression, so
+    # they cannot drift.
+    #
+    # `name` itself is never prefixed. It is what every special case below is
+    # keyed on -- the MPI_ARGV_NULL sentinels, the parameters whose leading
+    # blanks are kept, MPI_Cancel's request, MPI_Info_get_string's buflen,
+    # `f08_explicit_large_count` -- and prefixing it would make all of them
+    # quietly stop matching. `P` goes on the emitted names only.
+    for pmpi in [false, true], embiggen in (need_embiggen ? [false, true] : [false])
+        P = pmpi ? "P" : ""
+        # The C entry point called and the Fortran-callable symbol defined.
+        # `pmpi_send_` calling `PMPI_Send` is the whole point: one that called
+        # `MPI_Send` would not be the way past a tool that has replaced it, but a
+        # second way into it.
+        name_c = P * name * (embiggen ? "_c" : "")
+        name_f = lowercase(name_c * "_")
+        f_name = name_c
         f08_name = f_name
-        f08_name_f = replace(f08_name, "MPI" => "MPIF")
+        # The `replace` is global, and safe only because no MPI routine name
+        # contains "MPI" twice. It runs on the unprefixed name for that reason:
+        # applied to "PMPI_Send" it would be relying on the same accident twice.
+        f08_name_f = P * replace(name * (embiggen ? "_c" : ""), "MPI" => "MPIF")
 
-        state = State()
+        state = State(P)
         input_arguments = []
         final_input_arguments = []
         input_conversions = []
@@ -1027,7 +1091,7 @@ for key in sort(collect(keys(apis)))
                         append!(input_conversions,
                                 ["int ndims;",
                                  "{",
-                                 "  const int q_ierror = MPI_Cartdim_get(q_comm, &ndims);",
+                                 "  const int q_ierror = $(P)MPI_Cartdim_get(q_comm, &ndims);",
                                  "  if (q_ierror != MPI_SUCCESS) {",
                                  "    *ierror = q_ierror;",
                                  "    return;",
@@ -1595,7 +1659,12 @@ for key in sort(collect(keys(apis)))
                 @assert name ∈ f08_explicit_large_count
             else
                 @assert name ∉ f08_explicit_large_count
-                push!(f08_large_count_pairs, (name, guard))
+                # The prefixed name, so that PMPI gets the same generics; the
+                # guard is not prefixed, and must not be -- it is a macro
+                # CMakeLists.txt defines, and a
+                # PMPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND would simply never
+                # be true, taking eight generics with it without a word.
+                push!(f08_large_count_pairs, (P * name, guard))
             end
         end
 
@@ -1690,7 +1759,7 @@ for key in sort(collect(keys(apis)))
         push!(c_implementations, "}")
         push!(f_interfaces, "  end $f_unit $f_name")
 
-    end                         # for embiggen
+    end                         # for pmpi, embiggen
 end                             # for api
 
 append!(f_interfaces,

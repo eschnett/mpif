@@ -1,3 +1,6 @@
+! Interfaces to the Fortran-callable C entry points, MPI_ and PMPI_ alike.
+! See dev/mpiapi.jl; do not edit.
+
 module mpif_functions
   implicit none
   public
@@ -21,6 +24,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Abi_get_fortran_booleans
 
+  subroutine PMPI_Abi_get_fortran_booleans( &
+    logical_size, &
+    logical_true, &
+    logical_false, &
+    is_set, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: logical_size
+    logical :: logical_true
+    logical :: logical_false
+    logical :: is_set
+    integer :: ierror
+  end subroutine PMPI_Abi_get_fortran_booleans
+
   subroutine MPI_Abi_get_fortran_info( &
     info, &
     ierror &
@@ -31,6 +50,16 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Abi_get_fortran_info
 
+  subroutine PMPI_Abi_get_fortran_info( &
+    info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    integer :: ierror
+  end subroutine PMPI_Abi_get_fortran_info
+
   subroutine MPI_Abi_get_info( &
     info, &
     ierror &
@@ -40,6 +69,16 @@ module mpif_functions
     integer :: info
     integer :: ierror
   end subroutine MPI_Abi_get_info
+
+  subroutine PMPI_Abi_get_info( &
+    info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    integer :: ierror
+  end subroutine PMPI_Abi_get_info
 
   subroutine MPI_Abi_get_version( &
     abi_major, &
@@ -52,6 +91,18 @@ module mpif_functions
     integer :: abi_minor
     integer :: ierror
   end subroutine MPI_Abi_get_version
+
+  subroutine PMPI_Abi_get_version( &
+    abi_major, &
+    abi_minor, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: abi_major
+    integer :: abi_minor
+    integer :: ierror
+  end subroutine PMPI_Abi_get_version
 
   subroutine MPI_Abi_set_fortran_booleans( &
     logical_size, &
@@ -67,6 +118,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Abi_set_fortran_booleans
 
+  subroutine PMPI_Abi_set_fortran_booleans( &
+    logical_size, &
+    logical_true, &
+    logical_false, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: logical_size
+    logical :: logical_true
+    logical :: logical_false
+    integer :: ierror
+  end subroutine PMPI_Abi_set_fortran_booleans
+
   subroutine MPI_Abi_set_fortran_info( &
     info, &
     ierror &
@@ -76,6 +141,16 @@ module mpif_functions
     integer :: info
     integer :: ierror
   end subroutine MPI_Abi_set_fortran_info
+
+  subroutine PMPI_Abi_set_fortran_info( &
+    info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    integer :: ierror
+  end subroutine PMPI_Abi_set_fortran_info
 
   subroutine MPI_Abort( &
     comm, &
@@ -88,6 +163,18 @@ module mpif_functions
     integer :: errorcode
     integer :: ierror
   end subroutine MPI_Abort
+
+  subroutine PMPI_Abort( &
+    comm, &
+    errorcode, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: errorcode
+    integer :: ierror
+  end subroutine PMPI_Abort
 
   subroutine MPI_Accumulate( &
     origin_addr, &
@@ -145,6 +232,62 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Accumulate_c
 
+  subroutine PMPI_Accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    op, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer :: origin_count
+    integer :: origin_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer :: target_count
+    integer :: target_datatype
+    integer :: op
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Accumulate
+
+  subroutine PMPI_Accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    op, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer(MPI_COUNT_KIND) :: origin_count
+    integer :: origin_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer(MPI_COUNT_KIND) :: target_count
+    integer :: target_datatype
+    integer :: op
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Accumulate_c
+
   subroutine MPI_Add_error_class( &
     errorclass, &
     ierror &
@@ -154,6 +297,16 @@ module mpif_functions
     integer :: errorclass
     integer :: ierror
   end subroutine MPI_Add_error_class
+
+  subroutine PMPI_Add_error_class( &
+    errorclass, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: errorclass
+    integer :: ierror
+  end subroutine PMPI_Add_error_class
 
   subroutine MPI_Add_error_code( &
     errorclass, &
@@ -167,6 +320,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Add_error_code
 
+  subroutine PMPI_Add_error_code( &
+    errorclass, &
+    errorcode, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: errorclass
+    integer :: errorcode
+    integer :: ierror
+  end subroutine PMPI_Add_error_code
+
   subroutine MPI_Add_error_string( &
     errorcode, &
     string, &
@@ -179,6 +344,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Add_error_string
 
+  subroutine PMPI_Add_error_string( &
+    errorcode, &
+    string, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: errorcode
+    character*(*) :: string
+    integer :: ierror
+  end subroutine PMPI_Add_error_string
+
   function MPI_Aint_add( &
     base, &
     disp &
@@ -190,6 +367,17 @@ module mpif_functions
     integer(MPI_ADDRESS_KIND) :: disp
   end function MPI_Aint_add
 
+  function PMPI_Aint_add( &
+    base, &
+    disp &
+  ) result(result)
+    use mpif_constants
+    implicit none
+    integer(MPI_ADDRESS_KIND) :: result
+    integer(MPI_ADDRESS_KIND) :: base
+    integer(MPI_ADDRESS_KIND) :: disp
+  end function PMPI_Aint_add
+
   function MPI_Aint_diff( &
     addr1, &
     addr2 &
@@ -200,6 +388,17 @@ module mpif_functions
     integer(MPI_ADDRESS_KIND) :: addr1
     integer(MPI_ADDRESS_KIND) :: addr2
   end function MPI_Aint_diff
+
+  function PMPI_Aint_diff( &
+    addr1, &
+    addr2 &
+  ) result(result)
+    use mpif_constants
+    implicit none
+    integer(MPI_ADDRESS_KIND) :: result
+    integer(MPI_ADDRESS_KIND) :: addr1
+    integer(MPI_ADDRESS_KIND) :: addr2
+  end function PMPI_Aint_diff
 
   subroutine MPI_Allgather( &
     sendbuf, &
@@ -252,6 +451,58 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Allgather_c
+
+  subroutine PMPI_Allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Allgather
+
+  subroutine PMPI_Allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Allgather_c
 
   subroutine MPI_Allgather_init( &
     sendbuf, &
@@ -313,6 +564,66 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Allgather_init_c
 
+  subroutine PMPI_Allgather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Allgather_init
+
+  subroutine PMPI_Allgather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Allgather_init_c
+
   subroutine MPI_Allgatherv( &
     sendbuf, &
     sendcount, &
@@ -368,6 +679,62 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Allgatherv_c
+
+  subroutine PMPI_Allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: displs(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Allgatherv
+
+  subroutine PMPI_Allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: displs(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Allgatherv_c
 
   subroutine MPI_Allgatherv_init( &
     sendbuf, &
@@ -433,6 +800,70 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Allgatherv_init_c
 
+  subroutine PMPI_Allgatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: displs(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Allgatherv_init
+
+  subroutine PMPI_Allgatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: displs(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Allgatherv_init_c
+
   subroutine MPI_Alloc_mem( &
     size, &
     info, &
@@ -446,6 +877,20 @@ module mpif_functions
     integer(MPI_ADDRESS_KIND) :: baseptr
     integer :: ierror
   end subroutine MPI_Alloc_mem
+
+  subroutine PMPI_Alloc_mem( &
+    size, &
+    info, &
+    baseptr, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_ADDRESS_KIND) :: size
+    integer :: info
+    integer(MPI_ADDRESS_KIND) :: baseptr
+    integer :: ierror
+  end subroutine PMPI_Alloc_mem
 
   subroutine MPI_Allreduce( &
     sendbuf, &
@@ -494,6 +939,54 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Allreduce_c
+
+  subroutine PMPI_Allreduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Allreduce
+
+  subroutine PMPI_Allreduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Allreduce_c
 
   subroutine MPI_Allreduce_init( &
     sendbuf, &
@@ -551,6 +1044,62 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Allreduce_init_c
 
+  subroutine PMPI_Allreduce_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Allreduce_init
+
+  subroutine PMPI_Allreduce_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Allreduce_init_c
+
   subroutine MPI_Alltoall( &
     sendbuf, &
     sendcount, &
@@ -602,6 +1151,58 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Alltoall_c
+
+  subroutine PMPI_Alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Alltoall
+
+  subroutine PMPI_Alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Alltoall_c
 
   subroutine MPI_Alltoall_init( &
     sendbuf, &
@@ -663,6 +1264,66 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Alltoall_init_c
 
+  subroutine PMPI_Alltoall_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Alltoall_init
+
+  subroutine PMPI_Alltoall_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Alltoall_init_c
+
   subroutine MPI_Alltoallv( &
     sendbuf, &
     sendcounts, &
@@ -722,6 +1383,66 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Alltoallv_c
+
+  subroutine PMPI_Alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer :: sdispls(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: rdispls(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Alltoallv
+
+  subroutine PMPI_Alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Alltoallv_c
 
   subroutine MPI_Alltoallv_init( &
     sendbuf, &
@@ -791,6 +1512,74 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Alltoallv_init_c
 
+  subroutine PMPI_Alltoallv_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer :: sdispls(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: rdispls(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Alltoallv_init
+
+  subroutine PMPI_Alltoallv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Alltoallv_init_c
+
   subroutine MPI_Alltoallw( &
     sendbuf, &
     sendcounts, &
@@ -850,6 +1639,66 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Alltoallw_c
+
+  subroutine PMPI_Alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer :: sdispls(*)
+    integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: rdispls(*)
+    integer :: recvtypes(*)
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Alltoallw
+
+  subroutine PMPI_Alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtypes(*)
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Alltoallw_c
 
   subroutine MPI_Alltoallw_init( &
     sendbuf, &
@@ -919,6 +1768,74 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Alltoallw_init_c
 
+  subroutine PMPI_Alltoallw_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer :: sdispls(*)
+    integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: rdispls(*)
+    integer :: recvtypes(*)
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Alltoallw_init
+
+  subroutine PMPI_Alltoallw_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtypes(*)
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Alltoallw_init_c
+
   subroutine MPI_Attr_delete( &
     comm, &
     keyval, &
@@ -930,6 +1847,18 @@ module mpif_functions
     integer :: keyval
     integer :: ierror
   end subroutine MPI_Attr_delete
+
+  subroutine PMPI_Attr_delete( &
+    comm, &
+    keyval, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: keyval
+    integer :: ierror
+  end subroutine PMPI_Attr_delete
 
   subroutine MPI_Attr_get( &
     comm, &
@@ -947,6 +1876,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Attr_get
 
+  subroutine PMPI_Attr_get( &
+    comm, &
+    keyval, &
+    attribute_val, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: keyval
+    integer :: attribute_val
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Attr_get
+
   subroutine MPI_Attr_put( &
     comm, &
     keyval, &
@@ -961,6 +1906,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Attr_put
 
+  subroutine PMPI_Attr_put( &
+    comm, &
+    keyval, &
+    attribute_val, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: keyval
+    integer :: attribute_val
+    integer :: ierror
+  end subroutine PMPI_Attr_put
+
   subroutine MPI_Barrier( &
     comm, &
     ierror &
@@ -970,6 +1929,16 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Barrier
+
+  subroutine PMPI_Barrier( &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Barrier
 
   subroutine MPI_Barrier_init( &
     comm, &
@@ -984,6 +1953,20 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Barrier_init
+
+  subroutine PMPI_Barrier_init( &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Barrier_init
 
   subroutine MPI_Bcast( &
     buffer, &
@@ -1024,6 +2007,46 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Bcast_c
+
+  subroutine PMPI_Bcast( &
+    buffer, &
+    count, &
+    datatype, &
+    root, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buffer
+    !gcc$ attributes no_arg_check :: buffer
+    integer :: buffer(*)
+    integer :: count
+    integer :: datatype
+    integer :: root
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Bcast
+
+  subroutine PMPI_Bcast_c( &
+    buffer, &
+    count, &
+    datatype, &
+    root, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buffer
+    !gcc$ attributes no_arg_check :: buffer
+    integer :: buffer(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: root
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Bcast_c
 
   subroutine MPI_Bcast_init( &
     buffer, &
@@ -1073,6 +2096,54 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Bcast_init_c
 
+  subroutine PMPI_Bcast_init( &
+    buffer, &
+    count, &
+    datatype, &
+    root, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buffer
+    !gcc$ attributes no_arg_check :: buffer
+    integer :: buffer(*)
+    integer :: count
+    integer :: datatype
+    integer :: root
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Bcast_init
+
+  subroutine PMPI_Bcast_init_c( &
+    buffer, &
+    count, &
+    datatype, &
+    root, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buffer
+    !gcc$ attributes no_arg_check :: buffer
+    integer :: buffer(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: root
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Bcast_init_c
+
   subroutine MPI_Bsend( &
     buf, &
     count, &
@@ -1116,6 +2187,50 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Bsend_c
+
+  subroutine PMPI_Bsend( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Bsend
+
+  subroutine PMPI_Bsend_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Bsend_c
 
   subroutine MPI_Bsend_init( &
     buf, &
@@ -1165,6 +2280,54 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Bsend_init_c
 
+  subroutine PMPI_Bsend_init( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Bsend_init
+
+  subroutine PMPI_Bsend_init_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Bsend_init_c
+
   subroutine MPI_Buffer_attach( &
     buffer, &
     size, &
@@ -1192,6 +2355,34 @@ module mpif_functions
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
   end subroutine MPI_Buffer_attach_c
+
+  subroutine PMPI_Buffer_attach( &
+    buffer, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buffer
+    !gcc$ attributes no_arg_check :: buffer
+    integer :: buffer(*)
+    integer :: size
+    integer :: ierror
+  end subroutine PMPI_Buffer_attach
+
+  subroutine PMPI_Buffer_attach_c( &
+    buffer, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buffer
+    !gcc$ attributes no_arg_check :: buffer
+    integer :: buffer(*)
+    integer(MPI_COUNT_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_Buffer_attach_c
 
   subroutine MPI_Buffer_detach( &
     buffer_addr, &
@@ -1221,6 +2412,34 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Buffer_detach_c
 
+  subroutine PMPI_Buffer_detach( &
+    buffer_addr, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buffer_addr
+    !gcc$ attributes no_arg_check :: buffer_addr
+    integer :: buffer_addr(*)
+    integer :: size
+    integer :: ierror
+  end subroutine PMPI_Buffer_detach
+
+  subroutine PMPI_Buffer_detach_c( &
+    buffer_addr, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buffer_addr
+    !gcc$ attributes no_arg_check :: buffer_addr
+    integer :: buffer_addr(*)
+    integer(MPI_COUNT_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_Buffer_detach_c
+
   subroutine MPI_Buffer_flush( &
     ierror &
   )
@@ -1228,6 +2447,14 @@ module mpif_functions
     implicit none
     integer :: ierror
   end subroutine MPI_Buffer_flush
+
+  subroutine PMPI_Buffer_flush( &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: ierror
+  end subroutine PMPI_Buffer_flush
 
   subroutine MPI_Buffer_iflush( &
     request, &
@@ -1239,6 +2466,16 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Buffer_iflush
 
+  subroutine PMPI_Buffer_iflush( &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Buffer_iflush
+
   subroutine MPI_Cancel( &
     request, &
     ierror &
@@ -1248,6 +2485,16 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Cancel
+
+  subroutine PMPI_Cancel( &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Cancel
 
   subroutine MPI_Cart_coords( &
     comm, &
@@ -1264,6 +2511,22 @@ module mpif_functions
     integer :: coords(maxdims)
     integer :: ierror
   end subroutine MPI_Cart_coords
+
+  subroutine PMPI_Cart_coords( &
+    comm, &
+    rank, &
+    maxdims, &
+    coords, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: rank
+    integer :: maxdims
+    integer :: coords(maxdims)
+    integer :: ierror
+  end subroutine PMPI_Cart_coords
 
   subroutine MPI_Cart_create( &
     comm_old, &
@@ -1285,6 +2548,26 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Cart_create
 
+  subroutine PMPI_Cart_create( &
+    comm_old, &
+    ndims, &
+    dims, &
+    periods, &
+    reorder, &
+    comm_cart, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm_old
+    integer :: ndims
+    integer :: dims(ndims)
+    logical :: periods(*)
+    logical :: reorder
+    integer :: comm_cart
+    integer :: ierror
+  end subroutine PMPI_Cart_create
+
   subroutine MPI_Cart_get( &
     comm, &
     maxdims, &
@@ -1302,6 +2585,24 @@ module mpif_functions
     integer :: coords(maxdims)
     integer :: ierror
   end subroutine MPI_Cart_get
+
+  subroutine PMPI_Cart_get( &
+    comm, &
+    maxdims, &
+    dims, &
+    periods, &
+    coords, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: maxdims
+    integer :: dims(maxdims)
+    logical :: periods(*)
+    integer :: coords(maxdims)
+    integer :: ierror
+  end subroutine PMPI_Cart_get
 
   subroutine MPI_Cart_map( &
     comm, &
@@ -1321,6 +2622,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Cart_map
 
+  subroutine PMPI_Cart_map( &
+    comm, &
+    ndims, &
+    dims, &
+    periods, &
+    newrank, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: ndims
+    integer :: dims(ndims)
+    logical :: periods(*)
+    integer :: newrank
+    integer :: ierror
+  end subroutine PMPI_Cart_map
+
   subroutine MPI_Cart_rank( &
     comm, &
     coords, &
@@ -1334,6 +2653,20 @@ module mpif_functions
     integer :: rank
     integer :: ierror
   end subroutine MPI_Cart_rank
+
+  subroutine PMPI_Cart_rank( &
+    comm, &
+    coords, &
+    rank, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: coords(*)
+    integer :: rank
+    integer :: ierror
+  end subroutine PMPI_Cart_rank
 
   subroutine MPI_Cart_shift( &
     comm, &
@@ -1353,6 +2686,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Cart_shift
 
+  subroutine PMPI_Cart_shift( &
+    comm, &
+    direction, &
+    disp, &
+    rank_source, &
+    rank_dest, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: direction
+    integer :: disp
+    integer :: rank_source
+    integer :: rank_dest
+    integer :: ierror
+  end subroutine PMPI_Cart_shift
+
   subroutine MPI_Cart_sub( &
     comm, &
     remain_dims, &
@@ -1367,6 +2718,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Cart_sub
 
+  subroutine PMPI_Cart_sub( &
+    comm, &
+    remain_dims, &
+    newcomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    logical :: remain_dims(*)
+    integer :: newcomm
+    integer :: ierror
+  end subroutine PMPI_Cart_sub
+
   subroutine MPI_Cartdim_get( &
     comm, &
     ndims, &
@@ -1379,6 +2744,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Cartdim_get
 
+  subroutine PMPI_Cartdim_get( &
+    comm, &
+    ndims, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: ndims
+    integer :: ierror
+  end subroutine PMPI_Cartdim_get
+
   subroutine MPI_Close_port( &
     port_name, &
     ierror &
@@ -1388,6 +2765,16 @@ module mpif_functions
     character*(*) :: port_name
     integer :: ierror
   end subroutine MPI_Close_port
+
+  subroutine PMPI_Close_port( &
+    port_name, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: port_name
+    integer :: ierror
+  end subroutine PMPI_Close_port
 
   subroutine MPI_Comm_accept( &
     port_name, &
@@ -1406,6 +2793,24 @@ module mpif_functions
     integer :: newcomm
     integer :: ierror
   end subroutine MPI_Comm_accept
+
+  subroutine PMPI_Comm_accept( &
+    port_name, &
+    info, &
+    root, &
+    comm, &
+    newcomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: port_name
+    integer :: info
+    integer :: root
+    integer :: comm
+    integer :: newcomm
+    integer :: ierror
+  end subroutine PMPI_Comm_accept
 
   subroutine MPI_Comm_attach_buffer( &
     comm, &
@@ -1439,6 +2844,38 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_attach_buffer_c
 
+  subroutine PMPI_Comm_attach_buffer( &
+    comm, &
+    buffer, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    !dir$ ignore_tkr(trk) buffer
+    !gcc$ attributes no_arg_check :: buffer
+    integer :: buffer(*)
+    integer :: size
+    integer :: ierror
+  end subroutine PMPI_Comm_attach_buffer
+
+  subroutine PMPI_Comm_attach_buffer_c( &
+    comm, &
+    buffer, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    !dir$ ignore_tkr(trk) buffer
+    !gcc$ attributes no_arg_check :: buffer
+    integer :: buffer(*)
+    integer(MPI_COUNT_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_Comm_attach_buffer_c
+
   subroutine MPI_Comm_call_errhandler( &
     comm, &
     errorcode, &
@@ -1450,6 +2887,18 @@ module mpif_functions
     integer :: errorcode
     integer :: ierror
   end subroutine MPI_Comm_call_errhandler
+
+  subroutine PMPI_Comm_call_errhandler( &
+    comm, &
+    errorcode, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: errorcode
+    integer :: ierror
+  end subroutine PMPI_Comm_call_errhandler
 
   subroutine MPI_Comm_compare( &
     comm1, &
@@ -1464,6 +2913,20 @@ module mpif_functions
     integer :: result
     integer :: ierror
   end subroutine MPI_Comm_compare
+
+  subroutine PMPI_Comm_compare( &
+    comm1, &
+    comm2, &
+    result, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm1
+    integer :: comm2
+    integer :: result
+    integer :: ierror
+  end subroutine PMPI_Comm_compare
 
   subroutine MPI_Comm_connect( &
     port_name, &
@@ -1483,6 +2946,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_connect
 
+  subroutine PMPI_Comm_connect( &
+    port_name, &
+    info, &
+    root, &
+    comm, &
+    newcomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: port_name
+    integer :: info
+    integer :: root
+    integer :: comm
+    integer :: newcomm
+    integer :: ierror
+  end subroutine PMPI_Comm_connect
+
   subroutine MPI_Comm_create( &
     comm, &
     group, &
@@ -1497,6 +2978,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_create
 
+  subroutine PMPI_Comm_create( &
+    comm, &
+    group, &
+    newcomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: group
+    integer :: newcomm
+    integer :: ierror
+  end subroutine PMPI_Comm_create
+
   subroutine MPI_Comm_create_errhandler( &
     comm_errhandler_fn, &
     errhandler, &
@@ -1508,6 +3003,18 @@ module mpif_functions
     integer :: errhandler
     integer :: ierror
   end subroutine MPI_Comm_create_errhandler
+
+  subroutine PMPI_Comm_create_errhandler( &
+    comm_errhandler_fn, &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    external :: comm_errhandler_fn
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_Comm_create_errhandler
 
   subroutine MPI_Comm_create_from_group( &
     group, &
@@ -1527,6 +3034,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_create_from_group
 
+  subroutine PMPI_Comm_create_from_group( &
+    group, &
+    stringtag, &
+    info, &
+    errhandler, &
+    newcomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group
+    character*(*) :: stringtag
+    integer :: info
+    integer :: errhandler
+    integer :: newcomm
+    integer :: ierror
+  end subroutine PMPI_Comm_create_from_group
+
   subroutine MPI_Comm_create_group( &
     comm, &
     group, &
@@ -1542,6 +3067,22 @@ module mpif_functions
     integer :: newcomm
     integer :: ierror
   end subroutine MPI_Comm_create_group
+
+  subroutine PMPI_Comm_create_group( &
+    comm, &
+    group, &
+    tag, &
+    newcomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: group
+    integer :: tag
+    integer :: newcomm
+    integer :: ierror
+  end subroutine PMPI_Comm_create_group
 
   subroutine MPI_Comm_create_keyval( &
     comm_copy_attr_fn, &
@@ -1559,6 +3100,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_create_keyval
 
+  subroutine PMPI_Comm_create_keyval( &
+    comm_copy_attr_fn, &
+    comm_delete_attr_fn, &
+    comm_keyval, &
+    extra_state, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    external :: comm_copy_attr_fn
+    external :: comm_delete_attr_fn
+    integer :: comm_keyval
+    integer(MPI_ADDRESS_KIND) :: extra_state
+    integer :: ierror
+  end subroutine PMPI_Comm_create_keyval
+
   subroutine MPI_Comm_delete_attr( &
     comm, &
     comm_keyval, &
@@ -1570,6 +3127,18 @@ module mpif_functions
     integer :: comm_keyval
     integer :: ierror
   end subroutine MPI_Comm_delete_attr
+
+  subroutine PMPI_Comm_delete_attr( &
+    comm, &
+    comm_keyval, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: comm_keyval
+    integer :: ierror
+  end subroutine PMPI_Comm_delete_attr
 
   subroutine MPI_Comm_detach_buffer( &
     comm, &
@@ -1603,6 +3172,38 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_detach_buffer_c
 
+  subroutine PMPI_Comm_detach_buffer( &
+    comm, &
+    buffer_addr, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    !dir$ ignore_tkr(trk) buffer_addr
+    !gcc$ attributes no_arg_check :: buffer_addr
+    integer :: buffer_addr(*)
+    integer :: size
+    integer :: ierror
+  end subroutine PMPI_Comm_detach_buffer
+
+  subroutine PMPI_Comm_detach_buffer_c( &
+    comm, &
+    buffer_addr, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    !dir$ ignore_tkr(trk) buffer_addr
+    !gcc$ attributes no_arg_check :: buffer_addr
+    integer :: buffer_addr(*)
+    integer(MPI_COUNT_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_Comm_detach_buffer_c
+
   subroutine MPI_Comm_disconnect( &
     comm, &
     ierror &
@@ -1612,6 +3213,16 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Comm_disconnect
+
+  subroutine PMPI_Comm_disconnect( &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Comm_disconnect
 
   subroutine MPI_Comm_dup( &
     comm, &
@@ -1624,6 +3235,18 @@ module mpif_functions
     integer :: newcomm
     integer :: ierror
   end subroutine MPI_Comm_dup
+
+  subroutine PMPI_Comm_dup( &
+    comm, &
+    newcomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: newcomm
+    integer :: ierror
+  end subroutine PMPI_Comm_dup
 
   subroutine MPI_Comm_dup_with_info( &
     comm, &
@@ -1639,6 +3262,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_dup_with_info
 
+  subroutine PMPI_Comm_dup_with_info( &
+    comm, &
+    info, &
+    newcomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: info
+    integer :: newcomm
+    integer :: ierror
+  end subroutine PMPI_Comm_dup_with_info
+
   subroutine MPI_Comm_flush_buffer( &
     comm, &
     ierror &
@@ -1648,6 +3285,16 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Comm_flush_buffer
+
+  subroutine PMPI_Comm_flush_buffer( &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Comm_flush_buffer
 
   subroutine MPI_Comm_free( &
     comm, &
@@ -1659,6 +3306,16 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_free
 
+  subroutine PMPI_Comm_free( &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Comm_free
+
   subroutine MPI_Comm_free_keyval( &
     comm_keyval, &
     ierror &
@@ -1668,6 +3325,16 @@ module mpif_functions
     integer :: comm_keyval
     integer :: ierror
   end subroutine MPI_Comm_free_keyval
+
+  subroutine PMPI_Comm_free_keyval( &
+    comm_keyval, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm_keyval
+    integer :: ierror
+  end subroutine PMPI_Comm_free_keyval
 
   subroutine MPI_Comm_get_attr( &
     comm, &
@@ -1685,6 +3352,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_get_attr
 
+  subroutine PMPI_Comm_get_attr( &
+    comm, &
+    comm_keyval, &
+    attribute_val, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: comm_keyval
+    integer(MPI_ADDRESS_KIND) :: attribute_val
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Comm_get_attr
+
   subroutine MPI_Comm_get_errhandler( &
     comm, &
     errhandler, &
@@ -1697,6 +3380,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_get_errhandler
 
+  subroutine PMPI_Comm_get_errhandler( &
+    comm, &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_Comm_get_errhandler
+
   subroutine MPI_Comm_get_info( &
     comm, &
     info_used, &
@@ -1708,6 +3403,18 @@ module mpif_functions
     integer :: info_used
     integer :: ierror
   end subroutine MPI_Comm_get_info
+
+  subroutine PMPI_Comm_get_info( &
+    comm, &
+    info_used, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: info_used
+    integer :: ierror
+  end subroutine PMPI_Comm_get_info
 
   subroutine MPI_Comm_get_name( &
     comm, &
@@ -1723,6 +3430,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_get_name
 
+  subroutine PMPI_Comm_get_name( &
+    comm, &
+    comm_name, &
+    resultlen, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    character*(MPI_MAX_OBJECT_NAME) :: comm_name
+    integer :: resultlen
+    integer :: ierror
+  end subroutine PMPI_Comm_get_name
+
   subroutine MPI_Comm_get_parent( &
     parent, &
     ierror &
@@ -1732,6 +3453,16 @@ module mpif_functions
     integer :: parent
     integer :: ierror
   end subroutine MPI_Comm_get_parent
+
+  subroutine PMPI_Comm_get_parent( &
+    parent, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: parent
+    integer :: ierror
+  end subroutine PMPI_Comm_get_parent
 
   subroutine MPI_Comm_group( &
     comm, &
@@ -1744,6 +3475,18 @@ module mpif_functions
     integer :: group
     integer :: ierror
   end subroutine MPI_Comm_group
+
+  subroutine PMPI_Comm_group( &
+    comm, &
+    group, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: group
+    integer :: ierror
+  end subroutine PMPI_Comm_group
 
   subroutine MPI_Comm_idup( &
     comm, &
@@ -1758,6 +3501,20 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Comm_idup
+
+  subroutine PMPI_Comm_idup( &
+    comm, &
+    newcomm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: newcomm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Comm_idup
 
   subroutine MPI_Comm_idup_with_info( &
     comm, &
@@ -1775,6 +3532,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_idup_with_info
 
+  subroutine PMPI_Comm_idup_with_info( &
+    comm, &
+    info, &
+    newcomm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: info
+    integer :: newcomm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Comm_idup_with_info
+
   subroutine MPI_Comm_iflush_buffer( &
     comm, &
     request, &
@@ -1786,6 +3559,18 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Comm_iflush_buffer
+
+  subroutine PMPI_Comm_iflush_buffer( &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Comm_iflush_buffer
 
   subroutine MPI_Comm_join( &
     fd, &
@@ -1799,6 +3584,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_join
 
+  subroutine PMPI_Comm_join( &
+    fd, &
+    intercomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fd
+    integer :: intercomm
+    integer :: ierror
+  end subroutine PMPI_Comm_join
+
   subroutine MPI_Comm_rank( &
     comm, &
     rank, &
@@ -1810,6 +3607,18 @@ module mpif_functions
     integer :: rank
     integer :: ierror
   end subroutine MPI_Comm_rank
+
+  subroutine PMPI_Comm_rank( &
+    comm, &
+    rank, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: rank
+    integer :: ierror
+  end subroutine PMPI_Comm_rank
 
   subroutine MPI_Comm_remote_group( &
     comm, &
@@ -1823,6 +3632,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_remote_group
 
+  subroutine PMPI_Comm_remote_group( &
+    comm, &
+    group, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: group
+    integer :: ierror
+  end subroutine PMPI_Comm_remote_group
+
   subroutine MPI_Comm_remote_size( &
     comm, &
     size, &
@@ -1834,6 +3655,18 @@ module mpif_functions
     integer :: size
     integer :: ierror
   end subroutine MPI_Comm_remote_size
+
+  subroutine PMPI_Comm_remote_size( &
+    comm, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: size
+    integer :: ierror
+  end subroutine PMPI_Comm_remote_size
 
   subroutine MPI_Comm_set_attr( &
     comm, &
@@ -1849,6 +3682,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_set_attr
 
+  subroutine PMPI_Comm_set_attr( &
+    comm, &
+    comm_keyval, &
+    attribute_val, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: comm_keyval
+    integer(MPI_ADDRESS_KIND) :: attribute_val
+    integer :: ierror
+  end subroutine PMPI_Comm_set_attr
+
   subroutine MPI_Comm_set_errhandler( &
     comm, &
     errhandler, &
@@ -1860,6 +3707,18 @@ module mpif_functions
     integer :: errhandler
     integer :: ierror
   end subroutine MPI_Comm_set_errhandler
+
+  subroutine PMPI_Comm_set_errhandler( &
+    comm, &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_Comm_set_errhandler
 
   subroutine MPI_Comm_set_info( &
     comm, &
@@ -1873,6 +3732,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_set_info
 
+  subroutine PMPI_Comm_set_info( &
+    comm, &
+    info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: info
+    integer :: ierror
+  end subroutine PMPI_Comm_set_info
+
   subroutine MPI_Comm_set_name( &
     comm, &
     comm_name, &
@@ -1885,6 +3756,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_set_name
 
+  subroutine PMPI_Comm_set_name( &
+    comm, &
+    comm_name, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    character*(*) :: comm_name
+    integer :: ierror
+  end subroutine PMPI_Comm_set_name
+
   subroutine MPI_Comm_size( &
     comm, &
     size, &
@@ -1896,6 +3779,18 @@ module mpif_functions
     integer :: size
     integer :: ierror
   end subroutine MPI_Comm_size
+
+  subroutine PMPI_Comm_size( &
+    comm, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: size
+    integer :: ierror
+  end subroutine PMPI_Comm_size
 
   subroutine MPI_Comm_spawn( &
     command, &
@@ -1920,6 +3815,30 @@ module mpif_functions
     integer :: array_of_errcodes(*)
     integer :: ierror
   end subroutine MPI_Comm_spawn
+
+  subroutine PMPI_Comm_spawn( &
+    command, &
+    argv, &
+    maxprocs, &
+    info, &
+    root, &
+    comm, &
+    intercomm, &
+    array_of_errcodes, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: command
+    character*(*) :: argv(*)
+    integer :: maxprocs
+    integer :: info
+    integer :: root
+    integer :: comm
+    integer :: intercomm
+    integer :: array_of_errcodes(*)
+    integer :: ierror
+  end subroutine PMPI_Comm_spawn
 
   subroutine MPI_Comm_spawn_multiple( &
     count, &
@@ -1947,6 +3866,32 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_spawn_multiple
 
+  subroutine PMPI_Comm_spawn_multiple( &
+    count, &
+    array_of_commands, &
+    array_of_argv, &
+    array_of_maxprocs, &
+    array_of_info, &
+    root, &
+    comm, &
+    intercomm, &
+    array_of_errcodes, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    character*(*) :: array_of_commands(*)
+    character*(*) :: array_of_argv(count, *)
+    integer :: array_of_maxprocs(count)
+    integer :: array_of_info(count)
+    integer :: root
+    integer :: comm
+    integer :: intercomm
+    integer :: array_of_errcodes(*)
+    integer :: ierror
+  end subroutine PMPI_Comm_spawn_multiple
+
   subroutine MPI_Comm_split( &
     comm, &
     color, &
@@ -1962,6 +3907,22 @@ module mpif_functions
     integer :: newcomm
     integer :: ierror
   end subroutine MPI_Comm_split
+
+  subroutine PMPI_Comm_split( &
+    comm, &
+    color, &
+    key, &
+    newcomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: color
+    integer :: key
+    integer :: newcomm
+    integer :: ierror
+  end subroutine PMPI_Comm_split
 
   subroutine MPI_Comm_split_type( &
     comm, &
@@ -1981,6 +3942,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Comm_split_type
 
+  subroutine PMPI_Comm_split_type( &
+    comm, &
+    split_type, &
+    key, &
+    info, &
+    newcomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: split_type
+    integer :: key
+    integer :: info
+    integer :: newcomm
+    integer :: ierror
+  end subroutine PMPI_Comm_split_type
+
   subroutine MPI_Comm_test_inter( &
     comm, &
     flag, &
@@ -1992,6 +3971,18 @@ module mpif_functions
     logical :: flag
     integer :: ierror
   end subroutine MPI_Comm_test_inter
+
+  subroutine PMPI_Comm_test_inter( &
+    comm, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Comm_test_inter
 
   subroutine MPI_Compare_and_swap( &
     origin_addr, &
@@ -2021,6 +4012,34 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Compare_and_swap
 
+  subroutine PMPI_Compare_and_swap( &
+    origin_addr, &
+    compare_addr, &
+    result_addr, &
+    datatype, &
+    target_rank, &
+    target_disp, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    !dir$ ignore_tkr(trk) compare_addr
+    !gcc$ attributes no_arg_check :: compare_addr
+    integer :: compare_addr(*)
+    !dir$ ignore_tkr(trk) result_addr
+    !gcc$ attributes no_arg_check :: result_addr
+    integer :: result_addr(*)
+    integer :: datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Compare_and_swap
+
   subroutine MPI_Dims_create( &
     nnodes, &
     ndims, &
@@ -2034,6 +4053,20 @@ module mpif_functions
     integer :: dims(ndims)
     integer :: ierror
   end subroutine MPI_Dims_create
+
+  subroutine PMPI_Dims_create( &
+    nnodes, &
+    ndims, &
+    dims, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: nnodes
+    integer :: ndims
+    integer :: dims(ndims)
+    integer :: ierror
+  end subroutine PMPI_Dims_create
 
   subroutine MPI_Dist_graph_create( &
     comm_old, &
@@ -2060,6 +4093,32 @@ module mpif_functions
     integer :: comm_dist_graph
     integer :: ierror
   end subroutine MPI_Dist_graph_create
+
+  subroutine PMPI_Dist_graph_create( &
+    comm_old, &
+    n, &
+    sources, &
+    degrees, &
+    destinations, &
+    weights, &
+    info, &
+    reorder, &
+    comm_dist_graph, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm_old
+    integer :: n
+    integer :: sources(n)
+    integer :: degrees(n)
+    integer :: destinations(*)
+    integer :: weights(*)
+    integer :: info
+    logical :: reorder
+    integer :: comm_dist_graph
+    integer :: ierror
+  end subroutine PMPI_Dist_graph_create
 
   subroutine MPI_Dist_graph_create_adjacent( &
     comm_old, &
@@ -2089,6 +4148,34 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Dist_graph_create_adjacent
 
+  subroutine PMPI_Dist_graph_create_adjacent( &
+    comm_old, &
+    indegree, &
+    sources, &
+    sourceweights, &
+    outdegree, &
+    destinations, &
+    destweights, &
+    info, &
+    reorder, &
+    comm_dist_graph, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm_old
+    integer :: indegree
+    integer :: sources(indegree)
+    integer :: sourceweights(*)
+    integer :: outdegree
+    integer :: destinations(outdegree)
+    integer :: destweights(*)
+    integer :: info
+    logical :: reorder
+    integer :: comm_dist_graph
+    integer :: ierror
+  end subroutine PMPI_Dist_graph_create_adjacent
+
   subroutine MPI_Dist_graph_neighbors( &
     comm, &
     maxindegree, &
@@ -2111,6 +4198,28 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Dist_graph_neighbors
 
+  subroutine PMPI_Dist_graph_neighbors( &
+    comm, &
+    maxindegree, &
+    sources, &
+    sourceweights, &
+    maxoutdegree, &
+    destinations, &
+    destweights, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: maxindegree
+    integer :: sources(maxindegree)
+    integer :: sourceweights(*)
+    integer :: maxoutdegree
+    integer :: destinations(maxoutdegree)
+    integer :: destweights(*)
+    integer :: ierror
+  end subroutine PMPI_Dist_graph_neighbors
+
   subroutine MPI_Dist_graph_neighbors_count( &
     comm, &
     indegree, &
@@ -2127,6 +4236,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Dist_graph_neighbors_count
 
+  subroutine PMPI_Dist_graph_neighbors_count( &
+    comm, &
+    indegree, &
+    outdegree, &
+    weighted, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: indegree
+    integer :: outdegree
+    logical :: weighted
+    integer :: ierror
+  end subroutine PMPI_Dist_graph_neighbors_count
+
   subroutine MPI_Errhandler_free( &
     errhandler, &
     ierror &
@@ -2136,6 +4261,16 @@ module mpif_functions
     integer :: errhandler
     integer :: ierror
   end subroutine MPI_Errhandler_free
+
+  subroutine PMPI_Errhandler_free( &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_Errhandler_free
 
   subroutine MPI_Error_class( &
     errorcode, &
@@ -2148,6 +4283,18 @@ module mpif_functions
     integer :: errorclass
     integer :: ierror
   end subroutine MPI_Error_class
+
+  subroutine PMPI_Error_class( &
+    errorcode, &
+    errorclass, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: errorcode
+    integer :: errorclass
+    integer :: ierror
+  end subroutine PMPI_Error_class
 
   subroutine MPI_Error_string( &
     errorcode, &
@@ -2162,6 +4309,20 @@ module mpif_functions
     integer :: resultlen
     integer :: ierror
   end subroutine MPI_Error_string
+
+  subroutine PMPI_Error_string( &
+    errorcode, &
+    string, &
+    resultlen, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: errorcode
+    character*(MPI_MAX_ERROR_STRING) :: string
+    integer :: resultlen
+    integer :: ierror
+  end subroutine PMPI_Error_string
 
   subroutine MPI_Exscan( &
     sendbuf, &
@@ -2210,6 +4371,54 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Exscan_c
+
+  subroutine PMPI_Exscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Exscan
+
+  subroutine PMPI_Exscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Exscan_c
 
   subroutine MPI_Exscan_init( &
     sendbuf, &
@@ -2267,6 +4476,62 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Exscan_init_c
 
+  subroutine PMPI_Exscan_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Exscan_init
+
+  subroutine PMPI_Exscan_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Exscan_init_c
+
   subroutine MPI_F_sync_reg( &
     buf &
   )
@@ -2276,6 +4541,16 @@ module mpif_functions
     !gcc$ attributes no_arg_check :: buf
     integer :: buf(*)
   end subroutine MPI_F_sync_reg
+
+  subroutine PMPI_F_sync_reg( &
+    buf &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+  end subroutine PMPI_F_sync_reg
 
   subroutine MPI_Fetch_and_op( &
     origin_addr, &
@@ -2303,6 +4578,32 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Fetch_and_op
 
+  subroutine PMPI_Fetch_and_op( &
+    origin_addr, &
+    result_addr, &
+    datatype, &
+    target_rank, &
+    target_disp, &
+    op, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    !dir$ ignore_tkr(trk) result_addr
+    !gcc$ attributes no_arg_check :: result_addr
+    integer :: result_addr(*)
+    integer :: datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer :: op
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Fetch_and_op
+
   subroutine MPI_File_call_errhandler( &
     fh, &
     errorcode, &
@@ -2315,6 +4616,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_call_errhandler
 
+  subroutine PMPI_File_call_errhandler( &
+    fh, &
+    errorcode, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer :: errorcode
+    integer :: ierror
+  end subroutine PMPI_File_call_errhandler
+
   subroutine MPI_File_close( &
     fh, &
     ierror &
@@ -2324,6 +4637,16 @@ module mpif_functions
     integer :: fh
     integer :: ierror
   end subroutine MPI_File_close
+
+  subroutine PMPI_File_close( &
+    fh, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer :: ierror
+  end subroutine PMPI_File_close
 
   subroutine MPI_File_create_errhandler( &
     file_errhandler_fn, &
@@ -2337,6 +4660,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_create_errhandler
 
+  subroutine PMPI_File_create_errhandler( &
+    file_errhandler_fn, &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    external :: file_errhandler_fn
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_File_create_errhandler
+
   subroutine MPI_File_delete( &
     filename, &
     info, &
@@ -2348,6 +4683,18 @@ module mpif_functions
     integer :: info
     integer :: ierror
   end subroutine MPI_File_delete
+
+  subroutine PMPI_File_delete( &
+    filename, &
+    info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: filename
+    integer :: info
+    integer :: ierror
+  end subroutine PMPI_File_delete
 
   subroutine MPI_File_get_amode( &
     fh, &
@@ -2361,6 +4708,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_get_amode
 
+  subroutine PMPI_File_get_amode( &
+    fh, &
+    amode, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer :: amode
+    integer :: ierror
+  end subroutine PMPI_File_get_amode
+
   subroutine MPI_File_get_atomicity( &
     fh, &
     flag, &
@@ -2372,6 +4731,18 @@ module mpif_functions
     logical :: flag
     integer :: ierror
   end subroutine MPI_File_get_atomicity
+
+  subroutine PMPI_File_get_atomicity( &
+    fh, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_File_get_atomicity
 
   subroutine MPI_File_get_byte_offset( &
     fh, &
@@ -2387,6 +4758,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_get_byte_offset
 
+  subroutine PMPI_File_get_byte_offset( &
+    fh, &
+    offset, &
+    disp, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    integer(MPI_OFFSET_KIND) :: disp
+    integer :: ierror
+  end subroutine PMPI_File_get_byte_offset
+
   subroutine MPI_File_get_errhandler( &
     file, &
     errhandler, &
@@ -2398,6 +4783,18 @@ module mpif_functions
     integer :: errhandler
     integer :: ierror
   end subroutine MPI_File_get_errhandler
+
+  subroutine PMPI_File_get_errhandler( &
+    file, &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: file
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_File_get_errhandler
 
   subroutine MPI_File_get_group( &
     fh, &
@@ -2411,6 +4808,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_get_group
 
+  subroutine PMPI_File_get_group( &
+    fh, &
+    group, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer :: group
+    integer :: ierror
+  end subroutine PMPI_File_get_group
+
   subroutine MPI_File_get_info( &
     fh, &
     info_used, &
@@ -2422,6 +4831,18 @@ module mpif_functions
     integer :: info_used
     integer :: ierror
   end subroutine MPI_File_get_info
+
+  subroutine PMPI_File_get_info( &
+    fh, &
+    info_used, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer :: info_used
+    integer :: ierror
+  end subroutine PMPI_File_get_info
 
   subroutine MPI_File_get_position( &
     fh, &
@@ -2435,6 +4856,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_get_position
 
+  subroutine PMPI_File_get_position( &
+    fh, &
+    offset, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    integer :: ierror
+  end subroutine PMPI_File_get_position
+
   subroutine MPI_File_get_position_shared( &
     fh, &
     offset, &
@@ -2447,6 +4880,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_get_position_shared
 
+  subroutine PMPI_File_get_position_shared( &
+    fh, &
+    offset, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    integer :: ierror
+  end subroutine PMPI_File_get_position_shared
+
   subroutine MPI_File_get_size( &
     fh, &
     size, &
@@ -2458,6 +4903,18 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: size
     integer :: ierror
   end subroutine MPI_File_get_size
+
+  subroutine PMPI_File_get_size( &
+    fh, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_File_get_size
 
   subroutine MPI_File_get_type_extent( &
     fh, &
@@ -2487,6 +4944,34 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_get_type_extent_c
 
+  subroutine PMPI_File_get_type_extent( &
+    fh, &
+    datatype, &
+    extent, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer :: datatype
+    integer(MPI_ADDRESS_KIND) :: extent
+    integer :: ierror
+  end subroutine PMPI_File_get_type_extent
+
+  subroutine PMPI_File_get_type_extent_c( &
+    fh, &
+    datatype, &
+    extent, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: extent
+    integer :: ierror
+  end subroutine PMPI_File_get_type_extent_c
+
   subroutine MPI_File_get_view( &
     fh, &
     disp, &
@@ -2504,6 +4989,24 @@ module mpif_functions
     character*(*) :: datarep
     integer :: ierror
   end subroutine MPI_File_get_view
+
+  subroutine PMPI_File_get_view( &
+    fh, &
+    disp, &
+    etype, &
+    filetype, &
+    datarep, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: disp
+    integer :: etype
+    integer :: filetype
+    character*(*) :: datarep
+    integer :: ierror
+  end subroutine PMPI_File_get_view
 
   subroutine MPI_File_iread( &
     fh, &
@@ -2545,6 +5048,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_iread_c
 
+  subroutine PMPI_File_iread( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iread
+
+  subroutine PMPI_File_iread_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iread_c
+
   subroutine MPI_File_iread_all( &
     fh, &
     buf, &
@@ -2584,6 +5127,46 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_File_iread_all_c
+
+  subroutine PMPI_File_iread_all( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iread_all
+
+  subroutine PMPI_File_iread_all_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iread_all_c
 
   subroutine MPI_File_iread_at( &
     fh, &
@@ -2629,6 +5212,50 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_iread_at_c
 
+  subroutine PMPI_File_iread_at( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iread_at
+
+  subroutine PMPI_File_iread_at_c( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iread_at_c
+
   subroutine MPI_File_iread_at_all( &
     fh, &
     offset, &
@@ -2673,6 +5300,50 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_iread_at_all_c
 
+  subroutine PMPI_File_iread_at_all( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iread_at_all
+
+  subroutine PMPI_File_iread_at_all_c( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iread_at_all_c
+
   subroutine MPI_File_iread_shared( &
     fh, &
     buf, &
@@ -2712,6 +5383,46 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_File_iread_shared_c
+
+  subroutine PMPI_File_iread_shared( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iread_shared
+
+  subroutine PMPI_File_iread_shared_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iread_shared_c
 
   subroutine MPI_File_iwrite( &
     fh, &
@@ -2753,6 +5464,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_iwrite_c
 
+  subroutine PMPI_File_iwrite( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iwrite
+
+  subroutine PMPI_File_iwrite_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iwrite_c
+
   subroutine MPI_File_iwrite_all( &
     fh, &
     buf, &
@@ -2792,6 +5543,46 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_File_iwrite_all_c
+
+  subroutine PMPI_File_iwrite_all( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iwrite_all
+
+  subroutine PMPI_File_iwrite_all_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iwrite_all_c
 
   subroutine MPI_File_iwrite_at( &
     fh, &
@@ -2837,6 +5628,50 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_iwrite_at_c
 
+  subroutine PMPI_File_iwrite_at( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iwrite_at
+
+  subroutine PMPI_File_iwrite_at_c( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iwrite_at_c
+
   subroutine MPI_File_iwrite_at_all( &
     fh, &
     offset, &
@@ -2881,6 +5716,50 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_iwrite_at_all_c
 
+  subroutine PMPI_File_iwrite_at_all( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iwrite_at_all
+
+  subroutine PMPI_File_iwrite_at_all_c( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iwrite_at_all_c
+
   subroutine MPI_File_iwrite_shared( &
     fh, &
     buf, &
@@ -2921,6 +5800,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_iwrite_shared_c
 
+  subroutine PMPI_File_iwrite_shared( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iwrite_shared
+
+  subroutine PMPI_File_iwrite_shared_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_File_iwrite_shared_c
+
   subroutine MPI_File_open( &
     comm, &
     filename, &
@@ -2939,6 +5858,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_open
 
+  subroutine PMPI_File_open( &
+    comm, &
+    filename, &
+    amode, &
+    info, &
+    fh, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    character*(*) :: filename
+    integer :: amode
+    integer :: info
+    integer :: fh
+    integer :: ierror
+  end subroutine PMPI_File_open
+
   subroutine MPI_File_preallocate( &
     fh, &
     size, &
@@ -2950,6 +5887,18 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: size
     integer :: ierror
   end subroutine MPI_File_preallocate
+
+  subroutine PMPI_File_preallocate( &
+    fh, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_File_preallocate
 
   subroutine MPI_File_read( &
     fh, &
@@ -2991,6 +5940,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_read_c
 
+  subroutine PMPI_File_read( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read
+
+  subroutine PMPI_File_read_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_c
+
   subroutine MPI_File_read_all( &
     fh, &
     buf, &
@@ -3031,6 +6020,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_read_all_c
 
+  subroutine PMPI_File_read_all( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_all
+
+  subroutine PMPI_File_read_all_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_all_c
+
   subroutine MPI_File_read_all_begin( &
     fh, &
     buf, &
@@ -3067,6 +6096,42 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_read_all_begin_c
 
+  subroutine PMPI_File_read_all_begin( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_File_read_all_begin
+
+  subroutine PMPI_File_read_all_begin_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_File_read_all_begin_c
+
   subroutine MPI_File_read_all_end( &
     fh, &
     buf, &
@@ -3082,6 +6147,22 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_File_read_all_end
+
+  subroutine PMPI_File_read_all_end( &
+    fh, &
+    buf, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_all_end
 
   subroutine MPI_File_read_at( &
     fh, &
@@ -3127,6 +6208,50 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_read_at_c
 
+  subroutine PMPI_File_read_at( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_at
+
+  subroutine PMPI_File_read_at_c( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_at_c
+
   subroutine MPI_File_read_at_all( &
     fh, &
     offset, &
@@ -3171,6 +6296,50 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_read_at_all_c
 
+  subroutine PMPI_File_read_at_all( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_at_all
+
+  subroutine PMPI_File_read_at_all_c( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_at_all_c
+
   subroutine MPI_File_read_at_all_begin( &
     fh, &
     offset, &
@@ -3211,6 +6380,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_read_at_all_begin_c
 
+  subroutine PMPI_File_read_at_all_begin( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_File_read_at_all_begin
+
+  subroutine PMPI_File_read_at_all_begin_c( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_File_read_at_all_begin_c
+
   subroutine MPI_File_read_at_all_end( &
     fh, &
     buf, &
@@ -3226,6 +6435,22 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_File_read_at_all_end
+
+  subroutine PMPI_File_read_at_all_end( &
+    fh, &
+    buf, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_at_all_end
 
   subroutine MPI_File_read_ordered( &
     fh, &
@@ -3267,6 +6492,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_read_ordered_c
 
+  subroutine PMPI_File_read_ordered( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_ordered
+
+  subroutine PMPI_File_read_ordered_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_ordered_c
+
   subroutine MPI_File_read_ordered_begin( &
     fh, &
     buf, &
@@ -3303,6 +6568,42 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_read_ordered_begin_c
 
+  subroutine PMPI_File_read_ordered_begin( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_File_read_ordered_begin
+
+  subroutine PMPI_File_read_ordered_begin_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_File_read_ordered_begin_c
+
   subroutine MPI_File_read_ordered_end( &
     fh, &
     buf, &
@@ -3318,6 +6619,22 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_File_read_ordered_end
+
+  subroutine PMPI_File_read_ordered_end( &
+    fh, &
+    buf, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_ordered_end
 
   subroutine MPI_File_read_shared( &
     fh, &
@@ -3359,6 +6676,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_read_shared_c
 
+  subroutine PMPI_File_read_shared( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_shared
+
+  subroutine PMPI_File_read_shared_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_read_shared_c
+
   subroutine MPI_File_seek( &
     fh, &
     offset, &
@@ -3372,6 +6729,20 @@ module mpif_functions
     integer :: whence
     integer :: ierror
   end subroutine MPI_File_seek
+
+  subroutine PMPI_File_seek( &
+    fh, &
+    offset, &
+    whence, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    integer :: whence
+    integer :: ierror
+  end subroutine PMPI_File_seek
 
   subroutine MPI_File_seek_shared( &
     fh, &
@@ -3387,6 +6758,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_seek_shared
 
+  subroutine PMPI_File_seek_shared( &
+    fh, &
+    offset, &
+    whence, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    integer :: whence
+    integer :: ierror
+  end subroutine PMPI_File_seek_shared
+
   subroutine MPI_File_set_atomicity( &
     fh, &
     flag, &
@@ -3398,6 +6783,18 @@ module mpif_functions
     logical :: flag
     integer :: ierror
   end subroutine MPI_File_set_atomicity
+
+  subroutine PMPI_File_set_atomicity( &
+    fh, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_File_set_atomicity
 
   subroutine MPI_File_set_errhandler( &
     file, &
@@ -3411,6 +6808,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_set_errhandler
 
+  subroutine PMPI_File_set_errhandler( &
+    file, &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: file
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_File_set_errhandler
+
   subroutine MPI_File_set_info( &
     fh, &
     info, &
@@ -3423,6 +6832,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_set_info
 
+  subroutine PMPI_File_set_info( &
+    fh, &
+    info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer :: info
+    integer :: ierror
+  end subroutine PMPI_File_set_info
+
   subroutine MPI_File_set_size( &
     fh, &
     size, &
@@ -3434,6 +6855,18 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: size
     integer :: ierror
   end subroutine MPI_File_set_size
+
+  subroutine PMPI_File_set_size( &
+    fh, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_File_set_size
 
   subroutine MPI_File_set_view( &
     fh, &
@@ -3455,6 +6888,26 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_set_view
 
+  subroutine PMPI_File_set_view( &
+    fh, &
+    disp, &
+    etype, &
+    filetype, &
+    datarep, &
+    info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: disp
+    integer :: etype
+    integer :: filetype
+    character*(*) :: datarep
+    integer :: info
+    integer :: ierror
+  end subroutine PMPI_File_set_view
+
   subroutine MPI_File_sync( &
     fh, &
     ierror &
@@ -3464,6 +6917,16 @@ module mpif_functions
     integer :: fh
     integer :: ierror
   end subroutine MPI_File_sync
+
+  subroutine PMPI_File_sync( &
+    fh, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer :: ierror
+  end subroutine PMPI_File_sync
 
   subroutine MPI_File_write( &
     fh, &
@@ -3505,6 +6968,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_write_c
 
+  subroutine PMPI_File_write( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write
+
+  subroutine PMPI_File_write_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_c
+
   subroutine MPI_File_write_all( &
     fh, &
     buf, &
@@ -3545,6 +7048,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_write_all_c
 
+  subroutine PMPI_File_write_all( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_all
+
+  subroutine PMPI_File_write_all_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_all_c
+
   subroutine MPI_File_write_all_begin( &
     fh, &
     buf, &
@@ -3581,6 +7124,42 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_write_all_begin_c
 
+  subroutine PMPI_File_write_all_begin( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_File_write_all_begin
+
+  subroutine PMPI_File_write_all_begin_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_File_write_all_begin_c
+
   subroutine MPI_File_write_all_end( &
     fh, &
     buf, &
@@ -3596,6 +7175,22 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_File_write_all_end
+
+  subroutine PMPI_File_write_all_end( &
+    fh, &
+    buf, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_all_end
 
   subroutine MPI_File_write_at( &
     fh, &
@@ -3641,6 +7236,50 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_write_at_c
 
+  subroutine PMPI_File_write_at( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_at
+
+  subroutine PMPI_File_write_at_c( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_at_c
+
   subroutine MPI_File_write_at_all( &
     fh, &
     offset, &
@@ -3685,6 +7324,50 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_write_at_all_c
 
+  subroutine PMPI_File_write_at_all( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_at_all
+
+  subroutine PMPI_File_write_at_all_c( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_at_all_c
+
   subroutine MPI_File_write_at_all_begin( &
     fh, &
     offset, &
@@ -3725,6 +7408,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_write_at_all_begin_c
 
+  subroutine PMPI_File_write_at_all_begin( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_File_write_at_all_begin
+
+  subroutine PMPI_File_write_at_all_begin_c( &
+    fh, &
+    offset, &
+    buf, &
+    count, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    integer(MPI_OFFSET_KIND) :: offset
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_File_write_at_all_begin_c
+
   subroutine MPI_File_write_at_all_end( &
     fh, &
     buf, &
@@ -3740,6 +7463,22 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_File_write_at_all_end
+
+  subroutine PMPI_File_write_at_all_end( &
+    fh, &
+    buf, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_at_all_end
 
   subroutine MPI_File_write_ordered( &
     fh, &
@@ -3781,6 +7520,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_write_ordered_c
 
+  subroutine PMPI_File_write_ordered( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_ordered
+
+  subroutine PMPI_File_write_ordered_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_ordered_c
+
   subroutine MPI_File_write_ordered_begin( &
     fh, &
     buf, &
@@ -3817,6 +7596,42 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_write_ordered_begin_c
 
+  subroutine PMPI_File_write_ordered_begin( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_File_write_ordered_begin
+
+  subroutine PMPI_File_write_ordered_begin_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_File_write_ordered_begin_c
+
   subroutine MPI_File_write_ordered_end( &
     fh, &
     buf, &
@@ -3832,6 +7647,22 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_File_write_ordered_end
+
+  subroutine PMPI_File_write_ordered_end( &
+    fh, &
+    buf, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_ordered_end
 
   subroutine MPI_File_write_shared( &
     fh, &
@@ -3873,6 +7704,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_File_write_shared_c
 
+  subroutine PMPI_File_write_shared( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_shared
+
+  subroutine PMPI_File_write_shared_c( &
+    fh, &
+    buf, &
+    count, &
+    datatype, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: fh
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_File_write_shared_c
+
   subroutine MPI_Finalize( &
     ierror &
   )
@@ -3880,6 +7751,14 @@ module mpif_functions
     implicit none
     integer :: ierror
   end subroutine MPI_Finalize
+
+  subroutine PMPI_Finalize( &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: ierror
+  end subroutine PMPI_Finalize
 
   subroutine MPI_Finalized( &
     flag, &
@@ -3890,6 +7769,16 @@ module mpif_functions
     logical :: flag
     integer :: ierror
   end subroutine MPI_Finalized
+
+  subroutine PMPI_Finalized( &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Finalized
 
   subroutine MPI_Free_mem( &
     base, &
@@ -3902,6 +7791,18 @@ module mpif_functions
     integer :: base(*)
     integer :: ierror
   end subroutine MPI_Free_mem
+
+  subroutine PMPI_Free_mem( &
+    base, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) base
+    !gcc$ attributes no_arg_check :: base
+    integer :: base(*)
+    integer :: ierror
+  end subroutine PMPI_Free_mem
 
   subroutine MPI_Gather( &
     sendbuf, &
@@ -3958,6 +7859,62 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Gather_c
+
+  subroutine PMPI_Gather( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Gather
+
+  subroutine PMPI_Gather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Gather_c
 
   subroutine MPI_Gather_init( &
     sendbuf, &
@@ -4023,6 +7980,70 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Gather_init_c
 
+  subroutine PMPI_Gather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Gather_init
+
+  subroutine PMPI_Gather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Gather_init_c
+
   subroutine MPI_Gatherv( &
     sendbuf, &
     sendcount, &
@@ -4082,6 +8103,66 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Gatherv_c
+
+  subroutine PMPI_Gatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    root, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: displs(*)
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Gatherv
+
+  subroutine PMPI_Gatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    root, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: displs(*)
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Gatherv_c
 
   subroutine MPI_Gatherv_init( &
     sendbuf, &
@@ -4151,6 +8232,74 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Gatherv_init_c
 
+  subroutine PMPI_Gatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    root, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: displs(*)
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Gatherv_init
+
+  subroutine PMPI_Gatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    root, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: displs(*)
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Gatherv_init_c
+
   subroutine MPI_Get( &
     origin_addr, &
     origin_count, &
@@ -4202,6 +8351,58 @@ module mpif_functions
     integer :: win
     integer :: ierror
   end subroutine MPI_Get_c
+
+  subroutine PMPI_Get( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer :: origin_count
+    integer :: origin_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer :: target_count
+    integer :: target_datatype
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Get
+
+  subroutine PMPI_Get_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer(MPI_COUNT_KIND) :: origin_count
+    integer :: origin_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer(MPI_COUNT_KIND) :: target_count
+    integer :: target_datatype
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Get_c
 
   subroutine MPI_Get_accumulate( &
     origin_addr, &
@@ -4275,6 +8476,78 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Get_accumulate_c
 
+  subroutine PMPI_Get_accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    result_addr, &
+    result_count, &
+    result_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    op, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer :: origin_count
+    integer :: origin_datatype
+    !dir$ ignore_tkr(trk) result_addr
+    !gcc$ attributes no_arg_check :: result_addr
+    integer :: result_addr(*)
+    integer :: result_count
+    integer :: result_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer :: target_count
+    integer :: target_datatype
+    integer :: op
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Get_accumulate
+
+  subroutine PMPI_Get_accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    result_addr, &
+    result_count, &
+    result_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    op, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer(MPI_COUNT_KIND) :: origin_count
+    integer :: origin_datatype
+    !dir$ ignore_tkr(trk) result_addr
+    !gcc$ attributes no_arg_check :: result_addr
+    integer :: result_addr(*)
+    integer(MPI_COUNT_KIND) :: result_count
+    integer :: result_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer(MPI_COUNT_KIND) :: target_count
+    integer :: target_datatype
+    integer :: op
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Get_accumulate_c
+
   subroutine MPI_Get_address( &
     location, &
     address, &
@@ -4288,6 +8561,20 @@ module mpif_functions
     integer(MPI_ADDRESS_KIND) :: address
     integer :: ierror
   end subroutine MPI_Get_address
+
+  subroutine PMPI_Get_address( &
+    location, &
+    address, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) location
+    !gcc$ attributes no_arg_check :: location
+    integer :: location(*)
+    integer(MPI_ADDRESS_KIND) :: address
+    integer :: ierror
+  end subroutine PMPI_Get_address
 
   subroutine MPI_Get_count( &
     status, &
@@ -4317,6 +8604,34 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Get_count_c
 
+  subroutine PMPI_Get_count( &
+    status, &
+    datatype, &
+    count, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: datatype
+    integer :: count
+    integer :: ierror
+  end subroutine PMPI_Get_count
+
+  subroutine PMPI_Get_count_c( &
+    status, &
+    datatype, &
+    count, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: count
+    integer :: ierror
+  end subroutine PMPI_Get_count_c
+
   subroutine MPI_Get_elements( &
     status, &
     datatype, &
@@ -4345,6 +8660,34 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Get_elements_c
 
+  subroutine PMPI_Get_elements( &
+    status, &
+    datatype, &
+    count, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: datatype
+    integer :: count
+    integer :: ierror
+  end subroutine PMPI_Get_elements
+
+  subroutine PMPI_Get_elements_c( &
+    status, &
+    datatype, &
+    count, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: count
+    integer :: ierror
+  end subroutine PMPI_Get_elements_c
+
   subroutine MPI_Get_elements_x( &
     status, &
     datatype, &
@@ -4359,6 +8702,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Get_elements_x
 
+  subroutine PMPI_Get_elements_x( &
+    status, &
+    datatype, &
+    count, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: count
+    integer :: ierror
+  end subroutine PMPI_Get_elements_x
+
   subroutine MPI_Get_hw_resource_info( &
     hw_info, &
     ierror &
@@ -4368,6 +8725,16 @@ module mpif_functions
     integer :: hw_info
     integer :: ierror
   end subroutine MPI_Get_hw_resource_info
+
+  subroutine PMPI_Get_hw_resource_info( &
+    hw_info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: hw_info
+    integer :: ierror
+  end subroutine PMPI_Get_hw_resource_info
 
   subroutine MPI_Get_library_version( &
     version, &
@@ -4381,6 +8748,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Get_library_version
 
+  subroutine PMPI_Get_library_version( &
+    version, &
+    resultlen, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(MPI_MAX_LIBRARY_VERSION_STRING) :: version
+    integer :: resultlen
+    integer :: ierror
+  end subroutine PMPI_Get_library_version
+
   subroutine MPI_Get_processor_name( &
     name, &
     resultlen, &
@@ -4393,6 +8772,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Get_processor_name
 
+  subroutine PMPI_Get_processor_name( &
+    name, &
+    resultlen, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(MPI_MAX_PROCESSOR_NAME) :: name
+    integer :: resultlen
+    integer :: ierror
+  end subroutine PMPI_Get_processor_name
+
   subroutine MPI_Get_version( &
     version, &
     subversion, &
@@ -4404,6 +8795,18 @@ module mpif_functions
     integer :: subversion
     integer :: ierror
   end subroutine MPI_Get_version
+
+  subroutine PMPI_Get_version( &
+    version, &
+    subversion, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: version
+    integer :: subversion
+    integer :: ierror
+  end subroutine PMPI_Get_version
 
   subroutine MPI_Graph_create( &
     comm_old, &
@@ -4425,6 +8828,26 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Graph_create
 
+  subroutine PMPI_Graph_create( &
+    comm_old, &
+    nnodes, &
+    index, &
+    edges, &
+    reorder, &
+    comm_graph, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm_old
+    integer :: nnodes
+    integer :: index(nnodes)
+    integer :: edges(*)
+    logical :: reorder
+    integer :: comm_graph
+    integer :: ierror
+  end subroutine PMPI_Graph_create
+
   subroutine MPI_Graph_get( &
     comm, &
     maxindex, &
@@ -4442,6 +8865,24 @@ module mpif_functions
     integer :: edges(maxedges)
     integer :: ierror
   end subroutine MPI_Graph_get
+
+  subroutine PMPI_Graph_get( &
+    comm, &
+    maxindex, &
+    maxedges, &
+    index, &
+    edges, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: maxindex
+    integer :: maxedges
+    integer :: index(maxindex)
+    integer :: edges(maxedges)
+    integer :: ierror
+  end subroutine PMPI_Graph_get
 
   subroutine MPI_Graph_map( &
     comm, &
@@ -4461,6 +8902,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Graph_map
 
+  subroutine PMPI_Graph_map( &
+    comm, &
+    nnodes, &
+    index, &
+    edges, &
+    newrank, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: nnodes
+    integer :: index(nnodes)
+    integer :: edges(*)
+    integer :: newrank
+    integer :: ierror
+  end subroutine PMPI_Graph_map
+
   subroutine MPI_Graph_neighbors( &
     comm, &
     rank, &
@@ -4477,6 +8936,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Graph_neighbors
 
+  subroutine PMPI_Graph_neighbors( &
+    comm, &
+    rank, &
+    maxneighbors, &
+    neighbors, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: rank
+    integer :: maxneighbors
+    integer :: neighbors(maxneighbors)
+    integer :: ierror
+  end subroutine PMPI_Graph_neighbors
+
   subroutine MPI_Graph_neighbors_count( &
     comm, &
     rank, &
@@ -4490,6 +8965,20 @@ module mpif_functions
     integer :: nneighbors
     integer :: ierror
   end subroutine MPI_Graph_neighbors_count
+
+  subroutine PMPI_Graph_neighbors_count( &
+    comm, &
+    rank, &
+    nneighbors, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: rank
+    integer :: nneighbors
+    integer :: ierror
+  end subroutine PMPI_Graph_neighbors_count
 
   subroutine MPI_Graphdims_get( &
     comm, &
@@ -4505,6 +8994,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Graphdims_get
 
+  subroutine PMPI_Graphdims_get( &
+    comm, &
+    nnodes, &
+    nedges, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: nnodes
+    integer :: nedges
+    integer :: ierror
+  end subroutine PMPI_Graphdims_get
+
   subroutine MPI_Grequest_complete( &
     request, &
     ierror &
@@ -4514,6 +9017,16 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Grequest_complete
+
+  subroutine PMPI_Grequest_complete( &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Grequest_complete
 
   subroutine MPI_Grequest_start( &
     query_fn, &
@@ -4533,6 +9046,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Grequest_start
 
+  subroutine PMPI_Grequest_start( &
+    query_fn, &
+    free_fn, &
+    cancel_fn, &
+    extra_state, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    external :: query_fn
+    external :: free_fn
+    external :: cancel_fn
+    integer(MPI_ADDRESS_KIND) :: extra_state
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Grequest_start
+
   subroutine MPI_Group_compare( &
     group1, &
     group2, &
@@ -4547,6 +9078,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Group_compare
 
+  subroutine PMPI_Group_compare( &
+    group1, &
+    group2, &
+    result, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group1
+    integer :: group2
+    integer :: result
+    integer :: ierror
+  end subroutine PMPI_Group_compare
+
   subroutine MPI_Group_difference( &
     group1, &
     group2, &
@@ -4560,6 +9105,20 @@ module mpif_functions
     integer :: newgroup
     integer :: ierror
   end subroutine MPI_Group_difference
+
+  subroutine PMPI_Group_difference( &
+    group1, &
+    group2, &
+    newgroup, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group1
+    integer :: group2
+    integer :: newgroup
+    integer :: ierror
+  end subroutine PMPI_Group_difference
 
   subroutine MPI_Group_excl( &
     group, &
@@ -4577,6 +9136,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Group_excl
 
+  subroutine PMPI_Group_excl( &
+    group, &
+    n, &
+    ranks, &
+    newgroup, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group
+    integer :: n
+    integer :: ranks(n)
+    integer :: newgroup
+    integer :: ierror
+  end subroutine PMPI_Group_excl
+
   subroutine MPI_Group_free( &
     group, &
     ierror &
@@ -4586,6 +9161,16 @@ module mpif_functions
     integer :: group
     integer :: ierror
   end subroutine MPI_Group_free
+
+  subroutine PMPI_Group_free( &
+    group, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group
+    integer :: ierror
+  end subroutine PMPI_Group_free
 
   subroutine MPI_Group_from_session_pset( &
     session, &
@@ -4600,6 +9185,20 @@ module mpif_functions
     integer :: newgroup
     integer :: ierror
   end subroutine MPI_Group_from_session_pset
+
+  subroutine PMPI_Group_from_session_pset( &
+    session, &
+    pset_name, &
+    newgroup, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    character*(*) :: pset_name
+    integer :: newgroup
+    integer :: ierror
+  end subroutine PMPI_Group_from_session_pset
 
   subroutine MPI_Group_incl( &
     group, &
@@ -4617,6 +9216,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Group_incl
 
+  subroutine PMPI_Group_incl( &
+    group, &
+    n, &
+    ranks, &
+    newgroup, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group
+    integer :: n
+    integer :: ranks(n)
+    integer :: newgroup
+    integer :: ierror
+  end subroutine PMPI_Group_incl
+
   subroutine MPI_Group_intersection( &
     group1, &
     group2, &
@@ -4630,6 +9245,20 @@ module mpif_functions
     integer :: newgroup
     integer :: ierror
   end subroutine MPI_Group_intersection
+
+  subroutine PMPI_Group_intersection( &
+    group1, &
+    group2, &
+    newgroup, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group1
+    integer :: group2
+    integer :: newgroup
+    integer :: ierror
+  end subroutine PMPI_Group_intersection
 
   subroutine MPI_Group_range_excl( &
     group, &
@@ -4647,6 +9276,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Group_range_excl
 
+  subroutine PMPI_Group_range_excl( &
+    group, &
+    n, &
+    ranges, &
+    newgroup, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group
+    integer :: n
+    integer :: ranges(3, n)
+    integer :: newgroup
+    integer :: ierror
+  end subroutine PMPI_Group_range_excl
+
   subroutine MPI_Group_range_incl( &
     group, &
     n, &
@@ -4663,6 +9308,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Group_range_incl
 
+  subroutine PMPI_Group_range_incl( &
+    group, &
+    n, &
+    ranges, &
+    newgroup, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group
+    integer :: n
+    integer :: ranges(3, n)
+    integer :: newgroup
+    integer :: ierror
+  end subroutine PMPI_Group_range_incl
+
   subroutine MPI_Group_rank( &
     group, &
     rank, &
@@ -4675,6 +9336,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Group_rank
 
+  subroutine PMPI_Group_rank( &
+    group, &
+    rank, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group
+    integer :: rank
+    integer :: ierror
+  end subroutine PMPI_Group_rank
+
   subroutine MPI_Group_size( &
     group, &
     size, &
@@ -4686,6 +9359,18 @@ module mpif_functions
     integer :: size
     integer :: ierror
   end subroutine MPI_Group_size
+
+  subroutine PMPI_Group_size( &
+    group, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group
+    integer :: size
+    integer :: ierror
+  end subroutine PMPI_Group_size
 
   subroutine MPI_Group_translate_ranks( &
     group1, &
@@ -4705,6 +9390,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Group_translate_ranks
 
+  subroutine PMPI_Group_translate_ranks( &
+    group1, &
+    n, &
+    ranks1, &
+    group2, &
+    ranks2, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group1
+    integer :: n
+    integer :: ranks1(n)
+    integer :: group2
+    integer :: ranks2(n)
+    integer :: ierror
+  end subroutine PMPI_Group_translate_ranks
+
   subroutine MPI_Group_union( &
     group1, &
     group2, &
@@ -4718,6 +9421,20 @@ module mpif_functions
     integer :: newgroup
     integer :: ierror
   end subroutine MPI_Group_union
+
+  subroutine PMPI_Group_union( &
+    group1, &
+    group2, &
+    newgroup, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group1
+    integer :: group2
+    integer :: newgroup
+    integer :: ierror
+  end subroutine PMPI_Group_union
 
   subroutine MPI_Iallgather( &
     sendbuf, &
@@ -4774,6 +9491,62 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Iallgather_c
+
+  subroutine PMPI_Iallgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iallgather
+
+  subroutine PMPI_Iallgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iallgather_c
 
   subroutine MPI_Iallgatherv( &
     sendbuf, &
@@ -4835,6 +9608,66 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Iallgatherv_c
 
+  subroutine PMPI_Iallgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: displs(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iallgatherv
+
+  subroutine PMPI_Iallgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: displs(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iallgatherv_c
+
   subroutine MPI_Iallreduce( &
     sendbuf, &
     recvbuf, &
@@ -4886,6 +9719,58 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Iallreduce_c
+
+  subroutine PMPI_Iallreduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iallreduce
+
+  subroutine PMPI_Iallreduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iallreduce_c
 
   subroutine MPI_Ialltoall( &
     sendbuf, &
@@ -4942,6 +9827,62 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Ialltoall_c
+
+  subroutine PMPI_Ialltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ialltoall
+
+  subroutine PMPI_Ialltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ialltoall_c
 
   subroutine MPI_Ialltoallv( &
     sendbuf, &
@@ -5007,6 +9948,70 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Ialltoallv_c
 
+  subroutine PMPI_Ialltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer :: sdispls(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: rdispls(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ialltoallv
+
+  subroutine PMPI_Ialltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ialltoallv_c
+
   subroutine MPI_Ialltoallw( &
     sendbuf, &
     sendcounts, &
@@ -5071,6 +10076,70 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Ialltoallw_c
 
+  subroutine PMPI_Ialltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer :: sdispls(*)
+    integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: rdispls(*)
+    integer :: recvtypes(*)
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ialltoallw
+
+  subroutine PMPI_Ialltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtypes(*)
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ialltoallw_c
+
   subroutine MPI_Ibarrier( &
     comm, &
     request, &
@@ -5082,6 +10151,18 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Ibarrier
+
+  subroutine PMPI_Ibarrier( &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ibarrier
 
   subroutine MPI_Ibcast( &
     buffer, &
@@ -5126,6 +10207,50 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Ibcast_c
+
+  subroutine PMPI_Ibcast( &
+    buffer, &
+    count, &
+    datatype, &
+    root, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buffer
+    !gcc$ attributes no_arg_check :: buffer
+    integer :: buffer(*)
+    integer :: count
+    integer :: datatype
+    integer :: root
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ibcast
+
+  subroutine PMPI_Ibcast_c( &
+    buffer, &
+    count, &
+    datatype, &
+    root, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buffer
+    !gcc$ attributes no_arg_check :: buffer
+    integer :: buffer(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: root
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ibcast_c
 
   subroutine MPI_Ibsend( &
     buf, &
@@ -5174,6 +10299,54 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Ibsend_c
+
+  subroutine PMPI_Ibsend( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ibsend
+
+  subroutine PMPI_Ibsend_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ibsend_c
 
   subroutine MPI_Iexscan( &
     sendbuf, &
@@ -5226,6 +10399,58 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Iexscan_c
+
+  subroutine PMPI_Iexscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iexscan
+
+  subroutine PMPI_Iexscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iexscan_c
 
   subroutine MPI_Igather( &
     sendbuf, &
@@ -5286,6 +10511,66 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Igather_c
+
+  subroutine PMPI_Igather( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Igather
+
+  subroutine PMPI_Igather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Igather_c
 
   subroutine MPI_Igatherv( &
     sendbuf, &
@@ -5351,6 +10636,70 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Igatherv_c
 
+  subroutine PMPI_Igatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    root, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: displs(*)
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Igatherv
+
+  subroutine PMPI_Igatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    root, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: displs(*)
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Igatherv_c
+
   subroutine MPI_Improbe( &
     source, &
     tag, &
@@ -5370,6 +10719,26 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_Improbe
+
+  subroutine PMPI_Improbe( &
+    source, &
+    tag, &
+    comm, &
+    flag, &
+    message, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: source
+    integer :: tag
+    integer :: comm
+    logical :: flag
+    integer :: message
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Improbe
 
   subroutine MPI_Imrecv( &
     buf, &
@@ -5410,6 +10779,46 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Imrecv_c
+
+  subroutine PMPI_Imrecv( &
+    buf, &
+    count, &
+    datatype, &
+    message, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: message
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Imrecv
+
+  subroutine PMPI_Imrecv_c( &
+    buf, &
+    count, &
+    datatype, &
+    message, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: message
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Imrecv_c
 
   subroutine MPI_Ineighbor_allgather( &
     sendbuf, &
@@ -5466,6 +10875,62 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Ineighbor_allgather_c
+
+  subroutine PMPI_Ineighbor_allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ineighbor_allgather
+
+  subroutine PMPI_Ineighbor_allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ineighbor_allgather_c
 
   subroutine MPI_Ineighbor_allgatherv( &
     sendbuf, &
@@ -5527,6 +10992,66 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Ineighbor_allgatherv_c
 
+  subroutine PMPI_Ineighbor_allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: displs(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ineighbor_allgatherv
+
+  subroutine PMPI_Ineighbor_allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: displs(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ineighbor_allgatherv_c
+
   subroutine MPI_Ineighbor_alltoall( &
     sendbuf, &
     sendcount, &
@@ -5582,6 +11107,62 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Ineighbor_alltoall_c
+
+  subroutine PMPI_Ineighbor_alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ineighbor_alltoall
+
+  subroutine PMPI_Ineighbor_alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ineighbor_alltoall_c
 
   subroutine MPI_Ineighbor_alltoallv( &
     sendbuf, &
@@ -5647,6 +11228,70 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Ineighbor_alltoallv_c
 
+  subroutine PMPI_Ineighbor_alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer :: sdispls(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: rdispls(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ineighbor_alltoallv
+
+  subroutine PMPI_Ineighbor_alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ineighbor_alltoallv_c
+
   subroutine MPI_Ineighbor_alltoallw( &
     sendbuf, &
     sendcounts, &
@@ -5711,6 +11356,70 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Ineighbor_alltoallw_c
 
+  subroutine PMPI_Ineighbor_alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtypes(*)
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ineighbor_alltoallw
+
+  subroutine PMPI_Ineighbor_alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtypes(*)
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ineighbor_alltoallw_c
+
   subroutine MPI_Info_create( &
     info, &
     ierror &
@@ -5721,6 +11430,16 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Info_create
 
+  subroutine PMPI_Info_create( &
+    info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    integer :: ierror
+  end subroutine PMPI_Info_create
+
   subroutine MPI_Info_create_env( &
     info, &
     ierror &
@@ -5730,6 +11449,16 @@ module mpif_functions
     integer :: info
     integer :: ierror
   end subroutine MPI_Info_create_env
+
+  subroutine PMPI_Info_create_env( &
+    info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    integer :: ierror
+  end subroutine PMPI_Info_create_env
 
   subroutine MPI_Info_delete( &
     info, &
@@ -5743,6 +11472,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Info_delete
 
+  subroutine PMPI_Info_delete( &
+    info, &
+    key, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    character*(*) :: key
+    integer :: ierror
+  end subroutine PMPI_Info_delete
+
   subroutine MPI_Info_dup( &
     info, &
     newinfo, &
@@ -5755,6 +11496,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Info_dup
 
+  subroutine PMPI_Info_dup( &
+    info, &
+    newinfo, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    integer :: newinfo
+    integer :: ierror
+  end subroutine PMPI_Info_dup
+
   subroutine MPI_Info_free( &
     info, &
     ierror &
@@ -5764,6 +11517,16 @@ module mpif_functions
     integer :: info
     integer :: ierror
   end subroutine MPI_Info_free
+
+  subroutine PMPI_Info_free( &
+    info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    integer :: ierror
+  end subroutine PMPI_Info_free
 
   subroutine MPI_Info_get( &
     info, &
@@ -5783,6 +11546,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Info_get
 
+  subroutine PMPI_Info_get( &
+    info, &
+    key, &
+    valuelen, &
+    value, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    character*(*) :: key
+    integer :: valuelen
+    character*(valuelen) :: value
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Info_get
+
   subroutine MPI_Info_get_nkeys( &
     info, &
     nkeys, &
@@ -5794,6 +11575,18 @@ module mpif_functions
     integer :: nkeys
     integer :: ierror
   end subroutine MPI_Info_get_nkeys
+
+  subroutine PMPI_Info_get_nkeys( &
+    info, &
+    nkeys, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    integer :: nkeys
+    integer :: ierror
+  end subroutine PMPI_Info_get_nkeys
 
   subroutine MPI_Info_get_nthkey( &
     info, &
@@ -5808,6 +11601,20 @@ module mpif_functions
     character*(*) :: key
     integer :: ierror
   end subroutine MPI_Info_get_nthkey
+
+  subroutine PMPI_Info_get_nthkey( &
+    info, &
+    n, &
+    key, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    integer :: n
+    character*(*) :: key
+    integer :: ierror
+  end subroutine PMPI_Info_get_nthkey
 
   subroutine MPI_Info_get_string( &
     info, &
@@ -5827,6 +11634,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Info_get_string
 
+  subroutine PMPI_Info_get_string( &
+    info, &
+    key, &
+    buflen, &
+    value, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    character*(*) :: key
+    integer :: buflen
+    character*(*) :: value
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Info_get_string
+
   subroutine MPI_Info_get_valuelen( &
     info, &
     key, &
@@ -5843,6 +11668,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Info_get_valuelen
 
+  subroutine PMPI_Info_get_valuelen( &
+    info, &
+    key, &
+    valuelen, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    character*(*) :: key
+    integer :: valuelen
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Info_get_valuelen
+
   subroutine MPI_Info_set( &
     info, &
     key, &
@@ -5857,6 +11698,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Info_set
 
+  subroutine PMPI_Info_set( &
+    info, &
+    key, &
+    value, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    character*(*) :: key
+    character*(*) :: value
+    integer :: ierror
+  end subroutine PMPI_Info_set
+
   subroutine MPI_Init( &
     ierror &
   )
@@ -5864,6 +11719,14 @@ module mpif_functions
     implicit none
     integer :: ierror
   end subroutine MPI_Init
+
+  subroutine PMPI_Init( &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: ierror
+  end subroutine PMPI_Init
 
   subroutine MPI_Init_thread( &
     required, &
@@ -5877,6 +11740,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Init_thread
 
+  subroutine PMPI_Init_thread( &
+    required, &
+    provided, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: required
+    integer :: provided
+    integer :: ierror
+  end subroutine PMPI_Init_thread
+
   subroutine MPI_Initialized( &
     flag, &
     ierror &
@@ -5886,6 +11761,16 @@ module mpif_functions
     logical :: flag
     integer :: ierror
   end subroutine MPI_Initialized
+
+  subroutine PMPI_Initialized( &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Initialized
 
   subroutine MPI_Intercomm_create( &
     local_comm, &
@@ -5906,6 +11791,26 @@ module mpif_functions
     integer :: newintercomm
     integer :: ierror
   end subroutine MPI_Intercomm_create
+
+  subroutine PMPI_Intercomm_create( &
+    local_comm, &
+    local_leader, &
+    peer_comm, &
+    remote_leader, &
+    tag, &
+    newintercomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: local_comm
+    integer :: local_leader
+    integer :: peer_comm
+    integer :: remote_leader
+    integer :: tag
+    integer :: newintercomm
+    integer :: ierror
+  end subroutine PMPI_Intercomm_create
 
   subroutine MPI_Intercomm_create_from_groups( &
     local_group, &
@@ -5931,6 +11836,30 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Intercomm_create_from_groups
 
+  subroutine PMPI_Intercomm_create_from_groups( &
+    local_group, &
+    local_leader, &
+    remote_group, &
+    remote_leader, &
+    stringtag, &
+    info, &
+    errhandler, &
+    newintercomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: local_group
+    integer :: local_leader
+    integer :: remote_group
+    integer :: remote_leader
+    character*(*) :: stringtag
+    integer :: info
+    integer :: errhandler
+    integer :: newintercomm
+    integer :: ierror
+  end subroutine PMPI_Intercomm_create_from_groups
+
   subroutine MPI_Intercomm_merge( &
     intercomm, &
     high, &
@@ -5944,6 +11873,20 @@ module mpif_functions
     integer :: newintracomm
     integer :: ierror
   end subroutine MPI_Intercomm_merge
+
+  subroutine PMPI_Intercomm_merge( &
+    intercomm, &
+    high, &
+    newintracomm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: intercomm
+    logical :: high
+    integer :: newintracomm
+    integer :: ierror
+  end subroutine PMPI_Intercomm_merge
 
   subroutine MPI_Iprobe( &
     source, &
@@ -5962,6 +11905,24 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_Iprobe
+
+  subroutine PMPI_Iprobe( &
+    source, &
+    tag, &
+    comm, &
+    flag, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: source
+    integer :: tag
+    integer :: comm
+    logical :: flag
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Iprobe
 
   subroutine MPI_Irecv( &
     buf, &
@@ -6010,6 +11971,54 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Irecv_c
+
+  subroutine PMPI_Irecv( &
+    buf, &
+    count, &
+    datatype, &
+    source, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: source
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Irecv
+
+  subroutine PMPI_Irecv_c( &
+    buf, &
+    count, &
+    datatype, &
+    source, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: source
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Irecv_c
 
   subroutine MPI_Ireduce( &
     sendbuf, &
@@ -6067,6 +12076,62 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Ireduce_c
 
+  subroutine PMPI_Ireduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    root, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: root
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ireduce
+
+  subroutine PMPI_Ireduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    root, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: root
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ireduce_c
+
   subroutine MPI_Ireduce_scatter( &
     sendbuf, &
     recvbuf, &
@@ -6118,6 +12183,58 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Ireduce_scatter_c
+
+  subroutine PMPI_Ireduce_scatter( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype, &
+    op, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ireduce_scatter
+
+  subroutine PMPI_Ireduce_scatter_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype, &
+    op, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ireduce_scatter_c
 
   subroutine MPI_Ireduce_scatter_block( &
     sendbuf, &
@@ -6171,6 +12288,58 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Ireduce_scatter_block_c
 
+  subroutine PMPI_Ireduce_scatter_block( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype, &
+    op, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ireduce_scatter_block
+
+  subroutine PMPI_Ireduce_scatter_block_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype, &
+    op, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ireduce_scatter_block_c
+
   subroutine MPI_Irsend( &
     buf, &
     count, &
@@ -6219,6 +12388,54 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Irsend_c
 
+  subroutine PMPI_Irsend( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Irsend
+
+  subroutine PMPI_Irsend_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Irsend_c
+
   subroutine MPI_Is_thread_main( &
     flag, &
     ierror &
@@ -6228,6 +12445,16 @@ module mpif_functions
     logical :: flag
     integer :: ierror
   end subroutine MPI_Is_thread_main
+
+  subroutine PMPI_Is_thread_main( &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Is_thread_main
 
   subroutine MPI_Iscan( &
     sendbuf, &
@@ -6280,6 +12507,58 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Iscan_c
+
+  subroutine PMPI_Iscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iscan
+
+  subroutine PMPI_Iscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iscan_c
 
   subroutine MPI_Iscatter( &
     sendbuf, &
@@ -6340,6 +12619,66 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Iscatter_c
+
+  subroutine PMPI_Iscatter( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iscatter
+
+  subroutine PMPI_Iscatter_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iscatter_c
 
   subroutine MPI_Iscatterv( &
     sendbuf, &
@@ -6405,6 +12744,70 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Iscatterv_c
 
+  subroutine PMPI_Iscatterv( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer :: displs(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iscatterv
+
+  subroutine PMPI_Iscatterv_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: displs(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Iscatterv_c
+
   subroutine MPI_Isend( &
     buf, &
     count, &
@@ -6452,6 +12855,54 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Isend_c
+
+  subroutine PMPI_Isend( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Isend
+
+  subroutine PMPI_Isend_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Isend_c
 
   subroutine MPI_Isendrecv( &
     sendbuf, &
@@ -6525,6 +12976,78 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Isendrecv_c
 
+  subroutine PMPI_Isendrecv( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    source, &
+    recvtag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    integer :: dest
+    integer :: sendtag
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: source
+    integer :: recvtag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Isendrecv
+
+  subroutine PMPI_Isendrecv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    source, &
+    recvtag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    integer :: dest
+    integer :: sendtag
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: source
+    integer :: recvtag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Isendrecv_c
+
   subroutine MPI_Isendrecv_replace( &
     buf, &
     count, &
@@ -6581,6 +13104,62 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Isendrecv_replace_c
 
+  subroutine PMPI_Isendrecv_replace( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: sendtag
+    integer :: source
+    integer :: recvtag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Isendrecv_replace
+
+  subroutine PMPI_Isendrecv_replace_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: sendtag
+    integer :: source
+    integer :: recvtag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Isendrecv_replace_c
+
   subroutine MPI_Issend( &
     buf, &
     count, &
@@ -6629,6 +13208,54 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Issend_c
 
+  subroutine PMPI_Issend( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Issend
+
+  subroutine PMPI_Issend_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Issend_c
+
   subroutine MPI_Keyval_create( &
     copy_fn, &
     delete_fn, &
@@ -6645,6 +13272,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Keyval_create
 
+  subroutine PMPI_Keyval_create( &
+    copy_fn, &
+    delete_fn, &
+    keyval, &
+    extra_state, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    external :: copy_fn
+    external :: delete_fn
+    integer :: keyval
+    integer :: extra_state
+    integer :: ierror
+  end subroutine PMPI_Keyval_create
+
   subroutine MPI_Keyval_free( &
     keyval, &
     ierror &
@@ -6654,6 +13297,16 @@ module mpif_functions
     integer :: keyval
     integer :: ierror
   end subroutine MPI_Keyval_free
+
+  subroutine PMPI_Keyval_free( &
+    keyval, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: keyval
+    integer :: ierror
+  end subroutine PMPI_Keyval_free
 
   subroutine MPI_Lookup_name( &
     service_name, &
@@ -6668,6 +13321,20 @@ module mpif_functions
     character*(MPI_MAX_PORT_NAME) :: port_name
     integer :: ierror
   end subroutine MPI_Lookup_name
+
+  subroutine PMPI_Lookup_name( &
+    service_name, &
+    info, &
+    port_name, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: service_name
+    integer :: info
+    character*(MPI_MAX_PORT_NAME) :: port_name
+    integer :: ierror
+  end subroutine PMPI_Lookup_name
 
   subroutine MPI_Mprobe( &
     source, &
@@ -6686,6 +13353,24 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_Mprobe
+
+  subroutine PMPI_Mprobe( &
+    source, &
+    tag, &
+    comm, &
+    message, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: source
+    integer :: tag
+    integer :: comm
+    integer :: message
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Mprobe
 
   subroutine MPI_Mrecv( &
     buf, &
@@ -6726,6 +13411,46 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_Mrecv_c
+
+  subroutine PMPI_Mrecv( &
+    buf, &
+    count, &
+    datatype, &
+    message, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: message
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Mrecv
+
+  subroutine PMPI_Mrecv_c( &
+    buf, &
+    count, &
+    datatype, &
+    message, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: message
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Mrecv_c
 
   subroutine MPI_Neighbor_allgather( &
     sendbuf, &
@@ -6778,6 +13503,58 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Neighbor_allgather_c
+
+  subroutine PMPI_Neighbor_allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Neighbor_allgather
+
+  subroutine PMPI_Neighbor_allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Neighbor_allgather_c
 
   subroutine MPI_Neighbor_allgather_init( &
     sendbuf, &
@@ -6839,6 +13616,66 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Neighbor_allgather_init_c
 
+  subroutine PMPI_Neighbor_allgather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Neighbor_allgather_init
+
+  subroutine PMPI_Neighbor_allgather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Neighbor_allgather_init_c
+
   subroutine MPI_Neighbor_allgatherv( &
     sendbuf, &
     sendcount, &
@@ -6894,6 +13731,62 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Neighbor_allgatherv_c
+
+  subroutine PMPI_Neighbor_allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: displs(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Neighbor_allgatherv
+
+  subroutine PMPI_Neighbor_allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: displs(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Neighbor_allgatherv_c
 
   subroutine MPI_Neighbor_allgatherv_init( &
     sendbuf, &
@@ -6959,6 +13852,70 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Neighbor_allgatherv_init_c
 
+  subroutine PMPI_Neighbor_allgatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: displs(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Neighbor_allgatherv_init
+
+  subroutine PMPI_Neighbor_allgatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: displs(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Neighbor_allgatherv_init_c
+
   subroutine MPI_Neighbor_alltoall( &
     sendbuf, &
     sendcount, &
@@ -7010,6 +13967,58 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Neighbor_alltoall_c
+
+  subroutine PMPI_Neighbor_alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Neighbor_alltoall
+
+  subroutine PMPI_Neighbor_alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Neighbor_alltoall_c
 
   subroutine MPI_Neighbor_alltoall_init( &
     sendbuf, &
@@ -7071,6 +14080,66 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Neighbor_alltoall_init_c
 
+  subroutine PMPI_Neighbor_alltoall_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Neighbor_alltoall_init
+
+  subroutine PMPI_Neighbor_alltoall_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Neighbor_alltoall_init_c
+
   subroutine MPI_Neighbor_alltoallv( &
     sendbuf, &
     sendcounts, &
@@ -7130,6 +14199,66 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Neighbor_alltoallv_c
+
+  subroutine PMPI_Neighbor_alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer :: sdispls(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: rdispls(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Neighbor_alltoallv
+
+  subroutine PMPI_Neighbor_alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Neighbor_alltoallv_c
 
   subroutine MPI_Neighbor_alltoallv_init( &
     sendbuf, &
@@ -7199,6 +14328,74 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Neighbor_alltoallv_init_c
 
+  subroutine PMPI_Neighbor_alltoallv_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer :: sdispls(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: rdispls(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Neighbor_alltoallv_init
+
+  subroutine PMPI_Neighbor_alltoallv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtype
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Neighbor_alltoallv_init_c
+
   subroutine MPI_Neighbor_alltoallw( &
     sendbuf, &
     sendcounts, &
@@ -7258,6 +14455,66 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Neighbor_alltoallw_c
+
+  subroutine PMPI_Neighbor_alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtypes(*)
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Neighbor_alltoallw
+
+  subroutine PMPI_Neighbor_alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtypes(*)
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Neighbor_alltoallw_c
 
   subroutine MPI_Neighbor_alltoallw_init( &
     sendbuf, &
@@ -7327,6 +14584,74 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Neighbor_alltoallw_init_c
 
+  subroutine PMPI_Neighbor_alltoallw_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtypes(*)
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Neighbor_alltoallw_init
+
+  subroutine PMPI_Neighbor_alltoallw_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: sdispls(*)
+    integer :: sendtypes(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer(MPI_ADDRESS_KIND) :: rdispls(*)
+    integer :: recvtypes(*)
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Neighbor_alltoallw_init_c
+
   subroutine MPI_Op_commutative( &
     op, &
     commute, &
@@ -7338,6 +14663,18 @@ module mpif_functions
     logical :: commute
     integer :: ierror
   end subroutine MPI_Op_commutative
+
+  subroutine PMPI_Op_commutative( &
+    op, &
+    commute, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: op
+    logical :: commute
+    integer :: ierror
+  end subroutine PMPI_Op_commutative
 
   subroutine MPI_Op_create( &
     user_fn, &
@@ -7367,6 +14704,34 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Op_create_c
 
+  subroutine PMPI_Op_create( &
+    user_fn, &
+    commute, &
+    op, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    external :: user_fn
+    logical :: commute
+    integer :: op
+    integer :: ierror
+  end subroutine PMPI_Op_create
+
+  subroutine PMPI_Op_create_c( &
+    user_fn, &
+    commute, &
+    op, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    external :: user_fn
+    logical :: commute
+    integer :: op
+    integer :: ierror
+  end subroutine PMPI_Op_create_c
+
   subroutine MPI_Op_free( &
     op, &
     ierror &
@@ -7376,6 +14741,16 @@ module mpif_functions
     integer :: op
     integer :: ierror
   end subroutine MPI_Op_free
+
+  subroutine PMPI_Op_free( &
+    op, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: op
+    integer :: ierror
+  end subroutine PMPI_Op_free
 
   subroutine MPI_Open_port( &
     info, &
@@ -7388,6 +14763,18 @@ module mpif_functions
     character*(MPI_MAX_PORT_NAME) :: port_name
     integer :: ierror
   end subroutine MPI_Open_port
+
+  subroutine PMPI_Open_port( &
+    info, &
+    port_name, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    character*(MPI_MAX_PORT_NAME) :: port_name
+    integer :: ierror
+  end subroutine PMPI_Open_port
 
   subroutine MPI_Pack( &
     inbuf, &
@@ -7441,6 +14828,58 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Pack_c
 
+  subroutine PMPI_Pack( &
+    inbuf, &
+    incount, &
+    datatype, &
+    outbuf, &
+    outsize, &
+    position, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) inbuf
+    !gcc$ attributes no_arg_check :: inbuf
+    integer :: inbuf(*)
+    integer :: incount
+    integer :: datatype
+    !dir$ ignore_tkr(trk) outbuf
+    !gcc$ attributes no_arg_check :: outbuf
+    integer :: outbuf(*)
+    integer :: outsize
+    integer :: position
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Pack
+
+  subroutine PMPI_Pack_c( &
+    inbuf, &
+    incount, &
+    datatype, &
+    outbuf, &
+    outsize, &
+    position, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) inbuf
+    !gcc$ attributes no_arg_check :: inbuf
+    integer :: inbuf(*)
+    integer(MPI_COUNT_KIND) :: incount
+    integer :: datatype
+    !dir$ ignore_tkr(trk) outbuf
+    !gcc$ attributes no_arg_check :: outbuf
+    integer :: outbuf(*)
+    integer(MPI_COUNT_KIND) :: outsize
+    integer(MPI_COUNT_KIND) :: position
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Pack_c
+
   subroutine MPI_Pack_external( &
     datarep, &
     inbuf, &
@@ -7493,6 +14932,58 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Pack_external_c
 
+  subroutine PMPI_Pack_external( &
+    datarep, &
+    inbuf, &
+    incount, &
+    datatype, &
+    outbuf, &
+    outsize, &
+    position, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: datarep
+    !dir$ ignore_tkr(trk) inbuf
+    !gcc$ attributes no_arg_check :: inbuf
+    integer :: inbuf(*)
+    integer :: incount
+    integer :: datatype
+    !dir$ ignore_tkr(trk) outbuf
+    !gcc$ attributes no_arg_check :: outbuf
+    integer :: outbuf(*)
+    integer(MPI_ADDRESS_KIND) :: outsize
+    integer(MPI_ADDRESS_KIND) :: position
+    integer :: ierror
+  end subroutine PMPI_Pack_external
+
+  subroutine PMPI_Pack_external_c( &
+    datarep, &
+    inbuf, &
+    incount, &
+    datatype, &
+    outbuf, &
+    outsize, &
+    position, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: datarep
+    !dir$ ignore_tkr(trk) inbuf
+    !gcc$ attributes no_arg_check :: inbuf
+    integer :: inbuf(*)
+    integer(MPI_COUNT_KIND) :: incount
+    integer :: datatype
+    !dir$ ignore_tkr(trk) outbuf
+    !gcc$ attributes no_arg_check :: outbuf
+    integer :: outbuf(*)
+    integer(MPI_COUNT_KIND) :: outsize
+    integer(MPI_COUNT_KIND) :: position
+    integer :: ierror
+  end subroutine PMPI_Pack_external_c
+
   subroutine MPI_Pack_external_size( &
     datarep, &
     incount, &
@@ -7524,6 +15015,38 @@ module mpif_functions
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
   end subroutine MPI_Pack_external_size_c
+
+  subroutine PMPI_Pack_external_size( &
+    datarep, &
+    incount, &
+    datatype, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: datarep
+    integer :: incount
+    integer :: datatype
+    integer(MPI_ADDRESS_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_Pack_external_size
+
+  subroutine PMPI_Pack_external_size_c( &
+    datarep, &
+    incount, &
+    datatype, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: datarep
+    integer(MPI_COUNT_KIND) :: incount
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_Pack_external_size_c
 
   subroutine MPI_Pack_size( &
     incount, &
@@ -7557,6 +15080,38 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Pack_size_c
 
+  subroutine PMPI_Pack_size( &
+    incount, &
+    datatype, &
+    comm, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: incount
+    integer :: datatype
+    integer :: comm
+    integer :: size
+    integer :: ierror
+  end subroutine PMPI_Pack_size
+
+  subroutine PMPI_Pack_size_c( &
+    incount, &
+    datatype, &
+    comm, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_COUNT_KIND) :: incount
+    integer :: datatype
+    integer :: comm
+    integer(MPI_COUNT_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_Pack_size_c
+
   subroutine MPI_Parrived( &
     request, &
     partition, &
@@ -7571,6 +15126,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Parrived
 
+  subroutine PMPI_Parrived( &
+    request, &
+    partition, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: request
+    integer :: partition
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Parrived
+
   subroutine MPI_Pcontrol( &
     level &
   )
@@ -7578,6 +15147,14 @@ module mpif_functions
     implicit none
     integer :: level
   end subroutine MPI_Pcontrol
+
+  subroutine PMPI_Pcontrol( &
+    level &
+  )
+    use mpif_constants
+    implicit none
+    integer :: level
+  end subroutine PMPI_Pcontrol
 
   subroutine MPI_Pready( &
     partition, &
@@ -7590,6 +15167,18 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Pready
+
+  subroutine PMPI_Pready( &
+    partition, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: partition
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Pready
 
   subroutine MPI_Pready_list( &
     length, &
@@ -7605,6 +15194,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Pready_list
 
+  subroutine PMPI_Pready_list( &
+    length, &
+    array_of_partitions, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: length
+    integer :: array_of_partitions(length)
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Pready_list
+
   subroutine MPI_Pready_range( &
     partition_low, &
     partition_high, &
@@ -7618,6 +15221,20 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Pready_range
+
+  subroutine PMPI_Pready_range( &
+    partition_low, &
+    partition_high, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: partition_low
+    integer :: partition_high
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Pready_range
 
   subroutine MPI_Precv_init( &
     buf, &
@@ -7647,6 +15264,34 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Precv_init
 
+  subroutine PMPI_Precv_init( &
+    buf, &
+    partitions, &
+    count, &
+    datatype, &
+    source, &
+    tag, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: partitions
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: source
+    integer :: tag
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Precv_init
+
   subroutine MPI_Probe( &
     source, &
     tag, &
@@ -7662,6 +15307,22 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_Probe
+
+  subroutine PMPI_Probe( &
+    source, &
+    tag, &
+    comm, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: source
+    integer :: tag
+    integer :: comm
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Probe
 
   subroutine MPI_Psend_init( &
     buf, &
@@ -7691,6 +15352,34 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Psend_init
 
+  subroutine PMPI_Psend_init( &
+    buf, &
+    partitions, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: partitions
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Psend_init
+
   subroutine MPI_Publish_name( &
     service_name, &
     info, &
@@ -7704,6 +15393,20 @@ module mpif_functions
     character*(*) :: port_name
     integer :: ierror
   end subroutine MPI_Publish_name
+
+  subroutine PMPI_Publish_name( &
+    service_name, &
+    info, &
+    port_name, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: service_name
+    integer :: info
+    character*(*) :: port_name
+    integer :: ierror
+  end subroutine PMPI_Publish_name
 
   subroutine MPI_Put( &
     origin_addr, &
@@ -7757,6 +15460,58 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Put_c
 
+  subroutine PMPI_Put( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer :: origin_count
+    integer :: origin_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer :: target_count
+    integer :: target_datatype
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Put
+
+  subroutine PMPI_Put_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer(MPI_COUNT_KIND) :: origin_count
+    integer :: origin_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer(MPI_COUNT_KIND) :: target_count
+    integer :: target_datatype
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Put_c
+
   subroutine MPI_Query_thread( &
     provided, &
     ierror &
@@ -7766,6 +15521,16 @@ module mpif_functions
     integer :: provided
     integer :: ierror
   end subroutine MPI_Query_thread
+
+  subroutine PMPI_Query_thread( &
+    provided, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: provided
+    integer :: ierror
+  end subroutine PMPI_Query_thread
 
   subroutine MPI_Raccumulate( &
     origin_addr, &
@@ -7827,6 +15592,66 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Raccumulate_c
 
+  subroutine PMPI_Raccumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    op, &
+    win, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer :: origin_count
+    integer :: origin_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer :: target_count
+    integer :: target_datatype
+    integer :: op
+    integer :: win
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Raccumulate
+
+  subroutine PMPI_Raccumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    op, &
+    win, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer(MPI_COUNT_KIND) :: origin_count
+    integer :: origin_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer(MPI_COUNT_KIND) :: target_count
+    integer :: target_datatype
+    integer :: op
+    integer :: win
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Raccumulate_c
+
   subroutine MPI_Recv( &
     buf, &
     count, &
@@ -7875,6 +15700,54 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Recv_c
 
+  subroutine PMPI_Recv( &
+    buf, &
+    count, &
+    datatype, &
+    source, &
+    tag, &
+    comm, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: source
+    integer :: tag
+    integer :: comm
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Recv
+
+  subroutine PMPI_Recv_c( &
+    buf, &
+    count, &
+    datatype, &
+    source, &
+    tag, &
+    comm, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: source
+    integer :: tag
+    integer :: comm
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Recv_c
+
   subroutine MPI_Recv_init( &
     buf, &
     count, &
@@ -7922,6 +15795,54 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Recv_init_c
+
+  subroutine PMPI_Recv_init( &
+    buf, &
+    count, &
+    datatype, &
+    source, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: source
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Recv_init
+
+  subroutine PMPI_Recv_init_c( &
+    buf, &
+    count, &
+    datatype, &
+    source, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: source
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Recv_init_c
 
   subroutine MPI_Reduce( &
     sendbuf, &
@@ -7974,6 +15895,58 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Reduce_c
+
+  subroutine PMPI_Reduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    root, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: root
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Reduce
+
+  subroutine PMPI_Reduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    root, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: root
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Reduce_c
 
   subroutine MPI_Reduce_init( &
     sendbuf, &
@@ -8035,6 +16008,66 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Reduce_init_c
 
+  subroutine PMPI_Reduce_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    root, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: root
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Reduce_init
+
+  subroutine PMPI_Reduce_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    root, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: root
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Reduce_init_c
+
   subroutine MPI_Reduce_local( &
     inbuf, &
     inoutbuf, &
@@ -8078,6 +16111,50 @@ module mpif_functions
     integer :: op
     integer :: ierror
   end subroutine MPI_Reduce_local_c
+
+  subroutine PMPI_Reduce_local( &
+    inbuf, &
+    inoutbuf, &
+    count, &
+    datatype, &
+    op, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) inbuf
+    !gcc$ attributes no_arg_check :: inbuf
+    integer :: inbuf(*)
+    !dir$ ignore_tkr(trk) inoutbuf
+    !gcc$ attributes no_arg_check :: inoutbuf
+    integer :: inoutbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: ierror
+  end subroutine PMPI_Reduce_local
+
+  subroutine PMPI_Reduce_local_c( &
+    inbuf, &
+    inoutbuf, &
+    count, &
+    datatype, &
+    op, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) inbuf
+    !gcc$ attributes no_arg_check :: inbuf
+    integer :: inbuf(*)
+    !dir$ ignore_tkr(trk) inoutbuf
+    !gcc$ attributes no_arg_check :: inoutbuf
+    integer :: inoutbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: ierror
+  end subroutine PMPI_Reduce_local_c
 
   subroutine MPI_Reduce_scatter( &
     sendbuf, &
@@ -8127,6 +16204,54 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Reduce_scatter_c
 
+  subroutine PMPI_Reduce_scatter( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype, &
+    op, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Reduce_scatter
+
+  subroutine PMPI_Reduce_scatter_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype, &
+    op, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Reduce_scatter_c
+
   subroutine MPI_Reduce_scatter_block( &
     sendbuf, &
     recvbuf, &
@@ -8174,6 +16299,54 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Reduce_scatter_block_c
+
+  subroutine PMPI_Reduce_scatter_block( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype, &
+    op, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Reduce_scatter_block
+
+  subroutine PMPI_Reduce_scatter_block_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype, &
+    op, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Reduce_scatter_block_c
 
   subroutine MPI_Reduce_scatter_block_init( &
     sendbuf, &
@@ -8231,6 +16404,62 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Reduce_scatter_block_init_c
 
+  subroutine PMPI_Reduce_scatter_block_init( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype, &
+    op, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Reduce_scatter_block_init
+
+  subroutine PMPI_Reduce_scatter_block_init_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype, &
+    op, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Reduce_scatter_block_init_c
+
   subroutine MPI_Reduce_scatter_init( &
     sendbuf, &
     recvbuf, &
@@ -8287,6 +16516,62 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Reduce_scatter_init_c
 
+  subroutine PMPI_Reduce_scatter_init( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype, &
+    op, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcounts(*)
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Reduce_scatter_init
+
+  subroutine PMPI_Reduce_scatter_init_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype, &
+    op, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcounts(*)
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Reduce_scatter_init_c
+
   subroutine MPI_Register_datarep( &
     datarep, &
     read_conversion_fn, &
@@ -8323,6 +16608,42 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Register_datarep_c
 
+  subroutine PMPI_Register_datarep( &
+    datarep, &
+    read_conversion_fn, &
+    write_conversion_fn, &
+    dtype_file_extent_fn, &
+    extra_state, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: datarep
+    external :: read_conversion_fn
+    external :: write_conversion_fn
+    external :: dtype_file_extent_fn
+    integer(MPI_ADDRESS_KIND) :: extra_state
+    integer :: ierror
+  end subroutine PMPI_Register_datarep
+
+  subroutine PMPI_Register_datarep_c( &
+    datarep, &
+    read_conversion_fn, &
+    write_conversion_fn, &
+    dtype_file_extent_fn, &
+    extra_state, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: datarep
+    external :: read_conversion_fn
+    external :: write_conversion_fn
+    external :: dtype_file_extent_fn
+    integer(MPI_ADDRESS_KIND) :: extra_state
+    integer :: ierror
+  end subroutine PMPI_Register_datarep_c
+
   subroutine MPI_Remove_error_class( &
     errorclass, &
     ierror &
@@ -8332,6 +16653,16 @@ module mpif_functions
     integer :: errorclass
     integer :: ierror
   end subroutine MPI_Remove_error_class
+
+  subroutine PMPI_Remove_error_class( &
+    errorclass, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: errorclass
+    integer :: ierror
+  end subroutine PMPI_Remove_error_class
 
   subroutine MPI_Remove_error_code( &
     errorcode, &
@@ -8343,6 +16674,16 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Remove_error_code
 
+  subroutine PMPI_Remove_error_code( &
+    errorcode, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: errorcode
+    integer :: ierror
+  end subroutine PMPI_Remove_error_code
+
   subroutine MPI_Remove_error_string( &
     errorcode, &
     ierror &
@@ -8353,6 +16694,16 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Remove_error_string
 
+  subroutine PMPI_Remove_error_string( &
+    errorcode, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: errorcode
+    integer :: ierror
+  end subroutine PMPI_Remove_error_string
+
   subroutine MPI_Request_free( &
     request, &
     ierror &
@@ -8362,6 +16713,16 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Request_free
+
+  subroutine PMPI_Request_free( &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Request_free
 
   subroutine MPI_Request_get_status( &
     request, &
@@ -8376,6 +16737,20 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_Request_get_status
+
+  subroutine PMPI_Request_get_status( &
+    request, &
+    flag, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: request
+    logical :: flag
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Request_get_status
 
   subroutine MPI_Request_get_status_all( &
     count, &
@@ -8392,6 +16767,22 @@ module mpif_functions
     integer :: array_of_statuses(MPI_STATUS_SIZE, *)
     integer :: ierror
   end subroutine MPI_Request_get_status_all
+
+  subroutine PMPI_Request_get_status_all( &
+    count, &
+    array_of_requests, &
+    flag, &
+    array_of_statuses, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: array_of_requests(count)
+    logical :: flag
+    integer :: array_of_statuses(MPI_STATUS_SIZE, *)
+    integer :: ierror
+  end subroutine PMPI_Request_get_status_all
 
   subroutine MPI_Request_get_status_any( &
     count, &
@@ -8411,6 +16802,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Request_get_status_any
 
+  subroutine PMPI_Request_get_status_any( &
+    count, &
+    array_of_requests, &
+    index, &
+    flag, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: array_of_requests(count)
+    integer :: index
+    logical :: flag
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Request_get_status_any
+
   subroutine MPI_Request_get_status_some( &
     incount, &
     array_of_requests, &
@@ -8428,6 +16837,24 @@ module mpif_functions
     integer :: array_of_statuses(MPI_STATUS_SIZE, *)
     integer :: ierror
   end subroutine MPI_Request_get_status_some
+
+  subroutine PMPI_Request_get_status_some( &
+    incount, &
+    array_of_requests, &
+    outcount, &
+    array_of_indices, &
+    array_of_statuses, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: incount
+    integer :: array_of_requests(incount)
+    integer :: outcount
+    integer :: array_of_indices(*)
+    integer :: array_of_statuses(MPI_STATUS_SIZE, *)
+    integer :: ierror
+  end subroutine PMPI_Request_get_status_some
 
   subroutine MPI_Rget( &
     origin_addr, &
@@ -8484,6 +16911,62 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Rget_c
+
+  subroutine PMPI_Rget( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    win, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer :: origin_count
+    integer :: origin_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer :: target_count
+    integer :: target_datatype
+    integer :: win
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Rget
+
+  subroutine PMPI_Rget_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    win, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer(MPI_COUNT_KIND) :: origin_count
+    integer :: origin_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer(MPI_COUNT_KIND) :: target_count
+    integer :: target_datatype
+    integer :: win
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Rget_c
 
   subroutine MPI_Rget_accumulate( &
     origin_addr, &
@@ -8561,6 +17044,82 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Rget_accumulate_c
 
+  subroutine PMPI_Rget_accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    result_addr, &
+    result_count, &
+    result_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    op, &
+    win, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer :: origin_count
+    integer :: origin_datatype
+    !dir$ ignore_tkr(trk) result_addr
+    !gcc$ attributes no_arg_check :: result_addr
+    integer :: result_addr(*)
+    integer :: result_count
+    integer :: result_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer :: target_count
+    integer :: target_datatype
+    integer :: op
+    integer :: win
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Rget_accumulate
+
+  subroutine PMPI_Rget_accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    result_addr, &
+    result_count, &
+    result_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    op, &
+    win, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer(MPI_COUNT_KIND) :: origin_count
+    integer :: origin_datatype
+    !dir$ ignore_tkr(trk) result_addr
+    !gcc$ attributes no_arg_check :: result_addr
+    integer :: result_addr(*)
+    integer(MPI_COUNT_KIND) :: result_count
+    integer :: result_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer(MPI_COUNT_KIND) :: target_count
+    integer :: target_datatype
+    integer :: op
+    integer :: win
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Rget_accumulate_c
+
   subroutine MPI_Rput( &
     origin_addr, &
     origin_count, &
@@ -8617,6 +17176,62 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Rput_c
 
+  subroutine PMPI_Rput( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    win, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer :: origin_count
+    integer :: origin_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer :: target_count
+    integer :: target_datatype
+    integer :: win
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Rput
+
+  subroutine PMPI_Rput_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype, &
+    win, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) origin_addr
+    !gcc$ attributes no_arg_check :: origin_addr
+    integer :: origin_addr(*)
+    integer(MPI_COUNT_KIND) :: origin_count
+    integer :: origin_datatype
+    integer :: target_rank
+    integer(MPI_ADDRESS_KIND) :: target_disp
+    integer(MPI_COUNT_KIND) :: target_count
+    integer :: target_datatype
+    integer :: win
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Rput_c
+
   subroutine MPI_Rsend( &
     buf, &
     count, &
@@ -8660,6 +17275,50 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Rsend_c
+
+  subroutine PMPI_Rsend( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Rsend
+
+  subroutine PMPI_Rsend_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Rsend_c
 
   subroutine MPI_Rsend_init( &
     buf, &
@@ -8709,6 +17368,54 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Rsend_init_c
 
+  subroutine PMPI_Rsend_init( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Rsend_init
+
+  subroutine PMPI_Rsend_init_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Rsend_init_c
+
   subroutine MPI_Scan( &
     sendbuf, &
     recvbuf, &
@@ -8756,6 +17463,54 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Scan_c
+
+  subroutine PMPI_Scan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Scan
+
+  subroutine PMPI_Scan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Scan_c
 
   subroutine MPI_Scan_init( &
     sendbuf, &
@@ -8813,6 +17568,62 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Scan_init_c
 
+  subroutine PMPI_Scan_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Scan_init
+
+  subroutine PMPI_Scan_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype, &
+    op, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: op
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Scan_init_c
+
   subroutine MPI_Scatter( &
     sendbuf, &
     sendcount, &
@@ -8868,6 +17679,62 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Scatter_c
+
+  subroutine PMPI_Scatter( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Scatter
+
+  subroutine PMPI_Scatter_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Scatter_c
 
   subroutine MPI_Scatter_init( &
     sendbuf, &
@@ -8933,6 +17800,70 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Scatter_init_c
 
+  subroutine PMPI_Scatter_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Scatter_init
+
+  subroutine PMPI_Scatter_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Scatter_init_c
+
   subroutine MPI_Scatterv( &
     sendbuf, &
     sendcounts, &
@@ -8992,6 +17923,66 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Scatterv_c
+
+  subroutine PMPI_Scatterv( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer :: displs(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Scatterv
+
+  subroutine PMPI_Scatterv_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: displs(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Scatterv_c
 
   subroutine MPI_Scatterv_init( &
     sendbuf, &
@@ -9061,6 +18052,74 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Scatterv_init_c
 
+  subroutine PMPI_Scatterv_init( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcounts(*)
+    integer :: displs(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Scatterv_init
+
+  subroutine PMPI_Scatterv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    root, &
+    comm, &
+    info, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcounts(*)
+    integer(MPI_ADDRESS_KIND) :: displs(*)
+    integer :: sendtype
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: root
+    integer :: comm
+    integer :: info
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Scatterv_init_c
+
   subroutine MPI_Send( &
     buf, &
     count, &
@@ -9104,6 +18163,50 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Send_c
+
+  subroutine PMPI_Send( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Send
+
+  subroutine PMPI_Send_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Send_c
 
   subroutine MPI_Send_init( &
     buf, &
@@ -9152,6 +18255,54 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Send_init_c
+
+  subroutine PMPI_Send_init( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Send_init
+
+  subroutine PMPI_Send_init_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Send_init_c
 
   subroutine MPI_Sendrecv( &
     sendbuf, &
@@ -9225,6 +18376,78 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Sendrecv_c
 
+  subroutine PMPI_Sendrecv( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    source, &
+    recvtag, &
+    comm, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer :: sendcount
+    integer :: sendtype
+    integer :: dest
+    integer :: sendtag
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer :: recvcount
+    integer :: recvtype
+    integer :: source
+    integer :: recvtag
+    integer :: comm
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Sendrecv
+
+  subroutine PMPI_Sendrecv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype, &
+    source, &
+    recvtag, &
+    comm, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) sendbuf
+    !gcc$ attributes no_arg_check :: sendbuf
+    integer :: sendbuf(*)
+    integer(MPI_COUNT_KIND) :: sendcount
+    integer :: sendtype
+    integer :: dest
+    integer :: sendtag
+    !dir$ ignore_tkr(trk) recvbuf
+    !gcc$ attributes no_arg_check :: recvbuf
+    integer :: recvbuf(*)
+    integer(MPI_COUNT_KIND) :: recvcount
+    integer :: recvtype
+    integer :: source
+    integer :: recvtag
+    integer :: comm
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Sendrecv_c
+
   subroutine MPI_Sendrecv_replace( &
     buf, &
     count, &
@@ -9281,6 +18504,62 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Sendrecv_replace_c
 
+  subroutine PMPI_Sendrecv_replace( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: sendtag
+    integer :: source
+    integer :: recvtag
+    integer :: comm
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Sendrecv_replace
+
+  subroutine PMPI_Sendrecv_replace_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: sendtag
+    integer :: source
+    integer :: recvtag
+    integer :: comm
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Sendrecv_replace_c
+
   subroutine MPI_Session_attach_buffer( &
     session, &
     buffer, &
@@ -9313,6 +18592,38 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Session_attach_buffer_c
 
+  subroutine PMPI_Session_attach_buffer( &
+    session, &
+    buffer, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    !dir$ ignore_tkr(trk) buffer
+    !gcc$ attributes no_arg_check :: buffer
+    integer :: buffer(*)
+    integer :: size
+    integer :: ierror
+  end subroutine PMPI_Session_attach_buffer
+
+  subroutine PMPI_Session_attach_buffer_c( &
+    session, &
+    buffer, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    !dir$ ignore_tkr(trk) buffer
+    !gcc$ attributes no_arg_check :: buffer
+    integer :: buffer(*)
+    integer(MPI_COUNT_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_Session_attach_buffer_c
+
   subroutine MPI_Session_call_errhandler( &
     session, &
     errorcode, &
@@ -9325,6 +18636,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Session_call_errhandler
 
+  subroutine PMPI_Session_call_errhandler( &
+    session, &
+    errorcode, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    integer :: errorcode
+    integer :: ierror
+  end subroutine PMPI_Session_call_errhandler
+
   subroutine MPI_Session_create_errhandler( &
     session_errhandler_fn, &
     errhandler, &
@@ -9336,6 +18659,18 @@ module mpif_functions
     integer :: errhandler
     integer :: ierror
   end subroutine MPI_Session_create_errhandler
+
+  subroutine PMPI_Session_create_errhandler( &
+    session_errhandler_fn, &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    external :: session_errhandler_fn
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_Session_create_errhandler
 
   subroutine MPI_Session_detach_buffer( &
     session, &
@@ -9369,6 +18704,38 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Session_detach_buffer_c
 
+  subroutine PMPI_Session_detach_buffer( &
+    session, &
+    buffer_addr, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    !dir$ ignore_tkr(trk) buffer_addr
+    !gcc$ attributes no_arg_check :: buffer_addr
+    integer :: buffer_addr(*)
+    integer :: size
+    integer :: ierror
+  end subroutine PMPI_Session_detach_buffer
+
+  subroutine PMPI_Session_detach_buffer_c( &
+    session, &
+    buffer_addr, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    !dir$ ignore_tkr(trk) buffer_addr
+    !gcc$ attributes no_arg_check :: buffer_addr
+    integer :: buffer_addr(*)
+    integer(MPI_COUNT_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_Session_detach_buffer_c
+
   subroutine MPI_Session_finalize( &
     session, &
     ierror &
@@ -9379,6 +18746,16 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Session_finalize
 
+  subroutine PMPI_Session_finalize( &
+    session, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    integer :: ierror
+  end subroutine PMPI_Session_finalize
+
   subroutine MPI_Session_flush_buffer( &
     session, &
     ierror &
@@ -9388,6 +18765,16 @@ module mpif_functions
     integer :: session
     integer :: ierror
   end subroutine MPI_Session_flush_buffer
+
+  subroutine PMPI_Session_flush_buffer( &
+    session, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    integer :: ierror
+  end subroutine PMPI_Session_flush_buffer
 
   subroutine MPI_Session_get_errhandler( &
     session, &
@@ -9401,6 +18788,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Session_get_errhandler
 
+  subroutine PMPI_Session_get_errhandler( &
+    session, &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_Session_get_errhandler
+
   subroutine MPI_Session_get_info( &
     session, &
     info_used, &
@@ -9412,6 +18811,18 @@ module mpif_functions
     integer :: info_used
     integer :: ierror
   end subroutine MPI_Session_get_info
+
+  subroutine PMPI_Session_get_info( &
+    session, &
+    info_used, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    integer :: info_used
+    integer :: ierror
+  end subroutine PMPI_Session_get_info
 
   subroutine MPI_Session_get_nth_pset( &
     session, &
@@ -9431,6 +18842,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Session_get_nth_pset
 
+  subroutine PMPI_Session_get_nth_pset( &
+    session, &
+    info, &
+    n, &
+    pset_len, &
+    pset_name, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    integer :: info
+    integer :: n
+    integer :: pset_len
+    character*(*) :: pset_name
+    integer :: ierror
+  end subroutine PMPI_Session_get_nth_pset
+
   subroutine MPI_Session_get_num_psets( &
     session, &
     info, &
@@ -9444,6 +18873,20 @@ module mpif_functions
     integer :: npset_names
     integer :: ierror
   end subroutine MPI_Session_get_num_psets
+
+  subroutine PMPI_Session_get_num_psets( &
+    session, &
+    info, &
+    npset_names, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    integer :: info
+    integer :: npset_names
+    integer :: ierror
+  end subroutine PMPI_Session_get_num_psets
 
   subroutine MPI_Session_get_pset_info( &
     session, &
@@ -9459,6 +18902,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Session_get_pset_info
 
+  subroutine PMPI_Session_get_pset_info( &
+    session, &
+    pset_name, &
+    info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    character*(*) :: pset_name
+    integer :: info
+    integer :: ierror
+  end subroutine PMPI_Session_get_pset_info
+
   subroutine MPI_Session_iflush_buffer( &
     session, &
     request, &
@@ -9470,6 +18927,18 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Session_iflush_buffer
+
+  subroutine PMPI_Session_iflush_buffer( &
+    session, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Session_iflush_buffer
 
   subroutine MPI_Session_init( &
     info, &
@@ -9485,6 +18954,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Session_init
 
+  subroutine PMPI_Session_init( &
+    info, &
+    errhandler, &
+    session, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    integer :: errhandler
+    integer :: session
+    integer :: ierror
+  end subroutine PMPI_Session_init
+
   subroutine MPI_Session_set_errhandler( &
     session, &
     errhandler, &
@@ -9496,6 +18979,18 @@ module mpif_functions
     integer :: errhandler
     integer :: ierror
   end subroutine MPI_Session_set_errhandler
+
+  subroutine PMPI_Session_set_errhandler( &
+    session, &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: session
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_Session_set_errhandler
 
   subroutine MPI_Ssend( &
     buf, &
@@ -9540,6 +19035,50 @@ module mpif_functions
     integer :: comm
     integer :: ierror
   end subroutine MPI_Ssend_c
+
+  subroutine PMPI_Ssend( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Ssend
+
+  subroutine PMPI_Ssend_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Ssend_c
 
   subroutine MPI_Ssend_init( &
     buf, &
@@ -9589,6 +19128,54 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Ssend_init_c
 
+  subroutine PMPI_Ssend_init( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ssend_init
+
+  subroutine PMPI_Ssend_init_c( &
+    buf, &
+    count, &
+    datatype, &
+    dest, &
+    tag, &
+    comm, &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) buf
+    !gcc$ attributes no_arg_check :: buf
+    integer :: buf(*)
+    integer(MPI_COUNT_KIND) :: count
+    integer :: datatype
+    integer :: dest
+    integer :: tag
+    integer :: comm
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Ssend_init_c
+
   subroutine MPI_Start( &
     request, &
     ierror &
@@ -9598,6 +19185,16 @@ module mpif_functions
     integer :: request
     integer :: ierror
   end subroutine MPI_Start
+
+  subroutine PMPI_Start( &
+    request, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: request
+    integer :: ierror
+  end subroutine PMPI_Start
 
   subroutine MPI_Startall( &
     count, &
@@ -9611,6 +19208,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Startall
 
+  subroutine PMPI_Startall( &
+    count, &
+    array_of_requests, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: array_of_requests(count)
+    integer :: ierror
+  end subroutine PMPI_Startall
+
   subroutine MPI_Status_get_error( &
     status, &
     err, &
@@ -9622,6 +19231,18 @@ module mpif_functions
     integer :: err
     integer :: ierror
   end subroutine MPI_Status_get_error
+
+  subroutine PMPI_Status_get_error( &
+    status, &
+    err, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: err
+    integer :: ierror
+  end subroutine PMPI_Status_get_error
 
   subroutine MPI_Status_get_source( &
     status, &
@@ -9635,6 +19256,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Status_get_source
 
+  subroutine PMPI_Status_get_source( &
+    status, &
+    source, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: source
+    integer :: ierror
+  end subroutine PMPI_Status_get_source
+
   subroutine MPI_Status_get_tag( &
     status, &
     tag, &
@@ -9647,6 +19280,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Status_get_tag
 
+  subroutine PMPI_Status_get_tag( &
+    status, &
+    tag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: tag
+    integer :: ierror
+  end subroutine PMPI_Status_get_tag
+
   subroutine MPI_Status_set_cancelled( &
     status, &
     flag, &
@@ -9658,6 +19303,18 @@ module mpif_functions
     logical :: flag
     integer :: ierror
   end subroutine MPI_Status_set_cancelled
+
+  subroutine PMPI_Status_set_cancelled( &
+    status, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Status_set_cancelled
 
   subroutine MPI_Status_set_elements( &
     status, &
@@ -9687,6 +19344,34 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Status_set_elements_c
 
+  subroutine PMPI_Status_set_elements( &
+    status, &
+    datatype, &
+    count, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: datatype
+    integer :: count
+    integer :: ierror
+  end subroutine PMPI_Status_set_elements
+
+  subroutine PMPI_Status_set_elements_c( &
+    status, &
+    datatype, &
+    count, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: count
+    integer :: ierror
+  end subroutine PMPI_Status_set_elements_c
+
   subroutine MPI_Status_set_elements_x( &
     status, &
     datatype, &
@@ -9701,6 +19386,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Status_set_elements_x
 
+  subroutine PMPI_Status_set_elements_x( &
+    status, &
+    datatype, &
+    count, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: count
+    integer :: ierror
+  end subroutine PMPI_Status_set_elements_x
+
   subroutine MPI_Status_set_error( &
     status, &
     err, &
@@ -9712,6 +19411,18 @@ module mpif_functions
     integer :: err
     integer :: ierror
   end subroutine MPI_Status_set_error
+
+  subroutine PMPI_Status_set_error( &
+    status, &
+    err, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: err
+    integer :: ierror
+  end subroutine PMPI_Status_set_error
 
   subroutine MPI_Status_set_source( &
     status, &
@@ -9725,6 +19436,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Status_set_source
 
+  subroutine PMPI_Status_set_source( &
+    status, &
+    source, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: source
+    integer :: ierror
+  end subroutine PMPI_Status_set_source
+
   subroutine MPI_Status_set_tag( &
     status, &
     tag, &
@@ -9736,6 +19459,18 @@ module mpif_functions
     integer :: tag
     integer :: ierror
   end subroutine MPI_Status_set_tag
+
+  subroutine PMPI_Status_set_tag( &
+    status, &
+    tag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: tag
+    integer :: ierror
+  end subroutine PMPI_Status_set_tag
 
   subroutine MPI_Test( &
     request, &
@@ -9751,6 +19486,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Test
 
+  subroutine PMPI_Test( &
+    request, &
+    flag, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: request
+    logical :: flag
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Test
+
   subroutine MPI_Test_cancelled( &
     status, &
     flag, &
@@ -9762,6 +19511,18 @@ module mpif_functions
     logical :: flag
     integer :: ierror
   end subroutine MPI_Test_cancelled
+
+  subroutine PMPI_Test_cancelled( &
+    status, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: status(MPI_STATUS_SIZE)
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Test_cancelled
 
   subroutine MPI_Testall( &
     count, &
@@ -9778,6 +19539,22 @@ module mpif_functions
     integer :: array_of_statuses(MPI_STATUS_SIZE, *)
     integer :: ierror
   end subroutine MPI_Testall
+
+  subroutine PMPI_Testall( &
+    count, &
+    array_of_requests, &
+    flag, &
+    array_of_statuses, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: array_of_requests(count)
+    logical :: flag
+    integer :: array_of_statuses(MPI_STATUS_SIZE, *)
+    integer :: ierror
+  end subroutine PMPI_Testall
 
   subroutine MPI_Testany( &
     count, &
@@ -9797,6 +19574,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Testany
 
+  subroutine PMPI_Testany( &
+    count, &
+    array_of_requests, &
+    index, &
+    flag, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: array_of_requests(count)
+    integer :: index
+    logical :: flag
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Testany
+
   subroutine MPI_Testsome( &
     incount, &
     array_of_requests, &
@@ -9815,6 +19610,24 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Testsome
 
+  subroutine PMPI_Testsome( &
+    incount, &
+    array_of_requests, &
+    outcount, &
+    array_of_indices, &
+    array_of_statuses, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: incount
+    integer :: array_of_requests(incount)
+    integer :: outcount
+    integer :: array_of_indices(*)
+    integer :: array_of_statuses(MPI_STATUS_SIZE, *)
+    integer :: ierror
+  end subroutine PMPI_Testsome
+
   subroutine MPI_Topo_test( &
     comm, &
     status, &
@@ -9827,6 +19640,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Topo_test
 
+  subroutine PMPI_Topo_test( &
+    comm, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: comm
+    integer :: status
+    integer :: ierror
+  end subroutine PMPI_Topo_test
+
   subroutine MPI_Type_commit( &
     datatype, &
     ierror &
@@ -9836,6 +19661,16 @@ module mpif_functions
     integer :: datatype
     integer :: ierror
   end subroutine MPI_Type_commit
+
+  subroutine PMPI_Type_commit( &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_Type_commit
 
   subroutine MPI_Type_contiguous( &
     count, &
@@ -9864,6 +19699,34 @@ module mpif_functions
     integer :: newtype
     integer :: ierror
   end subroutine MPI_Type_contiguous_c
+
+  subroutine PMPI_Type_contiguous( &
+    count, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_contiguous
+
+  subroutine PMPI_Type_contiguous_c( &
+    count, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_COUNT_KIND) :: count
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_contiguous_c
 
   subroutine MPI_Type_create_darray( &
     size, &
@@ -9921,6 +19784,62 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_create_darray_c
 
+  subroutine PMPI_Type_create_darray( &
+    size, &
+    rank, &
+    ndims, &
+    array_of_gsizes, &
+    array_of_distribs, &
+    array_of_dargs, &
+    array_of_psizes, &
+    order, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: size
+    integer :: rank
+    integer :: ndims
+    integer :: array_of_gsizes(ndims)
+    integer :: array_of_distribs(ndims)
+    integer :: array_of_dargs(ndims)
+    integer :: array_of_psizes(ndims)
+    integer :: order
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_darray
+
+  subroutine PMPI_Type_create_darray_c( &
+    size, &
+    rank, &
+    ndims, &
+    array_of_gsizes, &
+    array_of_distribs, &
+    array_of_dargs, &
+    array_of_psizes, &
+    order, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: size
+    integer :: rank
+    integer :: ndims
+    integer(MPI_COUNT_KIND) :: array_of_gsizes(ndims)
+    integer :: array_of_distribs(ndims)
+    integer :: array_of_dargs(ndims)
+    integer :: array_of_psizes(ndims)
+    integer :: order
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_darray_c
+
   subroutine MPI_Type_create_f90_complex( &
     p, &
     r, &
@@ -9935,6 +19854,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_create_f90_complex
 
+  subroutine PMPI_Type_create_f90_complex( &
+    p, &
+    r, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: p
+    integer :: r
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_f90_complex
+
   subroutine MPI_Type_create_f90_integer( &
     r, &
     newtype, &
@@ -9946,6 +19879,18 @@ module mpif_functions
     integer :: newtype
     integer :: ierror
   end subroutine MPI_Type_create_f90_integer
+
+  subroutine PMPI_Type_create_f90_integer( &
+    r, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: r
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_f90_integer
 
   subroutine MPI_Type_create_f90_real( &
     p, &
@@ -9960,6 +19905,20 @@ module mpif_functions
     integer :: newtype
     integer :: ierror
   end subroutine MPI_Type_create_f90_real
+
+  subroutine PMPI_Type_create_f90_real( &
+    p, &
+    r, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: p
+    integer :: r
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_f90_real
 
   subroutine MPI_Type_create_hindexed( &
     count, &
@@ -9997,6 +19956,42 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_create_hindexed_c
 
+  subroutine PMPI_Type_create_hindexed( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: array_of_blocklengths(count)
+    integer(MPI_ADDRESS_KIND) :: array_of_displacements(count)
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_hindexed
+
+  subroutine PMPI_Type_create_hindexed_c( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_COUNT_KIND) :: count
+    integer(MPI_COUNT_KIND) :: array_of_blocklengths(count)
+    integer(MPI_COUNT_KIND) :: array_of_displacements(count)
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_hindexed_c
+
   subroutine MPI_Type_create_hindexed_block( &
     count, &
     blocklength, &
@@ -10032,6 +20027,42 @@ module mpif_functions
     integer :: newtype
     integer :: ierror
   end subroutine MPI_Type_create_hindexed_block_c
+
+  subroutine PMPI_Type_create_hindexed_block( &
+    count, &
+    blocklength, &
+    array_of_displacements, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: blocklength
+    integer(MPI_ADDRESS_KIND) :: array_of_displacements(count)
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_hindexed_block
+
+  subroutine PMPI_Type_create_hindexed_block_c( &
+    count, &
+    blocklength, &
+    array_of_displacements, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_COUNT_KIND) :: count
+    integer(MPI_COUNT_KIND) :: blocklength
+    integer(MPI_COUNT_KIND) :: array_of_displacements(count)
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_hindexed_block_c
 
   subroutine MPI_Type_create_hvector( &
     count, &
@@ -10069,6 +20100,42 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_create_hvector_c
 
+  subroutine PMPI_Type_create_hvector( &
+    count, &
+    blocklength, &
+    stride, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: blocklength
+    integer(MPI_ADDRESS_KIND) :: stride
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_hvector
+
+  subroutine PMPI_Type_create_hvector_c( &
+    count, &
+    blocklength, &
+    stride, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_COUNT_KIND) :: count
+    integer(MPI_COUNT_KIND) :: blocklength
+    integer(MPI_COUNT_KIND) :: stride
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_hvector_c
+
   subroutine MPI_Type_create_indexed_block( &
     count, &
     blocklength, &
@@ -10105,6 +20172,42 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_create_indexed_block_c
 
+  subroutine PMPI_Type_create_indexed_block( &
+    count, &
+    blocklength, &
+    array_of_displacements, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: blocklength
+    integer :: array_of_displacements(count)
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_indexed_block
+
+  subroutine PMPI_Type_create_indexed_block_c( &
+    count, &
+    blocklength, &
+    array_of_displacements, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_COUNT_KIND) :: count
+    integer(MPI_COUNT_KIND) :: blocklength
+    integer(MPI_COUNT_KIND) :: array_of_displacements(count)
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_indexed_block_c
+
   subroutine MPI_Type_create_keyval( &
     type_copy_attr_fn, &
     type_delete_attr_fn, &
@@ -10120,6 +20223,22 @@ module mpif_functions
     integer(MPI_ADDRESS_KIND) :: extra_state
     integer :: ierror
   end subroutine MPI_Type_create_keyval
+
+  subroutine PMPI_Type_create_keyval( &
+    type_copy_attr_fn, &
+    type_delete_attr_fn, &
+    type_keyval, &
+    extra_state, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    external :: type_copy_attr_fn
+    external :: type_delete_attr_fn
+    integer :: type_keyval
+    integer(MPI_ADDRESS_KIND) :: extra_state
+    integer :: ierror
+  end subroutine PMPI_Type_create_keyval
 
   subroutine MPI_Type_create_resized( &
     oldtype, &
@@ -10152,6 +20271,38 @@ module mpif_functions
     integer :: newtype
     integer :: ierror
   end subroutine MPI_Type_create_resized_c
+
+  subroutine PMPI_Type_create_resized( &
+    oldtype, &
+    lb, &
+    extent, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: oldtype
+    integer(MPI_ADDRESS_KIND) :: lb
+    integer(MPI_ADDRESS_KIND) :: extent
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_resized
+
+  subroutine PMPI_Type_create_resized_c( &
+    oldtype, &
+    lb, &
+    extent, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: oldtype
+    integer(MPI_COUNT_KIND) :: lb
+    integer(MPI_COUNT_KIND) :: extent
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_resized_c
 
   subroutine MPI_Type_create_struct( &
     count, &
@@ -10188,6 +20339,42 @@ module mpif_functions
     integer :: newtype
     integer :: ierror
   end subroutine MPI_Type_create_struct_c
+
+  subroutine PMPI_Type_create_struct( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    array_of_types, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: array_of_blocklengths(count)
+    integer(MPI_ADDRESS_KIND) :: array_of_displacements(count)
+    integer :: array_of_types(count)
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_struct
+
+  subroutine PMPI_Type_create_struct_c( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    array_of_types, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_COUNT_KIND) :: count
+    integer(MPI_COUNT_KIND) :: array_of_blocklengths(count)
+    integer(MPI_COUNT_KIND) :: array_of_displacements(count)
+    integer :: array_of_types(count)
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_struct_c
 
   subroutine MPI_Type_create_subarray( &
     ndims, &
@@ -10233,6 +20420,50 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_create_subarray_c
 
+  subroutine PMPI_Type_create_subarray( &
+    ndims, &
+    array_of_sizes, &
+    array_of_subsizes, &
+    array_of_starts, &
+    order, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: ndims
+    integer :: array_of_sizes(ndims)
+    integer :: array_of_subsizes(ndims)
+    integer :: array_of_starts(ndims)
+    integer :: order
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_subarray
+
+  subroutine PMPI_Type_create_subarray_c( &
+    ndims, &
+    array_of_sizes, &
+    array_of_subsizes, &
+    array_of_starts, &
+    order, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: ndims
+    integer(MPI_COUNT_KIND) :: array_of_sizes(ndims)
+    integer(MPI_COUNT_KIND) :: array_of_subsizes(ndims)
+    integer(MPI_COUNT_KIND) :: array_of_starts(ndims)
+    integer :: order
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_create_subarray_c
+
   subroutine MPI_Type_delete_attr( &
     datatype, &
     type_keyval, &
@@ -10244,6 +20475,18 @@ module mpif_functions
     integer :: type_keyval
     integer :: ierror
   end subroutine MPI_Type_delete_attr
+
+  subroutine PMPI_Type_delete_attr( &
+    datatype, &
+    type_keyval, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer :: type_keyval
+    integer :: ierror
+  end subroutine PMPI_Type_delete_attr
 
   subroutine MPI_Type_dup( &
     oldtype, &
@@ -10257,6 +20500,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_dup
 
+  subroutine PMPI_Type_dup( &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_dup
+
   subroutine MPI_Type_free( &
     datatype, &
     ierror &
@@ -10267,6 +20522,16 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_free
 
+  subroutine PMPI_Type_free( &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_Type_free
+
   subroutine MPI_Type_free_keyval( &
     type_keyval, &
     ierror &
@@ -10276,6 +20541,16 @@ module mpif_functions
     integer :: type_keyval
     integer :: ierror
   end subroutine MPI_Type_free_keyval
+
+  subroutine PMPI_Type_free_keyval( &
+    type_keyval, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: type_keyval
+    integer :: ierror
+  end subroutine PMPI_Type_free_keyval
 
   subroutine MPI_Type_get_attr( &
     datatype, &
@@ -10292,6 +20567,22 @@ module mpif_functions
     logical :: flag
     integer :: ierror
   end subroutine MPI_Type_get_attr
+
+  subroutine PMPI_Type_get_attr( &
+    datatype, &
+    type_keyval, &
+    attribute_val, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer :: type_keyval
+    integer(MPI_ADDRESS_KIND) :: attribute_val
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Type_get_attr
 
   subroutine MPI_Type_get_contents( &
     datatype, &
@@ -10341,6 +20632,54 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_get_contents_c
 
+  subroutine PMPI_Type_get_contents( &
+    datatype, &
+    max_integers, &
+    max_addresses, &
+    max_datatypes, &
+    array_of_integers, &
+    array_of_addresses, &
+    array_of_datatypes, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer :: max_integers
+    integer :: max_addresses
+    integer :: max_datatypes
+    integer :: array_of_integers(max_integers)
+    integer(MPI_ADDRESS_KIND) :: array_of_addresses(max_addresses)
+    integer :: array_of_datatypes(max_datatypes)
+    integer :: ierror
+  end subroutine PMPI_Type_get_contents
+
+  subroutine PMPI_Type_get_contents_c( &
+    datatype, &
+    max_integers, &
+    max_addresses, &
+    max_large_counts, &
+    max_datatypes, &
+    array_of_integers, &
+    array_of_addresses, &
+    array_of_large_counts, &
+    array_of_datatypes, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: max_integers
+    integer(MPI_COUNT_KIND) :: max_addresses
+    integer(MPI_COUNT_KIND) :: max_large_counts
+    integer(MPI_COUNT_KIND) :: max_datatypes
+    integer :: array_of_integers(max_integers)
+    integer(MPI_ADDRESS_KIND) :: array_of_addresses(max_addresses)
+    integer(MPI_COUNT_KIND) :: array_of_large_counts(max_large_counts)
+    integer :: array_of_datatypes(max_datatypes)
+    integer :: ierror
+  end subroutine PMPI_Type_get_contents_c
+
   subroutine MPI_Type_get_envelope( &
     datatype, &
     num_integers, &
@@ -10379,6 +20718,44 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_get_envelope_c
 
+  subroutine PMPI_Type_get_envelope( &
+    datatype, &
+    num_integers, &
+    num_addresses, &
+    num_datatypes, &
+    combiner, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer :: num_integers
+    integer :: num_addresses
+    integer :: num_datatypes
+    integer :: combiner
+    integer :: ierror
+  end subroutine PMPI_Type_get_envelope
+
+  subroutine PMPI_Type_get_envelope_c( &
+    datatype, &
+    num_integers, &
+    num_addresses, &
+    num_large_counts, &
+    num_datatypes, &
+    combiner, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: num_integers
+    integer(MPI_COUNT_KIND) :: num_addresses
+    integer(MPI_COUNT_KIND) :: num_large_counts
+    integer(MPI_COUNT_KIND) :: num_datatypes
+    integer :: combiner
+    integer :: ierror
+  end subroutine PMPI_Type_get_envelope_c
+
   subroutine MPI_Type_get_extent( &
     datatype, &
     lb, &
@@ -10407,6 +20784,34 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_get_extent_c
 
+  subroutine PMPI_Type_get_extent( &
+    datatype, &
+    lb, &
+    extent, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer(MPI_ADDRESS_KIND) :: lb
+    integer(MPI_ADDRESS_KIND) :: extent
+    integer :: ierror
+  end subroutine PMPI_Type_get_extent
+
+  subroutine PMPI_Type_get_extent_c( &
+    datatype, &
+    lb, &
+    extent, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: lb
+    integer(MPI_COUNT_KIND) :: extent
+    integer :: ierror
+  end subroutine PMPI_Type_get_extent_c
+
   subroutine MPI_Type_get_extent_x( &
     datatype, &
     lb, &
@@ -10421,6 +20826,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_get_extent_x
 
+  subroutine PMPI_Type_get_extent_x( &
+    datatype, &
+    lb, &
+    extent, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: lb
+    integer(MPI_COUNT_KIND) :: extent
+    integer :: ierror
+  end subroutine PMPI_Type_get_extent_x
+
   subroutine MPI_Type_get_name( &
     datatype, &
     type_name, &
@@ -10434,6 +20853,20 @@ module mpif_functions
     integer :: resultlen
     integer :: ierror
   end subroutine MPI_Type_get_name
+
+  subroutine PMPI_Type_get_name( &
+    datatype, &
+    type_name, &
+    resultlen, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    character*(MPI_MAX_OBJECT_NAME) :: type_name
+    integer :: resultlen
+    integer :: ierror
+  end subroutine PMPI_Type_get_name
 
   subroutine MPI_Type_get_true_extent( &
     datatype, &
@@ -10463,6 +20896,34 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_get_true_extent_c
 
+  subroutine PMPI_Type_get_true_extent( &
+    datatype, &
+    true_lb, &
+    true_extent, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer(MPI_ADDRESS_KIND) :: true_lb
+    integer(MPI_ADDRESS_KIND) :: true_extent
+    integer :: ierror
+  end subroutine PMPI_Type_get_true_extent
+
+  subroutine PMPI_Type_get_true_extent_c( &
+    datatype, &
+    true_lb, &
+    true_extent, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: true_lb
+    integer(MPI_COUNT_KIND) :: true_extent
+    integer :: ierror
+  end subroutine PMPI_Type_get_true_extent_c
+
   subroutine MPI_Type_get_true_extent_x( &
     datatype, &
     true_lb, &
@@ -10477,6 +20938,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_get_true_extent_x
 
+  subroutine PMPI_Type_get_true_extent_x( &
+    datatype, &
+    true_lb, &
+    true_extent, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: true_lb
+    integer(MPI_COUNT_KIND) :: true_extent
+    integer :: ierror
+  end subroutine PMPI_Type_get_true_extent_x
+
   subroutine MPI_Type_get_value_index( &
     value_type, &
     index_type, &
@@ -10490,6 +20965,20 @@ module mpif_functions
     integer :: pair_type
     integer :: ierror
   end subroutine MPI_Type_get_value_index
+
+  subroutine PMPI_Type_get_value_index( &
+    value_type, &
+    index_type, &
+    pair_type, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: value_type
+    integer :: index_type
+    integer :: pair_type
+    integer :: ierror
+  end subroutine PMPI_Type_get_value_index
 
   subroutine MPI_Type_indexed( &
     count, &
@@ -10527,6 +21016,42 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_indexed_c
 
+  subroutine PMPI_Type_indexed( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: array_of_blocklengths(count)
+    integer :: array_of_displacements(count)
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_indexed
+
+  subroutine PMPI_Type_indexed_c( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_COUNT_KIND) :: count
+    integer(MPI_COUNT_KIND) :: array_of_blocklengths(count)
+    integer(MPI_COUNT_KIND) :: array_of_displacements(count)
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_indexed_c
+
   subroutine MPI_Type_match_size( &
     typeclass, &
     size, &
@@ -10540,6 +21065,20 @@ module mpif_functions
     integer :: datatype
     integer :: ierror
   end subroutine MPI_Type_match_size
+
+  subroutine PMPI_Type_match_size( &
+    typeclass, &
+    size, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: typeclass
+    integer :: size
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_Type_match_size
 
   subroutine MPI_Type_set_attr( &
     datatype, &
@@ -10555,6 +21094,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_set_attr
 
+  subroutine PMPI_Type_set_attr( &
+    datatype, &
+    type_keyval, &
+    attribute_val, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer :: type_keyval
+    integer(MPI_ADDRESS_KIND) :: attribute_val
+    integer :: ierror
+  end subroutine PMPI_Type_set_attr
+
   subroutine MPI_Type_set_name( &
     datatype, &
     type_name, &
@@ -10566,6 +21119,18 @@ module mpif_functions
     character*(*) :: type_name
     integer :: ierror
   end subroutine MPI_Type_set_name
+
+  subroutine PMPI_Type_set_name( &
+    datatype, &
+    type_name, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    character*(*) :: type_name
+    integer :: ierror
+  end subroutine PMPI_Type_set_name
 
   subroutine MPI_Type_size( &
     datatype, &
@@ -10591,6 +21156,30 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Type_size_c
 
+  subroutine PMPI_Type_size( &
+    datatype, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer :: size
+    integer :: ierror
+  end subroutine PMPI_Type_size
+
+  subroutine PMPI_Type_size_c( &
+    datatype, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_Type_size_c
+
   subroutine MPI_Type_size_x( &
     datatype, &
     size, &
@@ -10602,6 +21191,18 @@ module mpif_functions
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
   end subroutine MPI_Type_size_x
+
+  subroutine PMPI_Type_size_x( &
+    datatype, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: datatype
+    integer(MPI_COUNT_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_Type_size_x
 
   subroutine MPI_Type_vector( &
     count, &
@@ -10638,6 +21239,42 @@ module mpif_functions
     integer :: newtype
     integer :: ierror
   end subroutine MPI_Type_vector_c
+
+  subroutine PMPI_Type_vector( &
+    count, &
+    blocklength, &
+    stride, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: blocklength
+    integer :: stride
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_vector
+
+  subroutine PMPI_Type_vector_c( &
+    count, &
+    blocklength, &
+    stride, &
+    oldtype, &
+    newtype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_COUNT_KIND) :: count
+    integer(MPI_COUNT_KIND) :: blocklength
+    integer(MPI_COUNT_KIND) :: stride
+    integer :: oldtype
+    integer :: newtype
+    integer :: ierror
+  end subroutine PMPI_Type_vector_c
 
   subroutine MPI_Unpack( &
     inbuf, &
@@ -10691,6 +21328,58 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Unpack_c
 
+  subroutine PMPI_Unpack( &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) inbuf
+    !gcc$ attributes no_arg_check :: inbuf
+    integer :: inbuf(*)
+    integer :: insize
+    integer :: position
+    !dir$ ignore_tkr(trk) outbuf
+    !gcc$ attributes no_arg_check :: outbuf
+    integer :: outbuf(*)
+    integer :: outcount
+    integer :: datatype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Unpack
+
+  subroutine PMPI_Unpack_c( &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype, &
+    comm, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) inbuf
+    !gcc$ attributes no_arg_check :: inbuf
+    integer :: inbuf(*)
+    integer(MPI_COUNT_KIND) :: insize
+    integer(MPI_COUNT_KIND) :: position
+    !dir$ ignore_tkr(trk) outbuf
+    !gcc$ attributes no_arg_check :: outbuf
+    integer :: outbuf(*)
+    integer(MPI_COUNT_KIND) :: outcount
+    integer :: datatype
+    integer :: comm
+    integer :: ierror
+  end subroutine PMPI_Unpack_c
+
   subroutine MPI_Unpack_external( &
     datarep, &
     inbuf, &
@@ -10743,6 +21432,58 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Unpack_external_c
 
+  subroutine PMPI_Unpack_external( &
+    datarep, &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: datarep
+    !dir$ ignore_tkr(trk) inbuf
+    !gcc$ attributes no_arg_check :: inbuf
+    integer :: inbuf(*)
+    integer(MPI_ADDRESS_KIND) :: insize
+    integer(MPI_ADDRESS_KIND) :: position
+    !dir$ ignore_tkr(trk) outbuf
+    !gcc$ attributes no_arg_check :: outbuf
+    integer :: outbuf(*)
+    integer :: outcount
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_Unpack_external
+
+  subroutine PMPI_Unpack_external_c( &
+    datarep, &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: datarep
+    !dir$ ignore_tkr(trk) inbuf
+    !gcc$ attributes no_arg_check :: inbuf
+    integer :: inbuf(*)
+    integer(MPI_COUNT_KIND) :: insize
+    integer(MPI_COUNT_KIND) :: position
+    !dir$ ignore_tkr(trk) outbuf
+    !gcc$ attributes no_arg_check :: outbuf
+    integer :: outbuf(*)
+    integer(MPI_COUNT_KIND) :: outcount
+    integer :: datatype
+    integer :: ierror
+  end subroutine PMPI_Unpack_external_c
+
   subroutine MPI_Unpublish_name( &
     service_name, &
     info, &
@@ -10757,6 +21498,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Unpublish_name
 
+  subroutine PMPI_Unpublish_name( &
+    service_name, &
+    info, &
+    port_name, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    character*(*) :: service_name
+    integer :: info
+    character*(*) :: port_name
+    integer :: ierror
+  end subroutine PMPI_Unpublish_name
+
   subroutine MPI_Wait( &
     request, &
     status, &
@@ -10768,6 +21523,18 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_Wait
+
+  subroutine PMPI_Wait( &
+    request, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: request
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Wait
 
   subroutine MPI_Waitall( &
     count, &
@@ -10782,6 +21549,20 @@ module mpif_functions
     integer :: array_of_statuses(MPI_STATUS_SIZE, *)
     integer :: ierror
   end subroutine MPI_Waitall
+
+  subroutine PMPI_Waitall( &
+    count, &
+    array_of_requests, &
+    array_of_statuses, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: array_of_requests(count)
+    integer :: array_of_statuses(MPI_STATUS_SIZE, *)
+    integer :: ierror
+  end subroutine PMPI_Waitall
 
   subroutine MPI_Waitany( &
     count, &
@@ -10798,6 +21579,22 @@ module mpif_functions
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
   end subroutine MPI_Waitany
+
+  subroutine PMPI_Waitany( &
+    count, &
+    array_of_requests, &
+    index, &
+    status, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: count
+    integer :: array_of_requests(count)
+    integer :: index
+    integer :: status(MPI_STATUS_SIZE)
+    integer :: ierror
+  end subroutine PMPI_Waitany
 
   subroutine MPI_Waitsome( &
     incount, &
@@ -10816,6 +21613,24 @@ module mpif_functions
     integer :: array_of_statuses(MPI_STATUS_SIZE, *)
     integer :: ierror
   end subroutine MPI_Waitsome
+
+  subroutine PMPI_Waitsome( &
+    incount, &
+    array_of_requests, &
+    outcount, &
+    array_of_indices, &
+    array_of_statuses, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: incount
+    integer :: array_of_requests(incount)
+    integer :: outcount
+    integer :: array_of_indices(*)
+    integer :: array_of_statuses(MPI_STATUS_SIZE, *)
+    integer :: ierror
+  end subroutine PMPI_Waitsome
 
   subroutine MPI_Win_allocate( &
     size, &
@@ -10857,6 +21672,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_allocate_c
 
+  subroutine PMPI_Win_allocate( &
+    size, &
+    disp_unit, &
+    info, &
+    comm, &
+    baseptr, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_ADDRESS_KIND) :: size
+    integer :: disp_unit
+    integer :: info
+    integer :: comm
+    integer(MPI_ADDRESS_KIND) :: baseptr
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_allocate
+
+  subroutine PMPI_Win_allocate_c( &
+    size, &
+    disp_unit, &
+    info, &
+    comm, &
+    baseptr, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_ADDRESS_KIND) :: size
+    integer(MPI_ADDRESS_KIND) :: disp_unit
+    integer :: info
+    integer :: comm
+    integer(MPI_ADDRESS_KIND) :: baseptr
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_allocate_c
+
   subroutine MPI_Win_allocate_shared( &
     size, &
     disp_unit, &
@@ -10897,6 +21752,46 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_allocate_shared_c
 
+  subroutine PMPI_Win_allocate_shared( &
+    size, &
+    disp_unit, &
+    info, &
+    comm, &
+    baseptr, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_ADDRESS_KIND) :: size
+    integer :: disp_unit
+    integer :: info
+    integer :: comm
+    integer(MPI_ADDRESS_KIND) :: baseptr
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_allocate_shared
+
+  subroutine PMPI_Win_allocate_shared_c( &
+    size, &
+    disp_unit, &
+    info, &
+    comm, &
+    baseptr, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer(MPI_ADDRESS_KIND) :: size
+    integer(MPI_ADDRESS_KIND) :: disp_unit
+    integer :: info
+    integer :: comm
+    integer(MPI_ADDRESS_KIND) :: baseptr
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_allocate_shared_c
+
   subroutine MPI_Win_attach( &
     win, &
     base, &
@@ -10913,6 +21808,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_attach
 
+  subroutine PMPI_Win_attach( &
+    win, &
+    base, &
+    size, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    !dir$ ignore_tkr(trk) base
+    !gcc$ attributes no_arg_check :: base
+    integer :: base(*)
+    integer(MPI_ADDRESS_KIND) :: size
+    integer :: ierror
+  end subroutine PMPI_Win_attach
+
   subroutine MPI_Win_call_errhandler( &
     win, &
     errorcode, &
@@ -10925,6 +21836,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_call_errhandler
 
+  subroutine PMPI_Win_call_errhandler( &
+    win, &
+    errorcode, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: errorcode
+    integer :: ierror
+  end subroutine PMPI_Win_call_errhandler
+
   subroutine MPI_Win_complete( &
     win, &
     ierror &
@@ -10934,6 +21857,16 @@ module mpif_functions
     integer :: win
     integer :: ierror
   end subroutine MPI_Win_complete
+
+  subroutine PMPI_Win_complete( &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_complete
 
   subroutine MPI_Win_create( &
     base, &
@@ -10979,6 +21912,50 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_create_c
 
+  subroutine PMPI_Win_create( &
+    base, &
+    size, &
+    disp_unit, &
+    info, &
+    comm, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) base
+    !gcc$ attributes no_arg_check :: base
+    integer :: base(*)
+    integer(MPI_ADDRESS_KIND) :: size
+    integer :: disp_unit
+    integer :: info
+    integer :: comm
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_create
+
+  subroutine PMPI_Win_create_c( &
+    base, &
+    size, &
+    disp_unit, &
+    info, &
+    comm, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    !dir$ ignore_tkr(trk) base
+    !gcc$ attributes no_arg_check :: base
+    integer :: base(*)
+    integer(MPI_ADDRESS_KIND) :: size
+    integer(MPI_ADDRESS_KIND) :: disp_unit
+    integer :: info
+    integer :: comm
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_create_c
+
   subroutine MPI_Win_create_dynamic( &
     info, &
     comm, &
@@ -10993,6 +21970,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_create_dynamic
 
+  subroutine PMPI_Win_create_dynamic( &
+    info, &
+    comm, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: info
+    integer :: comm
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_create_dynamic
+
   subroutine MPI_Win_create_errhandler( &
     win_errhandler_fn, &
     errhandler, &
@@ -11004,6 +21995,18 @@ module mpif_functions
     integer :: errhandler
     integer :: ierror
   end subroutine MPI_Win_create_errhandler
+
+  subroutine PMPI_Win_create_errhandler( &
+    win_errhandler_fn, &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    external :: win_errhandler_fn
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_Win_create_errhandler
 
   subroutine MPI_Win_create_keyval( &
     win_copy_attr_fn, &
@@ -11021,6 +22024,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_create_keyval
 
+  subroutine PMPI_Win_create_keyval( &
+    win_copy_attr_fn, &
+    win_delete_attr_fn, &
+    win_keyval, &
+    extra_state, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    external :: win_copy_attr_fn
+    external :: win_delete_attr_fn
+    integer :: win_keyval
+    integer(MPI_ADDRESS_KIND) :: extra_state
+    integer :: ierror
+  end subroutine PMPI_Win_create_keyval
+
   subroutine MPI_Win_delete_attr( &
     win, &
     win_keyval, &
@@ -11032,6 +22051,18 @@ module mpif_functions
     integer :: win_keyval
     integer :: ierror
   end subroutine MPI_Win_delete_attr
+
+  subroutine PMPI_Win_delete_attr( &
+    win, &
+    win_keyval, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: win_keyval
+    integer :: ierror
+  end subroutine PMPI_Win_delete_attr
 
   subroutine MPI_Win_detach( &
     win, &
@@ -11047,6 +22078,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_detach
 
+  subroutine PMPI_Win_detach( &
+    win, &
+    base, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    !dir$ ignore_tkr(trk) base
+    !gcc$ attributes no_arg_check :: base
+    integer :: base(*)
+    integer :: ierror
+  end subroutine PMPI_Win_detach
+
   subroutine MPI_Win_fence( &
     assert, &
     win, &
@@ -11058,6 +22103,18 @@ module mpif_functions
     integer :: win
     integer :: ierror
   end subroutine MPI_Win_fence
+
+  subroutine PMPI_Win_fence( &
+    assert, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: assert
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_fence
 
   subroutine MPI_Win_flush( &
     rank, &
@@ -11071,6 +22128,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_flush
 
+  subroutine PMPI_Win_flush( &
+    rank, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: rank
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_flush
+
   subroutine MPI_Win_flush_all( &
     win, &
     ierror &
@@ -11080,6 +22149,16 @@ module mpif_functions
     integer :: win
     integer :: ierror
   end subroutine MPI_Win_flush_all
+
+  subroutine PMPI_Win_flush_all( &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_flush_all
 
   subroutine MPI_Win_flush_local( &
     rank, &
@@ -11093,6 +22172,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_flush_local
 
+  subroutine PMPI_Win_flush_local( &
+    rank, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: rank
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_flush_local
+
   subroutine MPI_Win_flush_local_all( &
     win, &
     ierror &
@@ -11102,6 +22193,16 @@ module mpif_functions
     integer :: win
     integer :: ierror
   end subroutine MPI_Win_flush_local_all
+
+  subroutine PMPI_Win_flush_local_all( &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_flush_local_all
 
   subroutine MPI_Win_free( &
     win, &
@@ -11113,6 +22214,16 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_free
 
+  subroutine PMPI_Win_free( &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_free
+
   subroutine MPI_Win_free_keyval( &
     win_keyval, &
     ierror &
@@ -11122,6 +22233,16 @@ module mpif_functions
     integer :: win_keyval
     integer :: ierror
   end subroutine MPI_Win_free_keyval
+
+  subroutine PMPI_Win_free_keyval( &
+    win_keyval, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win_keyval
+    integer :: ierror
+  end subroutine PMPI_Win_free_keyval
 
   subroutine MPI_Win_get_attr( &
     win, &
@@ -11139,6 +22260,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_get_attr
 
+  subroutine PMPI_Win_get_attr( &
+    win, &
+    win_keyval, &
+    attribute_val, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: win_keyval
+    integer(MPI_ADDRESS_KIND) :: attribute_val
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Win_get_attr
+
   subroutine MPI_Win_get_errhandler( &
     win, &
     errhandler, &
@@ -11150,6 +22287,18 @@ module mpif_functions
     integer :: errhandler
     integer :: ierror
   end subroutine MPI_Win_get_errhandler
+
+  subroutine PMPI_Win_get_errhandler( &
+    win, &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_Win_get_errhandler
 
   subroutine MPI_Win_get_group( &
     win, &
@@ -11163,6 +22312,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_get_group
 
+  subroutine PMPI_Win_get_group( &
+    win, &
+    group, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: group
+    integer :: ierror
+  end subroutine PMPI_Win_get_group
+
   subroutine MPI_Win_get_info( &
     win, &
     info_used, &
@@ -11174,6 +22335,18 @@ module mpif_functions
     integer :: info_used
     integer :: ierror
   end subroutine MPI_Win_get_info
+
+  subroutine PMPI_Win_get_info( &
+    win, &
+    info_used, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: info_used
+    integer :: ierror
+  end subroutine PMPI_Win_get_info
 
   subroutine MPI_Win_get_name( &
     win, &
@@ -11188,6 +22361,20 @@ module mpif_functions
     integer :: resultlen
     integer :: ierror
   end subroutine MPI_Win_get_name
+
+  subroutine PMPI_Win_get_name( &
+    win, &
+    win_name, &
+    resultlen, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    character*(MPI_MAX_OBJECT_NAME) :: win_name
+    integer :: resultlen
+    integer :: ierror
+  end subroutine PMPI_Win_get_name
 
   subroutine MPI_Win_lock( &
     lock_type, &
@@ -11205,6 +22392,22 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_lock
 
+  subroutine PMPI_Win_lock( &
+    lock_type, &
+    rank, &
+    assert, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: lock_type
+    integer :: rank
+    integer :: assert
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_lock
+
   subroutine MPI_Win_lock_all( &
     assert, &
     win, &
@@ -11216,6 +22419,18 @@ module mpif_functions
     integer :: win
     integer :: ierror
   end subroutine MPI_Win_lock_all
+
+  subroutine PMPI_Win_lock_all( &
+    assert, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: assert
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_lock_all
 
   subroutine MPI_Win_post( &
     group, &
@@ -11231,6 +22446,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_post
 
+  subroutine PMPI_Win_post( &
+    group, &
+    assert, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group
+    integer :: assert
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_post
+
   subroutine MPI_Win_set_attr( &
     win, &
     win_keyval, &
@@ -11245,6 +22474,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_set_attr
 
+  subroutine PMPI_Win_set_attr( &
+    win, &
+    win_keyval, &
+    attribute_val, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: win_keyval
+    integer(MPI_ADDRESS_KIND) :: attribute_val
+    integer :: ierror
+  end subroutine PMPI_Win_set_attr
+
   subroutine MPI_Win_set_errhandler( &
     win, &
     errhandler, &
@@ -11256,6 +22499,18 @@ module mpif_functions
     integer :: errhandler
     integer :: ierror
   end subroutine MPI_Win_set_errhandler
+
+  subroutine PMPI_Win_set_errhandler( &
+    win, &
+    errhandler, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: errhandler
+    integer :: ierror
+  end subroutine PMPI_Win_set_errhandler
 
   subroutine MPI_Win_set_info( &
     win, &
@@ -11269,6 +22524,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_set_info
 
+  subroutine PMPI_Win_set_info( &
+    win, &
+    info, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: info
+    integer :: ierror
+  end subroutine PMPI_Win_set_info
+
   subroutine MPI_Win_set_name( &
     win, &
     win_name, &
@@ -11280,6 +22547,18 @@ module mpif_functions
     character*(*) :: win_name
     integer :: ierror
   end subroutine MPI_Win_set_name
+
+  subroutine PMPI_Win_set_name( &
+    win, &
+    win_name, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    character*(*) :: win_name
+    integer :: ierror
+  end subroutine PMPI_Win_set_name
 
   subroutine MPI_Win_shared_query( &
     win, &
@@ -11317,6 +22596,42 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_shared_query_c
 
+  subroutine PMPI_Win_shared_query( &
+    win, &
+    rank, &
+    size, &
+    disp_unit, &
+    baseptr, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: rank
+    integer(MPI_ADDRESS_KIND) :: size
+    integer :: disp_unit
+    integer(MPI_ADDRESS_KIND) :: baseptr
+    integer :: ierror
+  end subroutine PMPI_Win_shared_query
+
+  subroutine PMPI_Win_shared_query_c( &
+    win, &
+    rank, &
+    size, &
+    disp_unit, &
+    baseptr, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: rank
+    integer(MPI_ADDRESS_KIND) :: size
+    integer(MPI_ADDRESS_KIND) :: disp_unit
+    integer(MPI_ADDRESS_KIND) :: baseptr
+    integer :: ierror
+  end subroutine PMPI_Win_shared_query_c
+
   subroutine MPI_Win_start( &
     group, &
     assert, &
@@ -11331,6 +22646,20 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_start
 
+  subroutine PMPI_Win_start( &
+    group, &
+    assert, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: group
+    integer :: assert
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_start
+
   subroutine MPI_Win_sync( &
     win, &
     ierror &
@@ -11340,6 +22669,16 @@ module mpif_functions
     integer :: win
     integer :: ierror
   end subroutine MPI_Win_sync
+
+  subroutine PMPI_Win_sync( &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_sync
 
   subroutine MPI_Win_test( &
     win, &
@@ -11353,6 +22692,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_test
 
+  subroutine PMPI_Win_test( &
+    win, &
+    flag, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    logical :: flag
+    integer :: ierror
+  end subroutine PMPI_Win_test
+
   subroutine MPI_Win_unlock( &
     rank, &
     win, &
@@ -11365,6 +22716,18 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_unlock
 
+  subroutine PMPI_Win_unlock( &
+    rank, &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: rank
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_unlock
+
   subroutine MPI_Win_unlock_all( &
     win, &
     ierror &
@@ -11374,6 +22737,16 @@ module mpif_functions
     integer :: win
     integer :: ierror
   end subroutine MPI_Win_unlock_all
+
+  subroutine PMPI_Win_unlock_all( &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_unlock_all
 
   subroutine MPI_Win_wait( &
     win, &
@@ -11385,6 +22758,16 @@ module mpif_functions
     integer :: ierror
   end subroutine MPI_Win_wait
 
+  subroutine PMPI_Win_wait( &
+    win, &
+    ierror &
+  )
+    use mpif_constants
+    implicit none
+    integer :: win
+    integer :: ierror
+  end subroutine PMPI_Win_wait
+
   function MPI_Wtick( &
   ) result(result)
     use mpif_constants
@@ -11392,12 +22775,26 @@ module mpif_functions
     double precision :: result
   end function MPI_Wtick
 
+  function PMPI_Wtick( &
+  ) result(result)
+    use mpif_constants
+    implicit none
+    double precision :: result
+  end function PMPI_Wtick
+
   function MPI_Wtime( &
   ) result(result)
     use mpif_constants
     implicit none
     double precision :: result
   end function MPI_Wtime
+
+  function PMPI_Wtime( &
+  ) result(result)
+    use mpif_constants
+    implicit none
+    double precision :: result
+  end function PMPI_Wtime
 
   end interface
 

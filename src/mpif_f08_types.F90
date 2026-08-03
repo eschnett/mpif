@@ -126,6 +126,12 @@ module mpif_f08_types
   public :: MPI_Status_f2f08
   public :: MPI_Status_f082f
 
+  ! MPI-5.0 section 15.2 asks for a P-prefixed second procedure for every MPI
+  ! procedure, these two included; MPICH's own binding has them as module
+  ! procedures here too.
+  public :: PMPI_Status_f2f08
+  public :: PMPI_Status_f082f
+
   ! Handles
 
   type, bind(C), public :: MPI_Comm
@@ -824,5 +830,23 @@ contains
     f_status(4:8) = f08_status%MPI_internal(1:5)
     if (present(ierror)) ierror = MPI_SUCCESS
   end subroutine MPI_Status_f082f
+
+  ! Both conversions are pure Fortran -- MPI is not involved and there is nothing
+  ! for a tool to interpose between these and the library -- so the P forms
+  ! forward, leaving the field-by-field copy written once.
+
+  subroutine PMPI_Status_f2f08(f_status, f08_status, ierror)
+    integer, intent(in) :: f_status(MPI_STATUS_SIZE)
+    type(MPI_Status), intent(out) :: f08_status
+    integer, optional, intent(out) :: ierror
+    call MPI_Status_f2f08(f_status, f08_status, ierror)
+  end subroutine PMPI_Status_f2f08
+
+  subroutine PMPI_Status_f082f(f08_status, f_status, ierror)
+    type(MPI_Status), intent(in) :: f08_status
+    integer, intent(out) :: f_status(MPI_STATUS_SIZE)
+    integer, optional, intent(out) :: ierror
+    call MPI_Status_f082f(f08_status, f_status, ierror)
+  end subroutine PMPI_Status_f082f
 
 end module mpif_f08_types

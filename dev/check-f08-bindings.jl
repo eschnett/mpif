@@ -1,10 +1,20 @@
 # Check mpif's mpi_f08 declarations against the MPI-5.0 appendices.
 #
-# Three sets of declarations, each against the appendix that gives it:
+# Four sets of declarations, each against the appendix that gives it:
 #
 #   gen/mpif_f08_functions.F90   the 590 generated wrappers        against A.4
+#   gen/mpif_f08_functions.F90   their 590 PMPI_ forms, P stripped against A.4
 #   src/mpif_f08_types.F90       the 20 callback ABSTRACT INTERFACEs against A.1.3
 #   src/mpif_f08_attr_fns.F90    the 11 predefined callbacks       against A.4
+#
+# The appendices give no PMPI bindings, so "the same declarations as their twin"
+# is the only thing there is to check about the second set -- and it is the thing a
+# tools layer depends on, MPI-5.0 section 19.1.5 asking for "a second procedure
+# with the same calling conventions". Stripping the P and comparing against A.4
+# says exactly that, and costs one more turn of a comparison already written.
+#
+# The predefined callbacks have no PMPI forms and want none; see "The PMPI
+# profiling interface" in MISSING.md for why.
 #
 # The generator derives every f08 INTENT from the parameter's `param_direction`
 # in `data/apis.json`, and the standard's own bindings do not always agree. Where
@@ -492,8 +502,20 @@ function main()
     # INTEGER(KIND=MPI_ADDRESS_KIND) where A.1.3 gives TYPE(C_PTR), VALUE, and
     # that survived precisely because nothing compared the abstract interfaces
     # with anything.
+    #
+    # The generated file holds both halves. Split them, and compare the PMPI half
+    # against A.4 under its twin's name: nothing else states that the two are the
+    # same binding, and the whole point of a PMPI name is that a call written
+    # against one can be made through the other unchanged.
+    generated = parse_generated(gen_file)
+    mpi_generated = filter(kv -> !startswith(kv[1], "PMPI_"), generated)
+    pmpi_generated = Dict(kv[1][2:end] => kv[2]
+                          for kv in generated if startswith(kv[1], "PMPI_"))
+
     checks = [
-        (standard, parse_generated(gen_file), "A.4", "generated",
+        (standard, mpi_generated, "A.4", "generated",
+         "not generated (hand-written or a callback)"),
+        (standard, pmpi_generated, "A.4", "generated PMPI, P stripped",
          "not generated (hand-written or a callback)"),
         (parse_standard_prototypes(pdf_path), parse_abstract_interfaces(types_file), "A.1.3",
          "in mpif_f08_types", "not declared here (deprecated, or C-only)"),

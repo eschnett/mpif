@@ -123,8 +123,7 @@ flaky mpich/*/*/*/*            f77  nonblocking_inpf   # MISSING.md "ABI_Datatyp
 xfail */gcc/*/*/*              f08  nonblocking_inpf08 # gcc only, on both MPIs; MISSING.md "ABI_Datatype_from_mpi asserts on a datatype predefined only internally"
 flaky mpich/*/*/*/*            f90  nonblocking_inpf90 # MISSING.md "ABI_Datatype_from_mpi asserts"; the assert fires or not from run to run
 xfail */gcc/*/*/*              f08  nonblockingf08     # gcc only, on both MPIs; MISSING.md "ABI_Datatype_from_mpi asserts on a datatype predefined only internally"
-xfail */*/*/*/*                f08  profile1f90        # needs PMPI, and mpi_send_f08ts, an MPICH-specific specific name
-xfail */*/*/*/*                f90  profile1f90        # needs PMPI, and mpi_send_f08ts, an MPICH-specific specific name
+xfail */*/*/*/*                f08  profile1f90        # defines mpi_send_f08ts, MPICH's scheme-1B specific name; mpif is 1A. MISSING.md "The mpi_f08 specific procedure names"
 xfail */*/*/*/*                f08  spawnargvf03       # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
 xfail */*/*/*/*                f08  spawnargvf90       # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
 xfail openmpi/*/*/*/x86_64     f77  spawnargvf         # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
@@ -151,8 +150,6 @@ xfail */gcc/*/*/*              f08  vw_inplacef08      # gcc only, on both MPIs;
 xfail openmpi/*/*/*/*          f77  winnamef           # Open MPI gives a fresh window a name; MISSING.md "object names" -- reported upstream
 xfail openmpi/*/*/*/*          f08  winnamef08         # Open MPI gives a fresh window a name; MISSING.md "object names" -- reported upstream
 xfail openmpi/*/*/*/*          f90  winnamef90         # Open MPI gives a fresh window a name; MISSING.md "object names" -- reported upstream
-xfail */*/*/*/*                f08  wtimef90           # no PMPI: "Function 'pmpi_wtick' has no IMPLICIT type"
-xfail */*/*/*/*                f90  wtimef90           # no PMPI: "Function 'pmpi_wtick' has no IMPLICIT type"
 
 # --- Untriaged -----------------------------------------------------------------
 #

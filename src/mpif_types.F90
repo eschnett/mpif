@@ -68,6 +68,70 @@ module mpif_types
      module procedure mpif_sizeof_character_v
   end interface MPI_Sizeof
 
+  ! MPI_SIZEOF again under the name MPI-5.0 section 15.2 asks for. It costs
+  ! nothing but this block: a module procedure may be a specific of more than one
+  ! generic, so the same bodies serve both names. Neither implementation provides
+  ! a PMPI_SIZEOF -- `nm` finds no pmpi_sizeof in MPICH's libmpifort in any
+  ! spelling -- but the standard makes no exception for it, and here the exception
+  ! would cost more to argue than to close.
+  !
+  ! mpif.h cannot borrow the specifics this way. There they are external
+  ! procedures, and an external procedure may appear in only one interface body
+  ! per scope, so include/mpif_functions.h declares a second set of names over the
+  ! mpif_psizeof_* bodies in src/mpif_sizeof.c.
+  interface PMPI_Sizeof
+     module procedure mpif_sizeof_logical1
+     module procedure mpif_sizeof_logical1_v
+     module procedure mpif_sizeof_logical2
+     module procedure mpif_sizeof_logical2_v
+     module procedure mpif_sizeof_logical4
+     module procedure mpif_sizeof_logical4_v
+     module procedure mpif_sizeof_logical8
+     module procedure mpif_sizeof_logical8_v
+#ifdef MPIF_HAVE_LOGICAL16
+     module procedure mpif_sizeof_logical16
+     module procedure mpif_sizeof_logical16_v
+#endif
+     module procedure mpif_sizeof_integer1
+     module procedure mpif_sizeof_integer1_v
+     module procedure mpif_sizeof_integer2
+     module procedure mpif_sizeof_integer2_v
+     module procedure mpif_sizeof_integer4
+     module procedure mpif_sizeof_integer4_v
+     module procedure mpif_sizeof_integer8
+     module procedure mpif_sizeof_integer8_v
+#ifdef MPIF_HAVE_INTEGER16
+     module procedure mpif_sizeof_integer16
+     module procedure mpif_sizeof_integer16_v
+#endif
+#ifdef MPIF_HAVE_REAL2
+     module procedure mpif_sizeof_real2
+     module procedure mpif_sizeof_real2_v
+#endif
+     module procedure mpif_sizeof_real4
+     module procedure mpif_sizeof_real4_v
+     module procedure mpif_sizeof_real8
+     module procedure mpif_sizeof_real8_v
+#ifdef MPIF_HAVE_REAL16
+     module procedure mpif_sizeof_real16
+     module procedure mpif_sizeof_real16_v
+#endif
+#ifdef MPIF_HAVE_REAL2
+     module procedure mpif_sizeof_complex4
+     module procedure mpif_sizeof_complex4_v
+#endif
+     module procedure mpif_sizeof_complex8
+     module procedure mpif_sizeof_complex8_v
+     module procedure mpif_sizeof_complex16
+     module procedure mpif_sizeof_complex16_v
+#ifdef MPIF_HAVE_REAL16
+     module procedure mpif_sizeof_complex32
+     module procedure mpif_sizeof_complex32_v
+#endif
+     module procedure mpif_sizeof_character
+     module procedure mpif_sizeof_character_v
+  end interface PMPI_Sizeof
+
 contains
 
   subroutine mpif_sizeof_logical1(x, size, ierror)

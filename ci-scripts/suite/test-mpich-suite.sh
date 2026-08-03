@@ -361,7 +361,13 @@ else
     # eleven Open MPI spawn tests were read as failing on a warning, and the fatal
     # error two lines past the cut was the real one. The TAP file has all of it,
     # and this is read from there.
-    for entry in "${unexpected[@]}"; do
+    #
+    # Guarded because there need not be any: a run whose only differences are
+    # unexpected *passes* leaves this empty, and `"${unexpected[@]}"` on an empty
+    # array is an unbound variable under `set -u` in bash 3.2, which macOS ships.
+    # That aborted the script here rather than reaching its verdict -- exit 1 by
+    # accident, and none of the tail below printed.
+    for entry in ${unexpected[@]+"${unexpected[@]}"}; do
         read -r language test tapfile <<<"${entry}"
         echo
         echo "--- ${language} ${test}, as recorded in ${tapfile##*/}"

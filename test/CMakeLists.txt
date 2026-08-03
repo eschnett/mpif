@@ -63,3 +63,7 @@ add_mpi_test(buffer_detach          SOURCES buffer_detach.f90                   
 add_mpi_test(op_create              SOURCES op_create.f90                           LIBS MPI::MPI_Fortran)
 add_mpi_test(waitall_f90            SOURCES waitall_f90.f90                         LIBS MPI::MPI_Fortran)
 add_mpi_test(waitall_f08            SOURCES waitall_f08.f90                         LIBS MPI::MPI_Fortran)
+add_mpi_test(pmpi_f                 SOURCES pmpi_f.f                                LIBS MPI::MPI_Fortran)
+add_mpi_test(pmpi_f90               SOURCES pmpi_f90.f90                            LIBS MPI::MPI_Fortran)
+add_mpi_test(pmpi_f08               SOURCES pmpi_f08.f90                            LIBS MPI::MPI_Fortran)
+add_mpi_test(profile_f90            SOURCES profile_f90.f90                         LIBS MPI::MPI_Fortran)

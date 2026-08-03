@@ -612,11 +612,16 @@ than with the standard.
   `void c_f08_status_(MPI_F08_status *f08_status)`. The ABI spells that type
   `MPI_F08_Status`, with a capital S; `MPI_F08_status` is MPICH's own name for
   it. It fails to build, in C, before Fortran is involved.
-- **`profile1f90`** does `use :: mpi_f08, my_noname => mpi_send_f08ts`.
-  `mpi_send_f08ts` is MPICH's implementation-specific specific name for the
-  choice-buffer form; section 19.1.5 of the standard defines the `_f08` and `_f`
-  schemes and nothing that obliges an implementation to provide this one. It
-  fails to build, and would need the PMPI interface as well.
+- **`profile1f90`, the f08 copy only**, does
+  `use :: mpi_f08, my_noname => mpi_send_f08ts`. `mpi_send_f08ts` is the scheme-1B
+  specific name of Table 19.1, the `TYPE(*), DIMENSION(..)` form, which mpif does
+  not use: it is scheme 1A, and 1B arrives with assumed-rank or not at all. So the
+  name the test interposes is one mpif does not have, and it fails to build.
+
+  Its f90 copy passes now. It used to fail for want of PMPI and was listed here
+  with the f08 one; the two turned out to be different problems, and only this one
+  is about a name. See "The mpi_f08 specific procedure names" under "Missing
+  features" for what closing it would and would not buy.
 
 ### MPICH: the f08 copy of `spawnargvf90` contradicts the standard and its own f90 copy
 
@@ -740,28 +745,38 @@ layer:
 For scale, `apis.json` has 150 routines with a choice buffer and 222 buffer
 parameters between them.
 
-### The PMPI profiling interface
+### The mpi_f08 specific procedure names are not the ones a tools layer expects
 
-There is none. `nm` on the built library finds no `pmpi_` symbol at all, for any
-of the 585 entry points, and the generator emits none.
+The PMPI interface is there now (see "The PMPI profiling interface" under
+"Verified as correct"), and this is what it does not carry with it. Table 19.1
+lists the specific procedure name a Fortran call must resolve to, per support
+method, and for `mpi_f08` with `ignore_tkr` choice buffers -- mpif's scheme, 1A --
+that name is `MPI_Isend_f08`. mpif's f08 specifics are module procedures named
+`MPI_Isend`, so mpif does not offer the name the table gives, and a module
+procedure's symbol is the compiler's to mangle in any case.
 
-`include/mpif_functions.h` is worse than silent about it: it declares four PMPI
-names it does not define,
+What this costs is interposition, not correctness of any call. Section 19.1.5
+says a profiling routine "should provide the same specific Fortran procedure
+names and calling conventions, and therefore can interpose itself as the MPI
+library routine" -- which a tool can do for `mpif.h` and the `mpi` module, whose
+scheme-2A specifics are the external symbols `mpi_isend_` and so on, and cannot
+do for `mpi_f08`. `test/profile_f90.f90` is the `mpi` module half working; there
+is deliberately no f08 counterpart, because there is nothing to intercept.
 
-    double precision, external :: MPI_Wtick, PMPI_Wtick
-    double precision, external :: MPI_Wtime, PMPI_Wtime
-    integer(MPI_ADDRESS_KIND), external :: MPI_Aint_add, PMPI_Aint_add
-    ... PMPI_Aint_diff
+MPICH's arrangement is the one to copy if this is ever taken: its `mpi_f08` module
+is interface blocks only, over external `MPIR_Send_f08ts` bodies in
+`use_mpi_f08/wrappers_f/f08ts.f90`, with `PMPIR_Send_f08ts` beside them in
+`pf08ts.f90`. Moving mpif's 590 f08 bodies out of the module and into external
+procedures under the Table 19.1 names is the whole of the work, and it is not
+small.
 
-so an `mpif.h` program that calls one gets a link error rather than a diagnostic:
-`Undefined symbols: "_pmpi_wtime_"`. The `mpi` and `mpi_f08` modules do not
-declare them at all, which is what `f08/timer/wtimef90` hits --
-`Function 'pmpi_wtick' has no IMPLICIT type`.
-
-Because mpif prunes the implementation's own Fortran library, its `pmpi_*`
-symbols are not available as a fallback either. Generating the PMPI names
-alongside the MPI ones should be mechanical: each would be the same wrapper under
-a second symbol, calling the same C entry point.
+Worth knowing before starting: it would not make `f08/profile1f90` pass. That
+test defines `mpi_send_f08ts`, which is scheme **1B** -- the `TYPE(*),
+DIMENSION(..)` form -- and mpif is scheme 1A, so the name it interposes would
+still be one mpif does not use. 1B belongs to the assumed-rank option under
+"Assumed-rank choice buffers", which is not being taken. So the two are one
+decision: the `_f08ts` names arrive with assumed-rank or not at all, and only the
+plain `_f08` names are available meanwhile.
 
 ### Fortran-set attribute values are not visible to C as a pointer
 
@@ -835,8 +850,9 @@ tests above already state the requirement. Write one with the fix.
 
 ### `bind(C)`
 
-Nothing is declared `bind(C)`. All 585 entry points rely on the compiler
-lowercasing names and appending a single underscore, and on hidden character
+Nothing is declared `bind(C)`. All 1180 generated entry points -- the 590 MPI
+names and their 590 PMPI twins -- rely on the compiler lowercasing names and
+appending a single underscore, and on hidden character
 lengths being appended at the end of the argument list as `size_t`. That is
 correct for gfortran 8 and later and for flang, and an unstated assumption
 otherwise -- gfortran before 8 passed hidden lengths as `int`.
@@ -950,10 +966,142 @@ The procedures behind `operator(==)` and `operator(/=)` on the handle types were
 `MPI_Comm_equal` and so on, which the standard does not define; they are now
 `mpif_comm_equal` and friends. They were already private to `mpif_f08_types`.
 
+`PMPI_` is a third case, and a simpler one: the standard reserves the whole prefix
+to the implementation -- "programs must not declare functions with names beginning
+with any prefix of the form PMPI_" -- and says of the specific names behind the
+PMPI generics that they "must be different from the specific procedure names for
+the MPI_Xxxx procedures and are not specified by this standard". So nothing in the
+`PMPI_` space is the standard's to claim, and mpif spells the P form of a name the
+standard gives with `PMPI_`: `PMPI_Wtime`, and `PMPI_Alloc_mem_cptr` after
+`MPI_ALLOC_MEM_CPTR`.
+
+The P form of a name mpif invented keeps the `mpif_` prefix and takes the `p`
+directly after it -- `mpif_pwin_allocate_c_cptr` for `mpif_win_allocate_c_cptr`,
+`mpif_psizeof_logical1` for `mpif_sizeof_logical1`. One rule, and one that greps:
+`mpif_p` finds every invented PMPI name. A `pmpif_` prefix would have been neither
+`mpif_` nor anything the standard reserves, so it is not that.
+
 ## Verified as correct
 
 Recorded so that they do not get re-investigated:
 
+- **The PMPI profiling interface.** Every MPI procedure mpif provides has a
+  `PMPI_` form, in all three interfaces, and each calls C's `PMPI_` entry point
+  rather than its `MPI_` one. MPI-5.0 asks for this twice, in section 15.2.1 ("an
+  alternate entry point name, with the prefix `PMPI_` for each MPI function in
+  each provided language binding and language support method") and again for
+  Fortran in 19.1.5 ("for all MPI procedures, a second procedure with the same
+  calling conventions shall be supplied, except that the name is modified by
+  prefixing with the letter 'P'").
+
+  The generated half is one more turn of the loop in `dev/mpiapi.jl`, beside
+  `for embiggen`: 590 more Fortran-callable C wrappers, 590 more interface bodies
+  in `mpif_functions`, 590 more `mpi_f08` module procedures and 157 more generics,
+  under the same eight `#ifdef` guards. Emitting the two copies from one pass is
+  the point of doing it that way -- the name and the code that carries it are the
+  same expression, where a second pass or a rewrite of the first copy's text could
+  drift.
+
+  How to check that it changed nothing else, and the way that does not work:
+  `git diff gen/` reports thousands of deleted lines, because each PMPI block is
+  its twin but for one letter and `git` finds it cheaper to align the two than to
+  call the whole thing an insertion. That is a diff-presentation artifact and says
+  nothing. What settles it is generating the MPI half alone -- change the loop to
+  `for pmpi in [false]` and rerun -- after which `git diff gen/` is empty but for
+  the new file headers and the `PMPI_Attr_*` defines, every one of the 590
+  wrappers, interface bodies and f08 procedures being byte-identical to what was
+  committed before.
+
+  The hand-written half is 20 more entry points: the 10 removed MPI-1 routines of
+  `src/mpif_removed.c`, the 7 `TYPE(C_PTR)` overloads of `src/mpif_cptr.F90` with
+  their generics in `src/mpi.F90`, `MPI_Sizeof`, and
+  `MPI_Status_f2f08`/`MPI_Status_f082f`. `MPI_Sizeof` and the status conversions
+  forward to their twins, so that a body is written once; the removed MPI-1
+  routines and the `_cptr` overloads cannot, the C entry point or the raw
+  interface being the whole difference, and there each body is a macro or a call
+  instantiated twice.
+
+  Five things worth not re-deciding:
+
+  - **The P form must call C's `PMPI_`, never `MPI_`.** A `pmpi_send_` that called
+    `MPI_Send` would not be the way past a tool that had replaced `MPI_Send`, it
+    would be a second way into it. The same goes for the group size, rank and
+    dimension probes a few wrappers make on the caller's behalf, which is why
+    `State` carries the prefix. The handle conversions are left alone:
+    `MPI_Comm_fromint` is nothing a profiler can usefully replace, and there are
+    some eight hundred of them.
+  - **`PMPI_Sizeof` exists here and in neither implementation.** `nm` on MPICH's
+    `libmpifort` finds no `pmpi_sizeof` in any spelling. The standard makes no
+    exception for it, and closing the gap cost one interface block in
+    `src/mpif_types.F90` -- a module procedure may be a specific of more than one
+    generic -- plus a second set of 18 bodies for `mpif.h`, where the specifics
+    are external and an external procedure may appear in only one interface body
+    per scope.
+  - **No PMPI form of a predefined callback**, and none wanted: no
+    `PMPI_COMM_DUP_FN`, `PMPI_CONVERSION_FN_NULL` or any of the other twelve, in
+    any of the three interfaces. A name shift protects an *entry point* a program
+    calls and a tool may replace at link time, and these are not that. A.1.1,
+    "Defined Constants", carries all twelve in a table headed "Predefined
+    functions" whose third column is "ABI value in mpi.h", and the values are 0
+    and 1: in the ABI they are constants, not entry points, which is why
+    `src/mpif_callbacks.c` turns them into sentinels rather than calling them.
+    Every clause of section 15.2.1 is about the other thing -- "may be accessed
+    with a name shift", "an alternate entry point name ... for each MPI function",
+    "not possible to replace the MPI_ version with a user-defined version at link
+    time" -- and a predefined callback is passed as an actual argument, never
+    called by the program.
+
+    The one sentence that could be stretched is 19.1.5's "for all MPI procedures,
+    a second procedure ... prefixed with the letter 'P'", and A.4.5 does give
+    `MPI_COMM_DUP_FN` a Fortran binding in the same alphabetical list as
+    `MPI_Comm_dup`. Its own next paragraph settles it: the point of the P names is
+    that a profiling routine "can interpose itself as the MPI library routine",
+    and it goes on to speak of "routines that have callback routine dummy
+    arguments" -- callbacks are arguments to routines there, not routines wanting
+    P forms. Section 2.6.2 sorts them the same way, excepting "user-defined
+    callback functions ... and their predefined callbacks" from a rule about "all
+    MPI Fortran subroutines".
+
+    Nothing needs them either. A tools layer receives the callback as a
+    `PROCEDURE(MPI_Comm_copy_attr_function)` dummy and forwards that dummy;
+    `mpif_predefined_callback` matches on address and not on which entry point the
+    call arrived through, so the sentinel reaches MPI whether the program went via
+    `mpi_comm_create_keyval_` or `pmpi_comm_create_keyval_`. A program written
+    wholly in PMPI names therefore writes
+    `PMPI_Comm_create_keyval(MPI_COMM_DUP_FN, ...)`, mixing the prefixes in that
+    one place, which is what a program against either implementation has to write
+    and what the three `pmpi_*` tests assert.
+
+    They were built once and taken out again. What suggested them was that MPICH
+    defines `pmpi_comm_dup_fn_` and the rest -- but that is its generator emitting
+    each Fortran wrapper twice, not a requirement, and it does *not* define the
+    `mpi_f08` ones: its only `_MOD_pmpi_*` symbols are the four status converters,
+    and Open MPI has none either. The 25 procedures cost 370 lines across four
+    files and 25 entries in the recognition table, each entry a claim about an
+    address, and their only caller was the test written to justify them.
+  - **The registries are shared, deliberately.** One keyval registry, one
+    errhandler pool, one grequest pool for both copies, so that a program which
+    creates a keyval through `MPI_Comm_create_keyval` and frees it through
+    `PMPI_Comm_free_keyval` cannot tell.
+  - **What it does not carry**: the `mpi_f08` specific procedure names of
+    Table 19.1, which is its own entry under "Missing features".
+
+  The coverage is checkable in one line, and worth checking that way rather than
+  by counting: differencing the `mpi_*_` and `pmpi_*_` symbol sets of the built
+  library gives 614 against 600, with nothing in the second that is not in the
+  first, and the fourteen in the first without a twin are exactly the predefined
+  callbacks above.
+
+  `dev/check-f08-bindings.jl` holds the generated PMPI declarations to A.4 under
+  their twins' names, with the P stripped -- the appendices give no PMPI bindings,
+  so "the same binding as its twin" is the only thing there is to check, and it is
+  the thing a tools layer depends on. `test/pmpi_f.f`, `test/pmpi_f90.f90` and
+  `test/pmpi_f08.f90` call the P forms from each interface, and
+  `test/profile_f90.f90` is the one that asserts the point of the feature: it
+  replaces `mpi_comm_rank_` and `mpi_barrier_` with its own, counts the calls, and
+  reaches the real ones through PMPI. Its counter asserts in both directions --
+  one means the interception happened, exactly one means PMPI did not come back
+  through the interceptor.
 - **Nothing is silently dropped.** Replaying the generator's filters over
   `apis.json` gives 430 kept functions, 589 including `_c` variants, and
   `gen/mpif_f08_functions.F90` contains exactly those 589. Every omission is
@@ -1300,7 +1448,10 @@ declared types, `VALUE`, argument names and argument order against the appendix
 that gives them -- `gen/mpif_f08_functions.F90` against A.4, the callback abstract
 interfaces of `src/mpif_f08_types.F90` against A.1.3, and the predefined callbacks
 of `src/mpif_f08_attr_fns.F90` against A.4 -- exiting nonzero on anything it
-cannot account for. It reports no unexplained divergence today. Widening what it
+cannot account for. Five sets rather than three: the PMPI forms of the first and
+third are held to the same appendix under their twins' names, with the P stripped,
+which is the only thing the appendices can be asked about a name they do not
+carry. It reports no unexplained divergence today. Widening what it
 compares is what got it there each time: comparing types found the
 `MPI_Psend_init` count and the six `buffer_addr` declarations, which intents alone
 had passed, and comparing the hand-written declarations at all found
@@ -1378,21 +1529,19 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    still reports, above under "Missing features". Four tests, a specification that
    says exactly what is wanted, and a design question -- where the storage lives
    and how its lifetime is tied to the attribute -- that is the whole of the work.
-2. **The PMPI interface**, which does not exist at all and which `mpif.h`
-   currently promises four names it cannot link.
-3. **`i_fcoll_test`, the last two untriaged entries**, on CI's Linux runners and
+2. **`i_fcoll_test`, the last two untriaged entries**, on CI's Linux runners and
    under flang on macOS. `ci-scripts/suite/mpich-suite-xfail.txt` has the symptom.
    The macOS Open MPI case is solved and above; these two are not that, and the
    Linux one is odd in that the test passes on Ubuntu 26.04 and fails on 24.04.
    Start where the spawn eleven were solved: the "## Test output" block in the
    run's tap file.
-4. **The `ABI_Datatype_from_mpi` assert**, nine expected failures with one
+3. **The `ABI_Datatype_from_mpi` assert**, nine expected failures with one
    symptom and no diagnosis, in its own entry above. The largest single cluster
    left, and it got that way by being wrongly folded into the
    `MPI_Type_create_f90_*` entry; what is needed is to find which call hands back
    a handle that is predefined to MPICH and absent from the ABI's table. Start
    from `alltoallwf08` under a debugger, breaking on `MPIR_Assert_fail`.
-5. **Triage the two 32-bit variants**, `mpich/gcc/linux/13/i686` and the arm32v7
+4. **Triage the two 32-bit variants**, `mpich/gcc/linux/13/i686` and the arm32v7
    one, neither of which has a `triaged` line in
    `ci-scripts/suite/mpich-suite-xfail.txt` yet, so both are reported and cannot
    fail a run. The i386 one is the one to do first, since
@@ -1400,6 +1549,11 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    arm32v7 one is emulated and local-only. Do not carry either list over to the
    other: they are different 32-bit ABIs, a 64-bit type being eight-byte aligned
    on armhf and four-byte on i386.
+5. **The mpi_f08 specific procedure names**, last because it is the largest and
+   buys the least: it would let a tools layer interpose the f08 wrappers, which
+   `mpif.h` and the `mpi` module already allow, and it would flip no test either
+   way. Its own entry above says why, and why it cannot be separated from
+   assumed-rank.
 
 Two things are decided and not on this list, so that they are not picked up by
 mistake: assumed-rank choice buffers are not being taken for now, and `MPI_Sizeof`
@@ -1431,26 +1585,39 @@ way, is what is exact.
 
 | variant                          | f77 | f90 | f08 |
 |----------------------------------|-----|-----|-----|
-| mpich/gcc/darwin/15/arm64        |   3 |  11 |  18 |
-| mpich/gcc/linux/24.04/x86_64     |   3 |  12 |  19 |
-| mpich/gcc/linux/24.04/aarch64    |   4 |  11 |  20 |
-| mpich/llvm/darwin/15/arm64       |   3 |  11 |  15 |
-| mpich/llvm/linux/24.04/x86_64    |   4 |  12 |  16 |
-| mpich/llvm/linux/24.04/aarch64   |   4 |  12 |  16 |
-| openmpi/gcc/darwin/15/arm64      |   5 |   9 |  20 |
-| openmpi/gcc/linux/24.04/x86_64   |   8 |  14 |  23 |
-| openmpi/gcc/linux/24.04/aarch64  |   5 |   9 |  20 |
-| openmpi/llvm/darwin/15/arm64     |   5 |   9 |  16 |
-| openmpi/llvm/linux/24.04/x86_64  |   8 |  14 |  19 |
-| openmpi/llvm/linux/24.04/aarch64 |   5 |   9 |  16 |
+| mpich/gcc/darwin/15/arm64        |   3 |   9 |  17 |
+| mpich/gcc/linux/24.04/x86_64     |   3 |  10 |  18 |
+| mpich/gcc/linux/24.04/aarch64    |   4 |   9 |  19 |
+| mpich/llvm/darwin/15/arm64       |   3 |   9 |  14 |
+| mpich/llvm/linux/24.04/x86_64    |   4 |  10 |  15 |
+| mpich/llvm/linux/24.04/aarch64   |   4 |  10 |  15 |
+| openmpi/gcc/darwin/15/arm64      |   5 |   7 |  19 |
+| openmpi/gcc/linux/24.04/x86_64   |   8 |  12 |  22 |
+| openmpi/gcc/linux/24.04/aarch64  |   5 |   7 |  19 |
+| openmpi/llvm/darwin/15/arm64     |   5 |   7 |  15 |
+| openmpi/llvm/linux/24.04/x86_64  |   8 |  12 |  18 |
+| openmpi/llvm/linux/24.04/aarch64 |   5 |   7 |  15 |
 
-Every Open MPI f90 row is one lower than the run it comes from: `bsendf90` used
-to fail to build everywhere and now builds, and fails only on MPICH -- see
+Every row is two lower in f90 and one lower in f08 than the run it comes from,
+which is the PMPI interface arriving: `wtimef90` in both languages and
+`profile1f90` in f90 all pass now, and their entries are gone from the list. The
+first two only ever needed the names to exist. The third is the interesting one --
+it is MPICH's own profiling test, intercepting `mpi_send_` and `mpi_recv_` and
+calling `pmpi_send`/`pmpi_recv`, so it says that the mechanism works and not
+merely that the names link. Its f08 copy still fails, on a specific procedure name
+rather than on PMPI; see "The mpi_f08 specific procedure names".
+
+Measured on `mpich/gcc/darwin/26/arm64`, which reports no differences against the
+list after the change, and inferred for the other eleven: nothing about these three
+is implementation- or toolchain-specific, all three were expected to fail on `*/*`
+before, and CI is what confirms it.
+
+Every Open MPI f90 row is one lower again than the run it comes from: `bsendf90`
+used to fail to build everywhere and now builds, and fails only on MPICH -- see
 "suite tests that cannot pass against a conforming binding". That is inferred
 rather than measured, from `bsendf`, which is the same test with the same
 400-byte buffer and has always been expected to fail on MPICH alone; CI is what
-confirms it, on all four Open MPI variants at once. The MPICH rows are measured,
-`mpich/gcc/darwin/26/arm64` reporting no differences after the change.
+confirms it, on all four Open MPI variants at once.
 
 The two Open MPI x86_64 rows are the measured ones again: the eleven spawn tests
 there fail, on the abort recorded under "a spawned child is not reachable over TCP
@@ -1469,7 +1636,7 @@ variant, on one measurement. `mpich/gcc/linux/13/i686` has not been measured at
 all; the first CI run of it is the measurement. Do not carry one list to the other,
 the two being different 32-bit ABIs.
 
-Sixty-two entries cover them, for fifty-eight distinct language-and-test pairs --
+Fifty-nine entries cover them, for fifty-five distinct language-and-test pairs --
 five of them `flaky` rather than `xfail`. All but two are accounted for, each
 either by an entry here or by a reason that stands on its own; the two are
 `i_fcoll_test` on CI's Linux runners and under flang on macOS. The rows above are
@@ -1526,10 +1693,18 @@ expect some churn: a flaky entry surfaces as an unexpected pass, which is the
 mechanism working rather than failing. Three entries are already marked as seen
 on one variant only and therefore suspect.
 
-`test/`, mpif's own suite, was 32 of 32 and is now 39 of 39, `buffer_detach` and
-`op_create` being the most recent additions. Green on all twelve variants in CI up
-to `waitall_f08`; the two new ones have been run on `mpich/gcc/darwin/arm64` and
-`openmpi/gcc/darwin/arm64`, the other ten being CI's to confirm.
+`test/`, mpif's own suite, was 32 of 32 and is now 43 of 43, the four PMPI ones
+being the most recent additions -- `pmpi_f`, `pmpi_f90`, `pmpi_f08` and
+`profile_f90`. Green on all twelve variants in CI up to `op_create`; the four new
+ones have been run on `mpich/gcc/darwin/26/arm64`, the rest being CI's to confirm.
+
+Two of the four had to be written differently than first drafted, and both for
+reasons about MPI rather than about PMPI. `pmpi_f90` freed the address rather than
+the buffer -- `MPI_FREE_MEM` takes a choice buffer, so an address-kind baseptr has
+to go back through `C_F_POINTER` first, as `test/alloc_mem_cptr.f90` already did.
+And `pmpi_f08` hung: a blocking send to self is allowed to block until the
+matching receive is posted, and on MPICH it does, so the small-count case is a
+`PMPI_Sendrecv` and the nonblocking one an `PMPI_Irecv` before its `PMPI_Send`.
 
 Passing the f08 status through to C instead of converting it moved nothing, and
 was not meant to: it removes the temporary, the conversion and all 77 `loc()`

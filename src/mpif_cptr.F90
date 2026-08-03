@@ -30,6 +30,18 @@
 ! _c_cptr combination. Those three are mpif's own invention and are therefore
 ! spelled mpif_, since nothing outside the standard should claim the MPI_ prefix.
 
+! Each of the seven has a PMPI form too, MPI-5.0 section 15.2 asking for a
+! P-prefixed second procedure for every MPI procedure and MPICH's own binding
+! providing `pmpi_alloc_mem_cptr_` and the rest. The four the standard names take
+! PMPI_ names, that whole prefix being reserved to the implementation -- "programs
+! must not declare functions with names beginning with any prefix of the form
+! PMPI_" -- so nothing is claimed here that is not mpif's to claim. The three
+! mpif invented carry the `p` after the `mpif_` prefix instead, as every
+! mpif-invented PMPI name does.
+!
+! They cannot forward to their twins: each has to reach the PMPI interface rather
+! than the MPI one, which is the point of having them.
+
 module mpif_cptr
   use mpif_constants
   use mpif_functions, only: &
@@ -40,6 +52,14 @@ module mpif_cptr
        MPIF_Win_allocate_shared_c    => MPI_Win_allocate_shared_c   , &
        MPIF_Win_shared_query         => MPI_Win_shared_query        , &
        MPIF_Win_shared_query_c       => MPI_Win_shared_query_c
+  use mpif_functions, only: &
+       PMPIF_Alloc_mem               => PMPI_Alloc_mem              , &
+       PMPIF_Win_allocate            => PMPI_Win_allocate           , &
+       PMPIF_Win_allocate_c          => PMPI_Win_allocate_c         , &
+       PMPIF_Win_allocate_shared     => PMPI_Win_allocate_shared    , &
+       PMPIF_Win_allocate_shared_c   => PMPI_Win_allocate_shared_c  , &
+       PMPIF_Win_shared_query        => PMPI_Win_shared_query       , &
+       PMPIF_Win_shared_query_c      => PMPI_Win_shared_query_c
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
 
   implicit none
@@ -52,6 +72,14 @@ module mpif_cptr
   public :: mpif_win_allocate_shared_c_cptr
   public :: MPI_Win_shared_query_cptr
   public :: mpif_win_shared_query_c_cptr
+
+  public :: PMPI_Alloc_mem_cptr
+  public :: PMPI_Win_allocate_cptr
+  public :: mpif_pwin_allocate_c_cptr
+  public :: PMPI_Win_allocate_shared_cptr
+  public :: mpif_pwin_allocate_shared_c_cptr
+  public :: PMPI_Win_shared_query_cptr
+  public :: mpif_pwin_shared_query_c_cptr
 
 contains
 
@@ -140,5 +168,91 @@ contains
     call MPIF_Win_shared_query_c(win, rank, size, disp_unit, tmp_baseptr, ierror)
     baseptr = transfer(tmp_baseptr, C_NULL_PTR)
   end subroutine mpif_win_shared_query_c_cptr
+
+  subroutine PMPI_Alloc_mem_cptr(size, info, baseptr, ierror)
+    integer(MPI_ADDRESS_KIND) :: size
+    integer :: info
+    type(C_PTR) :: baseptr
+    integer :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+    call PMPIF_Alloc_mem(size, info, tmp_baseptr, ierror)
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  end subroutine PMPI_Alloc_mem_cptr
+
+  subroutine PMPI_Win_allocate_cptr(size, disp_unit, info, comm, baseptr, win, ierror)
+    integer(MPI_ADDRESS_KIND) :: size
+    integer :: disp_unit
+    integer :: info
+    integer :: comm
+    type(C_PTR) :: baseptr
+    integer :: win
+    integer :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+    call PMPIF_Win_allocate(size, disp_unit, info, comm, tmp_baseptr, win, ierror)
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  end subroutine PMPI_Win_allocate_cptr
+
+  subroutine mpif_pwin_allocate_c_cptr(size, disp_unit, info, comm, baseptr, win, ierror)
+    integer(MPI_ADDRESS_KIND) :: size
+    integer(MPI_ADDRESS_KIND) :: disp_unit
+    integer :: info
+    integer :: comm
+    type(C_PTR) :: baseptr
+    integer :: win
+    integer :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+    call PMPIF_Win_allocate_c(size, disp_unit, info, comm, tmp_baseptr, win, ierror)
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  end subroutine mpif_pwin_allocate_c_cptr
+
+  subroutine PMPI_Win_allocate_shared_cptr(size, disp_unit, info, comm, baseptr, win, ierror)
+    integer(MPI_ADDRESS_KIND) :: size
+    integer :: disp_unit
+    integer :: info
+    integer :: comm
+    type(C_PTR) :: baseptr
+    integer :: win
+    integer :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+    call PMPIF_Win_allocate_shared(size, disp_unit, info, comm, tmp_baseptr, win, ierror)
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  end subroutine PMPI_Win_allocate_shared_cptr
+
+  subroutine mpif_pwin_allocate_shared_c_cptr(size, disp_unit, info, comm, baseptr, win, ierror)
+    integer(MPI_ADDRESS_KIND) :: size
+    integer(MPI_ADDRESS_KIND) :: disp_unit
+    integer :: info
+    integer :: comm
+    type(C_PTR) :: baseptr
+    integer :: win
+    integer :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+    call PMPIF_Win_allocate_shared_c(size, disp_unit, info, comm, tmp_baseptr, win, ierror)
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  end subroutine mpif_pwin_allocate_shared_c_cptr
+
+  subroutine PMPI_Win_shared_query_cptr(win, rank, size, disp_unit, baseptr, ierror)
+    integer :: win
+    integer :: rank
+    integer(MPI_ADDRESS_KIND) :: size
+    integer :: disp_unit
+    type(C_PTR) :: baseptr
+    integer :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+    call PMPIF_Win_shared_query(win, rank, size, disp_unit, tmp_baseptr, ierror)
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  end subroutine PMPI_Win_shared_query_cptr
+
+  subroutine mpif_pwin_shared_query_c_cptr(win, rank, size, disp_unit, baseptr, ierror)
+    integer :: win
+    integer :: rank
+    integer(MPI_ADDRESS_KIND) :: size
+    integer(MPI_ADDRESS_KIND) :: disp_unit
+    type(C_PTR) :: baseptr
+    integer :: ierror
+    integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+    call PMPIF_Win_shared_query_c(win, rank, size, disp_unit, tmp_baseptr, ierror)
+    baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  end subroutine mpif_pwin_shared_query_c_cptr
 
 end module mpif_cptr
