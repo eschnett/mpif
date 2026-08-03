@@ -1035,13 +1035,20 @@ every `docker/*.dockerfile` and `scripts/macos-build.sh` all gate on it; none of
 them swallows the result any more.
 
 A variant with no `triaged` line in that file is compared and reported but
-cannot fail the run, which is how the three nobody has measured stay honest
-rather than being papered over. Only `mpich/gcc/darwin` is triaged today. The
-variant is detected rather than passed in -- Open MPI by the `ompi_info` it
-installs and MPICH by `mpiexec.hydra`, the toolchain from what mpif's own
-`mpifort` reports, the OS from `uname` -- and a component it cannot work out
-becomes `unknown`, which matches no entry, so the run is loudly wrong rather
-than quietly lenient.
+cannot fail the run, which is how a variant nobody has measured stays honest
+rather than being papered over. The variant is detected rather than passed in --
+Open MPI by the `ompi_info` it installs and MPICH by `mpiexec.hydra`, the
+toolchain from what mpif's own `mpifort` reports, the OS, its version and the
+architecture from the system -- and a component it cannot work out becomes
+`unknown`, which matches no entry, so the run is loudly wrong rather than quietly
+lenient.
+
+The key is `<mpi>/<toolchain>/<os>/<os-version>/<arch>`, and the version is in it
+because environments that agree on everything else still disagree: the Docker
+images run Ubuntu 26.04 where CI's runners run 24.04 and the two part company over
+`MPI_Dist_graph_create` and `i_fcoll_test`, and this repository's own macOS is 26
+where the runners are 15. So a local run here and a CI run no longer share a row,
+which is the point -- they were never the same environment.
 
 One check needs no build at all:
 

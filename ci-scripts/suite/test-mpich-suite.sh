@@ -39,9 +39,9 @@
 #                    Open MPI when MPIEXEC_MAXNP exceeds the available cores.
 #   MPIF_SUITE_VARIANT
 #                    which row of mpich-suite-xfail.txt applies, as
-#                    <mpi>/<toolchain>/<os>/<arch>. Detected by default and rarely
-#                    worth setting; an undetectable variant is reported and
-#                    cannot fail the run.
+#                    <mpi>/<toolchain>/<os>/<os-version>/<arch>. Detected by
+#                    default and rarely worth setting; an undetectable variant is
+#                    reported and cannot fail the run.
 #   MPIF_KEEP_TESTS  if non-empty, keep each test executable after it has run
 #                    instead of letting `runtests` delete it, and keep the work
 #                    directory too. Set this before chasing a crash: the
@@ -95,10 +95,22 @@ fi
 # Which row of the expected-failures list applies. Detected rather than passed
 # in, so that every caller gets it right without having to remember: the MPI is
 # told apart by a launcher only one of them installs, the toolchain by what mpif's
-# own wrapper reports, and the OS and architecture by uname. The architecture is
-# in the key because the two Linux runners disagree about eleven spawn tests. An undetectable component becomes "unknown", which
-# matches no entry and no `triaged` line, so the run reports and cannot fail --
-# loudly wrong rather than quietly lenient.
+# own wrapper reports, and the OS, its version and the architecture by asking the
+# system.
+#
+# Five components, `<mpi>/<toolchain>/<os>/<os-version>/<arch>`. The architecture
+# is in the key because the two Linux runners disagree about eleven spawn tests,
+# and the OS version because two environments that agree on everything else still
+# do not agree: the Docker images run Ubuntu 26.04 where CI's runners run 24.04,
+# and they differ over `MPI_Dist_graph_create` and `i_fcoll_test`.
+#
+# The version is coarse on purpose -- a distribution's VERSION_ID and macOS's major
+# version, so 24.04, 26.04, 15, 26. A finer one would churn every time a runner
+# image is refreshed, and expectations would go stale for no reason.
+#
+# An undetectable component becomes "unknown", which matches no entry and no
+# `triaged` line, so the run reports and cannot fail -- loudly wrong rather than
+# quietly lenient.
 if [[ -n ${MPIF_SUITE_VARIANT:-} ]]; then
     variant=${MPIF_SUITE_VARIANT}
 else
@@ -114,7 +126,23 @@ else
         *flang*|*Flang*) variant_toolchain=llvm ;;
         *)               variant_toolchain=unknown ;;
     esac
-    variant=${variant_mpi}/${variant_toolchain}/$(uname -s | tr '[:upper:]' '[:lower:]')/$(uname -m)
+    variant_os=$(uname -s | tr '[:upper:]' '[:lower:]')
+    case ${variant_os} in
+        darwin)
+            # The major version alone: 26 rather than 26.5.2
+            variant_osversion=$(sw_vers -productVersion 2>/dev/null | cut -d. -f1)
+            ;;
+        linux)
+            # VERSION_ID is the release, and for the distributions used here it is
+            # already the whole identity: Ubuntu's 24.04 against 26.04
+            variant_osversion=$(. /etc/os-release 2>/dev/null && echo "${VERSION_ID:-}")
+            ;;
+        *)
+            variant_osversion=
+            ;;
+    esac
+    variant_osversion=${variant_osversion:-unknown}
+    variant=${variant_mpi}/${variant_toolchain}/${variant_os}/${variant_osversion}/$(uname -m)
 fi
 
 xfail_file=${scriptdir}/mpich-suite-xfail.txt
@@ -126,8 +154,8 @@ fi
 # Whether a difference from the list may fail the run for this variant
 if awk -v variant="${variant}" '
         function matches(sel,   s, v, i) {
-            if (split(sel, s, "/") != 4 || split(variant, v, "/") != 4) return 0
-            for (i = 1; i <= 4; i++) if (s[i] != "*" && s[i] != v[i]) return 0
+            if (split(sel, s, "/") != 5 || split(variant, v, "/") != 5) return 0
+            for (i = 1; i <= 5; i++) if (s[i] != "*" && s[i] != v[i]) return 0
             return 1
         }
         { sub(/#.*/, "") }
@@ -260,8 +288,8 @@ for language in "${languages[@]}"; do
         esac
     done < <(awk -v variant="${variant}" -v lang="${language}" -v tap="${tap}" '
         function matches(sel,   s, v, i) {
-            if (split(sel, s, "/") != 4 || split(variant, v, "/") != 4) return 0
-            for (i = 1; i <= 4; i++) if (s[i] != "*" && s[i] != v[i]) return 0
+            if (split(sel, s, "/") != 5 || split(variant, v, "/") != 5) return 0
+            for (i = 1; i <= 5; i++) if (s[i] != "*" && s[i] != v[i]) return 0
             return 1
         }
         # The expected-failures list first, then the TAP file

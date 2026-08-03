@@ -69,7 +69,7 @@ Running the suite, in `suite/`:
 | file | what it does |
 |------|--------------|
 | `test-mpich-suite.sh` | download, build and run MPICH's Fortran suite against an installed mpif, then compare the result with the list below |
-| `mpich-suite-xfail.txt` | every expected failure, per variant, with the reason it is expected |
+| `mpich-suite-xfail.txt` | every expected failure, per variant, with the reason it is expected. A variant is `<mpi>/<toolchain>/<os>/<os-version>/<arch>`, detected by the runner above; the version is in the key because the images and CI's runners are different releases and disagree |
 | `mpiexec-filter.sh` | drop the launcher banner Open MPI prints on every run, which the suite would otherwise read as test output |
 
 `test-mpich-suite.sh` takes the MPI prefix and the mpif prefix. It reads
