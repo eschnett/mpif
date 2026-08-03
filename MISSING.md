@@ -312,6 +312,68 @@ Not an mpif problem: a pure C program that creates an env info before and after
 `MPI_Init` and prints both shows the same divergence, with no Fortran involved.
 Not reported upstream yet.
 
+### OpenMPI: object names where the standard asks for an empty string
+
+MPI-5.0 section 7.8 gives `MPI_WIN_GET_NAME` and `MPI_TYPE_GET_NAME` "the name
+previously stored on the *object*, or an empty string if no such name exists", and
+excepts only predefined datatypes: "Named predefined datatypes have the default
+names of the datatype name." Open MPI names two things the standard leaves
+nameless, which is six suite tests. `bug-ompi-object-names/ompi-object-names.c`
+prints both and exits nonzero on the first; it is pure C, no Fortran involved:
+
+    fresh window              MPICH len= 0 ""          Open MPI len=13 "rdma window 3"
+    fresh derived datatype    MPICH len= 0 ""          Open MPI len= 0 ""
+    dup of a named datatype   MPICH len= 0 ""          Open MPI len=17 "Dup a vector type"
+
+- **A fresh window has a name.** `MPI_Win_create` and then `MPI_Win_get_name`
+  yields `"rdma window 3"`, where nobody has called `MPI_Win_set_name`. The
+  standard is explicit, so this is a defect, and it is what `winnamef`,
+  `winnamef90` and `winnamef08` report as "Did not get empty name from new
+  window". Setting and getting a name works, so only the default is wrong.
+- **`MPI_TYPE_DUP` invents one.** Duplicating a datatype named `"a vector type"`
+  gives the duplicate the name `"Dup a vector type"` -- not a copy of the name but
+  a new one, stored by nobody. `typesnamef`, `typesnamef90` and `typesnamef08`
+  require the duplicate's name to be empty and report "(type2) Expected length 0,
+  got 17".
+
+  This half is weaker: the standard does not say whether `MPI_TYPE_DUP` carries
+  the name over, and "exactly the same properties as oldtype" could be read either
+  way. What it does say is "previously stored", and "Dup a vector type" was never
+  stored by anyone, so a synthesised name is hard to defend under either reading.
+  MPICH leaves it empty and the test codifies that; between the two, mpif can only
+  follow whichever implementation it is built against.
+
+Nothing to fix on this side either way. The window half is worth reporting
+upstream and is not yet; the dup half is worth asking about, since the standard
+could settle it in a sentence.
+
+### OpenMPI on macOS: a nonblocking collective write is lost when the aio queue fills
+
+`f08/io/i_fcoll_test` writes a 32³ integer array to a file through a
+`MPI_Type_create_darray` view with `MPI_File_iwrite_all`, reads it back with
+`MPI_File_iread_all`, and finds every element zero. Open MPI says why on the way
+past, once per process:
+
+    mca_fbtl_posix_ipwritev: error in aio_write():  Resource temporarily unavailable
+    mca_fbtl_posix_ipreadv: error in aio_read(): errno 35 Resource temporarily unavailable
+
+EAGAIN from `aio_write` means the system's asynchronous I/O queue is full, and
+macOS keeps it small -- `sysctl kern.aioprocmax` is 16 on this machine, against a
+Linux default in the tens of thousands, which is why this is a macOS entry.
+`ompi/mca/fbtl/posix/fbtl_posix_ipwritev.c` prints the message and gives up, so
+the data never reaches the file, and `MPI_Wait` reports `MPI_SUCCESS` anyway --
+silence would be bad enough, and success is worse.
+
+`bug-ompi-aio-eagain/ompi-aio-eagain.c` is the reproducer, in C on four processes:
+MPICH round-trips the array, Open MPI loses all of it. The noncontiguous view is
+the necessary part -- a contiguous one issues few enough requests to stay under the
+limit and passes -- which is why the test's `darray` is in the probe.
+
+Nothing to fix on this side. Worth reporting upstream, and not yet. It accounts
+for `i_fcoll_test` on `openmpi/*/darwin/*` only; the same test also fails on every
+Linux variant and under flang on macOS, and those are still untriaged, with the
+aio message conspicuously absent from the reason.
+
 ### OpenMPI on macOS: spawned intercommunicators hang
 
 Not an mpif problem either, and not really a blocker so much as a trap. Open MPI
@@ -415,6 +477,27 @@ alongside this one for compilers without Fortran 2018. Everything below is what
 taking it would involve, kept because the shape of the work is worth knowing and
 because the reasons could change; nothing below is a plan.
 
+The cost is two suite tests, and the suite says exactly what it is. MPICH's
+`f08/subarray` directory walks one array through fifteen cases, and the only two
+that fail are `test14` and `test15`:
+
+    test8   Send/Recv  2d array column slice iar_2d(:,2:6:2)        No Errors
+    test9   Send/Recv  2d array column slice iar_2d(1:7:3,2:6:2)    No Errors
+    test12  Isend/Irecv array slice iar(2:7)                        No Errors
+    test14  Isend/Irecv 2d column slice iar_2d(:,2:6:2)             Found 27 errors
+    test15  Isend/Irecv 2d column slice iar_2d(1:7:3,2:6:2)         Found 9 errors
+
+The pattern is the mechanism: `test8` and `test9` pass the same noncontiguous
+slices to a *blocking* call, where the compiler's copy-in/copy-out is correct;
+`test12` passes a *contiguous* slice to a nonblocking one, where no copy is made;
+`test14` and `test15` combine noncontiguous with nonblocking, and the copy dies at
+the wrapper's return, before `MPI_Wait`. 27 and 9 are the element counts of the two
+slices, so nothing arrives at all. Both tests declare the array `ASYNCHRONOUS`,
+which is the program's half of the contract, and then neither consults
+`MPI_SUBARRAYS_SUPPORTED` before relying on it -- so they cannot pass against a
+conforming `.FALSE.` implementation, and they are in
+`ci-scripts/mpich-suite-xfail.txt` with that reason rather than as untriaged.
+
 Taking the other option would mean declaring choice buffers
 `TYPE(*), DIMENSION(..), ASYNCHRONOUS` in the nonblocking, split-collective and
 persistent routines and setting both constants to `.true.`. The gain is that
@@ -499,6 +582,76 @@ Because mpif prunes the implementation's own Fortran library, its `pmpi_*`
 symbols are not available as a fallback either. Generating the PMPI names
 alongside the MPI ones should be mechanical: each would be the same wrapper under
 a second symbol, calling the same C entry point.
+
+### Fortran-set attribute values are not visible to C as a pointer
+
+An attribute set from Fortran and read from C comes back as the value where
+MPI-5.0 requires the address of it. Section 19.3.7:
+
+> MPI supports two types of attributes: address-valued (pointer) attributes, and
+> integer-valued attributes. C attribute functions put and get address-valued
+> attributes. Fortran attribute functions put and get integer-valued attributes.
+> When an integer-valued attribute is accessed from C, then `MPI_XXX_get_attr`
+> will return the address of (a pointer to) the integer-valued attribute, which
+> is a pointer to `MPI_Aint` if the attribute was stored with Fortran
+> `MPI_XXX_SET_ATTR`, and a pointer to `int` if it was stored with the deprecated
+> Fortran `MPI_ATTR_PUT`.
+
+mpif's wrapper hands MPI the value itself -- `mpi_comm_set_attr_` calls
+`MPI_Comm_set_attr(comm, keyval, (void*)*attribute_val)` -- so what MPI stores is
+an address-valued attribute whose "address" is the user's number. A conforming C
+reader then dereferences it. Of the nine cross-language cases the test suite
+enumerates, that is cases 4 and 7 -- Fortran sets, C gets -- and only those:
+
+- Fortran sets and Fortran gets is self-consistent, since `mpif_attr_value`
+  returns user-defined attributes verbatim;
+- C sets and Fortran gets is right, and for the reason the same section gives:
+  "When an address-valued attribute is accessed from Fortran, then
+  MPI_XXX_GET_ATTR will convert the address into an integer";
+- the deprecated `MPI_ATTR_PUT` form has the same defect one size down, C
+  expecting a pointer to `int`.
+
+Four suite tests fail on it, on all twelve variants: `attrlangf90` and
+`attrlangf08`, whose whole subject is the nine cases, and `fandcattrf90` and
+`fandcattrf08`, whose header says the rule out loud -- "The C attribute copy
+function should be passed a pointer to the Fortran attribute value (e.g., it
+should dereference it to check its value)". Both crash rather than report,
+`attrlangf90` in `cmpif2read_` at the `MPI_Aint` it was given to dereference:
+
+    frame #0: cmpif2read_(..., msg="F2 to c dup") at attrlangc.c:453
+    frame #1: f2toctest_ at attrlangf90.f90:747
+    stop reason = EXC_BAD_ACCESS (address=0x1b69b4be86b2915)
+
+which is the value the Fortran side stored. That is the whole diagnosis, and it
+was confirmed by a probe rather than read off the crash: Fortran sets an
+address-sized attribute, C reads it and finds the value; C sets one, Fortran reads
+it and finds the address, correctly.
+
+What a fix needs, and why it is a feature rather than a correction:
+
+- **Storage owned by mpif.** The value has to live somewhere with a stable
+  address for as long as the attribute exists, and mpif has to hand MPI that
+  address instead of the value. One `MPI_Aint` per (object, keyval) pair, not per
+  keyval: the same keyval carries a different value on every communicator.
+- **A language tag.** `MPI_XXX_GET_ATTR` from Fortran must return the value for a
+  Fortran-set attribute and the address for a C-set one, so the wrapper has to
+  know which it is looking at. The standard's own advice to implementors says as
+  much -- "This requires that attributes be tagged either as 'C' or 'Fortran'" --
+  and mpif cannot see the implementation's tag through the ABI, so it needs its
+  own record of the pairs it set.
+- **A lifetime.** The storage has to be released when the attribute is deleted or
+  the object freed, which means noticing `MPI_XXX_DELETE_ATTR`, `MPI_XXX_SET_ATTR`
+  overwriting a value, and the object's own free. mpif already keeps a keyval
+  registry for the attribute callbacks in `src/mpif_callbacks.c`, so there is
+  somewhere for this to go, but the key is wider and the frees are new.
+- **The copy callbacks.** `MPI_COMM_DUP` invokes the copy callback for each
+  attribute, and a C callback on a Fortran-set attribute is passed the same
+  pointer, so a duplicated attribute needs storage of its own. `fandcattrf90`
+  tests exactly this.
+
+There is no test in `test/` for it, deliberately: a test asserting what mpif
+cannot do yet would be a failing test rather than an assertion, and the four suite
+tests above already state the requirement. Write one with the fix.
 
 ### `bind(C)`
 
@@ -973,22 +1126,29 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
 
 ### Worth doing next, roughly in order
 
-1. **The PMPI interface**, which does not exist at all and which `mpif.h`
+1. **Fortran-set attribute values as C sees them**, the one mpif defect the suite
+   still reports, above under "Missing features". Four tests, a specification that
+   says exactly what is wanted, and a design question -- where the storage lives
+   and how its lifetime is tied to the attribute -- that is the whole of the work.
+2. **The PMPI interface**, which does not exist at all and which `mpif.h`
    currently promises four names it cannot link.
-2. **Triaging the 24 suite failures still untriaged.**
-   `ci-scripts/mpich-suite-xfail.txt` names each with its symptom. What is left
-   is: eleven Open MPI spawn tests that print "No Errors" and are rejected anyway
-   on x86_64 alone, three reporting an empty window name and three a type name of
-   the wrong length under Open MPI, `attrlangf*` and `fandcattrf*` (no output of
-   their own, a crash under Open MPI), `test14`/`test15`, and `i_fcoll_test`.
+3. **Triaging the 12 suite failures still untriaged.**
+   `ci-scripts/mpich-suite-xfail.txt` names each with its symptom. What is left is
+   the eleven Open MPI spawn tests that print "No Errors" on x86_64 and are
+   rejected anyway, and `i_fcoll_test` on Linux and under flang. For the spawn
+   eleven the mechanism is known -- `runtests` fails a test for *any* unexpected
+   output line, even beside "No Errors" -- and the missing datum is which line,
+   which every CI run records in its tap file and nobody has copied out.
 
 Two things are decided and not on this list, so that they are not picked up by
 mistake: assumed-rank choice buffers are not being taken for now, and `MPI_Sizeof`
 stays as it is, covering rank zero and rank one. Both are recorded where they
 belong -- the first in its own section, the second under "Verified as correct".
 
-One thing is worth reporting upstream and is not yet: Open MPI's
-`MPI_Info_create_env` changing across `MPI_Init`.
+Three things are worth reporting upstream and are not yet, all Open MPI: the
+`MPI_Info_create_env` divergence across `MPI_Init`, the name on a fresh window,
+and the lost nonblocking collective write on macOS. Two have reproducers in
+`bug-ompi-*/` already.
 
 ### Suite baseline
 
@@ -1029,10 +1189,19 @@ confirms it, on all four Open MPI variants at once. The MPICH rows are measured,
 `mpich/gcc/darwin/arm64` reporting no differences after the change.
 
 Fifty-nine entries cover them, for fifty-seven distinct language-and-test pairs
--- five of them `flaky` rather than `xfail`. Thirty-three are accounted for, each
-either by an entry here or by a reason that stands on its own, and twenty-six
-covering twenty-four pairs still say "untriaged". The passes through them have
-resolved two into mpif bugs and two into MPICH ones. The earlier version of this section had four rows and
+-- five of them `flaky` rather than `xfail`. Forty-six are accounted for, each
+either by an entry here or by a reason that stands on its own, and thirteen
+covering twelve pairs still say "untriaged": eleven Open MPI spawn tests on x86_64
+and two thirds of `i_fcoll_test`.
+
+The passes through them have resolved three into mpif bugs, two into MPICH ones,
+three into Open MPI ones and two into a decision. The most recent pass took
+twenty-four untriaged pairs down to twelve, and every one it resolved came from
+running the test rather than reading it: the four attribute tests turned out to
+crash in a C frame that names the defect, `test14` and `test15` sit in a directory
+whose thirteen passing neighbours say what the mechanism is, and the two Open MPI
+name cases and the aio one reproduce in C in a dozen lines. The earlier version of
+this section had four rows and
 claimed every failure was attributable, both of which were wrong: MPICH looked
 far worse than Open MPI only because those rows predated the handle-table patch,
 and most of the failures had never been diagnosed.

@@ -8,3 +8,5 @@ build*/
 /doc/mpi*-report.pdf
 /bug-mpich-7916/mpich-abi-attr-bug
 /bug-ompi-info-value/ompi-empty-info-value
+/bug-ompi-object-names/ompi-object-names
+/bug-ompi-aio-eagain/ompi-aio-eagain
