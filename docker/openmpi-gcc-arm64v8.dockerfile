@@ -37,6 +37,14 @@ RUN <<EOF
         patch
         perl
         python3
+        # PMIx, which Open MPI bundles, warns on every launch when it cannot
+        # find a compression library -- and `runtests` counts anything the
+        # launcher says as test output, so without this every suite test fails
+        # with "Unexpected output". ci-scripts/suite/mpiexec-filter.sh drops only
+        # Open MPI's own unavoidable banner, deliberately, so the fix belongs
+        # here. The CI runners have zlib already, which is why this shows up in
+        # the images alone.
+        zlib1g-dev
     )
     apt-get --yes --no-install-recommends install "${packages[@]}"
 EOF
