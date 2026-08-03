@@ -41,10 +41,16 @@ export MPICH_TESTS_DIR=${MPICH_TESTS_DIR:-${repodir}/mpi/tests-${variant}}
 # Not an mpif problem: a pure C program that spawns and then sends across the
 # intercommunicator hangs the same way, with no Fortran involved.
 #
-# The CI step does the same, guarded on RUNNER_OS -- Linux needs neither the
-# flag nor the interface name, its loopback being lo rather than lo0.
+# --mca btl_base_warn_peer_error 0: Open MPI warns when a TCP connect to a peer
+# fails, and on GitHub's x86_64 Linux runners it cannot reach a *spawned* child
+# that way -- harmlessly, since the tests print "No Errors" and every non-spawn
+# test is unaffected, but `runtests` fails a test for any unexpected output. Not
+# needed on macOS with the flag above; passed here so that the three places that
+# run the suite pass the same thing.
+#
+# The CI step does the same, with lo instead of lo0 on Linux.
 if [[ ${mpi} == openmpi ]]; then
-    export MPIEXEC_ARGS="${MPIEXEC_ARGS:---oversubscribe --mca btl_tcp_if_include lo0}"
+    export MPIEXEC_ARGS="${MPIEXEC_ARGS:---oversubscribe --mca btl_tcp_if_include lo0 --mca btl_base_warn_peer_error 0}"
 fi
 
 exec "${repodir}/ci-scripts/suite/test-mpich-suite.sh" "${mpi_prefix}" "${mpif_prefix}"

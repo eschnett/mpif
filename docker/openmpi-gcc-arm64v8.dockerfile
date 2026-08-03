@@ -148,6 +148,6 @@ RUN <<EOF
     # another one and then warns that it cannot reach a spawned child over it,
     # and `runtests` counts the warning as test output. See the same flag in
     # .github/workflows/ci.yaml.
-    export MPIEXEC_ARGS="--oversubscribe --allow-run-as-root --mca btl_tcp_if_include lo"
+    export MPIEXEC_ARGS="--oversubscribe --allow-run-as-root --mca btl_tcp_if_include lo --mca btl_base_warn_peer_error 0"
     ci-scripts/suite/test-mpich-suite.sh ${mpi_prefix} ${mpif_prefix}
 EOF

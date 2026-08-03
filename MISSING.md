@@ -389,26 +389,48 @@ takes a non-loopback one and then fails on it:
   intercommunicator, and each one then burns runtests' 180-second timeout rather
   than failing, so the suite looks stuck rather than broken. A pure C
   spawn-and-send reproduces it.
-- **Linux on GitHub's x86_64 runners**: those images have Docker installed, hence
-  a `docker0` bridge at 172.17.0.1, and a spawned child cannot be reached over it:
+- **Linux on GitHub's x86_64 runners**: it picked the `docker0` bridge those
+  images have, at 172.17.0.1, which is not an interface anything here wants.
 
-      WARNING: Open MPI failed to TCP connect to a peer MPI process.  This
-      should not happen.
-      Your Open MPI job may now hang or fail.
-        Message:    connect() to 172.17.0.1:1026 failed
+`--mca btl_tcp_if_include lo0` on macOS and `lo` on Linux settles that half, and is
+passed in all three places that run the suite: the CI step,
+`scripts/macos-test-mpich-suite.sh` and each `docker/openmpi-*.dockerfile`.
 
-  Nothing hangs and nothing is wrong with the tests -- each of the eleven prints
-  "No Errors" -- but `runtests` fails a test for *any* output it did not expect,
-  even beside "No Errors", so the warning alone failed them. The arm64 runners have
-  no Docker, no `docker0` and no warning, which is why this looked like an
-  architecture difference and sat under `openmpi/*/*/x86_64` as untriaged.
+### OpenMPI: a spawned child is not reachable over TCP on the x86_64 runners
 
-`--mca btl_tcp_if_include lo0` on macOS and `lo` on Linux is the whole cure, and
-it is now passed in all three places that run the suite: the CI step,
-`scripts/macos-test-mpich-suite.sh` and each `docker/openmpi-*.dockerfile`. The
-eleven entries are gone from `ci-scripts/suite/mpich-suite-xfail.txt`, which is a
-prediction CI checks: if the flag does not take, they come back as unexpected
-failures rather than staying quietly excused.
+Which is the other half, and what actually failed the eleven Open MPI spawn tests
+that spent months attributed to the architecture. Open MPI says:
+
+    WARNING: Open MPI failed to TCP connect to a peer MPI process.  This
+    should not happen.
+    Your Open MPI job may now hang or fail.
+      Message:    connect() to 127.0.0.1:1025 failed
+
+It neither hangs nor fails. All eleven print "No Errors", and every non-spawn test
+behaves exactly as it does on the arm64 runners -- subtract the eleven and the two
+x86_64 rows equal their aarch64 twins, 5 / 9 / 20 under gcc and 5 / 9 / 16 under
+llvm. What failed them is that `runtests` rejects a test for *any* output it did
+not expect, even beside "No Errors".
+
+The interface was a red herring, and worth recording as one: with `docker0` in
+play the warning named 172.17.0.1 and looked like a bridge problem, so the
+loopback flag above was expected to cure it. It did not -- the same warning came
+back naming 127.0.0.1, which is to say the spawned child is not listening where
+the parent looks, whatever interface is on offer. Why only the x86_64 runners is
+not established; the arm64 ones, with the same Open MPI built from the same
+commit, never warn.
+
+So the fix is to stop the warning rather than the connect:
+`--mca btl_base_warn_peer_error 0`, Open MPI's own knob for it -- "turn on warning
+messages when peers disconnect unexpectedly", a debugging aid that is on by
+default. It is passed in the same three places. Turning it off cannot hide a broken
+test: a connect failure that mattered would fail the test on its own output, which
+is what the suite compares.
+
+The eleven entries are gone from `ci-scripts/suite/mpich-suite-xfail.txt` rather
+than given a reason, which makes each run a check on this: if the warning is not
+what failed them, they come back as unexpected failures instead of staying quietly
+excused.
 
 The arithmetic that says the diagnosis is right: subtracting the eleven leaves the
 two Open MPI x86_64 rows in the baseline below identical to their aarch64 twins,
@@ -1256,9 +1278,11 @@ confirms it, on all four Open MPI variants at once. The MPICH rows are measured,
 `mpich/gcc/darwin/26/arm64` reporting no differences after the change.
 
 The two Open MPI x86_64 rows are likewise ahead of the run they come from, by the
-eleven spawn tests that the loopback flag should remove -- see "left to itself it
-picks an interface it cannot use". That is what makes them equal to their aarch64
-twins, and CI is what confirms it.
+eleven spawn tests that a launcher warning was failing -- see "a spawned child is
+not reachable over TCP on the x86_64 runners". That is what makes them equal to
+their aarch64 twins, and CI is what confirms it. It has already refuted one
+attempt: the first guess was that the `docker0` bridge was to blame, and keeping
+Open MPI on loopback moved the warning to 127.0.0.1 rather than removing it.
 
 Fifty-four entries cover them, for fifty-two distinct language-and-test pairs --
 five of them `flaky` rather than `xfail`. All but two are accounted for, each
@@ -1288,10 +1312,10 @@ Three things the twelve-way measurement settled that guesswork had got wrong:
   there. Eleven Open MPI spawn tests failed on `linux/x86_64` and passed on
   `linux/aarch64`, and two MPICH tests differ the other way; keyed on
   `mpi/toolchain/os` alone, each set would read as an unexpected pass on whichever
-  runner ran second. The spawn eleven turned out to be about a `docker0` bridge
-  that one runner image has and the other does not, so read the component as "a
-  different environment" and not as a claim about the ISA. The two MPICH tests
-  keep it in the key.
+  runner ran second. The spawn eleven turned out not to be about the ISA at all --
+  a warning the x86_64 runners produce and the arm64 ones do not, for reasons not
+  established -- so read the component as "a different environment" rather than as
+  a claim about the instruction set. The two MPICH tests keep it in the key.
 - **`alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08` and `vw_inplacef08`
   are a gcc problem, not an MPICH one.** They fail under gcc on *both*
   implementations and pass under llvm on both, so the selector is `*/gcc/*/*`.

@@ -294,25 +294,14 @@ jobs:
           # fewer cores than the suite asks processes for
           if [[ ${{ matrix.mpi }} == openmpi ]]; then
               args=--oversubscribe
-              # Keep Open MPI on the loopback interface. Everything here runs on
-              # one host, and left to itself Open MPI picks a non-loopback
-              # interface and then cannot use it, in a different way on each OS:
-              #
-              #   macOS      "setsockopt(TCP_NODELAY) failed: Invalid argument
-              #              (22)", and its own warning that this "may end up
-              #              hanging" -- which it does, in every test that
-              #              communicates across a spawned intercommunicator,
-              #              each then burning runtests' 180-second timeout.
-              #
-              #   Linux      on the x86_64 runners, which have Docker installed
-              #              and so a docker0 bridge at 172.17.0.1, a spawned
-              #              child cannot be reached over it: "WARNING: Open MPI
-              #              failed to TCP connect to a peer MPI process ...
-              #              connect() to 172.17.0.1:1026 failed". The tests
-              #              themselves still print "No Errors"; they fail
-              #              because `runtests` counts the warning as output. The
-              #              arm64 runners have no Docker, no docker0 and no
-              #              warning, which is why this looked architectural.
+              # Keep Open MPI on the loopback interface: everything here runs on
+              # one host, so no other interface is wanted, and left to itself it
+              # picks one it cannot use. On macOS that is fatal --
+              # "setsockopt(TCP_NODELAY) failed: Invalid argument (22)" and its own
+              # warning that this "may end up hanging", which it does, in every
+              # test that communicates across a spawned intercommunicator, each
+              # then burning runtests' 180-second timeout. On Linux's x86_64
+              # runners it picked the docker0 bridge those images have.
               #
               # The interface is lo0 on macOS and lo on Linux. See
               # scripts/macos-test-mpich-suite.sh, which does the same locally.
@@ -321,6 +310,25 @@ jobs:
               else
                   args="${args} --mca btl_tcp_if_include lo"
               fi
+              # And do not warn when a TCP connect to a peer fails. On the x86_64
+              # runners Open MPI cannot reach a *spawned* child over TCP, on
+              # loopback as much as over docker0, and says so:
+              #
+              #     WARNING: Open MPI failed to TCP connect to a peer MPI process.
+              #     Your Open MPI job may now hang or fail.
+              #       Message:    connect() to 127.0.0.1:1025 failed
+              #
+              # It neither hangs nor fails: all eleven spawn tests print
+              # "No Errors", and every non-spawn test behaves exactly as on the
+              # arm64 runners, which do not warn at all. But `runtests` fails a
+              # test for any output it did not expect, even beside "No Errors", so
+              # the warning alone failed them. Open MPI's own knob for it is
+              # `btl_base_warn_peer_error`, whose description is "turn on warning
+              # messages when peers disconnect unexpectedly" -- a debugging aid,
+              # on by default. Turning it off does not hide a broken test: a
+              # connect failure that mattered would fail the test on its own
+              # output.
+              args="${args} --mca btl_base_warn_peer_error 0"
               export MPIEXEC_ARGS="${args}"
           fi
           ci-scripts/suite/test-mpich-suite.sh "${MPI_PREFIX}" "${MPIF_PREFIX}"

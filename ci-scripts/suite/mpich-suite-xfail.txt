@@ -44,9 +44,9 @@
 # Both of the last two are in the key because environments that agree on
 # everything else still disagree -- and not always over the thing the component
 # names. The architecture went in for eleven Open MPI spawn tests that failed on
-# x86_64 and passed on aarch64, which turned out to be about a docker0 bridge one
-# runner image has and the other does not; two MPICH tests differ the other way
-# and keep it there. The OS version went in for the Docker images, which run
+# x86_64 and passed on aarch64, which turned out to be a launcher warning the
+# x86_64 runners produce and the arm64 ones do not, for reasons not established;
+# two MPICH tests differ the other way and keep it there. The OS version went in for the Docker images, which run
 # Ubuntu 26.04 where CI's runners run 24.04 and part company over
 # MPI_Dist_graph_create and i_fcoll_test, and because this repository's own macOS
 # is 26 where the runners are 15. Read either component as "a different
@@ -154,14 +154,15 @@ xfail */*/*/*/*                f90  wtimef90           # no PMPI: "Function 'pmp
 # macOS with Open MPI has a cause, and it is above.
 #
 # The eleven Open MPI spawn tests that used to be here were not a defect at all.
-# They printed "No Errors" and were rejected on a warning that Open MPI added to
-# their output -- it could not reach a spawned child over the docker0 bridge that
-# GitHub's x86_64 runners have and its arm64 runners do not. Keeping Open MPI on
-# the loopback interface removes it; see .github/workflows/ci.yaml. Worth
-# remembering as the shape of the thing: `runtests` fails a test for *any*
-# unexpected output line, even beside "No Errors", so a launcher that says
-# anything at all fails everything. The output is quoted in each run's tap file
-# under "## Test output", which is where to look first.
+# They printed "No Errors" and were rejected on a warning Open MPI added to their
+# output: it cannot TCP connect to a spawned child on GitHub's x86_64 runners, and
+# says so without anything going wrong. `--mca btl_base_warn_peer_error 0` stops
+# it; see .github/workflows/ci.yaml and MISSING.md. Worth remembering as the shape
+# of the thing: `runtests` fails a test for *any* unexpected output line, even
+# beside "No Errors", so a launcher that says anything at all fails everything. The
+# output is quoted in each run's tap file under "## Test output", which is where to
+# look first -- it is what solved these, after a first guess at the interface was
+# refuted by a CI run.
 #
 xfail */*/linux/24.04/*        f08  i_fcoll_test       # untriaged: fails on CI's 24.04 runners, cause unknown; it passes on 26.04, and the macOS cause above does not apply
 xfail mpich/llvm/darwin/*/*    f08  i_fcoll_test       # untriaged: fails under flang and passes under gfortran on the same MPI, which is the odd part
