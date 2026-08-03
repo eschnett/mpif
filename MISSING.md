@@ -786,31 +786,33 @@ One thing is worth reporting upstream and is not yet: Open MPI's
 
 ### Suite baseline
 
-All twelve variants, from one CI run, as failures out of 104 f77, 122 f90 and
-136 f08 tests. `ci-scripts/mpich-suite-xfail.txt` is the authority: it names
+All twelve variants, from the CI run of `baa7f65`, as failures out of 104 f77,
+122 f90 and 136 f08 tests. `ci-scripts/mpich-suite-xfail.txt` is the authority: it names
 every one of these with its reason, and the suite run fails on any difference
 from it. The table is for telling a change from the background noise at a
 glance.
 
-Only the mpich/gcc/darwin/arm64 row is measured since `MPI_WIN_NULL_COPY_FN`
-stopped writing `attribute_val_out`; the other eleven predate it and each drops
-one failure per language, `winattrf`, `winattrf90` and `winattrf08` having failed
-everywhere. The next CI run settles them.
+The MPICH rows wobble by one or two between runs, because the five `flaky`
+entries in the list are genuinely nondeterministic -- in the run these numbers
+come from, `typecntsf` failed on `mpich/gcc/linux/aarch64` and passed on
+`mpich/gcc/linux/x86_64`, while `typecntsf90` did the opposite. Read the MPICH
+rows as approximate to that extent; the list, which excuses those five either
+way, is what is exact.
 
 | variant                      | f77 | f90 | f08 |
 |------------------------------|-----|-----|-----|
 | mpich/gcc/darwin/arm64       |   3 |  11 |  18 |
-| mpich/gcc/linux/x86_64       |   5 |  12 |  20 |
-| mpich/gcc/linux/aarch64      |   5 |  12 |  20 |
-| mpich/llvm/darwin/arm64      |   4 |  12 |  16 |
-| mpich/llvm/linux/x86_64      |   5 |  13 |  16 |
-| mpich/llvm/linux/aarch64     |   4 |  13 |  16 |
-| openmpi/gcc/darwin/arm64     |   6 |  11 |  21 |
-| openmpi/gcc/linux/x86_64     |   9 |  16 |  24 |
-| openmpi/gcc/linux/aarch64    |   6 |  11 |  21 |
-| openmpi/llvm/darwin/arm64    |   6 |  11 |  17 |
-| openmpi/llvm/linux/x86_64    |   9 |  16 |  20 |
-| openmpi/llvm/linux/aarch64   |   6 |  11 |  17 |
+| mpich/gcc/linux/x86_64       |   3 |  12 |  19 |
+| mpich/gcc/linux/aarch64      |   4 |  11 |  20 |
+| mpich/llvm/darwin/arm64      |   3 |  11 |  15 |
+| mpich/llvm/linux/x86_64      |   4 |  12 |  16 |
+| mpich/llvm/linux/aarch64     |   4 |  12 |  16 |
+| openmpi/gcc/darwin/arm64     |   5 |  10 |  20 |
+| openmpi/gcc/linux/x86_64     |   8 |  15 |  23 |
+| openmpi/gcc/linux/aarch64    |   5 |  10 |  20 |
+| openmpi/llvm/darwin/arm64    |   5 |  10 |  16 |
+| openmpi/llvm/linux/x86_64    |   8 |  15 |  19 |
+| openmpi/llvm/linux/aarch64   |   5 |  10 |  16 |
 
 Fifty-nine entries cover them, for fifty-six distinct tests -- five of them
 `flaky` rather than `xfail`. Twenty-seven entries, covering twenty-two tests,
