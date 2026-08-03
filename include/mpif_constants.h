@@ -9,9 +9,17 @@
       integer, parameter :: MPIF_PATCH          = 0
 
       integer :: MPIF_DUMMY
+!     MPI_Aint is intptr_t in the standard ABI, so this follows the pointer.
       integer, parameter :: MPI_ADDRESS_KIND    = kind(loc(MPIF_DUMMY))
-      integer, parameter :: MPI_OFFSET_KIND     = MPI_ADDRESS_KIND
-      integer, parameter :: MPI_COUNT_KIND      = MPI_ADDRESS_KIND
+!     MPI_Offset and MPI_Count are int64_t there whatever a pointer is --
+!     `#define MPI_ABI_Offset int64_t` and `#define MPI_ABI_Count
+!     MPI_ABI_Offset` -- so these two are eight bytes on a 32-bit platform as
+!     well, where MPI_ADDRESS_KIND is four. Defining them as MPI_ADDRESS_KIND
+!     was right only by coincidence, and only where a pointer is 64 bits.
+!     selected_int_kind(18) is that kind: 18 decimal digits fit in 64 bits
+!     and not in 32.
+      integer, parameter :: MPI_OFFSET_KIND     = selected_int_kind(18)
+      integer, parameter :: MPI_COUNT_KIND      = MPI_OFFSET_KIND
       integer, parameter :: MPI_INTEGER_KIND    = kind(0)
 
 !     Fortran Support

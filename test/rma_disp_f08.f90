@@ -26,6 +26,16 @@ program rma_disp_f08
   buf = 0
   call MPI_Win_create(buf, winsize, disp_unit, MPI_INFO_NULL, MPI_COMM_SELF, win)
 
+  ! `disp_unit` is the other direction: a plain INTEGER in the small form and an
+  ! MPI_Aint in the large one, so MPI_Win_create's two specifics differ in kind
+  ! only where those two differ -- on a 64-bit platform and not on a 32-bit one,
+  ! where an MPI_Aint *is* a default INTEGER. An address-kind actual therefore has
+  ! to be accepted either way: through the generic where it exists, and through
+  ! the small specific where the two kinds are the same kind.
+  call MPI_Win_free(win)
+  call MPI_Win_create(buf, winsize, int(disp_unit, MPI_ADDRESS_KIND), &
+                      MPI_INFO_NULL, MPI_COMM_SELF, win)
+
   ! Write each element through the window at its own displacement
   call MPI_Win_fence(0, win)
   do i = 1, n
@@ -54,11 +64,16 @@ program rma_disp_f08
   end do
   print '("MPI_Get with an address-kind target_disp: ok")'
 
-  ! A displacement too large for a default INTEGER still has to be expressible,
-  ! which is the point of the address kind. Not used in a call -- the window is
-  ! small -- but it must at least fit and survive assignment.
-  target_disp = 3000000000_MPI_ADDRESS_KIND
-  if (target_disp /= 3000000000_MPI_ADDRESS_KIND) stop 3
+  ! A displacement has to span whatever range an address does here, which is the
+  ! point of the address kind: never narrower than a default INTEGER, and wider
+  ! wherever a pointer is, MPI_Aint being intptr_t in the ABI. Asserted against
+  ! huge() rather than against a literal such as 3000000000, which is what this
+  ! used to do and which is a compile error on a 32-bit platform -- there the two
+  ! kinds coincide and there is no larger value to write down. Not used in a call
+  ! -- the window is small -- but it must at least fit and survive assignment.
+  if (huge(target_disp) < huge(0)) stop 3
+  target_disp = huge(target_disp)
+  if (target_disp /= huge(target_disp)) stop 4
 
   call MPI_Win_free(win)
 

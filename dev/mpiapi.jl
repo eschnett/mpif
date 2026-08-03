@@ -1544,23 +1544,59 @@ for key in sort(collect(keys(apis)))
             push!(f08_implementations_useonly, "    $f08_name_f => $f08_name, &")
         end
         push!(f08_implementations_public, "  public :: $f08_name")
-        # Only overload when Fortran can actually tell the two apart. A POLY kind
-        # that goes from default INTEGER to an address- or count-sized one does
-        # that; one that goes from MPI_ADDRESS_KIND to MPI_COUNT_KIND does not,
-        # because mpif defines MPI_COUNT_KIND as MPI_ADDRESS_KIND, leaving the
-        # large form with a signature identical to the small one. MPI_Type_get_extent
-        # and MPI_Type_create_resized are of that sort, and declaring a generic
-        # over them is rejected: "Ambiguous interfaces in generic interface".
-        # MPICH's generator applies the same test, comparing the two kinds' sizes.
+        # Only overload when Fortran can actually tell the two apart, which is a
+        # question about kinds and therefore about the platform. MPICH's
+        # generator applies the same test, comparing the two kinds' sizes; it
+        # runs at build time and can simply look, where `gen/` is one committed
+        # file compiled everywhere, so what cannot be settled here is emitted
+        # under a preprocessor guard instead.
         #
-        # This also excludes the two the standard exempts by name, MPI_Op_create
-        # and MPI_Register_datarep, whose only POLY parameter is the callback:
-        # "interface polymorphism cannot be used to differentiate between the two
-        # different user callback prototypes despite their different type
-        # signatures".
-        if embiggen && any(p -> p["kind"] ∈ [int_aint_kinds; int_count_kinds], parameters)
-            @assert name ∉ f08_explicit_large_count
-            push!(f08_large_count_pairs, name)
+        # A POLY kind that goes from default INTEGER to a count settles it: the
+        # ABI's MPI_Count is int64_t whatever a pointer is. The other two kinds
+        # of widening depend on the platform, and in opposite directions:
+        #
+        # - default INTEGER to MPI_Aint distinguishes the two only where
+        #   MPI_Aint is wider than a default INTEGER, so on a 64-bit platform
+        #   and not on a 32-bit one. This is `disp_unit` of MPI_Win_create,
+        #   MPI_Win_allocate, MPI_Win_allocate_shared and MPI_Win_shared_query,
+        #   whose only POLY parameter it is.
+        # - MPI_Aint to MPI_Count distinguishes them only where MPI_Aint is
+        #   narrower than MPI_Count, so on a 32-bit platform and not on a
+        #   64-bit one. This is the extents of MPI_Type_get_extent,
+        #   MPI_Type_get_true_extent, MPI_Type_create_resized and
+        #   MPI_File_get_type_extent.
+        #
+        # A pointer being four bytes or eight, exactly one of those two holds on
+        # any given platform, and a generic declared where it does not is
+        # rejected: "Ambiguous interfaces in generic interface". A routine with
+        # widenings of both sorts needs no guard, since one or the other always
+        # holds.
+        if embiggen
+            kinds = [p["kind"] for p in parameters]
+            widens_int_to_count = any(k -> k ∈ int_count_kinds, kinds)
+            widens_int_to_aint = any(k -> k ∈ int_aint_kinds, kinds)
+            widens_aint_to_count = any(k -> k ∈ aint_count_kinds, kinds)
+            guard = if widens_int_to_count || (widens_int_to_aint && widens_aint_to_count)
+                ""
+            elseif widens_int_to_aint
+                "MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND"
+            elseif widens_aint_to_count
+                "MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND"
+            else
+                nothing
+            end
+            if guard ≡ nothing
+                # No parameter widens at all, so nothing could tell the two
+                # apart on any platform. That is exactly the two the standard
+                # exempts by name, MPI_Op_create and MPI_Register_datarep, whose
+                # only POLY parameter is the callback: "interface polymorphism
+                # cannot be used to differentiate between the two different user
+                # callback prototypes despite their different type signatures".
+                @assert name ∈ f08_explicit_large_count
+            else
+                @assert name ∉ f08_explicit_large_count
+                push!(f08_large_count_pairs, (name, guard))
+            end
         end
 
         push!(f08_implementations_body, "  $f_unit $f08_name( &")
@@ -1671,16 +1707,20 @@ append!(f08_implementations_body,
 
 # One generic per base name, gathering the small-count procedure and its
 # large-count companion. Naming the generic after one of its own specifics is
-# what the standard's own interface blocks do, and the two are distinguishable
-# because a default INTEGER count and an INTEGER(KIND=MPI_COUNT_KIND) one are
-# different kinds.
-for name in sort(f08_large_count_pairs)
+# what the standard's own interface blocks do. A non-empty guard is a routine
+# whose two specifics differ in kind only on some platforms; CMakeLists.txt
+# defines the macro when they do, by compiling the ambiguity itself. Without the
+# generic the base name is the small-count specific alone, which is all a
+# program on that platform could pass anyway.
+for (name, guard) in sort(f08_large_count_pairs)
+    isempty(guard) || push!(f08_generic_interfaces, "#ifdef $guard")
     append!(f08_generic_interfaces,
             ["  interface $name",
              "     procedure $name",
              "     procedure $(name)_c",
-             "  end interface $name",
-             ""])
+             "  end interface $name"])
+    isempty(guard) || push!(f08_generic_interfaces, "#endif")
+    push!(f08_generic_interfaces, "")
 end
 
 append!(f08_raw_interfaces,

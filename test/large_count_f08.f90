@@ -18,6 +18,7 @@ program large_count_f08
   integer :: sbuf(n), rbuf(n), i, small_count
   integer(MPI_COUNT_KIND) :: big_count
   integer(MPI_COUNT_KIND) :: got_count
+  integer(MPI_COUNT_KIND) :: big_lb, big_extent
   type(MPI_Status) :: status
   type(MPI_Datatype) :: dt
 
@@ -57,6 +58,18 @@ program large_count_f08
   call MPI_Type_commit(dt)
   call MPI_Type_free(dt)
   print '("MPI_Type_contiguous with a count-kind count: ok")'
+
+  ! MPI_Type_get_extent's extents are MPI_Aint in the small form and MPI_Count in
+  ! the large one, so its two specifics differ in kind only where those two types
+  ! do -- on a 32-bit platform and not on a 64-bit one, MPI_Aint being intptr_t
+  ! and MPI_Count int64_t. Count-kind extents have to be accepted either way:
+  ! through the generic where it exists, and through the small specific where the
+  ! two kinds are the same kind. See "MPI_Count is int64_t where MPI_Aint is a
+  ! pointer" in MISSING.md; before that, this line did not compile on 32 bits.
+  call MPI_Type_get_extent(MPI_INTEGER, big_lb, big_extent)
+  if (big_lb /= 0) stop 4
+  if (big_extent /= 4) stop 5
+  print '("MPI_Type_get_extent with count-kind extents: ok")'
 
   print '("large_count_f08: all ok")'
 

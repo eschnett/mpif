@@ -90,6 +90,69 @@ if(Fortran_flag_cray_pointer)
 endif()
 list(JOIN MPIF_Fortran_FLAGS_LIST " " MPIF_Fortran_FLAGS_STR)
 
+# In the MPI standard ABI, MPI_Aint is intptr_t while MPI_Count and MPI_Offset
+# are int64_t, so MPI_ADDRESS_KIND is 4 where MPI_COUNT_KIND is 8 on a 32-bit
+# platform and both are 8 on a 64-bit one. mpi_f08 overloads a small-count
+# routine with its `_c` companion under the base name, and that is legal only
+# where some argument's kind differs between the two -- which for eight routines
+# is exactly this question, in one direction or the other. `gen/` is one
+# committed file compiled on both, so it asks here rather than at generation
+# time; see the guards in dev/mpiapi.jl.
+#
+# Each probe is the ambiguity itself: a generic over two specifics differing
+# only in the kind of one argument, which compiles if and only if the two kinds
+# differ. `loc` needs the same flags the library is built with.
+set(saved_CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS}")
+set(CMAKE_REQUIRED_FLAGS "${MPIF_Fortran_FLAGS_STR}")
+check_fortran_source_compiles(
+  "
+  module probe
+    implicit none
+    integer :: dummy
+    integer, parameter :: address_kind = kind(loc(dummy))
+    interface generic
+       module procedure specific_integer
+       module procedure specific_address
+    end interface generic
+  contains
+    subroutine specific_integer(n)
+      integer :: n
+    end subroutine specific_integer
+    subroutine specific_address(n)
+      integer(address_kind) :: n
+    end subroutine specific_address
+  end module probe
+  end
+  "
+  MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+  SRC_EXT f90
+)
+check_fortran_source_compiles(
+  "
+  module probe
+    implicit none
+    integer :: dummy
+    integer, parameter :: address_kind = kind(loc(dummy))
+    integer, parameter :: count_kind = selected_int_kind(18)
+    interface generic
+       module procedure specific_address
+       module procedure specific_count
+    end interface generic
+  contains
+    subroutine specific_address(n)
+      integer(address_kind) :: n
+    end subroutine specific_address
+    subroutine specific_count(n)
+      integer(count_kind) :: n
+    end subroutine specific_count
+  end module probe
+  end
+  "
+  MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+  SRC_EXT f90
+)
+set(CMAKE_REQUIRED_FLAGS "${saved_CMAKE_REQUIRED_FLAGS}")
+
 check_fortran_source_compiles(
   "
   end
@@ -237,6 +300,8 @@ target_compile_definitions(mpifort_abi PRIVATE
   $<$<BOOL:${HAVE_LOGICAL16}>:MPIF_HAVE_LOGICAL16>
   $<$<BOOL:${HAVE_REAL2}>:MPIF_HAVE_REAL2>
   $<$<BOOL:${HAVE_REAL16}>:MPIF_HAVE_REAL16>
+  $<$<BOOL:${MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND}>:MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND>
+  $<$<BOOL:${MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND}>:MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND>
 )
 target_compile_options(mpifort_abi PRIVATE
   $<$<COMPILE_LANGUAGE:Fortran>:${MPIF_Fortran_FLAGS_LIST}>

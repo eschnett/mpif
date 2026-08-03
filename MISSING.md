@@ -545,6 +545,8 @@ keep failing while mpif follows the standard. Nothing to fix on this side.
 
 ## Missing features
 
+### Build 32-bit library on Github CI
+
 ### Assumed-rank choice buffers
 
 The bindings declare choice buffers as `integer :: buf(*)` guarded by
@@ -973,12 +975,73 @@ Recorded so that they do not get re-investigated:
   Appendix A.4 has the same 159, every generated one being in the appendix, so
   nothing here repeats the ABI header's invention of an `MPI_Psend_init_c`. Nor
   does any `_c` form add nothing: comparing each against its base, argument by
-  argument and by declared type, no pair is indistinguishable -- which also means
-  no generic interface pairs two specifics a compiler could not tell apart. The
+  argument and by declared type, no pair is indistinguishable -- though whether a
+  compiler can tell a given pair apart is a question about kinds and therefore
+  about the platform, which is the entry below. The
   two whose *argument lists* differ from their base, `MPI_Type_get_contents_c`
   and `MPI_Type_get_envelope_c`, differ in A.4 in the same way, gaining a count
   of large counts. `MPI_Psend_init` and `MPI_Precv_init` correctly have no `_c`
   form at all, and `dev/mpiapi.jl` asserts they never gain one.
+- **`MPI_Count` is `int64_t` where `MPI_Aint` is a pointer, so a 32-bit platform
+  is not a 64-bit one scaled down.** `include/mpif_constants.h` defined
+  `MPI_OFFSET_KIND` and `MPI_COUNT_KIND` as `MPI_ADDRESS_KIND`, which is
+  `kind(loc(...))`: right wherever a pointer is 64 bits and wrong everywhere
+  else. The ABI header settles it in three lines -- `#define MPI_ABI_Aint
+  intptr_t`, `#define MPI_ABI_Offset int64_t`, `#define MPI_ABI_Count
+  MPI_ABI_Offset`. Both are now `selected_int_kind(18)`, which is that `int64_t`
+  and nothing else; only `MPI_ADDRESS_KIND` follows the pointer.
+
+  `docker/mpich-gcc-arm32v7.dockerfile` is where this shows, and it had a loud
+  half and a quiet one. The loud half was 153 copies of "Ambiguous interfaces in
+  generic interface": with `MPI_COUNT_KIND` four bytes, a large-count `_c`
+  wrapper's signature was identical to its small-count companion's, so every
+  generic in `mpi_f08` paired two specifics gfortran could not tell apart, and
+  the library did not build at all. The quiet half would have outlived the fix:
+  `gen/mpif_functions.c` declares `const MPI_Count* count` whatever Fortran
+  thinks, so every large-count call and every file offset in all three interfaces
+  was a four-byte Fortran integer read as eight bytes.
+
+  Which large-count generics are legal is then a question the generator cannot
+  answer, `gen/` being one committed file compiled everywhere. Eight routines
+  are affected, and exactly one group of them is ambiguous on any given
+  platform, a pointer being four bytes or eight:
+
+  - `MPI_Win_create`, `MPI_Win_allocate`, `MPI_Win_allocate_shared` and
+    `MPI_Win_shared_query`, whose only widening parameter is `disp_unit`, a
+    plain INTEGER becoming an `MPI_Aint`. Legal on 64 bits only.
+  - `MPI_Type_get_extent`, `MPI_Type_get_true_extent`, `MPI_Type_create_resized`
+    and `MPI_File_get_type_extent`, whose extents go from `MPI_Aint` to
+    `MPI_Count`. Legal on 32 bits only -- and previously emitted on neither,
+    which was right for 64 bits and left a 32-bit program unable to reach the
+    `_c` form through the base name at all.
+
+  `dev/mpiapi.jl` emits those eight under `#ifdef` guards on
+  `MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND` and
+  `MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND`, and `CMakeLists.txt` defines each
+  macro by compiling the ambiguity itself -- a generic over two specifics
+  differing only in the kind of one argument, which compiles if and only if the
+  two kinds differ, so the probe is the very rule the compiler will apply to the
+  generated code. The other 149 generics need no guard: their widening reaches a
+  count from a default INTEGER, which distinguishes them everywhere.
+
+  What the guards are *for* is asserted at compile time, one line per group, and
+  neither line compiled on 32 bits before: `test/large_count_f08.f90` passes
+  count-kind extents to `MPI_Type_get_extent` and `test/rma_disp_f08.f90` an
+  address-kind `disp_unit` to `MPI_Win_create`. Each resolves to the generic on
+  the platform where one is emitted and to the small specific on the platform
+  where the two kinds are the same kind, so a guard that goes the wrong way is a
+  build failure rather than a silent narrowing.
+
+  `test/rma_disp_f08.f90` also made the point of the address kind with the literal
+  `3000000000_MPI_ADDRESS_KIND`, which is a compile error where that kind is four
+  bytes -- there is no displacement larger than a default INTEGER to write down,
+  since an address is not larger either. It now asserts against `huge()`, which
+  says the same thing on both: an address kind is never narrower than a default
+  INTEGER, and holds its own maximum.
+
+  `test/large_count_f08.f90` is also where the quiet half is caught, and was
+  before this: it hands `MPI_Get_count` an `INTEGER(KIND=MPI_COUNT_KIND)` out
+  argument, which C writes eight bytes into.
 - **A function parameter embiggens when `apis.json` says `POLYFUNCTION`.** Which
   is to say the JSON answers this like every other question of the kind, the
   `POLY` prefix meaning "plain in the small form, large in the `_c` form"

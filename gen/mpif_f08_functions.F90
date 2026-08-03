@@ -2664,6 +2664,13 @@ module mpif_f08_functions
      procedure MPI_Exscan_init_c
   end interface MPI_Exscan_init
 
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+  interface MPI_File_get_type_extent
+     procedure MPI_File_get_type_extent
+     procedure MPI_File_get_type_extent_c
+  end interface MPI_File_get_type_extent
+#endif
+
   interface MPI_File_iread
      procedure MPI_File_iread
      procedure MPI_File_iread_c
@@ -3249,6 +3256,13 @@ module mpif_f08_functions
      procedure MPI_Type_create_indexed_block_c
   end interface MPI_Type_create_indexed_block
 
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+  interface MPI_Type_create_resized
+     procedure MPI_Type_create_resized
+     procedure MPI_Type_create_resized_c
+  end interface MPI_Type_create_resized
+#endif
+
   interface MPI_Type_create_struct
      procedure MPI_Type_create_struct
      procedure MPI_Type_create_struct_c
@@ -3268,6 +3282,20 @@ module mpif_f08_functions
      procedure MPI_Type_get_envelope
      procedure MPI_Type_get_envelope_c
   end interface MPI_Type_get_envelope
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+  interface MPI_Type_get_extent
+     procedure MPI_Type_get_extent
+     procedure MPI_Type_get_extent_c
+  end interface MPI_Type_get_extent
+#endif
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+  interface MPI_Type_get_true_extent
+     procedure MPI_Type_get_true_extent
+     procedure MPI_Type_get_true_extent_c
+  end interface MPI_Type_get_true_extent
+#endif
 
   interface MPI_Type_indexed
      procedure MPI_Type_indexed
@@ -3294,25 +3322,33 @@ module mpif_f08_functions
      procedure MPI_Unpack_external_c
   end interface MPI_Unpack_external
 
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
   interface MPI_Win_allocate
      procedure MPI_Win_allocate
      procedure MPI_Win_allocate_c
   end interface MPI_Win_allocate
+#endif
 
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
   interface MPI_Win_allocate_shared
      procedure MPI_Win_allocate_shared
      procedure MPI_Win_allocate_shared_c
   end interface MPI_Win_allocate_shared
+#endif
 
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
   interface MPI_Win_create
      procedure MPI_Win_create
      procedure MPI_Win_create_c
   end interface MPI_Win_create
+#endif
 
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
   interface MPI_Win_shared_query
      procedure MPI_Win_shared_query
      procedure MPI_Win_shared_query_c
   end interface MPI_Win_shared_query
+#endif
 
 
 contains
