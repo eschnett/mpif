@@ -198,8 +198,6 @@ passed in that same run, which for a flaky entry says nothing either way.
 
 ### MPICH: the generalized request tests require `extra_state` to alias the caller's variable
 
-### MPICH: the generalized request tests require `extra_state` to alias the caller's variable
-
 `greqf`, `greqf90` and `greqf08` -- MPICH's tests, but run against both
 implementations, so they fail on all twelve variants -- each set
 `extrastate = 1`, start a generalized
@@ -633,8 +631,6 @@ ends, so the f08 file is an inconsistent hand-conversion of the f90 one.
 keep failing while mpif follows the standard. Nothing to fix on this side.
 
 ## Missing features
-
-### Build 32-bit library on Github CI
 
 ### Assumed-rank choice buffers
 
