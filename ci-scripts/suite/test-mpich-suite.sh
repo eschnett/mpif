@@ -42,6 +42,13 @@
 #                    <mpi>/<toolchain>/<os>/<os-version>/<arch>. Detected by
 #                    default and rarely worth setting; an undetectable variant is
 #                    reported and cannot fail the run.
+#   MPIF_SUITE_ARCH  the <arch> component alone, where `uname -m` cannot answer
+#                    for the build. A container is the case: a `linux/386` image
+#                    runs natively on an x86_64 kernel and buildx sets no 32-bit
+#                    personality, so `uname -m` reports the host while the image
+#                    and everything built in it are 32-bit. Prefer this over
+#                    MPIF_SUITE_VARIANT when only the architecture is wrong, so
+#                    that the rest of the key is still detected.
 #   MPIF_KEEP_TESTS  if non-empty, keep each test executable after it has run
 #                    instead of letting `runtests` delete it, and keep the work
 #                    directory too. Set this before chasing a crash: the
@@ -142,7 +149,10 @@ else
             ;;
     esac
     variant_osversion=${variant_osversion:-unknown}
-    variant=${variant_mpi}/${variant_toolchain}/${variant_os}/${variant_osversion}/$(uname -m)
+    # `uname -m` describes the kernel, which in a container need not be what the
+    # build targets; MPIF_SUITE_ARCH is how such an environment says so.
+    variant_arch=${MPIF_SUITE_ARCH:-$(uname -m)}
+    variant=${variant_mpi}/${variant_toolchain}/${variant_os}/${variant_osversion}/${variant_arch}
 fi
 
 xfail_file=${scriptdir}/mpich-suite-xfail.txt

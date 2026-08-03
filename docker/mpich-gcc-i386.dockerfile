@@ -14,6 +14,26 @@ FROM i386/debian:trixie-20260713-slim
 
 SHELL ["/bin/bash", "-c"]
 
+# `uname -m` cannot answer "which architecture is this build for" in a container,
+# so tell the suite instead. A `linux/386` image executes natively on an x86_64
+# kernel and buildx sets no 32-bit personality for a RUN, so `uname -m` returns the
+# host's `x86_64` even though the image, its gcc and everything built here are
+# 32-bit. That is the last component of the variant key
+# ci-scripts/suite/test-mpich-suite.sh compares against
+# ci-scripts/suite/mpich-suite-xfail.txt, and for one CI run this image reported
+# itself as mpich/gcc/linux/13/x86_64 and was compared against the 64-bit rows.
+#
+# Only this one component is supplied; mpi, toolchain, os and version are still
+# detected, so an OS upgrade or a toolchain change is still noticed here.
+#
+# Two things that do not work, so that neither is tried again. `docker run
+# --platform linux/386` *does* set the personality and reports i686, which is why a
+# probe that way sees nothing wrong -- it is not the environment the build runs in.
+# And `linux32`/`setarch i386` cannot supply it: both fail inside the container with
+# "failed to set personality to linux32: Success", and since they exit nonzero on
+# failure, using one as the SHELL would fail every RUN.
+ENV MPIF_SUITE_ARCH=i686
+
 ENV DEBIAN_FRONTEND=noninteractive
 # C.UTF-8 is built into glibc, so it needs neither `locales` nor a `locale-gen`
 # the way the en_US.UTF-8 of the Ubuntu images does. Nothing here wants en_US in
@@ -135,7 +155,10 @@ RUN ctest --test-dir build-mpich-gcc-tests --output-on-failure
 # with a reason apiece, and this fails on a difference from that list rather
 # than on a failure. A variant with no `triaged` line there is reported and
 # cannot fail the build, which is what this variant is until someone measures it:
-# the key is mpich/gcc/linux/13/i686, Debian's VERSION_ID being 13.
+# the key is mpich/gcc/linux/13/i686 -- Debian's VERSION_ID being 13, and the arch
+# from the MPIF_SUITE_ARCH set at the top of this file, since `uname -m` here
+# answers for the kernel. The first run of this image reported linux/13/x86_64 for
+# want of that, and was compared against the 64-bit rows.
 
 WORKDIR /cactus/mpif
 COPY --parents ci-scripts/suite .

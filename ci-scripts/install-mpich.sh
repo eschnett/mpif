@@ -40,15 +40,20 @@ repodir=$(cd "${scriptdir}/.." && pwd)
 nprocs=$(getconf _NPROCESSORS_ONLN)
 
 # Fixes applied to the source tree below. Each patch says in its own preamble
-# what it is, where it comes from and why it is still needed here. Most are
-# upstream fixes that are on `main` but not in the release above -- the fix
-# downloaded by URL as ${MPICH_PATCH_COMMIT} is the same idea, and these are the
-# ones whose upstream commit does not apply to this release. The f90-datatypes
-# one is not an upstream backport but a local fix for a defect not reported
-# upstream yet, and its preamble says so.
+# what it is, where it comes from and why it is still needed here. The first is an
+# upstream fix that is on `main` but not in the release above -- the fix downloaded
+# by URL as ${MPICH_PATCH_COMMIT} is the same idea, and this is the one whose
+# upstream commit does not apply to this release. The other two are local fixes for
+# defects not reported upstream yet, and their preambles say so.
+#
+# These are applied before `autogen.sh` runs, so a patch against a file that
+# autogen regenerates would be overwritten without a word. That is why
+# type-get-contents patches `maint/local_python/binding_c.py` rather than the
+# `src/binding/abi/c_binding_abi.c` it generates.
 patches=(
     "${scriptdir}/mpich-abi-util-one-copy.patch"
     "${scriptdir}/mpich-abi-f90-datatypes.patch"
+    "${scriptdir}/mpich-abi-type-get-contents.patch"
 )
 
 if [[ -n ${MPI_SRC_DIR:-} ]]; then

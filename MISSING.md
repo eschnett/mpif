@@ -168,33 +168,91 @@ stronger than MPI-5.0, which gives a matching rule rather than a same-handle
 rule -- it is MPICH's `f90Types` cache, which the patch restores along with
 everything else, so a regression in it should be visible.
 
-What this does **not** fix is the entry below on the `ABI_Datatype_from_mpi`
-assert, which the old diagnosis had folded into this one.
+Fixing it also made a second defect reachable, the entry below, which is where
+`createf90types` went next.
+
+### MPICH: `MPI_Type_get_contents` converts uninitialised memory — carried as a local patch
+
+The ABI wrapper allocates a temporary for the datatypes, calls the
+implementation, and then converts the caller's *maximum* rather than the number the
+datatype actually has:
+
+    MPI_Datatype *array_of_datatypes = NULL;
+    if (max_datatypes > 0)
+        array_of_datatypes = MPL_malloc(sizeof(MPI_Datatype) * max_datatypes, MPL_MEM_OTHER);
+    int ret = internal_Type_get_contents(...);
+    for (int i = 0; i < max_datatypes; i++)
+        array_of_datatypes_abi[i] = ABI_Datatype_from_mpi(array_of_datatypes[i]);
+
+`MPL_malloc` does not initialise, so every entry past what the implementation
+filled is converted from whatever was on the heap. `ABI_Datatype_from_mpi`
+reverse-searches `abi_datatype_builtins[]` for any handle
+`MPIR_DATATYPE_IS_PREDEFINED` accepts and `MPIR_Assert(0)` when it finds none, so
+garbage that looks builtin aborts -- "Assertion failed in file
+src/binding/abi/mpi_abi_util.h at line 140" -- and garbage that does not gets a
+pointer derived from it and is handed back without complaint. `ret` is not
+consulted before the loop either, so this happens even when the implementation
+failed and filled nothing.
+
+The gap is not a caller error. MPI-5.0 requires "an empty array_of_datatypes" for a
+datatype from `MPI_TYPE_CREATE_F90_*`, so a caller passing `max_datatypes = 1` and
+getting `ndtypes == 0` has done nothing wrong -- and MPICH's own
+`test/mpi/f90/f90types/createf90types.c` does exactly that,
+`MPI_Type_get_contents(dtype, 2, 0, 1, ints, 0, &outtype)`. That is what took
+`createf90types` from passing on macOS to aborting on three of CI's four MPICH
+Linux variants, once the entry above stopped handing it `MPI_DATATYPE_NULL` to bail
+on.
+
+**Reading uninitialised memory is why this assert has looked intermittent.** It is
+the recorded symptom of the `flaky` entries `typecntsf`, `typecntsf90` and
+`typecntsf08`, and it is why `createf90types` fails under gcc on Linux x86_64 and
+both Linux aarch64 toolchains while passing on macOS and on
+`mpich/llvm/linux/24.04/x86_64`. Nothing about the platform decides it; what was on
+the heap does.
+
+`ci-scripts/mpich-abi-type-get-contents.patch` initialises a pure-out handle array
+to the null handle before the call, so the surplus converts to `ABI_DATATYPE_NULL`,
+which every `ABI_*_from_mpi` returns on its first line. Zero-filling would not do:
+`MPI_DATATYPE_NULL` is `0x0c000000` and handle kind 0 is `HANDLE_KIND_INVALID`,
+which is not `HANDLE_IS_BUILTIN`, so a zeroed entry walks past the assert into
+`MPIR_Datatype_get_ptr`. Only `out` is initialised and not `inout`, an inout array
+being filled by the wrapper's own `to_mpi` loop first.
+
+It patches the generator, `maint/local_python/binding_c.py`, and not the
+`src/binding/abi/c_binding_abi.c` it produces, because `install-mpich.sh` patches
+before running `autogen.sh` and autogen regenerates that file -- a patch against it
+would be overwritten in silence. Two wrappers change and nothing else,
+`MPI_Type_get_contents` and its `_c` form. Not reported upstream yet, and worth
+reporting.
+
+`bug-mpich-type-get-contents/mpich-abi-type-get-contents-bug.c` is the reproducer,
+and it is built to show the read rather than the abort: it asks for four datatypes
+from a contiguous type that has one and prints all four, so it demonstrates the
+defect on a platform where the garbage happens not to abort. On macOS before the
+patch the three surplus entries came back as `201326592` where the ABI's null is
+`512`.
 
 ### MPICH: `ABI_Datatype_from_mpi` asserts on a datatype predefined only internally
 
-Nine expected failures share a symptom, "Assertion failed in file
-src/binding/abi/mpi_abi_util.h at line 140", and this is a placeholder for them
-rather than a diagnosis: the entry above used to claim them, and fixing that one
-left them alone.
+What is left of that assert once the entry above is fixed, and it is a symptom
+without a diagnosis rather than a defect anyone has pinned down.
 
-What the assert is, at least. `ABI_Datatype_from_mpi` reverse-searches
-`abi_datatype_builtins[]` for any handle `MPIR_DATATYPE_IS_PREDEFINED` accepts,
-and `MPIR_Assert(0)` when it finds none. That table holds only the datatypes the
-ABI names, while MPICH has internal builtins besides -- `MPIR_INT32`,
-`MPIR_FLOAT64` and the rest, which is what `MPIR_REAL_INTERNAL` and
-`MPIR_DOUBLE_PRECISION_INTERNAL` expand to -- and those are `HANDLE_IS_BUILTIN`
-and not in it. `MPI_Type_fromint` has a second assert of the same family at line
-143, `HANDLE_INDEX(in) < MPIR_DATATYPE_PREALLOC`, which is what `allctypesf90`
-aborts on when it reaches `MPI_LB`.
+`ABI_Datatype_from_mpi` reverse-searches `abi_datatype_builtins[]` for any handle
+`MPIR_DATATYPE_IS_PREDEFINED` accepts, and `MPIR_Assert(0)` when it finds none.
+That table holds only the datatypes the ABI names, while MPICH has internal
+builtins besides -- `MPIR_INT32`, `MPIR_FLOAT64` and the rest, which is what
+`MPIR_REAL_INTERNAL` and `MPIR_DOUBLE_PRECISION_INTERNAL` expand to -- and those
+are `HANDLE_IS_BUILTIN` and not in it. `MPI_Type_fromint` has a second assert of
+the same family at line 143, `HANDLE_INDEX(in) < MPIR_DATATYPE_PREALLOC`, which is
+what `allctypesf90` aborts on when it reaches `MPI_LB`.
 
-Which call hands such a handle back has not been established, and that is the
-work. Four of the nine are `alltoallwf08`, `nonblockingf08`, `vw_inplacef08` and
-`nonblocking_inpf08`, confirmed still failing after the f90 fix by running
-`f08/coll`; those four are `*/gcc/*/*/*`, failing under gcc on *both*
-implementations, so whatever the MPICH assert is, it cannot be the whole story --
-see the note under "Suite baseline". The other five are `flaky` entries, and they
-passed in that same run, which for a flaky entry says nothing either way.
+Four expected failures are left with it: `alltoallwf08`, `nonblockingf08`,
+`vw_inplacef08` and `nonblocking_inpf08`, confirmed still failing after the
+`MPI_Type_create_f90_*` fix by running `f08/coll`. They are `*/gcc/*/*/*`, failing
+under gcc on *both* implementations, so the MPICH assert cannot be the whole story
+for them -- see the note under "Suite baseline". None of the four calls
+`MPI_Type_get_contents`, so the patch above is not expected to touch them; whether
+it does is worth reading off the first CI run that carries it.
 
 ### MPICH: the generalized request tests require `extra_state` to alias the caller's variable
 
@@ -1464,6 +1522,40 @@ with one language in it needs no explaining. It was Python first; the port was
 checked by running both over the same tree, on a clean tree and with three defects
 put back, and taking byte-identical output as the standard to meet.
 
+### `docker run` is not the same environment as a buildx `RUN`
+
+Worth its own heading because it cost a whole CI run and was checked beforehand, by
+the wrong instrument. `docker run --platform linux/386` sets the 32-bit personality,
+so `uname -m` inside reports `i686`. A `RUN` step in a `docker build --platform
+linux/386` does **not**: the image is 32-bit, its compiler is 32-bit, and `uname -m`
+still returns the host's `x86_64`, because a `linux/386` image executes natively on
+an x86_64 kernel and buildx sets no personality.
+
+That is invisible unless something reads `uname`, and
+`ci-scripts/suite/test-mpich-suite.sh` does -- it is the last component of the
+variant key. So `docker/mpich-gcc-i386.dockerfile` reported a 32-bit run as
+`mpich/gcc/linux/13/x86_64`, compared it against the 64-bit rows, and the probe that
+was supposed to catch exactly this had used `docker run` and seen `i686`.
+
+The fix is `MPIF_SUITE_ARCH`, which `test-mpich-suite.sh` now prefers over
+`uname -m` for that one component, set to `i686` in the dockerfile. The other four
+components are still detected, so an OS upgrade there is still noticed.
+
+Setting the personality was tried first and does not work: `linux32` and
+`setarch i386` both fail inside the container --
+`linux32: failed to set personality to linux32: Success` -- and since they exit
+nonzero on failure, using one as the `SHELL` fails every `RUN`. Which is a second
+instance of the same lesson, because that was found by running it rather than by
+assuming it: the plan for this change said `SHELL ["/usr/bin/linux32", ...]` and the
+build refused it immediately.
+
+The general lesson is what this section is for: **verify a container's behaviour the
+way the build will run it.** Where a probe cannot be run that way -- and here it
+cannot, this machine being arm64, so `linux/386` and `linux/arm/v7` both go through
+qemu locally where CI's amd64 runners run one natively -- say so, and prefer a
+mechanism that does not depend on the difference. `MPIF_SUITE_ARCH` does not; the
+personality does.
+
 ### Stale build artifacts were the biggest time sink
 
 Four separate "regressions" during one session turned out to be stale artifacts,
@@ -1535,12 +1627,12 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
    Linux one is odd in that the test passes on Ubuntu 26.04 and fails on 24.04.
    Start where the spawn eleven were solved: the "## Test output" block in the
    run's tap file.
-3. **The `ABI_Datatype_from_mpi` assert**, nine expected failures with one
-   symptom and no diagnosis, in its own entry above. The largest single cluster
-   left, and it got that way by being wrongly folded into the
-   `MPI_Type_create_f90_*` entry; what is needed is to find which call hands back
-   a handle that is predefined to MPICH and absent from the ABI's table. Start
-   from `alltoallwf08` under a debugger, breaking on `MPIR_Assert_fail`.
+3. **The `ABI_Datatype_from_mpi` assert**, the four `*/gcc/*/*/*` collective tests
+   left with it once `MPI_Type_get_contents` was fixed, in its own entry above.
+   What is needed is to find which call hands back a handle that is predefined to
+   MPICH and absent from the ABI's table. Start from `alltoallwf08` under a
+   debugger, breaking on `MPIR_Assert_fail`. That they fail under gcc on both
+   implementations says the answer is not only this assert.
 4. **Triage the two 32-bit variants**, `mpich/gcc/linux/13/i686` and the arm32v7
    one, neither of which has a `triaged` line in
    `ci-scripts/suite/mpich-suite-xfail.txt` yet, so both are reported and cannot
@@ -1632,9 +1724,16 @@ going both ways -- `nonblocking_inpf` and `nonblocking_inpf90` passing,
 `typecntsf`, `typecntsf90` and `typecntsf08` failing, all of which the list excuses
 either way -- plus `attrmpi1f08` passing, which is the entry now enumerated per
 64-bit architecture above. So nothing 32-bit-specific is outstanding on that
-variant, on one measurement. `mpich/gcc/linux/13/i686` has not been measured at
-all; the first CI run of it is the measurement. Do not carry one list to the other,
-the two being different 32-bit ABIs.
+variant, on one measurement. Do not carry one list to the other, the two being
+different 32-bit ABIs.
+
+`mpich/gcc/linux/13/i686` has still not been measured under its own name. Its first
+CI run reported `mpich/gcc/linux/13/x86_64` instead -- `uname -m` in a buildx
+`linux/386` build returns the host's architecture, described under "Working on
+this" -- so that run compared a 32-bit build against the 64-bit rows and its
+numbers are not a baseline for anything. The `attrmpi1f08` it reported as
+unexpectedly passing is the same 32-bit pass the arm32v7 run found, showing through
+a key that said `x86_64` and so matched the entries scoped to it.
 
 Fifty-nine entries cover them, for fifty-five distinct language-and-test pairs --
 five of them `flaky` rather than `xfail`. All but two are accounted for, each
