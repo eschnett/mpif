@@ -390,10 +390,11 @@ C spawn-and-send reproduces it.
 
 ### MPICH: suite tests that cannot pass against a conforming binding
 
-Five of the suite's tests ask for something MPI-5.0 does not have, or something
-only MPICH provides. None of them can pass here, and none is a defect on this
-side; `ci-scripts/suite/mpich-suite-xfail.txt` carries each with a reason pointing at
-this entry. The `spawnargvf90` entry below is a sixth of the same species,
+Six of the suite's tests ask for something MPI-5.0 does not have, something only
+MPICH provides, or something the standard explicitly leaves to the implementation.
+None of them can pass here, and none is a defect on this side;
+`ci-scripts/suite/mpich-suite-xfail.txt` carries each with a reason pointing at
+this entry. The `spawnargvf90` entry below is a seventh of the same species,
 separate only because it is a disagreement between two copies of one test rather
 than with the standard.
 
@@ -415,6 +416,39 @@ than with the standard.
   "The f08 intents match Appendix A.4". Fixing that is what let it get as far as
   the attach, and its expected failure is now MPICH-only and identical to
   `bsendf`'s.
+- **`dgraph_wgtf`, `dgraph_unwgtf` and their f90 and f08 copies** ask
+  `MPI_Dist_graph_create` for a bidirectional ring with `reorder = .true.`, and
+  then check the neighbours `MPI_Dist_graph_neighbors` returns against the
+  caller's rank *in MPI_COMM_WORLD*. That is only valid if the reorder did not
+  reorder. MPI-5.0 says the opposite in the description of the routine: "If
+  reorder = false, all MPI processes will have the same rank in comm_dist_graph as
+  in comm_old. If reorder = true then the MPI library is free to remap to other
+  MPI processes (of comm_old) in order to improve communication on the edges of
+  the communication graph."
+
+  Open MPI takes the licence, through the `treematch` topology component --
+  `ompi/mca/topo/treematch/topo_treematch_dist_graph_create.c`, which walks hwloc's
+  view of the machine and permutes ranks for locality, falling back to the
+  identity when it cannot. In the arm64 Docker image it permutes, deterministically
+  and whether or not the run oversubscribes, and the same four processes in C give:
+
+      reorder=1   world rank 0 -> graph rank 2      srcs 0 3    <-- not neighbours of 0
+      reorder=1   world rank 1 -> graph rank 0      srcs 2 1
+      reorder=1   world rank 2 -> graph rank 1      srcs 0 3
+      reorder=0   world rank 1 -> graph rank 1      srcs 0 2    <-- correct ring
+      reorder=0   world rank 2 -> graph rank 2      srcs 3 1
+      reorder=0   world rank 3 -> graph rank 3      srcs 0 2
+
+  So the topology itself is right and the test's premise is wrong: with the reorder
+  off every neighbour is one step away, and with it on the ranks the test compares
+  are from two different communicators. Pure C, no Fortran, nothing for mpif to
+  fix. MPICH never remaps -- `topo_base_dist_graph_create.c` records `reorder` and
+  leaves the group alone -- which is what the test was written against.
+
+  Whether Open MPI remaps depends on the machine, so this is scoped in
+  `ci-scripts/suite/mpich-suite-xfail.txt` to the one variant where it has been
+  seen rather than to Open MPI at large; CI's Open MPI runners pass these tests
+  today, and may stop at any time without anything having changed on this side.
 - **`allctypesf`, `allctypesf90`, `allctypesf08`** run every predefined datatype
   past `MPI_Type_get_name`, `MPI_LB` and `MPI_UB` among them. Those two were
   removed in MPI-3.0 and appear nowhere in the ABI header -- `grep MPI_LB
@@ -1195,15 +1229,17 @@ rather than measured, from `bsendf`, which is the same test with the same
 confirms it, on all four Open MPI variants at once. The MPICH rows are measured,
 `mpich/gcc/darwin/arm64` reporting no differences after the change.
 
-Fifty-nine entries cover them, for fifty-seven distinct language-and-test pairs
--- five of them `flaky` rather than `xfail`. Forty-six are accounted for, each
+Sixty-five entries cover them, for sixty-three distinct language-and-test pairs
+-- five of them `flaky` rather than `xfail`. Fifty-two are accounted for, each
 either by an entry here or by a reason that stands on its own, and thirteen
 covering twelve pairs still say "untriaged": eleven Open MPI spawn tests on x86_64
-and two thirds of `i_fcoll_test`.
+and two thirds of `i_fcoll_test`. The rows above are CI's, so they do not count the
+six `dgraph` entries, which belong to a Docker variant.
 
 The passes through them have resolved three into mpif bugs, two into MPICH ones,
-three into Open MPI ones and two into a decision. The most recent pass took
-twenty-four untriaged pairs down to twelve, and every one it resolved came from
+three into Open MPI ones, two into a decision and one into a test asserting more
+than the standard says -- the `dgraph` pair, where Open MPI is within its rights.
+The most recent pass took twenty-four untriaged pairs down to twelve, and every one it resolved came from
 running the test rather than reading it: the four attribute tests turned out to
 crash in a C frame that names the defect, `test14` and `test15` sit in a directory
 whose thirteen passing neighbours say what the mechanism is, and the two Open MPI

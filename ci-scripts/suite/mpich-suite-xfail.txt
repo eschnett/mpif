@@ -1,6 +1,6 @@
 # Expected failures in MPICH's Fortran test suite.
 #
-# ci-scripts/test-mpich-suite.sh compares each run against this file and fails
+# test-mpich-suite.sh, beside this file, compares each run against it and fails
 # on any difference in either direction: a test that fails and is not listed
 # here, and a test that is listed here and passes. The second matters as much as
 # the first -- without it the list rots, an entry outliving the problem it stands
@@ -102,6 +102,12 @@ xfail mpich/*/*/*/*            f90  bsendf90           # attaches 400 bytes, und
 xfail mpich/*/*/*/*            f08  createf08          # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
 xfail mpich/*/*/*/*            f90  createf90          # MISSING.md "MPICH: MPI_Type_create_f90_* returns a datatype the ABI cannot use"
 xfail mpich/*/*/*/*            f90  createf90types     # MISSING.md "MPICH: MPI_Type_create_f90_*"; the test reports it as "Unable to find a real type"
+xfail openmpi/gcc/linux/26.04/aarch64 f77  dgraph_unwgtf      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/gcc/linux/26.04/aarch64 f08  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/gcc/linux/26.04/aarch64 f90  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/gcc/linux/26.04/aarch64 f77  dgraph_wgtf        # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/gcc/linux/26.04/aarch64 f08  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/gcc/linux/26.04/aarch64 f90  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail */*/*/*/*                f08  fandcattrf08       # attributes set in Fortran are not visible to C as a pointer; MISSING.md "Fortran-set attribute values"
 xfail */*/*/*/*                f90  fandcattrf90       # attributes set in Fortran are not visible to C as a pointer; MISSING.md "Fortran-set attribute values"
 xfail */*/*/*/*                f77  greqf              # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
@@ -155,12 +161,6 @@ xfail */*/*/*/*                f90  wtimef90           # no PMPI: "Function 'pmp
 # in every CI run: the tap file for the language names the test and quotes its
 # output under "## Test output". Read that before rerunning anything.
 #
-xfail openmpi/gcc/linux/26.04/aarch64 f77  dgraph_unwgtf      # untriaged: "MPI_Dist_graph_create() does not create a bidirectional ring graph!"; seen in the Docker image only
-xfail openmpi/gcc/linux/26.04/aarch64 f08  dgraph_unwgtf90    # untriaged: "MPI_Dist_graph_create() does not create a bidirectional ring graph!"; seen in the Docker image only
-xfail openmpi/gcc/linux/26.04/aarch64 f90  dgraph_unwgtf90    # untriaged: "MPI_Dist_graph_create() does not create a bidirectional ring graph!"; seen in the Docker image only
-xfail openmpi/gcc/linux/26.04/aarch64 f77  dgraph_wgtf        # untriaged: "MPI_Dist_graph_create() does not create a bidirectional ring graph!"; seen in the Docker image only
-xfail openmpi/gcc/linux/26.04/aarch64 f08  dgraph_wgtf90      # untriaged: "MPI_Dist_graph_create() does not create a bidirectional ring graph!"; seen in the Docker image only
-xfail openmpi/gcc/linux/26.04/aarch64 f90  dgraph_wgtf90      # untriaged: "MPI_Dist_graph_create() does not create a bidirectional ring graph!"; seen in the Docker image only
 xfail */*/linux/24.04/*        f08  i_fcoll_test       # untriaged: fails on CI's 24.04 runners, cause unknown; it passes on 26.04, and the macOS cause above does not apply
 xfail mpich/llvm/darwin/*/*    f08  i_fcoll_test       # untriaged: fails under flang and passes under gfortran on the same MPI, which is the odd part
 xfail openmpi/*/*/*/x86_64     f77  spawnargvf         # untriaged: prints "No Errors" and is still rejected; Open MPI on x86_64 only
