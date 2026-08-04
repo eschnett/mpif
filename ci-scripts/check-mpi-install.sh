@@ -12,6 +12,14 @@
 # The test program also calls MPI_Comm_c2f, so this doubles as a check that the
 # Fortran/C handle conversion functions that mpif adds are really exported.
 #
+# Compiling and linking is not on its own evidence that the installation exposes
+# the standard ABI: an installation that still has the implementation's own
+# `mpi.h` and its own library compiles this program perfectly well, and then
+# every C file in a mixed C/Fortran program disagrees with mpif about what a
+# handle is. So the program asserts MPI_ABI_VERSION at compile time and the
+# executable is checked for the ABI library afterwards. See MISSING.md
+# "An unpruned Open MPI prefix".
+#
 # Usage: check-mpi-install.sh <prefix>
 
 set -euo pipefail
@@ -23,6 +31,17 @@ trap 'rm -rf "${workdir}"' EXIT
 
 cat >"${workdir}/check.c" <<'EOF'
 #include <mpi.h>
+
+/* MPI-5.0 section 20.2, "Implementation Requirements": the macros
+   MPI_ABI_VERSION and MPI_ABI_SUBVERSION "are present in the MPI header and
+   modules so that applications can check for consistency between the
+   compilation environment and the properties of the implementation at
+   runtime", and are 1 and 0 for MPI-5.0. An implementation that does not
+   provide the ABI reports -1 -- which is exactly what Open MPI's own mpi.h
+   says, so this catches a prefix whose header was never replaced. */
+#if !defined(MPI_ABI_VERSION) || MPI_ABI_VERSION < 1
+#error "this mpi.h is not the MPI standard ABI header"
+#endif
 
 int main(int argc, char **argv) {
     MPI_Init(&argc, &argv);
@@ -58,15 +77,31 @@ if [[ -z ${library} ]]; then
     exit 1
 fi
 
+dependencies_of() {
+    if [[ $(uname) == Darwin ]]; then
+        otool -L "$1"
+    else
+        readelf -d "$1" | grep -E 'NEEDED|R(UN)?PATH' || true
+    fi
+}
+
 echo "Dependencies of ${library}:"
-if [[ $(uname) == Darwin ]]; then
-    otool -L "${library}"
-else
-    dependencies=$(readelf -d "${library}" | grep -E 'NEEDED|R(UN)?PATH' || true)
-    echo "${dependencies:-    (none recorded)}"
-fi
+dependencies=$(dependencies_of "${library}")
+echo "${dependencies:-    (none recorded)}"
 
 "${prefix}/bin/mpicc" -o "${workdir}/check" "${workdir}/check.c"
+
+# Which library the wrapper actually linked. The header assertion above says the
+# compilation environment is the ABI; this says the link is too. They can differ:
+# Open MPI installs libmpi_abi beside its own libmpi, and its wrapper names the
+# latter until install-openmpi.sh repoints it.
+linked=$(dependencies_of "${workdir}/check")
+if ! grep -q 'libmpi_abi' <<<"${linked}"; then
+    echo "error: ${prefix}/bin/mpicc does not link the ABI library." >&2
+    echo "       Dependencies of the test program:" >&2
+    echo "${linked:-    (none recorded)}" >&2
+    exit 1
+fi
 
 echo "OK: the installed MPI compiles and links a program that uses the ABI"
 echo "    and the Fortran/C handle conversion functions"

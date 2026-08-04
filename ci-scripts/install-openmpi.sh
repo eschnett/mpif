@@ -51,12 +51,63 @@ patches=(
     "${scriptdir}/openmpi-fbtl-posix-aio.patch"
 )
 
+# A prefix is not usable when `make install` is done with it, only when the four
+# steps after it are: until the wrapper compilers point at the ABI library, the
+# implementation's own headers, modules and libraries are pruned away and the
+# official ABI `mpi.h` is in place, the prefix looks complete and is wrong. That
+# state is MISSING.md "An unpruned Open MPI prefix", and the window is wide --
+# it spans `make install`, a `git clone` of the header from GitHub and
+# everything between -- so an interrupted or failed run reaches it easily. A run
+# that does not finish therefore takes the prefix with it: whatever looks for it
+# next then fails saying it is not there, instead of quietly building against
+# it.
+scratch_srcdir=""
+unfinished_prefix=""
+
+discard() {
+    if [[ -n ${scratch_srcdir} ]]; then
+        rm -rf "${scratch_srcdir}"
+        scratch_srcdir=""
+    fi
+    if [[ -n ${unfinished_prefix} ]]; then
+        echo "install-openmpi.sh: did not finish; removing the half-installed" \
+             "${unfinished_prefix}" >&2
+        rm -rf "${unfinished_prefix}"
+        unfinished_prefix=""
+    fi
+}
+
+on_exit() {
+    status=$?
+    if [[ ${status} -eq 0 ]]; then
+        if [[ -n ${scratch_srcdir} ]]; then
+            rm -rf "${scratch_srcdir}"
+        fi
+        return
+    fi
+    discard
+}
+
+# Signals need their own handler, and it must not consult `$?`. An EXIT trap
+# does not run at all when the shell dies of an untrapped signal, so Ctrl-C --
+# the likeliest way an install ends early -- would leave the prefix behind; and
+# naming INT in the EXIT trap is not enough either, because bash runs a trapped
+# INT handler with a zero status and the `$?` test above then keeps the prefix.
+# Both were measured rather than assumed; TERM and HUP behave differently again.
+on_signal() {
+    discard
+    exit 1
+}
+
+trap on_exit EXIT
+trap on_signal INT TERM HUP
+
 if [[ -n ${MPI_SRC_DIR:-} ]]; then
     mkdir -p "${MPI_SRC_DIR}"
     srcdir=$(cd "${MPI_SRC_DIR}" && pwd)
 else
     srcdir=$(mktemp -d)
-    trap 'rm -rf "${srcdir}"' EXIT
+    scratch_srcdir=${srcdir}
 fi
 
 tree=${srcdir}/ompi
@@ -130,8 +181,10 @@ configure_flags=(
 )
 ./configure "${configure_flags[@]}"
 
-# Build and install
+# Build and install. From here to the check at the bottom the prefix exists and
+# is not yet a standard-ABI installation, which the handlers above are for.
 make -j"${nprocs}"
+unfinished_prefix=${prefix}
 make install
 
 # Point the wrapper compilers at the ABI library
@@ -141,3 +194,6 @@ perl -pi -e 's!-lmpi!-lmpi_abi!' "${prefix}/bin/ompi_wrapper_script"
 "${scriptdir}/prune-install.sh" "${prefix}" "${scriptdir}/openmpi-prune.txt"
 "${scriptdir}/install-mpi-header.sh" "${prefix}"
 "${scriptdir}/check-mpi-install.sh" "${prefix}"
+
+# The prefix is a standard-ABI installation now, and may survive the script
+unfinished_prefix=""

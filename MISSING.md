@@ -17,6 +17,148 @@ None outstanding. Every entry that was here has been fixed, and the ones worth n
 re-investigating are under "Verified as correct" in `CODE.md`. What remains here
 is features mpif does not have, blockers outside it, and decisions.
 
+## Not defects
+
+Failures that were investigated and turned out not to be mpif's, and not an
+implementation's either. They are here so that the next person who sees the same
+symptom does not diagnose it again, and so that the decision not to add an
+expected-failure entry for them is on the record: an `xfail` line would have
+made a broken environment permanent.
+
+### An unpruned Open MPI prefix, and the six handle-conversion I/O tests it fails
+
+On 2026-08-04 a local suite run on `openmpi/gcc/darwin/26/arm64` and
+`openmpi/llvm/darwin/26/arm64` reported six unexpected failures, two in each
+language directory: `c2f2ciof90` and `c2f90multio` in `f08/io` and `f90/io`,
+`c2f2ciof` and `c2fmultio` in `f77/io`. They are the `MPI_File_c2f`/`MPI_File_f2c`
+round trips. `c2f2ciof90` printed "File: did not get expected group" and then
+aborted in `MPI_Group_compare` with `MPI_ERR_GROUP`; `c2f90multio` took a SIGSEGV
+whose only interesting frame was `MTest_Finalize`.
+
+Nothing was wrong with `fortran/f2c_abi_openmpi.c` or with the declarations
+`fortran/mpi.h.patch` adds. MPI-5.0 section 19.3.4, "Transfer of Handles", gives
+`MPI_File MPI_File_f2c(MPI_Fint file)` and `MPI_Fint MPI_File_c2f(MPI_File
+file)`, which is what both the patch and the bindings declare, and
+`data/apis.json` agrees. Two cheap measurements would each have been enough to
+stop looking at the bindings, and both should come before reading them next
+time: the same six tests pass on MPICH -- all 22 of `f08/io` pass on
+`mpich/gcc/darwin/26/arm64`, and the MPICH prefixes differ from the Open MPI ones
+only in being correctly installed -- and `ci-scripts/suite/mpich-suite-xfail.txt`
+has no entry for any of them on the four Open MPI variants CI gates, so CI
+watches these tests pass against Open MPI on every run.
+
+What was wrong was `mpi/openmpi-gcc` and `mpi/openmpi-llvm`. Neither had had any
+of the three steps `ci-scripts/install-openmpi.sh` runs after `make install`. So
+`include/` still had Open MPI's own `mpi.h`, `mpif.h` and fourteen more entries
+where a pruned prefix has one; `lib/` still had `libmpi`, `libmpi_mpifh` and
+`libmpi_usempif08` beside `libmpi_abi`; `bin/` still had Open MPI's own
+`mpifort`; and `bin/mpicc` still said `-lmpi` rather than `-lmpi_abi`. That the
+script had not run at all, rather than run and failed partway, is what the
+preparation stamp in `mpi/src-openmpi-gcc` says: the only one there was from
+before the aio patch joined the patch list, and the script names a stamp after a
+checksum of itself and its patches, so a run since then would have left a second
+one. Everything in the prefix was newer than that, and newer than the suite tree
+built against it. The likeliest story -- inferred, not measured -- is a `make
+install` by hand from the prepared tree while the aio defect was being chased.
+
+That is enough to produce these six failures and no others, because the
+suite compiles its C with the implementation's `mpicc` and its Fortran with
+mpif's `mpifort`. Every Fortran-only test still went through mpif and the ABI
+library and was unaffected. The three mixed C/Fortran tests compiled their C
+against Open MPI's own `mpi.h`, where `MPI_COMM_WORLD` is
+`&ompi_mpi_comm_world`, and were linked by `mpifort` against the ABI library,
+where it is `(MPI_Comm) 257`. `nm` on the pieces shows both halves of that:
+`c2f902cio.o` has an undefined `_ompi_mpi_comm_world`, and in the executable
+`_MPI_Comm_group` and `_MPI_File_f2c` resolve to `libmpi_abi` while
+`_ompi_mpi_comm_world` resolves to `libopen_mpi`. So the C half handed the ABI a
+pointer where an integer handle was expected, and `MPI_Group_compare` said
+`MPI_ERR_GROUP`.
+
+The three C-only tests were worse off still, being the ones the suite compiles
+*and* links with the implementation's `mpicc`. `util/libmtest_la-mtest.o`
+carries the ABI value -- `MTest_Finalize` begins `mov x0, #0x101`, which is 257
+-- having survived, by its timestamp, from a build made while the prefix was
+still correct, while the test itself was rebuilt against the native header and
+`libmpi`. So
+`MTest_Finalize` passed 257 to a `MPI_Comm_rank` that dereferences its argument.
+The fault address was `0x1f9`, which is `257 + 0xf8`, `0xf8` being the offset of
+the first field that implementation reads; `lldb` puts the faulting instruction
+at `MPI_Comm_rank + 60`, `ldr w0, [x6, #0xf8]` with `x6` holding `0x101`. Open
+MPI's own signal handler had reported the frame above it, `MTest_Finalize + 36`,
+because the crashing function sets up no frame of its own.
+
+Reinstalling both prefixes with `scripts/macos-install-mpi.sh openmpi <gcc|llvm>`
+fixed all six, on both toolchains. `openmpi/gcc/darwin/26/arm64` and
+`openmpi/llvm/darwin/26/arm64` each report no differences against the list, with
+`c2f2ciof` and `c2fmultio` ok in f77 and `c2f2ciof90` and `c2f90multio` ok in
+both f90 and f08; `test/` is 51 of 51 on both.
+
+### The install scripts were not atomic, which is how the prefix got that way
+
+Chasing the above turned up the more useful finding, and it retires the guess in
+the paragraph above that a hand-run `make install` was to blame -- it may have
+been, but it did not have to be. `install-openmpi.sh` and `install-mpich.sh`
+`make install` into the prefix and only then repoint the wrapper compilers,
+prune, fetch the ABI header and check. **Between the first of those and the last
+the prefix exists and is not a standard-ABI installation**, and one of the steps
+in between is a `git clone` from GitHub, so the window can close badly with
+nobody at the keyboard. Nothing removed the prefix when a run failed there and
+nothing re-examined it later; `scripts/macos-install-mpi.sh` removes the prefix
+at the *start* of a run, so a rerun cures it, but nothing says a rerun is owed.
+The install killed part-way through this very session landed just short of the
+window -- it died in `configure` and so left no prefix at all, where a minute
+later it would have left the bad one.
+
+Both scripts now discard a prefix that their run did not finish, so the next
+thing to look for it fails saying it is absent rather than quietly building
+against it. Getting that right took two corrections worth recording, both
+measured on the block copied verbatim out of the script:
+
+- `trap ... EXIT` does not run when the shell dies of an untrapped signal, so
+  Ctrl-C -- the likeliest way an install ends early -- left the prefix behind.
+- Naming `INT` alongside `EXIT` is still not enough, because bash runs a trapped
+  `INT` handler with a status of zero, and a handler that asks `$?` whether the
+  run failed concludes that it did not. `TERM` and `HUP` do not behave that way.
+  So signals get their own handler, which never consults `$?`.
+
+Six cases were checked: success keeps the prefix, a failure before `make install`
+leaves it untouched, a failure after it removes it, and `INT`, `TERM` and `HUP`
+all remove it. The success path is covered by more than that block: the
+`openmpi/llvm` prefix that this entry is about was reinstalled by the changed
+script from a clean source tree, and it finished and kept its prefix. One
+intermediate result was a defect in the test rather than in
+the script and is worth knowing about, since it will mislead anyone who retests
+this: a script run as `cmd &` inherits `SIGINT` ignored, and bash cannot trap a
+signal it inherited as ignored, so an interrupt test that backgrounds its subject
+reports that the handler does not work when it does. Signalling a foreground
+script is what shows the truth.
+
+Three more things changed so that this cannot cost a diagnosis twice.
+`ci-scripts/check-mpi-install.sh` used to claim it compiled "a program that uses
+the ABI" and did not: an unpruned prefix compiled and linked it perfectly well,
+which is why the check passed on both broken prefixes. It now asserts
+`MPI_ABI_VERSION` at compile time -- MPI-5.0 section 20.2 puts that macro in the header
+"so that applications can check for consistency between the compilation
+environment and the properties of the implementation", and an implementation
+without the ABI reports `-1`, which is exactly what Open MPI's own `mpi.h` says
+-- and then checks that the executable the wrapper produced links `libmpi_abi`.
+The two halves catch different failures and both were needed: the header check
+fires on the prefix as found, and the link check on a prefix whose header has
+been replaced but whose wrapper has not, which is the state after
+`install-mpi-header.sh` alone. Each was confirmed by putting the bug back, on
+`mpi/openmpi-llvm` in each of those two states, and a correctly installed
+`mpi/mpich-gcc` still passes.
+
+The other two are the callers. `ci-scripts/suite/test-mpich-suite.sh` runs that
+check before it downloads anything, so a prefix that is not the standard ABI
+stops the run in a second instead of producing six mysterious failures twenty
+minutes later, and `scripts/macos-build-mpif.sh` runs it before configuring, on
+the same reasoning one step earlier: an mpif built against the wrong headers is
+wrong without failing to build, and everything downstream then tests that. The
+producer-side discard above cannot cover either case on its own, since a prefix
+written some other way -- by hand, which is what may well have happened here --
+never goes near the install script's traps.
+
 ## External blockers
 
 ### The ABI header gets the partitioned-communication count wrong, twice — carried as a local patch
@@ -266,6 +408,8 @@ that a nondeterministic failure has stopped. It just was not the reason these tw
 kept failing.
 
 ### MPICH: the generalized request tests require `extra_state` to alias the caller's variable
+
+<https://github.com/pmodels/mpich/issues/7922>
 
 `greqf`, `greqf90` and `greqf08` -- MPICH's tests, but run against both
 implementations, so they fail on all twelve variants -- each set

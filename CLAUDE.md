@@ -114,6 +114,39 @@ implementation from source, so it costs a good deal more than the others. It is
 what to run when `find_package(MPI)` starts reporting that
 `mpi/<mpi>-<toolchain>/include` does not exist.
 
+**Never `make install` an MPI into `mpi/<variant>` by hand.** The prefix is not
+finished when `make install` is: the install script then repoints the wrapper
+compilers at the ABI library, prunes the implementation's own headers, Fortran
+modules and non-ABI libraries away, and puts the official ABI `mpi.h` in place of
+the one it shipped. Skip those and the prefix still builds everything, and the
+suite's mixed C/Fortran tests quietly disagree with mpif about what a handle is
+-- see `MISSING.md` "An unpruned Open MPI prefix". `ci-scripts/check-mpi-install.sh`
+now says so in a second, and both `test-mpich-suite.sh` and
+`scripts/macos-build-mpif.sh` run it before anything expensive.
+
+**Do not edit one of these scripts while it is running.** An install takes tens of
+minutes, which makes it tempting; bash reads a script incrementally and seeks by
+byte offset, so an edit that changes the file's length can make the tail of a run
+execute nonsense. Editing `install-openmpi.sh` during a build cost a restart here.
+Editing one also changes its checksum, and the checksum names the prepared-tree
+stamp, so the next run re-clones and re-runs `autogen` -- expected, and the reason
+the stamp exists.
+
+Stopping one wants care too. `pkill -f install-openmpi.sh` ends the script and not
+the `configure` and `make` it started, and those orphans keep creating files in the
+source tree, so the next run's `rm -rf` of that tree fails with "Directory not
+empty" and the run aborts on a message that looks like a build error and is not.
+Check `ps` for the source directory's path before restarting, and if a tree has
+already been half-removed, delete `mpi/src-<variant>` outright rather than
+reasoning about what is left of it.
+
+An install script that does not finish now takes its prefix with it, for the same
+reason: `make install` runs well before the four steps that make the prefix a
+standard-ABI one, and an interrupt anywhere in between used to leave something
+that looked complete. So **a missing `mpi/<variant>` means the last install
+failed**, and the cure is to run it again -- there is no half-installed prefix to
+recognise any more, which is the point.
+
 The suite has failures that are expected, so what fails a run is a difference
 from `ci-scripts/suite/mpich-suite-xfail.txt` rather than a failure --- in either
 direction, so a test that starts passing is caught as well as one that starts

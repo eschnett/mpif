@@ -79,6 +79,21 @@ installdir=$(cd "${scriptdir}/.." && pwd)
 nprocs=$(getconf _NPROCESSORS_ONLN)
 maxnp=${MPIEXEC_MAXNP:-4}
 
+# The suite compiles its C files with the implementation's own `mpicc` and its
+# Fortran with mpif's `mpifort`, and the two only agree if the prefix exposes
+# the standard ABI and nothing else. A prefix that still has the
+# implementation's own `mpi.h` and library builds every test without complaint
+# and then fails a handful of them in ways that look like mpif defects; that is
+# MISSING.md "An unpruned Open MPI prefix", which cost a diagnosis. Twenty
+# minutes of tests deserve the one compile it takes to rule that out.
+if ! abi_check=$("${installdir}/check-mpi-install.sh" "${mpi_prefix}" 2>&1); then
+    echo "${abi_check}" >&2
+    echo "error: ${mpi_prefix} does not expose the standard ABI, so the suite" >&2
+    echo "       would be testing something other than mpif. Reinstall it with" >&2
+    echo "       ci-scripts/install-<mpi>.sh or scripts/macos-install-mpi.sh." >&2
+    exit 1
+fi
+
 # Take the version from the install script, so the suite always matches the
 # MPICH we know how to build rather than drifting away from it
 version=$(sed -n 's/^MPICH_VERSION=//p' "${installdir}/install-mpich.sh")

@@ -56,12 +56,63 @@ patches=(
     "${scriptdir}/mpich-abi-type-get-contents.patch"
 )
 
+# A prefix is not usable when `make install` is done with it, only when the
+# steps after it are: until the wrapper compilers select the ABI, the
+# implementation's own headers, modules and libraries are pruned away and the
+# official ABI `mpi.h` is in place, the prefix looks complete and is wrong. That
+# state is MISSING.md "An unpruned Open MPI prefix" -- found on Open MPI, but
+# this script has the same window, spanning `make install`, a `git clone` of the
+# header from GitHub and everything between. A run that does not finish
+# therefore takes the prefix with it: whatever looks for it next then fails
+# saying it is not there, instead of quietly building against it.
+scratch_srcdir=""
+unfinished_prefix=""
+
+discard() {
+    if [[ -n ${scratch_srcdir} ]]; then
+        rm -rf "${scratch_srcdir}"
+        scratch_srcdir=""
+    fi
+    if [[ -n ${unfinished_prefix} ]]; then
+        echo "install-mpich.sh: did not finish; removing the half-installed" \
+             "${unfinished_prefix}" >&2
+        rm -rf "${unfinished_prefix}"
+        unfinished_prefix=""
+    fi
+}
+
+on_exit() {
+    status=$?
+    if [[ ${status} -eq 0 ]]; then
+        if [[ -n ${scratch_srcdir} ]]; then
+            rm -rf "${scratch_srcdir}"
+        fi
+        return
+    fi
+    discard
+}
+
+# Signals need their own handler, and it must not consult `$?`. An EXIT trap
+# does not run at all when the shell dies of an untrapped signal, so Ctrl-C --
+# the likeliest way an install ends early -- would leave the prefix behind; and
+# naming INT in the EXIT trap is not enough either, because bash runs a trapped
+# INT handler with a zero status and the `$?` test above then keeps the prefix.
+# Both were measured rather than assumed; see install-openmpi.sh, which has the
+# same block.
+on_signal() {
+    discard
+    exit 1
+}
+
+trap on_exit EXIT
+trap on_signal INT TERM HUP
+
 if [[ -n ${MPI_SRC_DIR:-} ]]; then
     mkdir -p "${MPI_SRC_DIR}"
     srcdir=$(cd "${MPI_SRC_DIR}" && pwd)
 else
     srcdir=$(mktemp -d)
-    trap 'rm -rf "${srcdir}"' EXIT
+    scratch_srcdir=${srcdir}
 fi
 
 tree=${srcdir}/mpich-${MPICH_VERSION}
@@ -215,6 +266,9 @@ fi
 # link commands, and those are exactly what one needs to see when a compiler
 # rejects an option that libtool chose for it.
 make V=1 -j"${nprocs}"
+# From here to the check at the bottom the prefix exists and is not yet a
+# standard-ABI installation, which the handlers above are for.
+unfinished_prefix=${prefix}
 make install
 
 # Point the wrapper compilers at the ABI library
@@ -224,3 +278,6 @@ perl -pi -e 's!mpi_abi=no!mpi_abi=yes!' "${prefix}/bin/mpicc" "${prefix}/bin/mpi
 "${scriptdir}/prune-install.sh" "${prefix}" "${scriptdir}/mpich-prune.txt"
 "${scriptdir}/install-mpi-header.sh" "${prefix}"
 "${scriptdir}/check-mpi-install.sh" "${prefix}"
+
+# The prefix is a standard-ABI installation now, and may survive the script
+unfinished_prefix=""
