@@ -27,7 +27,7 @@ set -euo pipefail
 # The head of https://github.com/open-mpi/ompi/pull/13280, the branch that adds
 # the MPI standard ABI. It is a pull request rather than a branch of the main
 # repository, so the commit is fetched by hash below rather than by name.
-OMPI_COMMIT=d0346f672a7698f32e9f346b5ca8681ab7887b36
+OMPI_COMMIT=6cb5ef1d82862adc4185b33537d4860aa165f314
 
 prefix=${1:-}
 prepare_only=${MPI_PREPARE_ONLY:-0}
@@ -42,10 +42,12 @@ nprocs=$(getconf _NPROCESSORS_ONLN)
 
 # Upstream fixes that have not reached the ABI branch yet, applied to the source
 # tree below. Each patch says in its own preamble what it is, where it comes from
-# and why it is still needed here.
-patches=(
-    "${scriptdir}/openmpi-info-set-empty-value.patch"
-)
+# and why it is still needed here. There are none at present: the one fix that was
+# carried, for the empty `MPI_Info_set` value, is on the branch as of the commit
+# above and was dropped. The array stays because the next one goes here, and it is
+# expanded with the `${a[@]+...}` guard throughout so that being empty is not an
+# unbound variable under `set -u` in bash 3.2, which is what macOS has.
+patches=()
 
 if [[ -n ${MPI_SRC_DIR:-} ]]; then
     mkdir -p "${MPI_SRC_DIR}"
@@ -60,7 +62,7 @@ tree=${srcdir}/ompi
 # that tree -- other than the bindings themselves -- belongs in its name. That
 # includes the patches above and this script: without the checksum, editing
 # either would silently reuse a tree prepared before the change.
-stamp=${srcdir}/prepared-${OMPI_COMMIT}-$(cat "${BASH_SOURCE[0]}" "${patches[@]}" | cksum | cut -d' ' -f1)
+stamp=${srcdir}/prepared-${OMPI_COMMIT}-$(cat "${BASH_SOURCE[0]}" ${patches[@]+"${patches[@]}"} | cksum | cut -d' ' -f1)
 
 # Copy in the Fortran/C handle conversion functions. Only the contents of this
 # file vary from run to run, so this happens on every run, including when the
@@ -86,7 +88,7 @@ else
     # rather than `patch`, because it refuses to apply with fuzz: once the
     # branch picks a fix up, or moves the code it touches, the patch stops
     # applying and says so here rather than landing somewhere unintended.
-    for patch in "${patches[@]}"; do
+    for patch in ${patches[@]+"${patches[@]}"}; do
         echo "Applying $(basename "${patch}")"
         git apply "${patch}"
     done

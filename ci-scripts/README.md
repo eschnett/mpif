@@ -68,7 +68,6 @@ Building and installing an MPI:
 | `prune-install.sh` | delete everything the standard ABI does not define, from a list |
 | `mpich-prune.txt`, `openmpi-prune.txt` | those lists |
 | `mpich-abi-util-one-copy.patch` | local fix carried against MPICH 5.0.1; see MISSING.md |
-| `openmpi-info-set-empty-value.patch` | local fix carried against Open MPI's ABI branch; see MISSING.md |
 | `check-mpi-install.sh` | assert that what was installed is the standard ABI and nothing else |
 | `check-headers.sh` | check that every Cray pointer in `mpif_constants.h` is the variable C initialises; run by the `checks` job in CI, and needs no MPI or compiler |
 | `flang-darwin-shim.sh` | works around flang's `-Wl,` handling on macOS, for MPICH's libtool |

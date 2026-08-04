@@ -414,7 +414,7 @@ which the ABI requires. Calling `ABI_init_builtins()` from
 rerun, but it papers over the duplication rather than removing it and diverges
 from what upstream did.
 
-### OpenMPI: an empty info value is rejected — carried as a local patch
+### OpenMPI: an empty info value was rejected — fixed upstream, patch dropped
 
 https://github.com/open-mpi/ompi/issues/14246
 
@@ -429,23 +429,36 @@ an info object.
 Fixed upstream on `main` by
 [5e21b7b2](https://github.com/open-mpi/ompi/commit/5e21b7b21f8b4e52c06b5527eb344958325cbb30)
 (pull request 14247), which removes the zero-length test on the value and leaves
-the empty *key* rejected. That commit is not on the ABI branch mpif builds from,
-so it is carried locally as `ci-scripts/openmpi-info-set-empty-value.patch`,
-applied by `ci-scripts/install-openmpi.sh`. **Drop the patch once the ABI branch
-picks the fix up**; `git apply` refuses fuzz, so it will fail loudly rather than
-land somewhere unintended, and the prepared-tree stamp covers the patches, so
-removing it re-prepares rather than reusing an older tree.
+the empty *key* rejected. That commit was not on the ABI branch mpif builds from,
+so it was carried locally as `ci-scripts/openmpi-info-set-empty-value.patch`,
+applied by `ci-scripts/install-openmpi.sh`.
 
-The patch is a local copy rather than the upstream `.patch` downloaded by URL,
-which is what `install-mpich.sh` does for its own fix, because the upstream one
-does not apply to the ABI branch: the branch templates the constant as
-`@MPI_MAX_INFO_VAL@` where main writes `MPI_MAX_INFO_VAL`, and the commit's other
-hunks touch a changelog and tests the branch does not have in the same state.
+The ABI branch has it as of `6cb5ef1d`, the commit `install-openmpi.sh` now
+pins, so the patch is gone and `patches=()` is empty. The evidence is
+`ompi/mpi/c/info_set.c.in` at that commit: the value check reads
+`if ((NULL == value) || (@MPI_MAX_INFO_VAL@ <= value_length))` with no
+`0 == value_length` term, and the file carries the 2026 Squyres copyright line
+the upstream commit added. `patch --dry-run` against it reports "Reversed (or
+previously applied) patch detected", which is the same finding from the other
+direction.
+
+Two notes for the next fix that has to be carried. The patch was a local copy
+rather than the upstream `.patch` downloaded by URL, which is what
+`install-mpich.sh` does for its own fix, because the upstream one does not apply
+to the ABI branch: the branch templates the constant as `@MPI_MAX_INFO_VAL@`
+where main writes `MPI_MAX_INFO_VAL`, and the commit's other hunks touch a
+changelog and tests the branch does not have in the same state. And an empty
+`patches` array is not free in bash 3.2, which is what macOS has: under `set -u`
+a bare `"${patches[@]}"` is an unbound variable rather than nothing, so the two
+places that expand it -- the stamp's `cksum` and the apply loop -- use
+`${patches[@]+"${patches[@]}"}`.
 
 It reaches Fortran through the stripping of leading and trailing blanks that the
 standard requires of info keys and values: a value of nothing but spaces becomes
 the empty string. `test/info_blanks_f08.f90` avoids asserting on it so that
-mpif's own tests do not fail on an implementation that has not taken the fix.
+mpif's own tests do not fail on an implementation that has not taken the fix --
+still the right thing now that the ABI branch has, since the assertion would be
+about the implementation rather than about mpif.
 The reproducer sent with the issue is
 `bug-ompi-info-value/ompi-empty-info-value.c`; it is pure C, and exits 0 on
 MPICH and 1 on an unpatched Open MPI.
