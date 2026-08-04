@@ -58,16 +58,24 @@ makes the JSON legible, since its keys and kinds are otherwise undocumented --
 `C_BUFFER` is an address in `MPI_Alloc_mem` and `C_BUFFER2` a choice buffer in
 `MPI_Buffer_detach`, and only the standard says which.
 
-One check needs no build at all:
+Two checks need no build at all:
 
     julia dev/check-f08-bindings.jl   # every mpi_f08 declaration against MPI-5.0
+    bash ci-scripts/check-headers.sh  # the Cray pointers against their common blocks
 
-It reads `doc/mpi50-report.pdf` and compares intents, declared types, `VALUE`,
-argument names and argument order against the appendix that gives them, and
-compares the 1180 f08 specifics' two declarations -- interface and body -- against
-each other. It exits nonzero on anything it cannot account for, and reports no
-unexplained divergence today. Run it after changing how any f08 argument is
-declared, generated or not.
+The first reads `doc/mpi50-report.pdf` and compares intents, declared types,
+`VALUE`, argument names and argument order against the appendix that gives them,
+and compares the 1180 f08 specifics' two declarations -- interface and body --
+against each other. It exits nonzero on anything it cannot account for, and
+reports no unexplained divergence today. Run it after changing how any f08
+argument is declared, generated or not. It cannot run in CI, needing the
+git-ignored PDF, so running it is on whoever changes a declaration.
+
+The second is in CI, as the `checks` job, and is the only thing that would catch a
+`pointer (P, X)` whose name does not match its `common /P/ P`: the mismatch makes
+a fresh implicitly declared local that nothing assigns, so `X` sits at an
+arbitrary address and MPI writes through it, and both spellings are valid Fortran
+so nothing warns.
 
 **Never edit `gen/` by hand.** It is generated and committed. To change what is
 there, edit `dev/mpiapi.jl` and run `julia dev/mpiapi.jl` from the repo root; the

@@ -11,10 +11,21 @@ mpif provides the MPI standard version 5.0.
 
 ## Status
 
-mpif currently implements almost all Fortran bindings for the
-`mpif.h`, `use mpi`, and `use mpi_f08` parts. Notable exceptions are
-callbacks (e.g. user-defined operators) which are not yet supported.
-Adding this support is planned.
+mpif implements the Fortran bindings for `mpif.h`, `use mpi` and `use
+mpi_f08`, each with the `PMPI_` forms the profiling interface requires.
+Callbacks work -- user-defined reduction operators, error handlers,
+generalized requests, attribute copy and delete functions, and the
+datarep conversion functions -- through trampolines that give the C
+library a C function and call the Fortran one behind it.
+
+One known defect remains, and MPICH's Fortran test suite reports it: an
+attribute set from Fortran is not visible to C as a pointer, where
+MPI-5.0 section 19.3.7 requires that it is. Assumed-rank choice buffers
+are not implemented either, which is a conforming choice rather than a
+defect -- `MPI_SUBARRAYS_SUPPORTED` is `.FALSE.`, which is the option
+the standard offers and which both other implementations offer for
+`mpif.h` and the `mpi` module. `MISSING.md` has both, with everything
+else outstanding and the reasons.
 
 ## Documentation
 

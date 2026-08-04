@@ -79,6 +79,15 @@ triaged openmpi/llvm/darwin/15/arm64
 triaged openmpi/llvm/linux/24.04/x86_64
 triaged openmpi/llvm/linux/24.04/aarch64
 
+# The 32-bit one, gating from three consecutive runs that reported it under its
+# own key with no differences: 30861875404, 30863777064 and 30905286536. It runs
+# natively on an amd64 runner with the arch overridden, so `uname -m` says i686
+# only because docker/mpich-gcc-i386.dockerfile makes it -- which is the thing
+# those runs had to confirm, since locally the image runs under qemu and would say
+# i686 regardless. The armv7l image is the other 32-bit ABI and is not covered by
+# this line; see MISSING.md "Triage the two 32-bit variants".
+triaged mpich/gcc/linux/13/i686
+
 # Measured outside CI, which the OS version in the key now tells apart from it:
 # this machine runs macOS 26 where the runners run 15, and the Docker images run
 # Ubuntu 26.04 where the runners run 24.04. The other five images have never been
@@ -119,9 +128,9 @@ xfail openmpi/*/darwin/*/*     f08  i_fcoll_test       # Open MPI on macOS loses
 xfail openmpi/*/*/*/*          f77  infocrenvf         # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
 xfail openmpi/*/*/*/*          f08  infocrenvf90       # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
 xfail openmpi/*/*/*/*          f90  infocrenvf90       # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
-flaky mpich/*/*/*/*            f77  nonblocking_inpf   # MISSING.md "MPI_Type_get_contents converts uninitialised memory" -- same assert, and the cause of the flakiness; passed on all six MPICH variants in the first run after that patch, so a candidate for removal
+flaky mpich/*/*/*/*            f77  nonblocking_inpf   # MISSING.md "MPI_Type_get_contents converts uninitialised memory" -- same assert, and the cause of the flakiness; still flaky, having failed on mpich/llvm/linux/24.04/x86_64 in 30863777064 and passed everywhere in 30861875404 and 30905286536
 xfail */gcc/*/*/*              f08  nonblocking_inpf08 # gcc only, on both MPIs; MISSING.md "ABI_Datatype_from_mpi asserts on a datatype predefined only internally"
-flaky mpich/*/*/*/*            f90  nonblocking_inpf90 # MISSING.md "MPI_Type_get_contents converts uninitialised memory" -- same assert, and the cause of the flakiness; passed on all six MPICH variants in the first run after that patch, so a candidate for removal
+flaky mpich/*/*/*/*            f90  nonblocking_inpf90 # MISSING.md "MPI_Type_get_contents converts uninitialised memory" -- same assert, and the cause of the flakiness; still flaky, having failed on mpich/llvm/linux/24.04/x86_64 in 30863777064 and passed everywhere in 30861875404 and 30905286536
 xfail */gcc/*/*/*              f08  nonblockingf08     # gcc only, on both MPIs; MISSING.md "ABI_Datatype_from_mpi asserts on a datatype predefined only internally"
 xfail */*/*/*/*                f08  profile1f90        # defines mpi_send_f08ts, MPICH's scheme-1B specific name; mpif is 1A. CODE.md "The mpi_f08 specific procedure names"
 xfail */*/*/*/*                f08  spawnargvf03       # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
@@ -140,9 +149,9 @@ xfail openmpi/*/*/*/x86_64     f08  spawnmultf90       # Open MPI cannot TCP con
 xfail */*/*/*/*                f08  statusconv         # C file spelling the ABI's MPI_F08_Status as MPICH's MPI_F08_status
 xfail */*/*/*/*                f08  test14             # noncontiguous subarray to a nonblocking call, which MPI_SUBARRAYS_SUPPORTED == .FALSE. forbids
 xfail */*/*/*/*                f08  test15             # noncontiguous subarray to a nonblocking call, which MPI_SUBARRAYS_SUPPORTED == .FALSE. forbids
-flaky mpich/*/*/*/*            f77  typecntsf          # MISSING.md "MPI_Type_get_contents converts uninitialised memory" -- same assert, and the cause of the flakiness; passed on all six MPICH variants in the first run after that patch, so a candidate for removal
-flaky mpich/*/*/*/*            f08  typecntsf08        # MISSING.md "MPI_Type_get_contents converts uninitialised memory" -- same assert, and the cause of the flakiness; passed on all six MPICH variants in the first run after that patch, so a candidate for removal
-flaky mpich/*/*/*/*            f90  typecntsf90        # MISSING.md "MPI_Type_get_contents converts uninitialised memory" -- same assert, and the cause of the flakiness; passed on all six MPICH variants in the first run after that patch, so a candidate for removal
+flaky mpich/*/*/*/*            f77  typecntsf          # MISSING.md "MPI_Type_get_contents converts uninitialised memory" -- same assert, and the cause of the flakiness; passed on every MPICH variant in 30861875404, 30863777064 and 30905286536, but the same defect still fires (see nonblocking_inpf), so not yet a candidate for removal
+flaky mpich/*/*/*/*            f08  typecntsf08        # MISSING.md "MPI_Type_get_contents converts uninitialised memory" -- same assert, and the cause of the flakiness; passed on every MPICH variant in 30861875404, 30863777064 and 30905286536, but the same defect still fires (see nonblocking_inpf), so not yet a candidate for removal
+flaky mpich/*/*/*/*            f90  typecntsf90        # MISSING.md "MPI_Type_get_contents converts uninitialised memory" -- same assert, and the cause of the flakiness; passed on every MPICH variant in 30861875404, 30863777064 and 30905286536, but the same defect still fires (see nonblocking_inpf), so not yet a candidate for removal
 xfail openmpi/*/*/*/*          f77  typesnamef         # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"
 xfail openmpi/*/*/*/*          f08  typesnamef08       # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"
 xfail openmpi/*/*/*/*          f90  typesnamef90       # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"

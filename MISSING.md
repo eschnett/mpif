@@ -240,12 +240,18 @@ CI run 30861875404 is the confirmation, all thirteen jobs green, and it settled 
 than `createf90types`: **every one of the five `flaky` entries passed on all six
 MPICH variants**, where the two runs before it had `typecntsf`, `typecntsf90` or
 `typecntsf08` failing on four variants between them. That is the same assert going
-away for the same reason, so those five are candidates for removal rather than
-flakiness anybody still has to live with -- their reasons in
-`ci-scripts/suite/mpich-suite-xfail.txt` now say so. Give it two or three more runs
-before deleting them: `flaky` was a statement of ignorance about a
-nondeterministic failure, and one green run is not yet the evidence that the
-nondeterminism is gone.
+away for the same reason, and it read at the time as though the five were
+candidates for removal rather than flakiness anybody still has to live with.
+
+Two runs later that is refuted, and the caution it came with -- one green run is
+not evidence that a nondeterministic failure has stopped -- was the right one.
+`nonblocking_inpf` and `nonblocking_inpf90` failed on `mpich/llvm/linux/24.04/x86_64` in
+30863777064, then passed again everywhere in 30905286536; the three `typecnts*`
+passed in all three. So the patch removed most of the nondeterminism and not all
+of it, and what is left is the interesting part: the same uninitialised read, on
+one variant, in the two tests that were flaky before it. None of the five can go
+until that is understood, the three quiet ones included -- see item 5 of "Worth
+doing next".
 
 ### MPICH: `ABI_Datatype_from_mpi` asserts on a datatype predefined only internally
 
@@ -1032,19 +1038,29 @@ writes it.
    MPICH and absent from the ABI's table. Start from `alltoallwf08` under a
    debugger, breaking on `MPIR_Assert_fail`. That they fail under gcc on both
    implementations says the answer is not only this assert.
-4. **Triage the two 32-bit variants**, `mpich/gcc/linux/13/i686` and the arm32v7
-   one, neither of which has a `triaged` line in
-   `ci-scripts/suite/mpich-suite-xfail.txt` yet, so both are reported and cannot
-   fail a run. The i386 one is the one to do first, since
-   `.github/workflows/ci.yaml` runs it on every push and it runs natively; the
-   arm32v7 one is emulated and local-only. It is ready for it: run 30861875404 is
-   the first to report it under its own key and it came out with no differences, so
-   the line can go in as soon as a second run agrees. Do not carry either list over
-   to the other: they are different 32-bit ABIs, a 64-bit type being eight-byte
-   aligned on armhf and four-byte on i386.
-5. **Delete the five `flaky` entries**, if two or three more runs keep agreeing
-   with 30861875404 that they pass. They were the `MPI_Type_get_contents` defect
-   all along; see that entry.
+4. **Triage `mpich/gcc/linux/26.04/armv7l`**, the one 32-bit variant still
+   without a `triaged` line, so it is reported and cannot fail a run. It is
+   emulated and local-only, which is why it is behind the i686 one -- that now
+   gates, on three consecutive runs agreeing. Do not carry the i686 list over to
+   it: they are different 32-bit ABIs, a 64-bit type being eight-byte aligned on
+   armhf and four-byte on i386.
+5. **Settle the five `flaky` entries**, which is no longer the simple deletion it
+   looked like. Three runs in, the two groups have parted company:
+
+       typecntsf, typecntsf90, typecntsf08   passed in all three runs
+       nonblocking_inpf, nonblocking_inpf90  failed in 30863777064, on
+                                             mpich/llvm/linux/24.04/x86_64
+
+   So the nondeterminism is not gone, and the reasons in
+   `ci-scripts/suite/mpich-suite-xfail.txt` say so now. Nor does that clear the
+   other three: all five are the one uninitialised read in
+   `MPI_Type_get_contents`, and a defect that still fires for two of them is a
+   defect. Twenty-one clean observations of `typecnts*` do not outweigh that.
+   What would settle it is finding why the patched `MPI_Type_get_contents` still
+   leaves anything nondeterministic -- start from `nonblocking_inpf` on
+   `mpich/llvm/linux/24.04/x86_64`, the one combination seen to fail -- rather
+   than more runs of the same count.
+
 Two things are decided and not on this list, so that they are not picked up by
 mistake: assumed-rank choice buffers are not being taken for now, and `MPI_Sizeof`
 stays as it is, covering rank zero and rank one. Both are recorded where they
@@ -1117,8 +1133,10 @@ on the x86_64 runners", and subtracting them is what would make those rows equal
 their aarch64 twins. Two attempts to remove them -- the interface, then the warning
 -- were both refuted by CI, which is what the rows are for.
 
-The table has no 32-bit row, and both 32-bit variants are untriaged. What one run
-of `mpich/gcc/linux/26.04/armv7l` reported, after the kinds were fixed: the whole
+The table has no 32-bit row. `mpich/gcc/linux/13/i686` now gates, on three
+consecutive runs -- 30861875404, 30863777064 and 30905286536 -- reporting it under
+its own key with no differences; `mpich/gcc/linux/26.04/armv7l` is still
+untriaged. What one run of that one reported, after the kinds were fixed: the whole
 suite ran, and the only differences from the list were the five `flaky` entries
 going both ways -- `nonblocking_inpf` and `nonblocking_inpf90` passing,
 `typecntsf`, `typecntsf90` and `typecntsf08` failing, all of which the list excuses
@@ -1186,8 +1204,15 @@ Three things the twelve-way measurement settled that guesswork had got wrong:
   Homebrew compilers, about three cores -- reports no differences against it.
   That is the evidence that the key needs nothing finer than architecture.
 
-Every variant is declared `triaged`, so any difference now fails the run.
-That rests on a single measurement each, which is thin for a flaky test, so
+Every variant CI runs is declared `triaged` -- the twelve above and
+`mpich/gcc/linux/13/i686`, which is all thirteen jobs -- so any difference there
+now fails the run. Fifteen `triaged` lines in all, the other two being the
+environments outside CI. The one variant still not gating is
+`mpich/gcc/linux/26.04/armv7l`, which CI does not run: `.github/workflows/ci.yaml`
+builds only the `linux/386` container, and the arm32v7 image is emulated and
+local-only.
+
+The twelve rest on a single measurement each, which is thin for a flaky test, so
 expect some churn: a flaky entry surfaces as an unexpected pass, which is the
 mechanism working rather than failing. Three entries are already marked as seen
 on one variant only and therefore suspect.

@@ -17,6 +17,28 @@ defaults:
     shell: bash
 
 jobs:
+  # Everything that needs no MPI, no compiler and no build, so it runs once
+  # rather than thirteen times and answers in seconds. Not a dependency of the
+  # jobs below: it would delay all thirteen by a runner start-up for a check that
+  # takes a moment, and a failure here fails the run either way.
+  checks:
+    name: source checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # The sentinels are Cray pointers whose pointer variable lives in a common
+      # block that src/mpif_constants.c defines. A `pointer (P, X)` whose name
+      # does not match its `common /P/ P` is a fresh implicitly declared local
+      # that nothing ever assigns, so X sits at an arbitrary address and MPI
+      # writes through it -- and nothing warns, both spellings being valid
+      # Fortran. This is the only thing that would catch it.
+      - name: Check the Cray pointers against their common blocks
+        run: bash ci-scripts/check-headers.sh
+
   build:
     name: ${{ matrix.mpi }} / ${{ matrix.toolchain }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
