@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13...3.28)
 project(
-  mpif VERSION 0.2.0
+  mpif VERSION 1.0.0
   DESCRIPTION "MPI Fortran bindings"
   HOMEPAGE_URL "https://github.com/eschnett/mpif"
   LANGUAGES C Fortran
@@ -15,7 +15,7 @@ project(
 #
 # Different SOVERSIONs are incompatible; there is no need to have a
 # major/minor version number.
-set(SOVERSION 0)
+set(SOVERSION 1)
 
 set(CMAKE_C_STANDARD 11)   # C11 for <stdatomic.h>, used by the callback registry
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
