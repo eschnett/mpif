@@ -16,6 +16,18 @@ mpif currently implements almost all Fortran bindings for the
 callbacks (e.g. user-defined operators) which are not yet supported.
 Adding this support is planned.
 
+## Documentation
+
+Three working notes, none of them referred to by the source tree:
+
+- `CODE.md`: what the code is made of, how the pieces fit, and why the
+  arrangements that look odd are the ones they are.
+- `MISSING.md`: what mpif gets wrong, does not do, or cannot do because
+  something outside it is broken -- plus the decisions not to do something.
+- `CLAUDE.md`: how to build, test and verify it, and the traps that have cost
+  the most time. Written for an AI agent working in the repository, and useful
+  to anyone else for the same reason.
+
 ## Directory structure
 
 - `bin`: scripts (`mpifort`)

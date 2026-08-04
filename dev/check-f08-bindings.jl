@@ -24,7 +24,7 @@
 # says exactly that, and costs one more turn of a comparison already written.
 #
 # The predefined callbacks have no PMPI forms and want none; see "The PMPI
-# profiling interface" in MISSING.md for why.
+# profiling interface" in CODE.md for why.
 #
 # The generator derives every f08 INTENT from the parameter's `param_direction`
 # in `data/apis.json`, and the standard's own bindings do not always agree. Where

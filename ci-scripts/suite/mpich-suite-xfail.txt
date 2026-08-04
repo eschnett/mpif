@@ -123,7 +123,7 @@ flaky mpich/*/*/*/*            f77  nonblocking_inpf   # MISSING.md "MPI_Type_ge
 xfail */gcc/*/*/*              f08  nonblocking_inpf08 # gcc only, on both MPIs; MISSING.md "ABI_Datatype_from_mpi asserts on a datatype predefined only internally"
 flaky mpich/*/*/*/*            f90  nonblocking_inpf90 # MISSING.md "MPI_Type_get_contents converts uninitialised memory" -- same assert, and the cause of the flakiness; passed on all six MPICH variants in the first run after that patch, so a candidate for removal
 xfail */gcc/*/*/*              f08  nonblockingf08     # gcc only, on both MPIs; MISSING.md "ABI_Datatype_from_mpi asserts on a datatype predefined only internally"
-xfail */*/*/*/*                f08  profile1f90        # defines mpi_send_f08ts, MPICH's scheme-1B specific name; mpif is 1A. MISSING.md "The mpi_f08 specific procedure names"
+xfail */*/*/*/*                f08  profile1f90        # defines mpi_send_f08ts, MPICH's scheme-1B specific name; mpif is 1A. CODE.md "The mpi_f08 specific procedure names"
 xfail */*/*/*/*                f08  spawnargvf03       # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
 xfail */*/*/*/*                f08  spawnargvf90       # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
 xfail openmpi/*/*/*/x86_64     f77  spawnargvf         # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
