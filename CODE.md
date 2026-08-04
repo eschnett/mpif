@@ -307,6 +307,71 @@ mechanism that replaced them and the evidence it is right.
   rather than generated, and are present. `MPI_Sizeof` is a hand-written generic
   in `src/mpif_types.F90`. `MPI_Status_f2f08` and `MPI_Status_f082f` are
   implemented and public in `src/mpif_f08_types.F90`.
+- **`mpif_f08_raw` exists so that two kinds of argument reach C without a Fortran
+  temporary, and both were defects before it did.** It is a second set of
+  interfaces to the same C entry points, differing from `mpif_functions`' only in
+  how they spell an argument or two, and the f08 wrappers of the affected routines call
+  it instead of the `mpi` module. `dev/mpiapi.jl` decides per routine and per
+  argument, from the declaration rather than from a list, so an argument that
+  stops needing the second spelling stops getting it.
+
+  A **status** is `TYPE(MPI_Status)` there where the `mpi` module says
+  `INTEGER(MPI_STATUS_SIZE)`. It is eight default integers either way -- the ABI
+  fixes `MPI_Status` as three named ints and five more, and mpif fixes
+  `MPI_STATUS_SIZE` at 8 with `MPI_SOURCE`, `MPI_TAG` and `MPI_ERROR` at 1, 2 and
+  3 -- so the caller's own status can be handed straight to C. Converting instead
+  cost three defects: a one-status temporary that arrays overran, an `MPI_ERROR`
+  copied back from uninitialised stack, and a `loc()` comparison per call to keep
+  `MPI_STATUS_IGNORE` out of the conversion.
+
+  An **assumed-size array of handles** is `TYPE(MPI_Datatype)` there. This is the
+  `alltoallw` family and nothing else -- the only routines in the standard whose
+  Fortran binding takes one, `sendtypes(*)` and `recvtypes(*)`, since their length
+  is the group or neighbour count and appears in no argument. It rests on
+  `TYPE(MPI_Datatype)` being `BIND(C)` around one default `INTEGER`, so an array of
+  them is an `MPI_Fint[]`, which is the same claim already made for a status's
+  eight. `%MPI_VAL` on such a dummy cost the fourth defect: a component reference
+  of an assumed-size array has no extent the compiler knows, and gfortran repacked
+  it into a temporary whose descriptor said `ubound = -1`, copying nothing. See the
+  withdrawn `ABI_Datatype_from_mpi` entry in `MISSING.md`.
+
+  **Explicit-shape handle arrays deliberately do not get this treatment.**
+  `MPI_Waitall`'s `array_of_requests(count)` and the thirteen others keep
+  `%MPI_VAL`: the compiler knows `count`, copies in and out correctly, and there
+  is no defect to fix. The rule is about what the compiler can size, not about
+  handles.
+- **The `alltoallw` family works out its own array lengths, and none of the three
+  answers is `MPI_Comm_size`.** `gen/mpif_functions.c` needs a count to convert
+  `sendtypes` and `recvtypes`, and the standard gives a different one per case:
+  the remote group's size for an intercommunicator, since the arrays are indexed
+  over the group being sent to (MPI-5.0 6.8) and `MPI_COMM_SIZE` "returns the size
+  of the local group" (7.6); the outdegree and indegree for the neighbour forms,
+  which 8.6 defines per topology and which `MPI_Topo_test` therefore has to
+  dispatch on; and the local size only for an intracommunicator. `sendtypes` is
+  additionally not read at all under `MPI_IN_PLACE`, 6.8 saying it "is ignored",
+  and is filled with `MPI_DATATYPE_NULL` in that case rather than left alone.
+
+  The neighbour dispatch matches what MPICH's own `mpi_abi_util.h` does for the
+  same question, `*indegree = *outdegree = 2 * ival` in the `MPI_CART` case
+  included, which is worth knowing when reading either. A communicator with no
+  topology leaves both degrees zero, so nothing is converted and the
+  implementation reports `MPI_ERR_TOPOLOGY` itself; and since a degree of zero is
+  legal, the VLAs are sized `n > 0 ? n : 1`.
+
+  `test/` covers all four with `add_mpi_test`'s `NPROCS`, which exists for them:
+  at one rank a group size, a remote group size and a neighbour count all
+  coincide, so every wrong length is the right one.
+
+  One thing `test/neighbor_alltoallw_f08.f90` deliberately does not assert, having
+  tried it: *which* block a neighbour's data lands in. Tagging each send block with
+  its index and predicting where it arrives fails, and correctly -- with `dims`
+  from `MPI_Dims_create` most dimensions have extent one, so both of their
+  neighbours are the calling process and several edges join the same pair. 8.6's
+  model is a loop of `MPI_Isend` to `dsts[k]` and `MPI_Irecv` from `srcs[i]`, and
+  its matching rule constrains the type signatures rather than which send satisfies
+  which receive; send block 6 duly arrived in receive block 3. The test sends each
+  rank's own number instead, which still pins down that block *i* came from source
+  *i*.
 - **`MPI_Sizeof` stays as it is, covering rank zero and rank one.**
   `src/mpif_types.F90` gives the generic a scalar and an assumed-size specific per
   type and kind, so an argument of rank two or more resolves to nothing. That is

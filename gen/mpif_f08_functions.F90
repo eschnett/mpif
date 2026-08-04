@@ -3,12 +3,276 @@
 
 module mpif_f08_raw
   use mpif_constants
-  use mpif_f08_types, only: MPI_Status
+  use mpif_f08_types, only: MPI_Datatype, MPI_Status
   implicit none
   public
   save
 
   interface
+
+     subroutine MPI_Alltoallw( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcounts(*)
+       integer :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcounts(*)
+       integer :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: ierror
+     end subroutine MPI_Alltoallw
+
+     subroutine MPI_Alltoallw_c( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: ierror
+     end subroutine MPI_Alltoallw_c
+
+     subroutine PMPI_Alltoallw( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcounts(*)
+       integer :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcounts(*)
+       integer :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: ierror
+     end subroutine PMPI_Alltoallw
+
+     subroutine PMPI_Alltoallw_c( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: ierror
+     end subroutine PMPI_Alltoallw_c
+
+     subroutine MPI_Alltoallw_init( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       info, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcounts(*)
+       integer :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcounts(*)
+       integer :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: info
+       integer :: request
+       integer :: ierror
+     end subroutine MPI_Alltoallw_init
+
+     subroutine MPI_Alltoallw_init_c( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       info, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: info
+       integer :: request
+       integer :: ierror
+     end subroutine MPI_Alltoallw_init_c
+
+     subroutine PMPI_Alltoallw_init( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       info, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcounts(*)
+       integer :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcounts(*)
+       integer :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: info
+       integer :: request
+       integer :: ierror
+     end subroutine PMPI_Alltoallw_init
+
+     subroutine PMPI_Alltoallw_init_c( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       info, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: info
+       integer :: request
+       integer :: ierror
+     end subroutine PMPI_Alltoallw_init_c
 
      subroutine MPI_File_read( &
        fh, &
@@ -1404,6 +1668,138 @@ module mpif_f08_raw
        integer :: ierror
      end subroutine PMPI_Get_elements_x
 
+     subroutine MPI_Ialltoallw( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcounts(*)
+       integer :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcounts(*)
+       integer :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: request
+       integer :: ierror
+     end subroutine MPI_Ialltoallw
+
+     subroutine MPI_Ialltoallw_c( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: request
+       integer :: ierror
+     end subroutine MPI_Ialltoallw_c
+
+     subroutine PMPI_Ialltoallw( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcounts(*)
+       integer :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcounts(*)
+       integer :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: request
+       integer :: ierror
+     end subroutine PMPI_Ialltoallw
+
+     subroutine PMPI_Ialltoallw_c( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: request
+       integer :: ierror
+     end subroutine PMPI_Ialltoallw_c
+
      subroutine MPI_Improbe( &
        source, &
        tag, &
@@ -1445,6 +1841,138 @@ module mpif_f08_raw
        type(MPI_Status) :: status
        integer :: ierror
      end subroutine PMPI_Improbe
+
+     subroutine MPI_Ineighbor_alltoallw( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: request
+       integer :: ierror
+     end subroutine MPI_Ineighbor_alltoallw
+
+     subroutine MPI_Ineighbor_alltoallw_c( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: request
+       integer :: ierror
+     end subroutine MPI_Ineighbor_alltoallw_c
+
+     subroutine PMPI_Ineighbor_alltoallw( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: request
+       integer :: ierror
+     end subroutine PMPI_Ineighbor_alltoallw
+
+     subroutine PMPI_Ineighbor_alltoallw_c( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: request
+       integer :: ierror
+     end subroutine PMPI_Ineighbor_alltoallw_c
 
      subroutine MPI_Iprobe( &
        source, &
@@ -1605,6 +2133,270 @@ module mpif_f08_raw
        type(MPI_Status) :: status
        integer :: ierror
      end subroutine PMPI_Mrecv_c
+
+     subroutine MPI_Neighbor_alltoallw( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: ierror
+     end subroutine MPI_Neighbor_alltoallw
+
+     subroutine MPI_Neighbor_alltoallw_c( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: ierror
+     end subroutine MPI_Neighbor_alltoallw_c
+
+     subroutine PMPI_Neighbor_alltoallw( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: ierror
+     end subroutine PMPI_Neighbor_alltoallw
+
+     subroutine PMPI_Neighbor_alltoallw_c( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: ierror
+     end subroutine PMPI_Neighbor_alltoallw_c
+
+     subroutine MPI_Neighbor_alltoallw_init( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       info, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: info
+       integer :: request
+       integer :: ierror
+     end subroutine MPI_Neighbor_alltoallw_init
+
+     subroutine MPI_Neighbor_alltoallw_init_c( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       info, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: info
+       integer :: request
+       integer :: ierror
+     end subroutine MPI_Neighbor_alltoallw_init_c
+
+     subroutine PMPI_Neighbor_alltoallw_init( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       info, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: info
+       integer :: request
+       integer :: ierror
+     end subroutine PMPI_Neighbor_alltoallw_init
+
+     subroutine PMPI_Neighbor_alltoallw_init_c( &
+       sendbuf, &
+       sendcounts, &
+       sdispls, &
+       sendtypes, &
+       recvbuf, &
+       recvcounts, &
+       rdispls, &
+       recvtypes, &
+       comm, &
+       info, &
+       request, &
+       ierror &
+     )
+       use mpif_constants
+       import :: MPI_Datatype
+       implicit none
+       !dir$ ignore_tkr(trk) sendbuf
+       !gcc$ attributes no_arg_check :: sendbuf
+       integer :: sendbuf(*)
+       integer(MPI_COUNT_KIND) :: sendcounts(*)
+       integer(MPI_ADDRESS_KIND) :: sdispls(*)
+       type(MPI_Datatype) :: sendtypes(*)
+       !dir$ ignore_tkr(trk) recvbuf
+       !gcc$ attributes no_arg_check :: recvbuf
+       integer :: recvbuf(*)
+       integer(MPI_COUNT_KIND) :: recvcounts(*)
+       integer(MPI_ADDRESS_KIND) :: rdispls(*)
+       type(MPI_Datatype) :: recvtypes(*)
+       integer :: comm
+       integer :: info
+       integer :: request
+       integer :: ierror
+     end subroutine PMPI_Neighbor_alltoallw_init_c
 
      subroutine MPI_Probe( &
        source, &

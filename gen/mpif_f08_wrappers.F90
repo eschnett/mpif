@@ -2328,7 +2328,7 @@ subroutine MPI_Alltoallw_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Alltoallw => MPI_Alltoallw
+  use mpif_f08_raw, only: MPIF_Alltoallw => MPI_Alltoallw
   implicit none
   integer :: sendbuf(*)
   integer, intent(in) :: sendcounts(*)
@@ -2345,11 +2345,11 @@ subroutine MPI_Alltoallw_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     tmp_ierror &
   )
@@ -2370,7 +2370,7 @@ subroutine MPI_Alltoallw_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Alltoallw_c => MPI_Alltoallw_c
+  use mpif_f08_raw, only: MPIF_Alltoallw_c => MPI_Alltoallw_c
   implicit none
   integer :: sendbuf(*)
   integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
@@ -2387,11 +2387,11 @@ subroutine MPI_Alltoallw_c_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     tmp_ierror &
   )
@@ -2412,7 +2412,7 @@ subroutine PMPI_Alltoallw_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Alltoallw => PMPI_Alltoallw
+  use mpif_f08_raw, only: PMPIF_Alltoallw => PMPI_Alltoallw
   implicit none
   integer :: sendbuf(*)
   integer, intent(in) :: sendcounts(*)
@@ -2429,11 +2429,11 @@ subroutine PMPI_Alltoallw_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     tmp_ierror &
   )
@@ -2454,7 +2454,7 @@ subroutine PMPI_Alltoallw_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Alltoallw_c => PMPI_Alltoallw_c
+  use mpif_f08_raw, only: PMPIF_Alltoallw_c => PMPI_Alltoallw_c
   implicit none
   integer :: sendbuf(*)
   integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
@@ -2471,11 +2471,11 @@ subroutine PMPI_Alltoallw_c_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     tmp_ierror &
   )
@@ -2498,7 +2498,7 @@ subroutine MPI_Alltoallw_init_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Alltoallw_init => MPI_Alltoallw_init
+  use mpif_f08_raw, only: MPIF_Alltoallw_init => MPI_Alltoallw_init
   implicit none
   integer :: sendbuf(*)
   integer, intent(in) :: sendcounts(*)
@@ -2517,11 +2517,11 @@ subroutine MPI_Alltoallw_init_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     info%MPI_VAL, &
     request%MPI_VAL, &
@@ -2546,7 +2546,7 @@ subroutine MPI_Alltoallw_init_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Alltoallw_init_c => MPI_Alltoallw_init_c
+  use mpif_f08_raw, only: MPIF_Alltoallw_init_c => MPI_Alltoallw_init_c
   implicit none
   integer :: sendbuf(*)
   integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
@@ -2565,11 +2565,11 @@ subroutine MPI_Alltoallw_init_c_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     info%MPI_VAL, &
     request%MPI_VAL, &
@@ -2594,7 +2594,7 @@ subroutine PMPI_Alltoallw_init_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Alltoallw_init => PMPI_Alltoallw_init
+  use mpif_f08_raw, only: PMPIF_Alltoallw_init => PMPI_Alltoallw_init
   implicit none
   integer :: sendbuf(*)
   integer, intent(in) :: sendcounts(*)
@@ -2613,11 +2613,11 @@ subroutine PMPI_Alltoallw_init_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     info%MPI_VAL, &
     request%MPI_VAL, &
@@ -2642,7 +2642,7 @@ subroutine PMPI_Alltoallw_init_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Alltoallw_init_c => PMPI_Alltoallw_init_c
+  use mpif_f08_raw, only: PMPIF_Alltoallw_init_c => PMPI_Alltoallw_init_c
   implicit none
   integer :: sendbuf(*)
   integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
@@ -2661,11 +2661,11 @@ subroutine PMPI_Alltoallw_init_c_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     info%MPI_VAL, &
     request%MPI_VAL, &
@@ -15551,7 +15551,7 @@ subroutine MPI_Ialltoallw_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Ialltoallw => MPI_Ialltoallw
+  use mpif_f08_raw, only: MPIF_Ialltoallw => MPI_Ialltoallw
   implicit none
   integer :: sendbuf(*)
   integer, intent(in) :: sendcounts(*)
@@ -15569,11 +15569,11 @@ subroutine MPI_Ialltoallw_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     request%MPI_VAL, &
     tmp_ierror &
@@ -15596,7 +15596,7 @@ subroutine MPI_Ialltoallw_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Ialltoallw_c => MPI_Ialltoallw_c
+  use mpif_f08_raw, only: MPIF_Ialltoallw_c => MPI_Ialltoallw_c
   implicit none
   integer :: sendbuf(*)
   integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
@@ -15614,11 +15614,11 @@ subroutine MPI_Ialltoallw_c_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     request%MPI_VAL, &
     tmp_ierror &
@@ -15641,7 +15641,7 @@ subroutine PMPI_Ialltoallw_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Ialltoallw => PMPI_Ialltoallw
+  use mpif_f08_raw, only: PMPIF_Ialltoallw => PMPI_Ialltoallw
   implicit none
   integer :: sendbuf(*)
   integer, intent(in) :: sendcounts(*)
@@ -15659,11 +15659,11 @@ subroutine PMPI_Ialltoallw_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     request%MPI_VAL, &
     tmp_ierror &
@@ -15686,7 +15686,7 @@ subroutine PMPI_Ialltoallw_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Ialltoallw_c => PMPI_Ialltoallw_c
+  use mpif_f08_raw, only: PMPIF_Ialltoallw_c => PMPI_Ialltoallw_c
   implicit none
   integer :: sendbuf(*)
   integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
@@ -15704,11 +15704,11 @@ subroutine PMPI_Ialltoallw_c_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     request%MPI_VAL, &
     tmp_ierror &
@@ -17387,7 +17387,7 @@ subroutine MPI_Ineighbor_alltoallw_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Ineighbor_alltoallw => MPI_Ineighbor_alltoallw
+  use mpif_f08_raw, only: MPIF_Ineighbor_alltoallw => MPI_Ineighbor_alltoallw
   implicit none
   integer :: sendbuf(*)
   integer, intent(in) :: sendcounts(*)
@@ -17405,11 +17405,11 @@ subroutine MPI_Ineighbor_alltoallw_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     request%MPI_VAL, &
     tmp_ierror &
@@ -17432,7 +17432,7 @@ subroutine MPI_Ineighbor_alltoallw_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Ineighbor_alltoallw_c => MPI_Ineighbor_alltoallw_c
+  use mpif_f08_raw, only: MPIF_Ineighbor_alltoallw_c => MPI_Ineighbor_alltoallw_c
   implicit none
   integer :: sendbuf(*)
   integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
@@ -17450,11 +17450,11 @@ subroutine MPI_Ineighbor_alltoallw_c_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     request%MPI_VAL, &
     tmp_ierror &
@@ -17477,7 +17477,7 @@ subroutine PMPI_Ineighbor_alltoallw_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Ineighbor_alltoallw => PMPI_Ineighbor_alltoallw
+  use mpif_f08_raw, only: PMPIF_Ineighbor_alltoallw => PMPI_Ineighbor_alltoallw
   implicit none
   integer :: sendbuf(*)
   integer, intent(in) :: sendcounts(*)
@@ -17495,11 +17495,11 @@ subroutine PMPI_Ineighbor_alltoallw_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     request%MPI_VAL, &
     tmp_ierror &
@@ -17522,7 +17522,7 @@ subroutine PMPI_Ineighbor_alltoallw_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Ineighbor_alltoallw_c => PMPI_Ineighbor_alltoallw_c
+  use mpif_f08_raw, only: PMPIF_Ineighbor_alltoallw_c => PMPI_Ineighbor_alltoallw_c
   implicit none
   integer :: sendbuf(*)
   integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
@@ -17540,11 +17540,11 @@ subroutine PMPI_Ineighbor_alltoallw_c_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     request%MPI_VAL, &
     tmp_ierror &
@@ -21988,7 +21988,7 @@ subroutine MPI_Neighbor_alltoallw_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Neighbor_alltoallw => MPI_Neighbor_alltoallw
+  use mpif_f08_raw, only: MPIF_Neighbor_alltoallw => MPI_Neighbor_alltoallw
   implicit none
   integer :: sendbuf(*)
   integer, intent(in) :: sendcounts(*)
@@ -22005,11 +22005,11 @@ subroutine MPI_Neighbor_alltoallw_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     tmp_ierror &
   )
@@ -22030,7 +22030,7 @@ subroutine MPI_Neighbor_alltoallw_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Neighbor_alltoallw_c => MPI_Neighbor_alltoallw_c
+  use mpif_f08_raw, only: MPIF_Neighbor_alltoallw_c => MPI_Neighbor_alltoallw_c
   implicit none
   integer :: sendbuf(*)
   integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
@@ -22047,11 +22047,11 @@ subroutine MPI_Neighbor_alltoallw_c_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     tmp_ierror &
   )
@@ -22072,7 +22072,7 @@ subroutine PMPI_Neighbor_alltoallw_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Neighbor_alltoallw => PMPI_Neighbor_alltoallw
+  use mpif_f08_raw, only: PMPIF_Neighbor_alltoallw => PMPI_Neighbor_alltoallw
   implicit none
   integer :: sendbuf(*)
   integer, intent(in) :: sendcounts(*)
@@ -22089,11 +22089,11 @@ subroutine PMPI_Neighbor_alltoallw_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     tmp_ierror &
   )
@@ -22114,7 +22114,7 @@ subroutine PMPI_Neighbor_alltoallw_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Neighbor_alltoallw_c => PMPI_Neighbor_alltoallw_c
+  use mpif_f08_raw, only: PMPIF_Neighbor_alltoallw_c => PMPI_Neighbor_alltoallw_c
   implicit none
   integer :: sendbuf(*)
   integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
@@ -22131,11 +22131,11 @@ subroutine PMPI_Neighbor_alltoallw_c_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     tmp_ierror &
   )
@@ -22158,7 +22158,7 @@ subroutine MPI_Neighbor_alltoallw_init_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Neighbor_alltoallw_init => MPI_Neighbor_alltoallw_init
+  use mpif_f08_raw, only: MPIF_Neighbor_alltoallw_init => MPI_Neighbor_alltoallw_init
   implicit none
   integer :: sendbuf(*)
   integer, intent(in) :: sendcounts(*)
@@ -22177,11 +22177,11 @@ subroutine MPI_Neighbor_alltoallw_init_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     info%MPI_VAL, &
     request%MPI_VAL, &
@@ -22206,7 +22206,7 @@ subroutine MPI_Neighbor_alltoallw_init_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Neighbor_alltoallw_init_c => MPI_Neighbor_alltoallw_init_c
+  use mpif_f08_raw, only: MPIF_Neighbor_alltoallw_init_c => MPI_Neighbor_alltoallw_init_c
   implicit none
   integer :: sendbuf(*)
   integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
@@ -22225,11 +22225,11 @@ subroutine MPI_Neighbor_alltoallw_init_c_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     info%MPI_VAL, &
     request%MPI_VAL, &
@@ -22254,7 +22254,7 @@ subroutine PMPI_Neighbor_alltoallw_init_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Neighbor_alltoallw_init => PMPI_Neighbor_alltoallw_init
+  use mpif_f08_raw, only: PMPIF_Neighbor_alltoallw_init => PMPI_Neighbor_alltoallw_init
   implicit none
   integer :: sendbuf(*)
   integer, intent(in) :: sendcounts(*)
@@ -22273,11 +22273,11 @@ subroutine PMPI_Neighbor_alltoallw_init_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     info%MPI_VAL, &
     request%MPI_VAL, &
@@ -22302,7 +22302,7 @@ subroutine PMPI_Neighbor_alltoallw_init_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Neighbor_alltoallw_init_c => PMPI_Neighbor_alltoallw_init_c
+  use mpif_f08_raw, only: PMPIF_Neighbor_alltoallw_init_c => PMPI_Neighbor_alltoallw_init_c
   implicit none
   integer :: sendbuf(*)
   integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
@@ -22321,11 +22321,11 @@ subroutine PMPI_Neighbor_alltoallw_init_c_f08( &
     sendbuf, &
     sendcounts, &
     sdispls, &
-    sendtypes%MPI_VAL, &
+    sendtypes, &
     recvbuf, &
     recvcounts, &
     rdispls, &
-    recvtypes%MPI_VAL, &
+    recvtypes, &
     comm%MPI_VAL, &
     info%MPI_VAL, &
     request%MPI_VAL, &

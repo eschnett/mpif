@@ -10,11 +10,39 @@ find_package(MPI REQUIRED COMPONENTS C Fortran)
 
 enable_testing()
 
+# Most of these tests are single-rank and run the executable directly. NPROCS
+# asks for more, which needs mpiexec.
+#
+# It needs the *variant's* mpiexec, not whichever one find_package(MPI) happens to
+# turn up: it found an unrelated miniforge install here, which would have run the
+# tests against an MPI that mpif was not built against and reported whatever came
+# of that. So every caller pins MPIEXEC_EXECUTABLE -- scripts/macos-test-mpif.sh,
+# .github/workflows/ci.yaml and every docker/*.dockerfile -- and a caller that
+# forgets fails here rather than at run time. MPIEXEC_PREFLAGS is how the
+# launcher's own requirements get in, `--allow-run-as-root` in the containers and
+# `--oversubscribe --mca btl_tcp_if_include lo` for Open MPI; the suite passes the
+# same things through MPIEXEC_ARGS.
 function(add_mpi_test name)
-  cmake_parse_arguments(T "" "" "SOURCES;LIBS" ${ARGN})
+  cmake_parse_arguments(T "" "NPROCS" "SOURCES;LIBS" ${ARGN})
   add_executable(${name} ${T_SOURCES})
   target_link_libraries(${name} PRIVATE ${T_LIBS})
-  add_test(NAME ${name} COMMAND ${name})
+  if(T_NPROCS)
+    if(NOT MPIEXEC_EXECUTABLE OR NOT EXISTS "${MPIEXEC_EXECUTABLE}")
+      message(FATAL_ERROR
+        "${name} needs ${T_NPROCS} ranks, but MPIEXEC_EXECUTABLE is "
+        "\"${MPIEXEC_EXECUTABLE}\", which is not a file. Pass "
+        "-DMPIEXEC_EXECUTABLE=<mpi-prefix>/bin/mpiexec: it must be the launcher "
+        "of the MPI that mpif was built against, and letting find_package(MPI) "
+        "guess has picked an unrelated one.")
+    endif()
+    add_test(
+      NAME ${name}
+      COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${T_NPROCS}
+              ${MPIEXEC_PREFLAGS} $<TARGET_FILE:${name}> ${MPIEXEC_POSTFLAGS}
+      )
+  else()
+    add_test(NAME ${name} COMMAND ${name})
+  endif()
 endfunction()
 
 add_mpi_test(init_f                 SOURCES init_f.f                                LIBS MPI::MPI_Fortran)
@@ -68,3 +96,20 @@ add_mpi_test(pmpi_f90               SOURCES pmpi_f90.f90                        
 add_mpi_test(pmpi_f08               SOURCES pmpi_f08.f90                            LIBS MPI::MPI_Fortran)
 add_mpi_test(profile_f90            SOURCES profile_f90.f90                         LIBS MPI::MPI_Fortran)
 add_mpi_test(profile_f08            SOURCES profile_f08.f90                         LIBS MPI::MPI_Fortran)
+
+# The alltoallw family, whose handle arrays are the one place mpif has to work
+# out for itself how many entries there are. Multi-rank on purpose: at one rank
+# every wrong length coincides with the right one.
+add_mpi_test(alltoallw_f08          SOURCES alltoallw_f08.f90         NPROCS 2      LIBS MPI::MPI_Fortran)
+add_mpi_test(alltoallw_inplace_f    SOURCES alltoallw_inplace_f.f     NPROCS 2      LIBS MPI::MPI_Fortran)
+add_mpi_test(alltoallw_inplace_f90  SOURCES alltoallw_inplace_f90.f90 NPROCS 2      LIBS MPI::MPI_Fortran)
+add_mpi_test(alltoallw_inplace_f08  SOURCES alltoallw_inplace_f08.f90 NPROCS 2      LIBS MPI::MPI_Fortran)
+add_mpi_test(neighbor_alltoallw_f08 SOURCES neighbor_alltoallw_f08.f90 NPROCS 2     LIBS MPI::MPI_Fortran)
+# The three above check that in-place works; this one checks that `sendtypes` is
+# not read, which needs a guard page and therefore C.
+add_mpi_test(alltoallw_inplace_guard
+  SOURCES alltoallw_inplace_guard.c alltoallw_inplace_guard_subf.f alltoallw_inplace_guard_subf90.f90
+  NPROCS 2 LIBS MPI::MPI_Fortran MPI::MPI_C)
+# Three, so that the two groups differ in size and the local one is the wrong
+# answer.
+add_mpi_test(alltoallw_inter_f08    SOURCES alltoallw_inter_f08.f90   NPROCS 3      LIBS MPI::MPI_Fortran)

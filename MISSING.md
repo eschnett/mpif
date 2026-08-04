@@ -243,37 +243,149 @@ MPICH variants**, where the two runs before it had `typecntsf`, `typecntsf90` or
 away for the same reason, and it read at the time as though the five were
 candidates for removal rather than flakiness anybody still has to live with.
 
-Two runs later that is refuted, and the caution it came with -- one green run is
-not evidence that a nondeterministic failure has stopped -- was the right one.
-`nonblocking_inpf` and `nonblocking_inpf90` failed on `mpich/llvm/linux/24.04/x86_64` in
-30863777064, then passed again everywhere in 30905286536; the three `typecnts*`
-passed in all three. So the patch removed most of the nondeterminism and not all
-of it, and what is left is the interesting part: the same uninitialised read, on
-one variant, in the two tests that were flaky before it. None of the five can go
-until that is understood, the three quiet ones included -- see item 5 of "Worth
-doing next".
+Two runs later that looked refuted: `nonblocking_inpf` and `nonblocking_inpf90`
+failed on `mpich/llvm/linux/24.04/x86_64` in 30863777064, then passed again
+everywhere in 30905286536, while the three `typecnts*` passed in all three. The
+reading at the time was that the patch had removed most of the nondeterminism and
+not all of it -- the same uninitialised read, on one variant, in two of the five.
 
-### MPICH: `ABI_Datatype_from_mpi` asserts on a datatype predefined only internally
+**That reading was wrong, and the split between the two groups was the clue it
+should have been.** `nonblocking_inpf` and `nonblocking_inpf90` do not call
+`MPI_Type_get_contents` at all. They call `MPI_IALLTOALLW` with `MPI_IN_PLACE` and
+a one-element `stypes(1)`, and the read that made them flaky was mpif's own,
+converting one datatype per rank out of a one-element array -- defect 2 of the
+entry below. No patch to `MPI_Type_get_contents` could ever have touched them, and
+what varied between runs was the stack, not MPICH. So the three `typecnts*` were
+the only tests exercising this defect after all, they have been quiet for three
+runs and a local one, and nothing is left that says it still fires. See item 4 of
+"Worth doing next".
 
-What is left of that assert once the entry above is fixed, and it is a symptom
-without a diagnosis rather than a defect anyone has pinned down.
+The caution that came with the old reading was still right on its own terms, and
+is why the two groups were not deleted together: one green run is not evidence
+that a nondeterministic failure has stopped. It just was not the reason these two
+kept failing.
 
-`ABI_Datatype_from_mpi` reverse-searches `abi_datatype_builtins[]` for any handle
-`MPIR_DATATYPE_IS_PREDEFINED` accepts, and `MPIR_Assert(0)` when it finds none.
-That table holds only the datatypes the ABI names, while MPICH has internal
-builtins besides -- `MPIR_INT32`, `MPIR_FLOAT64` and the rest, which is what
-`MPIR_REAL_INTERNAL` and `MPIR_DOUBLE_PRECISION_INTERNAL` expand to -- and those
-are `HANDLE_IS_BUILTIN` and not in it. `MPI_Type_fromint` has a second assert of
-the same family at line 143, `HANDLE_INDEX(in) < MPIR_DATATYPE_PREALLOC`, which is
-what `allctypesf90` aborts on when it reaches `MPI_LB`.
+### ~~MPICH: `ABI_Datatype_from_mpi` asserts on a datatype predefined only internally~~ — withdrawn: it was mpif's, in four places
 
-Four expected failures are left with it: `alltoallwf08`, `nonblockingf08`,
-`vw_inplacef08` and `nonblocking_inpf08`, confirmed still failing after the
-`MPI_Type_create_f90_*` fix by running `f08/coll`. They are `*/gcc/*/*/*`, failing
-under gcc on *both* implementations, so the MPICH assert cannot be the whole story
-for them -- see the note under "Suite baseline". None of the four calls
-`MPI_Type_get_contents`, so the patch above is not expected to touch them; whether
-it does is worth reading off the first CI run that carries it.
+Nothing here is outstanding, so by the rule at the top of this file the entry
+should be gone. It stays because what it records is a *misattribution* that
+survived two successive diagnoses and several rounds of measurement: deleting it
+would leave the mechanism in `CODE.md` with no trace of the four tests having been
+blamed first on the compiler's buffer copies and then on MPICH. The precedent is
+the empty-info-value entry below, also resolved and also kept. Read it as history,
+not as work.
+
+This entry used to attribute `alltoallwf08`, `nonblockingf08`, `vw_inplacef08` and
+`nonblocking_inpf08` to MPICH, and to guess that `ABI_Datatype_from_mpi`
+reverse-searches `abi_datatype_builtins[]` and asserts on one of MPICH's internal
+builtins -- `MPIR_INT32`, `MPIR_FLOAT64`, what `MPIR_REAL_INTERNAL` expands to --
+since those are `HANDLE_IS_BUILTIN` and not in the ABI's table. An item of "Worth
+doing next", since struck, asked which call produced such a handle.
+
+**None does.** MPICH is not at fault and no patch was needed. The assert is
+MPICH correctly reporting garbage that mpif handed it, and the entry's own
+observation was the tell: the four failed under gcc on *both* implementations,
+which no MPICH-only defect can explain. What refuted it is the backtrace, whose
+interesting frames are all mpif's own --
+
+    MPIR_Assert_fail
+    MPI_Type_fromint + 284
+    mpi_alltoallw_ + 320            gen/mpif_functions.c
+    mpi_alltoallw_f08_ + 312        gen/mpif_f08_wrappers.F90
+
+-- and `objdump -d --disassemble-symbols=_mpi_alltoallw_f08_` on the installed
+`libmpifort_abi`, which showed what gfortran does with `sendtypes%MPI_VAL` when
+`sendtypes` is `TYPE(MPI_Datatype), INTENT(IN) :: sendtypes(*)`. A component
+reference of an assumed-size dummy has no extent the compiler knows; gfortran
+repacked it regardless, into a descriptor carrying `lbound = 0` and
+`ubound = -1`, so the copy loop's bound was zero and it moved **no elements at
+all**. Both arrays got the same temporary, at `x29+0xd8` -- eight bytes below the
+incoming stack arguments, so the four `MPI_Fint`s the C wrapper read were that
+slot, `tmp_ierror`, and the two halves of the saved `comm` pointer. A stack
+address is not a datatype, and `MPIR_Assert(0)` is the right answer to it. flang
+passes the caller's address through unchanged, which is the whole of why the
+xfail lines said `*/gcc/*/*/*` -- correct by accident of how it treats a
+component reference, not by anything mpif did.
+
+Fixing that exposed three more, all in the same 24 wrappers -- the six alltoallw
+routines times `sendtypes` and `recvtypes` times PMPI, which is also every wrapper
+in `gen/mpif_functions.c` that used to mention `q_comm_size`:
+
+1. **The f08 repack**, above. Now the assumed-size handle arrays go straight
+   through, under a `TYPE(MPI_Datatype)` declaration in `mpif_f08_raw` -- the
+   module that already existed for the same reason for `MPI_Status`, and whose
+   comment already recorded that the alternative had cost three defects. The
+   claim it rests on is that `TYPE, BIND(C)` around one default `INTEGER` is an
+   `MPI_Fint[]`, the same claim mpif already makes for a status's eight integers.
+   The explicit-shape handle arrays keep `%MPI_VAL`: gfortran knows `count` and
+   copies in and out correctly, so `MPI_Waitall` and the thirteen others have no
+   defect to fix.
+2. **`sendtypes` was read under `MPI_IN_PLACE`**, where MPI-5.0 6.8 says "In such
+   a case, sendcounts, sdispls and sendtypes are ignored." mpif converted one per
+   member of the group anyway, so a caller who passed the one-element array the
+   standard entitles it to was over-read by every rank past the first. This one
+   was in the C wrapper, so it reached `mpif.h` and the `mpi` module as well --
+   which is where the residual flakiness went, below.
+3. **The neighbour forms used the communicator's size**, where 8.6 gives
+   `sendtypes` "length outdegree" and `recvtypes` "length indegree": `2*ndims` for
+   a Cartesian topology, `MPI_GRAPH_NEIGHBORS_COUNT` for a graph, and either
+   degree for a distributed graph. The comm size is unrelated and, at any size
+   below six on the 3-D communicator the new test builds, smaller -- so the
+   wrapper declared a two-element array and handed it to an implementation that
+   reads six. `MPI_Topo_test` now dispatches, which is what MPICH's own
+   `mpi_abi_util.h` does for the same question, down to
+   `*indegree = *outdegree = 2 * ival` in the `MPI_CART` case. A communicator with
+   no topology is erroneous here, so both degrees stay zero, nothing is converted,
+   and MPI reports `MPI_ERR_TOPOLOGY` itself.
+4. **Intercommunicators need the remote group's size.** The arrays are indexed
+   over the remote group -- "as if each MPI process in group A sends a message to
+   each MPI process in group B" (6.8) -- while `MPI_COMM_SIZE` "returns the size
+   of the local group" (7.6). `MPI_Comm_test_inter` now chooses between
+   `MPI_Comm_remote_size` and `MPI_Comm_size`.
+
+3 and 4 were reachable by nothing in the suite: no Fortran test there calls
+`MPI_NEIGHBOR_ALLTOALLW`, and none builds an intercommunicator with groups of
+unequal size. They have tests of mpif's own now, and `test/` grew multi-rank
+support to carry them -- `add_mpi_test`'s `NPROCS`, since at one rank every wrong
+length coincides with the right one. Three ranks for the intercommunicator, so
+that the two groups differ.
+
+Each fix was checked by putting it back one at a time: `alltoallw_f08` fails on 1
+with the original message, `alltoallw_inplace_guard` on 2, `neighbor_alltoallw_f08`
+on 3 with "Invalid datatype", `alltoallw_inter_f08` on 4 with a segfault, and each
+only on its own. All six suite entries went green on both implementations under
+gcc, with no other difference from the xfail list.
+
+**The in-place tests took two attempts, and the first was worthless.**
+`test/alltoallw_inplace_f08.f90` and its `mpif.h` and `mpi` twins pass a
+one-element `sendtypes` holding a poisoned handle, on the theory that converting
+it would abort. Putting defect 2 back left them passing. `MPI_Type_fromint` is
+why:
+
+    ABI_Datatype MPI_Type_fromint(int datatype)
+    {
+        if (datatype > 0 && datatype < 4096)
+            return (ABI_Datatype) (uintptr_t) datatype;
+        return ABI_Datatype_from_mpi(internal_Type_fromint(datatype));
+    }
+
+so an ABI-range value is returned unexamined and anything else has a pointer
+derived from it; `-12345` is neither builtin nor in range, and MPICH built a
+pointer out of it without complaint. Whether an over-read aborts, yields a
+plausible handle or yields a wild one is a property of what happened to be
+adjacent, and no test should rest on it. `test/alltoallw_inplace_guard.c` rests on
+the read instead: two pages, the second `PROT_NONE`, and the one-element array
+placed so its last byte ends the first, which is the instrument "Verifying a fix"
+prescribes and which ASan could not have supplied. It faults with the defect back
+and passes with it fixed, on MPICH and Open MPI alike -- so both do honour 6.8 and
+ignore the array. The three original tests are kept for the operation's
+correctness, with their comments corrected to stop claiming what they do not
+catch.
+
+`MPI_Type_fromint`'s other assert is unrelated and still stands: line 143's
+`HANDLE_INDEX(in) < MPIR_DATATYPE_PREALLOC` is what `allctypesf90` aborts on when
+it reaches `MPI_LB`, which has its own xfail line and its own reason -- `MPI_LB`
+and `MPI_UB` were removed in MPI-3.0 and are absent from the MPI-5.0 ABI.
 
 ### MPICH: the generalized request tests require `extra_state` to alias the caller's variable
 
@@ -1062,34 +1174,28 @@ writes it.
    Linux one is odd in that the test passes on Ubuntu 26.04 and fails on 24.04.
    Start where the spawn eleven were solved: the "## Test output" block in the
    run's tap file.
-3. **The `ABI_Datatype_from_mpi` assert**, the four `*/gcc/*/*/*` collective tests
-   left with it once `MPI_Type_get_contents` was fixed, in its own entry above.
-   What is needed is to find which call hands back a handle that is predefined to
-   MPICH and absent from the ABI's table. Start from `alltoallwf08` under a
-   debugger, breaking on `MPIR_Assert_fail`. That they fail under gcc on both
-   implementations says the answer is not only this assert.
-4. **Triage `mpich/gcc/linux/26.04/armv7l`**, the one 32-bit variant still
+3. **Triage `mpich/gcc/linux/26.04/armv7l`**, the one 32-bit variant still
    without a `triaged` line, so it is reported and cannot fail a run. It is
    emulated and local-only, which is why it is behind the i686 one -- that now
    gates, on three consecutive runs agreeing. Do not carry the i686 list over to
    it: they are different 32-bit ABIs, a 64-bit type being eight-byte aligned on
    armhf and four-byte on i386.
-5. **Settle the five `flaky` entries**, which is no longer the simple deletion it
-   looked like. Three runs in, the two groups have parted company:
+4. **Remove the three remaining `flaky` entries**, which is now the simple
+   deletion it once looked like -- but for a reason, not for a count. What kept
+   them was that `nonblocking_inpf` and `nonblocking_inpf90` had gone on failing
+   after `MPI_Type_get_contents` was patched, which read as the same
+   uninitialised read still firing. It was not: neither test calls
+   `MPI_Type_get_contents`. Both call `MPI_IALLTOALLW` with `MPI_IN_PLACE` and a
+   one-element `stypes(1)`, and they were the alltoallw in-place over-read, which
+   is fixed and has a guard-page test. That leaves `typecntsf`, `typecntsf90` and
+   `typecntsf08` as the only tests that ever exercised the get_contents defect,
+   with nothing left that says it still fires. Remove them on the next clean CI
+   run; the reasons in `ci-scripts/suite/mpich-suite-xfail.txt` say so.
 
-       typecntsf, typecntsf90, typecntsf08   passed in all three runs
-       nonblocking_inpf, nonblocking_inpf90  failed in 30863777064, on
-                                             mpich/llvm/linux/24.04/x86_64
-
-   So the nondeterminism is not gone, and the reasons in
-   `ci-scripts/suite/mpich-suite-xfail.txt` say so now. Nor does that clear the
-   other three: all five are the one uninitialised read in
-   `MPI_Type_get_contents`, and a defect that still fires for two of them is a
-   defect. Twenty-one clean observations of `typecnts*` do not outweigh that.
-   What would settle it is finding why the patched `MPI_Type_get_contents` still
-   leaves anything nondeterministic -- start from `nonblocking_inpf` on
-   `mpich/llvm/linux/24.04/x86_64`, the one combination seen to fail -- rather
-   than more runs of the same count.
+   The caution that came with the old item was still the right one, and is worth
+   keeping in mind for its own sake: one green run is not evidence that a
+   nondeterministic failure has stopped. What settles it here is a mechanism, not
+   a tally.
 
 Two things are decided and not on this list, so that they are not picked up by
 mistake: assumed-rank choice buffers are not being taken for now, and `MPI_Sizeof`
@@ -1113,27 +1219,42 @@ every one of these with its reason, and the suite run fails on any difference
 from it. The table is for telling a change from the background noise at a
 glance.
 
-The MPICH rows wobble by one or two between runs, because the five `flaky`
-entries in the list are genuinely nondeterministic -- in the run these numbers
-come from, `typecntsf` failed on `mpich/gcc/linux/aarch64` and passed on
+The MPICH rows wobble by one or two between runs, because the `flaky` entries in
+the list are genuinely nondeterministic -- in the run these numbers come from,
+`typecntsf` failed on `mpich/gcc/linux/aarch64` and passed on
 `mpich/gcc/linux/x86_64`, while `typecntsf90` did the opposite. Read the MPICH
-rows as approximate to that extent; the list, which excuses those five either
-way, is what is exact.
+rows as approximate to that extent; the list, which excuses them either way, is
+what is exact. There are three such entries now rather than five: `nonblocking_inpf`
+and `nonblocking_inpf90` were never the nondeterminism they were filed under and
+now pass, so two sources of wobble are gone from the f77 and f90 columns.
 
 | variant                          | f77 | f90 | f08 |
 |----------------------------------|-----|-----|-----|
-| mpich/gcc/darwin/15/arm64        |   3 |   9 |  17 |
-| mpich/gcc/linux/24.04/x86_64     |   3 |  10 |  18 |
-| mpich/gcc/linux/24.04/aarch64    |   4 |   9 |  19 |
+| mpich/gcc/darwin/15/arm64        |   3 |   9 |  14 |
+| mpich/gcc/linux/24.04/x86_64     |   3 |  10 |  15 |
+| mpich/gcc/linux/24.04/aarch64    |   4 |   9 |  15 |
 | mpich/llvm/darwin/15/arm64       |   3 |   9 |  14 |
 | mpich/llvm/linux/24.04/x86_64    |   4 |  10 |  15 |
 | mpich/llvm/linux/24.04/aarch64   |   4 |  10 |  15 |
-| openmpi/gcc/darwin/15/arm64      |   5 |   7 |  19 |
-| openmpi/gcc/linux/24.04/x86_64   |   8 |  12 |  22 |
-| openmpi/gcc/linux/24.04/aarch64  |   5 |   7 |  19 |
+| openmpi/gcc/darwin/15/arm64      |   5 |   7 |  15 |
+| openmpi/gcc/linux/24.04/x86_64   |   8 |  12 |  18 |
+| openmpi/gcc/linux/24.04/aarch64  |   5 |   7 |  15 |
 | openmpi/llvm/darwin/15/arm64     |   5 |   7 |  15 |
 | openmpi/llvm/linux/24.04/x86_64  |   8 |  12 |  18 |
 | openmpi/llvm/linux/24.04/aarch64 |   5 |   7 |  15 |
+
+The f08 column's six gcc rows are lower than the run they come from by the four
+`*/gcc/*` collective tests -- `alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08`
+and `vw_inplacef08` -- which the alltoallw handle-array fixes turned green. They are
+inferred, and inferred as *equal to their llvm twin* rather than as four less:
+those four were the only f08 difference between the toolchains, so the two rows of
+a pair should now coincide, and on four of the six pairs subtracting four gives
+exactly that. On the two MPICH pairs it gives one less, which is the flaky wobble
+the paragraph above describes rather than a real difference, so the twin is the
+number to trust. Measured only on this machine, whose OS version is in no row:
+`mpich/gcc/darwin/26/arm64` and `openmpi/gcc/darwin/26/arm64` both report no
+differences against the list, at 3/5/11 and 7/9/17, on three MPICH runs and two
+Open MPI ones.
 
 Every row is two lower in f90 and one lower in f08 than the run it comes from,
 which is the PMPI interface arriving: `wtimef90` in both languages and
@@ -1167,11 +1288,14 @@ The table has no 32-bit row. `mpich/gcc/linux/13/i686` now gates, on three
 consecutive runs -- 30861875404, 30863777064 and 30905286536 -- reporting it under
 its own key with no differences; `mpich/gcc/linux/26.04/armv7l` is still
 untriaged. What one run of that one reported, after the kinds were fixed: the whole
-suite ran, and the only differences from the list were the five `flaky` entries
-going both ways -- `nonblocking_inpf` and `nonblocking_inpf90` passing,
-`typecntsf`, `typecntsf90` and `typecntsf08` failing, all of which the list excuses
-either way -- plus `attrmpi1f08` passing, which is the entry now enumerated per
-64-bit architecture above. So nothing 32-bit-specific is outstanding on that
+suite ran, and the only differences from the list were the `flaky` entries going
+both ways -- `nonblocking_inpf` and `nonblocking_inpf90` passing, `typecntsf`,
+`typecntsf90` and `typecntsf08` failing, all of which the list excused either way
+-- plus `attrmpi1f08` passing, which is the entry now enumerated per 64-bit
+architecture above. The first two are no longer in the list at all, being the
+alltoallw in-place over-read rather than the get_contents read they were filed
+under, so a rerun of that variant has two fewer excuses and should still show no
+differences. So nothing 32-bit-specific is outstanding on that
 variant, on one measurement. Do not carry one list to the other, the two being
 different 32-bit ABIs.
 
@@ -1183,8 +1307,10 @@ numbers are not a baseline for anything. The `attrmpi1f08` it reported as
 unexpectedly passing is the same 32-bit pass the arm32v7 run found, showing through
 a key that said `x86_64` and so matched the entries scoped to it.
 
-Sixty-five entries cover them, for fifty-five distinct language-and-test pairs --
-five of them `flaky` rather than `xfail`. All but two are accounted for, each
+Fifty-nine entries cover them, for forty-nine distinct language-and-test pairs --
+three of them `flaky` rather than `xfail`. Six went away with the alltoallw
+handle-array fixes: the four `*/gcc/*` collective tests and the two
+`nonblocking_inp*` flaky ones. All but two are accounted for, each
 either by an entry here or by a reason that stands on its own; the two are
 `i_fcoll_test` on CI's Linux runners and under flang on macOS. The rows above are
 CI's, so they do not count the twelve `dgraph` entries, six for a Docker variant
@@ -1192,16 +1318,20 @@ and six for this machine's two Open MPI variants, which share one selector.
 
 Those two numbers were "fifty-four" and "fifty-two" for a while and were wrong
 when written down, the file having gained entries without them being updated: the
-real figures at the commit before the 32-bit work were 65 and 63. Count them
-rather than trusting the sentence, and prefer a count over a memory of one:
+real figures at the commit before the 32-bit work were 65 and 63, and they were 65
+and 55 before the alltoallw fixes removed six. Count them rather than trusting the
+sentence, and prefer a count over a memory of one:
 
     awk '$1=="xfail"||$1=="flaky"' ci-scripts/suite/mpich-suite-xfail.txt | wc -l
 
 Triage has taken twenty-four untriaged pairs down to two, and resolved them into
-three mpif bugs, two MPICH ones, three Open MPI ones, a decision, a test asserting
+four mpif bugs, two MPICH ones, three Open MPI ones, a decision, a test asserting
 more than the standard says -- the `dgraph` pair, where Open MPI is within its
 rights -- and eleven that were never failures at all, the spawn tests that a
-launcher warning was failing for them. Every one came from running the test rather
+launcher warning was failing for them. One of those attributions has since moved:
+the four `*/gcc/*` collective tests were counted against MPICH and are mpif's, so
+the mpif column gained a bug and the MPICH column lost one. An entry can be
+triaged and still be pointing at the wrong culprit. Every one came from running the test rather
 than reading it, or from reading what the run printed: the four attribute tests
 crash in a C frame that names the defect, `test14` and `test15` sit in a directory
 whose thirteen passing neighbours say what the mechanism is, the two Open MPI name
@@ -1223,12 +1353,17 @@ Three things the twelve-way measurement settled that guesswork had got wrong:
   established -- so read the component as "a different environment" rather than as
   a claim about the instruction set. The two MPICH tests keep it in the key.
 - **`alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08` and `vw_inplacef08`
-  are a gcc problem, not an MPICH one.** They fail under gcc on *both*
-  implementations and pass under llvm on both, so the selector is `*/gcc/*/*`.
-  This section used to call them "the four that flang passes and gfortran does
-  not" and guess they were about compiler-made buffer copies for noncontiguous
-  subarrays; under MPICH they abort inside `mpi_abi_util.h:140`, which is not
-  that. The guess is withdrawn; the symptom is recorded.
+  are a gcc problem, not an MPICH one.** They failed under gcc on *both*
+  implementations and passed under llvm on both, so the selector was `*/gcc/*/*`.
+  That much held up and was the thing that eventually solved them: it is mpif's
+  own defect, gfortran repacking an assumed-size `%MPI_VAL` into a zero-length
+  temporary, and the four now pass everywhere. Two guesses were withdrawn along
+  the way -- first that they were about compiler-made buffer copies for
+  noncontiguous subarrays, then that MPICH's `mpi_abi_util.h:140` was asserting on
+  a datatype only it knows about. See the withdrawn `ABI_Datatype_from_mpi` entry.
+  The lesson that survives both is the selector's: *`*/gcc/*` on both
+  implementations means the bug is on our side of the boundary*, and it was
+  visible from the first measurement.
 - **`mpich/gcc/darwin/arm64` transfers between machines.** Its list was measured
   here, on MacPorts gcc 15.2 with twelve cores, and CI's macos-15 runner --
   Homebrew compilers, about three cores -- reports no differences against it.
@@ -1247,12 +1382,21 @@ expect some churn: a flaky entry surfaces as an unexpected pass, which is the
 mechanism working rather than failing. Three entries are already marked as seen
 on one variant only and therefore suspect.
 
-`test/`, mpif's own suite, was 32 of 32 and is now 44 of 44, the most recent
-additions being the four PMPI ones -- `pmpi_f`, `pmpi_f90`, `pmpi_f08` and
-`profile_f90` -- and `profile_f08`, which interposes an f08 specific. Green on
-all twelve variants in CI up to the PMPI five; `profile_f08` has been run on
+`test/`, mpif's own suite, was 32 of 32 and is now 51 of 51, the most recent
+additions being the seven alltoallw ones and, before them, the four PMPI ones --
+`pmpi_f`, `pmpi_f90`, `pmpi_f08` and `profile_f90` -- and `profile_f08`, which
+interposes an f08 specific. Green on all twelve variants in CI up to the PMPI
+five; `profile_f08` and the alltoallw seven have been run on
 `mpich/gcc/darwin/26/arm64`, `mpich/llvm/darwin/26/arm64` and
 `openmpi/gcc/darwin/26/arm64`, the rest being CI's to confirm.
+
+The alltoallw seven are the first tests here that need more than one rank, which
+`add_mpi_test`'s `NPROCS` supplies -- and they need it: at one rank a group size,
+a remote group size and a neighbour count all coincide, so every wrong length is
+the right one. `MPIEXEC_EXECUTABLE` is pinned by
+`scripts/macos-test-mpif.sh` rather than left to `find_package(MPI)`, which
+detected an unrelated miniforge install here and would have run them against an
+MPI that mpif was not built against.
 
 Two of the four had to be written differently than first drafted, and both for
 reasons about MPI rather than about PMPI. `pmpi_f90` freed the address rather than
@@ -1283,27 +1427,51 @@ Six f90 tests and four f08 tests went green on both implementations --
 `winattr2f90`, and the `f08` counterparts of four of those -- and nothing
 regressed.
 
-The toolchains agree exactly on f77 and f90, and differ by four tests in f08,
-where flang does better than gfortran. It is the same four on both MPI
-implementations, and none fail under flang that pass under gfortran:
+The toolchains now agree exactly on f77, f90 and f08. They used to differ by four
+tests, the same four on both MPI implementations, all failing under gfortran and
+passing under flang:
 
     alltoallwf08   nonblockingf08   nonblocking_inpf08   vw_inplacef08
 
-Their shape is a lead rather than a diagnosis. All four are nonblocking or
-in-place collectives, which is exactly the case "Assumed-rank choice buffers"
-above describes: with `MPI_SUBARRAYS_SUPPORTED` false, a noncontiguous actual
+**Their shape was a lead, and it was the wrong one -- worth recording, because it
+was plausible for months and cost the four that long.** All four are nonblocking
+or in-place collectives, which is exactly the case "Assumed-rank choice buffers"
+above describes: with `MPI_SUBARRAYS_SUPPORTED` false a noncontiguous actual
 argument reaches the wrapper as a compiler-made copy, and for a nonblocking call
 that copy dies before the request completes. Two compilers need not make the same
-copy, so a difference here is more likely to be about what each chooses to copy
-than about mpif. Worth confirming before reading anything into it.
+copy, so the difference looked like one about what each chose to copy. That reading
+made the four a cost of declining assumed-rank rather than a defect to fix, which
+is the kind of conclusion that stops anyone looking.
 
-If that lead ever is confirmed, these four are a cost of declining assumed-rank
-rather than a defect to fix -- four suite tests that pass a noncontiguous subarray
-to a nonblocking call, which `MPI_SUBARRAYS_SUPPORTED == .FALSE.` tells a program
-not to do. `ci-scripts/suite/mpich-suite-xfail.txt` carries them as `*/gcc/*/*` with
-that symptom either way.
+It was none of it right. What the four have in common is not the buffer, it is
+`alltoallw`: every one of them calls a member of that family, which is the only
+one in the standard whose Fortran binding takes an *assumed-size array of
+handles*. The compiler-made copy that mattered was of `sendtypes`, not of a choice
+buffer, and gfortran making it while flang does not is the whole of the toolchain
+split. The entry for the withdrawn `ABI_Datatype_from_mpi` diagnosis has it in
+full. The general lesson is about which similarity to follow: three of the four
+being nonblocking is a coincidence of the directory, and the fourth,
+`vw_inplacef08`, is not nonblocking at all -- which the lead had to explain away
+and did not.
 
 One caution about these numbers: the Open MPI run needs the loopback workaround
 that `scripts/macos-test-mpich-suite.sh` applies by default -- without it the
 spawn tests hang rather than fail, each burning `runtests`' 180-second timeout,
 and the run appears stuck.
+
+Two ways a *local* suite run goes wrong for reasons that are not the code, both
+of which have now cost a run:
+
+- **Do not rebuild while a suite run is going.** The three build-and-test scripts
+  delete and reinstall what they own, so `scripts/macos-build-mpif.sh` run against
+  a variant whose suite is mid-flight removes the `mpifort` that `runtests` is
+  calling. Every remaining test then reports `Failed to build ...  /bin/sh:
+  .../bin/mpifort: No such file or directory`, which looks like a catastrophic
+  regression and is nothing at all.
+- **MPICH's spawn tests depend on the machine's hostname staying put.** One run
+  here failed them with `spawned process group was unable to connect back to the
+  parent on port <... $description#Mac.pitp.io$ ... $ifname#10.10.60.90$>` and
+  `Connection timed out in 180 seconds`, while `hostname` afterwards reported
+  `Redshift.local`. The name changed under the run -- DHCP, a network move -- so
+  the child could not reach the address the parent had published. Rerun before
+  believing it; the same suite had reported no differences twice within the hour.

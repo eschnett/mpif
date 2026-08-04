@@ -1520,19 +1520,28 @@ void mpi_alltoallw_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_group_size = 0;
   {
-    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    if (q_ierror == MPI_SUCCESS)
+      q_ierror = q_inter ? MPI_Comm_remote_size(q_comm, &q_group_size)
+                         : MPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_group_size];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_group_size];
+  for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = MPI_Alltoallw(
     sendbuf,
@@ -1561,19 +1570,28 @@ void mpi_alltoallw_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_group_size = 0;
   {
-    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    if (q_ierror == MPI_SUCCESS)
+      q_ierror = q_inter ? MPI_Comm_remote_size(q_comm, &q_group_size)
+                         : MPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_group_size];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_group_size];
+  for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = MPI_Alltoallw_c(
     sendbuf,
@@ -1602,19 +1620,28 @@ void pmpi_alltoallw_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_group_size = 0;
   {
-    const int q_ierror = PMPI_Comm_size(q_comm, &q_comm_size);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
+    if (q_ierror == MPI_SUCCESS)
+      q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)
+                         : PMPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_group_size];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_group_size];
+  for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = PMPI_Alltoallw(
     sendbuf,
@@ -1643,19 +1670,28 @@ void pmpi_alltoallw_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_group_size = 0;
   {
-    const int q_ierror = PMPI_Comm_size(q_comm, &q_comm_size);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
+    if (q_ierror == MPI_SUCCESS)
+      q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)
+                         : PMPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_group_size];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_group_size];
+  for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = PMPI_Alltoallw_c(
     sendbuf,
@@ -1686,19 +1722,28 @@ void mpi_alltoallw_init_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_group_size = 0;
   {
-    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    if (q_ierror == MPI_SUCCESS)
+      q_ierror = q_inter ? MPI_Comm_remote_size(q_comm, &q_group_size)
+                         : MPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_group_size];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_group_size];
+  for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = MPI_Alltoallw_init(
@@ -1733,19 +1778,28 @@ void mpi_alltoallw_init_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_group_size = 0;
   {
-    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    if (q_ierror == MPI_SUCCESS)
+      q_ierror = q_inter ? MPI_Comm_remote_size(q_comm, &q_group_size)
+                         : MPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_group_size];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_group_size];
+  for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = MPI_Alltoallw_init_c(
@@ -1780,19 +1834,28 @@ void pmpi_alltoallw_init_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_group_size = 0;
   {
-    const int q_ierror = PMPI_Comm_size(q_comm, &q_comm_size);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
+    if (q_ierror == MPI_SUCCESS)
+      q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)
+                         : PMPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_group_size];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_group_size];
+  for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = PMPI_Alltoallw_init(
@@ -1827,19 +1890,28 @@ void pmpi_alltoallw_init_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_group_size = 0;
   {
-    const int q_ierror = PMPI_Comm_size(q_comm, &q_comm_size);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
+    if (q_ierror == MPI_SUCCESS)
+      q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)
+                         : PMPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_group_size];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_group_size];
+  for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = PMPI_Alltoallw_init_c(
@@ -10445,19 +10517,28 @@ void mpi_ialltoallw_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_group_size = 0;
   {
-    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    if (q_ierror == MPI_SUCCESS)
+      q_ierror = q_inter ? MPI_Comm_remote_size(q_comm, &q_group_size)
+                         : MPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_group_size];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_group_size];
+  for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = MPI_Ialltoallw(
@@ -10490,19 +10571,28 @@ void mpi_ialltoallw_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_group_size = 0;
   {
-    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    if (q_ierror == MPI_SUCCESS)
+      q_ierror = q_inter ? MPI_Comm_remote_size(q_comm, &q_group_size)
+                         : MPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_group_size];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_group_size];
+  for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = MPI_Ialltoallw_c(
@@ -10535,19 +10625,28 @@ void pmpi_ialltoallw_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_group_size = 0;
   {
-    const int q_ierror = PMPI_Comm_size(q_comm, &q_comm_size);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
+    if (q_ierror == MPI_SUCCESS)
+      q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)
+                         : PMPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_group_size];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_group_size];
+  for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = PMPI_Ialltoallw(
@@ -10580,19 +10679,28 @@ void pmpi_ialltoallw_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_group_size = 0;
   {
-    const int q_ierror = PMPI_Comm_size(q_comm, &q_comm_size);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
+    if (q_ierror == MPI_SUCCESS)
+      q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)
+                         : PMPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_group_size];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_group_size; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_group_size];
+  for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = PMPI_Ialltoallw_c(
@@ -11813,19 +11921,44 @@ void mpi_ineighbor_alltoallw_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_indegree = 0, q_outdegree = 0;
   {
-    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    int q_topology;
+    int q_ierror = MPI_Topo_test(q_comm, &q_topology);
+    if (q_ierror == MPI_SUCCESS) {
+      if (q_topology == MPI_CART) {
+        int q_ndims;
+        q_ierror = MPI_Cartdim_get(q_comm, &q_ndims);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = 2 * q_ndims;
+      } else if (q_topology == MPI_GRAPH) {
+        int q_neighbor_rank;
+        int q_nneighbors;
+        q_ierror = MPI_Comm_rank(q_comm, &q_neighbor_rank);
+        if (q_ierror == MPI_SUCCESS)
+          q_ierror = MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = q_nneighbors;
+      } else if (q_topology == MPI_DIST_GRAPH) {
+        int q_weighted;
+        q_ierror = MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+      }
+    }
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_indegree > 0 ? q_indegree : 1];
+  for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = MPI_Ineighbor_alltoallw(
@@ -11858,19 +11991,44 @@ void mpi_ineighbor_alltoallw_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_indegree = 0, q_outdegree = 0;
   {
-    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    int q_topology;
+    int q_ierror = MPI_Topo_test(q_comm, &q_topology);
+    if (q_ierror == MPI_SUCCESS) {
+      if (q_topology == MPI_CART) {
+        int q_ndims;
+        q_ierror = MPI_Cartdim_get(q_comm, &q_ndims);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = 2 * q_ndims;
+      } else if (q_topology == MPI_GRAPH) {
+        int q_neighbor_rank;
+        int q_nneighbors;
+        q_ierror = MPI_Comm_rank(q_comm, &q_neighbor_rank);
+        if (q_ierror == MPI_SUCCESS)
+          q_ierror = MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = q_nneighbors;
+      } else if (q_topology == MPI_DIST_GRAPH) {
+        int q_weighted;
+        q_ierror = MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+      }
+    }
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_indegree > 0 ? q_indegree : 1];
+  for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = MPI_Ineighbor_alltoallw_c(
@@ -11903,19 +12061,44 @@ void pmpi_ineighbor_alltoallw_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_indegree = 0, q_outdegree = 0;
   {
-    const int q_ierror = PMPI_Comm_size(q_comm, &q_comm_size);
+    int q_topology;
+    int q_ierror = PMPI_Topo_test(q_comm, &q_topology);
+    if (q_ierror == MPI_SUCCESS) {
+      if (q_topology == MPI_CART) {
+        int q_ndims;
+        q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = 2 * q_ndims;
+      } else if (q_topology == MPI_GRAPH) {
+        int q_neighbor_rank;
+        int q_nneighbors;
+        q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);
+        if (q_ierror == MPI_SUCCESS)
+          q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = q_nneighbors;
+      } else if (q_topology == MPI_DIST_GRAPH) {
+        int q_weighted;
+        q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+      }
+    }
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_indegree > 0 ? q_indegree : 1];
+  for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = PMPI_Ineighbor_alltoallw(
@@ -11948,19 +12131,44 @@ void pmpi_ineighbor_alltoallw_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_indegree = 0, q_outdegree = 0;
   {
-    const int q_ierror = PMPI_Comm_size(q_comm, &q_comm_size);
+    int q_topology;
+    int q_ierror = PMPI_Topo_test(q_comm, &q_topology);
+    if (q_ierror == MPI_SUCCESS) {
+      if (q_topology == MPI_CART) {
+        int q_ndims;
+        q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = 2 * q_ndims;
+      } else if (q_topology == MPI_GRAPH) {
+        int q_neighbor_rank;
+        int q_nneighbors;
+        q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);
+        if (q_ierror == MPI_SUCCESS)
+          q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = q_nneighbors;
+      } else if (q_topology == MPI_DIST_GRAPH) {
+        int q_weighted;
+        q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+      }
+    }
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_indegree > 0 ? q_indegree : 1];
+  for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = PMPI_Ineighbor_alltoallw_c(
@@ -15076,19 +15284,44 @@ void mpi_neighbor_alltoallw_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_indegree = 0, q_outdegree = 0;
   {
-    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    int q_topology;
+    int q_ierror = MPI_Topo_test(q_comm, &q_topology);
+    if (q_ierror == MPI_SUCCESS) {
+      if (q_topology == MPI_CART) {
+        int q_ndims;
+        q_ierror = MPI_Cartdim_get(q_comm, &q_ndims);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = 2 * q_ndims;
+      } else if (q_topology == MPI_GRAPH) {
+        int q_neighbor_rank;
+        int q_nneighbors;
+        q_ierror = MPI_Comm_rank(q_comm, &q_neighbor_rank);
+        if (q_ierror == MPI_SUCCESS)
+          q_ierror = MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = q_nneighbors;
+      } else if (q_topology == MPI_DIST_GRAPH) {
+        int q_weighted;
+        q_ierror = MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+      }
+    }
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_indegree > 0 ? q_indegree : 1];
+  for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = MPI_Neighbor_alltoallw(
     sendbuf,
@@ -15117,19 +15350,44 @@ void mpi_neighbor_alltoallw_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_indegree = 0, q_outdegree = 0;
   {
-    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    int q_topology;
+    int q_ierror = MPI_Topo_test(q_comm, &q_topology);
+    if (q_ierror == MPI_SUCCESS) {
+      if (q_topology == MPI_CART) {
+        int q_ndims;
+        q_ierror = MPI_Cartdim_get(q_comm, &q_ndims);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = 2 * q_ndims;
+      } else if (q_topology == MPI_GRAPH) {
+        int q_neighbor_rank;
+        int q_nneighbors;
+        q_ierror = MPI_Comm_rank(q_comm, &q_neighbor_rank);
+        if (q_ierror == MPI_SUCCESS)
+          q_ierror = MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = q_nneighbors;
+      } else if (q_topology == MPI_DIST_GRAPH) {
+        int q_weighted;
+        q_ierror = MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+      }
+    }
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_indegree > 0 ? q_indegree : 1];
+  for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = MPI_Neighbor_alltoallw_c(
     sendbuf,
@@ -15158,19 +15416,44 @@ void pmpi_neighbor_alltoallw_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_indegree = 0, q_outdegree = 0;
   {
-    const int q_ierror = PMPI_Comm_size(q_comm, &q_comm_size);
+    int q_topology;
+    int q_ierror = PMPI_Topo_test(q_comm, &q_topology);
+    if (q_ierror == MPI_SUCCESS) {
+      if (q_topology == MPI_CART) {
+        int q_ndims;
+        q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = 2 * q_ndims;
+      } else if (q_topology == MPI_GRAPH) {
+        int q_neighbor_rank;
+        int q_nneighbors;
+        q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);
+        if (q_ierror == MPI_SUCCESS)
+          q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = q_nneighbors;
+      } else if (q_topology == MPI_DIST_GRAPH) {
+        int q_weighted;
+        q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+      }
+    }
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_indegree > 0 ? q_indegree : 1];
+  for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = PMPI_Neighbor_alltoallw(
     sendbuf,
@@ -15199,19 +15482,44 @@ void pmpi_neighbor_alltoallw_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_indegree = 0, q_outdegree = 0;
   {
-    const int q_ierror = PMPI_Comm_size(q_comm, &q_comm_size);
+    int q_topology;
+    int q_ierror = PMPI_Topo_test(q_comm, &q_topology);
+    if (q_ierror == MPI_SUCCESS) {
+      if (q_topology == MPI_CART) {
+        int q_ndims;
+        q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = 2 * q_ndims;
+      } else if (q_topology == MPI_GRAPH) {
+        int q_neighbor_rank;
+        int q_nneighbors;
+        q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);
+        if (q_ierror == MPI_SUCCESS)
+          q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = q_nneighbors;
+      } else if (q_topology == MPI_DIST_GRAPH) {
+        int q_weighted;
+        q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+      }
+    }
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_indegree > 0 ? q_indegree : 1];
+  for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = PMPI_Neighbor_alltoallw_c(
     sendbuf,
@@ -15242,19 +15550,44 @@ void mpi_neighbor_alltoallw_init_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_indegree = 0, q_outdegree = 0;
   {
-    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    int q_topology;
+    int q_ierror = MPI_Topo_test(q_comm, &q_topology);
+    if (q_ierror == MPI_SUCCESS) {
+      if (q_topology == MPI_CART) {
+        int q_ndims;
+        q_ierror = MPI_Cartdim_get(q_comm, &q_ndims);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = 2 * q_ndims;
+      } else if (q_topology == MPI_GRAPH) {
+        int q_neighbor_rank;
+        int q_nneighbors;
+        q_ierror = MPI_Comm_rank(q_comm, &q_neighbor_rank);
+        if (q_ierror == MPI_SUCCESS)
+          q_ierror = MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = q_nneighbors;
+      } else if (q_topology == MPI_DIST_GRAPH) {
+        int q_weighted;
+        q_ierror = MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+      }
+    }
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_indegree > 0 ? q_indegree : 1];
+  for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = MPI_Neighbor_alltoallw_init(
@@ -15289,19 +15622,44 @@ void mpi_neighbor_alltoallw_init_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_indegree = 0, q_outdegree = 0;
   {
-    const int q_ierror = MPI_Comm_size(q_comm, &q_comm_size);
+    int q_topology;
+    int q_ierror = MPI_Topo_test(q_comm, &q_topology);
+    if (q_ierror == MPI_SUCCESS) {
+      if (q_topology == MPI_CART) {
+        int q_ndims;
+        q_ierror = MPI_Cartdim_get(q_comm, &q_ndims);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = 2 * q_ndims;
+      } else if (q_topology == MPI_GRAPH) {
+        int q_neighbor_rank;
+        int q_nneighbors;
+        q_ierror = MPI_Comm_rank(q_comm, &q_neighbor_rank);
+        if (q_ierror == MPI_SUCCESS)
+          q_ierror = MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = q_nneighbors;
+      } else if (q_topology == MPI_DIST_GRAPH) {
+        int q_weighted;
+        q_ierror = MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+      }
+    }
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_indegree > 0 ? q_indegree : 1];
+  for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = MPI_Neighbor_alltoallw_init_c(
@@ -15336,19 +15694,44 @@ void pmpi_neighbor_alltoallw_init_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_indegree = 0, q_outdegree = 0;
   {
-    const int q_ierror = PMPI_Comm_size(q_comm, &q_comm_size);
+    int q_topology;
+    int q_ierror = PMPI_Topo_test(q_comm, &q_topology);
+    if (q_ierror == MPI_SUCCESS) {
+      if (q_topology == MPI_CART) {
+        int q_ndims;
+        q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = 2 * q_ndims;
+      } else if (q_topology == MPI_GRAPH) {
+        int q_neighbor_rank;
+        int q_nneighbors;
+        q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);
+        if (q_ierror == MPI_SUCCESS)
+          q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = q_nneighbors;
+      } else if (q_topology == MPI_DIST_GRAPH) {
+        int q_weighted;
+        q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+      }
+    }
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_indegree > 0 ? q_indegree : 1];
+  for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = PMPI_Neighbor_alltoallw_init(
@@ -15383,19 +15766,44 @@ void pmpi_neighbor_alltoallw_init_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_size;
+  int q_indegree = 0, q_outdegree = 0;
   {
-    const int q_ierror = PMPI_Comm_size(q_comm, &q_comm_size);
+    int q_topology;
+    int q_ierror = PMPI_Topo_test(q_comm, &q_topology);
+    if (q_ierror == MPI_SUCCESS) {
+      if (q_topology == MPI_CART) {
+        int q_ndims;
+        q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = 2 * q_ndims;
+      } else if (q_topology == MPI_GRAPH) {
+        int q_neighbor_rank;
+        int q_nneighbors;
+        q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);
+        if (q_ierror == MPI_SUCCESS)
+          q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+        if (q_ierror == MPI_SUCCESS)
+          q_indegree = q_outdegree = q_nneighbors;
+      } else if (q_topology == MPI_DIST_GRAPH) {
+        int q_weighted;
+        q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+      }
+    }
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
-    c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
-  MPI_Datatype c_recvtypes[q_comm_size];
-  for (int rank=0; rank<q_comm_size; ++rank)
+  MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
+  if (sendbuf != MPI_IN_PLACE) {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
+  } else {
+    for (int rank=0; rank<q_outdegree; ++rank)
+      c_sendtypes[rank] = MPI_DATATYPE_NULL;
+  }
+  MPI_Datatype c_recvtypes[q_indegree > 0 ? q_indegree : 1];
+  for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
   *ierror = PMPI_Neighbor_alltoallw_init_c(

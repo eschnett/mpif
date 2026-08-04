@@ -115,6 +115,13 @@ RUN <<EOF
         -DMPI_C_HEADER_DIR=${mpi_prefix}/include
         -DMPI_C_LIB_NAMES=mpi_abi
         -DMPI_mpi_abi_LIBRARY=${mpi_prefix}/lib/libmpi_abi.so
+        # The alltoallw tests need more than one rank. Pinned rather than
+        # detected: test/CMakeLists.txt fails the configure without it. The
+        # preflags are what the suite passes as MPIEXEC_ARGS below, and for
+        # the same reasons -- this container is root, and asks for more ranks
+        # than it has slots.
+        -DMPIEXEC_EXECUTABLE=${mpi_prefix}/bin/mpiexec
+        '-DMPIEXEC_PREFLAGS=--oversubscribe;--allow-run-as-root;--mca;btl_tcp_if_include;lo'
     )
     cmake -Bbuild-openmpi-llvm-tests "${test_flags[@]}"
 EOF

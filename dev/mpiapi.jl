@@ -211,7 +211,8 @@ struct State
     # have_fortran_booleans::Ref{Bool}
     have_comm::Ref{Bool}
     have_comm_rank::Ref{Bool}
-    have_comm_size::Ref{Bool}
+    have_group_size::Ref{Bool}
+    have_neighbor_degrees::Ref{Bool}
 
     # "" while the MPI wrappers are being emitted and "P" while the PMPI ones
     # are, so that the probes the helpers below emit call PMPI_Comm_size in the
@@ -219,7 +220,7 @@ struct State
     # the program never made.
     prefix::String
 
-    State(prefix) = new(Ref(false), Ref(false), Ref(false), prefix)
+    State(prefix) = new(Ref(false), Ref(false), Ref(false), Ref(false), prefix)
 end
 
 # Convert an attribute value that MPI returned through a `void**`.
@@ -247,19 +248,101 @@ function ensure_comm!(state, input_conversions)
     return state.have_comm[] = true
 end
 
-function ensure_comm_size!(state, input_conversions)
-    state.have_comm_size[] && return
+# The six routines whose handle arrays are indexed by neighbours rather than by a
+# group. MPI-5.0 8.6 gives MPI_NEIGHBOR_ALLTOALLW's `sendtypes` "length
+# outdegree" and its `recvtypes` "length indegree", which are properties of the
+# topology and unrelated to the size of the communicator: 2*ndims for a Cartesian
+# one, and either degree for a distributed graph. Listed rather than matched on
+# the name because `MPI_Ineighbor_alltoallw` does not spell "Neighbor" the way the
+# other two do.
+neighbor_alltoallw = ["MPI_Ineighbor_alltoallw",
+                      "MPI_Neighbor_alltoallw",
+                      "MPI_Neighbor_alltoallw_init"]
+
+# The number of entries in an alltoallw handle array, for the routines whose
+# arrays are indexed by a group.
+#
+# Not MPI_Comm_size: for an intercommunicator the arrays are indexed over the
+# *remote* group, the outcome being "as if each MPI process in group A sends a
+# message to each MPI process in group B" (MPI-5.0 6.8), while MPI_COMM_SIZE
+# "returns the size of the local group" (7.6). The two differ on every
+# intercommunicator whose groups are not the same size.
+function ensure_group_size!(state, input_conversions)
+    state.have_group_size[] && return
     ensure_comm!(state, input_conversions)
     append!(input_conversions,
-            ["int q_comm_size;",
+            ["int q_group_size = 0;",
              "{",
-             "  const int q_ierror = $(state.prefix)MPI_Comm_size(q_comm, &q_comm_size);",
+             "  int q_inter;",
+             "  int q_ierror = $(state.prefix)MPI_Comm_test_inter(q_comm, &q_inter);",
+             "  if (q_ierror == MPI_SUCCESS)",
+             "    q_ierror = q_inter ? $(state.prefix)MPI_Comm_remote_size(q_comm, &q_group_size)",
+             "                       : $(state.prefix)MPI_Comm_size(q_comm, &q_group_size);",
              "  if (q_ierror != MPI_SUCCESS) {",
              "    *ierror = q_ierror;",
              "    return;",
              "  }",
              "}"])
-    return state.have_comm_size[] = true
+    return state.have_group_size[] = true
+end
+
+# The two neighbour counts, for the routines whose arrays are indexed by
+# neighbours. MPI-5.0 8.6 defines them per topology, and the queries that report
+# them are per topology too -- MPI_DIST_GRAPH_NEIGHBORS_COUNT takes "a
+# communicator with associated distributed graph topology" and nothing licenses
+# asking it about a Cartesian one -- so this dispatches on MPI_Topo_test.
+#
+# A communicator with no topology is erroneous here, these routines supporting
+# "Cartesian communicators, graph communicators, and distributed graph
+# communicators" and no others. Both counts stay zero, so nothing is converted and
+# nothing uninitialised is passed, and MPI reports MPI_ERR_TOPOLOGY itself rather
+# than mpif inventing an error class on its behalf.
+function ensure_neighbor_degrees!(state, input_conversions)
+    state.have_neighbor_degrees[] && return
+    ensure_comm!(state, input_conversions)
+    append!(input_conversions,
+            ["int q_indegree = 0, q_outdegree = 0;",
+             "{",
+             "  int q_topology;",
+             "  int q_ierror = $(state.prefix)MPI_Topo_test(q_comm, &q_topology);",
+             "  if (q_ierror == MPI_SUCCESS) {",
+             "    if (q_topology == MPI_CART) {",
+             "      int q_ndims;",
+             "      q_ierror = $(state.prefix)MPI_Cartdim_get(q_comm, &q_ndims);",
+             "      if (q_ierror == MPI_SUCCESS)",
+             "        q_indegree = q_outdegree = 2 * q_ndims;",
+             "    } else if (q_topology == MPI_GRAPH) {",
+             "      int q_neighbor_rank;",
+             "      int q_nneighbors;",
+             "      q_ierror = $(state.prefix)MPI_Comm_rank(q_comm, &q_neighbor_rank);",
+             "      if (q_ierror == MPI_SUCCESS)",
+             "        q_ierror = $(state.prefix)MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);",
+             "      if (q_ierror == MPI_SUCCESS)",
+             "        q_indegree = q_outdegree = q_nneighbors;",
+             "    } else if (q_topology == MPI_DIST_GRAPH) {",
+             "      int q_weighted;",
+             "      q_ierror = $(state.prefix)MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);",
+             "    }",
+             "  }",
+             "  if (q_ierror != MPI_SUCCESS) {",
+             "    *ierror = q_ierror;",
+             "    return;",
+             "  }",
+             "}"])
+    return state.have_neighbor_degrees[] = true
+end
+
+# The C variable holding the number of entries in `parname`, an assumed-length
+# array of handles, and whether that number can be zero -- an indegree can be,
+# where a group size cannot, and a zero-length VLA is not C.
+function handle_array_length!(state, input_conversions, name, parname)
+    if name ∈ neighbor_alltoallw
+        ensure_neighbor_degrees!(state, input_conversions)
+        @assert parname ∈ ["sendtypes", "recvtypes"]
+        return (parname == "sendtypes" ? "q_outdegree" : "q_indegree"), true
+    end
+    ensure_group_size!(state, input_conversions)
+    return "q_group_size", false
 end
 
 function ensure_comm_rank!(state, input_conversions)
@@ -388,25 +471,20 @@ append!(f_interfaces,
          ])
 
 # A second set of interfaces to the C entry points, for the routines that take a
-# status. They differ from the mpi module's only in spelling those eight integers
-# TYPE(MPI_Status) rather than INTEGER(MPI_STATUS_SIZE), which is what lets the
-# f08 wrappers pass the caller's own status to C instead of converting it into a
-# temporary first. Two Fortran views of one C symbol, in two modules: legal,
-# since a program uses `mpi` or `mpi_f08` and not both for the same call, and
-# free on the C side, whose wrapper takes MPI_Fint* and casts it to MPI_Status*
-# either way.
-f08_raw_interfaces = ["! The mpi_f08 wrappers, MPI_ and PMPI_ alike, over a second set of interfaces",
-                      "! to the same C entry points. See dev/mpiapi.jl; do not edit.",
-                      "",
-                      "module mpif_f08_raw",
-                      "  use mpif_constants",
-                      "  use mpif_f08_types, only: MPI_Status",
-                      "  implicit none",
-                      "  public",
-                      "  save",
-                      "",
-                      "  interface",
-                      ]
+# status or an assumed-size array of handles. They differ from the mpi module's
+# only in how they spell one argument -- TYPE(MPI_Status) rather than
+# INTEGER(MPI_STATUS_SIZE), TYPE(MPI_Datatype) rather than INTEGER -- which is
+# what lets the f08 wrappers pass the caller's own storage to C instead of
+# converting it into a temporary first. Two Fortran views of one C symbol, in two
+# modules: legal, since a program uses `mpi` or `mpi_f08` and not both for the
+# same call, and free on the C side, whose wrapper takes MPI_Fint* and casts it
+# to MPI_Status* either way.
+#
+# The derived types the interfaces below name are collected as they are emitted
+# and the module's `use` list written from that, so a routine that stops needing
+# one stops importing it.
+f08_raw_types = Set{String}()
+f08_raw_interfaces = []
 append!(f08_implementations_public,
         ["module mpif_f08_functions",
          "  implicit none",
@@ -564,9 +642,13 @@ for key in sort(collect(keys(apis)))
         f_arguments = []
         f_declarations = []
         # The same declarations as the mpi module's interface, except that a
-        # status is TYPE(MPI_Status). See `mpif_f08_raw` below.
+        # status is TYPE(MPI_Status) and an assumed-size array of handles is
+        # TYPE(MPI_Datatype). See `mpif_f08_raw` below.
         f_raw_declarations = []
-        has_status = false
+        # Keyed on the argument name: the declaration `mpif_f08_raw` gives an
+        # argument whose two spellings differ, where the difference is not the
+        # textual substitution `f_raw_declarations` can make on its own.
+        f_raw_overrides = Dict{String,String}()
         f08_arguments = []
         f08_declarations = []
         f08_call_temp_declarations = []
@@ -618,6 +700,26 @@ for key in sort(collect(keys(apis)))
                             push!(f08_call_temp_declarations, "integer :: tmp_$f_argname")
                             push!(f08_call_temp_copyins, "tmp_$f_argname = $f_argname%MPI_VAL")
                             push!(f08_call_arguments, "tmp_$f_argname")
+                        elseif length == "*"
+                            # An assumed-size array of handles goes straight
+                            # through, under a TYPE(MPI_Datatype) declaration in
+                            # `mpif_f08_raw`, because `$parname%MPI_VAL` on one is
+                            # a component reference whose extent the compiler does
+                            # not know. gfortran repacks it anyway and copies the
+                            # trip count the descriptor gives -- `ubound = -1`, so
+                            # zero elements -- leaving the C wrapper reading
+                            # whatever is eight bytes below the incoming stack
+                            # arguments. That was `tmp_ierror` and the two halves
+                            # of the saved `comm` pointer, so MPI_Type_fromint was
+                            # handed a stack address and MPICH's
+                            # ABI_Datatype_from_mpi asserted on it.
+                            #
+                            # An explicit-shape array of handles has no such
+                            # problem: the compiler knows `count` and copies in
+                            # and out correctly, so MPI_Waitall and the seven
+                            # others keep the component reference.
+                            f_raw_overrides[parname] = "type(MPI_$(kind2type[kind])) :: $parname(*)"
+                            push!(f08_call_arguments, "$f_argname")
                         else
                             push!(f08_call_arguments, "$f_argname%MPI_VAL")
                         end
@@ -745,18 +847,46 @@ for key in sort(collect(keys(apis)))
                         end
                     elseif length == "*"
                         push!(input_arguments, "const MPI_Fint* restrict const $parname")
-                        ensure_comm_size!(state, input_conversions)
-                        push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[q_comm_size];")
-                        if root_only
-                            ensure_comm_rank!(state, input_conversions)
+                        count, may_be_zero = handle_array_length!(state, input_conversions, name, parname)
+                        vla = may_be_zero ? "$count > 0 ? $count : 1" : count
+                        push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[$vla];")
+                        # `sendtypes` is not read at all under MPI_IN_PLACE.
+                        # MPI-5.0 6.8 on MPI_ALLTOALLW: "In such a case,
+                        # sendcounts, sdispls and sendtypes are ignored." A
+                        # caller who takes the standard at its word passes a
+                        # one-element array, or an uninitialised one, and
+                        # converting `q_group_size` of them reads past it --
+                        # which is what MPICH's own vw_inplacef, vw_inplacef90,
+                        # nonblocking_inpf and nonblocking_inpf90 do, the last
+                        # two flakily enough to have been blamed on a defect in
+                        # MPI_Type_get_contents that they never call.
+                        #
+                        # The neighbour forms are guarded too, 8.6 saying the
+                        # option "is not meaningful for this operation" there, so
+                        # a caller who passes it anyway is erroneous either way
+                        # and this is one rule rather than two.
+                        in_place = parname == "sendtypes" &&
+                            "sendbuf" ∈ [p["name"] for p in parameters]
+                        guards = String[]
+                        root_only && (ensure_comm_rank!(state, input_conversions);
+                                      push!(guards, "q_comm_rank == 0"))
+                        in_place && push!(guards, "sendbuf != MPI_IN_PLACE")
+                        if isempty(guards)
                             append!(input_conversions,
-                                    ["if (q_comm_rank == 0)",
-                                     "  for (int rank=0; rank<q_comm_size; ++rank)",
-                                     "    c_$parname[rank] = MPI_$(kind2fun[kind])_fromint($parname[rank]);"])
-                        else
-                            append!(input_conversions,
-                                    ["for (int rank=0; rank<q_comm_size; ++rank)",
+                                    ["for (int rank=0; rank<$count; ++rank)",
                                      "  c_$parname[rank] = MPI_$(kind2fun[kind])_fromint($parname[rank]);"])
+                        else
+                            # Filled rather than left alone when the guard fails:
+                            # MPI ignores the array, but handing it uninitialised
+                            # memory is the habit that produced this defect.
+                            append!(input_conversions,
+                                    ["if ($(join(guards, " && "))) {",
+                                     "  for (int rank=0; rank<$count; ++rank)",
+                                     "    c_$parname[rank] = MPI_$(kind2fun[kind])_fromint($parname[rank]);",
+                                     "} else {",
+                                     "  for (int rank=0; rank<$count; ++rank)",
+                                     "    c_$parname[rank] = MPI_$(kind2null[kind])_NULL;",
+                                     "}"])
                         end
                         push!(call_arguments, "c_$parname")
                     elseif length ∈ ["count", "incount"]
@@ -799,13 +929,14 @@ for key in sort(collect(keys(apis)))
                         # MPI_REQUEST_NULL -- and so would write past the
                         # temporary and into this function's frame.
                         @assert length ∈ ["*", "count", "incount", "max_datatypes", "num_elements"]
+                        may_be_zero = false
                         if length == "*"
-                            ensure_comm_size!(state, input_conversions)
-                            count = "q_comm_size"
+                            count, may_be_zero = handle_array_length!(state, input_conversions, name, parname)
                         else
                             count = "*$length"
                         end
-                        push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[$count];")
+                        vla = may_be_zero ? "$count > 0 ? $count : 1" : count
+                        push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[$vla];")
                         if param_direction == "inout"
                             append!(input_conversions,
                                     ["for (int i=0; i<$count; ++i)",
@@ -985,10 +1116,10 @@ for key in sort(collect(keys(apis)))
                                         # failed call cannot turn this into a
                                         # wild write.
                                         append!(output_conversions,
-                                                ["const int count = *$reported_count < *$request_count",
-                                                 "                      ? *$reported_count",
-                                                 "                      : *$request_count;",
-                                                 "for (int i=0; i<count; ++i)",
+                                                ["const int q_count = *$reported_count < *$request_count",
+                                                 "                        ? *$reported_count",
+                                                 "                        : *$request_count;",
+                                                 "for (int i=0; i<q_count; ++i)",
                                                  "  ++$parname[i];"])
                                     end
                                 else
@@ -1556,24 +1687,31 @@ for key in sort(collect(keys(apis)))
         # MPI_Status as three named ints followed by five more, and mpif fixes
         # MPI_STATUS_SIZE at 8 with MPI_SOURCE, MPI_TAG and MPI_ERROR at 1, 2 and
         # 3 -- so the f08 layer can hand the caller's own status to C instead of
-        # converting into an INTEGER array first. What it cannot do is pass one
-        # through the mpi module's interface, which says INTEGER. So the
-        # status-taking routines get a second interface to the same C entry
-        # point, in `mpif_f08_raw`, differing only in how it spells those eight
-        # integers, and the f08 wrappers call that.
+        # converting into an INTEGER array first. An assumed-size array of
+        # handles is the same story in one component: TYPE(MPI_Datatype) is
+        # BIND(C) around one default INTEGER, so an array of them is an
+        # MPI_Fint[] and the C wrapper can be handed the caller's own. What
+        # neither can do is go through the mpi module's interface, which says
+        # INTEGER. So those routines get a second interface to the same C entry
+        # point, in `mpif_f08_raw`, differing only in how it spells that one
+        # argument, and the f08 wrappers call that.
         #
         # Without it every f08 status went through a temporary, which cost three
         # defects: a one-status temporary that arrays overran, an MPI_ERROR
         # copied back from uninitialised stack, and a `loc()` comparison per call
-        # to keep MPI_STATUS_IGNORE out of the conversion.
+        # to keep MPI_STATUS_IGNORE out of the conversion. The handle arrays cost
+        # a fourth, above: gfortran's repack of an assumed-size component
+        # reference copies nothing at all.
         f_raw_declarations = map(f_declarations) do decl
             m = match(r"^integer :: (\w+)\(MPI_STATUS_SIZE\)$", decl)
             m !== nothing && return "type(MPI_Status) :: $(m[1])"
             m = match(r"^integer :: (\w+)\(MPI_STATUS_SIZE, \*\)$", decl)
             m !== nothing && return "type(MPI_Status) :: $(m[1])(*)"
+            m = match(r"^integer :: (\w+)\(", decl)
+            m !== nothing && haskey(f_raw_overrides, m[1]) && return f_raw_overrides[m[1]]
             return decl
         end
-        has_status = f_raw_declarations != f_declarations
+        needs_raw = f_raw_declarations != f_declarations
 
         push!(c_implementations, "")
         push!(f_interfaces, "")
@@ -1622,7 +1760,14 @@ for key in sort(collect(keys(apis)))
         end
 
         # The second interface to the same C entry point, for the f08 layer
-        if has_status
+        if needs_raw
+            # The derived types it names, which is what it has to import from the
+            # host and what the module has to `use`. Read off the declarations
+            # rather than tracked alongside them, so the two cannot disagree.
+            imports = sort(unique([m[1] for m in
+                                   (match(r"^type\((MPI_\w+)\)", decl) for decl in f_raw_declarations)
+                                   if m !== nothing]))
+            union!(f08_raw_types, imports)
             push!(f08_raw_interfaces, "")
             push!(f08_raw_interfaces, "     $f_unit $f_name( &")
             for (n, arg) in enumerate(f_arguments)
@@ -1635,7 +1780,7 @@ for key in sort(collect(keys(apis)))
                 push!(f08_raw_interfaces, "     )")
             end
             push!(f08_raw_interfaces, "       use mpif_constants")
-            push!(f08_raw_interfaces, "       import :: MPI_Status")
+            push!(f08_raw_interfaces, "       import :: $(join(imports, ", "))")
             push!(f08_raw_interfaces, "       implicit none")
             if f_unit == "function"
                 push!(f08_raw_interfaces, "       $f_return_type :: result")
@@ -1648,7 +1793,7 @@ for key in sort(collect(keys(apis)))
 
         # The one alias this wrapper's body imports, from whichever of the two
         # views of the C symbol it needs.
-        f08_use_line = has_status ?
+        f08_use_line = needs_raw ?
             "  use mpif_f08_raw, only: $f08_name_f => $f_name" :
             "  use mpi, only: $f08_name_f => $f_name"
         # Only overload when Fortran can actually tell the two apart, which is a
@@ -1916,13 +2061,25 @@ for generic in sort(f08_generic_order)
 end
 push!(f08_implementations_public, "")
 
-append!(f08_raw_interfaces,
-        ["",
-         "  end interface",
-         "",
-         "end module mpif_f08_raw",
-         "",
-         ])
+f08_raw_interfaces = [["! The mpi_f08 wrappers, MPI_ and PMPI_ alike, over a second set of interfaces",
+                       "! to the same C entry points. See dev/mpiapi.jl; do not edit.",
+                       "",
+                       "module mpif_f08_raw",
+                       "  use mpif_constants",
+                       "  use mpif_f08_types, only: $(join(sort(collect(f08_raw_types)), ", "))",
+                       "  implicit none",
+                       "  public",
+                       "  save",
+                       "",
+                       "  interface",
+                       ];
+                      f08_raw_interfaces;
+                      ["",
+                       "  end interface",
+                       "",
+                       "end module mpif_f08_raw",
+                       "",
+                       ]]
 
 # The raw interfaces come first in the file: the wrapper bodies use them.
 f08_implementations = [f08_raw_interfaces;
