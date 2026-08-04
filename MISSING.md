@@ -676,9 +676,21 @@ than with the standard.
   leaves the group alone -- which is what the test was written against.
 
   Whether Open MPI remaps depends on the machine, so this is scoped in
-  `ci-scripts/suite/mpich-suite-xfail.txt` to the one variant where it has been
+  `ci-scripts/suite/mpich-suite-xfail.txt` to the variants where it has been
   seen rather than to Open MPI at large; CI's Open MPI runners pass these tests
   today, and may stop at any time without anything having changed on this side.
+
+  Two variants now, not one. `openmpi/gcc/darwin/26/arm64` -- this machine, gcc,
+  against Open MPI `6cb5ef1d` -- fails the same six with the same message,
+  `MPI_Dist_graph_create() does not create a bidirectional ring graph!`. It is the
+  second arm64 environment to remap, the first being the Ubuntu 26.04 arm64 Docker
+  image, which is what the remapping depending on hwloc's view would predict.
+
+  The entries stay per OS version rather than being widened to `darwin/*/arm64`,
+  because macOS 15 and macOS 26 disagree here: CI's macos-15 Open MPI jobs pass
+  these tests, and a selector covering both would fail that job for "unexpectedly
+  passes". Two macOS versions parting company over this is the same kind of thing
+  the OS version was put in the key for.
 - **`allctypesf`, `allctypesf90`, `allctypesf08`** run every predefined datatype
   past `MPI_Type_get_name`, `MPI_LB` and `MPI_UB` among them. Those two were
   removed in MPI-3.0 and appear nowhere in the ABI header -- `grep MPI_LB
@@ -1166,12 +1178,12 @@ numbers are not a baseline for anything. The `attrmpi1f08` it reported as
 unexpectedly passing is the same 32-bit pass the arm32v7 run found, showing through
 a key that said `x86_64` and so matched the entries scoped to it.
 
-Fifty-nine entries cover them, for fifty-five distinct language-and-test pairs --
+Sixty-five entries cover them, for fifty-five distinct language-and-test pairs --
 five of them `flaky` rather than `xfail`. All but two are accounted for, each
 either by an entry here or by a reason that stands on its own; the two are
 `i_fcoll_test` on CI's Linux runners and under flang on macOS. The rows above are
-CI's, so they do not count the six `dgraph` entries, which belong to a Docker
-variant.
+CI's, so they do not count the twelve `dgraph` entries, six for a Docker variant
+and six for this machine's `openmpi/gcc/darwin/26/arm64`.
 
 Those two numbers were "fifty-four" and "fifty-two" for a while and were wrong
 when written down, the file having gained entries without them being updated: the
