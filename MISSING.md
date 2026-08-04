@@ -645,8 +645,18 @@ which on a failed `aio_write` returns with the request marked `EINPROGRESS` and
 nothing in flight, so the next progress call asks `aio_error` about an operation
 that was already reaped. Neither is this defect and neither is fixed.
 
-Still worth reporting upstream and still not reported; #8368 is the issue to
-reference, its fix being the retry loop that cannot retry. The patch removed the
+Reported upstream as open-mpi/ompi#14278, with all three probes inlined, and the
+patch is open-mpi/ompi#14279 against `main` -- three commits, each compiling on its
+own, the source identical to what was built and tested here. Every file it touches
+is byte-identical between `main` and the ABI-branch commit `install-openmpi.sh`
+pins, so nothing had to be ported. #8368 is referenced in both as the earlier
+attempt at the same thing, its fix being the retry loop that cannot retry. Two
+questions are put to the reviewers rather than decided here: whether the
+`sysctlbyname` belongs in OPAL, which their `AGENTS.md` says is where OS-specific
+`#if` blocks go, and which of the two untouched defects above to fold in. Should
+either answer change the shape of the patch, this file and
+`ci-scripts/openmpi-fbtl-posix-aio.patch` follow it rather than the other way
+round. The patch removed the
 `openmpi/*/darwin/*/*` xfail for `i_fcoll_test`. Of the two rows that were
 untriaged beside it, one is now accounted for and not by this: under flang the test
 prints `No Errors` and then flang's `STOP` adds "IEEE arithmetic exceptions
@@ -1204,13 +1214,16 @@ stays as it is, covering rank zero and rank one. Both are recorded where they
 belong -- the first in its own section here, the second under "Verified as
 correct" in `CODE.md`.
 
-Four things are worth reporting upstream and are not yet. Three are Open MPI: the
-`MPI_Info_create_env` divergence across `MPI_Init`, the name on a fresh window,
-and the lost nonblocking collective write on macOS. Two of those have reproducers
-in `bug-ompi-*/` already. The fourth is MPICH's, and is the one with a fix
-attached rather than just a reproducer: `MPI_Type_create_f90_*` compiling to stubs
-in an ABI build, `bug-mpich-f90-datatypes/` plus
-`ci-scripts/mpich-abi-f90-datatypes.patch`.
+Three things are worth reporting upstream and are not yet. Two are Open MPI: the
+`MPI_Info_create_env` divergence across `MPI_Init`, and the name on a fresh window.
+The third is MPICH's, and is the one with a fix attached rather than just a
+reproducer: `MPI_Type_create_f90_*` compiling to stubs in an ABI build,
+`bug-mpich-f90-datatypes/` plus `ci-scripts/mpich-abi-f90-datatypes.patch`.
+
+The lost nonblocking collective write on macOS was the fourth and is now reported:
+open-mpi/ompi#14278 for the defect, open-mpi/ompi#14279 for the fix. It is the
+first of these to go upstream with the patch rather than the reproducer alone,
+which is what the other three are still short of.
 
 ## Suite baseline
 

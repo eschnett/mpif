@@ -1,9 +1,14 @@
 Stop the posix fbtl losing a nonblocking write when the aio queue fills
 
-Not an upstream backport, like the MPICH patches beside it are in part: a local
-fix for a defect not reported upstream yet, and worth reporting. It is what
-removed the `openmpi/*/darwin/*/*  f08  i_fcoll_test` line from
-suite/mpich-suite-xfail.txt. MISSING.md, "OpenMPI on macOS: a nonblocking
+Not an upstream backport, like the MPICH patches beside it are in part: a local fix
+carried ahead of upstream. It is reported -- open-mpi/ompi#14278 for the defect and
+open-mpi/ompi#14279 for this patch, three commits against `main`, whose source is
+identical to what is below. Every file touched is byte-identical between `main` and
+the ABI-branch commit install-openmpi.sh pins, which is why one patch serves both.
+Drop this file once the PR lands and the pinned commit carries it; until then
+whichever way review reshapes it, reshape this too rather than letting the two
+drift. It is also what removed the `openmpi/*/darwin/*/*  f08  i_fcoll_test` line
+from suite/mpich-suite-xfail.txt. MISSING.md, "OpenMPI on macOS: a nonblocking
 collective write is lost when the aio queue fills", has the measurements; this is
 the short version and the reasoning behind each hunk.
 
