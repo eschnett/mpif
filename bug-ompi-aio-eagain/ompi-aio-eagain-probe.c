@@ -26,7 +26,9 @@
 // in the way. MISSING.md, "a nonblocking collective write is lost when the aio
 // queue fills", has the reading of Open MPI's source that ties them together.
 //
-// Prints what it finds and exits 1 unless (a) succeeds and (b) does not.
+// Prints what it finds and exits 1 if any of the four loses data, so that it
+// doubles as the regression test for a fix: as `ompi-aio-eagain.c` beside it
+// does, nonzero means the defect is present.
 //
 //   mpicc -o ompi-aio-eagain-probe ompi-aio-eagain-probe.c
 //   mpiexec -n 1 ./ompi-aio-eagain-probe
@@ -105,14 +107,18 @@ int main(int argc, char **argv) {
   MPI_Type_free(&fragmented);
   free(buf);
 
-  int ok = control && !fault;
-  if (!ok) {
-    printf("  probe inconclusive: the control must succeed and (b) must not\n");
-  } else if (after || again) {
-    printf("  note: (c)/(d) succeeded, so the aio slots were not leaked here\n");
+  if (!control) {
+    printf("  inconclusive: the contiguous control write lost data too\n");
+  } else if (fault) {
+    printf("  no data lost -- the defect is not present here\n");
+  } else if (after && again) {
+    printf("  the fragmented write was lost, but the handle still works:"
+           " the aio slots were not leaked\n");
+  } else {
+    printf("  the fragmented write was lost and took the file handle with it\n");
   }
 
   MPI_File_delete(path, MPI_INFO_NULL);
   MPI_Finalize();
-  return ok ? 0 : 1;
+  return (control && fault && after && again) ? 0 : 1;
 }

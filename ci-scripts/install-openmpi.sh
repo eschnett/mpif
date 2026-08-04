@@ -40,14 +40,16 @@ scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 repodir=$(cd "${scriptdir}/.." && pwd)
 nprocs=$(getconf _NPROCESSORS_ONLN)
 
-# Upstream fixes that have not reached the ABI branch yet, applied to the source
-# tree below. Each patch says in its own preamble what it is, where it comes from
-# and why it is still needed here. There are none at present: the one fix that was
-# carried, for the empty `MPI_Info_set` value, is on the branch as of the commit
-# above and was dropped. The array stays because the next one goes here, and it is
-# expanded with the `${a[@]+...}` guard throughout so that being empty is not an
-# unbound variable under `set -u` in bash 3.2, which is what macOS has.
-patches=()
+# Fixes applied to the source tree below. Each patch says in its own preamble what
+# it is, where it comes from and why it is still needed here. The one here is a
+# local fix for a defect not reported upstream yet, and its preamble says so; the
+# one that used to be, for the empty `MPI_Info_set` value, is on the branch as of
+# the commit above and was dropped. The array is expanded with the `${a[@]+...}`
+# guard throughout so that being empty -- which it was, and may be again -- is not
+# an unbound variable under `set -u` in bash 3.2, which is what macOS has.
+patches=(
+    "${scriptdir}/openmpi-fbtl-posix-aio.patch"
+)
 
 if [[ -n ${MPI_SRC_DIR:-} ]]; then
     mkdir -p "${MPI_SRC_DIR}"

@@ -157,7 +157,7 @@ xfail */*/*/*/*                f90  fandcattrf90       # attributes set in Fortr
 xfail */*/*/*/*                f77  greqf              # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
 xfail */*/*/*/*                f08  greqf08            # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
 xfail */*/*/*/*                f90  greqf90            # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
-xfail openmpi/*/darwin/*/*     f08  i_fcoll_test       # Open MPI on macOS loses a nonblocking collective write, aio_write EAGAIN; MISSING.md "aio queue"
+xfail */llvm/darwin/*/*        f08  i_fcoll_test       # not a failure: flang's STOP prints "IEEE arithmetic exceptions signaled: INEXACT" past the test's "No Errors"; MISSING.md "aio queue"
 xfail openmpi/*/*/*/*          f77  infocrenvf         # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
 xfail openmpi/*/*/*/*          f08  infocrenvf90       # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
 xfail openmpi/*/*/*/*          f90  infocrenvf90       # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
@@ -192,8 +192,9 @@ xfail openmpi/*/*/*/*          f90  winnamef90         # Open MPI gives a fresh 
 #
 # Nobody has diagnosed these. Each says what it does, so that whoever picks one
 # up starts from the symptom rather than from a rerun. What is left is
-# i_fcoll_test, on CI's Linux runners and under flang on macOS; the same test on
-# macOS with Open MPI has a cause, and it is above.
+# i_fcoll_test on CI's Linux runners. The other two rows it used to have are gone:
+# Open MPI on macOS is fixed by ci-scripts/openmpi-fbtl-posix-aio.patch, and flang
+# on macOS turned out not to be a failure at all -- both are above.
 #
 # Read the whole of a test's output before diagnosing it. `runtests` prints ten
 # lines and then "... ...", and the eleven Open MPI spawn tests above cost two
@@ -201,5 +202,4 @@ xfail openmpi/*/*/*/*          f90  winnamef90         # Open MPI gives a fresh 
 # lines of an abort. This script now prints the full output of every unexpected
 # failure, from the TAP file, which is not truncated.
 #
-xfail */*/linux/24.04/*        f08  i_fcoll_test       # untriaged: fails on CI's 24.04 runners, cause unknown; it passes on 26.04, and the macOS cause above does not apply
-xfail mpich/llvm/darwin/*/*    f08  i_fcoll_test       # untriaged: fails under flang and passes under gfortran on the same MPI, which is the odd part
+xfail */*/linux/24.04/*        f08  i_fcoll_test       # untriaged: fails on CI's 24.04 runners, cause unknown; it passes on 26.04, and neither macOS cause above applies

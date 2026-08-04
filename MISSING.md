@@ -508,7 +508,7 @@ Nothing to fix on this side either way. The window half is worth reporting
 upstream and is not yet; the dup half is worth asking about, since the standard
 could settle it in a sentence.
 
-### OpenMPI on macOS: a nonblocking collective write is lost when the aio queue fills
+### OpenMPI on macOS: a nonblocking collective write is lost when the aio queue fills — carried as a local patch
 
 `f08/io/i_fcoll_test` writes a 32³ integer array to a file through a
 `MPI_Type_create_darray` view with `MPI_File_iwrite_all`, reads it back with
@@ -594,7 +594,12 @@ The one thing in the interface that admits any of this is `MPI_Get_count` on the
 completed request, 0 where a success reports the lot. `MPI_File_iwrite_all` returns
 `MPI_SUCCESS`, `MPI_Test` reports the request complete on the first call, and
 `MPI_Wait` returns `MPI_SUCCESS` -- silence would be bad enough, and success is
-worse.
+worse. That the request completes at all is worth its own sentence, since a request
+with no progress function ought to hang rather than succeed:
+`common_ompio_request.c:209` reads a null `req_progress_fn` as "this is a parent
+request", finds `req_num_subreqs == req_subreqs_completed` trivially at 0 == 0, and
+completes it with a status nobody has written. `MPI_ERROR` in it is uninitialised
+heap, which is why nothing can be read off it either.
 
 The blocking path is unaffected, measured: `MPI_File_write_all` through the same
 view transfers all 8192 and says so. `fbtl_posix_pwritev.c` contains no `aio_*`
@@ -606,20 +611,51 @@ issues few enough requests to stay under the limit and passes -- which is why th
 test's `darray` is in that probe, and why the one-process probe reaches the same
 fragmentation with a vector type.
 
-There is no workaround. Measured, each still failing: `--mca fbtl_posix_priority 0`
-(priority does not deselect the only component in the framework), `--mca fcoll
-individual` and `--mca fcoll_vulcan_async_io 0` (fcoll is not in this path at all,
-per the backtrace). `--mca fbtl ^posix` leaves no fbtl and the job dies. Open MPI
-6.1 ships one `io` component, `ompio`, and one `fbtl`, `posix`, so there is nothing
-to switch to; ROMIO is gone. Raising `kern.aioprocmax` past 90, with `kern.aiomax`
-above the product of that and the ranks per node, ought to work -- inferred, not
-measured, since it needs root, and a test suite cannot ask for it anyway.
+There is no workaround at run time. Measured, each still failing:
+`--mca fbtl_posix_priority 0` (priority does not deselect the only component in the
+framework), `--mca fcoll individual` and `--mca fcoll_vulcan_async_io 0` (fcoll is
+not in this path at all, per the backtrace). `--mca fbtl ^posix` leaves no fbtl and
+the job dies. Open MPI 6.1 ships one `io` component, `ompio`, and one `fbtl`,
+`posix`, so there is nothing to switch to; ROMIO is gone. Raising `kern.aioprocmax`
+past 90, with `kern.aiomax` above the product of that and the ranks per node, ought
+to work -- inferred, not measured, since it needs root, and a test suite cannot ask
+for it anyway.
 
-Nothing to fix on this side. Worth reporting upstream and still not reported;
-#8368 is the issue to reference, its fix being the retry loop that cannot retry.
-It accounts for `i_fcoll_test` on `openmpi/*/darwin/*` only; the same test also
-fails on every Linux variant and under flang on macOS, and those are still
-untriaged, with the aio message conspicuously absent from the reason.
+So it is patched instead: `ci-scripts/openmpi-fbtl-posix-aio.patch`, applied by
+`ci-scripts/install-openmpi.sh`, whose preamble carries the reasoning hunk by hunk.
+It reads `kern.aioprocmax` on Darwin rather than `sysconf(_SC_AIO_MAX)` and exposes
+the value as an `fbtl_posix_max_aio_reqs` MCA parameter; replaces the retry with
+back-pressure, posting what the queue takes and leaving the rest to progress, which
+needs `mca_fbtl_posix_progress` to arm the next batch on the width of the active
+window rather than on a whole chunk; makes the two ompio callers act on what the
+fbtl returns; and reaps what was posted before freeing the aiocbs. Both reproducers
+in `bug-ompi-aio-eagain/` pass under it, and both fail again when the change is
+reverted and Open MPI rebuilt, which is what makes the attribution rather than the
+symptom the thing that was tested. `f08/io` under `openmpi/gcc` goes from three
+failures to two and `f90/io` and `f77/io` are unchanged at two; the patch builds
+warning-free under both gcc 15 and clang 22, and fixes both local Open MPI
+variants.
+
+Two things it deliberately leaves alone, both reachable only from a genuine I/O
+error rather than from a full queue: the same discarded return value at
+`common_ompio_file_write.c:241` and `common_ompio_file_read.c:265`, in the
+*blocking* paths, where the enclosing function's own error handling would have to be
+rethought; and the partial-completion re-post inside `mca_fbtl_posix_progress`,
+which on a failed `aio_write` returns with the request marked `EINPROGRESS` and
+nothing in flight, so the next progress call asks `aio_error` about an operation
+that was already reaped. Neither is this defect and neither is fixed.
+
+Still worth reporting upstream and still not reported; #8368 is the issue to
+reference, its fix being the retry loop that cannot retry. The patch removed the
+`openmpi/*/darwin/*/*` xfail for `i_fcoll_test`. Of the two rows that were
+untriaged beside it, one is now accounted for and not by this: under flang the test
+prints `No Errors` and then flang's `STOP` adds "IEEE arithmetic exceptions
+signaled: INEXACT", which `runtests` counts as unexpected output, so
+`*/llvm/darwin/*/*` fails on both implementations for a reason that is not an MPI
+defect at all -- measured on `openmpi/llvm` and `mpich/llvm` here, and it is why the
+row said "passes under gfortran on the same MPI". What is left untriaged is
+`*/*/linux/24.04/*`, where the aio message is conspicuously absent from the output
+and this patch is not expected to change anything.
 
 ### OpenMPI: left to itself it picks an interface it cannot use
 
@@ -1132,12 +1168,13 @@ writes it.
    still reports, above under "Missing features". Four tests, a specification that
    says exactly what is wanted, and a design question -- where the storage lives
    and how its lifetime is tied to the attribute -- that is the whole of the work.
-2. **`i_fcoll_test`, the last two untriaged entries**, on CI's Linux runners and
-   under flang on macOS. `ci-scripts/suite/mpich-suite-xfail.txt` has the symptom.
-   The macOS Open MPI case is solved and above; these two are not that, and the
-   Linux one is odd in that the test passes on Ubuntu 26.04 and fails on 24.04.
-   Start where the spawn eleven were solved: the "## Test output" block in the
-   run's tap file.
+2. **`i_fcoll_test`, the last untriaged entry**, on CI's Linux runners.
+   `ci-scripts/suite/mpich-suite-xfail.txt` has the symptom. The two that used to
+   be beside it are gone -- the macOS Open MPI case is patched and above, and the
+   flang one turned out to be flang's `STOP` printing an IEEE-exception line past
+   the test's own `No Errors` -- and this one is neither: the aio message is absent,
+   and the test passes on Ubuntu 26.04 while failing on 24.04. Start where the
+   spawn eleven were solved: the "## Test output" block in the run's tap file.
 3. **Triage `mpich/gcc/linux/26.04/armv7l`**, the one 32-bit variant still
    without a `triaged` line, so it is reported and cannot fail a run. It is
    emulated and local-only, which is why it is behind the i686 one -- that now
@@ -1271,12 +1308,13 @@ numbers are not a baseline for anything. The `attrmpi1f08` it reported as
 unexpectedly passing is the same 32-bit pass the arm32v7 run found, showing through
 a key that said `x86_64` and so matched the entries scoped to it.
 
-Fifty-nine entries cover them, for forty-nine distinct language-and-test pairs --
+Fifty-eight entries cover them, for forty-nine distinct language-and-test pairs --
 three of them `flaky` rather than `xfail`. Six went away with the alltoallw
 handle-array fixes: the four `*/gcc/*` collective tests and the two
-`nonblocking_inp*` flaky ones. All but two are accounted for, each
-either by an entry here or by a reason that stands on its own; the two are
-`i_fcoll_test` on CI's Linux runners and under flang on macOS. The rows above are
+`nonblocking_inp*` flaky ones, and a seventh with the aio patch, the two macOS
+`i_fcoll_test` rows collapsing into one for flang. All but one are accounted for, each
+either by an entry here or by a reason that stands on its own; the one is
+`i_fcoll_test` on CI's Linux runners. The rows above are
 CI's, so they do not count the twelve `dgraph` entries, six for a Docker variant
 and six for this machine's two Open MPI variants, which share one selector.
 
