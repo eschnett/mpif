@@ -1,0 +1,35292 @@
+! The mpi_f08 wrappers themselves, MPI_ and PMPI_ alike, as external
+! procedures under the specific names of Table 19.1. Declared in
+! mpif_f08_functions, defined here, so that the name a call resolves to is
+! one a profiling layer can interpose. See dev/mpiapi.jl; do not edit.
+subroutine MPI_Abi_get_fortran_booleans_f08( &
+  logical_size, &
+  logical_true, &
+  logical_false, &
+  is_set, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Abi_get_fortran_booleans => MPI_Abi_get_fortran_booleans
+  implicit none
+  integer, intent(in) :: logical_size
+  logical, intent(out) :: logical_true
+  logical, intent(out) :: logical_false
+  logical, intent(out) :: is_set
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Abi_get_fortran_booleans( &
+    logical_size, &
+    logical_true, &
+    logical_false, &
+    is_set, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Abi_get_fortran_booleans_f08
+
+subroutine PMPI_Abi_get_fortran_booleans_f08( &
+  logical_size, &
+  logical_true, &
+  logical_false, &
+  is_set, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Abi_get_fortran_booleans => PMPI_Abi_get_fortran_booleans
+  implicit none
+  integer, intent(in) :: logical_size
+  logical, intent(out) :: logical_true
+  logical, intent(out) :: logical_false
+  logical, intent(out) :: is_set
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Abi_get_fortran_booleans( &
+    logical_size, &
+    logical_true, &
+    logical_false, &
+    is_set, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Abi_get_fortran_booleans_f08
+
+subroutine MPI_Abi_get_fortran_info_f08( &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Abi_get_fortran_info => MPI_Abi_get_fortran_info
+  implicit none
+  type(MPI_Info), intent(out) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Abi_get_fortran_info( &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Abi_get_fortran_info_f08
+
+subroutine PMPI_Abi_get_fortran_info_f08( &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Abi_get_fortran_info => PMPI_Abi_get_fortran_info
+  implicit none
+  type(MPI_Info), intent(out) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Abi_get_fortran_info( &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Abi_get_fortran_info_f08
+
+subroutine MPI_Abi_get_info_f08( &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Abi_get_info => MPI_Abi_get_info
+  implicit none
+  type(MPI_Info), intent(out) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Abi_get_info( &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Abi_get_info_f08
+
+subroutine PMPI_Abi_get_info_f08( &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Abi_get_info => PMPI_Abi_get_info
+  implicit none
+  type(MPI_Info), intent(out) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Abi_get_info( &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Abi_get_info_f08
+
+subroutine MPI_Abi_get_version_f08( &
+  abi_major, &
+  abi_minor, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Abi_get_version => MPI_Abi_get_version
+  implicit none
+  integer, intent(out) :: abi_major
+  integer, intent(out) :: abi_minor
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Abi_get_version( &
+    abi_major, &
+    abi_minor, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Abi_get_version_f08
+
+subroutine PMPI_Abi_get_version_f08( &
+  abi_major, &
+  abi_minor, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Abi_get_version => PMPI_Abi_get_version
+  implicit none
+  integer, intent(out) :: abi_major
+  integer, intent(out) :: abi_minor
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Abi_get_version( &
+    abi_major, &
+    abi_minor, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Abi_get_version_f08
+
+subroutine MPI_Abi_set_fortran_booleans_f08( &
+  logical_size, &
+  logical_true, &
+  logical_false, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Abi_set_fortran_booleans => MPI_Abi_set_fortran_booleans
+  implicit none
+  integer, intent(in) :: logical_size
+  logical, intent(in) :: logical_true
+  logical, intent(in) :: logical_false
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Abi_set_fortran_booleans( &
+    logical_size, &
+    logical_true, &
+    logical_false, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Abi_set_fortran_booleans_f08
+
+subroutine PMPI_Abi_set_fortran_booleans_f08( &
+  logical_size, &
+  logical_true, &
+  logical_false, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Abi_set_fortran_booleans => PMPI_Abi_set_fortran_booleans
+  implicit none
+  integer, intent(in) :: logical_size
+  logical, intent(in) :: logical_true
+  logical, intent(in) :: logical_false
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Abi_set_fortran_booleans( &
+    logical_size, &
+    logical_true, &
+    logical_false, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Abi_set_fortran_booleans_f08
+
+subroutine MPI_Abi_set_fortran_info_f08( &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Abi_set_fortran_info => MPI_Abi_set_fortran_info
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Abi_set_fortran_info( &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Abi_set_fortran_info_f08
+
+subroutine PMPI_Abi_set_fortran_info_f08( &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Abi_set_fortran_info => PMPI_Abi_set_fortran_info
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Abi_set_fortran_info( &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Abi_set_fortran_info_f08
+
+subroutine MPI_Abort_f08( &
+  comm, &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Abort => MPI_Abort
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Abort( &
+    comm%MPI_VAL, &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Abort_f08
+
+subroutine PMPI_Abort_f08( &
+  comm, &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Abort => PMPI_Abort
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Abort( &
+    comm%MPI_VAL, &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Abort_f08
+
+subroutine MPI_Accumulate_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Accumulate => MPI_Accumulate
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Accumulate_f08
+
+subroutine MPI_Accumulate_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Accumulate_c => MPI_Accumulate_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Accumulate_c_f08
+
+subroutine PMPI_Accumulate_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Accumulate => PMPI_Accumulate
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Accumulate_f08
+
+subroutine PMPI_Accumulate_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Accumulate_c => PMPI_Accumulate_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Accumulate_c_f08
+
+subroutine MPI_Add_error_class_f08( &
+  errorclass, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Add_error_class => MPI_Add_error_class
+  implicit none
+  integer, intent(out) :: errorclass
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Add_error_class( &
+    errorclass, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Add_error_class_f08
+
+subroutine PMPI_Add_error_class_f08( &
+  errorclass, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Add_error_class => PMPI_Add_error_class
+  implicit none
+  integer, intent(out) :: errorclass
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Add_error_class( &
+    errorclass, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Add_error_class_f08
+
+subroutine MPI_Add_error_code_f08( &
+  errorclass, &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Add_error_code => MPI_Add_error_code
+  implicit none
+  integer, intent(in) :: errorclass
+  integer, intent(out) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Add_error_code( &
+    errorclass, &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Add_error_code_f08
+
+subroutine PMPI_Add_error_code_f08( &
+  errorclass, &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Add_error_code => PMPI_Add_error_code
+  implicit none
+  integer, intent(in) :: errorclass
+  integer, intent(out) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Add_error_code( &
+    errorclass, &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Add_error_code_f08
+
+subroutine MPI_Add_error_string_f08( &
+  errorcode, &
+  string, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Add_error_string => MPI_Add_error_string
+  implicit none
+  integer, intent(in) :: errorcode
+  character*(*), intent(in) :: string
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Add_error_string( &
+    errorcode, &
+    string, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Add_error_string_f08
+
+subroutine PMPI_Add_error_string_f08( &
+  errorcode, &
+  string, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Add_error_string => PMPI_Add_error_string
+  implicit none
+  integer, intent(in) :: errorcode
+  character*(*), intent(in) :: string
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Add_error_string( &
+    errorcode, &
+    string, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Add_error_string_f08
+
+function MPI_Aint_add_f08( &
+  base, &
+  disp &
+) result(result)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Aint_add => MPI_Aint_add
+  implicit none
+  integer(MPI_ADDRESS_KIND) :: result
+  integer(MPI_ADDRESS_KIND), intent(in) :: base
+  integer(MPI_ADDRESS_KIND), intent(in) :: disp
+  result = MPIF_Aint_add( &
+    base, &
+    disp &
+  )
+end function MPI_Aint_add_f08
+
+function PMPI_Aint_add_f08( &
+  base, &
+  disp &
+) result(result)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Aint_add => PMPI_Aint_add
+  implicit none
+  integer(MPI_ADDRESS_KIND) :: result
+  integer(MPI_ADDRESS_KIND), intent(in) :: base
+  integer(MPI_ADDRESS_KIND), intent(in) :: disp
+  result = PMPIF_Aint_add( &
+    base, &
+    disp &
+  )
+end function PMPI_Aint_add_f08
+
+function MPI_Aint_diff_f08( &
+  addr1, &
+  addr2 &
+) result(result)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Aint_diff => MPI_Aint_diff
+  implicit none
+  integer(MPI_ADDRESS_KIND) :: result
+  integer(MPI_ADDRESS_KIND), intent(in) :: addr1
+  integer(MPI_ADDRESS_KIND), intent(in) :: addr2
+  result = MPIF_Aint_diff( &
+    addr1, &
+    addr2 &
+  )
+end function MPI_Aint_diff_f08
+
+function PMPI_Aint_diff_f08( &
+  addr1, &
+  addr2 &
+) result(result)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Aint_diff => PMPI_Aint_diff
+  implicit none
+  integer(MPI_ADDRESS_KIND) :: result
+  integer(MPI_ADDRESS_KIND), intent(in) :: addr1
+  integer(MPI_ADDRESS_KIND), intent(in) :: addr2
+  result = PMPIF_Aint_diff( &
+    addr1, &
+    addr2 &
+  )
+end function PMPI_Aint_diff_f08
+
+subroutine MPI_Allgather_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Allgather => MPI_Allgather
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgather_f08
+
+subroutine MPI_Allgather_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Allgather_c => MPI_Allgather_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgather_c_f08
+
+subroutine PMPI_Allgather_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Allgather => PMPI_Allgather
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgather_f08
+
+subroutine PMPI_Allgather_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Allgather_c => PMPI_Allgather_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgather_c_f08
+
+subroutine MPI_Allgather_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Allgather_init => MPI_Allgather_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgather_init_f08
+
+subroutine MPI_Allgather_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Allgather_init_c => MPI_Allgather_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgather_init_c_f08
+
+subroutine PMPI_Allgather_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Allgather_init => PMPI_Allgather_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgather_init_f08
+
+subroutine PMPI_Allgather_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Allgather_init_c => PMPI_Allgather_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgather_init_c_f08
+
+subroutine MPI_Allgatherv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Allgatherv => MPI_Allgatherv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgatherv_f08
+
+subroutine MPI_Allgatherv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Allgatherv_c => MPI_Allgatherv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgatherv_c_f08
+
+subroutine PMPI_Allgatherv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Allgatherv => PMPI_Allgatherv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgatherv_f08
+
+subroutine PMPI_Allgatherv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Allgatherv_c => PMPI_Allgatherv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgatherv_c_f08
+
+subroutine MPI_Allgatherv_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Allgatherv_init => MPI_Allgatherv_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgatherv_init_f08
+
+subroutine MPI_Allgatherv_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Allgatherv_init_c => MPI_Allgatherv_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgatherv_init_c_f08
+
+subroutine PMPI_Allgatherv_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Allgatherv_init => PMPI_Allgatherv_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgatherv_init_f08
+
+subroutine PMPI_Allgatherv_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Allgatherv_init_c => PMPI_Allgatherv_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgatherv_init_c_f08
+
+subroutine MPI_Alloc_mem_f08( &
+  size, &
+  info, &
+  baseptr, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alloc_mem => MPI_Alloc_mem
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  type(MPI_Info), intent(in) :: info
+  type(C_PTR), intent(out) :: baseptr
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call MPIF_Alloc_mem( &
+    size, &
+    info%MPI_VAL, &
+    tmp_baseptr, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alloc_mem_f08
+
+subroutine PMPI_Alloc_mem_f08( &
+  size, &
+  info, &
+  baseptr, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alloc_mem => PMPI_Alloc_mem
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  type(MPI_Info), intent(in) :: info
+  type(C_PTR), intent(out) :: baseptr
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call PMPIF_Alloc_mem( &
+    size, &
+    info%MPI_VAL, &
+    tmp_baseptr, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alloc_mem_f08
+
+subroutine MPI_Allreduce_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Allreduce => MPI_Allreduce
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allreduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allreduce_f08
+
+subroutine MPI_Allreduce_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Allreduce_c => MPI_Allreduce_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allreduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allreduce_c_f08
+
+subroutine PMPI_Allreduce_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Allreduce => PMPI_Allreduce
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allreduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allreduce_f08
+
+subroutine PMPI_Allreduce_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Allreduce_c => PMPI_Allreduce_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allreduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allreduce_c_f08
+
+subroutine MPI_Allreduce_init_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Allreduce_init => MPI_Allreduce_init
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allreduce_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allreduce_init_f08
+
+subroutine MPI_Allreduce_init_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Allreduce_init_c => MPI_Allreduce_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allreduce_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allreduce_init_c_f08
+
+subroutine PMPI_Allreduce_init_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Allreduce_init => PMPI_Allreduce_init
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allreduce_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allreduce_init_f08
+
+subroutine PMPI_Allreduce_init_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Allreduce_init_c => PMPI_Allreduce_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allreduce_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allreduce_init_c_f08
+
+subroutine MPI_Alltoall_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alltoall => MPI_Alltoall
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoall_f08
+
+subroutine MPI_Alltoall_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alltoall_c => MPI_Alltoall_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoall_c_f08
+
+subroutine PMPI_Alltoall_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alltoall => PMPI_Alltoall
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoall_f08
+
+subroutine PMPI_Alltoall_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alltoall_c => PMPI_Alltoall_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoall_c_f08
+
+subroutine MPI_Alltoall_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alltoall_init => MPI_Alltoall_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoall_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoall_init_f08
+
+subroutine MPI_Alltoall_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alltoall_init_c => MPI_Alltoall_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoall_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoall_init_c_f08
+
+subroutine PMPI_Alltoall_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alltoall_init => PMPI_Alltoall_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoall_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoall_init_f08
+
+subroutine PMPI_Alltoall_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alltoall_init_c => PMPI_Alltoall_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoall_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoall_init_c_f08
+
+subroutine MPI_Alltoallv_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alltoallv => MPI_Alltoallv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallv_f08
+
+subroutine MPI_Alltoallv_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alltoallv_c => MPI_Alltoallv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallv_c_f08
+
+subroutine PMPI_Alltoallv_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alltoallv => PMPI_Alltoallv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallv_f08
+
+subroutine PMPI_Alltoallv_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alltoallv_c => PMPI_Alltoallv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallv_c_f08
+
+subroutine MPI_Alltoallv_init_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alltoallv_init => MPI_Alltoallv_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallv_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallv_init_f08
+
+subroutine MPI_Alltoallv_init_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alltoallv_init_c => MPI_Alltoallv_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallv_init_c_f08
+
+subroutine PMPI_Alltoallv_init_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alltoallv_init => PMPI_Alltoallv_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallv_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallv_init_f08
+
+subroutine PMPI_Alltoallv_init_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alltoallv_init_c => PMPI_Alltoallv_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallv_init_c_f08
+
+subroutine MPI_Alltoallw_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alltoallw => MPI_Alltoallw
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallw_f08
+
+subroutine MPI_Alltoallw_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alltoallw_c => MPI_Alltoallw_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallw_c_f08
+
+subroutine PMPI_Alltoallw_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alltoallw => PMPI_Alltoallw
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallw_f08
+
+subroutine PMPI_Alltoallw_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alltoallw_c => PMPI_Alltoallw_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallw_c_f08
+
+subroutine MPI_Alltoallw_init_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alltoallw_init => MPI_Alltoallw_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallw_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallw_init_f08
+
+subroutine MPI_Alltoallw_init_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Alltoallw_init_c => MPI_Alltoallw_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallw_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallw_init_c_f08
+
+subroutine PMPI_Alltoallw_init_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alltoallw_init => PMPI_Alltoallw_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallw_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallw_init_f08
+
+subroutine PMPI_Alltoallw_init_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Alltoallw_init_c => PMPI_Alltoallw_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallw_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallw_init_c_f08
+
+subroutine MPI_Attr_delete_f08( &
+  comm, &
+  keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Attr_delete => MPI_Attr_delete
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Attr_delete( &
+    comm%MPI_VAL, &
+    keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Attr_delete_f08
+
+subroutine PMPI_Attr_delete_f08( &
+  comm, &
+  keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Attr_delete => PMPI_Attr_delete
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Attr_delete( &
+    comm%MPI_VAL, &
+    keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Attr_delete_f08
+
+subroutine MPI_Attr_get_f08( &
+  comm, &
+  keyval, &
+  attribute_val, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Attr_get => MPI_Attr_get
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: keyval
+  integer, intent(out) :: attribute_val
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Attr_get( &
+    comm%MPI_VAL, &
+    keyval, &
+    attribute_val, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Attr_get_f08
+
+subroutine PMPI_Attr_get_f08( &
+  comm, &
+  keyval, &
+  attribute_val, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Attr_get => PMPI_Attr_get
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: keyval
+  integer, intent(out) :: attribute_val
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Attr_get( &
+    comm%MPI_VAL, &
+    keyval, &
+    attribute_val, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Attr_get_f08
+
+subroutine MPI_Attr_put_f08( &
+  comm, &
+  keyval, &
+  attribute_val, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Attr_put => MPI_Attr_put
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: keyval
+  integer, intent(in) :: attribute_val
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Attr_put( &
+    comm%MPI_VAL, &
+    keyval, &
+    attribute_val, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Attr_put_f08
+
+subroutine PMPI_Attr_put_f08( &
+  comm, &
+  keyval, &
+  attribute_val, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Attr_put => PMPI_Attr_put
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: keyval
+  integer, intent(in) :: attribute_val
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Attr_put( &
+    comm%MPI_VAL, &
+    keyval, &
+    attribute_val, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Attr_put_f08
+
+subroutine MPI_Barrier_f08( &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Barrier => MPI_Barrier
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Barrier( &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Barrier_f08
+
+subroutine PMPI_Barrier_f08( &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Barrier => PMPI_Barrier
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Barrier( &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Barrier_f08
+
+subroutine MPI_Barrier_init_f08( &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Barrier_init => MPI_Barrier_init
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Barrier_init( &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Barrier_init_f08
+
+subroutine PMPI_Barrier_init_f08( &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Barrier_init => PMPI_Barrier_init
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Barrier_init( &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Barrier_init_f08
+
+subroutine MPI_Bcast_f08( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Bcast => MPI_Bcast
+  implicit none
+  integer :: buffer(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bcast( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bcast_f08
+
+subroutine MPI_Bcast_c_f08( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Bcast_c => MPI_Bcast_c
+  implicit none
+  integer :: buffer(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bcast_c( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bcast_c_f08
+
+subroutine PMPI_Bcast_f08( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Bcast => PMPI_Bcast
+  implicit none
+  integer :: buffer(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bcast( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bcast_f08
+
+subroutine PMPI_Bcast_c_f08( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Bcast_c => PMPI_Bcast_c
+  implicit none
+  integer :: buffer(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bcast_c( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bcast_c_f08
+
+subroutine MPI_Bcast_init_f08( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Bcast_init => MPI_Bcast_init
+  implicit none
+  integer :: buffer(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bcast_init( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bcast_init_f08
+
+subroutine MPI_Bcast_init_c_f08( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Bcast_init_c => MPI_Bcast_init_c
+  implicit none
+  integer :: buffer(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bcast_init_c( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bcast_init_c_f08
+
+subroutine PMPI_Bcast_init_f08( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Bcast_init => PMPI_Bcast_init
+  implicit none
+  integer :: buffer(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bcast_init( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bcast_init_f08
+
+subroutine PMPI_Bcast_init_c_f08( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Bcast_init_c => PMPI_Bcast_init_c
+  implicit none
+  integer :: buffer(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bcast_init_c( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bcast_init_c_f08
+
+subroutine MPI_Bsend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Bsend => MPI_Bsend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bsend_f08
+
+subroutine MPI_Bsend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Bsend_c => MPI_Bsend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bsend_c_f08
+
+subroutine PMPI_Bsend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Bsend => PMPI_Bsend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bsend_f08
+
+subroutine PMPI_Bsend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Bsend_c => PMPI_Bsend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bsend_c_f08
+
+subroutine MPI_Bsend_init_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Bsend_init => MPI_Bsend_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bsend_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bsend_init_f08
+
+subroutine MPI_Bsend_init_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Bsend_init_c => MPI_Bsend_init_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bsend_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bsend_init_c_f08
+
+subroutine PMPI_Bsend_init_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Bsend_init => PMPI_Bsend_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bsend_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bsend_init_f08
+
+subroutine PMPI_Bsend_init_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Bsend_init_c => PMPI_Bsend_init_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bsend_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bsend_init_c_f08
+
+subroutine MPI_Buffer_attach_f08( &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Buffer_attach => MPI_Buffer_attach
+  implicit none
+  integer :: buffer(*)
+  integer, intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Buffer_attach( &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Buffer_attach_f08
+
+subroutine MPI_Buffer_attach_c_f08( &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Buffer_attach_c => MPI_Buffer_attach_c
+  implicit none
+  integer :: buffer(*)
+  integer(MPI_COUNT_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Buffer_attach_c( &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Buffer_attach_c_f08
+
+subroutine PMPI_Buffer_attach_f08( &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Buffer_attach => PMPI_Buffer_attach
+  implicit none
+  integer :: buffer(*)
+  integer, intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Buffer_attach( &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Buffer_attach_f08
+
+subroutine PMPI_Buffer_attach_c_f08( &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Buffer_attach_c => PMPI_Buffer_attach_c
+  implicit none
+  integer :: buffer(*)
+  integer(MPI_COUNT_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Buffer_attach_c( &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Buffer_attach_c_f08
+
+subroutine MPI_Buffer_detach_f08( &
+  buffer_addr, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Buffer_detach => MPI_Buffer_detach
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(C_PTR), intent(out) :: buffer_addr
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
+  integer :: tmp_ierror
+  call MPIF_Buffer_detach( &
+    tmp_buffer_addr, &
+    size, &
+    tmp_ierror &
+  )
+  buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Buffer_detach_f08
+
+subroutine MPI_Buffer_detach_c_f08( &
+  buffer_addr, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Buffer_detach_c => MPI_Buffer_detach_c
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(C_PTR), intent(out) :: buffer_addr
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
+  integer :: tmp_ierror
+  call MPIF_Buffer_detach_c( &
+    tmp_buffer_addr, &
+    size, &
+    tmp_ierror &
+  )
+  buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Buffer_detach_c_f08
+
+subroutine PMPI_Buffer_detach_f08( &
+  buffer_addr, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Buffer_detach => PMPI_Buffer_detach
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(C_PTR), intent(out) :: buffer_addr
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
+  integer :: tmp_ierror
+  call PMPIF_Buffer_detach( &
+    tmp_buffer_addr, &
+    size, &
+    tmp_ierror &
+  )
+  buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Buffer_detach_f08
+
+subroutine PMPI_Buffer_detach_c_f08( &
+  buffer_addr, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Buffer_detach_c => PMPI_Buffer_detach_c
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(C_PTR), intent(out) :: buffer_addr
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
+  integer :: tmp_ierror
+  call PMPIF_Buffer_detach_c( &
+    tmp_buffer_addr, &
+    size, &
+    tmp_ierror &
+  )
+  buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Buffer_detach_c_f08
+
+subroutine MPI_Buffer_flush_f08( &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Buffer_flush => MPI_Buffer_flush
+  implicit none
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Buffer_flush( &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Buffer_flush_f08
+
+subroutine PMPI_Buffer_flush_f08( &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Buffer_flush => PMPI_Buffer_flush
+  implicit none
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Buffer_flush( &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Buffer_flush_f08
+
+subroutine MPI_Buffer_iflush_f08( &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Buffer_iflush => MPI_Buffer_iflush
+  implicit none
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Buffer_iflush( &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Buffer_iflush_f08
+
+subroutine PMPI_Buffer_iflush_f08( &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Buffer_iflush => PMPI_Buffer_iflush
+  implicit none
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Buffer_iflush( &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Buffer_iflush_f08
+
+subroutine MPI_Cancel_f08( &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Cancel => MPI_Cancel
+  implicit none
+  type(MPI_Request), intent(in) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_request
+  integer :: tmp_ierror
+  tmp_request = request%MPI_VAL
+  call MPIF_Cancel( &
+    tmp_request, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Cancel_f08
+
+subroutine PMPI_Cancel_f08( &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Cancel => PMPI_Cancel
+  implicit none
+  type(MPI_Request), intent(in) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_request
+  integer :: tmp_ierror
+  tmp_request = request%MPI_VAL
+  call PMPIF_Cancel( &
+    tmp_request, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Cancel_f08
+
+subroutine MPI_Cart_coords_f08( &
+  comm, &
+  rank, &
+  maxdims, &
+  coords, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Cart_coords => MPI_Cart_coords
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: rank
+  integer, intent(in) :: maxdims
+  integer, intent(out) :: coords(maxdims)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Cart_coords( &
+    comm%MPI_VAL, &
+    rank, &
+    maxdims, &
+    coords, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Cart_coords_f08
+
+subroutine PMPI_Cart_coords_f08( &
+  comm, &
+  rank, &
+  maxdims, &
+  coords, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Cart_coords => PMPI_Cart_coords
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: rank
+  integer, intent(in) :: maxdims
+  integer, intent(out) :: coords(maxdims)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Cart_coords( &
+    comm%MPI_VAL, &
+    rank, &
+    maxdims, &
+    coords, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Cart_coords_f08
+
+subroutine MPI_Cart_create_f08( &
+  comm_old, &
+  ndims, &
+  dims, &
+  periods, &
+  reorder, &
+  comm_cart, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Cart_create => MPI_Cart_create
+  implicit none
+  type(MPI_Comm), intent(in) :: comm_old
+  integer, intent(in) :: ndims
+  integer, intent(in) :: dims(ndims)
+  logical, intent(in) :: periods(*)
+  logical, intent(in) :: reorder
+  type(MPI_Comm), intent(out) :: comm_cart
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Cart_create( &
+    comm_old%MPI_VAL, &
+    ndims, &
+    dims, &
+    periods, &
+    reorder, &
+    comm_cart%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Cart_create_f08
+
+subroutine PMPI_Cart_create_f08( &
+  comm_old, &
+  ndims, &
+  dims, &
+  periods, &
+  reorder, &
+  comm_cart, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Cart_create => PMPI_Cart_create
+  implicit none
+  type(MPI_Comm), intent(in) :: comm_old
+  integer, intent(in) :: ndims
+  integer, intent(in) :: dims(ndims)
+  logical, intent(in) :: periods(*)
+  logical, intent(in) :: reorder
+  type(MPI_Comm), intent(out) :: comm_cart
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Cart_create( &
+    comm_old%MPI_VAL, &
+    ndims, &
+    dims, &
+    periods, &
+    reorder, &
+    comm_cart%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Cart_create_f08
+
+subroutine MPI_Cart_get_f08( &
+  comm, &
+  maxdims, &
+  dims, &
+  periods, &
+  coords, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Cart_get => MPI_Cart_get
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: maxdims
+  integer, intent(out) :: dims(maxdims)
+  logical, intent(out) :: periods(*)
+  integer, intent(out) :: coords(maxdims)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Cart_get( &
+    comm%MPI_VAL, &
+    maxdims, &
+    dims, &
+    periods, &
+    coords, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Cart_get_f08
+
+subroutine PMPI_Cart_get_f08( &
+  comm, &
+  maxdims, &
+  dims, &
+  periods, &
+  coords, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Cart_get => PMPI_Cart_get
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: maxdims
+  integer, intent(out) :: dims(maxdims)
+  logical, intent(out) :: periods(*)
+  integer, intent(out) :: coords(maxdims)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Cart_get( &
+    comm%MPI_VAL, &
+    maxdims, &
+    dims, &
+    periods, &
+    coords, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Cart_get_f08
+
+subroutine MPI_Cart_map_f08( &
+  comm, &
+  ndims, &
+  dims, &
+  periods, &
+  newrank, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Cart_map => MPI_Cart_map
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: ndims
+  integer, intent(in) :: dims(ndims)
+  logical, intent(in) :: periods(*)
+  integer, intent(out) :: newrank
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Cart_map( &
+    comm%MPI_VAL, &
+    ndims, &
+    dims, &
+    periods, &
+    newrank, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Cart_map_f08
+
+subroutine PMPI_Cart_map_f08( &
+  comm, &
+  ndims, &
+  dims, &
+  periods, &
+  newrank, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Cart_map => PMPI_Cart_map
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: ndims
+  integer, intent(in) :: dims(ndims)
+  logical, intent(in) :: periods(*)
+  integer, intent(out) :: newrank
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Cart_map( &
+    comm%MPI_VAL, &
+    ndims, &
+    dims, &
+    periods, &
+    newrank, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Cart_map_f08
+
+subroutine MPI_Cart_rank_f08( &
+  comm, &
+  coords, &
+  rank, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Cart_rank => MPI_Cart_rank
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: coords(*)
+  integer, intent(out) :: rank
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Cart_rank( &
+    comm%MPI_VAL, &
+    coords, &
+    rank, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Cart_rank_f08
+
+subroutine PMPI_Cart_rank_f08( &
+  comm, &
+  coords, &
+  rank, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Cart_rank => PMPI_Cart_rank
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: coords(*)
+  integer, intent(out) :: rank
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Cart_rank( &
+    comm%MPI_VAL, &
+    coords, &
+    rank, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Cart_rank_f08
+
+subroutine MPI_Cart_shift_f08( &
+  comm, &
+  direction, &
+  disp, &
+  rank_source, &
+  rank_dest, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Cart_shift => MPI_Cart_shift
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: direction
+  integer, intent(in) :: disp
+  integer, intent(out) :: rank_source
+  integer, intent(out) :: rank_dest
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Cart_shift( &
+    comm%MPI_VAL, &
+    direction, &
+    disp, &
+    rank_source, &
+    rank_dest, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Cart_shift_f08
+
+subroutine PMPI_Cart_shift_f08( &
+  comm, &
+  direction, &
+  disp, &
+  rank_source, &
+  rank_dest, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Cart_shift => PMPI_Cart_shift
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: direction
+  integer, intent(in) :: disp
+  integer, intent(out) :: rank_source
+  integer, intent(out) :: rank_dest
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Cart_shift( &
+    comm%MPI_VAL, &
+    direction, &
+    disp, &
+    rank_source, &
+    rank_dest, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Cart_shift_f08
+
+subroutine MPI_Cart_sub_f08( &
+  comm, &
+  remain_dims, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Cart_sub => MPI_Cart_sub
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  logical, intent(in) :: remain_dims(*)
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Cart_sub( &
+    comm%MPI_VAL, &
+    remain_dims, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Cart_sub_f08
+
+subroutine PMPI_Cart_sub_f08( &
+  comm, &
+  remain_dims, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Cart_sub => PMPI_Cart_sub
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  logical, intent(in) :: remain_dims(*)
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Cart_sub( &
+    comm%MPI_VAL, &
+    remain_dims, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Cart_sub_f08
+
+subroutine MPI_Cartdim_get_f08( &
+  comm, &
+  ndims, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Cartdim_get => MPI_Cartdim_get
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: ndims
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Cartdim_get( &
+    comm%MPI_VAL, &
+    ndims, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Cartdim_get_f08
+
+subroutine PMPI_Cartdim_get_f08( &
+  comm, &
+  ndims, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Cartdim_get => PMPI_Cartdim_get
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: ndims
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Cartdim_get( &
+    comm%MPI_VAL, &
+    ndims, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Cartdim_get_f08
+
+subroutine MPI_Close_port_f08( &
+  port_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Close_port => MPI_Close_port
+  implicit none
+  character*(*), intent(in) :: port_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Close_port( &
+    port_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Close_port_f08
+
+subroutine PMPI_Close_port_f08( &
+  port_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Close_port => PMPI_Close_port
+  implicit none
+  character*(*), intent(in) :: port_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Close_port( &
+    port_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Close_port_f08
+
+subroutine MPI_Comm_accept_f08( &
+  port_name, &
+  info, &
+  root, &
+  comm, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_accept => MPI_Comm_accept
+  implicit none
+  character*(*), intent(in) :: port_name
+  type(MPI_Info), intent(in) :: info
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_accept( &
+    port_name, &
+    info%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_accept_f08
+
+subroutine PMPI_Comm_accept_f08( &
+  port_name, &
+  info, &
+  root, &
+  comm, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_accept => PMPI_Comm_accept
+  implicit none
+  character*(*), intent(in) :: port_name
+  type(MPI_Info), intent(in) :: info
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_accept( &
+    port_name, &
+    info%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_accept_f08
+
+subroutine MPI_Comm_attach_buffer_f08( &
+  comm, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_attach_buffer => MPI_Comm_attach_buffer
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer :: buffer(*)
+  integer, intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_attach_buffer( &
+    comm%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_attach_buffer_f08
+
+subroutine MPI_Comm_attach_buffer_c_f08( &
+  comm, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_attach_buffer_c => MPI_Comm_attach_buffer_c
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer :: buffer(*)
+  integer(MPI_COUNT_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_attach_buffer_c( &
+    comm%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_attach_buffer_c_f08
+
+subroutine PMPI_Comm_attach_buffer_f08( &
+  comm, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_attach_buffer => PMPI_Comm_attach_buffer
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer :: buffer(*)
+  integer, intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_attach_buffer( &
+    comm%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_attach_buffer_f08
+
+subroutine PMPI_Comm_attach_buffer_c_f08( &
+  comm, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_attach_buffer_c => PMPI_Comm_attach_buffer_c
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer :: buffer(*)
+  integer(MPI_COUNT_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_attach_buffer_c( &
+    comm%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_attach_buffer_c_f08
+
+subroutine MPI_Comm_call_errhandler_f08( &
+  comm, &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_call_errhandler => MPI_Comm_call_errhandler
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_call_errhandler( &
+    comm%MPI_VAL, &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_call_errhandler_f08
+
+subroutine PMPI_Comm_call_errhandler_f08( &
+  comm, &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_call_errhandler => PMPI_Comm_call_errhandler
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_call_errhandler( &
+    comm%MPI_VAL, &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_call_errhandler_f08
+
+subroutine MPI_Comm_compare_f08( &
+  comm1, &
+  comm2, &
+  result, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_compare => MPI_Comm_compare
+  implicit none
+  type(MPI_Comm), intent(in) :: comm1
+  type(MPI_Comm), intent(in) :: comm2
+  integer, intent(out) :: result
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_compare( &
+    comm1%MPI_VAL, &
+    comm2%MPI_VAL, &
+    result, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_compare_f08
+
+subroutine PMPI_Comm_compare_f08( &
+  comm1, &
+  comm2, &
+  result, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_compare => PMPI_Comm_compare
+  implicit none
+  type(MPI_Comm), intent(in) :: comm1
+  type(MPI_Comm), intent(in) :: comm2
+  integer, intent(out) :: result
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_compare( &
+    comm1%MPI_VAL, &
+    comm2%MPI_VAL, &
+    result, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_compare_f08
+
+subroutine MPI_Comm_connect_f08( &
+  port_name, &
+  info, &
+  root, &
+  comm, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_connect => MPI_Comm_connect
+  implicit none
+  character*(*), intent(in) :: port_name
+  type(MPI_Info), intent(in) :: info
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_connect( &
+    port_name, &
+    info%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_connect_f08
+
+subroutine PMPI_Comm_connect_f08( &
+  port_name, &
+  info, &
+  root, &
+  comm, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_connect => PMPI_Comm_connect
+  implicit none
+  character*(*), intent(in) :: port_name
+  type(MPI_Info), intent(in) :: info
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_connect( &
+    port_name, &
+    info%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_connect_f08
+
+subroutine MPI_Comm_create_f08( &
+  comm, &
+  group, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_create => MPI_Comm_create
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Group), intent(in) :: group
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_create( &
+    comm%MPI_VAL, &
+    group%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_create_f08
+
+subroutine PMPI_Comm_create_f08( &
+  comm, &
+  group, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_create => PMPI_Comm_create
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Group), intent(in) :: group
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_create( &
+    comm%MPI_VAL, &
+    group%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_create_f08
+
+subroutine MPI_Comm_create_errhandler_f08( &
+  comm_errhandler_fn, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_create_errhandler => MPI_Comm_create_errhandler
+  implicit none
+  procedure(MPI_Comm_errhandler_function) :: comm_errhandler_fn
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_create_errhandler( &
+    comm_errhandler_fn, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_create_errhandler_f08
+
+subroutine PMPI_Comm_create_errhandler_f08( &
+  comm_errhandler_fn, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_create_errhandler => PMPI_Comm_create_errhandler
+  implicit none
+  procedure(MPI_Comm_errhandler_function) :: comm_errhandler_fn
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_create_errhandler( &
+    comm_errhandler_fn, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_create_errhandler_f08
+
+subroutine MPI_Comm_create_from_group_f08( &
+  group, &
+  stringtag, &
+  info, &
+  errhandler, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_create_from_group => MPI_Comm_create_from_group
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  character*(*), intent(in) :: stringtag
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Errhandler), intent(in) :: errhandler
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_create_from_group( &
+    group%MPI_VAL, &
+    stringtag, &
+    info%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_create_from_group_f08
+
+subroutine PMPI_Comm_create_from_group_f08( &
+  group, &
+  stringtag, &
+  info, &
+  errhandler, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_create_from_group => PMPI_Comm_create_from_group
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  character*(*), intent(in) :: stringtag
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Errhandler), intent(in) :: errhandler
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_create_from_group( &
+    group%MPI_VAL, &
+    stringtag, &
+    info%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_create_from_group_f08
+
+subroutine MPI_Comm_create_group_f08( &
+  comm, &
+  group, &
+  tag, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_create_group => MPI_Comm_create_group
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_create_group( &
+    comm%MPI_VAL, &
+    group%MPI_VAL, &
+    tag, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_create_group_f08
+
+subroutine PMPI_Comm_create_group_f08( &
+  comm, &
+  group, &
+  tag, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_create_group => PMPI_Comm_create_group
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_create_group( &
+    comm%MPI_VAL, &
+    group%MPI_VAL, &
+    tag, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_create_group_f08
+
+subroutine MPI_Comm_create_keyval_f08( &
+  comm_copy_attr_fn, &
+  comm_delete_attr_fn, &
+  comm_keyval, &
+  extra_state, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_create_keyval => MPI_Comm_create_keyval
+  implicit none
+  procedure(MPI_Comm_copy_attr_function) :: comm_copy_attr_fn
+  procedure(MPI_Comm_delete_attr_function) :: comm_delete_attr_fn
+  integer, intent(out) :: comm_keyval
+  integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_create_keyval( &
+    comm_copy_attr_fn, &
+    comm_delete_attr_fn, &
+    comm_keyval, &
+    extra_state, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_create_keyval_f08
+
+subroutine PMPI_Comm_create_keyval_f08( &
+  comm_copy_attr_fn, &
+  comm_delete_attr_fn, &
+  comm_keyval, &
+  extra_state, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_create_keyval => PMPI_Comm_create_keyval
+  implicit none
+  procedure(MPI_Comm_copy_attr_function) :: comm_copy_attr_fn
+  procedure(MPI_Comm_delete_attr_function) :: comm_delete_attr_fn
+  integer, intent(out) :: comm_keyval
+  integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_create_keyval( &
+    comm_copy_attr_fn, &
+    comm_delete_attr_fn, &
+    comm_keyval, &
+    extra_state, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_create_keyval_f08
+
+subroutine MPI_Comm_delete_attr_f08( &
+  comm, &
+  comm_keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_delete_attr => MPI_Comm_delete_attr
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: comm_keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_delete_attr( &
+    comm%MPI_VAL, &
+    comm_keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_delete_attr_f08
+
+subroutine PMPI_Comm_delete_attr_f08( &
+  comm, &
+  comm_keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_delete_attr => PMPI_Comm_delete_attr
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: comm_keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_delete_attr( &
+    comm%MPI_VAL, &
+    comm_keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_delete_attr_f08
+
+subroutine MPI_Comm_detach_buffer_f08( &
+  comm, &
+  buffer_addr, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_detach_buffer => MPI_Comm_detach_buffer
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(C_PTR), intent(out) :: buffer_addr
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
+  integer :: tmp_ierror
+  call MPIF_Comm_detach_buffer( &
+    comm%MPI_VAL, &
+    tmp_buffer_addr, &
+    size, &
+    tmp_ierror &
+  )
+  buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_detach_buffer_f08
+
+subroutine MPI_Comm_detach_buffer_c_f08( &
+  comm, &
+  buffer_addr, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_detach_buffer_c => MPI_Comm_detach_buffer_c
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(C_PTR), intent(out) :: buffer_addr
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
+  integer :: tmp_ierror
+  call MPIF_Comm_detach_buffer_c( &
+    comm%MPI_VAL, &
+    tmp_buffer_addr, &
+    size, &
+    tmp_ierror &
+  )
+  buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_detach_buffer_c_f08
+
+subroutine PMPI_Comm_detach_buffer_f08( &
+  comm, &
+  buffer_addr, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_detach_buffer => PMPI_Comm_detach_buffer
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(C_PTR), intent(out) :: buffer_addr
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
+  integer :: tmp_ierror
+  call PMPIF_Comm_detach_buffer( &
+    comm%MPI_VAL, &
+    tmp_buffer_addr, &
+    size, &
+    tmp_ierror &
+  )
+  buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_detach_buffer_f08
+
+subroutine PMPI_Comm_detach_buffer_c_f08( &
+  comm, &
+  buffer_addr, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_detach_buffer_c => PMPI_Comm_detach_buffer_c
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(C_PTR), intent(out) :: buffer_addr
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
+  integer :: tmp_ierror
+  call PMPIF_Comm_detach_buffer_c( &
+    comm%MPI_VAL, &
+    tmp_buffer_addr, &
+    size, &
+    tmp_ierror &
+  )
+  buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_detach_buffer_c_f08
+
+subroutine MPI_Comm_disconnect_f08( &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_disconnect => MPI_Comm_disconnect
+  implicit none
+  type(MPI_Comm), intent(inout) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_disconnect( &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_disconnect_f08
+
+subroutine PMPI_Comm_disconnect_f08( &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_disconnect => PMPI_Comm_disconnect
+  implicit none
+  type(MPI_Comm), intent(inout) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_disconnect( &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_disconnect_f08
+
+subroutine MPI_Comm_dup_f08( &
+  comm, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_dup => MPI_Comm_dup
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_dup( &
+    comm%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_dup_f08
+
+subroutine PMPI_Comm_dup_f08( &
+  comm, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_dup => PMPI_Comm_dup
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_dup( &
+    comm%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_dup_f08
+
+subroutine MPI_Comm_dup_with_info_f08( &
+  comm, &
+  info, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_dup_with_info => MPI_Comm_dup_with_info
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_dup_with_info( &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_dup_with_info_f08
+
+subroutine PMPI_Comm_dup_with_info_f08( &
+  comm, &
+  info, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_dup_with_info => PMPI_Comm_dup_with_info
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_dup_with_info( &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_dup_with_info_f08
+
+subroutine MPI_Comm_flush_buffer_f08( &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_flush_buffer => MPI_Comm_flush_buffer
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_flush_buffer( &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_flush_buffer_f08
+
+subroutine PMPI_Comm_flush_buffer_f08( &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_flush_buffer => PMPI_Comm_flush_buffer
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_flush_buffer( &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_flush_buffer_f08
+
+subroutine MPI_Comm_free_f08( &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_free => MPI_Comm_free
+  implicit none
+  type(MPI_Comm), intent(inout) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_free( &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_free_f08
+
+subroutine PMPI_Comm_free_f08( &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_free => PMPI_Comm_free
+  implicit none
+  type(MPI_Comm), intent(inout) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_free( &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_free_f08
+
+subroutine MPI_Comm_free_keyval_f08( &
+  comm_keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_free_keyval => MPI_Comm_free_keyval
+  implicit none
+  integer, intent(inout) :: comm_keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_free_keyval( &
+    comm_keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_free_keyval_f08
+
+subroutine PMPI_Comm_free_keyval_f08( &
+  comm_keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_free_keyval => PMPI_Comm_free_keyval
+  implicit none
+  integer, intent(inout) :: comm_keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_free_keyval( &
+    comm_keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_free_keyval_f08
+
+subroutine MPI_Comm_get_attr_f08( &
+  comm, &
+  comm_keyval, &
+  attribute_val, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_get_attr => MPI_Comm_get_attr
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: comm_keyval
+  integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_get_attr( &
+    comm%MPI_VAL, &
+    comm_keyval, &
+    attribute_val, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_get_attr_f08
+
+subroutine PMPI_Comm_get_attr_f08( &
+  comm, &
+  comm_keyval, &
+  attribute_val, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_get_attr => PMPI_Comm_get_attr
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: comm_keyval
+  integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_get_attr( &
+    comm%MPI_VAL, &
+    comm_keyval, &
+    attribute_val, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_get_attr_f08
+
+subroutine MPI_Comm_get_errhandler_f08( &
+  comm, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_get_errhandler => MPI_Comm_get_errhandler
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_get_errhandler( &
+    comm%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_get_errhandler_f08
+
+subroutine PMPI_Comm_get_errhandler_f08( &
+  comm, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_get_errhandler => PMPI_Comm_get_errhandler
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_get_errhandler( &
+    comm%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_get_errhandler_f08
+
+subroutine MPI_Comm_get_info_f08( &
+  comm, &
+  info_used, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_get_info => MPI_Comm_get_info
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(out) :: info_used
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_get_info( &
+    comm%MPI_VAL, &
+    info_used%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_get_info_f08
+
+subroutine PMPI_Comm_get_info_f08( &
+  comm, &
+  info_used, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_get_info => PMPI_Comm_get_info
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(out) :: info_used
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_get_info( &
+    comm%MPI_VAL, &
+    info_used%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_get_info_f08
+
+subroutine MPI_Comm_get_name_f08( &
+  comm, &
+  comm_name, &
+  resultlen, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_get_name => MPI_Comm_get_name
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  character*(MPI_MAX_OBJECT_NAME), intent(out) :: comm_name
+  integer, intent(out) :: resultlen
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_get_name( &
+    comm%MPI_VAL, &
+    comm_name, &
+    resultlen, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_get_name_f08
+
+subroutine PMPI_Comm_get_name_f08( &
+  comm, &
+  comm_name, &
+  resultlen, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_get_name => PMPI_Comm_get_name
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  character*(MPI_MAX_OBJECT_NAME), intent(out) :: comm_name
+  integer, intent(out) :: resultlen
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_get_name( &
+    comm%MPI_VAL, &
+    comm_name, &
+    resultlen, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_get_name_f08
+
+subroutine MPI_Comm_get_parent_f08( &
+  parent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_get_parent => MPI_Comm_get_parent
+  implicit none
+  type(MPI_Comm), intent(out) :: parent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_get_parent( &
+    parent%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_get_parent_f08
+
+subroutine PMPI_Comm_get_parent_f08( &
+  parent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_get_parent => PMPI_Comm_get_parent
+  implicit none
+  type(MPI_Comm), intent(out) :: parent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_get_parent( &
+    parent%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_get_parent_f08
+
+subroutine MPI_Comm_group_f08( &
+  comm, &
+  group, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_group => MPI_Comm_group
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Group), intent(out) :: group
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_group( &
+    comm%MPI_VAL, &
+    group%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_group_f08
+
+subroutine PMPI_Comm_group_f08( &
+  comm, &
+  group, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_group => PMPI_Comm_group
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Group), intent(out) :: group
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_group( &
+    comm%MPI_VAL, &
+    group%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_group_f08
+
+subroutine MPI_Comm_idup_f08( &
+  comm, &
+  newcomm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_idup => MPI_Comm_idup
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Comm), intent(out) :: newcomm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_idup( &
+    comm%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_idup_f08
+
+subroutine PMPI_Comm_idup_f08( &
+  comm, &
+  newcomm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_idup => PMPI_Comm_idup
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Comm), intent(out) :: newcomm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_idup( &
+    comm%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_idup_f08
+
+subroutine MPI_Comm_idup_with_info_f08( &
+  comm, &
+  info, &
+  newcomm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_idup_with_info => MPI_Comm_idup_with_info
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(out) :: newcomm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_idup_with_info( &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_idup_with_info_f08
+
+subroutine PMPI_Comm_idup_with_info_f08( &
+  comm, &
+  info, &
+  newcomm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_idup_with_info => PMPI_Comm_idup_with_info
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(out) :: newcomm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_idup_with_info( &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_idup_with_info_f08
+
+subroutine MPI_Comm_iflush_buffer_f08( &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_iflush_buffer => MPI_Comm_iflush_buffer
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_iflush_buffer( &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_iflush_buffer_f08
+
+subroutine PMPI_Comm_iflush_buffer_f08( &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_iflush_buffer => PMPI_Comm_iflush_buffer
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_iflush_buffer( &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_iflush_buffer_f08
+
+subroutine MPI_Comm_join_f08( &
+  fd, &
+  intercomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_join => MPI_Comm_join
+  implicit none
+  integer, intent(in) :: fd
+  type(MPI_Comm), intent(out) :: intercomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_join( &
+    fd, &
+    intercomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_join_f08
+
+subroutine PMPI_Comm_join_f08( &
+  fd, &
+  intercomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_join => PMPI_Comm_join
+  implicit none
+  integer, intent(in) :: fd
+  type(MPI_Comm), intent(out) :: intercomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_join( &
+    fd, &
+    intercomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_join_f08
+
+subroutine MPI_Comm_rank_f08( &
+  comm, &
+  rank, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_rank => MPI_Comm_rank
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: rank
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_rank( &
+    comm%MPI_VAL, &
+    rank, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_rank_f08
+
+subroutine PMPI_Comm_rank_f08( &
+  comm, &
+  rank, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_rank => PMPI_Comm_rank
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: rank
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_rank( &
+    comm%MPI_VAL, &
+    rank, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_rank_f08
+
+subroutine MPI_Comm_remote_group_f08( &
+  comm, &
+  group, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_remote_group => MPI_Comm_remote_group
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Group), intent(out) :: group
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_remote_group( &
+    comm%MPI_VAL, &
+    group%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_remote_group_f08
+
+subroutine PMPI_Comm_remote_group_f08( &
+  comm, &
+  group, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_remote_group => PMPI_Comm_remote_group
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Group), intent(out) :: group
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_remote_group( &
+    comm%MPI_VAL, &
+    group%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_remote_group_f08
+
+subroutine MPI_Comm_remote_size_f08( &
+  comm, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_remote_size => MPI_Comm_remote_size
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_remote_size( &
+    comm%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_remote_size_f08
+
+subroutine PMPI_Comm_remote_size_f08( &
+  comm, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_remote_size => PMPI_Comm_remote_size
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_remote_size( &
+    comm%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_remote_size_f08
+
+subroutine MPI_Comm_set_attr_f08( &
+  comm, &
+  comm_keyval, &
+  attribute_val, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_set_attr => MPI_Comm_set_attr
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: comm_keyval
+  integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_set_attr( &
+    comm%MPI_VAL, &
+    comm_keyval, &
+    attribute_val, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_set_attr_f08
+
+subroutine PMPI_Comm_set_attr_f08( &
+  comm, &
+  comm_keyval, &
+  attribute_val, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_set_attr => PMPI_Comm_set_attr
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: comm_keyval
+  integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_set_attr( &
+    comm%MPI_VAL, &
+    comm_keyval, &
+    attribute_val, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_set_attr_f08
+
+subroutine MPI_Comm_set_errhandler_f08( &
+  comm, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_set_errhandler => MPI_Comm_set_errhandler
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Errhandler), intent(in) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_set_errhandler( &
+    comm%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_set_errhandler_f08
+
+subroutine PMPI_Comm_set_errhandler_f08( &
+  comm, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_set_errhandler => PMPI_Comm_set_errhandler
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Errhandler), intent(in) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_set_errhandler( &
+    comm%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_set_errhandler_f08
+
+subroutine MPI_Comm_set_info_f08( &
+  comm, &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_set_info => MPI_Comm_set_info
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_set_info( &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_set_info_f08
+
+subroutine PMPI_Comm_set_info_f08( &
+  comm, &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_set_info => PMPI_Comm_set_info
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_set_info( &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_set_info_f08
+
+subroutine MPI_Comm_set_name_f08( &
+  comm, &
+  comm_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_set_name => MPI_Comm_set_name
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  character*(*), intent(in) :: comm_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_set_name( &
+    comm%MPI_VAL, &
+    comm_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_set_name_f08
+
+subroutine PMPI_Comm_set_name_f08( &
+  comm, &
+  comm_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_set_name => PMPI_Comm_set_name
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  character*(*), intent(in) :: comm_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_set_name( &
+    comm%MPI_VAL, &
+    comm_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_set_name_f08
+
+subroutine MPI_Comm_size_f08( &
+  comm, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_size => MPI_Comm_size
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_size( &
+    comm%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_size_f08
+
+subroutine PMPI_Comm_size_f08( &
+  comm, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_size => PMPI_Comm_size
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_size( &
+    comm%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_size_f08
+
+subroutine MPI_Comm_spawn_f08( &
+  command, &
+  argv, &
+  maxprocs, &
+  info, &
+  root, &
+  comm, &
+  intercomm, &
+  array_of_errcodes, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_spawn => MPI_Comm_spawn
+  implicit none
+  character*(*), intent(in) :: command
+  character*(*), intent(in) :: argv(*)
+  integer, intent(in) :: maxprocs
+  type(MPI_Info), intent(in) :: info
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Comm), intent(out) :: intercomm
+  integer :: array_of_errcodes(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_spawn( &
+    command, &
+    argv, &
+    maxprocs, &
+    info%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    intercomm%MPI_VAL, &
+    array_of_errcodes, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_spawn_f08
+
+subroutine PMPI_Comm_spawn_f08( &
+  command, &
+  argv, &
+  maxprocs, &
+  info, &
+  root, &
+  comm, &
+  intercomm, &
+  array_of_errcodes, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_spawn => PMPI_Comm_spawn
+  implicit none
+  character*(*), intent(in) :: command
+  character*(*), intent(in) :: argv(*)
+  integer, intent(in) :: maxprocs
+  type(MPI_Info), intent(in) :: info
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Comm), intent(out) :: intercomm
+  integer :: array_of_errcodes(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_spawn( &
+    command, &
+    argv, &
+    maxprocs, &
+    info%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    intercomm%MPI_VAL, &
+    array_of_errcodes, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_spawn_f08
+
+subroutine MPI_Comm_spawn_multiple_f08( &
+  count, &
+  array_of_commands, &
+  array_of_argv, &
+  array_of_maxprocs, &
+  array_of_info, &
+  root, &
+  comm, &
+  intercomm, &
+  array_of_errcodes, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_spawn_multiple => MPI_Comm_spawn_multiple
+  implicit none
+  integer, intent(in) :: count
+  character*(*), intent(in) :: array_of_commands(*)
+  character*(*), intent(in) :: array_of_argv(count, *)
+  integer, intent(in) :: array_of_maxprocs(count)
+  type(MPI_Info), intent(in) :: array_of_info(count)
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Comm), intent(out) :: intercomm
+  integer :: array_of_errcodes(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_spawn_multiple( &
+    count, &
+    array_of_commands, &
+    array_of_argv, &
+    array_of_maxprocs, &
+    array_of_info%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    intercomm%MPI_VAL, &
+    array_of_errcodes, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_spawn_multiple_f08
+
+subroutine PMPI_Comm_spawn_multiple_f08( &
+  count, &
+  array_of_commands, &
+  array_of_argv, &
+  array_of_maxprocs, &
+  array_of_info, &
+  root, &
+  comm, &
+  intercomm, &
+  array_of_errcodes, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_spawn_multiple => PMPI_Comm_spawn_multiple
+  implicit none
+  integer, intent(in) :: count
+  character*(*), intent(in) :: array_of_commands(*)
+  character*(*), intent(in) :: array_of_argv(count, *)
+  integer, intent(in) :: array_of_maxprocs(count)
+  type(MPI_Info), intent(in) :: array_of_info(count)
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Comm), intent(out) :: intercomm
+  integer :: array_of_errcodes(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_spawn_multiple( &
+    count, &
+    array_of_commands, &
+    array_of_argv, &
+    array_of_maxprocs, &
+    array_of_info%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    intercomm%MPI_VAL, &
+    array_of_errcodes, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_spawn_multiple_f08
+
+subroutine MPI_Comm_split_f08( &
+  comm, &
+  color, &
+  key, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_split => MPI_Comm_split
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: color
+  integer, intent(in) :: key
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_split( &
+    comm%MPI_VAL, &
+    color, &
+    key, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_split_f08
+
+subroutine PMPI_Comm_split_f08( &
+  comm, &
+  color, &
+  key, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_split => PMPI_Comm_split
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: color
+  integer, intent(in) :: key
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_split( &
+    comm%MPI_VAL, &
+    color, &
+    key, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_split_f08
+
+subroutine MPI_Comm_split_type_f08( &
+  comm, &
+  split_type, &
+  key, &
+  info, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_split_type => MPI_Comm_split_type
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: split_type
+  integer, intent(in) :: key
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_split_type( &
+    comm%MPI_VAL, &
+    split_type, &
+    key, &
+    info%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_split_type_f08
+
+subroutine PMPI_Comm_split_type_f08( &
+  comm, &
+  split_type, &
+  key, &
+  info, &
+  newcomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_split_type => PMPI_Comm_split_type
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: split_type
+  integer, intent(in) :: key
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(out) :: newcomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_split_type( &
+    comm%MPI_VAL, &
+    split_type, &
+    key, &
+    info%MPI_VAL, &
+    newcomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_split_type_f08
+
+subroutine MPI_Comm_test_inter_f08( &
+  comm, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Comm_test_inter => MPI_Comm_test_inter
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_test_inter( &
+    comm%MPI_VAL, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_test_inter_f08
+
+subroutine PMPI_Comm_test_inter_f08( &
+  comm, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Comm_test_inter => PMPI_Comm_test_inter
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_test_inter( &
+    comm%MPI_VAL, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_test_inter_f08
+
+subroutine MPI_Compare_and_swap_f08( &
+  origin_addr, &
+  compare_addr, &
+  result_addr, &
+  datatype, &
+  target_rank, &
+  target_disp, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Compare_and_swap => MPI_Compare_and_swap
+  implicit none
+  integer :: origin_addr(*)
+  integer :: compare_addr(*)
+  integer :: result_addr(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Compare_and_swap( &
+    origin_addr, &
+    compare_addr, &
+    result_addr, &
+    datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Compare_and_swap_f08
+
+subroutine PMPI_Compare_and_swap_f08( &
+  origin_addr, &
+  compare_addr, &
+  result_addr, &
+  datatype, &
+  target_rank, &
+  target_disp, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Compare_and_swap => PMPI_Compare_and_swap
+  implicit none
+  integer :: origin_addr(*)
+  integer :: compare_addr(*)
+  integer :: result_addr(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Compare_and_swap( &
+    origin_addr, &
+    compare_addr, &
+    result_addr, &
+    datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Compare_and_swap_f08
+
+subroutine MPI_Dims_create_f08( &
+  nnodes, &
+  ndims, &
+  dims, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Dims_create => MPI_Dims_create
+  implicit none
+  integer, intent(in) :: nnodes
+  integer, intent(in) :: ndims
+  integer, intent(inout) :: dims(ndims)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Dims_create( &
+    nnodes, &
+    ndims, &
+    dims, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Dims_create_f08
+
+subroutine PMPI_Dims_create_f08( &
+  nnodes, &
+  ndims, &
+  dims, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Dims_create => PMPI_Dims_create
+  implicit none
+  integer, intent(in) :: nnodes
+  integer, intent(in) :: ndims
+  integer, intent(inout) :: dims(ndims)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Dims_create( &
+    nnodes, &
+    ndims, &
+    dims, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Dims_create_f08
+
+subroutine MPI_Dist_graph_create_f08( &
+  comm_old, &
+  n, &
+  sources, &
+  degrees, &
+  destinations, &
+  weights, &
+  info, &
+  reorder, &
+  comm_dist_graph, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Dist_graph_create => MPI_Dist_graph_create
+  implicit none
+  type(MPI_Comm), intent(in) :: comm_old
+  integer, intent(in) :: n
+  integer, intent(in) :: sources(n)
+  integer, intent(in) :: degrees(n)
+  integer, intent(in) :: destinations(*)
+  integer, intent(in) :: weights(*)
+  type(MPI_Info), intent(in) :: info
+  logical, intent(in) :: reorder
+  type(MPI_Comm), intent(out) :: comm_dist_graph
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Dist_graph_create( &
+    comm_old%MPI_VAL, &
+    n, &
+    sources, &
+    degrees, &
+    destinations, &
+    weights, &
+    info%MPI_VAL, &
+    reorder, &
+    comm_dist_graph%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Dist_graph_create_f08
+
+subroutine PMPI_Dist_graph_create_f08( &
+  comm_old, &
+  n, &
+  sources, &
+  degrees, &
+  destinations, &
+  weights, &
+  info, &
+  reorder, &
+  comm_dist_graph, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Dist_graph_create => PMPI_Dist_graph_create
+  implicit none
+  type(MPI_Comm), intent(in) :: comm_old
+  integer, intent(in) :: n
+  integer, intent(in) :: sources(n)
+  integer, intent(in) :: degrees(n)
+  integer, intent(in) :: destinations(*)
+  integer, intent(in) :: weights(*)
+  type(MPI_Info), intent(in) :: info
+  logical, intent(in) :: reorder
+  type(MPI_Comm), intent(out) :: comm_dist_graph
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Dist_graph_create( &
+    comm_old%MPI_VAL, &
+    n, &
+    sources, &
+    degrees, &
+    destinations, &
+    weights, &
+    info%MPI_VAL, &
+    reorder, &
+    comm_dist_graph%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Dist_graph_create_f08
+
+subroutine MPI_Dist_graph_create_adjacent_f08( &
+  comm_old, &
+  indegree, &
+  sources, &
+  sourceweights, &
+  outdegree, &
+  destinations, &
+  destweights, &
+  info, &
+  reorder, &
+  comm_dist_graph, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Dist_graph_create_adjacent => MPI_Dist_graph_create_adjacent
+  implicit none
+  type(MPI_Comm), intent(in) :: comm_old
+  integer, intent(in) :: indegree
+  integer, intent(in) :: sources(indegree)
+  integer, intent(in) :: sourceweights(*)
+  integer, intent(in) :: outdegree
+  integer, intent(in) :: destinations(outdegree)
+  integer, intent(in) :: destweights(*)
+  type(MPI_Info), intent(in) :: info
+  logical, intent(in) :: reorder
+  type(MPI_Comm), intent(out) :: comm_dist_graph
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Dist_graph_create_adjacent( &
+    comm_old%MPI_VAL, &
+    indegree, &
+    sources, &
+    sourceweights, &
+    outdegree, &
+    destinations, &
+    destweights, &
+    info%MPI_VAL, &
+    reorder, &
+    comm_dist_graph%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Dist_graph_create_adjacent_f08
+
+subroutine PMPI_Dist_graph_create_adjacent_f08( &
+  comm_old, &
+  indegree, &
+  sources, &
+  sourceweights, &
+  outdegree, &
+  destinations, &
+  destweights, &
+  info, &
+  reorder, &
+  comm_dist_graph, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Dist_graph_create_adjacent => PMPI_Dist_graph_create_adjacent
+  implicit none
+  type(MPI_Comm), intent(in) :: comm_old
+  integer, intent(in) :: indegree
+  integer, intent(in) :: sources(indegree)
+  integer, intent(in) :: sourceweights(*)
+  integer, intent(in) :: outdegree
+  integer, intent(in) :: destinations(outdegree)
+  integer, intent(in) :: destweights(*)
+  type(MPI_Info), intent(in) :: info
+  logical, intent(in) :: reorder
+  type(MPI_Comm), intent(out) :: comm_dist_graph
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Dist_graph_create_adjacent( &
+    comm_old%MPI_VAL, &
+    indegree, &
+    sources, &
+    sourceweights, &
+    outdegree, &
+    destinations, &
+    destweights, &
+    info%MPI_VAL, &
+    reorder, &
+    comm_dist_graph%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Dist_graph_create_adjacent_f08
+
+subroutine MPI_Dist_graph_neighbors_f08( &
+  comm, &
+  maxindegree, &
+  sources, &
+  sourceweights, &
+  maxoutdegree, &
+  destinations, &
+  destweights, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Dist_graph_neighbors => MPI_Dist_graph_neighbors
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: maxindegree
+  integer, intent(out) :: sources(maxindegree)
+  integer :: sourceweights(*)
+  integer, intent(in) :: maxoutdegree
+  integer, intent(out) :: destinations(maxoutdegree)
+  integer :: destweights(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Dist_graph_neighbors( &
+    comm%MPI_VAL, &
+    maxindegree, &
+    sources, &
+    sourceweights, &
+    maxoutdegree, &
+    destinations, &
+    destweights, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Dist_graph_neighbors_f08
+
+subroutine PMPI_Dist_graph_neighbors_f08( &
+  comm, &
+  maxindegree, &
+  sources, &
+  sourceweights, &
+  maxoutdegree, &
+  destinations, &
+  destweights, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Dist_graph_neighbors => PMPI_Dist_graph_neighbors
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: maxindegree
+  integer, intent(out) :: sources(maxindegree)
+  integer :: sourceweights(*)
+  integer, intent(in) :: maxoutdegree
+  integer, intent(out) :: destinations(maxoutdegree)
+  integer :: destweights(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Dist_graph_neighbors( &
+    comm%MPI_VAL, &
+    maxindegree, &
+    sources, &
+    sourceweights, &
+    maxoutdegree, &
+    destinations, &
+    destweights, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Dist_graph_neighbors_f08
+
+subroutine MPI_Dist_graph_neighbors_count_f08( &
+  comm, &
+  indegree, &
+  outdegree, &
+  weighted, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Dist_graph_neighbors_count => MPI_Dist_graph_neighbors_count
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: indegree
+  integer, intent(out) :: outdegree
+  logical, intent(out) :: weighted
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Dist_graph_neighbors_count( &
+    comm%MPI_VAL, &
+    indegree, &
+    outdegree, &
+    weighted, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Dist_graph_neighbors_count_f08
+
+subroutine PMPI_Dist_graph_neighbors_count_f08( &
+  comm, &
+  indegree, &
+  outdegree, &
+  weighted, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Dist_graph_neighbors_count => PMPI_Dist_graph_neighbors_count
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: indegree
+  integer, intent(out) :: outdegree
+  logical, intent(out) :: weighted
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Dist_graph_neighbors_count( &
+    comm%MPI_VAL, &
+    indegree, &
+    outdegree, &
+    weighted, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Dist_graph_neighbors_count_f08
+
+subroutine MPI_Errhandler_free_f08( &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Errhandler_free => MPI_Errhandler_free
+  implicit none
+  type(MPI_Errhandler), intent(inout) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Errhandler_free( &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Errhandler_free_f08
+
+subroutine PMPI_Errhandler_free_f08( &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Errhandler_free => PMPI_Errhandler_free
+  implicit none
+  type(MPI_Errhandler), intent(inout) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Errhandler_free( &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Errhandler_free_f08
+
+subroutine MPI_Error_class_f08( &
+  errorcode, &
+  errorclass, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Error_class => MPI_Error_class
+  implicit none
+  integer, intent(in) :: errorcode
+  integer, intent(out) :: errorclass
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Error_class( &
+    errorcode, &
+    errorclass, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Error_class_f08
+
+subroutine PMPI_Error_class_f08( &
+  errorcode, &
+  errorclass, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Error_class => PMPI_Error_class
+  implicit none
+  integer, intent(in) :: errorcode
+  integer, intent(out) :: errorclass
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Error_class( &
+    errorcode, &
+    errorclass, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Error_class_f08
+
+subroutine MPI_Error_string_f08( &
+  errorcode, &
+  string, &
+  resultlen, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Error_string => MPI_Error_string
+  implicit none
+  integer, intent(in) :: errorcode
+  character*(MPI_MAX_ERROR_STRING), intent(out) :: string
+  integer, intent(out) :: resultlen
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Error_string( &
+    errorcode, &
+    string, &
+    resultlen, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Error_string_f08
+
+subroutine PMPI_Error_string_f08( &
+  errorcode, &
+  string, &
+  resultlen, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Error_string => PMPI_Error_string
+  implicit none
+  integer, intent(in) :: errorcode
+  character*(MPI_MAX_ERROR_STRING), intent(out) :: string
+  integer, intent(out) :: resultlen
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Error_string( &
+    errorcode, &
+    string, &
+    resultlen, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Error_string_f08
+
+subroutine MPI_Exscan_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Exscan => MPI_Exscan
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Exscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Exscan_f08
+
+subroutine MPI_Exscan_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Exscan_c => MPI_Exscan_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Exscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Exscan_c_f08
+
+subroutine PMPI_Exscan_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Exscan => PMPI_Exscan
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Exscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Exscan_f08
+
+subroutine PMPI_Exscan_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Exscan_c => PMPI_Exscan_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Exscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Exscan_c_f08
+
+subroutine MPI_Exscan_init_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Exscan_init => MPI_Exscan_init
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Exscan_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Exscan_init_f08
+
+subroutine MPI_Exscan_init_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Exscan_init_c => MPI_Exscan_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Exscan_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Exscan_init_c_f08
+
+subroutine PMPI_Exscan_init_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Exscan_init => PMPI_Exscan_init
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Exscan_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Exscan_init_f08
+
+subroutine PMPI_Exscan_init_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Exscan_init_c => PMPI_Exscan_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Exscan_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Exscan_init_c_f08
+
+subroutine MPI_F_sync_reg_f08( &
+  buf &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_F_sync_reg => MPI_F_sync_reg
+  implicit none
+  integer :: buf(*)
+  call MPIF_F_sync_reg( &
+    buf &
+  )
+end subroutine MPI_F_sync_reg_f08
+
+subroutine PMPI_F_sync_reg_f08( &
+  buf &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_F_sync_reg => PMPI_F_sync_reg
+  implicit none
+  integer :: buf(*)
+  call PMPIF_F_sync_reg( &
+    buf &
+  )
+end subroutine PMPI_F_sync_reg_f08
+
+subroutine MPI_Fetch_and_op_f08( &
+  origin_addr, &
+  result_addr, &
+  datatype, &
+  target_rank, &
+  target_disp, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Fetch_and_op => MPI_Fetch_and_op
+  implicit none
+  integer :: origin_addr(*)
+  integer :: result_addr(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Fetch_and_op( &
+    origin_addr, &
+    result_addr, &
+    datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Fetch_and_op_f08
+
+subroutine PMPI_Fetch_and_op_f08( &
+  origin_addr, &
+  result_addr, &
+  datatype, &
+  target_rank, &
+  target_disp, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Fetch_and_op => PMPI_Fetch_and_op
+  implicit none
+  integer :: origin_addr(*)
+  integer :: result_addr(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Fetch_and_op( &
+    origin_addr, &
+    result_addr, &
+    datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Fetch_and_op_f08
+
+subroutine MPI_File_call_errhandler_f08( &
+  fh, &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_call_errhandler => MPI_File_call_errhandler
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_call_errhandler( &
+    fh%MPI_VAL, &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_call_errhandler_f08
+
+subroutine PMPI_File_call_errhandler_f08( &
+  fh, &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_call_errhandler => PMPI_File_call_errhandler
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_call_errhandler( &
+    fh%MPI_VAL, &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_call_errhandler_f08
+
+subroutine MPI_File_close_f08( &
+  fh, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_close => MPI_File_close
+  implicit none
+  type(MPI_File), intent(inout) :: fh
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_close( &
+    fh%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_close_f08
+
+subroutine PMPI_File_close_f08( &
+  fh, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_close => PMPI_File_close
+  implicit none
+  type(MPI_File), intent(inout) :: fh
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_close( &
+    fh%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_close_f08
+
+subroutine MPI_File_create_errhandler_f08( &
+  file_errhandler_fn, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_create_errhandler => MPI_File_create_errhandler
+  implicit none
+  procedure(MPI_File_errhandler_function) :: file_errhandler_fn
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_create_errhandler( &
+    file_errhandler_fn, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_create_errhandler_f08
+
+subroutine PMPI_File_create_errhandler_f08( &
+  file_errhandler_fn, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_create_errhandler => PMPI_File_create_errhandler
+  implicit none
+  procedure(MPI_File_errhandler_function) :: file_errhandler_fn
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_create_errhandler( &
+    file_errhandler_fn, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_create_errhandler_f08
+
+subroutine MPI_File_delete_f08( &
+  filename, &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_delete => MPI_File_delete
+  implicit none
+  character*(*), intent(in) :: filename
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_delete( &
+    filename, &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_delete_f08
+
+subroutine PMPI_File_delete_f08( &
+  filename, &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_delete => PMPI_File_delete
+  implicit none
+  character*(*), intent(in) :: filename
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_delete( &
+    filename, &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_delete_f08
+
+subroutine MPI_File_get_amode_f08( &
+  fh, &
+  amode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_get_amode => MPI_File_get_amode
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer, intent(out) :: amode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_get_amode( &
+    fh%MPI_VAL, &
+    amode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_get_amode_f08
+
+subroutine PMPI_File_get_amode_f08( &
+  fh, &
+  amode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_get_amode => PMPI_File_get_amode
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer, intent(out) :: amode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_get_amode( &
+    fh%MPI_VAL, &
+    amode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_get_amode_f08
+
+subroutine MPI_File_get_atomicity_f08( &
+  fh, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_get_atomicity => MPI_File_get_atomicity
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_get_atomicity( &
+    fh%MPI_VAL, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_get_atomicity_f08
+
+subroutine PMPI_File_get_atomicity_f08( &
+  fh, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_get_atomicity => PMPI_File_get_atomicity
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_get_atomicity( &
+    fh%MPI_VAL, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_get_atomicity_f08
+
+subroutine MPI_File_get_byte_offset_f08( &
+  fh, &
+  offset, &
+  disp, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_get_byte_offset => MPI_File_get_byte_offset
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer(MPI_OFFSET_KIND), intent(out) :: disp
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_get_byte_offset( &
+    fh%MPI_VAL, &
+    offset, &
+    disp, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_get_byte_offset_f08
+
+subroutine PMPI_File_get_byte_offset_f08( &
+  fh, &
+  offset, &
+  disp, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_get_byte_offset => PMPI_File_get_byte_offset
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer(MPI_OFFSET_KIND), intent(out) :: disp
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_get_byte_offset( &
+    fh%MPI_VAL, &
+    offset, &
+    disp, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_get_byte_offset_f08
+
+subroutine MPI_File_get_errhandler_f08( &
+  file, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_get_errhandler => MPI_File_get_errhandler
+  implicit none
+  type(MPI_File), intent(in) :: file
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_get_errhandler( &
+    file%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_get_errhandler_f08
+
+subroutine PMPI_File_get_errhandler_f08( &
+  file, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_get_errhandler => PMPI_File_get_errhandler
+  implicit none
+  type(MPI_File), intent(in) :: file
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_get_errhandler( &
+    file%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_get_errhandler_f08
+
+subroutine MPI_File_get_group_f08( &
+  fh, &
+  group, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_get_group => MPI_File_get_group
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(MPI_Group), intent(out) :: group
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_get_group( &
+    fh%MPI_VAL, &
+    group%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_get_group_f08
+
+subroutine PMPI_File_get_group_f08( &
+  fh, &
+  group, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_get_group => PMPI_File_get_group
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(MPI_Group), intent(out) :: group
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_get_group( &
+    fh%MPI_VAL, &
+    group%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_get_group_f08
+
+subroutine MPI_File_get_info_f08( &
+  fh, &
+  info_used, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_get_info => MPI_File_get_info
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(MPI_Info), intent(out) :: info_used
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_get_info( &
+    fh%MPI_VAL, &
+    info_used%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_get_info_f08
+
+subroutine PMPI_File_get_info_f08( &
+  fh, &
+  info_used, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_get_info => PMPI_File_get_info
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(MPI_Info), intent(out) :: info_used
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_get_info( &
+    fh%MPI_VAL, &
+    info_used%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_get_info_f08
+
+subroutine MPI_File_get_position_f08( &
+  fh, &
+  offset, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_get_position => MPI_File_get_position
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(out) :: offset
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_get_position( &
+    fh%MPI_VAL, &
+    offset, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_get_position_f08
+
+subroutine PMPI_File_get_position_f08( &
+  fh, &
+  offset, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_get_position => PMPI_File_get_position
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(out) :: offset
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_get_position( &
+    fh%MPI_VAL, &
+    offset, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_get_position_f08
+
+subroutine MPI_File_get_position_shared_f08( &
+  fh, &
+  offset, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_get_position_shared => MPI_File_get_position_shared
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(out) :: offset
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_get_position_shared( &
+    fh%MPI_VAL, &
+    offset, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_get_position_shared_f08
+
+subroutine PMPI_File_get_position_shared_f08( &
+  fh, &
+  offset, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_get_position_shared => PMPI_File_get_position_shared
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(out) :: offset
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_get_position_shared( &
+    fh%MPI_VAL, &
+    offset, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_get_position_shared_f08
+
+subroutine MPI_File_get_size_f08( &
+  fh, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_get_size => MPI_File_get_size
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_get_size( &
+    fh%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_get_size_f08
+
+subroutine PMPI_File_get_size_f08( &
+  fh, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_get_size => PMPI_File_get_size
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_get_size( &
+    fh%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_get_size_f08
+
+subroutine MPI_File_get_type_extent_f08( &
+  fh, &
+  datatype, &
+  extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_get_type_extent => MPI_File_get_type_extent
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_ADDRESS_KIND), intent(out) :: extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_get_type_extent( &
+    fh%MPI_VAL, &
+    datatype%MPI_VAL, &
+    extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_get_type_extent_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+subroutine MPI_File_get_type_extent_c_f08( &
+  fh, &
+  datatype, &
+  extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_get_type_extent_c => MPI_File_get_type_extent_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_get_type_extent_c( &
+    fh%MPI_VAL, &
+    datatype%MPI_VAL, &
+    extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_get_type_extent_c_f08
+#endif
+
+subroutine PMPI_File_get_type_extent_f08( &
+  fh, &
+  datatype, &
+  extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_get_type_extent => PMPI_File_get_type_extent
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_ADDRESS_KIND), intent(out) :: extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_get_type_extent( &
+    fh%MPI_VAL, &
+    datatype%MPI_VAL, &
+    extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_get_type_extent_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+subroutine PMPI_File_get_type_extent_c_f08( &
+  fh, &
+  datatype, &
+  extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_get_type_extent_c => PMPI_File_get_type_extent_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_get_type_extent_c( &
+    fh%MPI_VAL, &
+    datatype%MPI_VAL, &
+    extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_get_type_extent_c_f08
+#endif
+
+subroutine MPI_File_get_view_f08( &
+  fh, &
+  disp, &
+  etype, &
+  filetype, &
+  datarep, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_get_view => MPI_File_get_view
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(out) :: disp
+  type(MPI_Datatype), intent(out) :: etype
+  type(MPI_Datatype), intent(out) :: filetype
+  character*(*), intent(out) :: datarep
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_get_view( &
+    fh%MPI_VAL, &
+    disp, &
+    etype%MPI_VAL, &
+    filetype%MPI_VAL, &
+    datarep, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_get_view_f08
+
+subroutine PMPI_File_get_view_f08( &
+  fh, &
+  disp, &
+  etype, &
+  filetype, &
+  datarep, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_get_view => PMPI_File_get_view
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(out) :: disp
+  type(MPI_Datatype), intent(out) :: etype
+  type(MPI_Datatype), intent(out) :: filetype
+  character*(*), intent(out) :: datarep
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_get_view( &
+    fh%MPI_VAL, &
+    disp, &
+    etype%MPI_VAL, &
+    filetype%MPI_VAL, &
+    datarep, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_get_view_f08
+
+subroutine MPI_File_iread_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iread => MPI_File_iread
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_f08
+
+subroutine MPI_File_iread_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iread_c => MPI_File_iread_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_c_f08
+
+subroutine PMPI_File_iread_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iread => PMPI_File_iread
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_f08
+
+subroutine PMPI_File_iread_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iread_c => PMPI_File_iread_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_c_f08
+
+subroutine MPI_File_iread_all_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iread_all => MPI_File_iread_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_all_f08
+
+subroutine MPI_File_iread_all_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iread_all_c => MPI_File_iread_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_all_c_f08
+
+subroutine PMPI_File_iread_all_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iread_all => PMPI_File_iread_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_all_f08
+
+subroutine PMPI_File_iread_all_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iread_all_c => PMPI_File_iread_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_all_c_f08
+
+subroutine MPI_File_iread_at_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iread_at => MPI_File_iread_at
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_at_f08
+
+subroutine MPI_File_iread_at_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iread_at_c => MPI_File_iread_at_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_at_c_f08
+
+subroutine PMPI_File_iread_at_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iread_at => PMPI_File_iread_at
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_at_f08
+
+subroutine PMPI_File_iread_at_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iread_at_c => PMPI_File_iread_at_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_at_c_f08
+
+subroutine MPI_File_iread_at_all_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iread_at_all => MPI_File_iread_at_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_at_all_f08
+
+subroutine MPI_File_iread_at_all_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iread_at_all_c => MPI_File_iread_at_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_at_all_c_f08
+
+subroutine PMPI_File_iread_at_all_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iread_at_all => PMPI_File_iread_at_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_at_all_f08
+
+subroutine PMPI_File_iread_at_all_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iread_at_all_c => PMPI_File_iread_at_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_at_all_c_f08
+
+subroutine MPI_File_iread_shared_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iread_shared => MPI_File_iread_shared
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_shared_f08
+
+subroutine MPI_File_iread_shared_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iread_shared_c => MPI_File_iread_shared_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_shared_c_f08
+
+subroutine PMPI_File_iread_shared_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iread_shared => PMPI_File_iread_shared
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_shared_f08
+
+subroutine PMPI_File_iread_shared_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iread_shared_c => PMPI_File_iread_shared_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_shared_c_f08
+
+subroutine MPI_File_iwrite_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iwrite => MPI_File_iwrite
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_f08
+
+subroutine MPI_File_iwrite_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iwrite_c => MPI_File_iwrite_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_c_f08
+
+subroutine PMPI_File_iwrite_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iwrite => PMPI_File_iwrite
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_f08
+
+subroutine PMPI_File_iwrite_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iwrite_c => PMPI_File_iwrite_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_c_f08
+
+subroutine MPI_File_iwrite_all_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iwrite_all => MPI_File_iwrite_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_all_f08
+
+subroutine MPI_File_iwrite_all_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iwrite_all_c => MPI_File_iwrite_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_all_c_f08
+
+subroutine PMPI_File_iwrite_all_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iwrite_all => PMPI_File_iwrite_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_all_f08
+
+subroutine PMPI_File_iwrite_all_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iwrite_all_c => PMPI_File_iwrite_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_all_c_f08
+
+subroutine MPI_File_iwrite_at_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iwrite_at => MPI_File_iwrite_at
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_at_f08
+
+subroutine MPI_File_iwrite_at_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iwrite_at_c => MPI_File_iwrite_at_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_at_c_f08
+
+subroutine PMPI_File_iwrite_at_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iwrite_at => PMPI_File_iwrite_at
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_at_f08
+
+subroutine PMPI_File_iwrite_at_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iwrite_at_c => PMPI_File_iwrite_at_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_at_c_f08
+
+subroutine MPI_File_iwrite_at_all_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iwrite_at_all => MPI_File_iwrite_at_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_at_all_f08
+
+subroutine MPI_File_iwrite_at_all_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iwrite_at_all_c => MPI_File_iwrite_at_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_at_all_c_f08
+
+subroutine PMPI_File_iwrite_at_all_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iwrite_at_all => PMPI_File_iwrite_at_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_at_all_f08
+
+subroutine PMPI_File_iwrite_at_all_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iwrite_at_all_c => PMPI_File_iwrite_at_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_at_all_c_f08
+
+subroutine MPI_File_iwrite_shared_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iwrite_shared => MPI_File_iwrite_shared
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_shared_f08
+
+subroutine MPI_File_iwrite_shared_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_iwrite_shared_c => MPI_File_iwrite_shared_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_shared_c_f08
+
+subroutine PMPI_File_iwrite_shared_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iwrite_shared => PMPI_File_iwrite_shared
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_shared_f08
+
+subroutine PMPI_File_iwrite_shared_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_iwrite_shared_c => PMPI_File_iwrite_shared_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_shared_c_f08
+
+subroutine MPI_File_open_f08( &
+  comm, &
+  filename, &
+  amode, &
+  info, &
+  fh, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_open => MPI_File_open
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  character*(*), intent(in) :: filename
+  integer, intent(in) :: amode
+  type(MPI_Info), intent(in) :: info
+  type(MPI_File), intent(out) :: fh
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_open( &
+    comm%MPI_VAL, &
+    filename, &
+    amode, &
+    info%MPI_VAL, &
+    fh%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_open_f08
+
+subroutine PMPI_File_open_f08( &
+  comm, &
+  filename, &
+  amode, &
+  info, &
+  fh, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_open => PMPI_File_open
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  character*(*), intent(in) :: filename
+  integer, intent(in) :: amode
+  type(MPI_Info), intent(in) :: info
+  type(MPI_File), intent(out) :: fh
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_open( &
+    comm%MPI_VAL, &
+    filename, &
+    amode, &
+    info%MPI_VAL, &
+    fh%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_open_f08
+
+subroutine MPI_File_preallocate_f08( &
+  fh, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_preallocate => MPI_File_preallocate
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_preallocate( &
+    fh%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_preallocate_f08
+
+subroutine PMPI_File_preallocate_f08( &
+  fh, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_preallocate => PMPI_File_preallocate
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_preallocate( &
+    fh%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_preallocate_f08
+
+subroutine MPI_File_read_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read => MPI_File_read
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_f08
+
+subroutine MPI_File_read_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_c => MPI_File_read_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_c_f08
+
+subroutine PMPI_File_read_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read => PMPI_File_read
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_f08
+
+subroutine PMPI_File_read_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_c => PMPI_File_read_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_c_f08
+
+subroutine MPI_File_read_all_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_all => MPI_File_read_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_all_f08
+
+subroutine MPI_File_read_all_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_all_c => MPI_File_read_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_all_c_f08
+
+subroutine PMPI_File_read_all_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_all => PMPI_File_read_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_all_f08
+
+subroutine PMPI_File_read_all_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_all_c => PMPI_File_read_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_all_c_f08
+
+subroutine MPI_File_read_all_begin_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_read_all_begin => MPI_File_read_all_begin
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_all_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_all_begin_f08
+
+subroutine MPI_File_read_all_begin_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_read_all_begin_c => MPI_File_read_all_begin_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_all_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_all_begin_c_f08
+
+subroutine PMPI_File_read_all_begin_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_read_all_begin => PMPI_File_read_all_begin
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_all_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_all_begin_f08
+
+subroutine PMPI_File_read_all_begin_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_read_all_begin_c => PMPI_File_read_all_begin_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_all_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_all_begin_c_f08
+
+subroutine MPI_File_read_all_end_f08( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_all_end => MPI_File_read_all_end
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_all_end_f08
+
+subroutine PMPI_File_read_all_end_f08( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_all_end => PMPI_File_read_all_end
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_all_end_f08
+
+subroutine MPI_File_read_at_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_at => MPI_File_read_at
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_f08
+
+subroutine MPI_File_read_at_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_at_c => MPI_File_read_at_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_c_f08
+
+subroutine PMPI_File_read_at_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_at => PMPI_File_read_at
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_f08
+
+subroutine PMPI_File_read_at_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_at_c => PMPI_File_read_at_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_c_f08
+
+subroutine MPI_File_read_at_all_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_at_all => MPI_File_read_at_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_all_f08
+
+subroutine MPI_File_read_at_all_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_at_all_c => MPI_File_read_at_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_all_c_f08
+
+subroutine PMPI_File_read_at_all_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_at_all => PMPI_File_read_at_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_all_f08
+
+subroutine PMPI_File_read_at_all_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_at_all_c => PMPI_File_read_at_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_all_c_f08
+
+subroutine MPI_File_read_at_all_begin_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_read_at_all_begin => MPI_File_read_at_all_begin
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at_all_begin( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_all_begin_f08
+
+subroutine MPI_File_read_at_all_begin_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_read_at_all_begin_c => MPI_File_read_at_all_begin_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at_all_begin_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_all_begin_c_f08
+
+subroutine PMPI_File_read_at_all_begin_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_read_at_all_begin => PMPI_File_read_at_all_begin
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at_all_begin( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_all_begin_f08
+
+subroutine PMPI_File_read_at_all_begin_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_read_at_all_begin_c => PMPI_File_read_at_all_begin_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at_all_begin_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_all_begin_c_f08
+
+subroutine MPI_File_read_at_all_end_f08( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_at_all_end => MPI_File_read_at_all_end
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_all_end_f08
+
+subroutine PMPI_File_read_at_all_end_f08( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_at_all_end => PMPI_File_read_at_all_end
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_all_end_f08
+
+subroutine MPI_File_read_ordered_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_ordered => MPI_File_read_ordered
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_ordered( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_ordered_f08
+
+subroutine MPI_File_read_ordered_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_ordered_c => MPI_File_read_ordered_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_ordered_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_ordered_c_f08
+
+subroutine PMPI_File_read_ordered_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_ordered => PMPI_File_read_ordered
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_ordered( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_ordered_f08
+
+subroutine PMPI_File_read_ordered_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_ordered_c => PMPI_File_read_ordered_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_ordered_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_ordered_c_f08
+
+subroutine MPI_File_read_ordered_begin_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_read_ordered_begin => MPI_File_read_ordered_begin
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_ordered_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_ordered_begin_f08
+
+subroutine MPI_File_read_ordered_begin_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_read_ordered_begin_c => MPI_File_read_ordered_begin_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_ordered_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_ordered_begin_c_f08
+
+subroutine PMPI_File_read_ordered_begin_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_read_ordered_begin => PMPI_File_read_ordered_begin
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_ordered_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_ordered_begin_f08
+
+subroutine PMPI_File_read_ordered_begin_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_read_ordered_begin_c => PMPI_File_read_ordered_begin_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_ordered_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_ordered_begin_c_f08
+
+subroutine MPI_File_read_ordered_end_f08( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_ordered_end => MPI_File_read_ordered_end
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_ordered_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_ordered_end_f08
+
+subroutine PMPI_File_read_ordered_end_f08( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_ordered_end => PMPI_File_read_ordered_end
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_ordered_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_ordered_end_f08
+
+subroutine MPI_File_read_shared_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_shared => MPI_File_read_shared
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_shared_f08
+
+subroutine MPI_File_read_shared_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_read_shared_c => MPI_File_read_shared_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_shared_c_f08
+
+subroutine PMPI_File_read_shared_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_shared => PMPI_File_read_shared
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_shared_f08
+
+subroutine PMPI_File_read_shared_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_read_shared_c => PMPI_File_read_shared_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_shared_c_f08
+
+subroutine MPI_File_seek_f08( &
+  fh, &
+  offset, &
+  whence, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_seek => MPI_File_seek
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer, intent(in) :: whence
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_seek( &
+    fh%MPI_VAL, &
+    offset, &
+    whence, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_seek_f08
+
+subroutine PMPI_File_seek_f08( &
+  fh, &
+  offset, &
+  whence, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_seek => PMPI_File_seek
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer, intent(in) :: whence
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_seek( &
+    fh%MPI_VAL, &
+    offset, &
+    whence, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_seek_f08
+
+subroutine MPI_File_seek_shared_f08( &
+  fh, &
+  offset, &
+  whence, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_seek_shared => MPI_File_seek_shared
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer, intent(in) :: whence
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_seek_shared( &
+    fh%MPI_VAL, &
+    offset, &
+    whence, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_seek_shared_f08
+
+subroutine PMPI_File_seek_shared_f08( &
+  fh, &
+  offset, &
+  whence, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_seek_shared => PMPI_File_seek_shared
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer, intent(in) :: whence
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_seek_shared( &
+    fh%MPI_VAL, &
+    offset, &
+    whence, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_seek_shared_f08
+
+subroutine MPI_File_set_atomicity_f08( &
+  fh, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_set_atomicity => MPI_File_set_atomicity
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  logical, intent(in) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_set_atomicity( &
+    fh%MPI_VAL, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_set_atomicity_f08
+
+subroutine PMPI_File_set_atomicity_f08( &
+  fh, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_set_atomicity => PMPI_File_set_atomicity
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  logical, intent(in) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_set_atomicity( &
+    fh%MPI_VAL, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_set_atomicity_f08
+
+subroutine MPI_File_set_errhandler_f08( &
+  file, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_set_errhandler => MPI_File_set_errhandler
+  implicit none
+  type(MPI_File), intent(in) :: file
+  type(MPI_Errhandler), intent(in) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_set_errhandler( &
+    file%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_set_errhandler_f08
+
+subroutine PMPI_File_set_errhandler_f08( &
+  file, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_set_errhandler => PMPI_File_set_errhandler
+  implicit none
+  type(MPI_File), intent(in) :: file
+  type(MPI_Errhandler), intent(in) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_set_errhandler( &
+    file%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_set_errhandler_f08
+
+subroutine MPI_File_set_info_f08( &
+  fh, &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_set_info => MPI_File_set_info
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_set_info( &
+    fh%MPI_VAL, &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_set_info_f08
+
+subroutine PMPI_File_set_info_f08( &
+  fh, &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_set_info => PMPI_File_set_info
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_set_info( &
+    fh%MPI_VAL, &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_set_info_f08
+
+subroutine MPI_File_set_size_f08( &
+  fh, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_set_size => MPI_File_set_size
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_set_size( &
+    fh%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_set_size_f08
+
+subroutine PMPI_File_set_size_f08( &
+  fh, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_set_size => PMPI_File_set_size
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_set_size( &
+    fh%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_set_size_f08
+
+subroutine MPI_File_set_view_f08( &
+  fh, &
+  disp, &
+  etype, &
+  filetype, &
+  datarep, &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_set_view => MPI_File_set_view
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: disp
+  type(MPI_Datatype), intent(in) :: etype
+  type(MPI_Datatype), intent(in) :: filetype
+  character*(*), intent(in) :: datarep
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_set_view( &
+    fh%MPI_VAL, &
+    disp, &
+    etype%MPI_VAL, &
+    filetype%MPI_VAL, &
+    datarep, &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_set_view_f08
+
+subroutine PMPI_File_set_view_f08( &
+  fh, &
+  disp, &
+  etype, &
+  filetype, &
+  datarep, &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_set_view => PMPI_File_set_view
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: disp
+  type(MPI_Datatype), intent(in) :: etype
+  type(MPI_Datatype), intent(in) :: filetype
+  character*(*), intent(in) :: datarep
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_set_view( &
+    fh%MPI_VAL, &
+    disp, &
+    etype%MPI_VAL, &
+    filetype%MPI_VAL, &
+    datarep, &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_set_view_f08
+
+subroutine MPI_File_sync_f08( &
+  fh, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_sync => MPI_File_sync
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_sync( &
+    fh%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_sync_f08
+
+subroutine PMPI_File_sync_f08( &
+  fh, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_sync => PMPI_File_sync
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_sync( &
+    fh%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_sync_f08
+
+subroutine MPI_File_write_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write => MPI_File_write
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_f08
+
+subroutine MPI_File_write_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_c => MPI_File_write_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_c_f08
+
+subroutine PMPI_File_write_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write => PMPI_File_write
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_f08
+
+subroutine PMPI_File_write_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_c => PMPI_File_write_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_c_f08
+
+subroutine MPI_File_write_all_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_all => MPI_File_write_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_all_f08
+
+subroutine MPI_File_write_all_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_all_c => MPI_File_write_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_all_c_f08
+
+subroutine PMPI_File_write_all_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_all => PMPI_File_write_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_all_f08
+
+subroutine PMPI_File_write_all_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_all_c => PMPI_File_write_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_all_c_f08
+
+subroutine MPI_File_write_all_begin_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_write_all_begin => MPI_File_write_all_begin
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_all_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_all_begin_f08
+
+subroutine MPI_File_write_all_begin_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_write_all_begin_c => MPI_File_write_all_begin_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_all_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_all_begin_c_f08
+
+subroutine PMPI_File_write_all_begin_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_write_all_begin => PMPI_File_write_all_begin
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_all_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_all_begin_f08
+
+subroutine PMPI_File_write_all_begin_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_write_all_begin_c => PMPI_File_write_all_begin_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_all_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_all_begin_c_f08
+
+subroutine MPI_File_write_all_end_f08( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_all_end => MPI_File_write_all_end
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_all_end_f08
+
+subroutine PMPI_File_write_all_end_f08( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_all_end => PMPI_File_write_all_end
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_all_end_f08
+
+subroutine MPI_File_write_at_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_at => MPI_File_write_at
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_f08
+
+subroutine MPI_File_write_at_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_at_c => MPI_File_write_at_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_c_f08
+
+subroutine PMPI_File_write_at_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_at => PMPI_File_write_at
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_f08
+
+subroutine PMPI_File_write_at_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_at_c => PMPI_File_write_at_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_c_f08
+
+subroutine MPI_File_write_at_all_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_at_all => MPI_File_write_at_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_all_f08
+
+subroutine MPI_File_write_at_all_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_at_all_c => MPI_File_write_at_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_all_c_f08
+
+subroutine PMPI_File_write_at_all_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_at_all => PMPI_File_write_at_all
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_all_f08
+
+subroutine PMPI_File_write_at_all_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_at_all_c => PMPI_File_write_at_all_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_all_c_f08
+
+subroutine MPI_File_write_at_all_begin_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_write_at_all_begin => MPI_File_write_at_all_begin
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at_all_begin( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_all_begin_f08
+
+subroutine MPI_File_write_at_all_begin_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_write_at_all_begin_c => MPI_File_write_at_all_begin_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at_all_begin_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_all_begin_c_f08
+
+subroutine PMPI_File_write_at_all_begin_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_write_at_all_begin => PMPI_File_write_at_all_begin
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at_all_begin( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_all_begin_f08
+
+subroutine PMPI_File_write_at_all_begin_c_f08( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_write_at_all_begin_c => PMPI_File_write_at_all_begin_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at_all_begin_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_all_begin_c_f08
+
+subroutine MPI_File_write_at_all_end_f08( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_at_all_end => MPI_File_write_at_all_end
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_all_end_f08
+
+subroutine PMPI_File_write_at_all_end_f08( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_at_all_end => PMPI_File_write_at_all_end
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_all_end_f08
+
+subroutine MPI_File_write_ordered_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_ordered => MPI_File_write_ordered
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_ordered( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_ordered_f08
+
+subroutine MPI_File_write_ordered_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_ordered_c => MPI_File_write_ordered_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_ordered_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_ordered_c_f08
+
+subroutine PMPI_File_write_ordered_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_ordered => PMPI_File_write_ordered
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_ordered( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_ordered_f08
+
+subroutine PMPI_File_write_ordered_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_ordered_c => PMPI_File_write_ordered_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_ordered_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_ordered_c_f08
+
+subroutine MPI_File_write_ordered_begin_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_write_ordered_begin => MPI_File_write_ordered_begin
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_ordered_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_ordered_begin_f08
+
+subroutine MPI_File_write_ordered_begin_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_File_write_ordered_begin_c => MPI_File_write_ordered_begin_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_ordered_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_ordered_begin_c_f08
+
+subroutine PMPI_File_write_ordered_begin_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_write_ordered_begin => PMPI_File_write_ordered_begin
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_ordered_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_ordered_begin_f08
+
+subroutine PMPI_File_write_ordered_begin_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_File_write_ordered_begin_c => PMPI_File_write_ordered_begin_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_ordered_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_ordered_begin_c_f08
+
+subroutine MPI_File_write_ordered_end_f08( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_ordered_end => MPI_File_write_ordered_end
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_ordered_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_ordered_end_f08
+
+subroutine PMPI_File_write_ordered_end_f08( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_ordered_end => PMPI_File_write_ordered_end
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_ordered_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_ordered_end_f08
+
+subroutine MPI_File_write_shared_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_shared => MPI_File_write_shared
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_shared_f08
+
+subroutine MPI_File_write_shared_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_File_write_shared_c => MPI_File_write_shared_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_shared_c_f08
+
+subroutine PMPI_File_write_shared_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_shared => PMPI_File_write_shared
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_shared_f08
+
+subroutine PMPI_File_write_shared_c_f08( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_File_write_shared_c => PMPI_File_write_shared_c
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_shared_c_f08
+
+subroutine MPI_Finalize_f08( &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Finalize => MPI_Finalize
+  implicit none
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Finalize( &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Finalize_f08
+
+subroutine PMPI_Finalize_f08( &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Finalize => PMPI_Finalize
+  implicit none
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Finalize( &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Finalize_f08
+
+subroutine MPI_Finalized_f08( &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Finalized => MPI_Finalized
+  implicit none
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Finalized( &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Finalized_f08
+
+subroutine PMPI_Finalized_f08( &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Finalized => PMPI_Finalized
+  implicit none
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Finalized( &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Finalized_f08
+
+subroutine MPI_Free_mem_f08( &
+  base, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Free_mem => MPI_Free_mem
+  implicit none
+  integer :: base(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Free_mem( &
+    base, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Free_mem_f08
+
+subroutine PMPI_Free_mem_f08( &
+  base, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Free_mem => PMPI_Free_mem
+  implicit none
+  integer :: base(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Free_mem( &
+    base, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Free_mem_f08
+
+subroutine MPI_Gather_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Gather => MPI_Gather
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gather_f08
+
+subroutine MPI_Gather_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Gather_c => MPI_Gather_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gather_c_f08
+
+subroutine PMPI_Gather_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Gather => PMPI_Gather
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gather_f08
+
+subroutine PMPI_Gather_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Gather_c => PMPI_Gather_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gather_c_f08
+
+subroutine MPI_Gather_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Gather_init => MPI_Gather_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gather_init_f08
+
+subroutine MPI_Gather_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Gather_init_c => MPI_Gather_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gather_init_c_f08
+
+subroutine PMPI_Gather_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Gather_init => PMPI_Gather_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gather_init_f08
+
+subroutine PMPI_Gather_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Gather_init_c => PMPI_Gather_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gather_init_c_f08
+
+subroutine MPI_Gatherv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Gatherv => MPI_Gatherv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gatherv_f08
+
+subroutine MPI_Gatherv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Gatherv_c => MPI_Gatherv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gatherv_c_f08
+
+subroutine PMPI_Gatherv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Gatherv => PMPI_Gatherv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gatherv_f08
+
+subroutine PMPI_Gatherv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Gatherv_c => PMPI_Gatherv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gatherv_c_f08
+
+subroutine MPI_Gatherv_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Gatherv_init => MPI_Gatherv_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gatherv_init_f08
+
+subroutine MPI_Gatherv_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Gatherv_init_c => MPI_Gatherv_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gatherv_init_c_f08
+
+subroutine PMPI_Gatherv_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Gatherv_init => PMPI_Gatherv_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gatherv_init_f08
+
+subroutine PMPI_Gatherv_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Gatherv_init_c => PMPI_Gatherv_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gatherv_init_c_f08
+
+subroutine MPI_Get_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Get => MPI_Get
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_f08
+
+subroutine MPI_Get_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Get_c => MPI_Get_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_c_f08
+
+subroutine PMPI_Get_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Get => PMPI_Get
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_f08
+
+subroutine PMPI_Get_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Get_c => PMPI_Get_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_c_f08
+
+subroutine MPI_Get_accumulate_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Get_accumulate => MPI_Get_accumulate
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer :: result_addr(*)
+  integer, intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_accumulate_f08
+
+subroutine MPI_Get_accumulate_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Get_accumulate_c => MPI_Get_accumulate_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer :: result_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_accumulate_c_f08
+
+subroutine PMPI_Get_accumulate_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Get_accumulate => PMPI_Get_accumulate
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer :: result_addr(*)
+  integer, intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_accumulate_f08
+
+subroutine PMPI_Get_accumulate_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Get_accumulate_c => PMPI_Get_accumulate_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer :: result_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_accumulate_c_f08
+
+subroutine MPI_Get_address_f08( &
+  location, &
+  address, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Get_address => MPI_Get_address
+  implicit none
+  integer :: location(*)
+  integer(MPI_ADDRESS_KIND), intent(out) :: address
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_address( &
+    location, &
+    address, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_address_f08
+
+subroutine PMPI_Get_address_f08( &
+  location, &
+  address, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Get_address => PMPI_Get_address
+  implicit none
+  integer :: location(*)
+  integer(MPI_ADDRESS_KIND), intent(out) :: address
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_address( &
+    location, &
+    address, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_address_f08
+
+subroutine MPI_Get_count_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Get_count => MPI_Get_count
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_count( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_count_f08
+
+subroutine MPI_Get_count_c_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Get_count_c => MPI_Get_count_c
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_count_c( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_count_c_f08
+
+subroutine PMPI_Get_count_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Get_count => PMPI_Get_count
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_count( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_count_f08
+
+subroutine PMPI_Get_count_c_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Get_count_c => PMPI_Get_count_c
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_count_c( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_count_c_f08
+
+subroutine MPI_Get_elements_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Get_elements => MPI_Get_elements
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_elements( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_elements_f08
+
+subroutine MPI_Get_elements_c_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Get_elements_c => MPI_Get_elements_c
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_elements_c( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_elements_c_f08
+
+subroutine PMPI_Get_elements_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Get_elements => PMPI_Get_elements
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_elements( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_elements_f08
+
+subroutine PMPI_Get_elements_c_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Get_elements_c => PMPI_Get_elements_c
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_elements_c( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_elements_c_f08
+
+subroutine MPI_Get_elements_x_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Get_elements_x => MPI_Get_elements_x
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_elements_x( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_elements_x_f08
+
+subroutine PMPI_Get_elements_x_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Get_elements_x => PMPI_Get_elements_x
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_elements_x( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_elements_x_f08
+
+subroutine MPI_Get_hw_resource_info_f08( &
+  hw_info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Get_hw_resource_info => MPI_Get_hw_resource_info
+  implicit none
+  type(MPI_Info), intent(out) :: hw_info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_hw_resource_info( &
+    hw_info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_hw_resource_info_f08
+
+subroutine PMPI_Get_hw_resource_info_f08( &
+  hw_info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Get_hw_resource_info => PMPI_Get_hw_resource_info
+  implicit none
+  type(MPI_Info), intent(out) :: hw_info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_hw_resource_info( &
+    hw_info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_hw_resource_info_f08
+
+subroutine MPI_Get_library_version_f08( &
+  version, &
+  resultlen, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Get_library_version => MPI_Get_library_version
+  implicit none
+  character*(MPI_MAX_LIBRARY_VERSION_STRING), intent(out) :: version
+  integer, intent(out) :: resultlen
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_library_version( &
+    version, &
+    resultlen, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_library_version_f08
+
+subroutine PMPI_Get_library_version_f08( &
+  version, &
+  resultlen, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Get_library_version => PMPI_Get_library_version
+  implicit none
+  character*(MPI_MAX_LIBRARY_VERSION_STRING), intent(out) :: version
+  integer, intent(out) :: resultlen
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_library_version( &
+    version, &
+    resultlen, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_library_version_f08
+
+subroutine MPI_Get_processor_name_f08( &
+  name, &
+  resultlen, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Get_processor_name => MPI_Get_processor_name
+  implicit none
+  character*(MPI_MAX_PROCESSOR_NAME), intent(out) :: name
+  integer, intent(out) :: resultlen
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_processor_name( &
+    name, &
+    resultlen, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_processor_name_f08
+
+subroutine PMPI_Get_processor_name_f08( &
+  name, &
+  resultlen, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Get_processor_name => PMPI_Get_processor_name
+  implicit none
+  character*(MPI_MAX_PROCESSOR_NAME), intent(out) :: name
+  integer, intent(out) :: resultlen
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_processor_name( &
+    name, &
+    resultlen, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_processor_name_f08
+
+subroutine MPI_Get_version_f08( &
+  version, &
+  subversion, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Get_version => MPI_Get_version
+  implicit none
+  integer, intent(out) :: version
+  integer, intent(out) :: subversion
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_version( &
+    version, &
+    subversion, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_version_f08
+
+subroutine PMPI_Get_version_f08( &
+  version, &
+  subversion, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Get_version => PMPI_Get_version
+  implicit none
+  integer, intent(out) :: version
+  integer, intent(out) :: subversion
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_version( &
+    version, &
+    subversion, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_version_f08
+
+subroutine MPI_Graph_create_f08( &
+  comm_old, &
+  nnodes, &
+  index, &
+  edges, &
+  reorder, &
+  comm_graph, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Graph_create => MPI_Graph_create
+  implicit none
+  type(MPI_Comm), intent(in) :: comm_old
+  integer, intent(in) :: nnodes
+  integer, intent(in) :: index(nnodes)
+  integer, intent(in) :: edges(*)
+  logical, intent(in) :: reorder
+  type(MPI_Comm), intent(out) :: comm_graph
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Graph_create( &
+    comm_old%MPI_VAL, &
+    nnodes, &
+    index, &
+    edges, &
+    reorder, &
+    comm_graph%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Graph_create_f08
+
+subroutine PMPI_Graph_create_f08( &
+  comm_old, &
+  nnodes, &
+  index, &
+  edges, &
+  reorder, &
+  comm_graph, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Graph_create => PMPI_Graph_create
+  implicit none
+  type(MPI_Comm), intent(in) :: comm_old
+  integer, intent(in) :: nnodes
+  integer, intent(in) :: index(nnodes)
+  integer, intent(in) :: edges(*)
+  logical, intent(in) :: reorder
+  type(MPI_Comm), intent(out) :: comm_graph
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Graph_create( &
+    comm_old%MPI_VAL, &
+    nnodes, &
+    index, &
+    edges, &
+    reorder, &
+    comm_graph%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Graph_create_f08
+
+subroutine MPI_Graph_get_f08( &
+  comm, &
+  maxindex, &
+  maxedges, &
+  index, &
+  edges, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Graph_get => MPI_Graph_get
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: maxindex
+  integer, intent(in) :: maxedges
+  integer, intent(out) :: index(maxindex)
+  integer, intent(out) :: edges(maxedges)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Graph_get( &
+    comm%MPI_VAL, &
+    maxindex, &
+    maxedges, &
+    index, &
+    edges, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Graph_get_f08
+
+subroutine PMPI_Graph_get_f08( &
+  comm, &
+  maxindex, &
+  maxedges, &
+  index, &
+  edges, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Graph_get => PMPI_Graph_get
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: maxindex
+  integer, intent(in) :: maxedges
+  integer, intent(out) :: index(maxindex)
+  integer, intent(out) :: edges(maxedges)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Graph_get( &
+    comm%MPI_VAL, &
+    maxindex, &
+    maxedges, &
+    index, &
+    edges, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Graph_get_f08
+
+subroutine MPI_Graph_map_f08( &
+  comm, &
+  nnodes, &
+  index, &
+  edges, &
+  newrank, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Graph_map => MPI_Graph_map
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: nnodes
+  integer, intent(in) :: index(nnodes)
+  integer, intent(in) :: edges(*)
+  integer, intent(out) :: newrank
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Graph_map( &
+    comm%MPI_VAL, &
+    nnodes, &
+    index, &
+    edges, &
+    newrank, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Graph_map_f08
+
+subroutine PMPI_Graph_map_f08( &
+  comm, &
+  nnodes, &
+  index, &
+  edges, &
+  newrank, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Graph_map => PMPI_Graph_map
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: nnodes
+  integer, intent(in) :: index(nnodes)
+  integer, intent(in) :: edges(*)
+  integer, intent(out) :: newrank
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Graph_map( &
+    comm%MPI_VAL, &
+    nnodes, &
+    index, &
+    edges, &
+    newrank, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Graph_map_f08
+
+subroutine MPI_Graph_neighbors_f08( &
+  comm, &
+  rank, &
+  maxneighbors, &
+  neighbors, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Graph_neighbors => MPI_Graph_neighbors
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: rank
+  integer, intent(in) :: maxneighbors
+  integer, intent(out) :: neighbors(maxneighbors)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Graph_neighbors( &
+    comm%MPI_VAL, &
+    rank, &
+    maxneighbors, &
+    neighbors, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Graph_neighbors_f08
+
+subroutine PMPI_Graph_neighbors_f08( &
+  comm, &
+  rank, &
+  maxneighbors, &
+  neighbors, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Graph_neighbors => PMPI_Graph_neighbors
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: rank
+  integer, intent(in) :: maxneighbors
+  integer, intent(out) :: neighbors(maxneighbors)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Graph_neighbors( &
+    comm%MPI_VAL, &
+    rank, &
+    maxneighbors, &
+    neighbors, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Graph_neighbors_f08
+
+subroutine MPI_Graph_neighbors_count_f08( &
+  comm, &
+  rank, &
+  nneighbors, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Graph_neighbors_count => MPI_Graph_neighbors_count
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: rank
+  integer, intent(out) :: nneighbors
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Graph_neighbors_count( &
+    comm%MPI_VAL, &
+    rank, &
+    nneighbors, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Graph_neighbors_count_f08
+
+subroutine PMPI_Graph_neighbors_count_f08( &
+  comm, &
+  rank, &
+  nneighbors, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Graph_neighbors_count => PMPI_Graph_neighbors_count
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(in) :: rank
+  integer, intent(out) :: nneighbors
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Graph_neighbors_count( &
+    comm%MPI_VAL, &
+    rank, &
+    nneighbors, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Graph_neighbors_count_f08
+
+subroutine MPI_Graphdims_get_f08( &
+  comm, &
+  nnodes, &
+  nedges, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Graphdims_get => MPI_Graphdims_get
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: nnodes
+  integer, intent(out) :: nedges
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Graphdims_get( &
+    comm%MPI_VAL, &
+    nnodes, &
+    nedges, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Graphdims_get_f08
+
+subroutine PMPI_Graphdims_get_f08( &
+  comm, &
+  nnodes, &
+  nedges, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Graphdims_get => PMPI_Graphdims_get
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: nnodes
+  integer, intent(out) :: nedges
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Graphdims_get( &
+    comm%MPI_VAL, &
+    nnodes, &
+    nedges, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Graphdims_get_f08
+
+subroutine MPI_Grequest_complete_f08( &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Grequest_complete => MPI_Grequest_complete
+  implicit none
+  type(MPI_Request), intent(in) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Grequest_complete( &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Grequest_complete_f08
+
+subroutine PMPI_Grequest_complete_f08( &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Grequest_complete => PMPI_Grequest_complete
+  implicit none
+  type(MPI_Request), intent(in) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Grequest_complete( &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Grequest_complete_f08
+
+subroutine MPI_Grequest_start_f08( &
+  query_fn, &
+  free_fn, &
+  cancel_fn, &
+  extra_state, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Grequest_start => MPI_Grequest_start
+  implicit none
+  procedure(MPI_Grequest_query_function) :: query_fn
+  procedure(MPI_Grequest_free_function) :: free_fn
+  procedure(MPI_Grequest_cancel_function) :: cancel_fn
+  integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Grequest_start( &
+    query_fn, &
+    free_fn, &
+    cancel_fn, &
+    extra_state, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Grequest_start_f08
+
+subroutine PMPI_Grequest_start_f08( &
+  query_fn, &
+  free_fn, &
+  cancel_fn, &
+  extra_state, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Grequest_start => PMPI_Grequest_start
+  implicit none
+  procedure(MPI_Grequest_query_function) :: query_fn
+  procedure(MPI_Grequest_free_function) :: free_fn
+  procedure(MPI_Grequest_cancel_function) :: cancel_fn
+  integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Grequest_start( &
+    query_fn, &
+    free_fn, &
+    cancel_fn, &
+    extra_state, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Grequest_start_f08
+
+subroutine MPI_Group_compare_f08( &
+  group1, &
+  group2, &
+  result, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_compare => MPI_Group_compare
+  implicit none
+  type(MPI_Group), intent(in) :: group1
+  type(MPI_Group), intent(in) :: group2
+  integer, intent(out) :: result
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_compare( &
+    group1%MPI_VAL, &
+    group2%MPI_VAL, &
+    result, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_compare_f08
+
+subroutine PMPI_Group_compare_f08( &
+  group1, &
+  group2, &
+  result, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_compare => PMPI_Group_compare
+  implicit none
+  type(MPI_Group), intent(in) :: group1
+  type(MPI_Group), intent(in) :: group2
+  integer, intent(out) :: result
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_compare( &
+    group1%MPI_VAL, &
+    group2%MPI_VAL, &
+    result, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_compare_f08
+
+subroutine MPI_Group_difference_f08( &
+  group1, &
+  group2, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_difference => MPI_Group_difference
+  implicit none
+  type(MPI_Group), intent(in) :: group1
+  type(MPI_Group), intent(in) :: group2
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_difference( &
+    group1%MPI_VAL, &
+    group2%MPI_VAL, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_difference_f08
+
+subroutine PMPI_Group_difference_f08( &
+  group1, &
+  group2, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_difference => PMPI_Group_difference
+  implicit none
+  type(MPI_Group), intent(in) :: group1
+  type(MPI_Group), intent(in) :: group2
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_difference( &
+    group1%MPI_VAL, &
+    group2%MPI_VAL, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_difference_f08
+
+subroutine MPI_Group_excl_f08( &
+  group, &
+  n, &
+  ranks, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_excl => MPI_Group_excl
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: n
+  integer, intent(in) :: ranks(n)
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_excl( &
+    group%MPI_VAL, &
+    n, &
+    ranks, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_excl_f08
+
+subroutine PMPI_Group_excl_f08( &
+  group, &
+  n, &
+  ranks, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_excl => PMPI_Group_excl
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: n
+  integer, intent(in) :: ranks(n)
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_excl( &
+    group%MPI_VAL, &
+    n, &
+    ranks, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_excl_f08
+
+subroutine MPI_Group_free_f08( &
+  group, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_free => MPI_Group_free
+  implicit none
+  type(MPI_Group), intent(inout) :: group
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_free( &
+    group%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_free_f08
+
+subroutine PMPI_Group_free_f08( &
+  group, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_free => PMPI_Group_free
+  implicit none
+  type(MPI_Group), intent(inout) :: group
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_free( &
+    group%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_free_f08
+
+subroutine MPI_Group_from_session_pset_f08( &
+  session, &
+  pset_name, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_from_session_pset => MPI_Group_from_session_pset
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  character*(*), intent(in) :: pset_name
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_from_session_pset( &
+    session%MPI_VAL, &
+    pset_name, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_from_session_pset_f08
+
+subroutine PMPI_Group_from_session_pset_f08( &
+  session, &
+  pset_name, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_from_session_pset => PMPI_Group_from_session_pset
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  character*(*), intent(in) :: pset_name
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_from_session_pset( &
+    session%MPI_VAL, &
+    pset_name, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_from_session_pset_f08
+
+subroutine MPI_Group_incl_f08( &
+  group, &
+  n, &
+  ranks, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_incl => MPI_Group_incl
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: n
+  integer, intent(in) :: ranks(n)
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_incl( &
+    group%MPI_VAL, &
+    n, &
+    ranks, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_incl_f08
+
+subroutine PMPI_Group_incl_f08( &
+  group, &
+  n, &
+  ranks, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_incl => PMPI_Group_incl
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: n
+  integer, intent(in) :: ranks(n)
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_incl( &
+    group%MPI_VAL, &
+    n, &
+    ranks, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_incl_f08
+
+subroutine MPI_Group_intersection_f08( &
+  group1, &
+  group2, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_intersection => MPI_Group_intersection
+  implicit none
+  type(MPI_Group), intent(in) :: group1
+  type(MPI_Group), intent(in) :: group2
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_intersection( &
+    group1%MPI_VAL, &
+    group2%MPI_VAL, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_intersection_f08
+
+subroutine PMPI_Group_intersection_f08( &
+  group1, &
+  group2, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_intersection => PMPI_Group_intersection
+  implicit none
+  type(MPI_Group), intent(in) :: group1
+  type(MPI_Group), intent(in) :: group2
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_intersection( &
+    group1%MPI_VAL, &
+    group2%MPI_VAL, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_intersection_f08
+
+subroutine MPI_Group_range_excl_f08( &
+  group, &
+  n, &
+  ranges, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_range_excl => MPI_Group_range_excl
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: n
+  integer, intent(in) :: ranges(3, n)
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_range_excl( &
+    group%MPI_VAL, &
+    n, &
+    ranges, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_range_excl_f08
+
+subroutine PMPI_Group_range_excl_f08( &
+  group, &
+  n, &
+  ranges, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_range_excl => PMPI_Group_range_excl
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: n
+  integer, intent(in) :: ranges(3, n)
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_range_excl( &
+    group%MPI_VAL, &
+    n, &
+    ranges, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_range_excl_f08
+
+subroutine MPI_Group_range_incl_f08( &
+  group, &
+  n, &
+  ranges, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_range_incl => MPI_Group_range_incl
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: n
+  integer, intent(in) :: ranges(3, n)
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_range_incl( &
+    group%MPI_VAL, &
+    n, &
+    ranges, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_range_incl_f08
+
+subroutine PMPI_Group_range_incl_f08( &
+  group, &
+  n, &
+  ranges, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_range_incl => PMPI_Group_range_incl
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: n
+  integer, intent(in) :: ranges(3, n)
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_range_incl( &
+    group%MPI_VAL, &
+    n, &
+    ranges, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_range_incl_f08
+
+subroutine MPI_Group_rank_f08( &
+  group, &
+  rank, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_rank => MPI_Group_rank
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(out) :: rank
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_rank( &
+    group%MPI_VAL, &
+    rank, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_rank_f08
+
+subroutine PMPI_Group_rank_f08( &
+  group, &
+  rank, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_rank => PMPI_Group_rank
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(out) :: rank
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_rank( &
+    group%MPI_VAL, &
+    rank, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_rank_f08
+
+subroutine MPI_Group_size_f08( &
+  group, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_size => MPI_Group_size
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_size( &
+    group%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_size_f08
+
+subroutine PMPI_Group_size_f08( &
+  group, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_size => PMPI_Group_size
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_size( &
+    group%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_size_f08
+
+subroutine MPI_Group_translate_ranks_f08( &
+  group1, &
+  n, &
+  ranks1, &
+  group2, &
+  ranks2, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_translate_ranks => MPI_Group_translate_ranks
+  implicit none
+  type(MPI_Group), intent(in) :: group1
+  integer, intent(in) :: n
+  integer, intent(in) :: ranks1(n)
+  type(MPI_Group), intent(in) :: group2
+  integer, intent(out) :: ranks2(n)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_translate_ranks( &
+    group1%MPI_VAL, &
+    n, &
+    ranks1, &
+    group2%MPI_VAL, &
+    ranks2, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_translate_ranks_f08
+
+subroutine PMPI_Group_translate_ranks_f08( &
+  group1, &
+  n, &
+  ranks1, &
+  group2, &
+  ranks2, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_translate_ranks => PMPI_Group_translate_ranks
+  implicit none
+  type(MPI_Group), intent(in) :: group1
+  integer, intent(in) :: n
+  integer, intent(in) :: ranks1(n)
+  type(MPI_Group), intent(in) :: group2
+  integer, intent(out) :: ranks2(n)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_translate_ranks( &
+    group1%MPI_VAL, &
+    n, &
+    ranks1, &
+    group2%MPI_VAL, &
+    ranks2, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_translate_ranks_f08
+
+subroutine MPI_Group_union_f08( &
+  group1, &
+  group2, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Group_union => MPI_Group_union
+  implicit none
+  type(MPI_Group), intent(in) :: group1
+  type(MPI_Group), intent(in) :: group2
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Group_union( &
+    group1%MPI_VAL, &
+    group2%MPI_VAL, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Group_union_f08
+
+subroutine PMPI_Group_union_f08( &
+  group1, &
+  group2, &
+  newgroup, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Group_union => PMPI_Group_union
+  implicit none
+  type(MPI_Group), intent(in) :: group1
+  type(MPI_Group), intent(in) :: group2
+  type(MPI_Group), intent(out) :: newgroup
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Group_union( &
+    group1%MPI_VAL, &
+    group2%MPI_VAL, &
+    newgroup%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Group_union_f08
+
+subroutine MPI_Iallgather_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iallgather => MPI_Iallgather
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iallgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iallgather_f08
+
+subroutine MPI_Iallgather_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iallgather_c => MPI_Iallgather_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iallgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iallgather_c_f08
+
+subroutine PMPI_Iallgather_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iallgather => PMPI_Iallgather
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iallgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iallgather_f08
+
+subroutine PMPI_Iallgather_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iallgather_c => PMPI_Iallgather_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iallgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iallgather_c_f08
+
+subroutine MPI_Iallgatherv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iallgatherv => MPI_Iallgatherv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iallgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iallgatherv_f08
+
+subroutine MPI_Iallgatherv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iallgatherv_c => MPI_Iallgatherv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iallgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iallgatherv_c_f08
+
+subroutine PMPI_Iallgatherv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iallgatherv => PMPI_Iallgatherv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iallgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iallgatherv_f08
+
+subroutine PMPI_Iallgatherv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iallgatherv_c => PMPI_Iallgatherv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iallgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iallgatherv_c_f08
+
+subroutine MPI_Iallreduce_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iallreduce => MPI_Iallreduce
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iallreduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iallreduce_f08
+
+subroutine MPI_Iallreduce_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iallreduce_c => MPI_Iallreduce_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iallreduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iallreduce_c_f08
+
+subroutine PMPI_Iallreduce_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iallreduce => PMPI_Iallreduce
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iallreduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iallreduce_f08
+
+subroutine PMPI_Iallreduce_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iallreduce_c => PMPI_Iallreduce_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iallreduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iallreduce_c_f08
+
+subroutine MPI_Ialltoall_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ialltoall => MPI_Ialltoall
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ialltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ialltoall_f08
+
+subroutine MPI_Ialltoall_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ialltoall_c => MPI_Ialltoall_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ialltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ialltoall_c_f08
+
+subroutine PMPI_Ialltoall_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ialltoall => PMPI_Ialltoall
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ialltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ialltoall_f08
+
+subroutine PMPI_Ialltoall_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ialltoall_c => PMPI_Ialltoall_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ialltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ialltoall_c_f08
+
+subroutine MPI_Ialltoallv_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ialltoallv => MPI_Ialltoallv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ialltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ialltoallv_f08
+
+subroutine MPI_Ialltoallv_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ialltoallv_c => MPI_Ialltoallv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ialltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ialltoallv_c_f08
+
+subroutine PMPI_Ialltoallv_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ialltoallv => PMPI_Ialltoallv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ialltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ialltoallv_f08
+
+subroutine PMPI_Ialltoallv_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ialltoallv_c => PMPI_Ialltoallv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ialltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ialltoallv_c_f08
+
+subroutine MPI_Ialltoallw_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ialltoallw => MPI_Ialltoallw
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ialltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ialltoallw_f08
+
+subroutine MPI_Ialltoallw_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ialltoallw_c => MPI_Ialltoallw_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ialltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ialltoallw_c_f08
+
+subroutine PMPI_Ialltoallw_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ialltoallw => PMPI_Ialltoallw
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ialltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ialltoallw_f08
+
+subroutine PMPI_Ialltoallw_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ialltoallw_c => PMPI_Ialltoallw_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ialltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ialltoallw_c_f08
+
+subroutine MPI_Ibarrier_f08( &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ibarrier => MPI_Ibarrier
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ibarrier( &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ibarrier_f08
+
+subroutine PMPI_Ibarrier_f08( &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ibarrier => PMPI_Ibarrier
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ibarrier( &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ibarrier_f08
+
+subroutine MPI_Ibcast_f08( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ibcast => MPI_Ibcast
+  implicit none
+  integer :: buffer(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ibcast( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ibcast_f08
+
+subroutine MPI_Ibcast_c_f08( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ibcast_c => MPI_Ibcast_c
+  implicit none
+  integer :: buffer(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ibcast_c( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ibcast_c_f08
+
+subroutine PMPI_Ibcast_f08( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ibcast => PMPI_Ibcast
+  implicit none
+  integer :: buffer(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ibcast( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ibcast_f08
+
+subroutine PMPI_Ibcast_c_f08( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ibcast_c => PMPI_Ibcast_c
+  implicit none
+  integer :: buffer(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ibcast_c( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ibcast_c_f08
+
+subroutine MPI_Ibsend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ibsend => MPI_Ibsend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ibsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ibsend_f08
+
+subroutine MPI_Ibsend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ibsend_c => MPI_Ibsend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ibsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ibsend_c_f08
+
+subroutine PMPI_Ibsend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ibsend => PMPI_Ibsend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ibsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ibsend_f08
+
+subroutine PMPI_Ibsend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ibsend_c => PMPI_Ibsend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ibsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ibsend_c_f08
+
+subroutine MPI_Iexscan_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iexscan => MPI_Iexscan
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iexscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iexscan_f08
+
+subroutine MPI_Iexscan_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iexscan_c => MPI_Iexscan_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iexscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iexscan_c_f08
+
+subroutine PMPI_Iexscan_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iexscan => PMPI_Iexscan
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iexscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iexscan_f08
+
+subroutine PMPI_Iexscan_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iexscan_c => PMPI_Iexscan_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iexscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iexscan_c_f08
+
+subroutine MPI_Igather_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Igather => MPI_Igather
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Igather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Igather_f08
+
+subroutine MPI_Igather_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Igather_c => MPI_Igather_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Igather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Igather_c_f08
+
+subroutine PMPI_Igather_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Igather => PMPI_Igather
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Igather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Igather_f08
+
+subroutine PMPI_Igather_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Igather_c => PMPI_Igather_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Igather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Igather_c_f08
+
+subroutine MPI_Igatherv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Igatherv => MPI_Igatherv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Igatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Igatherv_f08
+
+subroutine MPI_Igatherv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Igatherv_c => MPI_Igatherv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Igatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Igatherv_c_f08
+
+subroutine PMPI_Igatherv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Igatherv => PMPI_Igatherv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Igatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Igatherv_f08
+
+subroutine PMPI_Igatherv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Igatherv_c => PMPI_Igatherv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Igatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Igatherv_c_f08
+
+subroutine MPI_Improbe_f08( &
+  source, &
+  tag, &
+  comm, &
+  flag, &
+  message, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Improbe => MPI_Improbe
+  implicit none
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  logical, intent(out) :: flag
+  type(MPI_Message), intent(out) :: message
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Improbe( &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    flag, &
+    message%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Improbe_f08
+
+subroutine PMPI_Improbe_f08( &
+  source, &
+  tag, &
+  comm, &
+  flag, &
+  message, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Improbe => PMPI_Improbe
+  implicit none
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  logical, intent(out) :: flag
+  type(MPI_Message), intent(out) :: message
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Improbe( &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    flag, &
+    message%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Improbe_f08
+
+subroutine MPI_Imrecv_f08( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Imrecv => MPI_Imrecv
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Imrecv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Imrecv_f08
+
+subroutine MPI_Imrecv_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Imrecv_c => MPI_Imrecv_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Imrecv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Imrecv_c_f08
+
+subroutine PMPI_Imrecv_f08( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Imrecv => PMPI_Imrecv
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Imrecv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Imrecv_f08
+
+subroutine PMPI_Imrecv_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Imrecv_c => PMPI_Imrecv_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Imrecv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Imrecv_c_f08
+
+subroutine MPI_Ineighbor_allgather_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ineighbor_allgather => MPI_Ineighbor_allgather
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_allgather_f08
+
+subroutine MPI_Ineighbor_allgather_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ineighbor_allgather_c => MPI_Ineighbor_allgather_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_allgather_c_f08
+
+subroutine PMPI_Ineighbor_allgather_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ineighbor_allgather => PMPI_Ineighbor_allgather
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_allgather_f08
+
+subroutine PMPI_Ineighbor_allgather_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ineighbor_allgather_c => PMPI_Ineighbor_allgather_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_allgather_c_f08
+
+subroutine MPI_Ineighbor_allgatherv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ineighbor_allgatherv => MPI_Ineighbor_allgatherv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_allgatherv_f08
+
+subroutine MPI_Ineighbor_allgatherv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ineighbor_allgatherv_c => MPI_Ineighbor_allgatherv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_allgatherv_c_f08
+
+subroutine PMPI_Ineighbor_allgatherv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ineighbor_allgatherv => PMPI_Ineighbor_allgatherv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_allgatherv_f08
+
+subroutine PMPI_Ineighbor_allgatherv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ineighbor_allgatherv_c => PMPI_Ineighbor_allgatherv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_allgatherv_c_f08
+
+subroutine MPI_Ineighbor_alltoall_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ineighbor_alltoall => MPI_Ineighbor_alltoall
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_alltoall_f08
+
+subroutine MPI_Ineighbor_alltoall_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ineighbor_alltoall_c => MPI_Ineighbor_alltoall_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_alltoall_c_f08
+
+subroutine PMPI_Ineighbor_alltoall_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ineighbor_alltoall => PMPI_Ineighbor_alltoall
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_alltoall_f08
+
+subroutine PMPI_Ineighbor_alltoall_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ineighbor_alltoall_c => PMPI_Ineighbor_alltoall_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_alltoall_c_f08
+
+subroutine MPI_Ineighbor_alltoallv_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ineighbor_alltoallv => MPI_Ineighbor_alltoallv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_alltoallv_f08
+
+subroutine MPI_Ineighbor_alltoallv_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ineighbor_alltoallv_c => MPI_Ineighbor_alltoallv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_alltoallv_c_f08
+
+subroutine PMPI_Ineighbor_alltoallv_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ineighbor_alltoallv => PMPI_Ineighbor_alltoallv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_alltoallv_f08
+
+subroutine PMPI_Ineighbor_alltoallv_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ineighbor_alltoallv_c => PMPI_Ineighbor_alltoallv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_alltoallv_c_f08
+
+subroutine MPI_Ineighbor_alltoallw_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ineighbor_alltoallw => MPI_Ineighbor_alltoallw
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_alltoallw_f08
+
+subroutine MPI_Ineighbor_alltoallw_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ineighbor_alltoallw_c => MPI_Ineighbor_alltoallw_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_alltoallw_c_f08
+
+subroutine PMPI_Ineighbor_alltoallw_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ineighbor_alltoallw => PMPI_Ineighbor_alltoallw
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_alltoallw_f08
+
+subroutine PMPI_Ineighbor_alltoallw_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ineighbor_alltoallw_c => PMPI_Ineighbor_alltoallw_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_alltoallw_c_f08
+
+subroutine MPI_Info_create_f08( &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Info_create => MPI_Info_create
+  implicit none
+  type(MPI_Info), intent(out) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Info_create( &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Info_create_f08
+
+subroutine PMPI_Info_create_f08( &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Info_create => PMPI_Info_create
+  implicit none
+  type(MPI_Info), intent(out) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Info_create( &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Info_create_f08
+
+subroutine MPI_Info_create_env_f08( &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Info_create_env => MPI_Info_create_env
+  implicit none
+  type(MPI_Info), intent(out) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Info_create_env( &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Info_create_env_f08
+
+subroutine PMPI_Info_create_env_f08( &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Info_create_env => PMPI_Info_create_env
+  implicit none
+  type(MPI_Info), intent(out) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Info_create_env( &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Info_create_env_f08
+
+subroutine MPI_Info_delete_f08( &
+  info, &
+  key, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Info_delete => MPI_Info_delete
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: key
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Info_delete( &
+    info%MPI_VAL, &
+    key, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Info_delete_f08
+
+subroutine PMPI_Info_delete_f08( &
+  info, &
+  key, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Info_delete => PMPI_Info_delete
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: key
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Info_delete( &
+    info%MPI_VAL, &
+    key, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Info_delete_f08
+
+subroutine MPI_Info_dup_f08( &
+  info, &
+  newinfo, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Info_dup => MPI_Info_dup
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Info), intent(out) :: newinfo
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Info_dup( &
+    info%MPI_VAL, &
+    newinfo%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Info_dup_f08
+
+subroutine PMPI_Info_dup_f08( &
+  info, &
+  newinfo, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Info_dup => PMPI_Info_dup
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Info), intent(out) :: newinfo
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Info_dup( &
+    info%MPI_VAL, &
+    newinfo%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Info_dup_f08
+
+subroutine MPI_Info_free_f08( &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Info_free => MPI_Info_free
+  implicit none
+  type(MPI_Info), intent(inout) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Info_free( &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Info_free_f08
+
+subroutine PMPI_Info_free_f08( &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Info_free => PMPI_Info_free
+  implicit none
+  type(MPI_Info), intent(inout) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Info_free( &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Info_free_f08
+
+subroutine MPI_Info_get_f08( &
+  info, &
+  key, &
+  valuelen, &
+  value, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Info_get => MPI_Info_get
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: key
+  integer, intent(in) :: valuelen
+  character*(valuelen), intent(out) :: value
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Info_get( &
+    info%MPI_VAL, &
+    key, &
+    valuelen, &
+    value, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Info_get_f08
+
+subroutine PMPI_Info_get_f08( &
+  info, &
+  key, &
+  valuelen, &
+  value, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Info_get => PMPI_Info_get
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: key
+  integer, intent(in) :: valuelen
+  character*(valuelen), intent(out) :: value
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Info_get( &
+    info%MPI_VAL, &
+    key, &
+    valuelen, &
+    value, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Info_get_f08
+
+subroutine MPI_Info_get_nkeys_f08( &
+  info, &
+  nkeys, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Info_get_nkeys => MPI_Info_get_nkeys
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out) :: nkeys
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Info_get_nkeys( &
+    info%MPI_VAL, &
+    nkeys, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Info_get_nkeys_f08
+
+subroutine PMPI_Info_get_nkeys_f08( &
+  info, &
+  nkeys, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Info_get_nkeys => PMPI_Info_get_nkeys
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out) :: nkeys
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Info_get_nkeys( &
+    info%MPI_VAL, &
+    nkeys, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Info_get_nkeys_f08
+
+subroutine MPI_Info_get_nthkey_f08( &
+  info, &
+  n, &
+  key, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Info_get_nthkey => MPI_Info_get_nthkey
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  integer, intent(in) :: n
+  character*(*), intent(out) :: key
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Info_get_nthkey( &
+    info%MPI_VAL, &
+    n, &
+    key, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Info_get_nthkey_f08
+
+subroutine PMPI_Info_get_nthkey_f08( &
+  info, &
+  n, &
+  key, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Info_get_nthkey => PMPI_Info_get_nthkey
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  integer, intent(in) :: n
+  character*(*), intent(out) :: key
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Info_get_nthkey( &
+    info%MPI_VAL, &
+    n, &
+    key, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Info_get_nthkey_f08
+
+subroutine MPI_Info_get_string_f08( &
+  info, &
+  key, &
+  buflen, &
+  value, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Info_get_string => MPI_Info_get_string
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: key
+  integer, intent(inout) :: buflen
+  character*(*), intent(out) :: value
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Info_get_string( &
+    info%MPI_VAL, &
+    key, &
+    buflen, &
+    value, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Info_get_string_f08
+
+subroutine PMPI_Info_get_string_f08( &
+  info, &
+  key, &
+  buflen, &
+  value, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Info_get_string => PMPI_Info_get_string
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: key
+  integer, intent(inout) :: buflen
+  character*(*), intent(out) :: value
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Info_get_string( &
+    info%MPI_VAL, &
+    key, &
+    buflen, &
+    value, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Info_get_string_f08
+
+subroutine MPI_Info_get_valuelen_f08( &
+  info, &
+  key, &
+  valuelen, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Info_get_valuelen => MPI_Info_get_valuelen
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: key
+  integer, intent(out) :: valuelen
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Info_get_valuelen( &
+    info%MPI_VAL, &
+    key, &
+    valuelen, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Info_get_valuelen_f08
+
+subroutine PMPI_Info_get_valuelen_f08( &
+  info, &
+  key, &
+  valuelen, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Info_get_valuelen => PMPI_Info_get_valuelen
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: key
+  integer, intent(out) :: valuelen
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Info_get_valuelen( &
+    info%MPI_VAL, &
+    key, &
+    valuelen, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Info_get_valuelen_f08
+
+subroutine MPI_Info_set_f08( &
+  info, &
+  key, &
+  value, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Info_set => MPI_Info_set
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: key
+  character*(*), intent(in) :: value
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Info_set( &
+    info%MPI_VAL, &
+    key, &
+    value, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Info_set_f08
+
+subroutine PMPI_Info_set_f08( &
+  info, &
+  key, &
+  value, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Info_set => PMPI_Info_set
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: key
+  character*(*), intent(in) :: value
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Info_set( &
+    info%MPI_VAL, &
+    key, &
+    value, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Info_set_f08
+
+subroutine MPI_Init_f08( &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Init => MPI_Init
+  implicit none
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Init( &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Init_f08
+
+subroutine PMPI_Init_f08( &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Init => PMPI_Init
+  implicit none
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Init( &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Init_f08
+
+subroutine MPI_Init_thread_f08( &
+  required, &
+  provided, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Init_thread => MPI_Init_thread
+  implicit none
+  integer, intent(in) :: required
+  integer, intent(out) :: provided
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Init_thread( &
+    required, &
+    provided, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Init_thread_f08
+
+subroutine PMPI_Init_thread_f08( &
+  required, &
+  provided, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Init_thread => PMPI_Init_thread
+  implicit none
+  integer, intent(in) :: required
+  integer, intent(out) :: provided
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Init_thread( &
+    required, &
+    provided, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Init_thread_f08
+
+subroutine MPI_Initialized_f08( &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Initialized => MPI_Initialized
+  implicit none
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Initialized( &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Initialized_f08
+
+subroutine PMPI_Initialized_f08( &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Initialized => PMPI_Initialized
+  implicit none
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Initialized( &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Initialized_f08
+
+subroutine MPI_Intercomm_create_f08( &
+  local_comm, &
+  local_leader, &
+  peer_comm, &
+  remote_leader, &
+  tag, &
+  newintercomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Intercomm_create => MPI_Intercomm_create
+  implicit none
+  type(MPI_Comm), intent(in) :: local_comm
+  integer, intent(in) :: local_leader
+  type(MPI_Comm), intent(in) :: peer_comm
+  integer, intent(in) :: remote_leader
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(out) :: newintercomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Intercomm_create( &
+    local_comm%MPI_VAL, &
+    local_leader, &
+    peer_comm%MPI_VAL, &
+    remote_leader, &
+    tag, &
+    newintercomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Intercomm_create_f08
+
+subroutine PMPI_Intercomm_create_f08( &
+  local_comm, &
+  local_leader, &
+  peer_comm, &
+  remote_leader, &
+  tag, &
+  newintercomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Intercomm_create => PMPI_Intercomm_create
+  implicit none
+  type(MPI_Comm), intent(in) :: local_comm
+  integer, intent(in) :: local_leader
+  type(MPI_Comm), intent(in) :: peer_comm
+  integer, intent(in) :: remote_leader
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(out) :: newintercomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Intercomm_create( &
+    local_comm%MPI_VAL, &
+    local_leader, &
+    peer_comm%MPI_VAL, &
+    remote_leader, &
+    tag, &
+    newintercomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Intercomm_create_f08
+
+subroutine MPI_Intercomm_create_from_groups_f08( &
+  local_group, &
+  local_leader, &
+  remote_group, &
+  remote_leader, &
+  stringtag, &
+  info, &
+  errhandler, &
+  newintercomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Intercomm_create_from_groups => MPI_Intercomm_create_from_groups
+  implicit none
+  type(MPI_Group), intent(in) :: local_group
+  integer, intent(in) :: local_leader
+  type(MPI_Group), intent(in) :: remote_group
+  integer, intent(in) :: remote_leader
+  character*(*), intent(in) :: stringtag
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Errhandler), intent(in) :: errhandler
+  type(MPI_Comm), intent(out) :: newintercomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Intercomm_create_from_groups( &
+    local_group%MPI_VAL, &
+    local_leader, &
+    remote_group%MPI_VAL, &
+    remote_leader, &
+    stringtag, &
+    info%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    newintercomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Intercomm_create_from_groups_f08
+
+subroutine PMPI_Intercomm_create_from_groups_f08( &
+  local_group, &
+  local_leader, &
+  remote_group, &
+  remote_leader, &
+  stringtag, &
+  info, &
+  errhandler, &
+  newintercomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Intercomm_create_from_groups => PMPI_Intercomm_create_from_groups
+  implicit none
+  type(MPI_Group), intent(in) :: local_group
+  integer, intent(in) :: local_leader
+  type(MPI_Group), intent(in) :: remote_group
+  integer, intent(in) :: remote_leader
+  character*(*), intent(in) :: stringtag
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Errhandler), intent(in) :: errhandler
+  type(MPI_Comm), intent(out) :: newintercomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Intercomm_create_from_groups( &
+    local_group%MPI_VAL, &
+    local_leader, &
+    remote_group%MPI_VAL, &
+    remote_leader, &
+    stringtag, &
+    info%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    newintercomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Intercomm_create_from_groups_f08
+
+subroutine MPI_Intercomm_merge_f08( &
+  intercomm, &
+  high, &
+  newintracomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Intercomm_merge => MPI_Intercomm_merge
+  implicit none
+  type(MPI_Comm), intent(in) :: intercomm
+  logical, intent(in) :: high
+  type(MPI_Comm), intent(out) :: newintracomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Intercomm_merge( &
+    intercomm%MPI_VAL, &
+    high, &
+    newintracomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Intercomm_merge_f08
+
+subroutine PMPI_Intercomm_merge_f08( &
+  intercomm, &
+  high, &
+  newintracomm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Intercomm_merge => PMPI_Intercomm_merge
+  implicit none
+  type(MPI_Comm), intent(in) :: intercomm
+  logical, intent(in) :: high
+  type(MPI_Comm), intent(out) :: newintracomm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Intercomm_merge( &
+    intercomm%MPI_VAL, &
+    high, &
+    newintracomm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Intercomm_merge_f08
+
+subroutine MPI_Iprobe_f08( &
+  source, &
+  tag, &
+  comm, &
+  flag, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Iprobe => MPI_Iprobe
+  implicit none
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  logical, intent(out) :: flag
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iprobe( &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    flag, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iprobe_f08
+
+subroutine PMPI_Iprobe_f08( &
+  source, &
+  tag, &
+  comm, &
+  flag, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Iprobe => PMPI_Iprobe
+  implicit none
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  logical, intent(out) :: flag
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iprobe( &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    flag, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iprobe_f08
+
+subroutine MPI_Irecv_f08( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Irecv => MPI_Irecv
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Irecv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Irecv_f08
+
+subroutine MPI_Irecv_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Irecv_c => MPI_Irecv_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Irecv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Irecv_c_f08
+
+subroutine PMPI_Irecv_f08( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Irecv => PMPI_Irecv
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Irecv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Irecv_f08
+
+subroutine PMPI_Irecv_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Irecv_c => PMPI_Irecv_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Irecv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Irecv_c_f08
+
+subroutine MPI_Ireduce_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ireduce => MPI_Ireduce
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ireduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ireduce_f08
+
+subroutine MPI_Ireduce_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ireduce_c => MPI_Ireduce_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ireduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ireduce_c_f08
+
+subroutine PMPI_Ireduce_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ireduce => PMPI_Ireduce
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ireduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ireduce_f08
+
+subroutine PMPI_Ireduce_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ireduce_c => PMPI_Ireduce_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ireduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ireduce_c_f08
+
+subroutine MPI_Ireduce_scatter_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ireduce_scatter => MPI_Ireduce_scatter
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ireduce_scatter( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ireduce_scatter_f08
+
+subroutine MPI_Ireduce_scatter_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ireduce_scatter_c => MPI_Ireduce_scatter_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ireduce_scatter_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ireduce_scatter_c_f08
+
+subroutine PMPI_Ireduce_scatter_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ireduce_scatter => PMPI_Ireduce_scatter
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ireduce_scatter( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ireduce_scatter_f08
+
+subroutine PMPI_Ireduce_scatter_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ireduce_scatter_c => PMPI_Ireduce_scatter_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ireduce_scatter_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ireduce_scatter_c_f08
+
+subroutine MPI_Ireduce_scatter_block_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ireduce_scatter_block => MPI_Ireduce_scatter_block
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ireduce_scatter_block( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ireduce_scatter_block_f08
+
+subroutine MPI_Ireduce_scatter_block_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ireduce_scatter_block_c => MPI_Ireduce_scatter_block_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ireduce_scatter_block_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ireduce_scatter_block_c_f08
+
+subroutine PMPI_Ireduce_scatter_block_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ireduce_scatter_block => PMPI_Ireduce_scatter_block
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ireduce_scatter_block( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ireduce_scatter_block_f08
+
+subroutine PMPI_Ireduce_scatter_block_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ireduce_scatter_block_c => PMPI_Ireduce_scatter_block_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ireduce_scatter_block_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ireduce_scatter_block_c_f08
+
+subroutine MPI_Irsend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Irsend => MPI_Irsend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Irsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Irsend_f08
+
+subroutine MPI_Irsend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Irsend_c => MPI_Irsend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Irsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Irsend_c_f08
+
+subroutine PMPI_Irsend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Irsend => PMPI_Irsend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Irsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Irsend_f08
+
+subroutine PMPI_Irsend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Irsend_c => PMPI_Irsend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Irsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Irsend_c_f08
+
+subroutine MPI_Is_thread_main_f08( &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Is_thread_main => MPI_Is_thread_main
+  implicit none
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Is_thread_main( &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Is_thread_main_f08
+
+subroutine PMPI_Is_thread_main_f08( &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Is_thread_main => PMPI_Is_thread_main
+  implicit none
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Is_thread_main( &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Is_thread_main_f08
+
+subroutine MPI_Iscan_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iscan => MPI_Iscan
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iscan_f08
+
+subroutine MPI_Iscan_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iscan_c => MPI_Iscan_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iscan_c_f08
+
+subroutine PMPI_Iscan_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iscan => PMPI_Iscan
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iscan_f08
+
+subroutine PMPI_Iscan_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iscan_c => PMPI_Iscan_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iscan_c_f08
+
+subroutine MPI_Iscatter_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iscatter => MPI_Iscatter
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iscatter( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iscatter_f08
+
+subroutine MPI_Iscatter_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iscatter_c => MPI_Iscatter_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iscatter_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iscatter_c_f08
+
+subroutine PMPI_Iscatter_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iscatter => PMPI_Iscatter
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iscatter( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iscatter_f08
+
+subroutine PMPI_Iscatter_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iscatter_c => PMPI_Iscatter_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iscatter_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iscatter_c_f08
+
+subroutine MPI_Iscatterv_f08( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iscatterv => MPI_Iscatterv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iscatterv( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iscatterv_f08
+
+subroutine MPI_Iscatterv_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Iscatterv_c => MPI_Iscatterv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iscatterv_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iscatterv_c_f08
+
+subroutine PMPI_Iscatterv_f08( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iscatterv => PMPI_Iscatterv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iscatterv( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iscatterv_f08
+
+subroutine PMPI_Iscatterv_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Iscatterv_c => PMPI_Iscatterv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iscatterv_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iscatterv_c_f08
+
+subroutine MPI_Isend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Isend => MPI_Isend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Isend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Isend_f08
+
+subroutine MPI_Isend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Isend_c => MPI_Isend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Isend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Isend_c_f08
+
+subroutine PMPI_Isend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Isend => PMPI_Isend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Isend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Isend_f08
+
+subroutine PMPI_Isend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Isend_c => PMPI_Isend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Isend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Isend_c_f08
+
+subroutine MPI_Isendrecv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Isendrecv => MPI_Isendrecv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Isendrecv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Isendrecv_f08
+
+subroutine MPI_Isendrecv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Isendrecv_c => MPI_Isendrecv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Isendrecv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Isendrecv_c_f08
+
+subroutine PMPI_Isendrecv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Isendrecv => PMPI_Isendrecv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Isendrecv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Isendrecv_f08
+
+subroutine PMPI_Isendrecv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Isendrecv_c => PMPI_Isendrecv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Isendrecv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Isendrecv_c_f08
+
+subroutine MPI_Isendrecv_replace_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Isendrecv_replace => MPI_Isendrecv_replace
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Isendrecv_replace( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Isendrecv_replace_f08
+
+subroutine MPI_Isendrecv_replace_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Isendrecv_replace_c => MPI_Isendrecv_replace_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Isendrecv_replace_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Isendrecv_replace_c_f08
+
+subroutine PMPI_Isendrecv_replace_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Isendrecv_replace => PMPI_Isendrecv_replace
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Isendrecv_replace( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Isendrecv_replace_f08
+
+subroutine PMPI_Isendrecv_replace_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Isendrecv_replace_c => PMPI_Isendrecv_replace_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Isendrecv_replace_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Isendrecv_replace_c_f08
+
+subroutine MPI_Issend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Issend => MPI_Issend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Issend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Issend_f08
+
+subroutine MPI_Issend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Issend_c => MPI_Issend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Issend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Issend_c_f08
+
+subroutine PMPI_Issend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Issend => PMPI_Issend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Issend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Issend_f08
+
+subroutine PMPI_Issend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Issend_c => PMPI_Issend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Issend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Issend_c_f08
+
+subroutine MPI_Keyval_create_f08( &
+  copy_fn, &
+  delete_fn, &
+  keyval, &
+  extra_state, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Keyval_create => MPI_Keyval_create
+  implicit none
+  procedure(MPI_Copy_function) :: copy_fn
+  procedure(MPI_Delete_function) :: delete_fn
+  integer, intent(out) :: keyval
+  integer, intent(in) :: extra_state
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Keyval_create( &
+    copy_fn, &
+    delete_fn, &
+    keyval, &
+    extra_state, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Keyval_create_f08
+
+subroutine PMPI_Keyval_create_f08( &
+  copy_fn, &
+  delete_fn, &
+  keyval, &
+  extra_state, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Keyval_create => PMPI_Keyval_create
+  implicit none
+  procedure(MPI_Copy_function) :: copy_fn
+  procedure(MPI_Delete_function) :: delete_fn
+  integer, intent(out) :: keyval
+  integer, intent(in) :: extra_state
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Keyval_create( &
+    copy_fn, &
+    delete_fn, &
+    keyval, &
+    extra_state, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Keyval_create_f08
+
+subroutine MPI_Keyval_free_f08( &
+  keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Keyval_free => MPI_Keyval_free
+  implicit none
+  integer, intent(inout) :: keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Keyval_free( &
+    keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Keyval_free_f08
+
+subroutine PMPI_Keyval_free_f08( &
+  keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Keyval_free => PMPI_Keyval_free
+  implicit none
+  integer, intent(inout) :: keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Keyval_free( &
+    keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Keyval_free_f08
+
+subroutine MPI_Lookup_name_f08( &
+  service_name, &
+  info, &
+  port_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Lookup_name => MPI_Lookup_name
+  implicit none
+  character*(*), intent(in) :: service_name
+  type(MPI_Info), intent(in) :: info
+  character*(MPI_MAX_PORT_NAME), intent(out) :: port_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Lookup_name( &
+    service_name, &
+    info%MPI_VAL, &
+    port_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Lookup_name_f08
+
+subroutine PMPI_Lookup_name_f08( &
+  service_name, &
+  info, &
+  port_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Lookup_name => PMPI_Lookup_name
+  implicit none
+  character*(*), intent(in) :: service_name
+  type(MPI_Info), intent(in) :: info
+  character*(MPI_MAX_PORT_NAME), intent(out) :: port_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Lookup_name( &
+    service_name, &
+    info%MPI_VAL, &
+    port_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Lookup_name_f08
+
+subroutine MPI_Mprobe_f08( &
+  source, &
+  tag, &
+  comm, &
+  message, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Mprobe => MPI_Mprobe
+  implicit none
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Message), intent(out) :: message
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Mprobe( &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    message%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Mprobe_f08
+
+subroutine PMPI_Mprobe_f08( &
+  source, &
+  tag, &
+  comm, &
+  message, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Mprobe => PMPI_Mprobe
+  implicit none
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Message), intent(out) :: message
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Mprobe( &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    message%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Mprobe_f08
+
+subroutine MPI_Mrecv_f08( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Mrecv => MPI_Mrecv
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Mrecv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Mrecv_f08
+
+subroutine MPI_Mrecv_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Mrecv_c => MPI_Mrecv_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Mrecv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Mrecv_c_f08
+
+subroutine PMPI_Mrecv_f08( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Mrecv => PMPI_Mrecv
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Mrecv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Mrecv_f08
+
+subroutine PMPI_Mrecv_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Mrecv_c => PMPI_Mrecv_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Mrecv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Mrecv_c_f08
+
+subroutine MPI_Neighbor_allgather_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_allgather => MPI_Neighbor_allgather
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgather_f08
+
+subroutine MPI_Neighbor_allgather_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_allgather_c => MPI_Neighbor_allgather_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgather_c_f08
+
+subroutine PMPI_Neighbor_allgather_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_allgather => PMPI_Neighbor_allgather
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgather_f08
+
+subroutine PMPI_Neighbor_allgather_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_allgather_c => PMPI_Neighbor_allgather_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgather_c_f08
+
+subroutine MPI_Neighbor_allgather_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_allgather_init => MPI_Neighbor_allgather_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgather_init_f08
+
+subroutine MPI_Neighbor_allgather_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_allgather_init_c => MPI_Neighbor_allgather_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgather_init_c_f08
+
+subroutine PMPI_Neighbor_allgather_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_allgather_init => PMPI_Neighbor_allgather_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgather_init_f08
+
+subroutine PMPI_Neighbor_allgather_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_allgather_init_c => PMPI_Neighbor_allgather_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgather_init_c_f08
+
+subroutine MPI_Neighbor_allgatherv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_allgatherv => MPI_Neighbor_allgatherv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgatherv_f08
+
+subroutine MPI_Neighbor_allgatherv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_allgatherv_c => MPI_Neighbor_allgatherv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgatherv_c_f08
+
+subroutine PMPI_Neighbor_allgatherv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_allgatherv => PMPI_Neighbor_allgatherv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgatherv_f08
+
+subroutine PMPI_Neighbor_allgatherv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_allgatherv_c => PMPI_Neighbor_allgatherv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgatherv_c_f08
+
+subroutine MPI_Neighbor_allgatherv_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_allgatherv_init => MPI_Neighbor_allgatherv_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgatherv_init_f08
+
+subroutine MPI_Neighbor_allgatherv_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_allgatherv_init_c => MPI_Neighbor_allgatherv_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgatherv_init_c_f08
+
+subroutine PMPI_Neighbor_allgatherv_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_allgatherv_init => PMPI_Neighbor_allgatherv_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgatherv_init_f08
+
+subroutine PMPI_Neighbor_allgatherv_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_allgatherv_init_c => PMPI_Neighbor_allgatherv_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgatherv_init_c_f08
+
+subroutine MPI_Neighbor_alltoall_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_alltoall => MPI_Neighbor_alltoall
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoall_f08
+
+subroutine MPI_Neighbor_alltoall_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_alltoall_c => MPI_Neighbor_alltoall_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoall_c_f08
+
+subroutine PMPI_Neighbor_alltoall_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_alltoall => PMPI_Neighbor_alltoall
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoall_f08
+
+subroutine PMPI_Neighbor_alltoall_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_alltoall_c => PMPI_Neighbor_alltoall_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoall_c_f08
+
+subroutine MPI_Neighbor_alltoall_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_alltoall_init => MPI_Neighbor_alltoall_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoall_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoall_init_f08
+
+subroutine MPI_Neighbor_alltoall_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_alltoall_init_c => MPI_Neighbor_alltoall_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoall_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoall_init_c_f08
+
+subroutine PMPI_Neighbor_alltoall_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_alltoall_init => PMPI_Neighbor_alltoall_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoall_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoall_init_f08
+
+subroutine PMPI_Neighbor_alltoall_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_alltoall_init_c => PMPI_Neighbor_alltoall_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoall_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoall_init_c_f08
+
+subroutine MPI_Neighbor_alltoallv_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_alltoallv => MPI_Neighbor_alltoallv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallv_f08
+
+subroutine MPI_Neighbor_alltoallv_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_alltoallv_c => MPI_Neighbor_alltoallv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallv_c_f08
+
+subroutine PMPI_Neighbor_alltoallv_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_alltoallv => PMPI_Neighbor_alltoallv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallv_f08
+
+subroutine PMPI_Neighbor_alltoallv_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_alltoallv_c => PMPI_Neighbor_alltoallv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallv_c_f08
+
+subroutine MPI_Neighbor_alltoallv_init_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_alltoallv_init => MPI_Neighbor_alltoallv_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallv_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallv_init_f08
+
+subroutine MPI_Neighbor_alltoallv_init_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_alltoallv_init_c => MPI_Neighbor_alltoallv_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallv_init_c_f08
+
+subroutine PMPI_Neighbor_alltoallv_init_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_alltoallv_init => PMPI_Neighbor_alltoallv_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallv_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallv_init_f08
+
+subroutine PMPI_Neighbor_alltoallv_init_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_alltoallv_init_c => PMPI_Neighbor_alltoallv_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallv_init_c_f08
+
+subroutine MPI_Neighbor_alltoallw_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_alltoallw => MPI_Neighbor_alltoallw
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallw_f08
+
+subroutine MPI_Neighbor_alltoallw_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_alltoallw_c => MPI_Neighbor_alltoallw_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallw_c_f08
+
+subroutine PMPI_Neighbor_alltoallw_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_alltoallw => PMPI_Neighbor_alltoallw
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallw_f08
+
+subroutine PMPI_Neighbor_alltoallw_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_alltoallw_c => PMPI_Neighbor_alltoallw_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallw_c_f08
+
+subroutine MPI_Neighbor_alltoallw_init_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_alltoallw_init => MPI_Neighbor_alltoallw_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallw_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallw_init_f08
+
+subroutine MPI_Neighbor_alltoallw_init_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Neighbor_alltoallw_init_c => MPI_Neighbor_alltoallw_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallw_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallw_init_c_f08
+
+subroutine PMPI_Neighbor_alltoallw_init_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_alltoallw_init => PMPI_Neighbor_alltoallw_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallw_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallw_init_f08
+
+subroutine PMPI_Neighbor_alltoallw_init_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Neighbor_alltoallw_init_c => PMPI_Neighbor_alltoallw_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallw_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallw_init_c_f08
+
+subroutine MPI_Op_commutative_f08( &
+  op, &
+  commute, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Op_commutative => MPI_Op_commutative
+  implicit none
+  type(MPI_Op), intent(in) :: op
+  logical, intent(out) :: commute
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Op_commutative( &
+    op%MPI_VAL, &
+    commute, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Op_commutative_f08
+
+subroutine PMPI_Op_commutative_f08( &
+  op, &
+  commute, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Op_commutative => PMPI_Op_commutative
+  implicit none
+  type(MPI_Op), intent(in) :: op
+  logical, intent(out) :: commute
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Op_commutative( &
+    op%MPI_VAL, &
+    commute, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Op_commutative_f08
+
+subroutine MPI_Op_create_f08( &
+  user_fn, &
+  commute, &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Op_create => MPI_Op_create
+  implicit none
+  procedure(MPI_User_function) :: user_fn
+  logical, intent(in) :: commute
+  type(MPI_Op), intent(out) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Op_create( &
+    user_fn, &
+    commute, &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Op_create_f08
+
+subroutine MPI_Op_create_c_f08( &
+  user_fn, &
+  commute, &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Op_create_c => MPI_Op_create_c
+  implicit none
+  procedure(MPI_User_function_c) :: user_fn
+  logical, intent(in) :: commute
+  type(MPI_Op), intent(out) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Op_create_c( &
+    user_fn, &
+    commute, &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Op_create_c_f08
+
+subroutine PMPI_Op_create_f08( &
+  user_fn, &
+  commute, &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Op_create => PMPI_Op_create
+  implicit none
+  procedure(MPI_User_function) :: user_fn
+  logical, intent(in) :: commute
+  type(MPI_Op), intent(out) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Op_create( &
+    user_fn, &
+    commute, &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Op_create_f08
+
+subroutine PMPI_Op_create_c_f08( &
+  user_fn, &
+  commute, &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Op_create_c => PMPI_Op_create_c
+  implicit none
+  procedure(MPI_User_function_c) :: user_fn
+  logical, intent(in) :: commute
+  type(MPI_Op), intent(out) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Op_create_c( &
+    user_fn, &
+    commute, &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Op_create_c_f08
+
+subroutine MPI_Op_free_f08( &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Op_free => MPI_Op_free
+  implicit none
+  type(MPI_Op), intent(inout) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Op_free( &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Op_free_f08
+
+subroutine PMPI_Op_free_f08( &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Op_free => PMPI_Op_free
+  implicit none
+  type(MPI_Op), intent(inout) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Op_free( &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Op_free_f08
+
+subroutine MPI_Open_port_f08( &
+  info, &
+  port_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Open_port => MPI_Open_port
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  character*(MPI_MAX_PORT_NAME), intent(out) :: port_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Open_port( &
+    info%MPI_VAL, &
+    port_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Open_port_f08
+
+subroutine PMPI_Open_port_f08( &
+  info, &
+  port_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Open_port => PMPI_Open_port
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  character*(MPI_MAX_PORT_NAME), intent(out) :: port_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Open_port( &
+    info%MPI_VAL, &
+    port_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Open_port_f08
+
+subroutine MPI_Pack_f08( &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Pack => MPI_Pack
+  implicit none
+  integer :: inbuf(*)
+  integer, intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer :: outbuf(*)
+  integer, intent(in) :: outsize
+  integer, intent(inout) :: position
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pack( &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pack_f08
+
+subroutine MPI_Pack_c_f08( &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Pack_c => MPI_Pack_c
+  implicit none
+  integer :: inbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer :: outbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: outsize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pack_c( &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pack_c_f08
+
+subroutine PMPI_Pack_f08( &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Pack => PMPI_Pack
+  implicit none
+  integer :: inbuf(*)
+  integer, intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer :: outbuf(*)
+  integer, intent(in) :: outsize
+  integer, intent(inout) :: position
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pack( &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pack_f08
+
+subroutine PMPI_Pack_c_f08( &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Pack_c => PMPI_Pack_c
+  implicit none
+  integer :: inbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer :: outbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: outsize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pack_c( &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pack_c_f08
+
+subroutine MPI_Pack_external_f08( &
+  datarep, &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Pack_external => MPI_Pack_external
+  implicit none
+  character*(*), intent(in) :: datarep
+  integer :: inbuf(*)
+  integer, intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer :: outbuf(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: outsize
+  integer(MPI_ADDRESS_KIND), intent(inout) :: position
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pack_external( &
+    datarep, &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pack_external_f08
+
+subroutine MPI_Pack_external_c_f08( &
+  datarep, &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Pack_external_c => MPI_Pack_external_c
+  implicit none
+  character*(*), intent(in) :: datarep
+  integer :: inbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer :: outbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: outsize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pack_external_c( &
+    datarep, &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pack_external_c_f08
+
+subroutine PMPI_Pack_external_f08( &
+  datarep, &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Pack_external => PMPI_Pack_external
+  implicit none
+  character*(*), intent(in) :: datarep
+  integer :: inbuf(*)
+  integer, intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer :: outbuf(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: outsize
+  integer(MPI_ADDRESS_KIND), intent(inout) :: position
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pack_external( &
+    datarep, &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pack_external_f08
+
+subroutine PMPI_Pack_external_c_f08( &
+  datarep, &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Pack_external_c => PMPI_Pack_external_c
+  implicit none
+  character*(*), intent(in) :: datarep
+  integer :: inbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer :: outbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: outsize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pack_external_c( &
+    datarep, &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pack_external_c_f08
+
+subroutine MPI_Pack_external_size_f08( &
+  datarep, &
+  incount, &
+  datatype, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Pack_external_size => MPI_Pack_external_size
+  implicit none
+  character*(*), intent(in) :: datarep
+  integer, intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_ADDRESS_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pack_external_size( &
+    datarep, &
+    incount, &
+    datatype%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pack_external_size_f08
+
+subroutine MPI_Pack_external_size_c_f08( &
+  datarep, &
+  incount, &
+  datatype, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Pack_external_size_c => MPI_Pack_external_size_c
+  implicit none
+  character*(*), intent(in) :: datarep
+  integer(MPI_COUNT_KIND), intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pack_external_size_c( &
+    datarep, &
+    incount, &
+    datatype%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pack_external_size_c_f08
+
+subroutine PMPI_Pack_external_size_f08( &
+  datarep, &
+  incount, &
+  datatype, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Pack_external_size => PMPI_Pack_external_size
+  implicit none
+  character*(*), intent(in) :: datarep
+  integer, intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_ADDRESS_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pack_external_size( &
+    datarep, &
+    incount, &
+    datatype%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pack_external_size_f08
+
+subroutine PMPI_Pack_external_size_c_f08( &
+  datarep, &
+  incount, &
+  datatype, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Pack_external_size_c => PMPI_Pack_external_size_c
+  implicit none
+  character*(*), intent(in) :: datarep
+  integer(MPI_COUNT_KIND), intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pack_external_size_c( &
+    datarep, &
+    incount, &
+    datatype%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pack_external_size_c_f08
+
+subroutine MPI_Pack_size_f08( &
+  incount, &
+  datatype, &
+  comm, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Pack_size => MPI_Pack_size
+  implicit none
+  integer, intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pack_size( &
+    incount, &
+    datatype%MPI_VAL, &
+    comm%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pack_size_f08
+
+subroutine MPI_Pack_size_c_f08( &
+  incount, &
+  datatype, &
+  comm, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Pack_size_c => MPI_Pack_size_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Comm), intent(in) :: comm
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pack_size_c( &
+    incount, &
+    datatype%MPI_VAL, &
+    comm%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pack_size_c_f08
+
+subroutine PMPI_Pack_size_f08( &
+  incount, &
+  datatype, &
+  comm, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Pack_size => PMPI_Pack_size
+  implicit none
+  integer, intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pack_size( &
+    incount, &
+    datatype%MPI_VAL, &
+    comm%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pack_size_f08
+
+subroutine PMPI_Pack_size_c_f08( &
+  incount, &
+  datatype, &
+  comm, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Pack_size_c => PMPI_Pack_size_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Comm), intent(in) :: comm
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pack_size_c( &
+    incount, &
+    datatype%MPI_VAL, &
+    comm%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pack_size_c_f08
+
+subroutine MPI_Parrived_f08( &
+  request, &
+  partition, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Parrived => MPI_Parrived
+  implicit none
+  type(MPI_Request), intent(in) :: request
+  integer, intent(in) :: partition
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Parrived( &
+    request%MPI_VAL, &
+    partition, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Parrived_f08
+
+subroutine PMPI_Parrived_f08( &
+  request, &
+  partition, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Parrived => PMPI_Parrived
+  implicit none
+  type(MPI_Request), intent(in) :: request
+  integer, intent(in) :: partition
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Parrived( &
+    request%MPI_VAL, &
+    partition, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Parrived_f08
+
+subroutine MPI_Pcontrol_f08( &
+  level &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Pcontrol => MPI_Pcontrol
+  implicit none
+  integer, intent(in) :: level
+  call MPIF_Pcontrol( &
+    level &
+  )
+end subroutine MPI_Pcontrol_f08
+
+subroutine PMPI_Pcontrol_f08( &
+  level &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Pcontrol => PMPI_Pcontrol
+  implicit none
+  integer, intent(in) :: level
+  call PMPIF_Pcontrol( &
+    level &
+  )
+end subroutine PMPI_Pcontrol_f08
+
+subroutine MPI_Pready_f08( &
+  partition, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Pready => MPI_Pready
+  implicit none
+  integer, intent(in) :: partition
+  type(MPI_Request), intent(in) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pready( &
+    partition, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pready_f08
+
+subroutine PMPI_Pready_f08( &
+  partition, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Pready => PMPI_Pready
+  implicit none
+  integer, intent(in) :: partition
+  type(MPI_Request), intent(in) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pready( &
+    partition, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pready_f08
+
+subroutine MPI_Pready_list_f08( &
+  length, &
+  array_of_partitions, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Pready_list => MPI_Pready_list
+  implicit none
+  integer, intent(in) :: length
+  integer, intent(in) :: array_of_partitions(length)
+  type(MPI_Request), intent(in) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pready_list( &
+    length, &
+    array_of_partitions, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pready_list_f08
+
+subroutine PMPI_Pready_list_f08( &
+  length, &
+  array_of_partitions, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Pready_list => PMPI_Pready_list
+  implicit none
+  integer, intent(in) :: length
+  integer, intent(in) :: array_of_partitions(length)
+  type(MPI_Request), intent(in) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pready_list( &
+    length, &
+    array_of_partitions, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pready_list_f08
+
+subroutine MPI_Pready_range_f08( &
+  partition_low, &
+  partition_high, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Pready_range => MPI_Pready_range
+  implicit none
+  integer, intent(in) :: partition_low
+  integer, intent(in) :: partition_high
+  type(MPI_Request), intent(in) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pready_range( &
+    partition_low, &
+    partition_high, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pready_range_f08
+
+subroutine PMPI_Pready_range_f08( &
+  partition_low, &
+  partition_high, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Pready_range => PMPI_Pready_range
+  implicit none
+  integer, intent(in) :: partition_low
+  integer, intent(in) :: partition_high
+  type(MPI_Request), intent(in) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pready_range( &
+    partition_low, &
+    partition_high, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pready_range_f08
+
+subroutine MPI_Precv_init_f08( &
+  buf, &
+  partitions, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Precv_init => MPI_Precv_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: partitions
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Precv_init( &
+    buf, &
+    partitions, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Precv_init_f08
+
+subroutine PMPI_Precv_init_f08( &
+  buf, &
+  partitions, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Precv_init => PMPI_Precv_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: partitions
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Precv_init( &
+    buf, &
+    partitions, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Precv_init_f08
+
+subroutine MPI_Probe_f08( &
+  source, &
+  tag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Probe => MPI_Probe
+  implicit none
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Probe( &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Probe_f08
+
+subroutine PMPI_Probe_f08( &
+  source, &
+  tag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Probe => PMPI_Probe
+  implicit none
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Probe( &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Probe_f08
+
+subroutine MPI_Psend_init_f08( &
+  buf, &
+  partitions, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Psend_init => MPI_Psend_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: partitions
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Psend_init( &
+    buf, &
+    partitions, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Psend_init_f08
+
+subroutine PMPI_Psend_init_f08( &
+  buf, &
+  partitions, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Psend_init => PMPI_Psend_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: partitions
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Psend_init( &
+    buf, &
+    partitions, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Psend_init_f08
+
+subroutine MPI_Publish_name_f08( &
+  service_name, &
+  info, &
+  port_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Publish_name => MPI_Publish_name
+  implicit none
+  character*(*), intent(in) :: service_name
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: port_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Publish_name( &
+    service_name, &
+    info%MPI_VAL, &
+    port_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Publish_name_f08
+
+subroutine PMPI_Publish_name_f08( &
+  service_name, &
+  info, &
+  port_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Publish_name => PMPI_Publish_name
+  implicit none
+  character*(*), intent(in) :: service_name
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: port_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Publish_name( &
+    service_name, &
+    info%MPI_VAL, &
+    port_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Publish_name_f08
+
+subroutine MPI_Put_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Put => MPI_Put
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Put( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Put_f08
+
+subroutine MPI_Put_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Put_c => MPI_Put_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Put_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Put_c_f08
+
+subroutine PMPI_Put_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Put => PMPI_Put
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Put( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Put_f08
+
+subroutine PMPI_Put_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Put_c => PMPI_Put_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Put_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Put_c_f08
+
+subroutine MPI_Query_thread_f08( &
+  provided, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Query_thread => MPI_Query_thread
+  implicit none
+  integer, intent(out) :: provided
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Query_thread( &
+    provided, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Query_thread_f08
+
+subroutine PMPI_Query_thread_f08( &
+  provided, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Query_thread => PMPI_Query_thread
+  implicit none
+  integer, intent(out) :: provided
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Query_thread( &
+    provided, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Query_thread_f08
+
+subroutine MPI_Raccumulate_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Raccumulate => MPI_Raccumulate
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Raccumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Raccumulate_f08
+
+subroutine MPI_Raccumulate_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Raccumulate_c => MPI_Raccumulate_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Raccumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Raccumulate_c_f08
+
+subroutine PMPI_Raccumulate_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Raccumulate => PMPI_Raccumulate
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Raccumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Raccumulate_f08
+
+subroutine PMPI_Raccumulate_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Raccumulate_c => PMPI_Raccumulate_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Raccumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Raccumulate_c_f08
+
+subroutine MPI_Recv_f08( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Recv => MPI_Recv
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Recv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Recv_f08
+
+subroutine MPI_Recv_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Recv_c => MPI_Recv_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Recv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Recv_c_f08
+
+subroutine PMPI_Recv_f08( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Recv => PMPI_Recv
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Recv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Recv_f08
+
+subroutine PMPI_Recv_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Recv_c => PMPI_Recv_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Recv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Recv_c_f08
+
+subroutine MPI_Recv_init_f08( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Recv_init => MPI_Recv_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Recv_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Recv_init_f08
+
+subroutine MPI_Recv_init_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Recv_init_c => MPI_Recv_init_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Recv_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Recv_init_c_f08
+
+subroutine PMPI_Recv_init_f08( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Recv_init => PMPI_Recv_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Recv_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Recv_init_f08
+
+subroutine PMPI_Recv_init_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Recv_init_c => PMPI_Recv_init_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Recv_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Recv_init_c_f08
+
+subroutine MPI_Reduce_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce => MPI_Reduce
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_f08
+
+subroutine MPI_Reduce_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_c => MPI_Reduce_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_c_f08
+
+subroutine PMPI_Reduce_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce => PMPI_Reduce
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_f08
+
+subroutine PMPI_Reduce_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_c => PMPI_Reduce_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_c_f08
+
+subroutine MPI_Reduce_init_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_init => MPI_Reduce_init
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_init_f08
+
+subroutine MPI_Reduce_init_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_init_c => MPI_Reduce_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_init_c_f08
+
+subroutine PMPI_Reduce_init_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_init => PMPI_Reduce_init
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_init_f08
+
+subroutine PMPI_Reduce_init_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_init_c => PMPI_Reduce_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_init_c_f08
+
+subroutine MPI_Reduce_local_f08( &
+  inbuf, &
+  inoutbuf, &
+  count, &
+  datatype, &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_local => MPI_Reduce_local
+  implicit none
+  integer :: inbuf(*)
+  integer :: inoutbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_local( &
+    inbuf, &
+    inoutbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_local_f08
+
+subroutine MPI_Reduce_local_c_f08( &
+  inbuf, &
+  inoutbuf, &
+  count, &
+  datatype, &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_local_c => MPI_Reduce_local_c
+  implicit none
+  integer :: inbuf(*)
+  integer :: inoutbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_local_c( &
+    inbuf, &
+    inoutbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_local_c_f08
+
+subroutine PMPI_Reduce_local_f08( &
+  inbuf, &
+  inoutbuf, &
+  count, &
+  datatype, &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_local => PMPI_Reduce_local
+  implicit none
+  integer :: inbuf(*)
+  integer :: inoutbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_local( &
+    inbuf, &
+    inoutbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_local_f08
+
+subroutine PMPI_Reduce_local_c_f08( &
+  inbuf, &
+  inoutbuf, &
+  count, &
+  datatype, &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_local_c => PMPI_Reduce_local_c
+  implicit none
+  integer :: inbuf(*)
+  integer :: inoutbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_local_c( &
+    inbuf, &
+    inoutbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_local_c_f08
+
+subroutine MPI_Reduce_scatter_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_scatter => MPI_Reduce_scatter
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_f08
+
+subroutine MPI_Reduce_scatter_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_scatter_c => MPI_Reduce_scatter_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_c_f08
+
+subroutine PMPI_Reduce_scatter_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_scatter => PMPI_Reduce_scatter
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_f08
+
+subroutine PMPI_Reduce_scatter_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_scatter_c => PMPI_Reduce_scatter_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_c_f08
+
+subroutine MPI_Reduce_scatter_block_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_scatter_block => MPI_Reduce_scatter_block
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_block( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_block_f08
+
+subroutine MPI_Reduce_scatter_block_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_scatter_block_c => MPI_Reduce_scatter_block_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_block_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_block_c_f08
+
+subroutine PMPI_Reduce_scatter_block_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_scatter_block => PMPI_Reduce_scatter_block
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_block( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_block_f08
+
+subroutine PMPI_Reduce_scatter_block_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_scatter_block_c => PMPI_Reduce_scatter_block_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_block_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_block_c_f08
+
+subroutine MPI_Reduce_scatter_block_init_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_scatter_block_init => MPI_Reduce_scatter_block_init
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_block_init( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_block_init_f08
+
+subroutine MPI_Reduce_scatter_block_init_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_scatter_block_init_c => MPI_Reduce_scatter_block_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_block_init_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_block_init_c_f08
+
+subroutine PMPI_Reduce_scatter_block_init_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_scatter_block_init => PMPI_Reduce_scatter_block_init
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_block_init( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_block_init_f08
+
+subroutine PMPI_Reduce_scatter_block_init_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_scatter_block_init_c => PMPI_Reduce_scatter_block_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_block_init_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_block_init_c_f08
+
+subroutine MPI_Reduce_scatter_init_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_scatter_init => MPI_Reduce_scatter_init
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_init( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_init_f08
+
+subroutine MPI_Reduce_scatter_init_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Reduce_scatter_init_c => MPI_Reduce_scatter_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_init_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_init_c_f08
+
+subroutine PMPI_Reduce_scatter_init_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_scatter_init => PMPI_Reduce_scatter_init
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_init( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_init_f08
+
+subroutine PMPI_Reduce_scatter_init_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Reduce_scatter_init_c => PMPI_Reduce_scatter_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_init_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_init_c_f08
+
+subroutine MPI_Register_datarep_f08( &
+  datarep, &
+  read_conversion_fn, &
+  write_conversion_fn, &
+  dtype_file_extent_fn, &
+  extra_state, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Register_datarep => MPI_Register_datarep
+  implicit none
+  character*(*), intent(in) :: datarep
+  procedure(MPI_Datarep_conversion_function) :: read_conversion_fn
+  procedure(MPI_Datarep_conversion_function) :: write_conversion_fn
+  procedure(MPI_Datarep_extent_function) :: dtype_file_extent_fn
+  integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Register_datarep( &
+    datarep, &
+    read_conversion_fn, &
+    write_conversion_fn, &
+    dtype_file_extent_fn, &
+    extra_state, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Register_datarep_f08
+
+subroutine MPI_Register_datarep_c_f08( &
+  datarep, &
+  read_conversion_fn, &
+  write_conversion_fn, &
+  dtype_file_extent_fn, &
+  extra_state, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Register_datarep_c => MPI_Register_datarep_c
+  implicit none
+  character*(*), intent(in) :: datarep
+  procedure(MPI_Datarep_conversion_function_c) :: read_conversion_fn
+  procedure(MPI_Datarep_conversion_function_c) :: write_conversion_fn
+  procedure(MPI_Datarep_extent_function) :: dtype_file_extent_fn
+  integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Register_datarep_c( &
+    datarep, &
+    read_conversion_fn, &
+    write_conversion_fn, &
+    dtype_file_extent_fn, &
+    extra_state, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Register_datarep_c_f08
+
+subroutine PMPI_Register_datarep_f08( &
+  datarep, &
+  read_conversion_fn, &
+  write_conversion_fn, &
+  dtype_file_extent_fn, &
+  extra_state, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Register_datarep => PMPI_Register_datarep
+  implicit none
+  character*(*), intent(in) :: datarep
+  procedure(MPI_Datarep_conversion_function) :: read_conversion_fn
+  procedure(MPI_Datarep_conversion_function) :: write_conversion_fn
+  procedure(MPI_Datarep_extent_function) :: dtype_file_extent_fn
+  integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Register_datarep( &
+    datarep, &
+    read_conversion_fn, &
+    write_conversion_fn, &
+    dtype_file_extent_fn, &
+    extra_state, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Register_datarep_f08
+
+subroutine PMPI_Register_datarep_c_f08( &
+  datarep, &
+  read_conversion_fn, &
+  write_conversion_fn, &
+  dtype_file_extent_fn, &
+  extra_state, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Register_datarep_c => PMPI_Register_datarep_c
+  implicit none
+  character*(*), intent(in) :: datarep
+  procedure(MPI_Datarep_conversion_function_c) :: read_conversion_fn
+  procedure(MPI_Datarep_conversion_function_c) :: write_conversion_fn
+  procedure(MPI_Datarep_extent_function) :: dtype_file_extent_fn
+  integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Register_datarep_c( &
+    datarep, &
+    read_conversion_fn, &
+    write_conversion_fn, &
+    dtype_file_extent_fn, &
+    extra_state, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Register_datarep_c_f08
+
+subroutine MPI_Remove_error_class_f08( &
+  errorclass, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Remove_error_class => MPI_Remove_error_class
+  implicit none
+  integer, intent(in) :: errorclass
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Remove_error_class( &
+    errorclass, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Remove_error_class_f08
+
+subroutine PMPI_Remove_error_class_f08( &
+  errorclass, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Remove_error_class => PMPI_Remove_error_class
+  implicit none
+  integer, intent(in) :: errorclass
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Remove_error_class( &
+    errorclass, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Remove_error_class_f08
+
+subroutine MPI_Remove_error_code_f08( &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Remove_error_code => MPI_Remove_error_code
+  implicit none
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Remove_error_code( &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Remove_error_code_f08
+
+subroutine PMPI_Remove_error_code_f08( &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Remove_error_code => PMPI_Remove_error_code
+  implicit none
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Remove_error_code( &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Remove_error_code_f08
+
+subroutine MPI_Remove_error_string_f08( &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Remove_error_string => MPI_Remove_error_string
+  implicit none
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Remove_error_string( &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Remove_error_string_f08
+
+subroutine PMPI_Remove_error_string_f08( &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Remove_error_string => PMPI_Remove_error_string
+  implicit none
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Remove_error_string( &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Remove_error_string_f08
+
+subroutine MPI_Request_free_f08( &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Request_free => MPI_Request_free
+  implicit none
+  type(MPI_Request), intent(inout) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Request_free( &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Request_free_f08
+
+subroutine PMPI_Request_free_f08( &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Request_free => PMPI_Request_free
+  implicit none
+  type(MPI_Request), intent(inout) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Request_free( &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Request_free_f08
+
+subroutine MPI_Request_get_status_f08( &
+  request, &
+  flag, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Request_get_status => MPI_Request_get_status
+  implicit none
+  type(MPI_Request), intent(in) :: request
+  logical, intent(out) :: flag
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Request_get_status( &
+    request%MPI_VAL, &
+    flag, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Request_get_status_f08
+
+subroutine PMPI_Request_get_status_f08( &
+  request, &
+  flag, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Request_get_status => PMPI_Request_get_status
+  implicit none
+  type(MPI_Request), intent(in) :: request
+  logical, intent(out) :: flag
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Request_get_status( &
+    request%MPI_VAL, &
+    flag, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Request_get_status_f08
+
+subroutine MPI_Request_get_status_all_f08( &
+  count, &
+  array_of_requests, &
+  flag, &
+  array_of_statuses, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Request_get_status_all => MPI_Request_get_status_all
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(in) :: array_of_requests(count)
+  logical, intent(out) :: flag
+  type(MPI_Status) :: array_of_statuses(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Request_get_status_all( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    flag, &
+    array_of_statuses, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Request_get_status_all_f08
+
+subroutine PMPI_Request_get_status_all_f08( &
+  count, &
+  array_of_requests, &
+  flag, &
+  array_of_statuses, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Request_get_status_all => PMPI_Request_get_status_all
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(in) :: array_of_requests(count)
+  logical, intent(out) :: flag
+  type(MPI_Status) :: array_of_statuses(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Request_get_status_all( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    flag, &
+    array_of_statuses, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Request_get_status_all_f08
+
+subroutine MPI_Request_get_status_any_f08( &
+  count, &
+  array_of_requests, &
+  index, &
+  flag, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Request_get_status_any => MPI_Request_get_status_any
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(in) :: array_of_requests(count)
+  integer, intent(out) :: index
+  logical, intent(out) :: flag
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Request_get_status_any( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    index, &
+    flag, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Request_get_status_any_f08
+
+subroutine PMPI_Request_get_status_any_f08( &
+  count, &
+  array_of_requests, &
+  index, &
+  flag, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Request_get_status_any => PMPI_Request_get_status_any
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(in) :: array_of_requests(count)
+  integer, intent(out) :: index
+  logical, intent(out) :: flag
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Request_get_status_any( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    index, &
+    flag, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Request_get_status_any_f08
+
+subroutine MPI_Request_get_status_some_f08( &
+  incount, &
+  array_of_requests, &
+  outcount, &
+  array_of_indices, &
+  array_of_statuses, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Request_get_status_some => MPI_Request_get_status_some
+  implicit none
+  integer, intent(in) :: incount
+  type(MPI_Request), intent(in) :: array_of_requests(incount)
+  integer, intent(out) :: outcount
+  integer, intent(out) :: array_of_indices(*)
+  type(MPI_Status) :: array_of_statuses(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Request_get_status_some( &
+    incount, &
+    array_of_requests%MPI_VAL, &
+    outcount, &
+    array_of_indices, &
+    array_of_statuses, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Request_get_status_some_f08
+
+subroutine PMPI_Request_get_status_some_f08( &
+  incount, &
+  array_of_requests, &
+  outcount, &
+  array_of_indices, &
+  array_of_statuses, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Request_get_status_some => PMPI_Request_get_status_some
+  implicit none
+  integer, intent(in) :: incount
+  type(MPI_Request), intent(in) :: array_of_requests(incount)
+  integer, intent(out) :: outcount
+  integer, intent(out) :: array_of_indices(*)
+  type(MPI_Status) :: array_of_statuses(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Request_get_status_some( &
+    incount, &
+    array_of_requests%MPI_VAL, &
+    outcount, &
+    array_of_indices, &
+    array_of_statuses, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Request_get_status_some_f08
+
+subroutine MPI_Rget_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Rget => MPI_Rget
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rget( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rget_f08
+
+subroutine MPI_Rget_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Rget_c => MPI_Rget_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rget_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rget_c_f08
+
+subroutine PMPI_Rget_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Rget => PMPI_Rget
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rget( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rget_f08
+
+subroutine PMPI_Rget_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Rget_c => PMPI_Rget_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rget_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rget_c_f08
+
+subroutine MPI_Rget_accumulate_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Rget_accumulate => MPI_Rget_accumulate
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer :: result_addr(*)
+  integer, intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rget_accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rget_accumulate_f08
+
+subroutine MPI_Rget_accumulate_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Rget_accumulate_c => MPI_Rget_accumulate_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer :: result_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rget_accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rget_accumulate_c_f08
+
+subroutine PMPI_Rget_accumulate_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Rget_accumulate => PMPI_Rget_accumulate
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer :: result_addr(*)
+  integer, intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rget_accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rget_accumulate_f08
+
+subroutine PMPI_Rget_accumulate_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Rget_accumulate_c => PMPI_Rget_accumulate_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer :: result_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rget_accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rget_accumulate_c_f08
+
+subroutine MPI_Rput_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Rput => MPI_Rput
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rput( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rput_f08
+
+subroutine MPI_Rput_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Rput_c => MPI_Rput_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rput_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rput_c_f08
+
+subroutine PMPI_Rput_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Rput => PMPI_Rput
+  implicit none
+  integer :: origin_addr(*)
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rput( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rput_f08
+
+subroutine PMPI_Rput_c_f08( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Rput_c => PMPI_Rput_c
+  implicit none
+  integer :: origin_addr(*)
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rput_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rput_c_f08
+
+subroutine MPI_Rsend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Rsend => MPI_Rsend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rsend_f08
+
+subroutine MPI_Rsend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Rsend_c => MPI_Rsend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rsend_c_f08
+
+subroutine PMPI_Rsend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Rsend => PMPI_Rsend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rsend_f08
+
+subroutine PMPI_Rsend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Rsend_c => PMPI_Rsend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rsend_c_f08
+
+subroutine MPI_Rsend_init_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Rsend_init => MPI_Rsend_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rsend_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rsend_init_f08
+
+subroutine MPI_Rsend_init_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Rsend_init_c => MPI_Rsend_init_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rsend_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rsend_init_c_f08
+
+subroutine PMPI_Rsend_init_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Rsend_init => PMPI_Rsend_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rsend_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rsend_init_f08
+
+subroutine PMPI_Rsend_init_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Rsend_init_c => PMPI_Rsend_init_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rsend_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rsend_init_c_f08
+
+subroutine MPI_Scan_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Scan => MPI_Scan
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scan_f08
+
+subroutine MPI_Scan_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Scan_c => MPI_Scan_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scan_c_f08
+
+subroutine PMPI_Scan_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Scan => PMPI_Scan
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scan_f08
+
+subroutine PMPI_Scan_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Scan_c => PMPI_Scan_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scan_c_f08
+
+subroutine MPI_Scan_init_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Scan_init => MPI_Scan_init
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scan_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scan_init_f08
+
+subroutine MPI_Scan_init_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Scan_init_c => MPI_Scan_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scan_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scan_init_c_f08
+
+subroutine PMPI_Scan_init_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Scan_init => PMPI_Scan_init
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scan_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scan_init_f08
+
+subroutine PMPI_Scan_init_c_f08( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Scan_init_c => PMPI_Scan_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scan_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scan_init_c_f08
+
+subroutine MPI_Scatter_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Scatter => MPI_Scatter
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatter( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatter_f08
+
+subroutine MPI_Scatter_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Scatter_c => MPI_Scatter_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatter_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatter_c_f08
+
+subroutine PMPI_Scatter_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Scatter => PMPI_Scatter
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatter( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatter_f08
+
+subroutine PMPI_Scatter_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Scatter_c => PMPI_Scatter_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatter_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatter_c_f08
+
+subroutine MPI_Scatter_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Scatter_init => MPI_Scatter_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatter_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatter_init_f08
+
+subroutine MPI_Scatter_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Scatter_init_c => MPI_Scatter_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatter_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatter_init_c_f08
+
+subroutine PMPI_Scatter_init_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Scatter_init => PMPI_Scatter_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatter_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatter_init_f08
+
+subroutine PMPI_Scatter_init_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Scatter_init_c => PMPI_Scatter_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatter_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatter_init_c_f08
+
+subroutine MPI_Scatterv_f08( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Scatterv => MPI_Scatterv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatterv( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatterv_f08
+
+subroutine MPI_Scatterv_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Scatterv_c => MPI_Scatterv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatterv_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatterv_c_f08
+
+subroutine PMPI_Scatterv_f08( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Scatterv => PMPI_Scatterv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatterv( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatterv_f08
+
+subroutine PMPI_Scatterv_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Scatterv_c => PMPI_Scatterv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatterv_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatterv_c_f08
+
+subroutine MPI_Scatterv_init_f08( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Scatterv_init => MPI_Scatterv_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatterv_init( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatterv_init_f08
+
+subroutine MPI_Scatterv_init_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Scatterv_init_c => MPI_Scatterv_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatterv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatterv_init_c_f08
+
+subroutine PMPI_Scatterv_init_f08( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Scatterv_init => PMPI_Scatterv_init
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatterv_init( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatterv_init_f08
+
+subroutine PMPI_Scatterv_init_c_f08( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Scatterv_init_c => PMPI_Scatterv_init_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatterv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatterv_init_c_f08
+
+subroutine MPI_Send_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Send => MPI_Send
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Send( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Send_f08
+
+subroutine MPI_Send_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Send_c => MPI_Send_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Send_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Send_c_f08
+
+subroutine PMPI_Send_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Send => PMPI_Send
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Send( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Send_f08
+
+subroutine PMPI_Send_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Send_c => PMPI_Send_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Send_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Send_c_f08
+
+subroutine MPI_Send_init_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Send_init => MPI_Send_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Send_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Send_init_f08
+
+subroutine MPI_Send_init_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Send_init_c => MPI_Send_init_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Send_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Send_init_c_f08
+
+subroutine PMPI_Send_init_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Send_init => PMPI_Send_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Send_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Send_init_f08
+
+subroutine PMPI_Send_init_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Send_init_c => PMPI_Send_init_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Send_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Send_init_c_f08
+
+subroutine MPI_Sendrecv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Sendrecv => MPI_Sendrecv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Sendrecv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Sendrecv_f08
+
+subroutine MPI_Sendrecv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Sendrecv_c => MPI_Sendrecv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Sendrecv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Sendrecv_c_f08
+
+subroutine PMPI_Sendrecv_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Sendrecv => PMPI_Sendrecv
+  implicit none
+  integer :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Sendrecv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Sendrecv_f08
+
+subroutine PMPI_Sendrecv_c_f08( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Sendrecv_c => PMPI_Sendrecv_c
+  implicit none
+  integer :: sendbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer :: recvbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Sendrecv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Sendrecv_c_f08
+
+subroutine MPI_Sendrecv_replace_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Sendrecv_replace => MPI_Sendrecv_replace
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Sendrecv_replace( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Sendrecv_replace_f08
+
+subroutine MPI_Sendrecv_replace_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Sendrecv_replace_c => MPI_Sendrecv_replace_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Sendrecv_replace_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Sendrecv_replace_c_f08
+
+subroutine PMPI_Sendrecv_replace_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Sendrecv_replace => PMPI_Sendrecv_replace
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Sendrecv_replace( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Sendrecv_replace_f08
+
+subroutine PMPI_Sendrecv_replace_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Sendrecv_replace_c => PMPI_Sendrecv_replace_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Sendrecv_replace_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Sendrecv_replace_c_f08
+
+subroutine MPI_Session_attach_buffer_f08( &
+  session, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_attach_buffer => MPI_Session_attach_buffer
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  integer :: buffer(*)
+  integer, intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_attach_buffer( &
+    session%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_attach_buffer_f08
+
+subroutine MPI_Session_attach_buffer_c_f08( &
+  session, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_attach_buffer_c => MPI_Session_attach_buffer_c
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  integer :: buffer(*)
+  integer(MPI_COUNT_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_attach_buffer_c( &
+    session%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_attach_buffer_c_f08
+
+subroutine PMPI_Session_attach_buffer_f08( &
+  session, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_attach_buffer => PMPI_Session_attach_buffer
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  integer :: buffer(*)
+  integer, intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_attach_buffer( &
+    session%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_attach_buffer_f08
+
+subroutine PMPI_Session_attach_buffer_c_f08( &
+  session, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_attach_buffer_c => PMPI_Session_attach_buffer_c
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  integer :: buffer(*)
+  integer(MPI_COUNT_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_attach_buffer_c( &
+    session%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_attach_buffer_c_f08
+
+subroutine MPI_Session_call_errhandler_f08( &
+  session, &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_call_errhandler => MPI_Session_call_errhandler
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_call_errhandler( &
+    session%MPI_VAL, &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_call_errhandler_f08
+
+subroutine PMPI_Session_call_errhandler_f08( &
+  session, &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_call_errhandler => PMPI_Session_call_errhandler
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_call_errhandler( &
+    session%MPI_VAL, &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_call_errhandler_f08
+
+subroutine MPI_Session_create_errhandler_f08( &
+  session_errhandler_fn, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_create_errhandler => MPI_Session_create_errhandler
+  implicit none
+  procedure(MPI_Session_errhandler_function) :: session_errhandler_fn
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_create_errhandler( &
+    session_errhandler_fn, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_create_errhandler_f08
+
+subroutine PMPI_Session_create_errhandler_f08( &
+  session_errhandler_fn, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_create_errhandler => PMPI_Session_create_errhandler
+  implicit none
+  procedure(MPI_Session_errhandler_function) :: session_errhandler_fn
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_create_errhandler( &
+    session_errhandler_fn, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_create_errhandler_f08
+
+subroutine MPI_Session_detach_buffer_f08( &
+  session, &
+  buffer_addr, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_detach_buffer => MPI_Session_detach_buffer
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(C_PTR), intent(out) :: buffer_addr
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
+  integer :: tmp_ierror
+  call MPIF_Session_detach_buffer( &
+    session%MPI_VAL, &
+    tmp_buffer_addr, &
+    size, &
+    tmp_ierror &
+  )
+  buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_detach_buffer_f08
+
+subroutine MPI_Session_detach_buffer_c_f08( &
+  session, &
+  buffer_addr, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_detach_buffer_c => MPI_Session_detach_buffer_c
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(C_PTR), intent(out) :: buffer_addr
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
+  integer :: tmp_ierror
+  call MPIF_Session_detach_buffer_c( &
+    session%MPI_VAL, &
+    tmp_buffer_addr, &
+    size, &
+    tmp_ierror &
+  )
+  buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_detach_buffer_c_f08
+
+subroutine PMPI_Session_detach_buffer_f08( &
+  session, &
+  buffer_addr, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_detach_buffer => PMPI_Session_detach_buffer
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(C_PTR), intent(out) :: buffer_addr
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
+  integer :: tmp_ierror
+  call PMPIF_Session_detach_buffer( &
+    session%MPI_VAL, &
+    tmp_buffer_addr, &
+    size, &
+    tmp_ierror &
+  )
+  buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_detach_buffer_f08
+
+subroutine PMPI_Session_detach_buffer_c_f08( &
+  session, &
+  buffer_addr, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_detach_buffer_c => PMPI_Session_detach_buffer_c
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(C_PTR), intent(out) :: buffer_addr
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_buffer_addr
+  integer :: tmp_ierror
+  call PMPIF_Session_detach_buffer_c( &
+    session%MPI_VAL, &
+    tmp_buffer_addr, &
+    size, &
+    tmp_ierror &
+  )
+  buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_detach_buffer_c_f08
+
+subroutine MPI_Session_finalize_f08( &
+  session, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_finalize => MPI_Session_finalize
+  implicit none
+  type(MPI_Session), intent(inout) :: session
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_finalize( &
+    session%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_finalize_f08
+
+subroutine PMPI_Session_finalize_f08( &
+  session, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_finalize => PMPI_Session_finalize
+  implicit none
+  type(MPI_Session), intent(inout) :: session
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_finalize( &
+    session%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_finalize_f08
+
+subroutine MPI_Session_flush_buffer_f08( &
+  session, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_flush_buffer => MPI_Session_flush_buffer
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_flush_buffer( &
+    session%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_flush_buffer_f08
+
+subroutine PMPI_Session_flush_buffer_f08( &
+  session, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_flush_buffer => PMPI_Session_flush_buffer
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_flush_buffer( &
+    session%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_flush_buffer_f08
+
+subroutine MPI_Session_get_errhandler_f08( &
+  session, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_get_errhandler => MPI_Session_get_errhandler
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_get_errhandler( &
+    session%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_get_errhandler_f08
+
+subroutine PMPI_Session_get_errhandler_f08( &
+  session, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_get_errhandler => PMPI_Session_get_errhandler
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_get_errhandler( &
+    session%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_get_errhandler_f08
+
+subroutine MPI_Session_get_info_f08( &
+  session, &
+  info_used, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_get_info => MPI_Session_get_info
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(MPI_Info), intent(out) :: info_used
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_get_info( &
+    session%MPI_VAL, &
+    info_used%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_get_info_f08
+
+subroutine PMPI_Session_get_info_f08( &
+  session, &
+  info_used, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_get_info => PMPI_Session_get_info
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(MPI_Info), intent(out) :: info_used
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_get_info( &
+    session%MPI_VAL, &
+    info_used%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_get_info_f08
+
+subroutine MPI_Session_get_nth_pset_f08( &
+  session, &
+  info, &
+  n, &
+  pset_len, &
+  pset_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_get_nth_pset => MPI_Session_get_nth_pset
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(MPI_Info), intent(in) :: info
+  integer, intent(in) :: n
+  integer, intent(inout) :: pset_len
+  character*(*), intent(out) :: pset_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_get_nth_pset( &
+    session%MPI_VAL, &
+    info%MPI_VAL, &
+    n, &
+    pset_len, &
+    pset_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_get_nth_pset_f08
+
+subroutine PMPI_Session_get_nth_pset_f08( &
+  session, &
+  info, &
+  n, &
+  pset_len, &
+  pset_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_get_nth_pset => PMPI_Session_get_nth_pset
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(MPI_Info), intent(in) :: info
+  integer, intent(in) :: n
+  integer, intent(inout) :: pset_len
+  character*(*), intent(out) :: pset_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_get_nth_pset( &
+    session%MPI_VAL, &
+    info%MPI_VAL, &
+    n, &
+    pset_len, &
+    pset_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_get_nth_pset_f08
+
+subroutine MPI_Session_get_num_psets_f08( &
+  session, &
+  info, &
+  npset_names, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_get_num_psets => MPI_Session_get_num_psets
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out) :: npset_names
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_get_num_psets( &
+    session%MPI_VAL, &
+    info%MPI_VAL, &
+    npset_names, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_get_num_psets_f08
+
+subroutine PMPI_Session_get_num_psets_f08( &
+  session, &
+  info, &
+  npset_names, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_get_num_psets => PMPI_Session_get_num_psets
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out) :: npset_names
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_get_num_psets( &
+    session%MPI_VAL, &
+    info%MPI_VAL, &
+    npset_names, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_get_num_psets_f08
+
+subroutine MPI_Session_get_pset_info_f08( &
+  session, &
+  pset_name, &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_get_pset_info => MPI_Session_get_pset_info
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  character*(*), intent(in) :: pset_name
+  type(MPI_Info), intent(out) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_get_pset_info( &
+    session%MPI_VAL, &
+    pset_name, &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_get_pset_info_f08
+
+subroutine PMPI_Session_get_pset_info_f08( &
+  session, &
+  pset_name, &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_get_pset_info => PMPI_Session_get_pset_info
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  character*(*), intent(in) :: pset_name
+  type(MPI_Info), intent(out) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_get_pset_info( &
+    session%MPI_VAL, &
+    pset_name, &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_get_pset_info_f08
+
+subroutine MPI_Session_iflush_buffer_f08( &
+  session, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_iflush_buffer => MPI_Session_iflush_buffer
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_iflush_buffer( &
+    session%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_iflush_buffer_f08
+
+subroutine PMPI_Session_iflush_buffer_f08( &
+  session, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_iflush_buffer => PMPI_Session_iflush_buffer
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_iflush_buffer( &
+    session%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_iflush_buffer_f08
+
+subroutine MPI_Session_init_f08( &
+  info, &
+  errhandler, &
+  session, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_init => MPI_Session_init
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Errhandler), intent(in) :: errhandler
+  type(MPI_Session), intent(out) :: session
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_init( &
+    info%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    session%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_init_f08
+
+subroutine PMPI_Session_init_f08( &
+  info, &
+  errhandler, &
+  session, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_init => PMPI_Session_init
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Errhandler), intent(in) :: errhandler
+  type(MPI_Session), intent(out) :: session
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_init( &
+    info%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    session%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_init_f08
+
+subroutine MPI_Session_set_errhandler_f08( &
+  session, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Session_set_errhandler => MPI_Session_set_errhandler
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(MPI_Errhandler), intent(in) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_set_errhandler( &
+    session%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_set_errhandler_f08
+
+subroutine PMPI_Session_set_errhandler_f08( &
+  session, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Session_set_errhandler => PMPI_Session_set_errhandler
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(MPI_Errhandler), intent(in) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_set_errhandler( &
+    session%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_set_errhandler_f08
+
+subroutine MPI_Ssend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ssend => MPI_Ssend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ssend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ssend_f08
+
+subroutine MPI_Ssend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ssend_c => MPI_Ssend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ssend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ssend_c_f08
+
+subroutine PMPI_Ssend_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ssend => PMPI_Ssend
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ssend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ssend_f08
+
+subroutine PMPI_Ssend_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ssend_c => PMPI_Ssend_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ssend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ssend_c_f08
+
+subroutine MPI_Ssend_init_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ssend_init => MPI_Ssend_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ssend_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ssend_init_f08
+
+subroutine MPI_Ssend_init_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Ssend_init_c => MPI_Ssend_init_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ssend_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ssend_init_c_f08
+
+subroutine PMPI_Ssend_init_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ssend_init => PMPI_Ssend_init
+  implicit none
+  integer :: buf(*)
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ssend_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ssend_init_f08
+
+subroutine PMPI_Ssend_init_c_f08( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Ssend_init_c => PMPI_Ssend_init_c
+  implicit none
+  integer :: buf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ssend_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ssend_init_c_f08
+
+subroutine MPI_Start_f08( &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Start => MPI_Start
+  implicit none
+  type(MPI_Request), intent(inout) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Start( &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Start_f08
+
+subroutine PMPI_Start_f08( &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Start => PMPI_Start
+  implicit none
+  type(MPI_Request), intent(inout) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Start( &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Start_f08
+
+subroutine MPI_Startall_f08( &
+  count, &
+  array_of_requests, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Startall => MPI_Startall
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(inout) :: array_of_requests(count)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Startall( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Startall_f08
+
+subroutine PMPI_Startall_f08( &
+  count, &
+  array_of_requests, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Startall => PMPI_Startall
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(inout) :: array_of_requests(count)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Startall( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Startall_f08
+
+subroutine MPI_Status_get_error_f08( &
+  status, &
+  err, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Status_get_error => MPI_Status_get_error
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  integer, intent(out) :: err
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Status_get_error( &
+    status, &
+    err, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Status_get_error_f08
+
+subroutine PMPI_Status_get_error_f08( &
+  status, &
+  err, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Status_get_error => PMPI_Status_get_error
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  integer, intent(out) :: err
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Status_get_error( &
+    status, &
+    err, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Status_get_error_f08
+
+subroutine MPI_Status_get_source_f08( &
+  status, &
+  source, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Status_get_source => MPI_Status_get_source
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  integer, intent(out) :: source
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Status_get_source( &
+    status, &
+    source, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Status_get_source_f08
+
+subroutine PMPI_Status_get_source_f08( &
+  status, &
+  source, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Status_get_source => PMPI_Status_get_source
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  integer, intent(out) :: source
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Status_get_source( &
+    status, &
+    source, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Status_get_source_f08
+
+subroutine MPI_Status_get_tag_f08( &
+  status, &
+  tag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Status_get_tag => MPI_Status_get_tag
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  integer, intent(out) :: tag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Status_get_tag( &
+    status, &
+    tag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Status_get_tag_f08
+
+subroutine PMPI_Status_get_tag_f08( &
+  status, &
+  tag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Status_get_tag => PMPI_Status_get_tag
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  integer, intent(out) :: tag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Status_get_tag( &
+    status, &
+    tag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Status_get_tag_f08
+
+subroutine MPI_Status_set_cancelled_f08( &
+  status, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Status_set_cancelled => MPI_Status_set_cancelled
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  logical, intent(in) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Status_set_cancelled( &
+    status, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Status_set_cancelled_f08
+
+subroutine PMPI_Status_set_cancelled_f08( &
+  status, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Status_set_cancelled => PMPI_Status_set_cancelled
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  logical, intent(in) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Status_set_cancelled( &
+    status, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Status_set_cancelled_f08
+
+subroutine MPI_Status_set_elements_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Status_set_elements => MPI_Status_set_elements
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Status_set_elements( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Status_set_elements_f08
+
+subroutine MPI_Status_set_elements_c_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Status_set_elements_c => MPI_Status_set_elements_c
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Status_set_elements_c( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Status_set_elements_c_f08
+
+subroutine PMPI_Status_set_elements_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Status_set_elements => PMPI_Status_set_elements
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Status_set_elements( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Status_set_elements_f08
+
+subroutine PMPI_Status_set_elements_c_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Status_set_elements_c => PMPI_Status_set_elements_c
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Status_set_elements_c( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Status_set_elements_c_f08
+
+subroutine MPI_Status_set_elements_x_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Status_set_elements_x => MPI_Status_set_elements_x
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Status_set_elements_x( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Status_set_elements_x_f08
+
+subroutine PMPI_Status_set_elements_x_f08( &
+  status, &
+  datatype, &
+  count, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Status_set_elements_x => PMPI_Status_set_elements_x
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Status_set_elements_x( &
+    status, &
+    datatype%MPI_VAL, &
+    count, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Status_set_elements_x_f08
+
+subroutine MPI_Status_set_error_f08( &
+  status, &
+  err, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Status_set_error => MPI_Status_set_error
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  integer, intent(in) :: err
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Status_set_error( &
+    status, &
+    err, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Status_set_error_f08
+
+subroutine PMPI_Status_set_error_f08( &
+  status, &
+  err, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Status_set_error => PMPI_Status_set_error
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  integer, intent(in) :: err
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Status_set_error( &
+    status, &
+    err, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Status_set_error_f08
+
+subroutine MPI_Status_set_source_f08( &
+  status, &
+  source, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Status_set_source => MPI_Status_set_source
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  integer, intent(in) :: source
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Status_set_source( &
+    status, &
+    source, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Status_set_source_f08
+
+subroutine PMPI_Status_set_source_f08( &
+  status, &
+  source, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Status_set_source => PMPI_Status_set_source
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  integer, intent(in) :: source
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Status_set_source( &
+    status, &
+    source, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Status_set_source_f08
+
+subroutine MPI_Status_set_tag_f08( &
+  status, &
+  tag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Status_set_tag => MPI_Status_set_tag
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  integer, intent(in) :: tag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Status_set_tag( &
+    status, &
+    tag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Status_set_tag_f08
+
+subroutine PMPI_Status_set_tag_f08( &
+  status, &
+  tag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Status_set_tag => PMPI_Status_set_tag
+  implicit none
+  type(MPI_Status), intent(inout) :: status
+  integer, intent(in) :: tag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Status_set_tag( &
+    status, &
+    tag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Status_set_tag_f08
+
+subroutine MPI_Test_f08( &
+  request, &
+  flag, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Test => MPI_Test
+  implicit none
+  type(MPI_Request), intent(inout) :: request
+  logical, intent(out) :: flag
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Test( &
+    request%MPI_VAL, &
+    flag, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Test_f08
+
+subroutine PMPI_Test_f08( &
+  request, &
+  flag, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Test => PMPI_Test
+  implicit none
+  type(MPI_Request), intent(inout) :: request
+  logical, intent(out) :: flag
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Test( &
+    request%MPI_VAL, &
+    flag, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Test_f08
+
+subroutine MPI_Test_cancelled_f08( &
+  status, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Test_cancelled => MPI_Test_cancelled
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Test_cancelled( &
+    status, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Test_cancelled_f08
+
+subroutine PMPI_Test_cancelled_f08( &
+  status, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Test_cancelled => PMPI_Test_cancelled
+  implicit none
+  type(MPI_Status), intent(in) :: status
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Test_cancelled( &
+    status, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Test_cancelled_f08
+
+subroutine MPI_Testall_f08( &
+  count, &
+  array_of_requests, &
+  flag, &
+  array_of_statuses, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Testall => MPI_Testall
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(inout) :: array_of_requests(count)
+  logical, intent(out) :: flag
+  type(MPI_Status) :: array_of_statuses(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Testall( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    flag, &
+    array_of_statuses, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Testall_f08
+
+subroutine PMPI_Testall_f08( &
+  count, &
+  array_of_requests, &
+  flag, &
+  array_of_statuses, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Testall => PMPI_Testall
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(inout) :: array_of_requests(count)
+  logical, intent(out) :: flag
+  type(MPI_Status) :: array_of_statuses(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Testall( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    flag, &
+    array_of_statuses, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Testall_f08
+
+subroutine MPI_Testany_f08( &
+  count, &
+  array_of_requests, &
+  index, &
+  flag, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Testany => MPI_Testany
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(inout) :: array_of_requests(count)
+  integer, intent(out) :: index
+  logical, intent(out) :: flag
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Testany( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    index, &
+    flag, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Testany_f08
+
+subroutine PMPI_Testany_f08( &
+  count, &
+  array_of_requests, &
+  index, &
+  flag, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Testany => PMPI_Testany
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(inout) :: array_of_requests(count)
+  integer, intent(out) :: index
+  logical, intent(out) :: flag
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Testany( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    index, &
+    flag, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Testany_f08
+
+subroutine MPI_Testsome_f08( &
+  incount, &
+  array_of_requests, &
+  outcount, &
+  array_of_indices, &
+  array_of_statuses, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Testsome => MPI_Testsome
+  implicit none
+  integer, intent(in) :: incount
+  type(MPI_Request), intent(inout) :: array_of_requests(incount)
+  integer, intent(out) :: outcount
+  integer, intent(out) :: array_of_indices(*)
+  type(MPI_Status) :: array_of_statuses(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Testsome( &
+    incount, &
+    array_of_requests%MPI_VAL, &
+    outcount, &
+    array_of_indices, &
+    array_of_statuses, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Testsome_f08
+
+subroutine PMPI_Testsome_f08( &
+  incount, &
+  array_of_requests, &
+  outcount, &
+  array_of_indices, &
+  array_of_statuses, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Testsome => PMPI_Testsome
+  implicit none
+  integer, intent(in) :: incount
+  type(MPI_Request), intent(inout) :: array_of_requests(incount)
+  integer, intent(out) :: outcount
+  integer, intent(out) :: array_of_indices(*)
+  type(MPI_Status) :: array_of_statuses(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Testsome( &
+    incount, &
+    array_of_requests%MPI_VAL, &
+    outcount, &
+    array_of_indices, &
+    array_of_statuses, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Testsome_f08
+
+subroutine MPI_Topo_test_f08( &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Topo_test => MPI_Topo_test
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Topo_test( &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Topo_test_f08
+
+subroutine PMPI_Topo_test_f08( &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Topo_test => PMPI_Topo_test
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Topo_test( &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Topo_test_f08
+
+subroutine MPI_Type_commit_f08( &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_commit => MPI_Type_commit
+  implicit none
+  type(MPI_Datatype), intent(inout) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_commit( &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_commit_f08
+
+subroutine PMPI_Type_commit_f08( &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_commit => PMPI_Type_commit
+  implicit none
+  type(MPI_Datatype), intent(inout) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_commit( &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_commit_f08
+
+subroutine MPI_Type_contiguous_f08( &
+  count, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_contiguous => MPI_Type_contiguous
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_contiguous( &
+    count, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_contiguous_f08
+
+subroutine MPI_Type_contiguous_c_f08( &
+  count, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_contiguous_c => MPI_Type_contiguous_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_contiguous_c( &
+    count, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_contiguous_c_f08
+
+subroutine PMPI_Type_contiguous_f08( &
+  count, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_contiguous => PMPI_Type_contiguous
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_contiguous( &
+    count, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_contiguous_f08
+
+subroutine PMPI_Type_contiguous_c_f08( &
+  count, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_contiguous_c => PMPI_Type_contiguous_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_contiguous_c( &
+    count, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_contiguous_c_f08
+
+subroutine MPI_Type_create_darray_f08( &
+  size, &
+  rank, &
+  ndims, &
+  array_of_gsizes, &
+  array_of_distribs, &
+  array_of_dargs, &
+  array_of_psizes, &
+  order, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_darray => MPI_Type_create_darray
+  implicit none
+  integer, intent(in) :: size
+  integer, intent(in) :: rank
+  integer, intent(in) :: ndims
+  integer, intent(in) :: array_of_gsizes(ndims)
+  integer, intent(in) :: array_of_distribs(ndims)
+  integer, intent(in) :: array_of_dargs(ndims)
+  integer, intent(in) :: array_of_psizes(ndims)
+  integer, intent(in) :: order
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_darray( &
+    size, &
+    rank, &
+    ndims, &
+    array_of_gsizes, &
+    array_of_distribs, &
+    array_of_dargs, &
+    array_of_psizes, &
+    order, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_darray_f08
+
+subroutine MPI_Type_create_darray_c_f08( &
+  size, &
+  rank, &
+  ndims, &
+  array_of_gsizes, &
+  array_of_distribs, &
+  array_of_dargs, &
+  array_of_psizes, &
+  order, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_darray_c => MPI_Type_create_darray_c
+  implicit none
+  integer, intent(in) :: size
+  integer, intent(in) :: rank
+  integer, intent(in) :: ndims
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_gsizes(ndims)
+  integer, intent(in) :: array_of_distribs(ndims)
+  integer, intent(in) :: array_of_dargs(ndims)
+  integer, intent(in) :: array_of_psizes(ndims)
+  integer, intent(in) :: order
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_darray_c( &
+    size, &
+    rank, &
+    ndims, &
+    array_of_gsizes, &
+    array_of_distribs, &
+    array_of_dargs, &
+    array_of_psizes, &
+    order, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_darray_c_f08
+
+subroutine PMPI_Type_create_darray_f08( &
+  size, &
+  rank, &
+  ndims, &
+  array_of_gsizes, &
+  array_of_distribs, &
+  array_of_dargs, &
+  array_of_psizes, &
+  order, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_darray => PMPI_Type_create_darray
+  implicit none
+  integer, intent(in) :: size
+  integer, intent(in) :: rank
+  integer, intent(in) :: ndims
+  integer, intent(in) :: array_of_gsizes(ndims)
+  integer, intent(in) :: array_of_distribs(ndims)
+  integer, intent(in) :: array_of_dargs(ndims)
+  integer, intent(in) :: array_of_psizes(ndims)
+  integer, intent(in) :: order
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_darray( &
+    size, &
+    rank, &
+    ndims, &
+    array_of_gsizes, &
+    array_of_distribs, &
+    array_of_dargs, &
+    array_of_psizes, &
+    order, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_darray_f08
+
+subroutine PMPI_Type_create_darray_c_f08( &
+  size, &
+  rank, &
+  ndims, &
+  array_of_gsizes, &
+  array_of_distribs, &
+  array_of_dargs, &
+  array_of_psizes, &
+  order, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_darray_c => PMPI_Type_create_darray_c
+  implicit none
+  integer, intent(in) :: size
+  integer, intent(in) :: rank
+  integer, intent(in) :: ndims
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_gsizes(ndims)
+  integer, intent(in) :: array_of_distribs(ndims)
+  integer, intent(in) :: array_of_dargs(ndims)
+  integer, intent(in) :: array_of_psizes(ndims)
+  integer, intent(in) :: order
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_darray_c( &
+    size, &
+    rank, &
+    ndims, &
+    array_of_gsizes, &
+    array_of_distribs, &
+    array_of_dargs, &
+    array_of_psizes, &
+    order, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_darray_c_f08
+
+subroutine MPI_Type_create_f90_complex_f08( &
+  p, &
+  r, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_f90_complex => MPI_Type_create_f90_complex
+  implicit none
+  integer, intent(in) :: p
+  integer, intent(in) :: r
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_f90_complex( &
+    p, &
+    r, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_f90_complex_f08
+
+subroutine PMPI_Type_create_f90_complex_f08( &
+  p, &
+  r, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_f90_complex => PMPI_Type_create_f90_complex
+  implicit none
+  integer, intent(in) :: p
+  integer, intent(in) :: r
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_f90_complex( &
+    p, &
+    r, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_f90_complex_f08
+
+subroutine MPI_Type_create_f90_integer_f08( &
+  r, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_f90_integer => MPI_Type_create_f90_integer
+  implicit none
+  integer, intent(in) :: r
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_f90_integer( &
+    r, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_f90_integer_f08
+
+subroutine PMPI_Type_create_f90_integer_f08( &
+  r, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_f90_integer => PMPI_Type_create_f90_integer
+  implicit none
+  integer, intent(in) :: r
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_f90_integer( &
+    r, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_f90_integer_f08
+
+subroutine MPI_Type_create_f90_real_f08( &
+  p, &
+  r, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_f90_real => MPI_Type_create_f90_real
+  implicit none
+  integer, intent(in) :: p
+  integer, intent(in) :: r
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_f90_real( &
+    p, &
+    r, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_f90_real_f08
+
+subroutine PMPI_Type_create_f90_real_f08( &
+  p, &
+  r, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_f90_real => PMPI_Type_create_f90_real
+  implicit none
+  integer, intent(in) :: p
+  integer, intent(in) :: r
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_f90_real( &
+    p, &
+    r, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_f90_real_f08
+
+subroutine MPI_Type_create_hindexed_f08( &
+  count, &
+  array_of_blocklengths, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_hindexed => MPI_Type_create_hindexed
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: array_of_blocklengths(count)
+  integer(MPI_ADDRESS_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_hindexed( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_hindexed_f08
+
+subroutine MPI_Type_create_hindexed_c_f08( &
+  count, &
+  array_of_blocklengths, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_hindexed_c => MPI_Type_create_hindexed_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_blocklengths(count)
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_hindexed_c( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_hindexed_c_f08
+
+subroutine PMPI_Type_create_hindexed_f08( &
+  count, &
+  array_of_blocklengths, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_hindexed => PMPI_Type_create_hindexed
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: array_of_blocklengths(count)
+  integer(MPI_ADDRESS_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_hindexed( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_hindexed_f08
+
+subroutine PMPI_Type_create_hindexed_c_f08( &
+  count, &
+  array_of_blocklengths, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_hindexed_c => PMPI_Type_create_hindexed_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_blocklengths(count)
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_hindexed_c( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_hindexed_c_f08
+
+subroutine MPI_Type_create_hindexed_block_f08( &
+  count, &
+  blocklength, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_hindexed_block => MPI_Type_create_hindexed_block
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: blocklength
+  integer(MPI_ADDRESS_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_hindexed_block( &
+    count, &
+    blocklength, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_hindexed_block_f08
+
+subroutine MPI_Type_create_hindexed_block_c_f08( &
+  count, &
+  blocklength, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_hindexed_block_c => MPI_Type_create_hindexed_block_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: blocklength
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_hindexed_block_c( &
+    count, &
+    blocklength, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_hindexed_block_c_f08
+
+subroutine PMPI_Type_create_hindexed_block_f08( &
+  count, &
+  blocklength, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_hindexed_block => PMPI_Type_create_hindexed_block
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: blocklength
+  integer(MPI_ADDRESS_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_hindexed_block( &
+    count, &
+    blocklength, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_hindexed_block_f08
+
+subroutine PMPI_Type_create_hindexed_block_c_f08( &
+  count, &
+  blocklength, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_hindexed_block_c => PMPI_Type_create_hindexed_block_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: blocklength
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_hindexed_block_c( &
+    count, &
+    blocklength, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_hindexed_block_c_f08
+
+subroutine MPI_Type_create_hvector_f08( &
+  count, &
+  blocklength, &
+  stride, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_hvector => MPI_Type_create_hvector
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: blocklength
+  integer(MPI_ADDRESS_KIND), intent(in) :: stride
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_hvector( &
+    count, &
+    blocklength, &
+    stride, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_hvector_f08
+
+subroutine MPI_Type_create_hvector_c_f08( &
+  count, &
+  blocklength, &
+  stride, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_hvector_c => MPI_Type_create_hvector_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: blocklength
+  integer(MPI_COUNT_KIND), intent(in) :: stride
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_hvector_c( &
+    count, &
+    blocklength, &
+    stride, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_hvector_c_f08
+
+subroutine PMPI_Type_create_hvector_f08( &
+  count, &
+  blocklength, &
+  stride, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_hvector => PMPI_Type_create_hvector
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: blocklength
+  integer(MPI_ADDRESS_KIND), intent(in) :: stride
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_hvector( &
+    count, &
+    blocklength, &
+    stride, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_hvector_f08
+
+subroutine PMPI_Type_create_hvector_c_f08( &
+  count, &
+  blocklength, &
+  stride, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_hvector_c => PMPI_Type_create_hvector_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: blocklength
+  integer(MPI_COUNT_KIND), intent(in) :: stride
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_hvector_c( &
+    count, &
+    blocklength, &
+    stride, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_hvector_c_f08
+
+subroutine MPI_Type_create_indexed_block_f08( &
+  count, &
+  blocklength, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_indexed_block => MPI_Type_create_indexed_block
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: blocklength
+  integer, intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_indexed_block( &
+    count, &
+    blocklength, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_indexed_block_f08
+
+subroutine MPI_Type_create_indexed_block_c_f08( &
+  count, &
+  blocklength, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_indexed_block_c => MPI_Type_create_indexed_block_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: blocklength
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_indexed_block_c( &
+    count, &
+    blocklength, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_indexed_block_c_f08
+
+subroutine PMPI_Type_create_indexed_block_f08( &
+  count, &
+  blocklength, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_indexed_block => PMPI_Type_create_indexed_block
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: blocklength
+  integer, intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_indexed_block( &
+    count, &
+    blocklength, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_indexed_block_f08
+
+subroutine PMPI_Type_create_indexed_block_c_f08( &
+  count, &
+  blocklength, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_indexed_block_c => PMPI_Type_create_indexed_block_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: blocklength
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_indexed_block_c( &
+    count, &
+    blocklength, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_indexed_block_c_f08
+
+subroutine MPI_Type_create_keyval_f08( &
+  type_copy_attr_fn, &
+  type_delete_attr_fn, &
+  type_keyval, &
+  extra_state, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_keyval => MPI_Type_create_keyval
+  implicit none
+  procedure(MPI_Type_copy_attr_function) :: type_copy_attr_fn
+  procedure(MPI_Type_delete_attr_function) :: type_delete_attr_fn
+  integer, intent(out) :: type_keyval
+  integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_keyval( &
+    type_copy_attr_fn, &
+    type_delete_attr_fn, &
+    type_keyval, &
+    extra_state, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_keyval_f08
+
+subroutine PMPI_Type_create_keyval_f08( &
+  type_copy_attr_fn, &
+  type_delete_attr_fn, &
+  type_keyval, &
+  extra_state, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_keyval => PMPI_Type_create_keyval
+  implicit none
+  procedure(MPI_Type_copy_attr_function) :: type_copy_attr_fn
+  procedure(MPI_Type_delete_attr_function) :: type_delete_attr_fn
+  integer, intent(out) :: type_keyval
+  integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_keyval( &
+    type_copy_attr_fn, &
+    type_delete_attr_fn, &
+    type_keyval, &
+    extra_state, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_keyval_f08
+
+subroutine MPI_Type_create_resized_f08( &
+  oldtype, &
+  lb, &
+  extent, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_resized => MPI_Type_create_resized
+  implicit none
+  type(MPI_Datatype), intent(in) :: oldtype
+  integer(MPI_ADDRESS_KIND), intent(in) :: lb
+  integer(MPI_ADDRESS_KIND), intent(in) :: extent
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_resized( &
+    oldtype%MPI_VAL, &
+    lb, &
+    extent, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_resized_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+subroutine MPI_Type_create_resized_c_f08( &
+  oldtype, &
+  lb, &
+  extent, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_resized_c => MPI_Type_create_resized_c
+  implicit none
+  type(MPI_Datatype), intent(in) :: oldtype
+  integer(MPI_COUNT_KIND), intent(in) :: lb
+  integer(MPI_COUNT_KIND), intent(in) :: extent
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_resized_c( &
+    oldtype%MPI_VAL, &
+    lb, &
+    extent, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_resized_c_f08
+#endif
+
+subroutine PMPI_Type_create_resized_f08( &
+  oldtype, &
+  lb, &
+  extent, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_resized => PMPI_Type_create_resized
+  implicit none
+  type(MPI_Datatype), intent(in) :: oldtype
+  integer(MPI_ADDRESS_KIND), intent(in) :: lb
+  integer(MPI_ADDRESS_KIND), intent(in) :: extent
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_resized( &
+    oldtype%MPI_VAL, &
+    lb, &
+    extent, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_resized_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+subroutine PMPI_Type_create_resized_c_f08( &
+  oldtype, &
+  lb, &
+  extent, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_resized_c => PMPI_Type_create_resized_c
+  implicit none
+  type(MPI_Datatype), intent(in) :: oldtype
+  integer(MPI_COUNT_KIND), intent(in) :: lb
+  integer(MPI_COUNT_KIND), intent(in) :: extent
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_resized_c( &
+    oldtype%MPI_VAL, &
+    lb, &
+    extent, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_resized_c_f08
+#endif
+
+subroutine MPI_Type_create_struct_f08( &
+  count, &
+  array_of_blocklengths, &
+  array_of_displacements, &
+  array_of_types, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_struct => MPI_Type_create_struct
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: array_of_blocklengths(count)
+  integer(MPI_ADDRESS_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: array_of_types(count)
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_struct( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    array_of_types%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_struct_f08
+
+subroutine MPI_Type_create_struct_c_f08( &
+  count, &
+  array_of_blocklengths, &
+  array_of_displacements, &
+  array_of_types, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_struct_c => MPI_Type_create_struct_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_blocklengths(count)
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: array_of_types(count)
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_struct_c( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    array_of_types%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_struct_c_f08
+
+subroutine PMPI_Type_create_struct_f08( &
+  count, &
+  array_of_blocklengths, &
+  array_of_displacements, &
+  array_of_types, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_struct => PMPI_Type_create_struct
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: array_of_blocklengths(count)
+  integer(MPI_ADDRESS_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: array_of_types(count)
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_struct( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    array_of_types%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_struct_f08
+
+subroutine PMPI_Type_create_struct_c_f08( &
+  count, &
+  array_of_blocklengths, &
+  array_of_displacements, &
+  array_of_types, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_struct_c => PMPI_Type_create_struct_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_blocklengths(count)
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: array_of_types(count)
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_struct_c( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    array_of_types%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_struct_c_f08
+
+subroutine MPI_Type_create_subarray_f08( &
+  ndims, &
+  array_of_sizes, &
+  array_of_subsizes, &
+  array_of_starts, &
+  order, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_subarray => MPI_Type_create_subarray
+  implicit none
+  integer, intent(in) :: ndims
+  integer, intent(in) :: array_of_sizes(ndims)
+  integer, intent(in) :: array_of_subsizes(ndims)
+  integer, intent(in) :: array_of_starts(ndims)
+  integer, intent(in) :: order
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_subarray( &
+    ndims, &
+    array_of_sizes, &
+    array_of_subsizes, &
+    array_of_starts, &
+    order, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_subarray_f08
+
+subroutine MPI_Type_create_subarray_c_f08( &
+  ndims, &
+  array_of_sizes, &
+  array_of_subsizes, &
+  array_of_starts, &
+  order, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_create_subarray_c => MPI_Type_create_subarray_c
+  implicit none
+  integer, intent(in) :: ndims
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_sizes(ndims)
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_subsizes(ndims)
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_starts(ndims)
+  integer, intent(in) :: order
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_create_subarray_c( &
+    ndims, &
+    array_of_sizes, &
+    array_of_subsizes, &
+    array_of_starts, &
+    order, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_create_subarray_c_f08
+
+subroutine PMPI_Type_create_subarray_f08( &
+  ndims, &
+  array_of_sizes, &
+  array_of_subsizes, &
+  array_of_starts, &
+  order, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_subarray => PMPI_Type_create_subarray
+  implicit none
+  integer, intent(in) :: ndims
+  integer, intent(in) :: array_of_sizes(ndims)
+  integer, intent(in) :: array_of_subsizes(ndims)
+  integer, intent(in) :: array_of_starts(ndims)
+  integer, intent(in) :: order
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_subarray( &
+    ndims, &
+    array_of_sizes, &
+    array_of_subsizes, &
+    array_of_starts, &
+    order, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_subarray_f08
+
+subroutine PMPI_Type_create_subarray_c_f08( &
+  ndims, &
+  array_of_sizes, &
+  array_of_subsizes, &
+  array_of_starts, &
+  order, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_create_subarray_c => PMPI_Type_create_subarray_c
+  implicit none
+  integer, intent(in) :: ndims
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_sizes(ndims)
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_subsizes(ndims)
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_starts(ndims)
+  integer, intent(in) :: order
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_create_subarray_c( &
+    ndims, &
+    array_of_sizes, &
+    array_of_subsizes, &
+    array_of_starts, &
+    order, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_create_subarray_c_f08
+
+subroutine MPI_Type_delete_attr_f08( &
+  datatype, &
+  type_keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_delete_attr => MPI_Type_delete_attr
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: type_keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_delete_attr( &
+    datatype%MPI_VAL, &
+    type_keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_delete_attr_f08
+
+subroutine PMPI_Type_delete_attr_f08( &
+  datatype, &
+  type_keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_delete_attr => PMPI_Type_delete_attr
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: type_keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_delete_attr( &
+    datatype%MPI_VAL, &
+    type_keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_delete_attr_f08
+
+subroutine MPI_Type_dup_f08( &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_dup => MPI_Type_dup
+  implicit none
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_dup( &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_dup_f08
+
+subroutine PMPI_Type_dup_f08( &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_dup => PMPI_Type_dup
+  implicit none
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_dup( &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_dup_f08
+
+subroutine MPI_Type_free_f08( &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_free => MPI_Type_free
+  implicit none
+  type(MPI_Datatype), intent(inout) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_free( &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_free_f08
+
+subroutine PMPI_Type_free_f08( &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_free => PMPI_Type_free
+  implicit none
+  type(MPI_Datatype), intent(inout) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_free( &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_free_f08
+
+subroutine MPI_Type_free_keyval_f08( &
+  type_keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_free_keyval => MPI_Type_free_keyval
+  implicit none
+  integer, intent(inout) :: type_keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_free_keyval( &
+    type_keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_free_keyval_f08
+
+subroutine PMPI_Type_free_keyval_f08( &
+  type_keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_free_keyval => PMPI_Type_free_keyval
+  implicit none
+  integer, intent(inout) :: type_keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_free_keyval( &
+    type_keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_free_keyval_f08
+
+subroutine MPI_Type_get_attr_f08( &
+  datatype, &
+  type_keyval, &
+  attribute_val, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_attr => MPI_Type_get_attr
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: type_keyval
+  integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_attr( &
+    datatype%MPI_VAL, &
+    type_keyval, &
+    attribute_val, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_attr_f08
+
+subroutine PMPI_Type_get_attr_f08( &
+  datatype, &
+  type_keyval, &
+  attribute_val, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_attr => PMPI_Type_get_attr
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: type_keyval
+  integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_attr( &
+    datatype%MPI_VAL, &
+    type_keyval, &
+    attribute_val, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_attr_f08
+
+subroutine MPI_Type_get_contents_f08( &
+  datatype, &
+  max_integers, &
+  max_addresses, &
+  max_datatypes, &
+  array_of_integers, &
+  array_of_addresses, &
+  array_of_datatypes, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_contents => MPI_Type_get_contents
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: max_integers
+  integer, intent(in) :: max_addresses
+  integer, intent(in) :: max_datatypes
+  integer, intent(out) :: array_of_integers(max_integers)
+  integer(MPI_ADDRESS_KIND), intent(out) :: array_of_addresses(max_addresses)
+  type(MPI_Datatype), intent(out) :: array_of_datatypes(max_datatypes)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_contents( &
+    datatype%MPI_VAL, &
+    max_integers, &
+    max_addresses, &
+    max_datatypes, &
+    array_of_integers, &
+    array_of_addresses, &
+    array_of_datatypes%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_contents_f08
+
+subroutine MPI_Type_get_contents_c_f08( &
+  datatype, &
+  max_integers, &
+  max_addresses, &
+  max_large_counts, &
+  max_datatypes, &
+  array_of_integers, &
+  array_of_addresses, &
+  array_of_large_counts, &
+  array_of_datatypes, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_contents_c => MPI_Type_get_contents_c
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(in) :: max_integers
+  integer(MPI_COUNT_KIND), intent(in) :: max_addresses
+  integer(MPI_COUNT_KIND), intent(in) :: max_large_counts
+  integer(MPI_COUNT_KIND), intent(in) :: max_datatypes
+  integer, intent(out) :: array_of_integers(max_integers)
+  integer(MPI_ADDRESS_KIND), intent(out) :: array_of_addresses(max_addresses)
+  integer(MPI_COUNT_KIND), intent(out) :: array_of_large_counts(max_large_counts)
+  type(MPI_Datatype), intent(out) :: array_of_datatypes(max_datatypes)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_contents_c( &
+    datatype%MPI_VAL, &
+    max_integers, &
+    max_addresses, &
+    max_large_counts, &
+    max_datatypes, &
+    array_of_integers, &
+    array_of_addresses, &
+    array_of_large_counts, &
+    array_of_datatypes%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_contents_c_f08
+
+subroutine PMPI_Type_get_contents_f08( &
+  datatype, &
+  max_integers, &
+  max_addresses, &
+  max_datatypes, &
+  array_of_integers, &
+  array_of_addresses, &
+  array_of_datatypes, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_contents => PMPI_Type_get_contents
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: max_integers
+  integer, intent(in) :: max_addresses
+  integer, intent(in) :: max_datatypes
+  integer, intent(out) :: array_of_integers(max_integers)
+  integer(MPI_ADDRESS_KIND), intent(out) :: array_of_addresses(max_addresses)
+  type(MPI_Datatype), intent(out) :: array_of_datatypes(max_datatypes)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_contents( &
+    datatype%MPI_VAL, &
+    max_integers, &
+    max_addresses, &
+    max_datatypes, &
+    array_of_integers, &
+    array_of_addresses, &
+    array_of_datatypes%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_contents_f08
+
+subroutine PMPI_Type_get_contents_c_f08( &
+  datatype, &
+  max_integers, &
+  max_addresses, &
+  max_large_counts, &
+  max_datatypes, &
+  array_of_integers, &
+  array_of_addresses, &
+  array_of_large_counts, &
+  array_of_datatypes, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_contents_c => PMPI_Type_get_contents_c
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(in) :: max_integers
+  integer(MPI_COUNT_KIND), intent(in) :: max_addresses
+  integer(MPI_COUNT_KIND), intent(in) :: max_large_counts
+  integer(MPI_COUNT_KIND), intent(in) :: max_datatypes
+  integer, intent(out) :: array_of_integers(max_integers)
+  integer(MPI_ADDRESS_KIND), intent(out) :: array_of_addresses(max_addresses)
+  integer(MPI_COUNT_KIND), intent(out) :: array_of_large_counts(max_large_counts)
+  type(MPI_Datatype), intent(out) :: array_of_datatypes(max_datatypes)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_contents_c( &
+    datatype%MPI_VAL, &
+    max_integers, &
+    max_addresses, &
+    max_large_counts, &
+    max_datatypes, &
+    array_of_integers, &
+    array_of_addresses, &
+    array_of_large_counts, &
+    array_of_datatypes%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_contents_c_f08
+
+subroutine MPI_Type_get_envelope_f08( &
+  datatype, &
+  num_integers, &
+  num_addresses, &
+  num_datatypes, &
+  combiner, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_envelope => MPI_Type_get_envelope
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out) :: num_integers
+  integer, intent(out) :: num_addresses
+  integer, intent(out) :: num_datatypes
+  integer, intent(out) :: combiner
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_envelope( &
+    datatype%MPI_VAL, &
+    num_integers, &
+    num_addresses, &
+    num_datatypes, &
+    combiner, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_envelope_f08
+
+subroutine MPI_Type_get_envelope_c_f08( &
+  datatype, &
+  num_integers, &
+  num_addresses, &
+  num_large_counts, &
+  num_datatypes, &
+  combiner, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_envelope_c => MPI_Type_get_envelope_c
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: num_integers
+  integer(MPI_COUNT_KIND), intent(out) :: num_addresses
+  integer(MPI_COUNT_KIND), intent(out) :: num_large_counts
+  integer(MPI_COUNT_KIND), intent(out) :: num_datatypes
+  integer, intent(out) :: combiner
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_envelope_c( &
+    datatype%MPI_VAL, &
+    num_integers, &
+    num_addresses, &
+    num_large_counts, &
+    num_datatypes, &
+    combiner, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_envelope_c_f08
+
+subroutine PMPI_Type_get_envelope_f08( &
+  datatype, &
+  num_integers, &
+  num_addresses, &
+  num_datatypes, &
+  combiner, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_envelope => PMPI_Type_get_envelope
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out) :: num_integers
+  integer, intent(out) :: num_addresses
+  integer, intent(out) :: num_datatypes
+  integer, intent(out) :: combiner
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_envelope( &
+    datatype%MPI_VAL, &
+    num_integers, &
+    num_addresses, &
+    num_datatypes, &
+    combiner, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_envelope_f08
+
+subroutine PMPI_Type_get_envelope_c_f08( &
+  datatype, &
+  num_integers, &
+  num_addresses, &
+  num_large_counts, &
+  num_datatypes, &
+  combiner, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_envelope_c => PMPI_Type_get_envelope_c
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: num_integers
+  integer(MPI_COUNT_KIND), intent(out) :: num_addresses
+  integer(MPI_COUNT_KIND), intent(out) :: num_large_counts
+  integer(MPI_COUNT_KIND), intent(out) :: num_datatypes
+  integer, intent(out) :: combiner
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_envelope_c( &
+    datatype%MPI_VAL, &
+    num_integers, &
+    num_addresses, &
+    num_large_counts, &
+    num_datatypes, &
+    combiner, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_envelope_c_f08
+
+subroutine MPI_Type_get_extent_f08( &
+  datatype, &
+  lb, &
+  extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_extent => MPI_Type_get_extent
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_ADDRESS_KIND), intent(out) :: lb
+  integer(MPI_ADDRESS_KIND), intent(out) :: extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_extent( &
+    datatype%MPI_VAL, &
+    lb, &
+    extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_extent_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+subroutine MPI_Type_get_extent_c_f08( &
+  datatype, &
+  lb, &
+  extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_extent_c => MPI_Type_get_extent_c
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: lb
+  integer(MPI_COUNT_KIND), intent(out) :: extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_extent_c( &
+    datatype%MPI_VAL, &
+    lb, &
+    extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_extent_c_f08
+#endif
+
+subroutine PMPI_Type_get_extent_f08( &
+  datatype, &
+  lb, &
+  extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_extent => PMPI_Type_get_extent
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_ADDRESS_KIND), intent(out) :: lb
+  integer(MPI_ADDRESS_KIND), intent(out) :: extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_extent( &
+    datatype%MPI_VAL, &
+    lb, &
+    extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_extent_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+subroutine PMPI_Type_get_extent_c_f08( &
+  datatype, &
+  lb, &
+  extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_extent_c => PMPI_Type_get_extent_c
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: lb
+  integer(MPI_COUNT_KIND), intent(out) :: extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_extent_c( &
+    datatype%MPI_VAL, &
+    lb, &
+    extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_extent_c_f08
+#endif
+
+subroutine MPI_Type_get_extent_x_f08( &
+  datatype, &
+  lb, &
+  extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_extent_x => MPI_Type_get_extent_x
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: lb
+  integer(MPI_COUNT_KIND), intent(out) :: extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_extent_x( &
+    datatype%MPI_VAL, &
+    lb, &
+    extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_extent_x_f08
+
+subroutine PMPI_Type_get_extent_x_f08( &
+  datatype, &
+  lb, &
+  extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_extent_x => PMPI_Type_get_extent_x
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: lb
+  integer(MPI_COUNT_KIND), intent(out) :: extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_extent_x( &
+    datatype%MPI_VAL, &
+    lb, &
+    extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_extent_x_f08
+
+subroutine MPI_Type_get_name_f08( &
+  datatype, &
+  type_name, &
+  resultlen, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_name => MPI_Type_get_name
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  character*(MPI_MAX_OBJECT_NAME), intent(out) :: type_name
+  integer, intent(out) :: resultlen
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_name( &
+    datatype%MPI_VAL, &
+    type_name, &
+    resultlen, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_name_f08
+
+subroutine PMPI_Type_get_name_f08( &
+  datatype, &
+  type_name, &
+  resultlen, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_name => PMPI_Type_get_name
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  character*(MPI_MAX_OBJECT_NAME), intent(out) :: type_name
+  integer, intent(out) :: resultlen
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_name( &
+    datatype%MPI_VAL, &
+    type_name, &
+    resultlen, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_name_f08
+
+subroutine MPI_Type_get_true_extent_f08( &
+  datatype, &
+  true_lb, &
+  true_extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_true_extent => MPI_Type_get_true_extent
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_ADDRESS_KIND), intent(out) :: true_lb
+  integer(MPI_ADDRESS_KIND), intent(out) :: true_extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_true_extent( &
+    datatype%MPI_VAL, &
+    true_lb, &
+    true_extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_true_extent_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+subroutine MPI_Type_get_true_extent_c_f08( &
+  datatype, &
+  true_lb, &
+  true_extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_true_extent_c => MPI_Type_get_true_extent_c
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: true_lb
+  integer(MPI_COUNT_KIND), intent(out) :: true_extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_true_extent_c( &
+    datatype%MPI_VAL, &
+    true_lb, &
+    true_extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_true_extent_c_f08
+#endif
+
+subroutine PMPI_Type_get_true_extent_f08( &
+  datatype, &
+  true_lb, &
+  true_extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_true_extent => PMPI_Type_get_true_extent
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_ADDRESS_KIND), intent(out) :: true_lb
+  integer(MPI_ADDRESS_KIND), intent(out) :: true_extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_true_extent( &
+    datatype%MPI_VAL, &
+    true_lb, &
+    true_extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_true_extent_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+subroutine PMPI_Type_get_true_extent_c_f08( &
+  datatype, &
+  true_lb, &
+  true_extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_true_extent_c => PMPI_Type_get_true_extent_c
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: true_lb
+  integer(MPI_COUNT_KIND), intent(out) :: true_extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_true_extent_c( &
+    datatype%MPI_VAL, &
+    true_lb, &
+    true_extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_true_extent_c_f08
+#endif
+
+subroutine MPI_Type_get_true_extent_x_f08( &
+  datatype, &
+  true_lb, &
+  true_extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_true_extent_x => MPI_Type_get_true_extent_x
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: true_lb
+  integer(MPI_COUNT_KIND), intent(out) :: true_extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_true_extent_x( &
+    datatype%MPI_VAL, &
+    true_lb, &
+    true_extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_true_extent_x_f08
+
+subroutine PMPI_Type_get_true_extent_x_f08( &
+  datatype, &
+  true_lb, &
+  true_extent, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_true_extent_x => PMPI_Type_get_true_extent_x
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: true_lb
+  integer(MPI_COUNT_KIND), intent(out) :: true_extent
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_true_extent_x( &
+    datatype%MPI_VAL, &
+    true_lb, &
+    true_extent, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_true_extent_x_f08
+
+subroutine MPI_Type_get_value_index_f08( &
+  value_type, &
+  index_type, &
+  pair_type, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_get_value_index => MPI_Type_get_value_index
+  implicit none
+  type(MPI_Datatype), intent(in) :: value_type
+  type(MPI_Datatype), intent(in) :: index_type
+  type(MPI_Datatype), intent(out) :: pair_type
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_get_value_index( &
+    value_type%MPI_VAL, &
+    index_type%MPI_VAL, &
+    pair_type%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_get_value_index_f08
+
+subroutine PMPI_Type_get_value_index_f08( &
+  value_type, &
+  index_type, &
+  pair_type, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_get_value_index => PMPI_Type_get_value_index
+  implicit none
+  type(MPI_Datatype), intent(in) :: value_type
+  type(MPI_Datatype), intent(in) :: index_type
+  type(MPI_Datatype), intent(out) :: pair_type
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_get_value_index( &
+    value_type%MPI_VAL, &
+    index_type%MPI_VAL, &
+    pair_type%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_get_value_index_f08
+
+subroutine MPI_Type_indexed_f08( &
+  count, &
+  array_of_blocklengths, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_indexed => MPI_Type_indexed
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: array_of_blocklengths(count)
+  integer, intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_indexed( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_indexed_f08
+
+subroutine MPI_Type_indexed_c_f08( &
+  count, &
+  array_of_blocklengths, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_indexed_c => MPI_Type_indexed_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_blocklengths(count)
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_indexed_c( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_indexed_c_f08
+
+subroutine PMPI_Type_indexed_f08( &
+  count, &
+  array_of_blocklengths, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_indexed => PMPI_Type_indexed
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: array_of_blocklengths(count)
+  integer, intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_indexed( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_indexed_f08
+
+subroutine PMPI_Type_indexed_c_f08( &
+  count, &
+  array_of_blocklengths, &
+  array_of_displacements, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_indexed_c => PMPI_Type_indexed_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_blocklengths(count)
+  integer(MPI_COUNT_KIND), intent(in) :: array_of_displacements(count)
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_indexed_c( &
+    count, &
+    array_of_blocklengths, &
+    array_of_displacements, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_indexed_c_f08
+
+subroutine MPI_Type_match_size_f08( &
+  typeclass, &
+  size, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_match_size => MPI_Type_match_size
+  implicit none
+  integer, intent(in) :: typeclass
+  integer, intent(in) :: size
+  type(MPI_Datatype), intent(out) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_match_size( &
+    typeclass, &
+    size, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_match_size_f08
+
+subroutine PMPI_Type_match_size_f08( &
+  typeclass, &
+  size, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_match_size => PMPI_Type_match_size
+  implicit none
+  integer, intent(in) :: typeclass
+  integer, intent(in) :: size
+  type(MPI_Datatype), intent(out) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_match_size( &
+    typeclass, &
+    size, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_match_size_f08
+
+subroutine MPI_Type_set_attr_f08( &
+  datatype, &
+  type_keyval, &
+  attribute_val, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_set_attr => MPI_Type_set_attr
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: type_keyval
+  integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_set_attr( &
+    datatype%MPI_VAL, &
+    type_keyval, &
+    attribute_val, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_set_attr_f08
+
+subroutine PMPI_Type_set_attr_f08( &
+  datatype, &
+  type_keyval, &
+  attribute_val, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_set_attr => PMPI_Type_set_attr
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: type_keyval
+  integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_set_attr( &
+    datatype%MPI_VAL, &
+    type_keyval, &
+    attribute_val, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_set_attr_f08
+
+subroutine MPI_Type_set_name_f08( &
+  datatype, &
+  type_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_set_name => MPI_Type_set_name
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  character*(*), intent(in) :: type_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_set_name( &
+    datatype%MPI_VAL, &
+    type_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_set_name_f08
+
+subroutine PMPI_Type_set_name_f08( &
+  datatype, &
+  type_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_set_name => PMPI_Type_set_name
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  character*(*), intent(in) :: type_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_set_name( &
+    datatype%MPI_VAL, &
+    type_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_set_name_f08
+
+subroutine MPI_Type_size_f08( &
+  datatype, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_size => MPI_Type_size
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_size( &
+    datatype%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_size_f08
+
+subroutine MPI_Type_size_c_f08( &
+  datatype, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_size_c => MPI_Type_size_c
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_size_c( &
+    datatype%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_size_c_f08
+
+subroutine PMPI_Type_size_f08( &
+  datatype, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_size => PMPI_Type_size
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_size( &
+    datatype%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_size_f08
+
+subroutine PMPI_Type_size_c_f08( &
+  datatype, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_size_c => PMPI_Type_size_c
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_size_c( &
+    datatype%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_size_c_f08
+
+subroutine MPI_Type_size_x_f08( &
+  datatype, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_size_x => MPI_Type_size_x
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_size_x( &
+    datatype%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_size_x_f08
+
+subroutine PMPI_Type_size_x_f08( &
+  datatype, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_size_x => PMPI_Type_size_x
+  implicit none
+  type(MPI_Datatype), intent(in) :: datatype
+  integer(MPI_COUNT_KIND), intent(out) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_size_x( &
+    datatype%MPI_VAL, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_size_x_f08
+
+subroutine MPI_Type_vector_f08( &
+  count, &
+  blocklength, &
+  stride, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_vector => MPI_Type_vector
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: blocklength
+  integer, intent(in) :: stride
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_vector( &
+    count, &
+    blocklength, &
+    stride, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_vector_f08
+
+subroutine MPI_Type_vector_c_f08( &
+  count, &
+  blocklength, &
+  stride, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Type_vector_c => MPI_Type_vector_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: blocklength
+  integer(MPI_COUNT_KIND), intent(in) :: stride
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Type_vector_c( &
+    count, &
+    blocklength, &
+    stride, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Type_vector_c_f08
+
+subroutine PMPI_Type_vector_f08( &
+  count, &
+  blocklength, &
+  stride, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_vector => PMPI_Type_vector
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: blocklength
+  integer, intent(in) :: stride
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_vector( &
+    count, &
+    blocklength, &
+    stride, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_vector_f08
+
+subroutine PMPI_Type_vector_c_f08( &
+  count, &
+  blocklength, &
+  stride, &
+  oldtype, &
+  newtype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Type_vector_c => PMPI_Type_vector_c
+  implicit none
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  integer(MPI_COUNT_KIND), intent(in) :: blocklength
+  integer(MPI_COUNT_KIND), intent(in) :: stride
+  type(MPI_Datatype), intent(in) :: oldtype
+  type(MPI_Datatype), intent(out) :: newtype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Type_vector_c( &
+    count, &
+    blocklength, &
+    stride, &
+    oldtype%MPI_VAL, &
+    newtype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Type_vector_c_f08
+
+subroutine MPI_Unpack_f08( &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Unpack => MPI_Unpack
+  implicit none
+  integer :: inbuf(*)
+  integer, intent(in) :: insize
+  integer, intent(inout) :: position
+  integer :: outbuf(*)
+  integer, intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Unpack( &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Unpack_f08
+
+subroutine MPI_Unpack_c_f08( &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Unpack_c => MPI_Unpack_c
+  implicit none
+  integer :: inbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: insize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  integer :: outbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Unpack_c( &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Unpack_c_f08
+
+subroutine PMPI_Unpack_f08( &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Unpack => PMPI_Unpack
+  implicit none
+  integer :: inbuf(*)
+  integer, intent(in) :: insize
+  integer, intent(inout) :: position
+  integer :: outbuf(*)
+  integer, intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Unpack( &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Unpack_f08
+
+subroutine PMPI_Unpack_c_f08( &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Unpack_c => PMPI_Unpack_c
+  implicit none
+  integer :: inbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: insize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  integer :: outbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Unpack_c( &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Unpack_c_f08
+
+subroutine MPI_Unpack_external_f08( &
+  datarep, &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Unpack_external => MPI_Unpack_external
+  implicit none
+  character*(*), intent(in) :: datarep
+  integer :: inbuf(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: insize
+  integer(MPI_ADDRESS_KIND), intent(inout) :: position
+  integer :: outbuf(*)
+  integer, intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Unpack_external( &
+    datarep, &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Unpack_external_f08
+
+subroutine MPI_Unpack_external_c_f08( &
+  datarep, &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Unpack_external_c => MPI_Unpack_external_c
+  implicit none
+  character*(*), intent(in) :: datarep
+  integer :: inbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: insize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  integer :: outbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Unpack_external_c( &
+    datarep, &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Unpack_external_c_f08
+
+subroutine PMPI_Unpack_external_f08( &
+  datarep, &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Unpack_external => PMPI_Unpack_external
+  implicit none
+  character*(*), intent(in) :: datarep
+  integer :: inbuf(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: insize
+  integer(MPI_ADDRESS_KIND), intent(inout) :: position
+  integer :: outbuf(*)
+  integer, intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Unpack_external( &
+    datarep, &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Unpack_external_f08
+
+subroutine PMPI_Unpack_external_c_f08( &
+  datarep, &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Unpack_external_c => PMPI_Unpack_external_c
+  implicit none
+  character*(*), intent(in) :: datarep
+  integer :: inbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: insize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  integer :: outbuf(*)
+  integer(MPI_COUNT_KIND), intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Unpack_external_c( &
+    datarep, &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Unpack_external_c_f08
+
+subroutine MPI_Unpublish_name_f08( &
+  service_name, &
+  info, &
+  port_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Unpublish_name => MPI_Unpublish_name
+  implicit none
+  character*(*), intent(in) :: service_name
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: port_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Unpublish_name( &
+    service_name, &
+    info%MPI_VAL, &
+    port_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Unpublish_name_f08
+
+subroutine PMPI_Unpublish_name_f08( &
+  service_name, &
+  info, &
+  port_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Unpublish_name => PMPI_Unpublish_name
+  implicit none
+  character*(*), intent(in) :: service_name
+  type(MPI_Info), intent(in) :: info
+  character*(*), intent(in) :: port_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Unpublish_name( &
+    service_name, &
+    info%MPI_VAL, &
+    port_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Unpublish_name_f08
+
+subroutine MPI_Wait_f08( &
+  request, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Wait => MPI_Wait
+  implicit none
+  type(MPI_Request), intent(inout) :: request
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Wait( &
+    request%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Wait_f08
+
+subroutine PMPI_Wait_f08( &
+  request, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Wait => PMPI_Wait
+  implicit none
+  type(MPI_Request), intent(inout) :: request
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Wait( &
+    request%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Wait_f08
+
+subroutine MPI_Waitall_f08( &
+  count, &
+  array_of_requests, &
+  array_of_statuses, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Waitall => MPI_Waitall
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(inout) :: array_of_requests(count)
+  type(MPI_Status) :: array_of_statuses(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Waitall( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    array_of_statuses, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Waitall_f08
+
+subroutine PMPI_Waitall_f08( &
+  count, &
+  array_of_requests, &
+  array_of_statuses, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Waitall => PMPI_Waitall
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(inout) :: array_of_requests(count)
+  type(MPI_Status) :: array_of_statuses(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Waitall( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    array_of_statuses, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Waitall_f08
+
+subroutine MPI_Waitany_f08( &
+  count, &
+  array_of_requests, &
+  index, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Waitany => MPI_Waitany
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(inout) :: array_of_requests(count)
+  integer, intent(out) :: index
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Waitany( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    index, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Waitany_f08
+
+subroutine PMPI_Waitany_f08( &
+  count, &
+  array_of_requests, &
+  index, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Waitany => PMPI_Waitany
+  implicit none
+  integer, intent(in) :: count
+  type(MPI_Request), intent(inout) :: array_of_requests(count)
+  integer, intent(out) :: index
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Waitany( &
+    count, &
+    array_of_requests%MPI_VAL, &
+    index, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Waitany_f08
+
+subroutine MPI_Waitsome_f08( &
+  incount, &
+  array_of_requests, &
+  outcount, &
+  array_of_indices, &
+  array_of_statuses, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: MPIF_Waitsome => MPI_Waitsome
+  implicit none
+  integer, intent(in) :: incount
+  type(MPI_Request), intent(inout) :: array_of_requests(incount)
+  integer, intent(out) :: outcount
+  integer, intent(out) :: array_of_indices(*)
+  type(MPI_Status) :: array_of_statuses(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Waitsome( &
+    incount, &
+    array_of_requests%MPI_VAL, &
+    outcount, &
+    array_of_indices, &
+    array_of_statuses, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Waitsome_f08
+
+subroutine PMPI_Waitsome_f08( &
+  incount, &
+  array_of_requests, &
+  outcount, &
+  array_of_indices, &
+  array_of_statuses, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_raw, only: PMPIF_Waitsome => PMPI_Waitsome
+  implicit none
+  integer, intent(in) :: incount
+  type(MPI_Request), intent(inout) :: array_of_requests(incount)
+  integer, intent(out) :: outcount
+  integer, intent(out) :: array_of_indices(*)
+  type(MPI_Status) :: array_of_statuses(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Waitsome( &
+    incount, &
+    array_of_requests%MPI_VAL, &
+    outcount, &
+    array_of_indices, &
+    array_of_statuses, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Waitsome_f08
+
+subroutine MPI_Win_allocate_f08( &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  baseptr, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_allocate => MPI_Win_allocate
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer, intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(C_PTR), intent(out) :: baseptr
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call MPIF_Win_allocate( &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_baseptr, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_allocate_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+subroutine MPI_Win_allocate_c_f08( &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  baseptr, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_allocate_c => MPI_Win_allocate_c
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer(MPI_ADDRESS_KIND), intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(C_PTR), intent(out) :: baseptr
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call MPIF_Win_allocate_c( &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_baseptr, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_allocate_c_f08
+#endif
+
+subroutine PMPI_Win_allocate_f08( &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  baseptr, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_allocate => PMPI_Win_allocate
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer, intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(C_PTR), intent(out) :: baseptr
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call PMPIF_Win_allocate( &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_baseptr, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_allocate_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+subroutine PMPI_Win_allocate_c_f08( &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  baseptr, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_allocate_c => PMPI_Win_allocate_c
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer(MPI_ADDRESS_KIND), intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(C_PTR), intent(out) :: baseptr
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call PMPIF_Win_allocate_c( &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_baseptr, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_allocate_c_f08
+#endif
+
+subroutine MPI_Win_allocate_shared_f08( &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  baseptr, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_allocate_shared => MPI_Win_allocate_shared
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer, intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(C_PTR), intent(out) :: baseptr
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call MPIF_Win_allocate_shared( &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_baseptr, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_allocate_shared_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+subroutine MPI_Win_allocate_shared_c_f08( &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  baseptr, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_allocate_shared_c => MPI_Win_allocate_shared_c
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer(MPI_ADDRESS_KIND), intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(C_PTR), intent(out) :: baseptr
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call MPIF_Win_allocate_shared_c( &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_baseptr, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_allocate_shared_c_f08
+#endif
+
+subroutine PMPI_Win_allocate_shared_f08( &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  baseptr, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_allocate_shared => PMPI_Win_allocate_shared
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer, intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(C_PTR), intent(out) :: baseptr
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call PMPIF_Win_allocate_shared( &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_baseptr, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_allocate_shared_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+subroutine PMPI_Win_allocate_shared_c_f08( &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  baseptr, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_allocate_shared_c => PMPI_Win_allocate_shared_c
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer(MPI_ADDRESS_KIND), intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(C_PTR), intent(out) :: baseptr
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call PMPIF_Win_allocate_shared_c( &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_baseptr, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_allocate_shared_c_f08
+#endif
+
+subroutine MPI_Win_attach_f08( &
+  win, &
+  base, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_attach => MPI_Win_attach
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer :: base(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_attach( &
+    win%MPI_VAL, &
+    base, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_attach_f08
+
+subroutine PMPI_Win_attach_f08( &
+  win, &
+  base, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_attach => PMPI_Win_attach
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer :: base(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_attach( &
+    win%MPI_VAL, &
+    base, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_attach_f08
+
+subroutine MPI_Win_call_errhandler_f08( &
+  win, &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_call_errhandler => MPI_Win_call_errhandler
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_call_errhandler( &
+    win%MPI_VAL, &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_call_errhandler_f08
+
+subroutine PMPI_Win_call_errhandler_f08( &
+  win, &
+  errorcode, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_call_errhandler => PMPI_Win_call_errhandler
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(in) :: errorcode
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_call_errhandler( &
+    win%MPI_VAL, &
+    errorcode, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_call_errhandler_f08
+
+subroutine MPI_Win_complete_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_complete => MPI_Win_complete
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_complete( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_complete_f08
+
+subroutine PMPI_Win_complete_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_complete => PMPI_Win_complete
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_complete( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_complete_f08
+
+subroutine MPI_Win_create_f08( &
+  base, &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_create => MPI_Win_create
+  implicit none
+  integer :: base(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer, intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_create( &
+    base, &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_create_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+subroutine MPI_Win_create_c_f08( &
+  base, &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_create_c => MPI_Win_create_c
+  implicit none
+  integer :: base(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer(MPI_ADDRESS_KIND), intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_create_c( &
+    base, &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_create_c_f08
+#endif
+
+subroutine PMPI_Win_create_f08( &
+  base, &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_create => PMPI_Win_create
+  implicit none
+  integer :: base(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer, intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_create( &
+    base, &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_create_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+subroutine PMPI_Win_create_c_f08( &
+  base, &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_create_c => PMPI_Win_create_c
+  implicit none
+  integer :: base(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer(MPI_ADDRESS_KIND), intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_create_c( &
+    base, &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_create_c_f08
+#endif
+
+subroutine MPI_Win_create_dynamic_f08( &
+  info, &
+  comm, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_create_dynamic => MPI_Win_create_dynamic
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_create_dynamic( &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_create_dynamic_f08
+
+subroutine PMPI_Win_create_dynamic_f08( &
+  info, &
+  comm, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_create_dynamic => PMPI_Win_create_dynamic
+  implicit none
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_create_dynamic( &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_create_dynamic_f08
+
+subroutine MPI_Win_create_errhandler_f08( &
+  win_errhandler_fn, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_create_errhandler => MPI_Win_create_errhandler
+  implicit none
+  procedure(MPI_Win_errhandler_function) :: win_errhandler_fn
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_create_errhandler( &
+    win_errhandler_fn, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_create_errhandler_f08
+
+subroutine PMPI_Win_create_errhandler_f08( &
+  win_errhandler_fn, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_create_errhandler => PMPI_Win_create_errhandler
+  implicit none
+  procedure(MPI_Win_errhandler_function) :: win_errhandler_fn
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_create_errhandler( &
+    win_errhandler_fn, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_create_errhandler_f08
+
+subroutine MPI_Win_create_keyval_f08( &
+  win_copy_attr_fn, &
+  win_delete_attr_fn, &
+  win_keyval, &
+  extra_state, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_create_keyval => MPI_Win_create_keyval
+  implicit none
+  procedure(MPI_Win_copy_attr_function) :: win_copy_attr_fn
+  procedure(MPI_Win_delete_attr_function) :: win_delete_attr_fn
+  integer, intent(out) :: win_keyval
+  integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_create_keyval( &
+    win_copy_attr_fn, &
+    win_delete_attr_fn, &
+    win_keyval, &
+    extra_state, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_create_keyval_f08
+
+subroutine PMPI_Win_create_keyval_f08( &
+  win_copy_attr_fn, &
+  win_delete_attr_fn, &
+  win_keyval, &
+  extra_state, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_create_keyval => PMPI_Win_create_keyval
+  implicit none
+  procedure(MPI_Win_copy_attr_function) :: win_copy_attr_fn
+  procedure(MPI_Win_delete_attr_function) :: win_delete_attr_fn
+  integer, intent(out) :: win_keyval
+  integer(MPI_ADDRESS_KIND), intent(in) :: extra_state
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_create_keyval( &
+    win_copy_attr_fn, &
+    win_delete_attr_fn, &
+    win_keyval, &
+    extra_state, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_create_keyval_f08
+
+subroutine MPI_Win_delete_attr_f08( &
+  win, &
+  win_keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_delete_attr => MPI_Win_delete_attr
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(in) :: win_keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_delete_attr( &
+    win%MPI_VAL, &
+    win_keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_delete_attr_f08
+
+subroutine PMPI_Win_delete_attr_f08( &
+  win, &
+  win_keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_delete_attr => PMPI_Win_delete_attr
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(in) :: win_keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_delete_attr( &
+    win%MPI_VAL, &
+    win_keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_delete_attr_f08
+
+subroutine MPI_Win_detach_f08( &
+  win, &
+  base, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_detach => MPI_Win_detach
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer :: base(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_detach( &
+    win%MPI_VAL, &
+    base, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_detach_f08
+
+subroutine PMPI_Win_detach_f08( &
+  win, &
+  base, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_detach => PMPI_Win_detach
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer :: base(*)
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_detach( &
+    win%MPI_VAL, &
+    base, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_detach_f08
+
+subroutine MPI_Win_fence_f08( &
+  assert, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_fence => MPI_Win_fence
+  implicit none
+  integer, intent(in) :: assert
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_fence( &
+    assert, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_fence_f08
+
+subroutine PMPI_Win_fence_f08( &
+  assert, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_fence => PMPI_Win_fence
+  implicit none
+  integer, intent(in) :: assert
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_fence( &
+    assert, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_fence_f08
+
+subroutine MPI_Win_flush_f08( &
+  rank, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_flush => MPI_Win_flush
+  implicit none
+  integer, intent(in) :: rank
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_flush( &
+    rank, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_flush_f08
+
+subroutine PMPI_Win_flush_f08( &
+  rank, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_flush => PMPI_Win_flush
+  implicit none
+  integer, intent(in) :: rank
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_flush( &
+    rank, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_flush_f08
+
+subroutine MPI_Win_flush_all_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_flush_all => MPI_Win_flush_all
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_flush_all( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_flush_all_f08
+
+subroutine PMPI_Win_flush_all_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_flush_all => PMPI_Win_flush_all
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_flush_all( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_flush_all_f08
+
+subroutine MPI_Win_flush_local_f08( &
+  rank, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_flush_local => MPI_Win_flush_local
+  implicit none
+  integer, intent(in) :: rank
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_flush_local( &
+    rank, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_flush_local_f08
+
+subroutine PMPI_Win_flush_local_f08( &
+  rank, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_flush_local => PMPI_Win_flush_local
+  implicit none
+  integer, intent(in) :: rank
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_flush_local( &
+    rank, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_flush_local_f08
+
+subroutine MPI_Win_flush_local_all_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_flush_local_all => MPI_Win_flush_local_all
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_flush_local_all( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_flush_local_all_f08
+
+subroutine PMPI_Win_flush_local_all_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_flush_local_all => PMPI_Win_flush_local_all
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_flush_local_all( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_flush_local_all_f08
+
+subroutine MPI_Win_free_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_free => MPI_Win_free
+  implicit none
+  type(MPI_Win), intent(inout) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_free( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_free_f08
+
+subroutine PMPI_Win_free_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_free => PMPI_Win_free
+  implicit none
+  type(MPI_Win), intent(inout) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_free( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_free_f08
+
+subroutine MPI_Win_free_keyval_f08( &
+  win_keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_free_keyval => MPI_Win_free_keyval
+  implicit none
+  integer, intent(inout) :: win_keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_free_keyval( &
+    win_keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_free_keyval_f08
+
+subroutine PMPI_Win_free_keyval_f08( &
+  win_keyval, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_free_keyval => PMPI_Win_free_keyval
+  implicit none
+  integer, intent(inout) :: win_keyval
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_free_keyval( &
+    win_keyval, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_free_keyval_f08
+
+subroutine MPI_Win_get_attr_f08( &
+  win, &
+  win_keyval, &
+  attribute_val, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_get_attr => MPI_Win_get_attr
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(in) :: win_keyval
+  integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_get_attr( &
+    win%MPI_VAL, &
+    win_keyval, &
+    attribute_val, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_get_attr_f08
+
+subroutine PMPI_Win_get_attr_f08( &
+  win, &
+  win_keyval, &
+  attribute_val, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_get_attr => PMPI_Win_get_attr
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(in) :: win_keyval
+  integer(MPI_ADDRESS_KIND), intent(out) :: attribute_val
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_get_attr( &
+    win%MPI_VAL, &
+    win_keyval, &
+    attribute_val, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_get_attr_f08
+
+subroutine MPI_Win_get_errhandler_f08( &
+  win, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_get_errhandler => MPI_Win_get_errhandler
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_get_errhandler( &
+    win%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_get_errhandler_f08
+
+subroutine PMPI_Win_get_errhandler_f08( &
+  win, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_get_errhandler => PMPI_Win_get_errhandler
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Errhandler), intent(out) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_get_errhandler( &
+    win%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_get_errhandler_f08
+
+subroutine MPI_Win_get_group_f08( &
+  win, &
+  group, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_get_group => MPI_Win_get_group
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Group), intent(out) :: group
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_get_group( &
+    win%MPI_VAL, &
+    group%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_get_group_f08
+
+subroutine PMPI_Win_get_group_f08( &
+  win, &
+  group, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_get_group => PMPI_Win_get_group
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Group), intent(out) :: group
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_get_group( &
+    win%MPI_VAL, &
+    group%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_get_group_f08
+
+subroutine MPI_Win_get_info_f08( &
+  win, &
+  info_used, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_get_info => MPI_Win_get_info
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Info), intent(out) :: info_used
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_get_info( &
+    win%MPI_VAL, &
+    info_used%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_get_info_f08
+
+subroutine PMPI_Win_get_info_f08( &
+  win, &
+  info_used, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_get_info => PMPI_Win_get_info
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Info), intent(out) :: info_used
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_get_info( &
+    win%MPI_VAL, &
+    info_used%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_get_info_f08
+
+subroutine MPI_Win_get_name_f08( &
+  win, &
+  win_name, &
+  resultlen, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_get_name => MPI_Win_get_name
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  character*(MPI_MAX_OBJECT_NAME), intent(out) :: win_name
+  integer, intent(out) :: resultlen
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_get_name( &
+    win%MPI_VAL, &
+    win_name, &
+    resultlen, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_get_name_f08
+
+subroutine PMPI_Win_get_name_f08( &
+  win, &
+  win_name, &
+  resultlen, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_get_name => PMPI_Win_get_name
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  character*(MPI_MAX_OBJECT_NAME), intent(out) :: win_name
+  integer, intent(out) :: resultlen
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_get_name( &
+    win%MPI_VAL, &
+    win_name, &
+    resultlen, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_get_name_f08
+
+subroutine MPI_Win_lock_f08( &
+  lock_type, &
+  rank, &
+  assert, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_lock => MPI_Win_lock
+  implicit none
+  integer, intent(in) :: lock_type
+  integer, intent(in) :: rank
+  integer, intent(in) :: assert
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_lock( &
+    lock_type, &
+    rank, &
+    assert, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_lock_f08
+
+subroutine PMPI_Win_lock_f08( &
+  lock_type, &
+  rank, &
+  assert, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_lock => PMPI_Win_lock
+  implicit none
+  integer, intent(in) :: lock_type
+  integer, intent(in) :: rank
+  integer, intent(in) :: assert
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_lock( &
+    lock_type, &
+    rank, &
+    assert, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_lock_f08
+
+subroutine MPI_Win_lock_all_f08( &
+  assert, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_lock_all => MPI_Win_lock_all
+  implicit none
+  integer, intent(in) :: assert
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_lock_all( &
+    assert, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_lock_all_f08
+
+subroutine PMPI_Win_lock_all_f08( &
+  assert, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_lock_all => PMPI_Win_lock_all
+  implicit none
+  integer, intent(in) :: assert
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_lock_all( &
+    assert, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_lock_all_f08
+
+subroutine MPI_Win_post_f08( &
+  group, &
+  assert, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_post => MPI_Win_post
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: assert
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_post( &
+    group%MPI_VAL, &
+    assert, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_post_f08
+
+subroutine PMPI_Win_post_f08( &
+  group, &
+  assert, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_post => PMPI_Win_post
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: assert
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_post( &
+    group%MPI_VAL, &
+    assert, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_post_f08
+
+subroutine MPI_Win_set_attr_f08( &
+  win, &
+  win_keyval, &
+  attribute_val, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_set_attr => MPI_Win_set_attr
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(in) :: win_keyval
+  integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_set_attr( &
+    win%MPI_VAL, &
+    win_keyval, &
+    attribute_val, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_set_attr_f08
+
+subroutine PMPI_Win_set_attr_f08( &
+  win, &
+  win_keyval, &
+  attribute_val, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_set_attr => PMPI_Win_set_attr
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(in) :: win_keyval
+  integer(MPI_ADDRESS_KIND), intent(in) :: attribute_val
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_set_attr( &
+    win%MPI_VAL, &
+    win_keyval, &
+    attribute_val, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_set_attr_f08
+
+subroutine MPI_Win_set_errhandler_f08( &
+  win, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_set_errhandler => MPI_Win_set_errhandler
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Errhandler), intent(in) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_set_errhandler( &
+    win%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_set_errhandler_f08
+
+subroutine PMPI_Win_set_errhandler_f08( &
+  win, &
+  errhandler, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_set_errhandler => PMPI_Win_set_errhandler
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Errhandler), intent(in) :: errhandler
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_set_errhandler( &
+    win%MPI_VAL, &
+    errhandler%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_set_errhandler_f08
+
+subroutine MPI_Win_set_info_f08( &
+  win, &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_set_info => MPI_Win_set_info
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_set_info( &
+    win%MPI_VAL, &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_set_info_f08
+
+subroutine PMPI_Win_set_info_f08( &
+  win, &
+  info, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_set_info => PMPI_Win_set_info
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Info), intent(in) :: info
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_set_info( &
+    win%MPI_VAL, &
+    info%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_set_info_f08
+
+subroutine MPI_Win_set_name_f08( &
+  win, &
+  win_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_set_name => MPI_Win_set_name
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  character*(*), intent(in) :: win_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_set_name( &
+    win%MPI_VAL, &
+    win_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_set_name_f08
+
+subroutine PMPI_Win_set_name_f08( &
+  win, &
+  win_name, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_set_name => PMPI_Win_set_name
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  character*(*), intent(in) :: win_name
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_set_name( &
+    win%MPI_VAL, &
+    win_name, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_set_name_f08
+
+subroutine MPI_Win_shared_query_f08( &
+  win, &
+  rank, &
+  size, &
+  disp_unit, &
+  baseptr, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_shared_query => MPI_Win_shared_query
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(in) :: rank
+  integer(MPI_ADDRESS_KIND), intent(out) :: size
+  integer, intent(out) :: disp_unit
+  type(C_PTR), intent(out) :: baseptr
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call MPIF_Win_shared_query( &
+    win%MPI_VAL, &
+    rank, &
+    size, &
+    disp_unit, &
+    tmp_baseptr, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_shared_query_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+subroutine MPI_Win_shared_query_c_f08( &
+  win, &
+  rank, &
+  size, &
+  disp_unit, &
+  baseptr, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_shared_query_c => MPI_Win_shared_query_c
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(in) :: rank
+  integer(MPI_ADDRESS_KIND), intent(out) :: size
+  integer(MPI_ADDRESS_KIND), intent(out) :: disp_unit
+  type(C_PTR), intent(out) :: baseptr
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call MPIF_Win_shared_query_c( &
+    win%MPI_VAL, &
+    rank, &
+    size, &
+    disp_unit, &
+    tmp_baseptr, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_shared_query_c_f08
+#endif
+
+subroutine PMPI_Win_shared_query_f08( &
+  win, &
+  rank, &
+  size, &
+  disp_unit, &
+  baseptr, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_shared_query => PMPI_Win_shared_query
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(in) :: rank
+  integer(MPI_ADDRESS_KIND), intent(out) :: size
+  integer, intent(out) :: disp_unit
+  type(C_PTR), intent(out) :: baseptr
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call PMPIF_Win_shared_query( &
+    win%MPI_VAL, &
+    rank, &
+    size, &
+    disp_unit, &
+    tmp_baseptr, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_shared_query_f08
+
+#ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+subroutine PMPI_Win_shared_query_c_f08( &
+  win, &
+  rank, &
+  size, &
+  disp_unit, &
+  baseptr, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_shared_query_c => PMPI_Win_shared_query_c
+  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(in) :: rank
+  integer(MPI_ADDRESS_KIND), intent(out) :: size
+  integer(MPI_ADDRESS_KIND), intent(out) :: disp_unit
+  type(C_PTR), intent(out) :: baseptr
+  integer, intent(out), optional :: ierror
+  integer(MPI_ADDRESS_KIND) :: tmp_baseptr
+  integer :: tmp_ierror
+  call PMPIF_Win_shared_query_c( &
+    win%MPI_VAL, &
+    rank, &
+    size, &
+    disp_unit, &
+    tmp_baseptr, &
+    tmp_ierror &
+  )
+  baseptr = transfer(tmp_baseptr, C_NULL_PTR)
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_shared_query_c_f08
+#endif
+
+subroutine MPI_Win_start_f08( &
+  group, &
+  assert, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_start => MPI_Win_start
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: assert
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_start( &
+    group%MPI_VAL, &
+    assert, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_start_f08
+
+subroutine PMPI_Win_start_f08( &
+  group, &
+  assert, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_start => PMPI_Win_start
+  implicit none
+  type(MPI_Group), intent(in) :: group
+  integer, intent(in) :: assert
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_start( &
+    group%MPI_VAL, &
+    assert, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_start_f08
+
+subroutine MPI_Win_sync_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_sync => MPI_Win_sync
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_sync( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_sync_f08
+
+subroutine PMPI_Win_sync_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_sync => PMPI_Win_sync
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_sync( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_sync_f08
+
+subroutine MPI_Win_test_f08( &
+  win, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_test => MPI_Win_test
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_test( &
+    win%MPI_VAL, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_test_f08
+
+subroutine PMPI_Win_test_f08( &
+  win, &
+  flag, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_test => PMPI_Win_test
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  logical, intent(out) :: flag
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_test( &
+    win%MPI_VAL, &
+    flag, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_test_f08
+
+subroutine MPI_Win_unlock_f08( &
+  rank, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_unlock => MPI_Win_unlock
+  implicit none
+  integer, intent(in) :: rank
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_unlock( &
+    rank, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_unlock_f08
+
+subroutine PMPI_Win_unlock_f08( &
+  rank, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_unlock => PMPI_Win_unlock
+  implicit none
+  integer, intent(in) :: rank
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_unlock( &
+    rank, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_unlock_f08
+
+subroutine MPI_Win_unlock_all_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_unlock_all => MPI_Win_unlock_all
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_unlock_all( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_unlock_all_f08
+
+subroutine PMPI_Win_unlock_all_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_unlock_all => PMPI_Win_unlock_all
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_unlock_all( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_unlock_all_f08
+
+subroutine MPI_Win_wait_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Win_wait => MPI_Win_wait
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_wait( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_wait_f08
+
+subroutine PMPI_Win_wait_f08( &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Win_wait => PMPI_Win_wait
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_wait( &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_wait_f08
+
+function MPI_Wtick_f08( &
+) result(result)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Wtick => MPI_Wtick
+  implicit none
+  double precision :: result
+  result = MPIF_Wtick( &
+  )
+end function MPI_Wtick_f08
+
+function PMPI_Wtick_f08( &
+) result(result)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Wtick => PMPI_Wtick
+  implicit none
+  double precision :: result
+  result = PMPIF_Wtick( &
+  )
+end function PMPI_Wtick_f08
+
+function MPI_Wtime_f08( &
+) result(result)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: MPIF_Wtime => MPI_Wtime
+  implicit none
+  double precision :: result
+  result = MPIF_Wtime( &
+  )
+end function MPI_Wtime_f08
+
+function PMPI_Wtime_f08( &
+) result(result)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpi, only: PMPIF_Wtime => PMPI_Wtime
+  implicit none
+  double precision :: result
+  result = PMPIF_Wtime( &
+  )
+end function PMPI_Wtime_f08
+

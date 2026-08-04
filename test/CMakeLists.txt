@@ -67,3 +67,4 @@ add_mpi_test(pmpi_f                 SOURCES pmpi_f.f                            
 add_mpi_test(pmpi_f90               SOURCES pmpi_f90.f90                            LIBS MPI::MPI_Fortran)
 add_mpi_test(pmpi_f08               SOURCES pmpi_f08.f90                            LIBS MPI::MPI_Fortran)
 add_mpi_test(profile_f90            SOURCES profile_f90.f90                         LIBS MPI::MPI_Fortran)
+add_mpi_test(profile_f08            SOURCES profile_f08.f90                         LIBS MPI::MPI_Fortran)

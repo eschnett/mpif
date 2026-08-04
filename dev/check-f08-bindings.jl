@@ -7,6 +7,16 @@
 #   src/mpif_f08_types.F90       the 20 callback ABSTRACT INTERFACEs against A.1.3
 #   src/mpif_f08_attr_fns.F90    the 11 predefined callbacks       against A.4
 #
+# and one set against another: the 1180 specifics are declared in
+# gen/mpif_f08_functions.F90 and defined in gen/mpif_f08_wrappers.F90, being
+# external procedures so that their names are ones a profiling layer can
+# interpose, and the two declarations have to match. gfortran compares them too,
+# but only warns, which a build this size will bury.
+#
+# The specifics carry Table 19.1's `_f08` token and the appendix does not, A.4
+# giving each binding under the name a program writes. Stripping the token is
+# what lines the two up.
+#
 # The appendices give no PMPI bindings, so "the same declarations as their twin"
 # is the only thing there is to check about the second set -- and it is the thing a
 # tools layer depends on, MPI-5.0 section 19.1.5 asking for "a second procedure
@@ -58,6 +68,7 @@ const gen_file = joinpath(repo, "gen", "mpif_f08_functions.F90")
 const types_file = joinpath(repo, "src", "mpif_f08_types.F90")
 const attr_fns_file = joinpath(repo, "src", "mpif_f08_attr_fns.F90")
 const mpi_f08_file = joinpath(repo, "src", "mpi_f08.F90")
+const wrappers_file = joinpath(repo, "gen", "mpif_f08_wrappers.F90")
 
 # Divergences that are known, deliberate and recorded in MISSING.md. Anything
 # else is a finding. Each is counted and printed as a reminder, so that one which
@@ -373,13 +384,37 @@ function parse_predefined_callbacks(attr_fns, mpi_f08)
     return routines
 end
 
-"""The same shape, from gen/mpif_f08_functions.F90."""
-function parse_generated(path)
+"""
+The same shape, from a generated file, at a given indentation.
+
+Two callers, and comparing what they return is the point of having both. The
+mpi_f08 specifics are external procedures now, declared inside the module and
+defined outside it, so their declaration is written twice -- five spaces in for
+the interface bodies of gen/mpif_f08_functions.F90, flush left for the bodies of
+gen/mpif_f08_wrappers.F90. They come from one pass over one set of data and so
+cannot disagree, but that is an argument rather than a check, and gfortran's own
+cross-check is a warning that a 100,000-line build will bury.
+
+A body's locals and executable statements need no special handling: a name that
+is not a dummy argument is dropped, and a statement carries no `::`.
+"""
+function parse_generated(path, ind="  "; after=nothing)
     lines = split(read(path, String), "\n")
     routines = Dict{String,Any}()
     i, n = 1, length(lines)
+    # gen/mpif_f08_functions.F90 holds two modules, and mpif_f08_raw's interface
+    # bodies are indented exactly like mpif_f08_functions'. Without this the raw
+    # view of a status-taking routine -- INTEGER where the f08 one has
+    # TYPE(MPI_Status) -- lands in the same dictionary slot as the real one.
+    if after !== nothing
+        i = findfirst(==(after), lines)
+        i === nothing && error("$path: no line \"$after\"")
+    end
+    open_re = Regex("^" * ind * "(?:subroutine|function) (\\w+)\\( *&?\\s*\$")
+    close_re = Regex("^" * ind * "\\)")
+    end_re = Regex("^" * ind * "end (?:subroutine|function) ")
     while i ≤ n
-        m = match(r"^  (?:subroutine|function) (\w+)\( *&?\s*$", lines[i])
+        m = match(open_re, lines[i])
         if m === nothing
             i += 1
             continue
@@ -387,13 +422,13 @@ function parse_generated(path)
         name = m[1]
         args = String[]
         i += 1
-        while match(r"^  \)", lines[i]) === nothing
+        while match(close_re, lines[i]) === nothing
             a = strip(rstrip(strip(rstrip(strip(lines[i])), '&')), ',')
             isempty(a) || push!(args, lowercase(a))
             i += 1
         end
         params = Dict{String,Any}()
-        while i ≤ n && match(r"^  end (?:subroutine|function) ", lines[i]) === nothing
+        while i ≤ n && match(end_re, lines[i]) === nothing
             s = strip(lines[i])
             i += 1
             (startswith(s, "!") || !occursin("::", s)) && continue
@@ -507,10 +542,39 @@ function main()
     # against A.4 under its twin's name: nothing else states that the two are the
     # same binding, and the whole point of a PMPI name is that a call written
     # against one can be made through the other unchanged.
-    generated = parse_generated(gen_file)
-    mpi_generated = filter(kv -> !startswith(kv[1], "PMPI_"), generated)
-    pmpi_generated = Dict(kv[1][2:end] => kv[2]
+    # The specifics carry Table 19.1's `_f08` token, which the appendix does not:
+    # A.4 gives the binding under the name a program writes, and the token names
+    # the procedure a call resolves to. Strip it, and the P with it, to compare.
+    unsuffix(name) = endswith(name, "_f08") ? name[1:end-4] : name
+    generated = parse_generated(gen_file, "     "; after="module mpif_f08_functions")
+    mpi_generated = Dict(unsuffix(kv[1]) => kv[2]
+                         for kv in generated if !startswith(kv[1], "PMPI_"))
+    pmpi_generated = Dict(unsuffix(kv[1][2:end]) => kv[2]
                           for kv in generated if startswith(kv[1], "PMPI_"))
+
+    # Every specific is declared twice, in the module and over its body. They are
+    # emitted from one pass and so ought to agree; this is what says they do,
+    # gfortran's own cross-check between the two being a warning rather than an
+    # error and easily lost in the build.
+    bodies = parse_generated(wrappers_file, "")
+    if keys(bodies) != keys(generated)
+        only_ifc = sort(collect(setdiff(keys(generated), keys(bodies))))
+        only_body = sort(collect(setdiff(keys(bodies), keys(generated))))
+        println("WRAPPERS declared and not defined: $only_ifc")
+        println("WRAPPERS defined and not declared: $only_body")
+        problems_wrappers = length(only_ifc) + length(only_body)
+    else
+        problems_wrappers = 0
+        for name in sort(collect(keys(generated)))
+            if generated[name] != bodies[name]
+                println("WRAPPERS $name: interface and body disagree")
+                problems_wrappers += 1
+            end
+        end
+    end
+    println("$(length(generated)) specifics declared, $(length(bodies)) defined, " *
+            "$(problems_wrappers == 0 ? "identical" : "$problems_wrappers disagreeing")")
+    println()
 
     checks = [
         (standard, mpi_generated, "A.4", "generated",
@@ -523,7 +587,7 @@ function main()
          "in mpif_f08_attr_fns", "not declared here"),
     ]
 
-    problems = 0
+    problems = problems_wrappers
     passed_over = Dict{String,Int}()
     for (n, args) in enumerate(checks)
         n == 1 || println()

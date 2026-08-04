@@ -699,8 +699,9 @@ than with the standard.
 
   Its f90 copy passes now. It used to fail for want of PMPI and was listed here
   with the f08 one; the two turned out to be different problems, and only this one
-  is about a name. See "The mpi_f08 specific procedure names" under "Missing
-  features" for what closing it would and would not buy.
+  is about a name. mpif offers `MPI_Send_f08` -- see "The mpi_f08 specific
+  procedure names" under "Verified as correct" -- and will not offer
+  `MPI_Send_f08ts` until assumed-rank is taken, those two being one decision.
 
 ### MPICH: the f08 copy of `spawnargvf90` contradicts the standard and its own f90 copy
 
@@ -824,38 +825,39 @@ layer:
 For scale, `apis.json` has 150 routines with a choice buffer and 222 buffer
 parameters between them.
 
-### The mpi_f08 specific procedure names are not the ones a tools layer expects
+### The mpi module's `_c` names
 
-The PMPI interface is there now (see "The PMPI profiling interface" under
-"Verified as correct"), and this is what it does not carry with it. Table 19.1
-lists the specific procedure name a Fortran call must resolve to, per support
-method, and for `mpi_f08` with `ignore_tkr` choice buffers -- mpif's scheme, 1A --
-that name is `MPI_Isend_f08`. mpif's f08 specifics are module procedures named
-`MPI_Isend`, so mpif does not offer the name the table gives, and a module
-procedure's symbol is the compiler's to mangle in any case.
+`gen/mpif_functions.F90` declares `MPI_Send_c`, `MPI_Recv_c` and 157 more beside
+their small-count namesakes, so `use mpi` and `mpif.h` can reach the large-count
+C entry points. The standard gives no such binding. A.5, which is the appendix
+for `mpif.h` and the `mpi` module, contains not one `!(_c)` marker where A.4 has
+331, and section 19.1.4 says why: "In older Fortran bindings (mpif.h
+(deprecated) and use mpi), no new interfaces and no new specific procedures for
+larger types are provided beyond what existed in MPI-3.1; all MPI procedures have
+the same types as in the versions prior to MPI-4.0."
 
-What this costs is interposition, not correctness of any call. Section 19.1.5
-says a profiling routine "should provide the same specific Fortran procedure
-names and calling conventions, and therefore can interpose itself as the MPI
-library routine" -- which a tool can do for `mpif.h` and the `mpi` module, whose
-scheme-2A specifics are the external symbols `mpi_isend_` and so on, and cannot
-do for `mpi_f08`. `test/profile_f90.f90` is the `mpi` module half working; there
-is deliberately no f08 counterpart, because there is nothing to intercept.
+Noticed while giving the `mpi_f08` specifics their Table 19.1 names, which is
+where the same question had a clear answer: there the plain `_c` names went, the
+standard saying invoking them is erroneous. Here it is less clear-cut, and the
+argument runs both ways.
 
-MPICH's arrangement is the one to copy if this is ever taken: its `mpi_f08` module
-is interface blocks only, over external `MPIR_Send_f08ts` bodies in
-`use_mpi_f08/wrappers_f/f08ts.f90`, with `PMPIR_Send_f08ts` beside them in
-`pf08ts.f90`. Moving mpif's 590 f08 bodies out of the module and into external
-procedures under the Table 19.1 names is the whole of the work, and it is not
-small.
+For removing them: `MPI_Send_c` is a name the standard defines in C and not in
+Fortran, so declaring it in the `mpi` module puts an mpif invention in the `MPI_`
+namespace, which the Namespace section above says nothing may do. Neither MPICH
+nor Open MPI declares one.
 
-Worth knowing before starting: it would not make `f08/profile1f90` pass. That
-test defines `mpi_send_f08ts`, which is scheme **1B** -- the `TYPE(*),
-DIMENSION(..)` form -- and mpif is scheme 1A, so the name it interposes would
-still be one mpif does not use. 1B belongs to the assumed-rank option under
-"Assumed-rank choice buffers", which is not being taken. So the two are one
-decision: the `_f08ts` names arrive with assumed-rank or not at all, and only the
-plain `_f08` names are available meanwhile.
+For keeping them: without them a program limited to `mpif.h` or the `mpi` module
+cannot send more than `huge(0)` elements at all, since those bindings have no
+polymorphism to reach the large-count form with -- that is the deficiency the
+quoted sentence describes rather than a facility it withholds. And the names cost
+little to keep: `mpif.h` has implicit interfaces, so `call MPI_SEND_C(...)` finds
+`mpi_send_c_` whether or not anything declares it, and that symbol has to exist
+for the f08 layer regardless.
+
+Unresolved, and left alone deliberately rather than swept along with the f08
+change: the two are not the same question, and this one is a judgement about
+whether mpif should offer a useful non-standard name where the standard offers
+nothing. Whoever settles it should decide the `mpif.h` half with it.
 
 ### Fortran-set attribute values are not visible to C as a pointer
 
@@ -1045,6 +1047,13 @@ The procedures behind `operator(==)` and `operator(/=)` on the handle types were
 `MPI_Comm_equal` and so on, which the standard does not define; they are now
 `mpif_comm_equal` and friends. They were already private to `mpif_f08_types`.
 
+In `mpi_f08` the procedures a program calls are generics, and the specifics
+behind them carry Table 19.1's `_f08` token: `MPI_Send_f08`, `MPI_Send_c_f08`.
+Both are the standard's names, not mpif's, and the plain `MPI_Send_c` that used
+to sit in that module is gone -- 19.1.4 makes invoking a `_c` specific erroneous
+but for `MPI_Op_create_c` and `MPI_Register_datarep_c`. See "The mpi_f08 specific
+procedure names" under "Verified as correct".
+
 `PMPI_` is a third case, and a simpler one: the standard reserves the whole prefix
 to the implementation -- "programs must not declare functions with names beginning
 with any prefix of the form PMPI_" -- and says of the specific names behind the
@@ -1064,6 +1073,76 @@ directly after it -- `mpif_pwin_allocate_c_cptr` for `mpif_win_allocate_c_cptr`,
 
 Recorded so that they do not get re-investigated:
 
+- **The mpi_f08 specific procedure names.** Table 19.1 says a Fortran call to an
+  MPI routine "shall result in a call to a procedure with one of the specific
+  procedure names and calling conventions" it lists, and for `mpi_f08` with
+  choice buffers under `ignore_tkr` -- scheme 1A, mpif's -- that name carries an
+  `_f08` token. Section 19.1.4 adds the large-count one: "the same name followed
+  by `_c`, and then suffixed by the token specified in Table 19.1", so `_c`
+  comes first and the standard's own longest-name example,
+  `PMPI_Reduce_scatter_block_init_c_f08ts`, spells the order out. mpif's
+  specifics are `MPI_Send_f08` and `MPI_Send_c_f08` accordingly, and their PMPI
+  twins likewise.
+
+  They are external procedures, in `gen/mpif_f08_wrappers.F90`, declared as
+  interface bodies in `mpif_f08_functions` and defined outside any module. That
+  is the point rather than an implementation detail. They used to be module
+  procedures, which could have carried the same names but not what the names are
+  for: 19.1.5 wants a profiling routine to "provide the same specific Fortran
+  procedure names and calling conventions, and therefore ... interpose itself as
+  the MPI library routine", and a module procedure's symbol is the compiler's to
+  mangle. `test/profile_f08.f90` is that working -- it defines its own
+  `MPI_Comm_rank_f08`, a `call MPI_Comm_rank(...)` written against the generic
+  lands in it, and it reaches the real one through `PMPI_Comm_rank`. Before this
+  there was nothing in `mpi_f08` to intercept, and the test could not have been
+  written.
+
+  Every base name is a generic now, 866 of them counting the PMPI half, because
+  the plain `MPI_Send` is no longer a procedure at all -- only the name a call is
+  written with. The specifics are public beside them, since a tool has to be able
+  to name one.
+
+  Two things this settled that had been assumed the other way:
+
+  - **`MPI_Send_c` is gone from `mpi_f08`, and 156 like it.** Section 19.1.4:
+    "It is erroneous to directly invoke the `_c` specific procedures in the
+    Fortran mpi_f08 module with the exception of the following procedures:
+    MPI_Op_create_c and MPI_Register_datarep_c." A.4 bears it out, giving the
+    large-count binding as `MPI_Send(...) !(_c)` -- the same generic name, with
+    the marker saying which of its two specifics is meant. So the only `_c` names
+    a program may call are those two, whose large-count form no generic can
+    select because only the callback's prototype distinguishes it; for them the
+    standard says the variant "shall be called explicitly as MPI_Op_create_c".
+    mpif provides exactly those two and no others, which is what MPICH provides.
+    `test/op_create.f90` had been calling `MPI_Reduce_local_c` and now calls the
+    generic.
+  - **The `#ifdef` guards were half-applied.** 19.1.4 again: where "the type
+    signatures of the two specific procedures are identical ... the
+    implementation shall not provide the `_c` specific procedure". The guards
+    gated only the generic that would pair the two, so on the platform meant to
+    have no `_c` specific mpif emitted one anyway, reachable under the
+    `MPI_Type_get_extent_c` name that has now gone. The guard covers the
+    specific's interface, its public line and its body.
+
+  One thing to know before touching the choice buffers: `!dir$ ignore_tkr` and
+  `!gcc$ attributes no_arg_check` are on the interface bodies and not on the
+  definitions. flang requires that -- "!DIR$ IGNORE_TKR may apply only in an
+  interface or a module procedure" -- and it is right anyway, both directives
+  relaxing the checking a *caller* gets, and a caller seeing the interface. While
+  these were module procedures the interface and the definition were one
+  declaration and the question did not arise; gcc accepted the directives in the
+  bodies and flang refused to build, which is the sort of thing only building
+  both catches.
+
+  The declaration being written twice is the cost of the arrangement, so
+  `dev/check-f08-bindings.jl` compares the two: 1180 specifics declared, 1180
+  defined, identical, argument names and order included. gfortran compares them
+  too and only warns, which a build this size buries.
+
+  What this does not do is make `f08/profile1f90` pass. That test interposes
+  `mpi_send_f08ts`, scheme **1B** -- the `TYPE(*), DIMENSION(..)` form -- and
+  mpif is 1A. The `_f08ts` names arrive with assumed-rank or not at all; see
+  "Assumed-rank choice buffers", which is still not being taken.
 - **The PMPI profiling interface.** Every MPI procedure mpif provides has a
   `PMPI_` form, in all three interfaces, and each calls C's `PMPI_` entry point
   rather than its `MPI_` one. MPI-5.0 asks for this twice, in section 15.2.1 ("an
@@ -1667,12 +1746,6 @@ byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
 5. **Delete the five `flaky` entries**, if two or three more runs keep agreeing
    with 30861875404 that they pass. They were the `MPI_Type_get_contents` defect
    all along; see that entry.
-6. **The mpi_f08 specific procedure names**, last because it is the largest and
-   buys the least: it would let a tools layer interpose the f08 wrappers, which
-   `mpif.h` and the `mpi` module already allow, and it would flip no test either
-   way. Its own entry above says why, and why it cannot be separated from
-   assumed-rank.
-
 Two things are decided and not on this list, so that they are not picked up by
 mistake: assumed-rank choice buffers are not being taken for now, and `MPI_Sizeof`
 stays as it is, covering rank zero and rank one. Both are recorded where they
@@ -1722,8 +1795,9 @@ which is the PMPI interface arriving: `wtimef90` in both languages and
 first two only ever needed the names to exist. The third is the interesting one --
 it is MPICH's own profiling test, intercepting `mpi_send_` and `mpi_recv_` and
 calling `pmpi_send`/`pmpi_recv`, so it says that the mechanism works and not
-merely that the names link. Its f08 copy still fails, on a specific procedure name
-rather than on PMPI; see "The mpi_f08 specific procedure names".
+merely that the names link. Its f08 copy still fails, and on a different thing
+again: it interposes `mpi_send_f08ts`, a scheme-1B name that belongs to
+assumed-rank. See "The mpi_f08 specific procedure names".
 
 Measured on `mpich/gcc/darwin/26/arm64`, which reports no differences against the
 list after the change, and inferred for the other eleven: nothing about these three
@@ -1818,10 +1892,12 @@ expect some churn: a flaky entry surfaces as an unexpected pass, which is the
 mechanism working rather than failing. Three entries are already marked as seen
 on one variant only and therefore suspect.
 
-`test/`, mpif's own suite, was 32 of 32 and is now 43 of 43, the four PMPI ones
-being the most recent additions -- `pmpi_f`, `pmpi_f90`, `pmpi_f08` and
-`profile_f90`. Green on all twelve variants in CI up to `op_create`; the four new
-ones have been run on `mpich/gcc/darwin/26/arm64`, the rest being CI's to confirm.
+`test/`, mpif's own suite, was 32 of 32 and is now 44 of 44, the most recent
+additions being the four PMPI ones -- `pmpi_f`, `pmpi_f90`, `pmpi_f08` and
+`profile_f90` -- and `profile_f08`, which interposes an f08 specific. Green on
+all twelve variants in CI up to the PMPI five; `profile_f08` has been run on
+`mpich/gcc/darwin/26/arm64`, `mpich/llvm/darwin/26/arm64` and
+`openmpi/gcc/darwin/26/arm64`, the rest being CI's to confirm.
 
 Two of the four had to be written differently than first drafted, and both for
 reasons about MPI rather than about PMPI. `pmpi_f90` freed the address rather than

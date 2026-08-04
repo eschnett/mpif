@@ -288,6 +288,7 @@ add_library(mpifort_abi SHARED
   gen/mpif_functions.c
   gen/mpif_functions.F90
   gen/mpif_f08_functions.F90
+  gen/mpif_f08_wrappers.F90
 )
 target_include_directories(mpifort_abi
   PUBLIC

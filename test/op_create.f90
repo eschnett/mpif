@@ -88,8 +88,15 @@ contains
        inoutbuf(i) = 100 * i
     end do
     count_c = n
+    ! MPI_Op_create_c by name, and MPI_Reduce_local through its generic. That is
+    ! the whole of the difference the standard draws between them: 19.1.4 says
+    ! invoking a `_c` specific directly is erroneous "with the exception of the
+    ! following procedures: MPI_Op_create_c and MPI_Register_datarep_c", those two
+    ! being the ones whose large-count form no generic can select, since only the
+    ! callback's prototype tells them apart. Everywhere else the count's kind
+    ! does, so the generic resolves and there is no `_c` name to call.
     call MPI_Op_create_c(f08_sum_c, .true., op)
-    call MPI_Reduce_local_c(inbuf, inoutbuf, count_c, MPI_INTEGER, op)
+    call MPI_Reduce_local(inbuf, inoutbuf, count_c, MPI_INTEGER, op)
     do i = 1, n
        if (inoutbuf(i) /= 101 * i) stop 33
     end do

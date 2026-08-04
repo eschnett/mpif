@@ -280,19 +280,42 @@ end
 c_implementations = []
 c_prototypes = []
 f_interfaces = []
-f08_implementations_useonly = []
 f08_implementations_public = []
 f08_generic_interfaces = []
 
-# Base names that got a large-count `_c` companion, so that mpi_f08 can overload
-# the two under the base name. MPI-4.0 added large counts "via separate
-# additional MPI procedures in C (suffixed with `_c`) and via interface
-# polymorphism in Fortran when using USE mpi_f08" -- so `MPI_Send` there has to
-# accept an INTEGER(KIND=MPI_COUNT_KIND) count, not send the caller to a
-# separate `MPI_Send_c`. Note the other half of that sentence: "No polymorphic
-# support for larger types is provided in Fortran when using mpif.h and use
-# mpi", which is why this list only feeds the f08 module.
-f08_large_count_pairs = []
+# The mpi_f08 wrappers are external procedures, declared in the module and
+# defined outside it, rather than module procedures. Table 19.1 is why: a Fortran
+# call to an MPI routine "shall result in a call to a procedure with one of the
+# specific procedure names" it lists, which for mpi_f08 with `ignore_tkr` choice
+# buffers -- scheme 1A -- is `MPI_Isend_f08`. A module procedure could carry that
+# name but not the point of it: its symbol is the compiler's to mangle, where
+# 19.1.5 wants a profiling routine to "provide the same specific Fortran
+# procedure names and calling conventions, and therefore ... interpose itself as
+# the MPI library routine". Only an external procedure has a name a linker will
+# let a tool replace.
+#
+# So the declarations go in the module and the bodies in a file of their own,
+# which is how both implementations arrange it. The two are emitted from one pass
+# over the same data and so cannot disagree; `dev/check-f08-bindings.jl` compares
+# them anyway, the compiler's own cross-check being only a warning.
+f08_specific_interfaces = []
+f08_wrapper_bodies = []
+
+# Generic name -> its specifics, in the order they were emitted, and the guard
+# that decides whether the second one exists at all. Every base name needs a
+# generic now: the plain `MPI_Isend` is no longer a procedure, only the name a
+# call is written with.
+#
+# This is the f08 module's business alone. MPI-4.0 added large counts "via
+# separate additional MPI procedures in C (suffixed with `_c`) and via interface
+# polymorphism in Fortran when using USE mpi_f08", and the other half of that
+# sentence is "No polymorphic support for larger types is provided in Fortran
+# when using mpif.h and use mpi" -- so there the two forms stay two names, and
+# `gen/mpif_functions.F90` declares `MPI_Send` and `MPI_Send_c` side by side. See
+# "The mpi module's `_c` names" in MISSING.md for what is unresolved about that.
+f08_generic_specifics = Dict{String,Vector{String}}()
+f08_generic_guards = Dict{String,String}()
+f08_generic_order = []
 
 # The two the standard exempts, listing them as "the explicit Fortran procedures
 # MPI_Op_create_c and MPI_Register_datarep_c". Both take a user callback whose
@@ -301,7 +324,6 @@ f08_large_count_pairs = []
 # the two different user callback prototypes despite their different type
 # signatures".
 f08_explicit_large_count = ["MPI_Op_create", "MPI_Register_datarep"]
-f08_implementations_body = []
 
 append!(c_implementations,
         ["// Fortran-callable entry points, MPI_ and PMPI_ alike. See",
@@ -385,21 +407,24 @@ f08_raw_interfaces = ["! The mpi_f08 wrappers, MPI_ and PMPI_ alike, over a seco
                       "",
                       "  interface",
                       ]
-f08_raw_uses = []
-
-append!(f08_implementations_useonly,
-        ["module mpif_f08_functions",
-         "  use mpi, only: &",
-         ])
 append!(f08_implementations_public,
-        ["  implicit none",
+        ["module mpif_f08_functions",
+         "  implicit none",
          "  private",
          "  save",
          "",
          ])
-append!(f08_implementations_body,
-        ["",
-         "contains",
+
+# The bodies, in their own file. Each reaches C the way it always did, through
+# the `mpi` module's interface to the Fortran-callable C symbol -- or through
+# `mpif_f08_raw`'s, where a status is involved. As module procedures they got
+# those aliases from one `use` list at module scope; as external procedures each
+# names the one alias it calls, which is narrower and says what it is for.
+append!(f08_wrapper_bodies,
+        ["! The mpi_f08 wrappers themselves, MPI_ and PMPI_ alike, as external",
+         "! procedures under the specific names of Table 19.1. Declared in",
+         "! mpif_f08_functions, defined here, so that the name a call resolves to is",
+         "! one a profiling layer can interpose. See dev/mpiapi.jl; do not edit.",
          ])
 
 for key in sort(collect(keys(apis)))
@@ -507,11 +532,28 @@ for key in sort(collect(keys(apis)))
         name_c = P * name * (embiggen ? "_c" : "")
         name_f = lowercase(name_c * "_")
         f_name = name_c
-        f08_name = f_name
         # The `replace` is global, and safe only because no MPI routine name
         # contains "MPI" twice. It runs on the unprefixed name for that reason:
         # applied to "PMPI_Send" it would be relying on the same accident twice.
         f08_name_f = P * replace(name * (embiggen ? "_c" : ""), "MPI" => "MPIF")
+
+        # The specific procedure name, and the generic a program writes.
+        #
+        # Scheme 1A of Table 19.1 puts `_f08` on the end. Section 19.1.4 gives
+        # the large-count one "the same name followed by `_c`, and then suffixed
+        # by the token specified in Table 19.1", hence `_c_f08` in that order --
+        # which the standard's own longest-name example,
+        # PMPI_Reduce_scatter_block_init_c_f08ts, spells out.
+        f08_name = name_c * "_f08"
+        # 19.1.4 again: the two specifics live behind one polymorphic interface,
+        # so the generic is the base name. The exception is the two routines
+        # whose large-count form cannot be told apart by interface polymorphism;
+        # for those the standard says the large-count variant "shall be called
+        # explicitly as MPI_Op_create_c (i.e., with suffix `_c`)", so the `_c`
+        # name is a generic of its own. For every other routine invoking a `_c`
+        # name is erroneous, and mpif does not provide one.
+        f08_generic = embiggen && name ∈ f08_explicit_large_count ?
+            P * name * "_c" : P * name
 
         state = State(P)
         input_arguments = []
@@ -1535,7 +1577,6 @@ for key in sort(collect(keys(apis)))
 
         push!(c_implementations, "")
         push!(f_interfaces, "")
-        push!(f08_implementations_body, "")
 
         return_kind = api["return_kind"]
         if return_kind == "ERROR_CODE"
@@ -1603,11 +1644,13 @@ for key in sort(collect(keys(apis)))
                 push!(f08_raw_interfaces, "       $decl")
             end
             push!(f08_raw_interfaces, "     end $f_unit $f_name")
-            push!(f08_raw_uses, "    $f08_name_f => $f08_name, &")
-        else
-            push!(f08_implementations_useonly, "    $f08_name_f => $f08_name, &")
         end
-        push!(f08_implementations_public, "  public :: $f08_name")
+
+        # The one alias this wrapper's body imports, from whichever of the two
+        # views of the C symbol it needs.
+        f08_use_line = has_status ?
+            "  use mpif_f08_raw, only: $f08_name_f => $f_name" :
+            "  use mpi, only: $f08_name_f => $f_name"
         # Only overload when Fortran can actually tell the two apart, which is a
         # question about kinds and therefore about the platform. MPICH's
         # generator applies the same test, comparing the two kinds' sizes; it
@@ -1635,6 +1678,17 @@ for key in sort(collect(keys(apis)))
         # rejected: "Ambiguous interfaces in generic interface". A routine with
         # widenings of both sorts needs no guard, since one or the other always
         # holds.
+        #
+        # The guard covers the whole `_c` specific now, not just the generic that
+        # would pair it: 19.1.4 says that where "the type signatures of the two
+        # specific procedures are identical ... the implementation shall not
+        # provide the `_c` specific procedure". Before, the specific was emitted
+        # either way and only the pairing was guarded, which left a procedure
+        # behind on the platform that is meant not to have one -- reachable then,
+        # under the name `MPI_Type_get_extent_c`, and unreachable now, there being
+        # no such generic. Emitting it would be dead code as well as non-
+        # conforming.
+        specific_guard = ""
         if embiggen
             kinds = [p["kind"] for p in parameters]
             widens_int_to_count = any(k -> k ∈ int_count_kinds, kinds)
@@ -1659,57 +1713,103 @@ for key in sort(collect(keys(apis)))
                 @assert name ∈ f08_explicit_large_count
             else
                 @assert name ∉ f08_explicit_large_count
-                # The prefixed name, so that PMPI gets the same generics; the
-                # guard is not prefixed, and must not be -- it is a macro
+                # Not prefixed, and it must not be: the guard is a macro
                 # CMakeLists.txt defines, and a
                 # PMPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND would simply never
-                # be true, taking eight generics with it without a word.
-                push!(f08_large_count_pairs, (P * name, guard))
+                # be true, taking eight specifics with it without a word.
+                specific_guard = guard
             end
         end
 
-        push!(f08_implementations_body, "  $f_unit $f08_name( &")
+        # Register the specific under the generic a program calls it by. The
+        # order matters only for reading: the small-count specific is emitted
+        # first, so it comes first in the interface.
+        if !haskey(f08_generic_specifics, f08_generic)
+            f08_generic_specifics[f08_generic] = String[]
+            push!(f08_generic_order, f08_generic)
+        end
+        push!(f08_generic_specifics[f08_generic], f08_name)
+        isempty(specific_guard) || (f08_generic_guards[f08_generic] = specific_guard)
+
+        # The declaration, twice over: once as an interface body inside the
+        # module and once heading the external procedure. They are the same text
+        # down to the indentation, which is what the two loops below emit -- the
+        # body then carries on with its locals and its call, where the interface
+        # stops at the dummy arguments.
+        needs_cptr = any(p -> p["kind"] ∈ cptr_out_kinds && p["param_direction"] == "out",
+                         parameters)
+
+        isempty(specific_guard) || push!(f08_specific_interfaces, "#ifdef $specific_guard")
+        push!(f08_specific_interfaces, "     $f_unit $f08_name( &")
         for (n, arg) in enumerate(f08_arguments)
             comma = n < length(f08_arguments) ? "," : ""
-            push!(f08_implementations_body, "    $arg$comma &")
+            push!(f08_specific_interfaces, "       $arg$comma &")
         end
+        push!(f08_specific_interfaces,
+              f_unit == "function" ? "     ) result(result)" : "     )")
+        push!(f08_specific_interfaces, "       use mpif_f08_constants")
+        push!(f08_specific_interfaces, "       use mpif_f08_types")
+        needs_cptr &&
+            push!(f08_specific_interfaces, "       use, intrinsic :: iso_c_binding, only: C_PTR")
+        push!(f08_specific_interfaces, "       implicit none")
         if f_unit == "function"
-            push!(f08_implementations_body, "  ) result(result)")
-        else
-            push!(f08_implementations_body, "  )")
-        end
-        push!(f08_implementations_body, "    use mpif_f08_constants")
-        push!(f08_implementations_body, "    use mpif_f08_types")
-        if any(p -> p["kind"] ∈ cptr_out_kinds && p["param_direction"] == "out", parameters)
-            push!(f08_implementations_body, "    use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR")
-        end
-        push!(f08_implementations_body, "    implicit none")
-        if f_unit == "function"
-            push!(f08_implementations_body, "    $f_return_type :: result")
+            push!(f08_specific_interfaces, "       $f_return_type :: result")
         end
         for decl in f08_declarations
-            push!(f08_implementations_body, "    $decl")
+            push!(f08_specific_interfaces, "       $decl")
+        end
+        push!(f08_specific_interfaces, "     end $f_unit $f08_name")
+        isempty(specific_guard) || push!(f08_specific_interfaces, "#endif")
+        push!(f08_specific_interfaces, "")
+
+        isempty(specific_guard) || push!(f08_wrapper_bodies, "#ifdef $specific_guard")
+        push!(f08_wrapper_bodies, "$f_unit $f08_name( &")
+        for (n, arg) in enumerate(f08_arguments)
+            comma = n < length(f08_arguments) ? "," : ""
+            push!(f08_wrapper_bodies, "  $arg$comma &")
+        end
+        push!(f08_wrapper_bodies,
+              f_unit == "function" ? ") result(result)" : ")")
+        push!(f08_wrapper_bodies, "  use mpif_f08_constants")
+        push!(f08_wrapper_bodies, "  use mpif_f08_types")
+        push!(f08_wrapper_bodies, f08_use_line)
+        needs_cptr &&
+            push!(f08_wrapper_bodies, "  use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR")
+        push!(f08_wrapper_bodies, "  implicit none")
+        if f_unit == "function"
+            push!(f08_wrapper_bodies, "  $f_return_type :: result")
+        end
+        for decl in f08_declarations
+            # The choice-buffer directives stay behind in the interface, which is
+            # the only place they mean anything and, for flang, the only place
+            # they are allowed: "!DIR$ IGNORE_TKR may apply only in an interface
+            # or a module procedure". Both directives relax the checking a
+            # *caller* gets, and a caller sees the interface; the body below just
+            # forwards the address to a dummy declared the same way. While these
+            # wrappers were module procedures the two were one declaration, so the
+            # question did not arise.
+            startswith(decl, "!dir\$") || startswith(decl, "!gcc\$") ||
+                push!(f08_wrapper_bodies, "  $decl")
         end
         for decl in f08_call_temp_declarations
-            push!(f08_implementations_body, "    $decl")
+            push!(f08_wrapper_bodies, "  $decl")
         end
         for stmt in f08_call_temp_copyins
-            push!(f08_implementations_body, "    $stmt")
+            push!(f08_wrapper_bodies, "  $stmt")
         end
-        if f_unit == "function"        
-            push!(f08_implementations_body, "    result = $f08_name_f( &")
-        else
-            push!(f08_implementations_body, "    call $f08_name_f( &")
-        end
+        push!(f08_wrapper_bodies,
+              f_unit == "function" ? "  result = $f08_name_f( &" : "  call $f08_name_f( &")
         for (n, arg) in enumerate(f08_call_arguments)
             comma = n < length(f08_call_arguments) ? "," : ""
-            push!(f08_implementations_body, "      $arg$comma &")
+            push!(f08_wrapper_bodies, "    $arg$comma &")
         end
-        push!(f08_implementations_body, "    )")
+        push!(f08_wrapper_bodies, "  )")
         for stmt in f08_call_temp_copyouts
-            push!(f08_implementations_body, "    $stmt")
+            push!(f08_wrapper_bodies, "  $stmt")
         end
-        push!(f08_implementations_body, "  end $f_unit $f08_name")
+        push!(f08_wrapper_bodies, "end $f_unit $f08_name")
+        isempty(specific_guard) || push!(f08_wrapper_bodies, "#endif")
+        push!(f08_wrapper_bodies, "")
 
         push!(c_implementations, "{")
 
@@ -1769,28 +1869,52 @@ append!(f_interfaces,
          "end module mpif_functions",
          ])
 
-append!(f08_implementations_body,
-        ["",
-         "end module mpif_f08_functions",
-         ])
-
-# One generic per base name, gathering the small-count procedure and its
-# large-count companion. Naming the generic after one of its own specifics is
-# what the standard's own interface blocks do. A non-empty guard is a routine
-# whose two specifics differ in kind only on some platforms; CMakeLists.txt
-# defines the macro when they do, by compiling the ambiguity itself. Without the
-# generic the base name is the small-count specific alone, which is all a
-# program on that platform could pass anyway.
-for (name, guard) in sort(f08_large_count_pairs)
-    isempty(guard) || push!(f08_generic_interfaces, "#ifdef $guard")
-    append!(f08_generic_interfaces,
-            ["  interface $name",
-             "     procedure $name",
-             "     procedure $(name)_c",
-             "  end interface $name"])
-    isempty(guard) || push!(f08_generic_interfaces, "#endif")
+# One generic per base name -- every base name, not just the overloaded ones,
+# since `MPI_Isend` is no longer a procedure but only the name a call is written
+# with. Where a routine has a large-count companion the generic gathers both, and
+# a guarded companion makes the generic itself conditional: on the platform where
+# the two signatures coincide there is one specific to gather, which is all a
+# program there could pass anyway.
+for generic in sort(f08_generic_order)
+    specifics = f08_generic_specifics[generic]
+    guard = get(f08_generic_guards, generic, "")
+    if isempty(guard)
+        append!(f08_generic_interfaces, ["  interface $generic"])
+        for s in specifics
+            push!(f08_generic_interfaces, "     procedure $s")
+        end
+        push!(f08_generic_interfaces, "  end interface $generic")
+    else
+        @assert length(specifics) == 2
+        append!(f08_generic_interfaces,
+                ["#ifdef $guard",
+                 "  interface $generic",
+                 "     procedure $(specifics[1])",
+                 "     procedure $(specifics[2])",
+                 "  end interface $generic",
+                 "#else",
+                 "  interface $generic",
+                 "     procedure $(specifics[1])",
+                 "  end interface $generic",
+                 "#endif"])
+    end
     push!(f08_generic_interfaces, "")
 end
+
+# The generic is what a program calls; the specifics are public so that a
+# profiling layer can name one, which is the whole point of their having the
+# names Table 19.1 gives. A guarded specific is public only where it exists.
+for generic in sort(f08_generic_order)
+    guard = get(f08_generic_guards, generic, "")
+    push!(f08_implementations_public, "  public :: $generic")
+    for (n, s) in enumerate(f08_generic_specifics[generic])
+        guarded = !isempty(guard) && n == 2
+        guarded && push!(f08_implementations_public, "#ifdef $guard")
+        push!(f08_implementations_public, "  public :: $s")
+        guarded && push!(f08_implementations_public, "#endif")
+    end
+end
+push!(f08_implementations_public, "")
 
 append!(f08_raw_interfaces,
         ["",
@@ -1800,21 +1924,15 @@ append!(f08_raw_interfaces,
          "",
          ])
 
-# `MPI_VERSION` closes the `use mpi` list, having no trailing continuation; the
-# last of the raw renames closes its own the same way.
-f08_raw_use_block = []
-if !isempty(f08_raw_uses)
-    f08_raw_uses[end] = replace(f08_raw_uses[end], r", &$" => "")
-    f08_raw_use_block = ["  use mpif_f08_raw, only: &"; f08_raw_uses]
-end
-
-# The raw interfaces come first in the file: mpif_f08_functions uses them.
+# The raw interfaces come first in the file: the wrapper bodies use them.
 f08_implementations = [f08_raw_interfaces;
-                       f08_implementations_useonly;
-                       ["    MPI_VERSION"];
-                       f08_raw_use_block;
                        f08_implementations_public;
-                       f08_generic_interfaces; f08_implementations_body]
+                       f08_generic_interfaces;
+                       ["  interface"];
+                       f08_specific_interfaces;
+                       ["  end interface";
+                        "";
+                        "end module mpif_f08_functions"]]
 
 println("Writing \"gen/mpif_functions.c\"...")
 open("gen/mpif_functions.c", "w") do f
@@ -1834,6 +1952,13 @@ println("Writing \"gen/mpif_f08_functions.F90\"...")
 open("gen/mpif_f08_functions.F90", "w") do f
     for impl in f08_implementations
         println(f, impl)
+    end
+end
+
+println("Writing \"gen/mpif_f08_wrappers.F90\"...")
+open("gen/mpif_f08_wrappers.F90", "w") do f
+    for body in f08_wrapper_bodies
+        println(f, body)
     end
 end
 

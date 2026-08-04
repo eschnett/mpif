@@ -1,11 +1,13 @@
 ! MPI-4.0 added large counts "via separate additional MPI procedures in C
 ! (suffixed with `_c`) and via interface polymorphism in Fortran when using USE
 ! mpi_f08". So in mpi_f08 the base name has to accept an
-! INTEGER(KIND=MPI_COUNT_KIND) count as well as a default INTEGER one; the caller
-! is not meant to reach for MPI_Send_c. mpif generated the two as separate names
-! with no generic tying them together, so passing a count-kind count failed to
-! compile -- "Type mismatch in argument 'count'; passed INTEGER(8) to
-! INTEGER(4)", which is what stopped f08/pt2pt/pt2pt_largef08.
+! INTEGER(KIND=MPI_COUNT_KIND) count as well as a default INTEGER one, and the
+! caller cannot reach for MPI_Send_c: section 19.1.4 makes invoking a `_c`
+! specific erroneous but for MPI_Op_create_c and MPI_Register_datarep_c, and no
+! such name exists here. mpif generated the two as separate names with no generic
+! tying them together, so passing a count-kind count failed to compile -- "Type
+! mismatch in argument 'count'; passed INTEGER(8) to INTEGER(4)", which is what
+! stopped f08/pt2pt/pt2pt_largef08.
 !
 ! The counts here are small; what is being tested is which specific the generic
 ! resolves to, not actually moving more than 2^31 elements.
