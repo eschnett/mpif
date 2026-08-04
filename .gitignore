@@ -10,3 +10,6 @@ build*/
 /bug-ompi-info-value/ompi-empty-info-value
 /bug-ompi-object-names/ompi-object-names
 /bug-ompi-aio-eagain/ompi-aio-eagain
+/bug-ompi-aio-eagain/ompi-aio-eagain-probe
+/bug-ompi-aio-eagain/posix-aio-limit
+/bug-ompi-aio-eagain/*.dat

@@ -640,22 +640,108 @@ past, once per process:
     mca_fbtl_posix_ipwritev: error in aio_write():  Resource temporarily unavailable
     mca_fbtl_posix_ipreadv: error in aio_read(): errno 35 Resource temporarily unavailable
 
-EAGAIN from `aio_write` means the system's asynchronous I/O queue is full, and
-macOS keeps it small -- `sysctl kern.aioprocmax` is 16 on this machine, against a
-Linux default in the tens of thousands, which is why this is a macOS entry.
-`ompi/mca/fbtl/posix/fbtl_posix_ipwritev.c` prints the message and gives up, so
-the data never reaches the file, and `MPI_Wait` reports `MPI_SUCCESS` anyway --
-silence would be bad enough, and success is worse.
+The first reading of this said that the macOS aio queue is small -- `sysctl
+kern.aioprocmax` is 16 here, against a Linux default in the tens of thousands,
+which is why it is a macOS entry -- and that Open MPI prints the message and gives
+up, so "the data never reaches the file". Both halves are too generous. The queue
+is small, but Open MPI derives its limit from the wrong sysctl, cannot retry the
+way it thinks it can, discards the failure when it happens, and then leaks the
+slots it did get. Four separable defects, and the last two are what turn a lost
+write into a dead file handle. Paths below are relative to `mpi/src-openmpi-gcc/ompi`
+(Open MPI 6.1.0a1).
 
-`bug-ompi-aio-eagain/ompi-aio-eagain.c` is the reproducer, in C on four processes:
-MPICH round-trips the array, Open MPI loses all of it. The noncontiguous view is
-the necessary part -- a contiguous one issues few enough requests to stay under the
-limit and passes -- which is why the test's `darray` is in the probe.
+**The limit is per process, and Open MPI reads the system-wide one.**
+`ompi/mca/fbtl/posix/fbtl_posix.c:107` sets `ompi_fbtl_posix_max_prd_active_reqs`,
+the number of `aio_write`s it will keep in flight at once
+(`fbtl_posix_ipwritev.c:56`), from `sysconf(_SC_AIO_MAX)`. On macOS that reports
+`kern.aiomax`, 90 here, which is the *system-wide* total; what one process may
+have outstanding is `kern.aioprocmax`, 16. Measured, by declaring the variable
+`extern` in a program of one's own and printing it either side of the file open
+that runs the fbtl's `module_init`: 2048 -- the compiled-in default at
+`fbtl_posix.c:39` -- and then 90. So the batch is sized 5.6× what the process is
+allowed. It is not an MCA parameter: `sysconf` is the only thing that ever assigns
+it, so no run-time setting can bring it down.
 
-Nothing to fix on this side. Worth reporting upstream, and not yet. It accounts
-for `i_fcoll_test` on `openmpi/*/darwin/*` only; the same test also fails on every
-Linux variant and under flang on macOS, and those are still untriaged, with the
-aio message conspicuously absent from the reason.
+**Nothing can reap during the retry.** `fbtl_posix_ipwritev.c:113-130` does try:
+ten attempts per request with `mca_common_ompio_progress()` between them, which is
+the fix for open-mpi/ompi#8368, "Exceeding the max. number of pending aio requests
+on MacOS", closed in the 4.1 series. It cannot work here. A slot is released by
+`aio_return`, not by the operation finishing -- measurement (2) of
+`bug-ompi-aio-eagain/posix-aio-limit.c`: sixteen requests that have all completed
+still refuse a seventeenth, and accept it the moment they are reaped -- and the
+only caller of `aio_return` is `mca_fbtl_posix_progress`, which
+`mca_common_ompio_progress` reaches through `req->req_progress_fn`, assigned at
+`fbtl_posix_ipwritev.c:133`, *after* the loop. The ten attempts therefore iterate
+over a request that progress cannot see, and unless some unrelated ompio request
+happens to be reapable they are ten copies of one failure.
+
+**The failure is then dropped on the floor.** `fbtl_posix_ipwritev.c:128` returns
+`OMPI_ERROR`; `common_ompio_file_write.c:456` calls it as a statement and assigns
+the result to nothing. Which is also the whole of what `MPI_File_iwrite_all`
+does, because in ompio it is not collective at all: no component under
+`ompi/mca/fcoll/` sets `fcoll_file_iwrite_all`, so
+`mca_common_ompio_file_iwrite_all` takes its own else branch at
+`common_ompio_file_write.c:667` -- "WE fake it with individual non-blocking I/O
+operations" -- and nothing aggregates, so the io array is exactly as fragmented as
+the file view, 512 entries for the probe below. The backtrace has no fcoll frame
+in it: `PMPI_File_iwrite_all` → `mca_io_ompio_file_iwrite_all` →
+`mca_common_ompio_file_iwrite` → `mca_fbtl_posix_ipwritev`.
+
+**And the sixteen slots it did get are leaked.** The error path frees
+`data->prd_aio.aio_reqs` (`fbtl_posix_ipwritev.c:126`) while sixteen `aio_write`s
+are outstanding against those very control blocks -- undefined on POSIX's terms,
+which require an aiocb to stay valid until its operation completes -- and calls
+`aio_return` on none of them. Every slot the process has is retired for the life
+of the process, so every later nonblocking file operation fails at once, whatever
+its view.
+
+`bug-ompi-aio-eagain/ompi-aio-eagain-probe.c` counts all of that on one process,
+four `MPI_File_iwrite_all` calls in order, `mpiexec -n 1`:
+
+      (a) contiguous, control      MPI_Get_count =    64 of    64
+      (b) 512 blocks of 16         MPI_Get_count =     0 of  8192   <-- lost
+      (c) contiguous, after (b)    MPI_Get_count =     0 of    64   <-- lost
+      (d) contiguous, once more    MPI_Get_count =     0 of    64   <-- lost
+      file is 1984 bytes, a complete write leaves 65472 (16 blocks of 64 bytes landed)
+
+So "loses all of it" was wrong in detail, and the detail is the diagnosis: exactly
+`kern.aioprocmax` blocks reach the file, 16 of 512, and the file is left short.
+(c) and (d) are the leak -- single-request contiguous writes, identical to the
+control that had just succeeded. And the round trip reads back nothing not because
+the read is fragmented too but because the write has already retired every slot: a
+read-only run in a fresh process against a good file recovers 256 of 8192 integers,
+16 blocks again.
+
+The one thing in the interface that admits any of this is `MPI_Get_count` on the
+completed request, 0 where a success reports the lot. `MPI_File_iwrite_all` returns
+`MPI_SUCCESS`, `MPI_Test` reports the request complete on the first call, and
+`MPI_Wait` returns `MPI_SUCCESS` -- silence would be bad enough, and success is
+worse.
+
+The blocking path is unaffected, measured: `MPI_File_write_all` through the same
+view transfers all 8192 and says so. `fbtl_posix_pwritev.c` contains no `aio_*`
+call at all, using `pwritev` and data sieving instead, so this is the nonblocking
+path's alone. `bug-ompi-aio-eagain/ompi-aio-eagain.c` remains the four-process
+version, closest to the test: MPICH round-trips the array, rerun today, and
+Open MPI does not. The noncontiguous view is the necessary part -- a contiguous one
+issues few enough requests to stay under the limit and passes -- which is why the
+test's `darray` is in that probe, and why the one-process probe reaches the same
+fragmentation with a vector type.
+
+There is no workaround. Measured, each still failing: `--mca fbtl_posix_priority 0`
+(priority does not deselect the only component in the framework), `--mca fcoll
+individual` and `--mca fcoll_vulcan_async_io 0` (fcoll is not in this path at all,
+per the backtrace). `--mca fbtl ^posix` leaves no fbtl and the job dies. Open MPI
+6.1 ships one `io` component, `ompio`, and one `fbtl`, `posix`, so there is nothing
+to switch to; ROMIO is gone. Raising `kern.aioprocmax` past 90, with `kern.aiomax`
+above the product of that and the ranks per node, ought to work -- inferred, not
+measured, since it needs root, and a test suite cannot ask for it anyway.
+
+Nothing to fix on this side. Worth reporting upstream and still not reported;
+#8368 is the issue to reference, its fix being the retry loop that cannot retry.
+It accounts for `i_fcoll_test` on `openmpi/*/darwin/*` only; the same test also
+fails on every Linux variant and under flang on macOS, and those are still
+untriaged, with the aio message conspicuously absent from the reason.
 
 ### OpenMPI: left to itself it picks an interface it cannot use
 
