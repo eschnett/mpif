@@ -680,17 +680,22 @@ than with the standard.
   seen rather than to Open MPI at large; CI's Open MPI runners pass these tests
   today, and may stop at any time without anything having changed on this side.
 
-  Two variants now, not one. `openmpi/gcc/darwin/26/arm64` -- this machine, gcc,
-  against Open MPI `6cb5ef1d` -- fails the same six with the same message,
-  `MPI_Dist_graph_create() does not create a bidirectional ring graph!`. It is the
-  second arm64 environment to remap, the first being the Ubuntu 26.04 arm64 Docker
-  image, which is what the remapping depending on hwloc's view would predict.
+  Three variants now, not one. Both of this machine's Open MPI variants --
+  `openmpi/gcc/darwin/26/arm64` and `openmpi/llvm/darwin/26/arm64`, against Open
+  MPI `6cb5ef1d` -- fail the same six with the same message,
+  `MPI_Dist_graph_create() does not create a bidirectional ring graph!`. That
+  makes macOS 26 on arm64 the second environment to remap, the first being the
+  Ubuntu 26.04 arm64 Docker image, which is what remapping-depends-on-hwloc's-view
+  would predict.
 
-  The entries stay per OS version rather than being widened to `darwin/*/arm64`,
-  because macOS 15 and macOS 26 disagree here: CI's macos-15 Open MPI jobs pass
-  these tests, and a selector covering both would fail that job for "unexpectedly
-  passes". Two macOS versions parting company over this is the same kind of thing
-  the OS version was put in the key for.
+  The entries are `openmpi/*/darwin/26/arm64`: wildcarded over the toolchain,
+  pinned to the OS version. Both halves were decided by a run rather than by
+  taste. The toolchain is wildcarded because gcc and llvm fail identically, which
+  follows from `treematch` being C -- the Fortran compiler has no say in whether
+  it permutes. The OS version is pinned because macOS 15 and macOS 26 genuinely
+  disagree: CI's macos-15 Open MPI jobs pass these tests, so a `darwin/*/arm64`
+  selector would fail that job for "unexpectedly passes". Two macOS versions
+  parting company is the same kind of thing the OS version was put in the key for.
 - **`allctypesf`, `allctypesf90`, `allctypesf08`** run every predefined datatype
   past `MPI_Type_get_name`, `MPI_LB` and `MPI_UB` among them. Those two were
   removed in MPI-3.0 and appear nowhere in the ABI header -- `grep MPI_LB
@@ -1183,7 +1188,7 @@ five of them `flaky` rather than `xfail`. All but two are accounted for, each
 either by an entry here or by a reason that stands on its own; the two are
 `i_fcoll_test` on CI's Linux runners and under flang on macOS. The rows above are
 CI's, so they do not count the twelve `dgraph` entries, six for a Docker variant
-and six for this machine's `openmpi/gcc/darwin/26/arm64`.
+and six for this machine's two Open MPI variants, which share one selector.
 
 Those two numbers were "fifty-four" and "fifty-two" for a while and were wrong
 when written down, the file having gained entries without them being updated: the

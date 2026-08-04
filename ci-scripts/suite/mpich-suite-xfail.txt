@@ -93,13 +93,26 @@ triaged mpich/gcc/linux/13/i686
 # Ubuntu 26.04 where the runners run 24.04. The other five images have never been
 # measured, so they are reported and cannot fail a build.
 triaged mpich/gcc/darwin/26/arm64
+triaged mpich/llvm/darwin/26/arm64
 triaged openmpi/gcc/linux/26.04/aarch64
 triaged openmpi/gcc/darwin/26/arm64
+triaged openmpi/llvm/darwin/26/arm64
 
-# The llvm half of this machine is deliberately absent: openmpi/llvm/darwin/26/arm64
-# has never been run, so it stays reported-only until it is. The gcc line above is
-# from one measured run, against Open MPI 6cb5ef1d, whose only difference from the
-# list was the six `dgraph` entries added for it below.
+# All four of this machine's variants are measured now, one run each against
+# MPICH 5.0.1 and Open MPI 6cb5ef1d. Three matched the list exactly; Open MPI
+# contributed the six `dgraph` entries below, on both toolchains alike.
+#
+# The mpich/llvm line took two runs to earn, and the first was wrong in a way
+# worth recording. It reported `createf90`, `createf90types`, `trf90` and `trf08`
+# failing -- which is precisely MISSING.md "MPI_Type_create_f90_* is a no-op in an
+# ABI build", the defect ci-scripts/mpich-abi-f90-datatypes.patch fixes. The
+# variant had not regressed: `mpi/mpich-llvm` had been built from a source tree
+# prepared before that patch existed, `MPIR_HAVE_F90_MODEL` appearing 0 times in
+# its create_f90.c against 5 in the gcc tree. Reusing an installed prefix skips
+# the stamp that would have caught it, since the stamp is checked by the install
+# script and nothing else. Reinstalling re-prepared the tree and the four passed.
+# **Measure a variant from a prefix the install script has just written**, not
+# from whatever `mpi/<variant>` happens to hold.
 
 # --- Accounted for -------------------------------------------------------------
 #
@@ -124,18 +137,22 @@ xfail mpich/*/*/*/*            f90  bsendf90           # attaches 400 bytes, und
 # the runners pass these and this machine fails them. A `darwin/*/arm64` selector
 # would therefore turn the macos-15 job red for "unexpectedly passes", which is the
 # comparison working, not a bug in it. Widen it only when a run says to.
+#
+# The toolchain *is* wildcarded, and that one a run did say: gcc and llvm on macOS
+# 26 fail the same six with the same message. treematch is C, so the Fortran
+# compiler has nothing to do with whether it permutes.
 xfail openmpi/gcc/linux/26.04/aarch64 f77  dgraph_unwgtf      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/gcc/linux/26.04/aarch64 f08  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/gcc/linux/26.04/aarch64 f90  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/gcc/linux/26.04/aarch64 f77  dgraph_wgtf        # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/gcc/linux/26.04/aarch64 f08  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/gcc/linux/26.04/aarch64 f90  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/gcc/darwin/26/arm64     f77  dgraph_unwgtf      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/gcc/darwin/26/arm64     f08  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/gcc/darwin/26/arm64     f90  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/gcc/darwin/26/arm64     f77  dgraph_wgtf        # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/gcc/darwin/26/arm64     f08  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/gcc/darwin/26/arm64     f90  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/darwin/26/arm64       f77  dgraph_unwgtf      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/darwin/26/arm64       f08  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/darwin/26/arm64       f90  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/darwin/26/arm64       f77  dgraph_wgtf        # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/darwin/26/arm64       f08  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/darwin/26/arm64       f90  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail */*/*/*/*                f08  fandcattrf08       # attributes set in Fortran are not visible to C as a pointer; MISSING.md "Fortran-set attribute values"
 xfail */*/*/*/*                f90  fandcattrf90       # attributes set in Fortran are not visible to C as a pointer; MISSING.md "Fortran-set attribute values"
 xfail */*/*/*/*                f77  greqf              # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
