@@ -489,18 +489,51 @@ mechanism that replaced them and the evidence it is right.
   noticed while rewriting them and left for a change of its own, so that a leak and
   a significance guard are not verified as one thing. See "`MPI_Comm_spawn_multiple`
   leaks one allocation per command" in `MISSING.md`.
-- **`MPI_Sizeof` stays as it is, covering rank zero and rank one.**
-  `src/mpif_types.F90` gives the generic a scalar and an assumed-size specific per
-  type and kind, so an argument of rank two or more resolves to nothing. That is
-  the deliberate stopping place, not an oversight: a Fortran generic needs a
-  specific per type, kind *and* rank, so covering every rank would mean sixteen
-  specifics apiece, and assumed-rank -- which would collapse them to one each --
-  is not being taken (see "Assumed-rank choice buffers" in `MISSING.md`).
-  MPICH's own binding
-  generates exactly these two forms per type and stops in the same place, and
-  `MPI_Sizeof` is deprecated in MPI-4.0 with its `mpi_f08` form removed, so the
-  routine that would pay for the mechanism is the one least worth it. `mpif.h` and
-  the `mpi` module keep it because the standard still has it there.
+- **`MPI_Sizeof` stays as it is, covering rank zero and rank one -- in `mpif.h`
+  now too.** `src/mpif_types.F90` gives the `mpi` module's generic a scalar and
+  an assumed-size specific per type and kind, so an argument of rank two or more
+  resolves to nothing. That is the deliberate stopping place, not an oversight: a
+  Fortran generic needs a specific per type, kind *and* rank, so covering every
+  rank would mean sixteen specifics apiece, and assumed-rank -- which would
+  collapse them to one each -- is not being taken (see "Assumed-rank choice
+  buffers" in `MISSING.md`). MPICH's own binding generates exactly these two
+  forms per type and stops in the same place, and `MPI_Sizeof` is deprecated in
+  MPI-4.0 with its `mpi_f08` form removed, so the routine that would pay for the
+  mechanism is the one least worth it. `mpif.h` and the `mpi` module keep it
+  because the standard still has it there.
+
+  `include/mpif_functions.h` did not match this until 2026-08-06: its `MPI_SIZEOF`
+  and `PMPI_SIZEOF` generics declared assumed-size specifics only, one per type,
+  because their interfaces are external rather than module procedures and so
+  cannot reuse the module's. Under an explicit interface a scalar actual does not
+  match an array dummy, so `call MPI_SIZEOF(x, sz, ierr)` on a scalar `x` failed
+  against `mpif.h` with "There is no specific subroutine for the generic
+  'mpi_sizeof'" while the same call against the `mpi` module succeeded --
+  verified by compile test on 2026-08-06, then fixed by adding a second specific
+  per type, its external name suffixed `_s`, from the same `MPIF_DEFINE_SIZEOF`
+  body in `src/mpif_sizeof.c` extended to emit four names (array and scalar,
+  `mpi` and `pmpi`) instead of two. `test/sizeof_f.f` covers a scalar and a
+  rank-1 array of a couple of types through both names; removing the scalar
+  bodies again reproduces the error above.
+
+  Two things settled alongside the scalar fix, recorded here rather than left to
+  look like oversights:
+  - `mpif.h`'s `MPI_SIZEOF`/`PMPI_SIZEOF` still omit the optional kinds
+    (`logical16`, `integer16`, `real2`, `real16`, `complex4`, `complex32`) that
+    the `mpi` module guards with `#ifdef MPIF_HAVE_*` in `src/mpif_types.F90`.
+    `mpif.h` is read by Fortran's `include`, never preprocessed, so those guards
+    are not available to it; the specifics stay commented out rather than always
+    present, since always declaring them would break a build on a compiler
+    lacking the kind. This is not being fixed by preprocessing `mpif.h` -- it
+    must stay includable by unpreprocessed fixed-form code, which is the whole
+    reason a `mpif.h` exists alongside the `mpi` module.
+  - `mpif.h`'s generic gained `CHARACTER` specifics, scalar and array, for parity
+    with the `mpi` module's `mpif_sizeof_character(_v)`
+    (`src/mpif_types.F90:443-457`). A `CHARACTER` dummy makes the caller append a
+    hidden trailing length argument that the C bodies in `src/mpif_sizeof.c` never
+    declare; that is harmless, extra trailing arguments being harmless in the C
+    calling conventions mpif supports, the same fact the generated string
+    wrappers already rely on.
 
   Recorded here rather than as an error so that the question is not reopened.
   Should assumed-rank ever be taken for choice buffers, this comes with it for
