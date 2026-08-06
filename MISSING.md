@@ -612,9 +612,12 @@ the empty *key* rejected. That commit was not on the ABI branch mpif builds from
 so it was carried locally as `ci-scripts/openmpi-info-set-empty-value.patch`,
 applied by `ci-scripts/install-openmpi.sh`.
 
-The ABI branch has it as of `6cb5ef1d`, the commit `install-openmpi.sh` now
-pins, so the patch is gone and `patches=()` is empty. The evidence is
-`ompi/mpi/c/info_set.c.in` at that commit: the value check reads
+The ABI branch had it as of `6cb5ef1d`, the commit `install-openmpi.sh` used to
+pin. That PR, open-mpi/ompi#13280, has since merged into `main` -- `main`'s tip
+is now what `install-openmpi.sh` pins, currently `003e0ca0`, and `6cb5ef1d` is
+an ancestor of it -- so the patch is gone and `patches=()` is empty either way.
+The evidence is `ompi/mpi/c/info_set.c.in` at that commit: the value check
+reads
 `if ((NULL == value) || (@MPI_MAX_INFO_VAL@ <= value_length))` with no
 `0 == value_length` term, and the file carries the 2026 Squyres copyright line
 the upstream commit added. `patch --dry-run` against it reports "Reversed (or
@@ -623,10 +626,12 @@ direction.
 
 Two notes for the next fix that has to be carried. The patch was a local copy
 rather than the upstream `.patch` downloaded by URL, which is what
-`install-mpich.sh` does for its own fix, because the upstream one does not apply
-to the ABI branch: the branch templates the constant as `@MPI_MAX_INFO_VAL@`
-where main writes `MPI_MAX_INFO_VAL`, and the commit's other hunks touch a
-changelog and tests the branch does not have in the same state. And an empty
+`install-mpich.sh` does for its own fix, because the upstream one did not apply
+to the ABI branch: it templated the constant as `@MPI_MAX_INFO_VAL@` where the
+rest of `main` wrote `MPI_MAX_INFO_VAL`, and the commit's other hunks touched a
+changelog and tests the branch did not have in the same state -- both branch
+and main are one tree now that the merge has happened, but the historical
+mismatch is why a hand-carried patch was needed at the time. And an empty
 `patches` array is not free in bash 3.2, which is what macOS has: under `set -u`
 a bare `"${patches[@]}"` is an unbound variable rather than nothing, so the two
 places that expand it -- the stamp's `cksum` and the apply loop -- use
@@ -636,8 +641,8 @@ It reaches Fortran through the stripping of leading and trailing blanks that the
 standard requires of info keys and values: a value of nothing but spaces becomes
 the empty string. `test/info_blanks_f08.f90` avoids asserting on it so that
 mpif's own tests do not fail on an implementation that has not taken the fix --
-still the right thing now that the ABI branch has, since the assertion would be
-about the implementation rather than about mpif.
+still the right thing, since the assertion would be about the implementation
+rather than about mpif.
 The reproducer sent with the issue is
 `bug-ompi-info-value/ompi-empty-info-value.c`; it is pure C, and exits 0 on
 MPICH and 1 on an unpatched Open MPI.

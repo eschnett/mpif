@@ -24,10 +24,14 @@
 
 set -euo pipefail
 
-# The head of https://github.com/open-mpi/ompi/pull/13280, the branch that adds
-# the MPI standard ABI. It is a pull request rather than a branch of the main
-# repository, so the commit is fetched by hash below rather than by name.
-OMPI_COMMIT=6cb5ef1d82862adc4185b33537d4860aa165f314
+# open-mpi/ompi#13280, the branch that added the MPI standard ABI, merged into
+# `main` on 2026-08-05 as commit 003e0ca0d2d0145359c661f239633427919f4b13 --
+# checked via `gh api repos/open-mpi/ompi/branches/main`, which reports that
+# commit as `main`'s current tip. Pinned to that commit rather than tracking
+# `main` by name, for the same reason the stamp below is keyed on this value:
+# a floating ref would never invalidate the cached, prepared tree, and a
+# moving upstream is exactly what the stamp exists to notice.
+OMPI_COMMIT=003e0ca0d2d0145359c661f239633427919f4b13
 
 prefix=${1:-}
 prepare_only=${MPI_PREPARE_ONLY:-0}
@@ -43,8 +47,8 @@ nprocs=$(getconf _NPROCESSORS_ONLN)
 # Fixes applied to the source tree below. Each patch says in its own preamble what
 # it is, where it comes from and why it is still needed here. The one here is a
 # local fix for a defect not reported upstream yet, and its preamble says so; the
-# one that used to be, for the empty `MPI_Info_set` value, is on the branch as of
-# the commit above and was dropped. The array is expanded with the `${a[@]+...}`
+# one that used to be, for the empty `MPI_Info_set` value, is upstream as of the
+# commit above and was dropped. The array is expanded with the `${a[@]+...}`
 # guard throughout so that being empty -- which it was, and may be again -- is not
 # an unbound variable under `set -u` in bash 3.2, which is what macOS has.
 patches=(
