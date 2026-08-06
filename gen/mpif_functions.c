@@ -18083,10 +18083,10 @@ void mpi_request_get_status_some_(
     array_of_indices,
     (MPI_Status*)array_of_statuses
   );
-  const int count = *outcount < *incount
-                        ? *outcount
-                        : *incount;
-  for (int i=0; i<count; ++i)
+  const int q_count = *outcount < *incount
+                          ? *outcount
+                          : *incount;
+  for (int i=0; i<q_count; ++i)
     ++array_of_indices[i];
 }
 
@@ -18109,10 +18109,10 @@ void pmpi_request_get_status_some_(
     array_of_indices,
     (MPI_Status*)array_of_statuses
   );
-  const int count = *outcount < *incount
-                        ? *outcount
-                        : *incount;
-  for (int i=0; i<count; ++i)
+  const int q_count = *outcount < *incount
+                          ? *outcount
+                          : *incount;
+  for (int i=0; i<q_count; ++i)
     ++array_of_indices[i];
 }
 
@@ -20989,10 +20989,10 @@ void mpi_testsome_(
   );
   for (int i=0; i<*incount; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
-  const int count = *outcount < *incount
-                        ? *outcount
-                        : *incount;
-  for (int i=0; i<count; ++i)
+  const int q_count = *outcount < *incount
+                          ? *outcount
+                          : *incount;
+  for (int i=0; i<q_count; ++i)
     ++array_of_indices[i];
 }
 
@@ -21017,10 +21017,10 @@ void pmpi_testsome_(
   );
   for (int i=0; i<*incount; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
-  const int count = *outcount < *incount
-                        ? *outcount
-                        : *incount;
-  for (int i=0; i<count; ++i)
+  const int q_count = *outcount < *incount
+                          ? *outcount
+                          : *incount;
+  for (int i=0; i<q_count; ++i)
     ++array_of_indices[i];
 }
 
@@ -23225,10 +23225,10 @@ void mpi_waitsome_(
   );
   for (int i=0; i<*incount; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
-  const int count = *outcount < *incount
-                        ? *outcount
-                        : *incount;
-  for (int i=0; i<count; ++i)
+  const int q_count = *outcount < *incount
+                          ? *outcount
+                          : *incount;
+  for (int i=0; i<q_count; ++i)
     ++array_of_indices[i];
 }
 
@@ -23253,10 +23253,10 @@ void pmpi_waitsome_(
   );
   for (int i=0; i<*incount; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
-  const int count = *outcount < *incount
-                        ? *outcount
-                        : *incount;
-  for (int i=0; i<count; ++i)
+  const int q_count = *outcount < *incount
+                          ? *outcount
+                          : *incount;
+  for (int i=0; i<q_count; ++i)
     ++array_of_indices[i];
 }
 
