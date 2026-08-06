@@ -69,7 +69,7 @@ MPIF_DEFINE_TYPE_HVECTOR(pmpi_type_hvector_, PMPI_Type_create_hvector)
   void fname(const MPI_Fint *count, const MPI_Fint *array_of_blocklengths,     \
              const MPI_Fint *array_of_displacements, const MPI_Fint *oldtype,  \
              MPI_Fint *newtype, MPI_Fint *ierror) {                            \
-    MPI_Aint c_displacements[*count];                                          \
+    MPI_Aint c_displacements[*count > 0 ? *count : 1];                         \
     for (int i = 0; i < *count; ++i)                                           \
       c_displacements[i] = (MPI_Aint)array_of_displacements[i];                \
     MPI_Datatype c_newtype;                                                    \
@@ -87,8 +87,8 @@ MPIF_DEFINE_TYPE_HINDEXED(pmpi_type_hindexed_, PMPI_Type_create_hindexed)
              const MPI_Fint *array_of_displacements,                           \
              const MPI_Fint *array_of_types, MPI_Fint *newtype,                \
              MPI_Fint *ierror) {                                               \
-    MPI_Aint c_displacements[*count];                                          \
-    MPI_Datatype c_types[*count];                                              \
+    MPI_Aint c_displacements[*count > 0 ? *count : 1];                         \
+    MPI_Datatype c_types[*count > 0 ? *count : 1];                             \
     for (int i = 0; i < *count; ++i) {                                         \
       c_displacements[i] = (MPI_Aint)array_of_displacements[i];                \
       c_types[i] = MPI_Type_fromint(array_of_types[i]);                        \

@@ -48,7 +48,7 @@ void mpi_abi_get_fortran_booleans_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_is_set;
+  MPI_Fint c_is_set = 0;
   *ierror = MPI_Abi_get_fortran_booleans(
     *logical_size,
     logical_true,
@@ -66,7 +66,7 @@ void pmpi_abi_get_fortran_booleans_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_is_set;
+  MPI_Fint c_is_set = 0;
   *ierror = PMPI_Abi_get_fortran_booleans(
     *logical_size,
     logical_true,
@@ -1532,7 +1532,7 @@ void mpi_alltoallw_(
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_group_size];
+  MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
   if (sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
@@ -1540,7 +1540,7 @@ void mpi_alltoallw_(
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_DATATYPE_NULL;
   }
-  MPI_Datatype c_recvtypes[q_group_size];
+  MPI_Datatype c_recvtypes[q_group_size > 0 ? q_group_size : 1];
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = MPI_Alltoallw(
@@ -1582,7 +1582,7 @@ void mpi_alltoallw_c_(
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_group_size];
+  MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
   if (sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
@@ -1590,7 +1590,7 @@ void mpi_alltoallw_c_(
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_DATATYPE_NULL;
   }
-  MPI_Datatype c_recvtypes[q_group_size];
+  MPI_Datatype c_recvtypes[q_group_size > 0 ? q_group_size : 1];
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = MPI_Alltoallw_c(
@@ -1632,7 +1632,7 @@ void pmpi_alltoallw_(
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_group_size];
+  MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
   if (sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
@@ -1640,7 +1640,7 @@ void pmpi_alltoallw_(
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_DATATYPE_NULL;
   }
-  MPI_Datatype c_recvtypes[q_group_size];
+  MPI_Datatype c_recvtypes[q_group_size > 0 ? q_group_size : 1];
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = PMPI_Alltoallw(
@@ -1682,7 +1682,7 @@ void pmpi_alltoallw_c_(
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_group_size];
+  MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
   if (sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
@@ -1690,7 +1690,7 @@ void pmpi_alltoallw_c_(
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_DATATYPE_NULL;
   }
-  MPI_Datatype c_recvtypes[q_group_size];
+  MPI_Datatype c_recvtypes[q_group_size > 0 ? q_group_size : 1];
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = PMPI_Alltoallw_c(
@@ -1734,7 +1734,7 @@ void mpi_alltoallw_init_(
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_group_size];
+  MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
   if (sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
@@ -1742,7 +1742,7 @@ void mpi_alltoallw_init_(
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_DATATYPE_NULL;
   }
-  MPI_Datatype c_recvtypes[q_group_size];
+  MPI_Datatype c_recvtypes[q_group_size > 0 ? q_group_size : 1];
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
@@ -1790,7 +1790,7 @@ void mpi_alltoallw_init_c_(
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_group_size];
+  MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
   if (sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
@@ -1798,7 +1798,7 @@ void mpi_alltoallw_init_c_(
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_DATATYPE_NULL;
   }
-  MPI_Datatype c_recvtypes[q_group_size];
+  MPI_Datatype c_recvtypes[q_group_size > 0 ? q_group_size : 1];
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
@@ -1846,7 +1846,7 @@ void pmpi_alltoallw_init_(
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_group_size];
+  MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
   if (sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
@@ -1854,7 +1854,7 @@ void pmpi_alltoallw_init_(
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_DATATYPE_NULL;
   }
-  MPI_Datatype c_recvtypes[q_group_size];
+  MPI_Datatype c_recvtypes[q_group_size > 0 ? q_group_size : 1];
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
@@ -1902,7 +1902,7 @@ void pmpi_alltoallw_init_c_(
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_group_size];
+  MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
   if (sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
@@ -1910,7 +1910,7 @@ void pmpi_alltoallw_init_c_(
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_DATATYPE_NULL;
   }
-  MPI_Datatype c_recvtypes[q_group_size];
+  MPI_Datatype c_recvtypes[q_group_size > 0 ? q_group_size : 1];
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
@@ -1963,7 +1963,7 @@ void mpi_attr_get_(
 )
 {
   void *c_attribute_val;
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Attr_get(
     MPI_Comm_fromint(*comm),
     *keyval,
@@ -1986,7 +1986,7 @@ void pmpi_attr_get_(
 )
 {
   void *c_attribute_val;
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Attr_get(
     MPI_Comm_fromint(*comm),
     *keyval,
@@ -2626,7 +2626,7 @@ void mpi_cart_create_(
   MPI_Fint* restrict const ierror
 )
 {
-  int c_periods[*ndims];
+  int c_periods[*ndims > 0 ? *ndims : 1];
   for (int dim=0; dim<*ndims; ++dim)
     c_periods[dim] = mpif_logical2bool(periods[dim]);
   MPI_Comm c_comm_cart;
@@ -2651,7 +2651,7 @@ void pmpi_cart_create_(
   MPI_Fint* restrict const ierror
 )
 {
-  int c_periods[*ndims];
+  int c_periods[*ndims > 0 ? *ndims : 1];
   for (int dim=0; dim<*ndims; ++dim)
     c_periods[dim] = mpif_logical2bool(periods[dim]);
   MPI_Comm c_comm_cart;
@@ -2675,7 +2675,7 @@ void mpi_cart_get_(
   MPI_Fint* restrict const ierror
 )
 {
-  int c_periods[*maxdims];
+  int c_periods[*maxdims > 0 ? *maxdims : 1];
   *ierror = MPI_Cart_get(
     MPI_Comm_fromint(*comm),
     *maxdims,
@@ -2696,7 +2696,7 @@ void pmpi_cart_get_(
   MPI_Fint* restrict const ierror
 )
 {
-  int c_periods[*maxdims];
+  int c_periods[*maxdims > 0 ? *maxdims : 1];
   *ierror = PMPI_Cart_get(
     MPI_Comm_fromint(*comm),
     *maxdims,
@@ -2717,7 +2717,7 @@ void mpi_cart_map_(
   MPI_Fint* restrict const ierror
 )
 {
-  int c_periods[*ndims];
+  int c_periods[*ndims > 0 ? *ndims : 1];
   for (int dim=0; dim<*ndims; ++dim)
     c_periods[dim] = mpif_logical2bool(periods[dim]);
   *ierror = MPI_Cart_map(
@@ -2738,7 +2738,7 @@ void pmpi_cart_map_(
   MPI_Fint* restrict const ierror
 )
 {
-  int c_periods[*ndims];
+  int c_periods[*ndims > 0 ? *ndims : 1];
   for (int dim=0; dim<*ndims; ++dim)
     c_periods[dim] = mpif_logical2bool(periods[dim]);
   *ierror = PMPI_Cart_map(
@@ -2830,7 +2830,7 @@ void mpi_cart_sub_(
       return;
     }
   }
-  int c_remain_dims[ndims];
+  int c_remain_dims[ndims > 0 ? ndims : 1];
   for (int dim=0; dim<ndims; ++dim)
     c_remain_dims[dim] = mpif_logical2bool(remain_dims[dim]);
   MPI_Comm c_newcomm;
@@ -2858,7 +2858,7 @@ void pmpi_cart_sub_(
       return;
     }
   }
-  int c_remain_dims[ndims];
+  int c_remain_dims[ndims > 0 ? ndims : 1];
   for (int dim=0; dim<ndims; ++dim)
     c_remain_dims[dim] = mpif_logical2bool(remain_dims[dim]);
   MPI_Comm c_newcomm;
@@ -3663,7 +3663,7 @@ void mpi_comm_get_attr_(
 )
 {
   void *c_attribute_val;
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Comm_get_attr(
     MPI_Comm_fromint(*comm),
     *comm_keyval,
@@ -3686,7 +3686,7 @@ void pmpi_comm_get_attr_(
 )
 {
   void *c_attribute_val;
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Comm_get_attr(
     MPI_Comm_fromint(*comm),
     *comm_keyval,
@@ -4560,7 +4560,7 @@ void mpi_comm_test_inter_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Comm_test_inter(
     MPI_Comm_fromint(*comm),
     &c_flag
@@ -4574,7 +4574,7 @@ void pmpi_comm_test_inter_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Comm_test_inter(
     MPI_Comm_fromint(*comm),
     &c_flag
@@ -4822,7 +4822,7 @@ void mpi_dist_graph_neighbors_count_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_weighted;
+  MPI_Fint c_weighted = 0;
   *ierror = MPI_Dist_graph_neighbors_count(
     MPI_Comm_fromint(*comm),
     indegree,
@@ -4840,7 +4840,7 @@ void pmpi_dist_graph_neighbors_count_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_weighted;
+  MPI_Fint c_weighted = 0;
   *ierror = PMPI_Dist_graph_neighbors_count(
     MPI_Comm_fromint(*comm),
     indegree,
@@ -5326,7 +5326,7 @@ void mpi_file_get_atomicity_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_File_get_atomicity(
     MPI_File_fromint(*fh),
     &c_flag
@@ -5340,7 +5340,7 @@ void pmpi_file_get_atomicity_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_File_get_atomicity(
     MPI_File_fromint(*fh),
     &c_flag
@@ -8245,7 +8245,7 @@ void mpi_finalized_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Finalized(
     &c_flag
   );
@@ -8257,7 +8257,7 @@ void pmpi_finalized_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Finalized(
     &c_flag
   );
@@ -10823,7 +10823,7 @@ void mpi_ialltoallw_(
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_group_size];
+  MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
   if (sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
@@ -10831,7 +10831,7 @@ void mpi_ialltoallw_(
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_DATATYPE_NULL;
   }
-  MPI_Datatype c_recvtypes[q_group_size];
+  MPI_Datatype c_recvtypes[q_group_size > 0 ? q_group_size : 1];
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
@@ -10877,7 +10877,7 @@ void mpi_ialltoallw_c_(
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_group_size];
+  MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
   if (sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
@@ -10885,7 +10885,7 @@ void mpi_ialltoallw_c_(
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_DATATYPE_NULL;
   }
-  MPI_Datatype c_recvtypes[q_group_size];
+  MPI_Datatype c_recvtypes[q_group_size > 0 ? q_group_size : 1];
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
@@ -10931,7 +10931,7 @@ void pmpi_ialltoallw_(
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_group_size];
+  MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
   if (sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
@@ -10939,7 +10939,7 @@ void pmpi_ialltoallw_(
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_DATATYPE_NULL;
   }
-  MPI_Datatype c_recvtypes[q_group_size];
+  MPI_Datatype c_recvtypes[q_group_size > 0 ? q_group_size : 1];
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
@@ -10985,7 +10985,7 @@ void pmpi_ialltoallw_c_(
       return;
     }
   }
-  MPI_Datatype c_sendtypes[q_group_size];
+  MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
   if (sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
@@ -10993,7 +10993,7 @@ void pmpi_ialltoallw_c_(
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_DATATYPE_NULL;
   }
-  MPI_Datatype c_recvtypes[q_group_size];
+  MPI_Datatype c_recvtypes[q_group_size > 0 ? q_group_size : 1];
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request;
@@ -11730,7 +11730,7 @@ void mpi_improbe_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   MPI_Message c_message;
   *ierror = MPI_Improbe(
     *source,
@@ -11754,7 +11754,7 @@ void pmpi_improbe_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   MPI_Message c_message;
   *ierror = PMPI_Improbe(
     *source,
@@ -12724,7 +12724,7 @@ void mpi_info_get_(
   const size_t buflen_value = *valuelen;
   const size_t length_value = *valuelen;
   char c_value[buflen_value + 1];
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Info_get(
     MPI_Info_fromint(*info),
     c_key,
@@ -12752,7 +12752,7 @@ void pmpi_info_get_(
   const size_t buflen_value = *valuelen;
   const size_t length_value = *valuelen;
   char c_value[buflen_value + 1];
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Info_get(
     MPI_Info_fromint(*info),
     c_key,
@@ -12846,7 +12846,7 @@ void mpi_info_get_string_(
                     : (int)length_value + 1;
   const size_t buflen_value = length_value;
   char c_value[buflen_value + 1];
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Info_get_string(
     MPI_Info_fromint(*info),
     c_key,
@@ -12882,7 +12882,7 @@ void pmpi_info_get_string_(
                     : (int)length_value + 1;
   const size_t buflen_value = length_value;
   char c_value[buflen_value + 1];
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Info_get_string(
     MPI_Info_fromint(*info),
     c_key,
@@ -12908,7 +12908,7 @@ void mpi_info_get_valuelen_(
 )
 {
   char* const c_key = mpif_strdup_f2c_trim(key, length_key);
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Info_get_valuelen(
     MPI_Info_fromint(*info),
     c_key,
@@ -12929,7 +12929,7 @@ void pmpi_info_get_valuelen_(
 )
 {
   char* const c_key = mpif_strdup_f2c_trim(key, length_key);
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Info_get_valuelen(
     MPI_Info_fromint(*info),
     c_key,
@@ -13033,7 +13033,7 @@ void mpi_initialized_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Initialized(
     &c_flag
   );
@@ -13045,7 +13045,7 @@ void pmpi_initialized_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Initialized(
     &c_flag
   );
@@ -13195,7 +13195,7 @@ void mpi_iprobe_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Iprobe(
     *source,
     *tag,
@@ -13215,7 +13215,7 @@ void pmpi_iprobe_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Iprobe(
     *source,
     *tag,
@@ -13719,7 +13719,7 @@ void mpi_is_thread_main_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Is_thread_main(
     &c_flag
   );
@@ -13731,7 +13731,7 @@ void pmpi_is_thread_main_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Is_thread_main(
     &c_flag
   );
@@ -16314,7 +16314,7 @@ void mpi_op_commutative_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_commute;
+  MPI_Fint c_commute = 0;
   *ierror = MPI_Op_commutative(
     MPI_Op_fromint(*op),
     &c_commute
@@ -16328,7 +16328,7 @@ void pmpi_op_commutative_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_commute;
+  MPI_Fint c_commute = 0;
   *ierror = PMPI_Op_commutative(
     MPI_Op_fromint(*op),
     &c_commute
@@ -16827,7 +16827,7 @@ void mpi_parrived_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Parrived(
     MPI_Request_fromint(*request),
     *partition,
@@ -16843,7 +16843,7 @@ void pmpi_parrived_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Parrived(
     MPI_Request_fromint(*request),
     *partition,
@@ -18433,7 +18433,7 @@ void mpi_request_get_status_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Request_get_status(
     MPI_Request_fromint(*request),
     &c_flag,
@@ -18449,7 +18449,7 @@ void pmpi_request_get_status_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Request_get_status(
     MPI_Request_fromint(*request),
     &c_flag,
@@ -18466,10 +18466,10 @@ void mpi_request_get_status_all_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int rank=0; rank<*count; ++rank)
     c_array_of_requests[rank] = MPI_Request_fromint(array_of_requests[rank]);
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Request_get_status_all(
     *count,
     c_array_of_requests,
@@ -18487,10 +18487,10 @@ void pmpi_request_get_status_all_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int rank=0; rank<*count; ++rank)
     c_array_of_requests[rank] = MPI_Request_fromint(array_of_requests[rank]);
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Request_get_status_all(
     *count,
     c_array_of_requests,
@@ -18509,10 +18509,10 @@ void mpi_request_get_status_any_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int rank=0; rank<*count; ++rank)
     c_array_of_requests[rank] = MPI_Request_fromint(array_of_requests[rank]);
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Request_get_status_any(
     *count,
     c_array_of_requests,
@@ -18534,10 +18534,10 @@ void pmpi_request_get_status_any_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int rank=0; rank<*count; ++rank)
     c_array_of_requests[rank] = MPI_Request_fromint(array_of_requests[rank]);
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Request_get_status_any(
     *count,
     c_array_of_requests,
@@ -18559,7 +18559,7 @@ void mpi_request_get_status_some_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*incount];
+  MPI_Request c_array_of_requests[*incount > 0 ? *incount : 1];
   for (int rank=0; rank<*incount; ++rank)
     c_array_of_requests[rank] = MPI_Request_fromint(array_of_requests[rank]);
   *ierror = MPI_Request_get_status_some(
@@ -18585,7 +18585,7 @@ void pmpi_request_get_status_some_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*incount];
+  MPI_Request c_array_of_requests[*incount > 0 ? *incount : 1];
   for (int rank=0; rank<*incount; ++rank)
     c_array_of_requests[rank] = MPI_Request_fromint(array_of_requests[rank]);
   *ierror = PMPI_Request_get_status_some(
@@ -21202,7 +21202,7 @@ void mpi_startall_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int i=0; i<*count; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
   *ierror = MPI_Startall(
@@ -21219,7 +21219,7 @@ void pmpi_startall_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int i=0; i<*count; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
   *ierror = PMPI_Startall(
@@ -21490,7 +21490,7 @@ void mpi_test_(
 )
 {
   MPI_Request c_request = MPI_Request_fromint(*request);
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Test(
     &c_request,
     &c_flag,
@@ -21508,7 +21508,7 @@ void pmpi_test_(
 )
 {
   MPI_Request c_request = MPI_Request_fromint(*request);
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Test(
     &c_request,
     &c_flag,
@@ -21524,7 +21524,7 @@ void mpi_test_cancelled_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Test_cancelled(
     (const MPI_Status*)status,
     &c_flag
@@ -21538,7 +21538,7 @@ void pmpi_test_cancelled_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Test_cancelled(
     (const MPI_Status*)status,
     &c_flag
@@ -21554,10 +21554,10 @@ void mpi_testall_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int i=0; i<*count; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Testall(
     *count,
     c_array_of_requests,
@@ -21577,10 +21577,10 @@ void pmpi_testall_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int i=0; i<*count; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Testall(
     *count,
     c_array_of_requests,
@@ -21601,10 +21601,10 @@ void mpi_testany_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int i=0; i<*count; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Testany(
     *count,
     c_array_of_requests,
@@ -21628,10 +21628,10 @@ void pmpi_testany_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int i=0; i<*count; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Testany(
     *count,
     c_array_of_requests,
@@ -21655,7 +21655,7 @@ void mpi_testsome_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*incount];
+  MPI_Request c_array_of_requests[*incount > 0 ? *incount : 1];
   for (int i=0; i<*incount; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
   *ierror = MPI_Testsome(
@@ -21683,7 +21683,7 @@ void pmpi_testsome_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*incount];
+  MPI_Request c_array_of_requests[*incount > 0 ? *incount : 1];
   for (int i=0; i<*incount; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
   *ierror = PMPI_Testsome(
@@ -22479,7 +22479,7 @@ void mpi_type_create_struct_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Datatype c_array_of_types[*count];
+  MPI_Datatype c_array_of_types[*count > 0 ? *count : 1];
   for (int rank=0; rank<*count; ++rank)
     c_array_of_types[rank] = MPI_Type_fromint(array_of_types[rank]);
   MPI_Datatype c_newtype;
@@ -22502,7 +22502,7 @@ void mpi_type_create_struct_c_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Datatype c_array_of_types[*count];
+  MPI_Datatype c_array_of_types[*count > 0 ? *count : 1];
   for (int rank=0; rank<*count; ++rank)
     c_array_of_types[rank] = MPI_Type_fromint(array_of_types[rank]);
   MPI_Datatype c_newtype;
@@ -22525,7 +22525,7 @@ void pmpi_type_create_struct_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Datatype c_array_of_types[*count];
+  MPI_Datatype c_array_of_types[*count > 0 ? *count : 1];
   for (int rank=0; rank<*count; ++rank)
     c_array_of_types[rank] = MPI_Type_fromint(array_of_types[rank]);
   MPI_Datatype c_newtype;
@@ -22548,7 +22548,7 @@ void pmpi_type_create_struct_c_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Datatype c_array_of_types[*count];
+  MPI_Datatype c_array_of_types[*count > 0 ? *count : 1];
   for (int rank=0; rank<*count; ++rank)
     c_array_of_types[rank] = MPI_Type_fromint(array_of_types[rank]);
   MPI_Datatype c_newtype;
@@ -22763,7 +22763,7 @@ void mpi_type_get_attr_(
 )
 {
   void *c_attribute_val;
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Type_get_attr(
     MPI_Type_fromint(*datatype),
     *type_keyval,
@@ -22786,7 +22786,7 @@ void pmpi_type_get_attr_(
 )
 {
   void *c_attribute_val;
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Type_get_attr(
     MPI_Type_fromint(*datatype),
     *type_keyval,
@@ -22811,7 +22811,7 @@ void mpi_type_get_contents_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Datatype c_array_of_datatypes[*max_datatypes];
+  MPI_Datatype c_array_of_datatypes[*max_datatypes > 0 ? *max_datatypes : 1];
   *ierror = MPI_Type_get_contents(
     MPI_Type_fromint(*datatype),
     *max_integers,
@@ -22838,7 +22838,7 @@ void mpi_type_get_contents_c_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Datatype c_array_of_datatypes[*max_datatypes];
+  MPI_Datatype c_array_of_datatypes[*max_datatypes > 0 ? *max_datatypes : 1];
   *ierror = MPI_Type_get_contents_c(
     MPI_Type_fromint(*datatype),
     *max_integers,
@@ -22865,7 +22865,7 @@ void pmpi_type_get_contents_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Datatype c_array_of_datatypes[*max_datatypes];
+  MPI_Datatype c_array_of_datatypes[*max_datatypes > 0 ? *max_datatypes : 1];
   *ierror = PMPI_Type_get_contents(
     MPI_Type_fromint(*datatype),
     *max_integers,
@@ -22892,7 +22892,7 @@ void pmpi_type_get_contents_c_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Datatype c_array_of_datatypes[*max_datatypes];
+  MPI_Datatype c_array_of_datatypes[*max_datatypes > 0 ? *max_datatypes : 1];
   *ierror = PMPI_Type_get_contents_c(
     MPI_Type_fromint(*datatype),
     *max_integers,
@@ -23805,7 +23805,7 @@ void mpi_waitall_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int i=0; i<*count; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
   *ierror = MPI_Waitall(
@@ -23824,7 +23824,7 @@ void pmpi_waitall_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int i=0; i<*count; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
   *ierror = PMPI_Waitall(
@@ -23844,7 +23844,7 @@ void mpi_waitany_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int i=0; i<*count; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
   *ierror = MPI_Waitany(
@@ -23867,7 +23867,7 @@ void pmpi_waitany_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*count];
+  MPI_Request c_array_of_requests[*count > 0 ? *count : 1];
   for (int i=0; i<*count; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
   *ierror = PMPI_Waitany(
@@ -23891,7 +23891,7 @@ void mpi_waitsome_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*incount];
+  MPI_Request c_array_of_requests[*incount > 0 ? *incount : 1];
   for (int i=0; i<*incount; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
   *ierror = MPI_Waitsome(
@@ -23919,7 +23919,7 @@ void pmpi_waitsome_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Request c_array_of_requests[*incount];
+  MPI_Request c_array_of_requests[*incount > 0 ? *incount : 1];
   for (int i=0; i<*incount; ++i)
     c_array_of_requests[i] = MPI_Request_fromint(array_of_requests[i]);
   *ierror = PMPI_Waitsome(
@@ -24615,7 +24615,7 @@ void mpi_win_get_attr_(
 )
 {
   void *c_attribute_val;
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Win_get_attr(
     MPI_Win_fromint(*win),
     *win_keyval,
@@ -24638,7 +24638,7 @@ void pmpi_win_get_attr_(
 )
 {
   void *c_attribute_val;
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Win_get_attr(
     MPI_Win_fromint(*win),
     *win_keyval,
@@ -25088,7 +25088,7 @@ void mpi_win_test_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = MPI_Win_test(
     MPI_Win_fromint(*win),
     &c_flag
@@ -25102,7 +25102,7 @@ void pmpi_win_test_(
   MPI_Fint* restrict const ierror
 )
 {
-  MPI_Fint c_flag;
+  MPI_Fint c_flag = 0;
   *ierror = PMPI_Win_test(
     MPI_Win_fromint(*win),
     &c_flag

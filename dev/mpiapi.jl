@@ -337,17 +337,27 @@ function ensure_neighbor_degrees!(state, input_conversions)
     return state.have_neighbor_degrees[] = true
 end
 
+# The array-size expression for a VLA whose true element count is `count`:
+# floored at 1, since a zero-length VLA is not C even where the count it is
+# sized from is legally zero -- an indegree, a `count`/`incount`/`ndims`, or
+# any other length a caller may pass as zero. Applied unconditionally rather
+# than only where a count is known to be sometimes-zero: a count that happens
+# to be always positive floors to itself and nothing changes, so there is no
+# per-site judgement call to get wrong. The loops that iterate still use
+# `count` itself, unfloored, so behaviour for a genuine zero is unchanged;
+# only the declared size gains the floor.
+vla_size(count) = "$count > 0 ? $count : 1"
+
 # The C variable holding the number of entries in `parname`, an assumed-length
-# array of handles, and whether that number can be zero -- an indegree can be,
-# where a group size cannot, and a zero-length VLA is not C.
+# array of handles.
 function handle_array_length!(state, input_conversions, name, parname)
     if name ∈ neighbor_alltoallw
         ensure_neighbor_degrees!(state, input_conversions)
         @assert parname ∈ ["sendtypes", "recvtypes"]
-        return (parname == "sendtypes" ? "q_outdegree" : "q_indegree"), true
+        return parname == "sendtypes" ? "q_outdegree" : "q_indegree"
     end
     ensure_group_size!(state, input_conversions)
-    return "q_group_size", false
+    return "q_group_size"
 end
 
 # Whether this process is the one at which a `root_only` argument is significant.
@@ -914,9 +924,8 @@ for key in sort(collect(keys(apis)))
                         end
                     elseif length == "*"
                         push!(input_arguments, "const MPI_Fint* restrict const $parname")
-                        count, may_be_zero = handle_array_length!(state, input_conversions, name, parname)
-                        vla = may_be_zero ? "$count > 0 ? $count : 1" : count
-                        push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[$vla];")
+                        count = handle_array_length!(state, input_conversions, name, parname)
+                        push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[$(vla_size(count))];")
                         # `sendtypes` is not read at all under MPI_IN_PLACE.
                         # MPI-5.0 6.8 on MPI_ALLTOALLW: "In such a case,
                         # sendcounts, sdispls and sendtypes are ignored." A
@@ -966,7 +975,7 @@ for key in sort(collect(keys(apis)))
                             # included, so that nothing uninitialised is handed
                             # to MPI even where MPI ignores it.
                             count = root_only_count!(state, input_conversions, name, parameters, length)
-                            vla = "$count > 0 ? $count : 1"
+                            vla = vla_size(count)
                             append!(input_conversions,
                                     ["MPI_$(kind2type[kind]) c_$parname[$vla];",
                                      "for (int rank=0; rank<($vla); ++rank)",
@@ -974,7 +983,7 @@ for key in sort(collect(keys(apis)))
                                      "for (int rank=0; rank<$count; ++rank)",
                                      "  c_$parname[rank] = MPI_$(kind2fun[kind])_fromint($parname[rank]);"])
                         else
-                            push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[*$length];")
+                            push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[$(vla_size("*$length"))];")
                             append!(input_conversions,
                                     ["for (int rank=0; rank<*$length; ++rank)",
                                      "  c_$parname[rank] = MPI_$(kind2fun[kind])_fromint($parname[rank]);"])
@@ -1005,14 +1014,12 @@ for key in sort(collect(keys(apis)))
                         # MPI_REQUEST_NULL -- and so would write past the
                         # temporary and into this function's frame.
                         @assert length ∈ ["*", "count", "incount", "max_datatypes", "num_elements"]
-                        may_be_zero = false
                         if length == "*"
-                            count, may_be_zero = handle_array_length!(state, input_conversions, name, parname)
+                            count = handle_array_length!(state, input_conversions, name, parname)
                         else
                             count = "*$length"
                         end
-                        vla = may_be_zero ? "$count > 0 ? $count : 1" : count
-                        push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[$vla];")
+                        push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[$(vla_size(count))];")
                         if param_direction == "inout"
                             append!(input_conversions,
                                     ["for (int i=0; i<$count; ++i)",
@@ -1330,7 +1337,7 @@ for key in sort(collect(keys(apis)))
                     elseif length == "ndims"
                         push!(input_arguments, "const MPI_Fint* restrict const $parname")
                         append!(input_conversions,
-                                ["int c_$parname[*ndims];",
+                                ["int c_$parname[$(vla_size("*ndims"))];",
                                  "for (int dim=0; dim<*ndims; ++dim)",
                                  "  c_$parname[dim] = mpif_logical2bool($parname[dim]);"])
                         push!(call_arguments, "c_$parname")
@@ -1346,7 +1353,7 @@ for key in sort(collect(keys(apis)))
                                  "    return;",
                                  "  }",
                                  "}",
-                                 "int c_$parname[ndims];",
+                                 "int c_$parname[$(vla_size("ndims"))];",
                                  "for (int dim=0; dim<ndims; ++dim)",
                                  "  c_$parname[dim] = mpif_logical2bool($parname[dim]);"])
                         push!(call_arguments, "c_$parname")
@@ -1357,12 +1364,17 @@ for key in sort(collect(keys(apis)))
                 elseif param_direction ∈ ["inout", "out"]
                     if length == nothing
                         push!(input_arguments, "MPI_Fint* restrict const $parname")
-                        push!(input_conversions, "MPI_Fint c_$parname;")
+                        # Initialised: MPI leaves this unwritten on failure, and
+                        # an uninitialised read here is exactly what a stricter
+                        # compiler or MSan flags, even though no defined
+                        # behaviour changes since the caller must not look at
+                        # `$parname` after a failing call either.
+                        push!(input_conversions, "MPI_Fint c_$parname = 0;")
                         push!(call_arguments, "&c_$parname")
                         push!(output_conversions, "*$parname = mpif_bool2logical(c_$parname);")
                     elseif length == "maxdims"
                         push!(input_arguments, "MPI_Fint* restrict const $parname")
-                        append!(input_conversions, ["int c_$parname[*maxdims];"])
+                        append!(input_conversions, ["int c_$parname[$(vla_size("*maxdims"))];"])
                         push!(call_arguments, "c_$parname")
                         append!(output_conversions,
                                 ["for (int dim=0; dim<*maxdims; ++dim)",
@@ -1552,7 +1564,7 @@ for key in sort(collect(keys(apis)))
                 # for that reason, leaving the sentinel as the only thing left to
                 # test.
                 count = root_only_count!(state, input_conversions, name, parameters, length)
-                vla = "$count > 0 ? $count : 1"
+                vla = vla_size(count)
                 body = ["count_$parname[i] = mpif_fcount2d($parname, $count, i, length_$parname);",
                         "argv_$parname[i] = malloc((count_$parname[i] + 1) * sizeof(char*));",
                         "for (size_t n=0; n<count_$parname[i]; ++n)",

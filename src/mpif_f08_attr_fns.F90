@@ -347,10 +347,15 @@ subroutine mpif_f08_win_null_delete_fn(win, win_keyval, attribute_val, extra_sta
   ierror = MPI_SUCCESS
 end subroutine mpif_f08_win_null_delete_fn
 
+! A pure sentinel, meaning "no conversion is needed", and MPI never calls it --
+! hence MPI_ERR_INTERN rather than a plausible-looking no-op, so that a call
+! that somehow does arrive is noticed. Matches the mpif.h/mpi module twins'
+! MPI_CONVERSION_FN_NULL/_C in mpif_attr_fns.F90.
 subroutine mpif_f08_conversion_fn_null(userbuf, datatype, count, filebuf, &
      position, extra_state, ierror)
   use mpif_f08_types, only: MPI_Datatype
-  use mpif_f08_constants, only: MPI_ADDRESS_KIND, MPI_COUNT_KIND, MPI_OFFSET_KIND
+  use mpif_f08_constants, only: MPI_ADDRESS_KIND, MPI_COUNT_KIND, MPI_ERR_INTERN, &
+       MPI_OFFSET_KIND
   use, intrinsic :: iso_c_binding, only: C_PTR
   implicit none
   type(C_PTR), value :: userbuf
@@ -360,12 +365,14 @@ subroutine mpif_f08_conversion_fn_null(userbuf, datatype, count, filebuf, &
   integer(MPI_OFFSET_KIND) :: position
   integer(MPI_ADDRESS_KIND) :: extra_state
   integer :: ierror
+  ierror = MPI_ERR_INTERN
 end subroutine mpif_f08_conversion_fn_null
 
 subroutine mpif_f08_conversion_fn_null_c(userbuf, datatype, count, filebuf, &
      position, extra_state, ierror)
   use mpif_f08_types, only: MPI_Datatype
-  use mpif_f08_constants, only: MPI_ADDRESS_KIND, MPI_COUNT_KIND, MPI_OFFSET_KIND
+  use mpif_f08_constants, only: MPI_ADDRESS_KIND, MPI_COUNT_KIND, MPI_ERR_INTERN, &
+       MPI_OFFSET_KIND
   use, intrinsic :: iso_c_binding, only: C_PTR
   implicit none
   type(C_PTR), value :: userbuf
@@ -375,4 +382,5 @@ subroutine mpif_f08_conversion_fn_null_c(userbuf, datatype, count, filebuf, &
   integer(MPI_OFFSET_KIND) :: position
   integer(MPI_ADDRESS_KIND) :: extra_state
   integer :: ierror
+  ierror = MPI_ERR_INTERN
 end subroutine mpif_f08_conversion_fn_null_c

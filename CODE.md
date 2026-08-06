@@ -863,3 +863,115 @@ mechanism that replaced them and the evidence it is right.
   `MPI_COMM_WORLD`, checking the copy callback's `extra_state` and
   `attribute_val_in` and that a duplicate carries the copied attribute, which
   is the runtime half.
+- **Every generator-emitted VLA is floored at length 1, and the scalar
+  temporaries `bool2logical`/`toint` read after a call are initialised.**
+  Two latent instances of undefined behaviour, found together on 2026-08-06
+  while reading `dev/mpiapi.jl` for the zero-length-VLA rule it already had --
+  the comment at what is now line 340, "a zero-length VLA is not C" -- and
+  noticing the rule was applied only to the neighbour-degree arrays via a
+  `may_be_zero` flag threaded out of `handle_array_length!`, while every other
+  conversion array was declared `T c_x[n]` with no guard at all, `n` being
+  legally zero at several of those sites. `MPI_Waitall`, `MPI_Testall` and
+  `MPI_Startall`'s request arrays and `MPI_Waitsome`/`MPI_Testsome`'s take
+  `count`/`incount = 0`, which MPI-5.0 3.7.5 puts no lower bound against;
+  `MPI_Type_create_struct` takes `count = 0` the same way; and
+  `MPI_Cart_create`, `MPI_Cart_map`, `MPI_Cart_sub` and `MPI_Cart_get`'s
+  per-dimension LOGICAL arrays take `ndims`/`maxdims = 0`, legal since MPI-4.0
+  for a zero-dimensional Cartesian communicator.
+
+  The fix is `vla_size(count) = "$count > 0 ? $count : 1"`, applied at every
+  site that declares `T c_x[n]`, unconditionally rather than per site: a count
+  that happens to be always positive -- `q_group_size`, which `MPI_Alltoallw`'s
+  `sendtypes`/`recvtypes` are sized from, an intracommunicator's or an
+  intercommunicator's group never being empty -- floors to itself and nothing
+  changes, so there is no longer a judgement call to get wrong at a new call
+  site. `handle_array_length!` used to return that judgement as a second
+  value; it now just returns the count, `may_be_zero` having no remaining
+  reader. The loops that iterate over the array still use the true count,
+  unfloored, so a genuine zero converts zero elements exactly as before; only
+  the declared size gained the floor. The same floor was applied by hand to
+  `src/mpif_removed.c`'s `MPIF_DEFINE_TYPE_HINDEXED`/`_STRUCT` macros, the
+  generator's two hand-written twins for the removed MPI-1 names.
+
+  The second instance is unrelated code reached by the same read-through: the
+  out-LOGICAL scalar conversion declared `MPI_Fint c_flag;` and read it
+  unconditionally after the call with `*flag = mpif_bool2logical(c_flag);`,
+  so a failing call -- `MPI_Comm_get_attr`, `MPI_Attr_get`,
+  `MPI_Comm_test_inter`, `MPI_Dist_graph_neighbors_count`,
+  `MPI_Op_commutative` and every other routine with a plain LOGICAL out
+  argument -- read `c_flag` uninitialised. MPI leaves an output undefined on
+  error, so no defined behaviour changes; it is the same class of latent
+  defect this project already patched MPICH for (see "MPICH:
+  `MPI_Type_get_contents` converts uninitialised memory" in `MISSING.md`),
+  and it is what makes valgrind or MSan noisy on a path a caller cannot
+  legally inspect. Now `MPI_Fint c_$parname = 0;`, one line, all 26 affected
+  routines (52 generated bodies, MPI and PMPI) coming from the one generator
+  branch.
+
+  Neither has a test that can fail on it: gcc and clang both accept a
+  zero-length VLA as an extension, so `test/waitall_f08.f90`,
+  `test/waitall_f90.f90` and `test/type_create_struct_f08.f90` gained
+  `count = 0` calls that pass before this change and after it, pinning the
+  behaviour rather than reproducing a crash; and reading an uninitialised
+  `MPI_Fint` is not reliably observable without a sanitiser build this
+  project does not run routinely. `git diff gen/` is therefore the
+  verification that matters: regenerating produced exactly 112 added and 112
+  removed lines in `gen/mpif_functions.c` and nothing else, 60 VLA floors and
+  52 initialisers, each an exact match for the line it replaced;
+  `dev/check-f08-bindings.jl` reports no divergence, since no declaration
+  changed; and both `test/` and the MPICH suite stayed green on `mpich/gcc`
+  and `openmpi/gcc`.
+- **The f08 twins of `MPI_CONVERSION_FN_NULL`/`_C` now set `ierror`, agreeing
+  with their `mpif.h`/`mpi` module twins.** `src/mpif_attr_fns.F90`'s
+  `MPI_CONVERSION_FN_NULL`/`_C` set `ierror = MPI_ERR_INTERN` deliberately: the
+  comment above them explains that these two are pure sentinels meaning "no
+  conversion is needed", that MPI never actually calls them, and that a
+  plausible-looking no-op would hide the day one somehow does arrive.
+  `src/mpif_f08_attr_fns.F90`'s `mpif_f08_conversion_fn_null`/`_c` had empty
+  bodies instead, left over from before that reasoning was written down, so a
+  direct f08 call -- legal to make, if pointless, and one MPI itself never
+  makes, the wrappers substituting the ABI sentinel value rather than calling
+  through -- returned whatever `ierror` happened to hold. Both now set
+  `MPI_ERR_INTERN` too, for the same reason their twins do; no test, for the
+  same reason the `mpif.h` comment already gives none. `dev/check-f08-bindings.jl`
+  stayed clean, the fix touching no declaration.
+- **`mpif_strdup_f2c`/`mpif_strdup_f2c_trim` abort on OOM instead of returning
+  NULL through it.** Both wrote through `malloc`'s result unchecked, so
+  running out of memory was a NULL dereference inside mpif rather than a
+  reported error. Every caller is generated code -- the `STRING`, `STRING_ARRAY`
+  and `STRING_2DARRAY` branches of `dev/mpiapi.jl` -- with no cleanup path for a
+  mid-conversion failure: the result is handed straight to MPI, or built into
+  an array of them in a loop with no room in the generated code to unwind.
+  Returning NULL would only move the crash one frame out, into MPI or into
+  that loop, with no diagnostic naming what failed; checking and aborting here
+  instead, in the one place that still knows how many bytes were being
+  allocated and for which call, is the more honest failure. Printed with the
+  same `fprintf(stderr, "mpif: ...")` style the callback pools already use for
+  their own OOM path in `src/mpif_callbacks.c`.
+
+  The `array_of_argv` row allocation in the generator's `STRING_2DARRAY` branch
+  (`argv_$parname[i] = malloc(...)` in `dev/mpiapi.jl`, feeding
+  `MPI_Comm_spawn_multiple`) is deliberately left as it was, unchecked, rather
+  than folded into the same policy: it already has an open, unrelated defect
+  of its own (see "`MPI_Comm_spawn_multiple` leaks one allocation per command"
+  in `MISSING.md`), and giving every generated `malloc` site the checked
+  treatment would mean threading `stdio.h` and an abort path through the
+  generator's C-emission code for a single call site behind a root-only,
+  rarely-exercised routine. Recorded here as the accepted-as-is choice rather
+  than left to look like an oversight; revisit together with the leak if that
+  routine is touched again.
+- **The datarep box differs from the grequest box in exactly one way: it is
+  never freed.** `include/mpif_callbacks.h`'s datarep section used to claim a
+  second difference, that `extra_state` is "copied into the box rather than
+  aliased, where the grequest box holds the address of the caller's
+  variable." That was never true of the grequest box either -- its own section
+  higher in the same header says plainly that `extra_state` "is copied into
+  the box", citing MPI-5.0's `INTENT(IN)` on the argument and the C
+  prototypes taking it by value -- so the datarep paragraph was arguing
+  against a design the project had already settled and documented two dozen
+  lines above it. Leftover from an earlier draft where the grequest box
+  really did alias, this stale second claim contradicted the code
+  (`mpif_grequest_reserve` takes `MPI_Aint extra_state` by value,
+  `src/mpif_callbacks.c`) as well as its sibling comment. Rewritten to state
+  only the true difference, and to say the copy is the same as the
+  grequest box's rather than its opposite.

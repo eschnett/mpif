@@ -47,6 +47,15 @@ tests it -- a leak this size shows up in neither `test/` nor the suite -- so
 whoever fixes it should say what instrument they used, `leaks` or a counted
 malloc wrapper.
 
+The same `malloc` call is also the one generated allocation site that was left
+with no OOM check, when `src/mpif_strings.c`'s `mpif_strdup_f2c`/
+`mpif_strdup_f2c_trim` gained one on 2026-08-06 (see "`mpif_strdup_f2c`/
+`mpif_strdup_f2c_trim` abort on OOM instead of returning NULL through it" in
+`CODE.md`). Left that way deliberately rather than folded into the same
+change, for the same reason as the leak above: whoever fixes the leak should
+decide the OOM policy for this call at the same time, rather than have it
+decided here for a line that is about to move.
+
 ## Not defects
 
 Failures that were investigated and turned out not to be mpif's, and not an

@@ -45,6 +45,12 @@ program waitall_f90
   end do
   print '("MPI_Waitall with a rank-two array of statuses: ok")'
 
+  ! count = 0 is legal (MPI-5.0 3.7.5) and used to size the C wrapper's
+  ! request temporary as a zero-length VLA, which C does not have.
+  call MPI_Waitall(0, reqs, statuses, ierror)
+  if (ierror /= MPI_SUCCESS) stop 6
+  print '("MPI_Waitall with count = 0: ok")'
+
   print '("waitall_f90: all ok")'
 
   call MPI_Finalize(ierror)

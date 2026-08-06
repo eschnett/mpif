@@ -52,5 +52,19 @@ program type_create_struct_f08
 
   !
 
+  ! count = 0 is legal and used to size the C wrapper's displacement and type
+  ! temporaries as zero-length VLAs, which C does not have.
+  count = 0
+  call MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype)
+
+  call MPI_Type_commit(newtype)
+
+  call MPI_Type_size(newtype, size)
+  if (size /= 0) stop 2
+
+  call MPI_Type_free(newtype)
+
+  !
+
   call MPI_Finalize()
 end program type_create_struct_f08

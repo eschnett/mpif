@@ -156,18 +156,15 @@ int mpif_grequest_cancel_trampoline(void *extra_state, int complete);
 // apiece is enough. The two conversion callbacks share a signature, so they get
 // a trampoline each rather than one that has to guess which it is serving.
 //
-// Two things differ from the grequest box. The datarep is registered for the
+// One thing differs from the grequest box: the datarep is registered for the
 // duration of the program -- MPI-5.0 has no call that undoes
 // MPI_Register_datarep -- so the box is never freed. That is not a leak to be
 // fixed later: there is no point at which freeing it would be safe, and the
 // number of boxes is the number of datareps a program registers.
 //
-// And `extra_state` is copied into the box rather than aliased, where the
-// grequest box holds the address of the caller's variable. Aliasing is what
-// lets a grequest `free_fn` be seen by the caller, but it would be a dangling
-// pointer here, the box outliving any scope the caller registered from.
-// MPI-5.0 gives MPI_Register_datarep's own `extra_state` INTENT(IN), so there
-// is nothing to report back: the callbacks get the value that was registered.
+// `extra_state` is copied into the box the same way the grequest box copies
+// it (see above), not aliased: MPI-5.0 gives MPI_Register_datarep's own
+// `extra_state` INTENT(IN), so there is nothing to report back either way.
 void *mpif_datarep_reserve(mpif_fortran_procedure read_fn,
                            mpif_fortran_procedure write_fn,
                            mpif_fortran_procedure extent_fn,

@@ -63,6 +63,12 @@ program waitall_f08
   call check_recvbuf(5)
   print '("MPI_Waitall with MPI_STATUSES_IGNORE: ok")'
 
+  ! MPI_Waitall with count = 0, which is legal (MPI-5.0 3.7.5 puts no lower
+  ! bound on `count`) and used to size the C wrapper's request temporary as a
+  ! zero-length VLA, which C does not have.
+  call MPI_Waitall(0, reqs, statuses)
+  print '("MPI_Waitall with count = 0: ok")'
+
   ! MPI_Testall, which reports the same array once every request is complete
 
   call post(reqs)

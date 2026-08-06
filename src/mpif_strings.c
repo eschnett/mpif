@@ -1,5 +1,6 @@
 #include <mpif_strings.h>
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -13,10 +14,22 @@ size_t mpif_fstrlen(const char *restrict const str, const size_t str_length) {
   return 0;
 }
 
-// Duplicate a Fortran string to a C string. Allocate the result with `malloc`.
+// Duplicate a Fortran string to a C string. Allocate the result with
+// `malloc`.
+//
+// Every caller is generated code with no cleanup path for a mid-conversion
+// failure: the result goes straight to MPI, or into a loop building an array
+// of them. Returning NULL on OOM would just move the crash into MPI or that
+// loop with no diagnostic, so this aborts instead, in the one place that
+// still knows what was being allocated.
 char *mpif_strdup_f2c(const char *restrict const str, const size_t str_length) {
   const size_t len = mpif_fstrlen(str, str_length);
   char *restrict const res = malloc(len + 1);
+  if (!res) {
+    fprintf(stderr, "mpif: mpif_strdup_f2c: out of memory allocating %zu bytes\n",
+            len + 1);
+    abort();
+  }
   memcpy(res, str, len);
   res[len] = '\0';
   return res;
@@ -45,6 +58,12 @@ char *mpif_strdup_f2c_trim(const char *restrict const str,
     ++begin;
   const size_t len = end - begin;
   char *restrict const res = malloc(len + 1);
+  if (!res) {
+    fprintf(stderr,
+            "mpif: mpif_strdup_f2c_trim: out of memory allocating %zu bytes\n",
+            len + 1);
+    abort();
+  }
   memcpy(res, str + begin, len);
   res[len] = '\0';
   return res;
