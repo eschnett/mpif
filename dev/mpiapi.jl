@@ -496,6 +496,7 @@ append!(c_implementations,
          "#include <mpi.h>",
          "#include <assert.h>",
          "#include <stdint.h>",
+         "#include <stdio.h>",
          "#include <stdlib.h>",
          "#include <string.h>",
          "",
@@ -1565,8 +1566,18 @@ for key in sort(collect(keys(apis)))
                 # test.
                 count = root_only_count!(state, input_conversions, name, parameters, length)
                 vla = vla_size(count)
+                # `malloc` here gets the same checked-and-abort policy as
+                # `mpif_strdup_f2c`/`_trim`, which every row's strings already
+                # go through: this call has the same generated-code caller with
+                # no cleanup path for a mid-conversion failure, so returning
+                # NULL through it would only move the crash from here into the
+                # `argv_$parname[i][n] = ...` write two lines down.
                 body = ["count_$parname[i] = mpif_fcount2d($parname, $count, i, length_$parname);",
                         "argv_$parname[i] = malloc((count_$parname[i] + 1) * sizeof(char*));",
+                        "if (!argv_$parname[i]) {",
+                        "  fprintf(stderr, \"mpif: $name: out of memory allocating %zu bytes\\n\", (count_$parname[i] + 1) * sizeof(char*));",
+                        "  abort();",
+                        "}",
                         "for (size_t n=0; n<count_$parname[i]; ++n)",
                         "  argv_$parname[i][n] = $strdup_f2c($parname + i * length_$parname + n * $count * length_$parname, length_$parname);",
                         "argv_$parname[i][count_$parname[i]] = NULL;"]
@@ -1596,6 +1607,7 @@ for key in sort(collect(keys(apis)))
                         ["for (int i=0; i<$count; ++i) {",
                          "  for (size_t n=0; n<count_$parname[i]; ++n)",
                          "    free(argv_$parname[i][n]);",
+                         "  free(argv_$parname[i]);",
                          "}"])
                 push!(f_declarations, "character*(*) :: $parname($length, *)")
                 push!(f08_declarations, "character*(*), intent($param_direction) :: $parname($length, *)")

@@ -8,6 +8,7 @@
 #include <mpi.h>
 #include <assert.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -4363,6 +4364,10 @@ void mpi_comm_spawn_multiple_(
     if (!null_array_of_argv) {
       count_array_of_argv[i] = mpif_fcount2d(array_of_argv, q_count, i, length_array_of_argv);
       argv_array_of_argv[i] = malloc((count_array_of_argv[i] + 1) * sizeof(char*));
+      if (!argv_array_of_argv[i]) {
+        fprintf(stderr, "mpif: MPI_Comm_spawn_multiple: out of memory allocating %zu bytes\n", (count_array_of_argv[i] + 1) * sizeof(char*));
+        abort();
+      }
       for (size_t n=0; n<count_array_of_argv[i]; ++n)
         argv_array_of_argv[i][n] = mpif_strdup_f2c_trim(array_of_argv + i * length_array_of_argv + n * q_count * length_array_of_argv, length_array_of_argv);
       argv_array_of_argv[i][count_array_of_argv[i]] = NULL;
@@ -4390,6 +4395,7 @@ void mpi_comm_spawn_multiple_(
   for (int i=0; i<q_count; ++i) {
     for (size_t n=0; n<count_array_of_argv[i]; ++n)
       free(argv_array_of_argv[i][n]);
+    free(argv_array_of_argv[i]);
   }
   *intercomm = MPI_Comm_toint(c_intercomm);
 }
@@ -4447,6 +4453,10 @@ void pmpi_comm_spawn_multiple_(
     if (!null_array_of_argv) {
       count_array_of_argv[i] = mpif_fcount2d(array_of_argv, q_count, i, length_array_of_argv);
       argv_array_of_argv[i] = malloc((count_array_of_argv[i] + 1) * sizeof(char*));
+      if (!argv_array_of_argv[i]) {
+        fprintf(stderr, "mpif: MPI_Comm_spawn_multiple: out of memory allocating %zu bytes\n", (count_array_of_argv[i] + 1) * sizeof(char*));
+        abort();
+      }
       for (size_t n=0; n<count_array_of_argv[i]; ++n)
         argv_array_of_argv[i][n] = mpif_strdup_f2c_trim(array_of_argv + i * length_array_of_argv + n * q_count * length_array_of_argv, length_array_of_argv);
       argv_array_of_argv[i][count_array_of_argv[i]] = NULL;
@@ -4474,6 +4484,7 @@ void pmpi_comm_spawn_multiple_(
   for (int i=0; i<q_count; ++i) {
     for (size_t n=0; n<count_array_of_argv[i]; ++n)
       free(argv_array_of_argv[i][n]);
+    free(argv_array_of_argv[i]);
   }
   *intercomm = MPI_Comm_toint(c_intercomm);
 }

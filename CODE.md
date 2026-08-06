@@ -951,15 +951,9 @@ mechanism that replaced them and the evidence it is right.
 
   The `array_of_argv` row allocation in the generator's `STRING_2DARRAY` branch
   (`argv_$parname[i] = malloc(...)` in `dev/mpiapi.jl`, feeding
-  `MPI_Comm_spawn_multiple`) is deliberately left as it was, unchecked, rather
-  than folded into the same policy: it already has an open, unrelated defect
-  of its own (see "`MPI_Comm_spawn_multiple` leaks one allocation per command"
-  in `MISSING.md`), and giving every generated `malloc` site the checked
-  treatment would mean threading `stdio.h` and an abort path through the
-  generator's C-emission code for a single call site behind a root-only,
-  rarely-exercised routine. Recorded here as the accepted-as-is choice rather
-  than left to look like an oversight; revisit together with the leak if that
-  routine is touched again.
+  `MPI_Comm_spawn_multiple`) gained the same check when its own open defect,
+  the missing `free` below, was fixed and touched this exact line anyway; see
+  that entry for the check and the `#include <stdio.h>` it needed.
 - **The datarep box differs from the grequest box in exactly one way: it is
   never freed.** `include/mpif_callbacks.h`'s datarep section used to claim a
   second difference, that `extra_state` is "copied into the box rather than
@@ -975,3 +969,35 @@ mechanism that replaced them and the evidence it is right.
   `src/mpif_callbacks.c`) as well as its sibling comment. Rewritten to state
   only the true difference, and to say the copy is the same as the
   grequest box's rather than its opposite.
+- **`MPI_Comm_spawn_multiple` no longer leaks one allocation per command.**
+  The `STRING_2DARRAY` branch of `dev/mpiapi.jl` converts `array_of_argv` a row
+  at a time, mallocing the `char*` vector each row needs
+  (`argv_array_of_argv[i] = malloc(...)`), and the cleanup after the call used
+  to free only the strings inside each vector -- `free(argv_array_of_argv[i][n])`
+  in a loop -- and never the vector itself. Every call therefore leaked `count`
+  allocations of `(argc + 1) * sizeof(char*)` bytes, small and bounded per
+  call but unbounded over a program that spawns repeatedly. The fix is the one
+  line `MISSING.md` already named: `free(argv_$parname[i]);` after the inner
+  loop. The row is `NULL` where the conversion did not run -- away from the
+  root, or under a NULL-sentinel guard -- and `free(NULL)` is defined, so no
+  extra guard is needed around the new line.
+
+  This malloc was also the one generated allocation site left unchecked when
+  `mpif_strdup_f2c`/`_trim` gained the abort-on-OOM policy above; fixing the
+  leak was the trigger to decide that too, per the note left for exactly this
+  in `MISSING.md`. Same policy, same reasoning: every caller is generated code
+  with no cleanup path for a mid-conversion failure, so `argv_$parname[i] =
+  malloc(...)` now checks and aborts with a diagnostic rather than handing a
+  NULL vector to the write two lines down. `dev/mpiapi.jl`'s C-implementation
+  header gained `#include <stdio.h>` for the `fprintf` this needed, the first
+  generated file to use it.
+
+  Nothing in `test/` or the MPICH suite exercises `MPI_Comm_spawn_multiple` --
+  `test/` has no spawn plumbing at all (see "Root-only arguments are converted
+  at the root" in this file), and the suite's own spawn tests were already
+  green before and after. Verified instead with a throwaway two-command
+  self-spawning Fortran program run under `mpiexec -n 1` and macOS `leaks
+  -atExit`: before the fix, `leaks` reported "2 leaks for 64 total leaked
+  bytes", with the stack trace naming `mpi_comm_spawn_multiple_` at the exact
+  `malloc` line; after it, "0 leaks for 0 total leaked bytes", same program,
+  same run.

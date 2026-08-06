@@ -13,48 +13,10 @@ reading the generator alone -- see "Checking a claim" in `CLAUDE.md`.
 
 ## Errors
 
-One outstanding. Entries here go away when they are fixed, and the ones worth not
-re-investigating afterwards are under "Verified as correct" in `CODE.md`; what else
-remains in this file is features mpif does not have, blockers outside it, and
-decisions.
-
-### `MPI_Comm_spawn_multiple` leaks one allocation per command
-
-`gen/mpif_functions.c` converts `array_of_argv` a row at a time and mallocs the
-`char*` vector each row needs:
-
-    argv_array_of_argv[i] = malloc((count_array_of_argv[i] + 1) * sizeof(char*));
-
-The cleanup after the call frees the strings in each vector and not the vectors
-themselves --
-
-    for (int i=0; i<q_count; ++i) {
-      for (size_t n=0; n<count_array_of_argv[i]; ++n)
-        free(argv_array_of_argv[i][n]);
-    }
-
--- so every call leaks `count` allocations of `(argc + 1) * sizeof(char*)` bytes.
-Small and bounded per call, unbounded over a program that spawns repeatedly.
-
-The fix is one line in the `STRING_2DARRAY` branch of `dev/mpiapi.jl`, a
-`free(argv_$parname[i]);` after the inner loop; the row is `NULL` where the
-conversion did not run, and `free(NULL)` is defined, so the guard the conversion
-needs is not needed here. Noticed on 2026-08-06 while rewriting that branch for
-root significance (see "Root-only arguments are converted at the root" in
-`CODE.md`) and left out of that change deliberately, its scope being the guard:
-recorded rather than folded in so that the two are not verified as one. Nothing
-tests it -- a leak this size shows up in neither `test/` nor the suite -- so
-whoever fixes it should say what instrument they used, `leaks` or a counted
-malloc wrapper.
-
-The same `malloc` call is also the one generated allocation site that was left
-with no OOM check, when `src/mpif_strings.c`'s `mpif_strdup_f2c`/
-`mpif_strdup_f2c_trim` gained one on 2026-08-06 (see "`mpif_strdup_f2c`/
-`mpif_strdup_f2c_trim` abort on OOM instead of returning NULL through it" in
-`CODE.md`). Left that way deliberately rather than folded into the same
-change, for the same reason as the leak above: whoever fixes the leak should
-decide the OOM policy for this call at the same time, rather than have it
-decided here for a line that is about to move.
+None outstanding. Entries here go away when they are fixed, and the ones worth
+not re-investigating afterwards are under "Verified as correct" in `CODE.md`;
+what else remains in this file is features mpif does not have, blockers outside
+it, and decisions.
 
 ## Not defects
 
