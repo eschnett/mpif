@@ -20,6 +20,8 @@ program version_f08
 
   call MPI_Init()
 
+  if (MPI_T_ERR_CVAR_SET_NEVER /= 1015) stop 1
+
   call MPI_Get_version(version, subversion)
   print '("MPI standard version ",i0,".",i0)', version, subversion
 

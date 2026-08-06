@@ -505,6 +505,22 @@ mechanism that replaced them and the evidence it is right.
   Recorded here rather than as an error so that the question is not reopened.
   Should assumed-rank ever be taken for choice buffers, this comes with it for
   nothing and is worth doing then.
+- **`MPI_T_ERR_CVAR_SET_NEVER` reaches `mpi_f08`, the eighteenth `MPI_T_ERR_*`
+  code.** `include/mpif_constants.h` defines all eighteen `MPI_T_ERR_*` classes
+  A.1.1 gives an INTEGER type, value 1015 for this one, between
+  `MPI_T_ERR_CVAR_SET_NOT_NOW` (1014) and `MPI_T_ERR_PVAR_NO_WRITE` (1016), so
+  `mpif.h` and the `mpi` module have it through the `include`.
+  `src/mpif_f08_constants.F90` re-exports the class into `mpi_f08` by hand, one
+  `use mpi, only:` entry and one `public ::` entry per name, and until
+  2026-08-06 this one was in neither list while the other seventeen were in both.
+
+  Nothing diffs the re-export lists against `mpif_constants.h`, which is how one
+  missing pair among several hundred names survived: the seventeen correctly
+  re-exported neighbours give no signal that an eighteenth is missing, since
+  nothing calls out that there ought to be eighteen. `test/version_f08.f90` now
+  asserts `MPI_T_ERR_CVAR_SET_NEVER == 1015`; removing the two lines again
+  reproduces gfortran's original diagnostic, "Symbol 'mpi_t_err_cvar_set_never'
+  at (1) has no IMPLICIT type; did you mean 'mpi_t_err_cvar_set_not_now'?".
 - **A user-defined reduction operator receives its buffers, from all three
   interfaces.** `MPI_User_function`'s `invec` and `inoutvec` were
   `INTEGER(KIND=MPI_ADDRESS_KIND)` by reference in `mpi_f08`, where MPI-5.0

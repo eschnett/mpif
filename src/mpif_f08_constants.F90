@@ -99,6 +99,7 @@ module mpif_f08_constants
        MPI_T_ERR_OUT_OF_HANDLES, &
        MPI_T_ERR_OUT_OF_SESSIONS, &
        MPI_T_ERR_CVAR_SET_NOT_NOW, &
+       MPI_T_ERR_CVAR_SET_NEVER, &
        MPI_T_ERR_PVAR_NO_WRITE, &
        MPI_T_ERR_PVAR_NO_STARTSTOP, &
        MPI_T_ERR_PVAR_NO_ATOMIC, &
@@ -339,6 +340,7 @@ module mpif_f08_constants
        MPI_T_ERR_OUT_OF_HANDLES, &
        MPI_T_ERR_OUT_OF_SESSIONS, &
        MPI_T_ERR_CVAR_SET_NOT_NOW, &
+       MPI_T_ERR_CVAR_SET_NEVER, &
        MPI_T_ERR_PVAR_NO_WRITE, &
        MPI_T_ERR_PVAR_NO_STARTSTOP, &
        MPI_T_ERR_PVAR_NO_ATOMIC, &
