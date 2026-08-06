@@ -31,6 +31,28 @@ machine is `<mpi>/<toolchain>/darwin/26/arm64`, which is *not* one of CI's rows 
 theirs are macos-15 and Ubuntu. Do not expect the suite baseline table to match a
 local run.
 
+**This machine's own name does not resolve to this machine.** `gethostname()`
+returns `Mac.pitp.io`, and the DNS this network hands out answers that with an
+address on a different subnet than the one `en0` holds -- 10.41.6.x against
+10.10.60.110 as of August 2026, and both halves move, so check rather than trust
+those numbers:
+
+    python3 -c 'import socket; h=socket.gethostname(); \
+        print(h, sorted({a[4][0] for a in socket.getaddrinfo(h,None)}))'
+    ifconfig | awk "/inet /{print \$2}" | sort -u
+
+If the first prints an address the second does not list, MPICH's spawn tests
+cannot pass without help, because ch3:nemesis:tcp puts that address in the
+business card a spawned child connects back to. The symptom is
+`MPIDI_Create_inter_root_communicator_connect(316): Connection timed out in 180
+seconds`, one 180-second timeout per test, and `MISSING.md` "MPICH: a spawned
+child connects back to whatever `gethostname()` resolves to" has the diagnosis.
+`scripts/macos-test-mpich-suite.sh` now exports
+`MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=lo0` for MPICH, so the scripted run is
+already covered; a hand-run `runtests` is not, and has to set it itself. Open MPI
+is unaffected -- it was already pinned to `lo0` for an unrelated reason -- and so
+is mpif's own `test/`, which deliberately never spawns.
+
 ## Preferences
 
 - **Commit on `main`.** No feature branches in this repo. Do not push unless
@@ -101,9 +123,25 @@ one, and the counts it reports are recorded under "Suite baseline" in
 `MISSING.md`. To run
 one directory of the suite rather than all of it:
 
-    cd mpi/tests-<variant>-gcc/mpich-5.0.1/test/mpi/f90/rma
+    cd mpi/tests-<variant>/mpich-5.0.1/test/mpi/f90/rma
     MPIF_REAL_MPIEXEC=<mpi-prefix>/bin/mpiexec ../../runtests -tests=testlist \
         -mpiexec=<repo>/ci-scripts/suite/mpiexec-filter.sh -maxnp=4
+
+`<variant>` is `<mpi>-<toolchain>` entire, so that first path is
+`mpi/tests-mpich-gcc/...`; it read `tests-<variant>-gcc` here until August 2026,
+which is a directory that has never existed.
+
+A hand-run `runtests` gets none of what the wrapper scripts export, and on this
+network that matters: add `MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=lo0` for MPICH, or
+`MPIEXEC_ARGS` as `scripts/macos-test-mpich-suite.sh` sets it for Open MPI,
+whenever the directory contains spawn tests. See "This machine" above for why.
+
+**Only one suite run per variant at a time.** `MPICH_TESTS_DIR` defaults to
+`mpi/tests-<variant>`, so two runs of the same variant -- a scripted one and a
+hand-run `runtests`, say -- are the same tree, and the second rebuilds and deletes
+executables under the first. The scripted run also unpacks the suite again at the
+start, which pulls the directory out from under anything already running in it.
+Different variants are different trees and do not collide.
 
 Set `MPIF_KEEP_TESTS=1` to stop `runtests` deleting each executable after it
 runs, which is what a debugger needs to turn "test failed" into a backtrace.

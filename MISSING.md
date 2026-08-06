@@ -958,6 +958,73 @@ two Open MPI x86_64 rows in the baseline below identical to their aarch64 twins,
 5 / 9 / 20 under gcc and 5 / 9 / 16 under llvm, which is what "the same
 implementation on the same OS" should look like.
 
+### MPICH: a spawned child connects back to whatever `gethostname()` resolves to
+
+Not a defect in mpif, and not really one in MPICH either, but it fails every MPICH
+spawn test in the suite on a machine whose name resolves somewhere else, and it
+costs 180 seconds a test to do it, so it is worth knowing on sight. The local
+network here changed in August 2026 and it turned up the same day.
+
+`gethostname()` on this machine returns `Mac.pitp.io`. The DNS this network serves
+answers that with 10.41.6.x; `en0` holds 10.10.60.110. Nothing on the machine
+answers to the address its own name gives.
+
+MPICH is built `--with-device=ch3` here, and `GetSockInterfaceAddr` in
+`src/mpid/ch3/channels/nemesis/netmod/tcp/tcp_init.c:295` picks the address that
+goes into the business card from, in order, `MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE`,
+`MPIR_CVAR_CH3_INTERFACE_HOSTNAME`, `MPIR_pmi_hostname()`, and a scan for a single
+non-loopback address. With neither CVAR set the third wins, and it is the
+unresolvable name. So the parent advertises a port at an address that does not
+exist, the child cannot reach it, and:
+
+    init_spawn(226): spawned process group was unable to connect back to the
+        parent on port <tag#0$description#Mac.pitp.io$port#53122$ifname#10.41.6.89$>
+    MPIDI_Comm_connect(787): Named port tag#0$description#Mac.pitp.io$port#53122$
+        ifname#10.41.6.89$ does not exist
+    MPIDI_Create_inter_root_communicator_connect(316): Connection timed out in
+        180 seconds
+
+The `ifname#` field is the whole diagnosis: compare it against `ifconfig` and if
+the machine has no such address, this is that and nothing else needs looking at.
+Do not expect the same address twice -- the DNS round-robins, and three lookups
+minutes apart here gave 10.41.6.140, .89 and .65. Only the subnet is stable, and
+only until the network changes again.
+
+Measured, not inferred. A ten-line C program that calls `MPI_Comm_spawn` on itself
+reproduces it with no Fortran anywhere, which is what rules mpif out. Timings from
+that program, `mpiexec -n 2`, MPICH gcc:
+
+| setting | result |
+| --- | --- |
+| nothing set | fails, 180 s |
+| `MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=lo0` | passes, 0.08 s |
+| `MPIR_CVAR_CH3_INTERFACE_HOSTNAME=127.0.0.1` | passes |
+| `MPIR_CVAR_CH3_INTERFACE_HOSTNAME=localhost` | passes |
+| `MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=en0` | fails, 0.3 s, "does not exist" |
+
+The fix is the first of those, exported for MPICH by
+`scripts/macos-test-mpich-suite.sh`, which is where Open MPI already gets
+`--mca btl_tcp_if_include lo0` for an unrelated reason. The suite is one machine
+talking to itself, so the loopback is all it ever needed, and pinning to it makes
+the run independent of what the network is doing -- which is the point, the
+failure having arrived through no change to this repository at all.
+
+Two things deliberately not done. The interface CVAR rather than
+`MPIR_CVAR_CH3_INTERFACE_HOSTNAME=127.0.0.1`, which works equally well: MPICH
+errors out if both are set, and naming the interface leaves the choice of address
+to MPICH. And the last row is not chased. `en0` is a real address the machine
+really has, a plain TCP connect to it from this machine succeeds, and it still
+fails -- but fast, and with a different message, so it is a different thing;
+loopback is the answer regardless and the row is recorded only so the next person
+does not read it as a variant of the timeout.
+
+Nothing was added to `ci-scripts/suite/mpich-suite-xfail.txt`. These tests pass
+once the interface is pinned, so they are not expected failures; xfailing them
+would have hidden a working configuration behind a local network's DNS. CI is
+untouched for the same reason -- its runners' names resolve to their own
+addresses, `.github/workflows/ci.yaml` never calls the macOS script, and the
+baseline rows below were measured before this and still stand.
+
 ### MPICH: suite tests that cannot pass against a conforming binding
 
 Six of the suite's tests ask for something MPI-5.0 does not have, something only

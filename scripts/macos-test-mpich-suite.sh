@@ -46,4 +46,35 @@ if [[ ${mpi} == openmpi ]]; then
     export MPIEXEC_ARGS="${MPIEXEC_ARGS:---oversubscribe --mca btl_tcp_if_include lo0}"
 fi
 
+# MPICH needs the same thing said its own way, and for a different reason. Its
+# ch3:nemesis:tcp business card carries the address a spawned child connects back
+# to, and GetSockInterfaceAddr in
+# src/mpid/ch3/channels/nemesis/netmod/tcp/tcp_init.c works down a list to find
+# it: MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE, then MPIR_CVAR_CH3_INTERFACE_HOSTNAME,
+# then the name the process manager gives, which is gethostname(). With nothing
+# set that last one wins, and it is only right while the machine's own name
+# resolves to an address the machine actually has. Off a network where it does
+# not, every spawn test dies after runtests' 180-second timeout with
+#
+#     init_spawn(226): spawned process group was unable to connect back to the
+#         parent on port <tag#0$description#<host>$port#53122$ifname#<stale-ip>$>
+#     MPIDI_Create_inter_root_communicator_connect(316): Connection timed out in
+#         180 seconds
+#
+# and the `ifname#` in that message is the address to check: if the machine has
+# no such address, this is that. Measured here with a ten-line C program that
+# spawns itself, no Fortran in sight, so it is not an mpif problem; lo0 took it
+# from a 180-second timeout to 0.08 seconds. As with Open MPI above, the suite is
+# one machine talking to itself, so the loopback is all it ever needed.
+#
+# The interface, not MPIR_CVAR_CH3_INTERFACE_HOSTNAME=127.0.0.1, which also works
+# -- MPICH rejects the two set together, and naming the interface leaves the
+# choice of address to it. Do not use a real interface: en0 was tried here and
+# fails immediately with "Named port ... does not exist" rather than timing out,
+# which is a different symptom and was not chased, the loopback being the answer
+# either way.
+if [[ ${mpi} == mpich ]]; then
+    export MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE="${MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE:-lo0}"
+fi
+
 exec "${repodir}/ci-scripts/suite/test-mpich-suite.sh" "${mpi_prefix}" "${mpif_prefix}"
