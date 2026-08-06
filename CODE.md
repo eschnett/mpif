@@ -372,6 +372,83 @@ mechanism that replaced them and the evidence it is right.
   which receive; send block 6 duly arrived in receive block 3. The test sends each
   rank's own number instead, which still pins down that block *i* came from source
   *i*.
+- **Root-only arguments are converted at the root, and the root is not rank 0.**
+  `data/apis.json` marks 19 routines' parameters `root_only`, which MPI-5.0 6.1
+  defines as "significant only at root, and ... ignored for all participants
+  except the root". A non-root caller may therefore pass anything, so mpif
+  converts such a parameter only where it is significant: `MPI_Type_fromint` on a
+  meaningless handle, or `mpif_strdup_f2c` on a meaningless string, is a wild read
+  either way.
+
+  That guard was right in intent and wrong in its test. Every one of the six
+  places in `dev/mpiapi.jl` that emitted it compared `q_comm_rank == 0`, where the
+  significant process is the one the routine's own `root` argument names, so a
+  gather to root 1 converted `recvtype` on rank 0 and handed MPICH
+  `MPI_DATATYPE_NULL` at rank 1: "internal_Gather(9304): Datatype for argument
+  datatype is a null datatype". That one was run. `MPI_Comm_spawn` is the same
+  shape and worse by inspection of the same generated C -- `c_command` stays
+  `NULL` unless the guard passes, so a spawn from a root other than 0 hands the
+  implementation a null `command` -- and is inferred rather than measured, `test/`
+  having no spawn test to measure it with: spawn under `ctest` wants the same
+  filtered launcher the suite needs (`ci-scripts/suite/mpiexec-filter.sh`), which
+  is more machinery than a second reproducer of one guard is worth.
+
+  `ensure_at_root!` replaces `ensure_comm_rank!` and emits `q_at_root`, which asks
+  the standard's two questions rather than one. On an intracommunicator it is
+  `q_comm_rank == *root`. On an intercommunicator a rank in `comm` does not
+  identify the root at all -- 6.2.3 has "the root uses the special value
+  MPI_ROOT; all other MPI processes in the same group as the root use
+  MPI_PROC_NULL. All MPI processes in the other group ... pass the same value in
+  argument root, which is the rank of the root in group A" -- so comparing a
+  process's own rank against `*root` there converts at whichever process of the
+  *remote* group carries that number and never at the root. It is `*root ==
+  MPI_ROOT`, and A.1.1's ABI value for `MPI_ROOT` is -4, so no valid rank
+  collides. The dispatch is `MPI_Comm_test_inter`, through `state.prefix` so that
+  the PMPI copies probe with `PMPI_Comm_test_inter`; the three routines that can
+  only be given an intracommunicator -- `MPI_COMM_SPAWN`, `MPI_COMM_ACCEPT`,
+  `MPI_COMM_CONNECT` -- pay one wasted query rather than needing a second rule.
+  `root` is the name of the argument in all 19, which `ensure_at_root!` asserts
+  from `parameters` rather than hardcoding.
+
+  Only converted arguments ever had the defect. `MPI_Reduce`'s `recvbuf` and the
+  gather family's are `root_only` too and are choice buffers, which go to C
+  untouched; `recvcount`, `recvcounts` and `displs` are integers and arrays of
+  integers that pass through unguarded, which is equally safe, the implementation
+  being the one entitled to ignore them.
+
+  MPICH's Fortran suite never caught any of it, because every call in it that has
+  a root names rank 0, which is the one value at which the wrong guard and the
+  right one agree. Checked rather than assumed, over all three Fortran
+  directories: a literal `0` in `spawn/spawnf.f`, `spawn/spawnmultf.f`,
+  `spawn/connaccf.f` and the two `MPI_Igather`/`MPI_Igatherv` calls of
+  `coll/nonblockingf.f`, and a variable set to `root = 0` at line 27 of
+  `coll/inplacef.f`, with the `f90` and `f08` twins of each identical in this
+  respect. So `test/gather_root_f08.f90` gathers to root 1 and scatters from it at
+  two ranks, and `test/gather_inter_f08.f90` does both over an intercommunicator
+  at three, with group A = {1, 2} and the root second in it: at one process per
+  group both roots have local rank 0 and the old guard would come out right by
+  accident. Both fail with the message above when the guard is put back, which is
+  how they were checked. One interface apiece is enough, `mpi_f08`'s `MPI_Gather`
+  calling the `mpi` module's and both reaching the single C wrapper that carries
+  the guard.
+
+  Two things in `MPI_Comm_spawn_multiple` went with it, `count` there being
+  `root_only` as well. It sized three VLAs -- `size_t count_array_of_argv[*count]`
+  and two more -- from a value a non-root caller need not have set, where a large
+  one overflows the stack and zero is not a VLA length C admits; and the
+  `array_of_info` conversion had no `else`, so away from the root MPI received an
+  uninitialised array of handles. `root_only_count!` now emits `const int q_count =
+  q_at_root ? (int)*count : 0;` once, every VLA is sized `q_count > 0 ? q_count :
+  1`, every loop runs to `q_count`, and the arrays are filled -- with
+  `MPI_INFO_NULL` and with `NULL` -- over their whole extent first, the padding
+  element included. `*count` itself still reaches MPI unchanged: it is the
+  caller's argument, and MPI is the one entitled to ignore it.
+
+  One thing in those same lines is *not* fixed, and is deliberately not: the
+  `char*` vector each row of `array_of_argv` is malloc'd is never freed. It was
+  noticed while rewriting them and left for a change of its own, so that a leak and
+  a significance guard are not verified as one thing. See "`MPI_Comm_spawn_multiple`
+  leaks one allocation per command" in `MISSING.md`.
 - **`MPI_Sizeof` stays as it is, covering rank zero and rank one.**
   `src/mpif_types.F90` gives the generic a scalar and an assumed-size specific per
   type and kind, so an argument of rank two or more resolves to nothing. That is

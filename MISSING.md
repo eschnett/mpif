@@ -13,9 +13,39 @@ reading the generator alone -- see "Checking a claim" in `CLAUDE.md`.
 
 ## Errors
 
-None outstanding. Every entry that was here has been fixed, and the ones worth not
-re-investigating are under "Verified as correct" in `CODE.md`. What remains here
-is features mpif does not have, blockers outside it, and decisions.
+One outstanding. Entries here go away when they are fixed, and the ones worth not
+re-investigating afterwards are under "Verified as correct" in `CODE.md`; what else
+remains in this file is features mpif does not have, blockers outside it, and
+decisions.
+
+### `MPI_Comm_spawn_multiple` leaks one allocation per command
+
+`gen/mpif_functions.c` converts `array_of_argv` a row at a time and mallocs the
+`char*` vector each row needs:
+
+    argv_array_of_argv[i] = malloc((count_array_of_argv[i] + 1) * sizeof(char*));
+
+The cleanup after the call frees the strings in each vector and not the vectors
+themselves --
+
+    for (int i=0; i<q_count; ++i) {
+      for (size_t n=0; n<count_array_of_argv[i]; ++n)
+        free(argv_array_of_argv[i][n]);
+    }
+
+-- so every call leaks `count` allocations of `(argc + 1) * sizeof(char*)` bytes.
+Small and bounded per call, unbounded over a program that spawns repeatedly.
+
+The fix is one line in the `STRING_2DARRAY` branch of `dev/mpiapi.jl`, a
+`free(argv_$parname[i]);` after the inner loop; the row is `NULL` where the
+conversion did not run, and `free(NULL)` is defined, so the guard the conversion
+needs is not needed here. Noticed on 2026-08-06 while rewriting that branch for
+root significance (see "Root-only arguments are converted at the root" in
+`CODE.md`) and left out of that change deliberately, its scope being the guard:
+recorded rather than folded in so that the two are not verified as one. Nothing
+tests it -- a leak this size shows up in neither `test/` nor the suite -- so
+whoever fixes it should say what instrument they used, `leaks` or a counted
+malloc wrapper.
 
 ## Not defects
 
@@ -158,6 +188,50 @@ wrong without failing to build, and everything downstream then tests that. The
 producer-side discard above cannot cover either case on its own, since a prefix
 written some other way -- by hand, which is what may well have happened here --
 never goes near the install script's traps.
+
+### Every MPICH spawn test fails when the host's own name resolves to another host
+
+Seen on 2026-08-06 on `mpich/gcc/darwin/26/arm64`, where three earlier runs had
+reported no differences. `f77/spawn/spawnf` failed and `f77/spawn/spawnargvf` then
+burned `runtests`' 180-second timeout, on the spawned child's `MPI_Init` rather
+than on anything the test did:
+
+    init_spawn(226): spawned process group was unable to connect back to the
+    parent on port <tag#0$description#Mac.pitp.io$port#65285$ifname#10.10.60.97$>
+    MPIDI_Comm_connect(787): Named port ... does not exist
+    MPIDI_Create_inter_root_communicator_connect(316): Connection timed out in
+    180 seconds
+
+`ifname#10.10.60.97` is the address MPICH published for the parent to be reached
+at, and this machine's `en0` is **10.10.60.110**. `Mac.pitp.io` is its own
+`hostname`, and it resolves to 10.10.60.97 -- a different host on the same subnet,
+139 ms away by `ping`. So MPICH resolved its own name, advertised somebody else's
+address, and the child dialled it. A stale DNS record or a DHCP lease that moved,
+either way outside this repository.
+
+Not mpif's, and proven so rather than argued: a fifteen-line C program that spawns
+a copy of itself, compiled with `mpi/mpich-gcc/bin/mpicc` and linked against
+MPICH's own ABI library with no mpif anywhere in it, fails with the identical error
+stack and the same port string. That is the measurement to take first if the spawn
+tests ever look broken again -- the child's connect-back is inside MPI_Init, where
+a Fortran binding has no part to play, so a Fortran spawn test failing this way
+says nothing about the binding.
+
+`MPIR_CVAR_CH3_INTERFACE_HOSTNAME=127.0.0.1` fixes it: MPICH here is a ch3 build --
+`MPIDI_Comm_connect` and `MPID_Comm_connect` are ch3's, and
+`src/mpid/ch3/src/ch3u_port.c` is where "Named port does not exist" comes from --
+and that CVAR is what tells it which address to advertise. The C reproducer passes
+with it set, and so does the suite. Deliberately *not* added to
+`scripts/macos-test-mpich-suite.sh`: it is a workaround for one machine's broken
+name resolution, and baking it in would hide the same breakage from the next person
+rather than showing it to them, which is the argument that keeps entries out of the
+`xfail` list too. Export it for the run, as was done here, and say so.
+
+The Open MPI analogue is under "External blockers" below -- "OpenMPI: left to
+itself it picks an interface it cannot use" -- and needs a different flag for a
+different reason. Its `--mca btl_tcp_if_include lo0` *is* passed by the scripts,
+that being a choice Open MPI gets wrong on every host rather than a property of
+this one.
 
 ## External blockers
 

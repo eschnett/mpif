@@ -210,9 +210,14 @@ callback_prototypes = Dict(a["name"] => a for a in values(apis) if a["attributes
 struct State
     # have_fortran_booleans::Ref{Bool}
     have_comm::Ref{Bool}
-    have_comm_rank::Ref{Bool}
+    have_at_root::Ref{Bool}
     have_group_size::Ref{Bool}
     have_neighbor_degrees::Ref{Bool}
+
+    # The length arguments a `q_<name>` has already been emitted for; see
+    # `root_only_count!`. A set because one routine may have several arrays and
+    # they may share a length, as MPI_Comm_spawn_multiple's three do.
+    root_counts::Set{String}
 
     # "" while the MPI wrappers are being emitted and "P" while the PMPI ones
     # are, so that the probes the helpers below emit call PMPI_Comm_size in the
@@ -220,7 +225,7 @@ struct State
     # the program never made.
     prefix::String
 
-    State(prefix) = new(Ref(false), Ref(false), Ref(false), Ref(false), prefix)
+    State(prefix) = new(Ref(false), Ref(false), Ref(false), Ref(false), Set{String}(), prefix)
 end
 
 # Convert an attribute value that MPI returned through a `void**`.
@@ -345,19 +350,81 @@ function handle_array_length!(state, input_conversions, name, parname)
     return "q_group_size", false
 end
 
-function ensure_comm_rank!(state, input_conversions)
-    state.have_comm_rank[] && return
+# Whether this process is the one at which a `root_only` argument is significant.
+#
+# Every guard below used to ask `MPI_Comm_rank(comm) == 0`, which is right only
+# for a call whose root happens to be rank 0: the significant process is the one
+# the routine's own `root` argument names, so a gather to root 1 converted
+# `recvtype` on rank 0 and handed MPI MPI_DATATYPE_NULL on rank 1. See
+# "Root-only arguments are converted at the root" in CODE.md.
+#
+# On an intercommunicator the significant process is not identified by a rank in
+# `comm` at all. MPI-5.0 6.2.3: "the root uses the special value MPI_ROOT; all
+# other MPI processes in the same group as the root use MPI_PROC_NULL. All MPI
+# processes in the other group ... pass the same value in argument root, which is
+# the rank of the root in group A". So comparing a process's own rank against
+# `*root` there would convert at whichever process of the *remote* group happened
+# to carry that number, and never at the root. Hence the MPI_Comm_test_inter and
+# hence two rules rather than one. Both sentinels are negative -- A.1.1 gives
+# MPI_ROOT the ABI value -4 -- so neither collides with a valid rank.
+#
+# Only the collectives can be given an intercommunicator; MPI_COMM_SPAWN,
+# MPI_COMM_ACCEPT and MPI_COMM_CONNECT all take an intracommunicator, and there
+# the test is a wasted query rather than a wrong answer. One shape for all of
+# them is cheaper than a second rule about which routines get which.
+function ensure_at_root!(state, input_conversions, name, parameters)
+    state.have_at_root[] && return
+    # The argument that names the root. Asserted rather than assumed: the guard
+    # is meaningless if a routine spells it anything else, and `parameters` is
+    # the only place that could say so.
+    roots = [p["name"] for p in parameters if p["kind"] == "RANK" && p["param_direction"] == "in"]
+    @assert roots == ["root"] (name, roots)
     ensure_comm!(state, input_conversions)
     append!(input_conversions,
-            ["int q_comm_rank;",
+            ["int q_at_root;",
              "{",
-             "  const int q_ierror = $(state.prefix)MPI_Comm_rank(q_comm, &q_comm_rank);",
+             "  int q_inter;",
+             "  int q_ierror = $(state.prefix)MPI_Comm_test_inter(q_comm, &q_inter);",
              "  if (q_ierror != MPI_SUCCESS) {",
              "    *ierror = q_ierror;",
              "    return;",
              "  }",
+             "  if (q_inter) {",
+             "    q_at_root = *root == MPI_ROOT;",
+             "  } else {",
+             "    int q_comm_rank;",
+             "    q_ierror = $(state.prefix)MPI_Comm_rank(q_comm, &q_comm_rank);",
+             "    if (q_ierror != MPI_SUCCESS) {",
+             "      *ierror = q_ierror;",
+             "      return;",
+             "    }",
+             "    q_at_root = q_comm_rank == *root;",
+             "  }",
              "}"])
-    return state.have_comm_rank[] = true
+    return state.have_at_root[] = true
+end
+
+# The number of entries to convert in a root-only array whose length argument is
+# itself root-only, which is MPI_Comm_spawn_multiple and nothing else: `count`
+# there is "significant only at root", so a non-root caller may leave it
+# uninitialised, and every use of it away from the root is a wild read.
+# `*count` sized three VLAs -- a huge garbage value overflows the stack, and zero
+# is not a VLA length C admits at all -- and bounded three conversion loops.
+#
+# So zero away from the root, and every VLA sized `q_count > 0 ? q_count : 1` and
+# filled over that whole extent, so that a legal array of ignored entries is what
+# MPI receives rather than a stack overflow or uninitialised memory. `*count`
+# itself still goes to MPI unchanged: it is the caller's argument, and MPI is the
+# one entitled to ignore it.
+function root_only_count!(state, input_conversions, name, parameters, lengthname)
+    ensure_at_root!(state, input_conversions, name, parameters)
+    lengthpar = only(p for p in parameters if p["name"] == lengthname)
+    @assert lengthpar["root_only"] (name, lengthname)
+    if lengthname ∉ state.root_counts
+        push!(input_conversions, "const int q_$lengthname = q_at_root ? (int)*$lengthname : 0;")
+        push!(state.root_counts, lengthname)
+    end
+    return "q_$lengthname"
 end
 
 c_implementations = []
@@ -839,9 +906,9 @@ for key in sort(collect(keys(apis)))
                     if length == nothing
                         push!(input_arguments, "const MPI_Fint* restrict const $parname")
                         if root_only
-                            ensure_comm_rank!(state, input_conversions)
+                            ensure_at_root!(state, input_conversions, name, parameters)
                             push!(call_arguments,
-                                  "q_comm_rank == 0 ? MPI_$(kind2fun[kind])_fromint(*$parname) : MPI_$(kind2null[kind])_NULL")
+                                  "q_at_root ? MPI_$(kind2fun[kind])_fromint(*$parname) : MPI_$(kind2null[kind])_NULL")
                         else
                             push!(call_arguments, "MPI_$(kind2fun[kind])_fromint(*$parname)")
                         end
@@ -868,8 +935,8 @@ for key in sort(collect(keys(apis)))
                         in_place = parname == "sendtypes" &&
                             "sendbuf" ∈ [p["name"] for p in parameters]
                         guards = String[]
-                        root_only && (ensure_comm_rank!(state, input_conversions);
-                                      push!(guards, "q_comm_rank == 0"))
+                        root_only && (ensure_at_root!(state, input_conversions, name, parameters);
+                                      push!(guards, "q_at_root"))
                         in_place && push!(guards, "sendbuf != MPI_IN_PLACE")
                         if isempty(guards)
                             append!(input_conversions,
@@ -891,14 +958,23 @@ for key in sort(collect(keys(apis)))
                         push!(call_arguments, "c_$parname")
                     elseif length ∈ ["count", "incount"]
                         push!(input_arguments, "const MPI_Fint* restrict const $parname")
-                        push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[*$length];")
                         if root_only
-                            ensure_comm_rank!(state, input_conversions)
+                            # `q_count` is zero away from the root, so the
+                            # conversion loop needs no guard of its own -- and
+                            # the NULL fill runs over the array's whole extent,
+                            # the padding element of an otherwise zero-length VLA
+                            # included, so that nothing uninitialised is handed
+                            # to MPI even where MPI ignores it.
+                            count = root_only_count!(state, input_conversions, name, parameters, length)
+                            vla = "$count > 0 ? $count : 1"
                             append!(input_conversions,
-                                    ["if (q_comm_rank == 0)",
-                                     "  for (int rank=0; rank<*$length; ++rank)",
-                                     "    c_$parname[rank] = MPI_$(kind2fun[kind])_fromint($parname[rank]);"])
+                                    ["MPI_$(kind2type[kind]) c_$parname[$vla];",
+                                     "for (int rank=0; rank<($vla); ++rank)",
+                                     "  c_$parname[rank] = MPI_$(kind2null[kind])_NULL;",
+                                     "for (int rank=0; rank<$count; ++rank)",
+                                     "  c_$parname[rank] = MPI_$(kind2fun[kind])_fromint($parname[rank]);"])
                         else
+                            push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname[*$length];")
                             append!(input_conversions,
                                     ["for (int rank=0; rank<*$length; ++rank)",
                                      "  c_$parname[rank] = MPI_$(kind2fun[kind])_fromint($parname[rank]);"])
@@ -1328,12 +1404,12 @@ for key in sort(collect(keys(apis)))
                         end
                         strdup_f2c = (name, parname) ∈ strip_leading_blanks ? "mpif_strdup_f2c_trim" : "mpif_strdup_f2c"
                         if root_only
-                            ensure_comm_rank!(state, input_conversions)
+                            ensure_at_root!(state, input_conversions, name, parameters)
                             append!(input_conversions,
                                     ["char* c_$parname = NULL;",
-                                     "if (q_comm_rank == 0)",
+                                     "if (q_at_root)",
                                      "  c_$parname = $strdup_f2c($parname, length_$parname);"])
-                            append!(output_conversions, ["if (q_comm_rank == 0)",
+                            append!(output_conversions, ["if (q_at_root)",
                                                          "  free(c_$parname);"])
                         else
                             push!(input_conversions, "char* const c_$parname = $strdup_f2c($parname, length_$parname);")
@@ -1416,10 +1492,10 @@ for key in sort(collect(keys(apis)))
                 if "f90_parameter" ∉ suppress
                     push!(input_arguments, "const char* restrict const $parname")
                     push!(final_input_arguments, "const size_t length_$parname")
-                    ensure_comm_rank!(state, input_conversions)
+                    ensure_at_root!(state, input_conversions, name, parameters)
                     strdup_f2c = (name, parname) ∈ strip_leading_blanks ? "mpif_strdup_f2c_trim" : "mpif_strdup_f2c"
                     sentinel = get(argv_null_sentinels, (name, parname), nothing)
-                    guard = sentinel == nothing ? "q_comm_rank == 0" : "q_comm_rank == 0 && !null_$parname"
+                    guard = sentinel == nothing ? "q_at_root" : "q_at_root && !null_$parname"
                     if sentinel != nothing
                         push!(input_conversions,
                               "const int null_$parname = (const void*)$parname == (const void*)$sentinel;")
@@ -1464,33 +1540,48 @@ for key in sort(collect(keys(apis)))
                 @assert param_direction == "in"
                 push!(input_arguments, "const char* restrict const $parname")
                 push!(final_input_arguments, "const size_t length_$parname")
-                ensure_comm_rank!(state, input_conversions)
                 strdup_f2c = (name, parname) ∈ strip_leading_blanks ? "mpif_strdup_f2c_trim" : "mpif_strdup_f2c"
                 sentinel = get(argv_null_sentinels, (name, parname), nothing)
-                guard = sentinel == nothing ? "q_comm_rank == 0" : "q_comm_rank == 0 && !null_$parname"
                 if sentinel != nothing
                     push!(input_conversions,
                           "const int null_$parname = (const void*)$parname == (const void*)$sentinel;")
                 end
+                # The root's own count, zero elsewhere, which is what makes the
+                # two VLAs and all three loops safe away from the root; the
+                # rootness of the argument is in the bound rather than in a guard
+                # for that reason, leaving the sentinel as the only thing left to
+                # test.
+                count = root_only_count!(state, input_conversions, name, parameters, length)
+                vla = "$count > 0 ? $count : 1"
+                body = ["count_$parname[i] = mpif_fcount2d($parname, $count, i, length_$parname);",
+                        "argv_$parname[i] = malloc((count_$parname[i] + 1) * sizeof(char*));",
+                        "for (size_t n=0; n<count_$parname[i]; ++n)",
+                        "  argv_$parname[i][n] = $strdup_f2c($parname + i * length_$parname + n * $count * length_$parname, length_$parname);",
+                        "argv_$parname[i][count_$parname[i]] = NULL;"]
                 append!(input_conversions,
-                        ["size_t count_$parname[*count];",
-                         "char **argv_$parname[*count];",
-                         "for (int i=0; i<*count; ++i) {",
-                         "  if ($guard) {",
-                         "    count_$parname[i] = mpif_fcount2d($parname, *count, i, length_$parname);",
-                         "    argv_$parname[i] = malloc((count_$parname[i] + 1) * sizeof(char*));",
-                         "    for (size_t n=0; n<count_$parname[i]; ++n)",
-                         "      argv_$parname[i][n] = $strdup_f2c($parname + i * length_$parname + n * *count * length_$parname, length_$parname);",
-                         "    argv_$parname[i][count_$parname[i]] = NULL;",
-                         "  } else {",
-                         "    count_$parname[i] = 0;",
-                         "    argv_$parname[i] = NULL;",
-                         "  }",
+                        ["size_t count_$parname[$vla];",
+                         "char **argv_$parname[$vla];",
+                         "for (int i=0; i<($vla); ++i) {",
+                         "  count_$parname[i] = 0;",
+                         "  argv_$parname[i] = NULL;",
                          "}"])
+                if sentinel == nothing
+                    append!(input_conversions,
+                            ["for (int i=0; i<$count; ++i) {";
+                             "  " .* body;
+                             "}"])
+                else
+                    append!(input_conversions,
+                            ["for (int i=0; i<$count; ++i) {";
+                             "  if (!null_$parname) {";
+                             "    " .* body;
+                             "  }";
+                             "}"])
+                end
                 push!(call_arguments,
                       sentinel == nothing ? "argv_$parname" : "null_$parname ? $sentinel : argv_$parname")
                 append!(output_conversions,
-                        ["for (int i=0; i<*count; ++i) {",
+                        ["for (int i=0; i<$count; ++i) {",
                          "  for (size_t n=0; n<count_$parname[i]; ++n)",
                          "    free(argv_$parname[i][n]);",
                          "}"])

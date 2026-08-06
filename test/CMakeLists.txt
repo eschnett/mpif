@@ -113,3 +113,11 @@ add_mpi_test(alltoallw_inplace_guard
 # Three, so that the two groups differ in size and the local one is the wrong
 # answer.
 add_mpi_test(alltoallw_inter_f08    SOURCES alltoallw_inter_f08.f90   NPROCS 3      LIBS MPI::MPI_Fortran)
+
+# Root-only arguments, which mpif converts only where they are significant and
+# used to convert on rank 0 instead of at the root. Both need more than one rank
+# for the same reason: at one rank every process is the root.
+add_mpi_test(gather_root_f08        SOURCES gather_root_f08.f90       NPROCS 2      LIBS MPI::MPI_Fortran)
+# Three, so that the root is not the first process of its own group and MPI_ROOT
+# is the only thing that identifies it.
+add_mpi_test(gather_inter_f08       SOURCES gather_inter_f08.f90      NPROCS 3      LIBS MPI::MPI_Fortran)

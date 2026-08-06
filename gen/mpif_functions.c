@@ -2931,26 +2931,38 @@ void mpi_comm_accept_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
+    }
   }
   char* c_port_name = NULL;
-  if (q_comm_rank == 0)
+  if (q_at_root)
     c_port_name = mpif_strdup_f2c(port_name, length_port_name);
   MPI_Comm c_newcomm;
   *ierror = MPI_Comm_accept(
     c_port_name,
-    q_comm_rank == 0 ? MPI_Info_fromint(*info) : MPI_INFO_NULL,
+    q_at_root ? MPI_Info_fromint(*info) : MPI_INFO_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_newcomm
   );
-  if (q_comm_rank == 0)
+  if (q_at_root)
     free(c_port_name);
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
@@ -2966,26 +2978,38 @@ void pmpi_comm_accept_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
+    }
   }
   char* c_port_name = NULL;
-  if (q_comm_rank == 0)
+  if (q_at_root)
     c_port_name = mpif_strdup_f2c(port_name, length_port_name);
   MPI_Comm c_newcomm;
   *ierror = PMPI_Comm_accept(
     c_port_name,
-    q_comm_rank == 0 ? MPI_Info_fromint(*info) : MPI_INFO_NULL,
+    q_at_root ? MPI_Info_fromint(*info) : MPI_INFO_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_newcomm
   );
-  if (q_comm_rank == 0)
+  if (q_at_root)
     free(c_port_name);
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
@@ -3109,26 +3133,38 @@ void mpi_comm_connect_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
+    }
   }
   char* c_port_name = NULL;
-  if (q_comm_rank == 0)
+  if (q_at_root)
     c_port_name = mpif_strdup_f2c(port_name, length_port_name);
   MPI_Comm c_newcomm;
   *ierror = MPI_Comm_connect(
     c_port_name,
-    q_comm_rank == 0 ? MPI_Info_fromint(*info) : MPI_INFO_NULL,
+    q_at_root ? MPI_Info_fromint(*info) : MPI_INFO_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_newcomm
   );
-  if (q_comm_rank == 0)
+  if (q_at_root)
     free(c_port_name);
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
@@ -3144,26 +3180,38 @@ void pmpi_comm_connect_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
+    }
   }
   char* c_port_name = NULL;
-  if (q_comm_rank == 0)
+  if (q_at_root)
     c_port_name = mpif_strdup_f2c(port_name, length_port_name);
   MPI_Comm c_newcomm;
   *ierror = PMPI_Comm_connect(
     c_port_name,
-    q_comm_rank == 0 ? MPI_Info_fromint(*info) : MPI_INFO_NULL,
+    q_at_root ? MPI_Info_fromint(*info) : MPI_INFO_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_newcomm
   );
-  if (q_comm_rank == 0)
+  if (q_at_root)
     free(c_port_name);
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
@@ -4149,20 +4197,32 @@ void mpi_comm_spawn_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
+    }
   }
   char* c_command = NULL;
-  if (q_comm_rank == 0)
+  if (q_at_root)
     c_command = mpif_strdup_f2c_trim(command, length_command);
   const int null_argv = (const void*)argv == (const void*)MPI_ARGV_NULL;
   size_t count_argv = 0;
-  if (q_comm_rank == 0 && !null_argv)
+  if (q_at_root && !null_argv)
     count_argv = mpif_fcount(argv, length_argv);
   char *argv_argv[count_argv + 1];
   for (size_t n=0; n<count_argv; ++n)
@@ -4173,13 +4233,13 @@ void mpi_comm_spawn_(
     c_command,
     null_argv ? MPI_ARGV_NULL : argv_argv,
     *maxprocs,
-    q_comm_rank == 0 ? MPI_Info_fromint(*info) : MPI_INFO_NULL,
+    q_at_root ? MPI_Info_fromint(*info) : MPI_INFO_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_intercomm,
     array_of_errcodes
   );
-  if (q_comm_rank == 0)
+  if (q_at_root)
     free(c_command);
   for (size_t n=0; n<count_argv; ++n)
     free(argv_argv[n]);
@@ -4201,20 +4261,32 @@ void pmpi_comm_spawn_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
+    }
   }
   char* c_command = NULL;
-  if (q_comm_rank == 0)
+  if (q_at_root)
     c_command = mpif_strdup_f2c_trim(command, length_command);
   const int null_argv = (const void*)argv == (const void*)MPI_ARGV_NULL;
   size_t count_argv = 0;
-  if (q_comm_rank == 0 && !null_argv)
+  if (q_at_root && !null_argv)
     count_argv = mpif_fcount(argv, length_argv);
   char *argv_argv[count_argv + 1];
   for (size_t n=0; n<count_argv; ++n)
@@ -4225,13 +4297,13 @@ void pmpi_comm_spawn_(
     c_command,
     null_argv ? MPI_ARGV_NULL : argv_argv,
     *maxprocs,
-    q_comm_rank == 0 ? MPI_Info_fromint(*info) : MPI_INFO_NULL,
+    q_at_root ? MPI_Info_fromint(*info) : MPI_INFO_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_intercomm,
     array_of_errcodes
   );
-  if (q_comm_rank == 0)
+  if (q_at_root)
     free(c_command);
   for (size_t n=0; n<count_argv; ++n)
     free(argv_argv[n]);
@@ -4254,38 +4326,53 @@ void mpi_comm_spawn_multiple_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
+    }
   }
-  const size_t count_array_of_commands = q_comm_rank == 0 ? (size_t)*count : 0;
+  const size_t count_array_of_commands = q_at_root ? (size_t)*count : 0;
   char *argv_array_of_commands[count_array_of_commands + 1];
   for (size_t n=0; n<count_array_of_commands; ++n)
     argv_array_of_commands[n] = mpif_strdup_f2c_trim(array_of_commands + n * length_array_of_commands, length_array_of_commands);
   argv_array_of_commands[count_array_of_commands] = NULL;
   const int null_array_of_argv = (const void*)array_of_argv == (const void*)MPI_ARGVS_NULL;
-  size_t count_array_of_argv[*count];
-  char **argv_array_of_argv[*count];
-  for (int i=0; i<*count; ++i) {
-    if (q_comm_rank == 0 && !null_array_of_argv) {
-      count_array_of_argv[i] = mpif_fcount2d(array_of_argv, *count, i, length_array_of_argv);
+  const int q_count = q_at_root ? (int)*count : 0;
+  size_t count_array_of_argv[q_count > 0 ? q_count : 1];
+  char **argv_array_of_argv[q_count > 0 ? q_count : 1];
+  for (int i=0; i<(q_count > 0 ? q_count : 1); ++i) {
+    count_array_of_argv[i] = 0;
+    argv_array_of_argv[i] = NULL;
+  }
+  for (int i=0; i<q_count; ++i) {
+    if (!null_array_of_argv) {
+      count_array_of_argv[i] = mpif_fcount2d(array_of_argv, q_count, i, length_array_of_argv);
       argv_array_of_argv[i] = malloc((count_array_of_argv[i] + 1) * sizeof(char*));
       for (size_t n=0; n<count_array_of_argv[i]; ++n)
-        argv_array_of_argv[i][n] = mpif_strdup_f2c_trim(array_of_argv + i * length_array_of_argv + n * *count * length_array_of_argv, length_array_of_argv);
+        argv_array_of_argv[i][n] = mpif_strdup_f2c_trim(array_of_argv + i * length_array_of_argv + n * q_count * length_array_of_argv, length_array_of_argv);
       argv_array_of_argv[i][count_array_of_argv[i]] = NULL;
-    } else {
-      count_array_of_argv[i] = 0;
-      argv_array_of_argv[i] = NULL;
     }
   }
-  MPI_Info c_array_of_info[*count];
-  if (q_comm_rank == 0)
-    for (int rank=0; rank<*count; ++rank)
-      c_array_of_info[rank] = MPI_Info_fromint(array_of_info[rank]);
+  MPI_Info c_array_of_info[q_count > 0 ? q_count : 1];
+  for (int rank=0; rank<(q_count > 0 ? q_count : 1); ++rank)
+    c_array_of_info[rank] = MPI_INFO_NULL;
+  for (int rank=0; rank<q_count; ++rank)
+    c_array_of_info[rank] = MPI_Info_fromint(array_of_info[rank]);
   MPI_Comm c_intercomm;
   *ierror = MPI_Comm_spawn_multiple(
     *count,
@@ -4300,7 +4387,7 @@ void mpi_comm_spawn_multiple_(
   );
   for (size_t n=0; n<count_array_of_commands; ++n)
     free(argv_array_of_commands[n]);
-  for (int i=0; i<*count; ++i) {
+  for (int i=0; i<q_count; ++i) {
     for (size_t n=0; n<count_array_of_argv[i]; ++n)
       free(argv_array_of_argv[i][n]);
   }
@@ -4323,38 +4410,53 @@ void pmpi_comm_spawn_multiple_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
     }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
+    }
   }
-  const size_t count_array_of_commands = q_comm_rank == 0 ? (size_t)*count : 0;
+  const size_t count_array_of_commands = q_at_root ? (size_t)*count : 0;
   char *argv_array_of_commands[count_array_of_commands + 1];
   for (size_t n=0; n<count_array_of_commands; ++n)
     argv_array_of_commands[n] = mpif_strdup_f2c_trim(array_of_commands + n * length_array_of_commands, length_array_of_commands);
   argv_array_of_commands[count_array_of_commands] = NULL;
   const int null_array_of_argv = (const void*)array_of_argv == (const void*)MPI_ARGVS_NULL;
-  size_t count_array_of_argv[*count];
-  char **argv_array_of_argv[*count];
-  for (int i=0; i<*count; ++i) {
-    if (q_comm_rank == 0 && !null_array_of_argv) {
-      count_array_of_argv[i] = mpif_fcount2d(array_of_argv, *count, i, length_array_of_argv);
+  const int q_count = q_at_root ? (int)*count : 0;
+  size_t count_array_of_argv[q_count > 0 ? q_count : 1];
+  char **argv_array_of_argv[q_count > 0 ? q_count : 1];
+  for (int i=0; i<(q_count > 0 ? q_count : 1); ++i) {
+    count_array_of_argv[i] = 0;
+    argv_array_of_argv[i] = NULL;
+  }
+  for (int i=0; i<q_count; ++i) {
+    if (!null_array_of_argv) {
+      count_array_of_argv[i] = mpif_fcount2d(array_of_argv, q_count, i, length_array_of_argv);
       argv_array_of_argv[i] = malloc((count_array_of_argv[i] + 1) * sizeof(char*));
       for (size_t n=0; n<count_array_of_argv[i]; ++n)
-        argv_array_of_argv[i][n] = mpif_strdup_f2c_trim(array_of_argv + i * length_array_of_argv + n * *count * length_array_of_argv, length_array_of_argv);
+        argv_array_of_argv[i][n] = mpif_strdup_f2c_trim(array_of_argv + i * length_array_of_argv + n * q_count * length_array_of_argv, length_array_of_argv);
       argv_array_of_argv[i][count_array_of_argv[i]] = NULL;
-    } else {
-      count_array_of_argv[i] = 0;
-      argv_array_of_argv[i] = NULL;
     }
   }
-  MPI_Info c_array_of_info[*count];
-  if (q_comm_rank == 0)
-    for (int rank=0; rank<*count; ++rank)
-      c_array_of_info[rank] = MPI_Info_fromint(array_of_info[rank]);
+  MPI_Info c_array_of_info[q_count > 0 ? q_count : 1];
+  for (int rank=0; rank<(q_count > 0 ? q_count : 1); ++rank)
+    c_array_of_info[rank] = MPI_INFO_NULL;
+  for (int rank=0; rank<q_count; ++rank)
+    c_array_of_info[rank] = MPI_Info_fromint(array_of_info[rank]);
   MPI_Comm c_intercomm;
   *ierror = PMPI_Comm_spawn_multiple(
     *count,
@@ -4369,7 +4471,7 @@ void pmpi_comm_spawn_multiple_(
   );
   for (size_t n=0; n<count_array_of_commands; ++n)
     free(argv_array_of_commands[n]);
-  for (int i=0; i<*count; ++i) {
+  for (int i=0; i<q_count; ++i) {
     for (size_t n=0; n<count_array_of_argv[i]; ++n)
       free(argv_array_of_argv[i][n]);
   }
@@ -8195,12 +8297,24 @@ void mpi_gather_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = MPI_Gather(
@@ -8209,7 +8323,7 @@ void mpi_gather_(
     MPI_Type_fromint(*sendtype),
     recvbuf,
     *recvcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm)
   );
@@ -8228,12 +8342,24 @@ void mpi_gather_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = MPI_Gather_c(
@@ -8242,7 +8368,7 @@ void mpi_gather_c_(
     MPI_Type_fromint(*sendtype),
     recvbuf,
     *recvcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm)
   );
@@ -8261,12 +8387,24 @@ void pmpi_gather_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = PMPI_Gather(
@@ -8275,7 +8413,7 @@ void pmpi_gather_(
     MPI_Type_fromint(*sendtype),
     recvbuf,
     *recvcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm)
   );
@@ -8294,12 +8432,24 @@ void pmpi_gather_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = PMPI_Gather_c(
@@ -8308,7 +8458,7 @@ void pmpi_gather_c_(
     MPI_Type_fromint(*sendtype),
     recvbuf,
     *recvcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm)
   );
@@ -8329,12 +8479,24 @@ void mpi_gather_init_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -8344,7 +8506,7 @@ void mpi_gather_init_(
     MPI_Type_fromint(*sendtype),
     recvbuf,
     *recvcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
@@ -8368,12 +8530,24 @@ void mpi_gather_init_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -8383,7 +8557,7 @@ void mpi_gather_init_c_(
     MPI_Type_fromint(*sendtype),
     recvbuf,
     *recvcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
@@ -8407,12 +8581,24 @@ void pmpi_gather_init_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -8422,7 +8608,7 @@ void pmpi_gather_init_(
     MPI_Type_fromint(*sendtype),
     recvbuf,
     *recvcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
@@ -8446,12 +8632,24 @@ void pmpi_gather_init_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -8461,7 +8659,7 @@ void pmpi_gather_init_c_(
     MPI_Type_fromint(*sendtype),
     recvbuf,
     *recvcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
@@ -8484,12 +8682,24 @@ void mpi_gatherv_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = MPI_Gatherv(
@@ -8499,7 +8709,7 @@ void mpi_gatherv_(
     recvbuf,
     recvcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm)
   );
@@ -8519,12 +8729,24 @@ void mpi_gatherv_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = MPI_Gatherv_c(
@@ -8534,7 +8756,7 @@ void mpi_gatherv_c_(
     recvbuf,
     recvcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm)
   );
@@ -8554,12 +8776,24 @@ void pmpi_gatherv_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = PMPI_Gatherv(
@@ -8569,7 +8803,7 @@ void pmpi_gatherv_(
     recvbuf,
     recvcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm)
   );
@@ -8589,12 +8823,24 @@ void pmpi_gatherv_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = PMPI_Gatherv_c(
@@ -8604,7 +8850,7 @@ void pmpi_gatherv_c_(
     recvbuf,
     recvcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm)
   );
@@ -8626,12 +8872,24 @@ void mpi_gatherv_init_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -8642,7 +8900,7 @@ void mpi_gatherv_init_(
     recvbuf,
     recvcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
@@ -8667,12 +8925,24 @@ void mpi_gatherv_init_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -8683,7 +8953,7 @@ void mpi_gatherv_init_c_(
     recvbuf,
     recvcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
@@ -8708,12 +8978,24 @@ void pmpi_gatherv_init_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -8724,7 +9006,7 @@ void pmpi_gatherv_init_(
     recvbuf,
     recvcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
@@ -8749,12 +9031,24 @@ void pmpi_gatherv_init_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -8765,7 +9059,7 @@ void pmpi_gatherv_init_c_(
     recvbuf,
     recvcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
@@ -11040,12 +11334,24 @@ void mpi_igather_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -11055,7 +11361,7 @@ void mpi_igather_(
     MPI_Type_fromint(*sendtype),
     recvbuf,
     *recvcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_request
@@ -11077,12 +11383,24 @@ void mpi_igather_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -11092,7 +11410,7 @@ void mpi_igather_c_(
     MPI_Type_fromint(*sendtype),
     recvbuf,
     *recvcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_request
@@ -11114,12 +11432,24 @@ void pmpi_igather_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -11129,7 +11459,7 @@ void pmpi_igather_(
     MPI_Type_fromint(*sendtype),
     recvbuf,
     *recvcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_request
@@ -11151,12 +11481,24 @@ void pmpi_igather_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -11166,7 +11508,7 @@ void pmpi_igather_c_(
     MPI_Type_fromint(*sendtype),
     recvbuf,
     *recvcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_request
@@ -11189,12 +11531,24 @@ void mpi_igatherv_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -11205,7 +11559,7 @@ void mpi_igatherv_(
     recvbuf,
     recvcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_request
@@ -11228,12 +11582,24 @@ void mpi_igatherv_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -11244,7 +11610,7 @@ void mpi_igatherv_c_(
     recvbuf,
     recvcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_request
@@ -11267,12 +11633,24 @@ void pmpi_igatherv_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -11283,7 +11661,7 @@ void pmpi_igatherv_(
     recvbuf,
     recvcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_request
@@ -11306,12 +11684,24 @@ void pmpi_igatherv_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -11322,7 +11712,7 @@ void pmpi_igatherv_c_(
     recvbuf,
     recvcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
     MPI_Comm_fromint(*comm),
     &c_request
@@ -13458,19 +13848,31 @@ void mpi_iscatter_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
   *ierror = MPI_Iscatter(
     sendbuf,
     *sendcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -13495,19 +13897,31 @@ void mpi_iscatter_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
   *ierror = MPI_Iscatter_c(
     sendbuf,
     *sendcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -13532,19 +13946,31 @@ void pmpi_iscatter_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
   *ierror = PMPI_Iscatter(
     sendbuf,
     *sendcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -13569,19 +13995,31 @@ void pmpi_iscatter_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
   *ierror = PMPI_Iscatter_c(
     sendbuf,
     *sendcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -13607,12 +14045,24 @@ void mpi_iscatterv_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -13620,7 +14070,7 @@ void mpi_iscatterv_(
     sendbuf,
     sendcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -13646,12 +14096,24 @@ void mpi_iscatterv_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -13659,7 +14121,7 @@ void mpi_iscatterv_c_(
     sendbuf,
     sendcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -13685,12 +14147,24 @@ void pmpi_iscatterv_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -13698,7 +14172,7 @@ void pmpi_iscatterv_(
     sendbuf,
     sendcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -13724,12 +14198,24 @@ void pmpi_iscatterv_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -13737,7 +14223,7 @@ void pmpi_iscatterv_c_(
     sendbuf,
     sendcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -18857,18 +19343,30 @@ void mpi_scatter_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = MPI_Scatter(
     sendbuf,
     *sendcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -18890,18 +19388,30 @@ void mpi_scatter_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = MPI_Scatter_c(
     sendbuf,
     *sendcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -18923,18 +19433,30 @@ void pmpi_scatter_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = PMPI_Scatter(
     sendbuf,
     *sendcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -18956,18 +19478,30 @@ void pmpi_scatter_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = PMPI_Scatter_c(
     sendbuf,
     *sendcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -18991,19 +19525,31 @@ void mpi_scatter_init_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
   *ierror = MPI_Scatter_init(
     sendbuf,
     *sendcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -19030,19 +19576,31 @@ void mpi_scatter_init_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
   *ierror = MPI_Scatter_init_c(
     sendbuf,
     *sendcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -19069,19 +19627,31 @@ void pmpi_scatter_init_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
   *ierror = PMPI_Scatter_init(
     sendbuf,
     *sendcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -19108,19 +19678,31 @@ void pmpi_scatter_init_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
   *ierror = PMPI_Scatter_init_c(
     sendbuf,
     *sendcount,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -19146,19 +19728,31 @@ void mpi_scatterv_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = MPI_Scatterv(
     sendbuf,
     sendcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -19181,19 +19775,31 @@ void mpi_scatterv_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = MPI_Scatterv_c(
     sendbuf,
     sendcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -19216,19 +19822,31 @@ void pmpi_scatterv_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = PMPI_Scatterv(
     sendbuf,
     sendcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -19251,19 +19869,31 @@ void pmpi_scatterv_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   *ierror = PMPI_Scatterv_c(
     sendbuf,
     sendcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -19288,12 +19918,24 @@ void mpi_scatterv_init_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -19301,7 +19943,7 @@ void mpi_scatterv_init_(
     sendbuf,
     sendcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -19329,12 +19971,24 @@ void mpi_scatterv_init_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -19342,7 +19996,7 @@ void mpi_scatterv_init_c_(
     sendbuf,
     sendcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -19370,12 +20024,24 @@ void pmpi_scatterv_init_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -19383,7 +20049,7 @@ void pmpi_scatterv_init_(
     sendbuf,
     sendcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
@@ -19411,12 +20077,24 @@ void pmpi_scatterv_init_c_(
 )
 {
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
-  int q_comm_rank;
+  int q_at_root;
   {
-    const int q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+    int q_inter;
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
+    }
+    if (q_inter) {
+      q_at_root = *root == MPI_ROOT;
+    } else {
+      int q_comm_rank;
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
+      if (q_ierror != MPI_SUCCESS) {
+        *ierror = q_ierror;
+        return;
+      }
+      q_at_root = q_comm_rank == *root;
     }
   }
   MPI_Request c_request;
@@ -19424,7 +20102,7 @@ void pmpi_scatterv_init_c_(
     sendbuf,
     sendcounts,
     displs,
-    q_comm_rank == 0 ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
+    q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
     recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
