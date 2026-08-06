@@ -37,16 +37,53 @@ be declared where both halves are visible -- the `TYPE(C_PTR)` overloads of
 `MPI_Alloc_mem` and the window allocators, whose two specifics come from two
 different modules.
 
+One module, `src/mpif_handle_types.F90`, sits below *both* `mpi` and
+`mpif_f08_types`, and the reason is a circular-use constraint. MPI-5.0 section
+19.1.3 requires the `mpi` module to "Define the derived type MPI_Status and all
+named handle types that are used in the mpi_f08 module", with `.EQ.` and `.NE.`
+overloaded on the handle types, and A.5.13 gives `MPI_Status_f2f08` and
+`MPI_Status_f082f` bindings marked "not available with mpif.h" -- the only two
+A.5 names so marked, so they are required in the `mpi` module and exempt only for
+the include file. "that are used in the mpi_f08 module" makes it one set of types
+rather than two, which is a property worth having: a `TYPE(MPI_Status)` obtained
+through `use mpi` is the very type `mpi_f08` expects, so passing one to the other
+needs no conversion, and `test/handle_types_f90.f90` asserts it by handing
+handles built in `mpi`-module terms to a companion module written in `mpi_f08`
+terms.
+
+`mpif_f08_types` cannot be where they live, because it does `use mpi, only: ...`
+to build its PARAMETER handle constants out of the `mpi` module's INTEGER
+constants; `mpi` using it back would be circular. So the definitions go down
+instead, to a module whose only dependency is `mpif_constants` --
+`MPI_STATUS_SIZE`, the three status indices and `MPI_SUCCESS` are all it needs.
+`mpi` and `mpif_f08_types` both `use` it and re-export publicly.
+
+The handle *constants* did not move and must not: in the `mpi` module
+`MPI_COMM_WORLD` is the INTEGER parameter that `mpif.h` and the `mpi` module give
+it, and only `mpi_f08` has the `TYPE(MPI_Comm)` one, so the two live in the two
+modules that already had them. `mpif.h` gets nothing at all here; the standard
+exempts it, and a derived type in an include file would be wrong regardless.
+
+Open MPI reads 19.1.3 the same way and has a module of exactly this shape,
+`ompi/mpi/fortran/use-mpi/mpi-types.F90`, whose comment says "yes, the MPI spec
+requires that the TYPE(MPI_Blah) types all show up in both modules". MPICH
+instead declares a second, distinct set in its `mpi_constants`, so its `use mpi`
+`MPI_Comm` and its `use mpi_f08` `MPI_Comm` are different types; nor does its
+`mpi` module have the two status converters.
+
 ## Namespace
 
 Only what the MPI standard defines may be spelled `MPI_` or `mpi_`; everything
 mpif invents is `mpif_` or `MPIF_`. Two modules are the standard's and keep their
-names, `mpi` and `mpi_f08`; the seven mpif provides beneath them are
-`mpif_constants`, `mpif_types`, `mpif_functions`, `mpif_cptr`,
-`mpif_f08_constants`, `mpif_f08_types` and `mpif_f08_functions`. Their `.mod`
-files follow, which also removes a real collision: MPICH installs an
+names, `mpi` and `mpi_f08`; the eight mpif provides beneath them are
+`mpif_constants`, `mpif_handle_types`, `mpif_types`, `mpif_functions`,
+`mpif_cptr`, `mpif_f08_constants`, `mpif_f08_types` and `mpif_f08_functions`.
+Their `.mod` files follow, which also removes a real collision: MPICH installs an
 `mpi_constants.mod` and Open MPI an `mpi_types.mod` and `mpi_f08_types.mod` of
-their own, and mpif used to ship files of exactly those names.
+their own, and mpif used to ship files of exactly those names. `mpi_types` is
+what Open MPI calls the module `mpif_handle_types` corresponds to, which is
+reason enough on its own not to reuse the name; `mpif_types` was already taken by
+the `MPI_SIZEOF` generics, hence `handle` in the middle.
 
 The Fortran entry points that C provides -- `mpi_send_`, `mpi_alloc_mem_`, ... --
 are of course named after the MPI routines they implement; that is what makes
@@ -63,7 +100,9 @@ Two judgement calls worth recording:
 
 The procedures behind `operator(==)` and `operator(/=)` on the handle types were
 `MPI_Comm_equal` and so on, which the standard does not define; they are now
-`mpif_comm_equal` and friends. They were already private to `mpif_f08_types`.
+`mpif_comm_equal` and friends. They were private to `mpif_f08_types` when that was
+where the operators lived, and are private to `mpif_handle_types` now that both
+modules share them -- only the two generics are public.
 
 In `mpi_f08` the procedures a program calls are generics, and the specifics
 behind them carry Table 19.1's `_f08` token: `MPI_Send_f08`, `MPI_Send_c_f08`.
@@ -306,7 +345,8 @@ mechanism that replaced them and the evidence it is right.
 - `MPI_Wtime`, `MPI_Wtick`, `MPI_Aint_add` and `MPI_Aint_diff` are hand-written
   rather than generated, and are present. `MPI_Sizeof` is a hand-written generic
   in `src/mpif_types.F90`. `MPI_Status_f2f08` and `MPI_Status_f082f` are
-  implemented and public in `src/mpif_f08_types.F90`.
+  implemented in `src/mpif_handle_types.F90` and public from both the `mpi` module
+  and `mpi_f08`, which is what A.5.13's "not available with mpif.h" asks for.
 - **`mpif_f08_raw` exists so that two kinds of argument reach C without a Fortran
   temporary, and both were defects before it did.** It is a second set of
   interfaces to the same C entry points, differing from `mpif_functions`' only in

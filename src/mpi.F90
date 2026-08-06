@@ -5,6 +5,20 @@ module mpi
   use mpif_cptr
   use mpif_attr_fns
 
+  ! MPI-5.0 section 19.1.3 requires the mpi module to "Define the derived type
+  ! MPI_Status and all named handle types that are used in the mpi_f08 module",
+  ! with .EQ. and .NE. overloaded on the handle types, and A.5.13 gives
+  ! MPI_Status_f2f08 and MPI_Status_f082f Fortran bindings marked "not available
+  ! with mpif.h" -- the only two A.5 names so marked, which is to say required
+  ! here and exempt only for the include file. mpif_handle_types holds all of it,
+  ! and mpif_f08_types uses the same module, so the types are one set rather than
+  ! two; see the comment there for why it sits below both.
+  !
+  ! The handle *constants* are not affected: MPI_COMM_WORLD in this module stays
+  ! the INTEGER parameter from mpif_constants, and only mpi_f08 has the
+  ! TYPE(MPI_Comm) one.
+  use mpif_handle_types
+
   implicit none
   public
   save

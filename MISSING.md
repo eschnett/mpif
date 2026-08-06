@@ -1297,6 +1297,21 @@ change: the two are not the same question, and this one is a judgement about
 whether mpif should offer a useful non-standard name where the standard offers
 nothing. Whoever settles it should decide the `mpif.h` half with it.
 
+`MPI_CONVERSION_FN_NULL_C` is one more member of the same cluster, found while
+adding the handle types to the `mpi` module and recorded here to be settled with
+the rest rather than on its own. `src/mpif_attr_fns.F90` defines it and
+`include/mpif_attr_fns.h` declares it `external`, so both `use mpi` and `mpif.h`
+have the name; the standard gives it to C and `mpi_f08` only. Section 19.2 says
+the large-count conversion callback "is provided within each of these two
+language bindings", meaning the C `_c` prototypes and `mpi_f08`'s abstract
+interfaces, and A.1.1's table of defined constants is explicit where §19.2 is
+only implicit: against `MPI_CONVERSION_FN_NULL_C` the mpif.h/`mpi`-module column
+reads `(n/a)`, where `MPI_CONVERSION_FN_NULL` on the line above has
+`DATAREP_CONVERSION_FUNCTION`. A.5.12 lists `MPI_CONVERSION_FN_NULL` and not the
+`_C` form. So it is the `MPI_Send_c` question again -- a large-count name in the
+older bindings that the standard puts only in the newer two -- with the same
+arguments on both sides, and no code change here either way.
+
 ### Fortran-set attribute values are not visible to C as a pointer
 
 An attribute set from Fortran and read from C comes back as the value where

@@ -266,6 +266,7 @@ add_library(mpifort_abi SHARED
   src/mpi.F90
   src/mpif_constants.F90
   src/mpif_cptr.F90
+  src/mpif_handle_types.F90
   src/mpif_types.F90
   src/mpi_f08.F90
   src/mpif_f08_constants.F90
@@ -341,6 +342,7 @@ install(FILES
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_functions.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_raw.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_types.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_handle_types.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_functions.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_types.mod
