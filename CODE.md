@@ -521,6 +521,35 @@ mechanism that replaced them and the evidence it is right.
   asserts `MPI_T_ERR_CVAR_SET_NEVER == 1015`; removing the two lines again
   reproduces gfortran's original diagnostic, "Symbol 'mpi_t_err_cvar_set_never'
   at (1) has no IMPLICIT type; did you mean 'mpi_t_err_cvar_set_not_now'?".
+- **`MPIF_HAVE_INTEGER16` is now a real probe.** `src/mpif_types.F90` guards the
+  `integer*16` specifics of `MPI_Sizeof` and `PMPI_Sizeof` with `#ifdef
+  MPIF_HAVE_INTEGER16` at lines 39, 103 and 284, but until 2026-08-06 nothing
+  defined it: `CMakeLists.txt` probes `HAVE_LOGICAL16`, `HAVE_REAL2` and
+  `HAVE_REAL16` and passes each through as a `$<$<BOOL:...>>` compile definition,
+  and `integer*16` had neither the probe nor the pass-through. The guarded
+  specifics were therefore dead code on every platform mpif builds on, including
+  this one, where gfortran supports the kind -- `MPI_SIZEOF` of an `INTEGER(16)`
+  failed generic resolution regardless.
+
+  The sibling probes existing at all is exactly why this escaped: the pattern
+  looked wired up, three guards out of four having a probe behind them, and nothing
+  checked that the fourth did too. The fix is the missing probe, same
+  `check_fortran_source_compiles` shape as `HAVE_LOGICAL16`, and the matching
+  `$<$<BOOL:${HAVE_INTEGER16}>:MPIF_HAVE_INTEGER16>` compile definition.
+
+  Measured rather than assumed on all four local variants: `HAVE_INTEGER16` comes
+  out true under both gfortran and flang here, where `HAVE_LOGICAL16` and
+  `HAVE_REAL16` come out false under flang -- confirmation that the probes are
+  not redundant with each other and that flang really is the toolchain expected
+  to differ (see "This machine" in `CLAUDE.md`). No committed test exercises the
+  fix: `test/` has no `MPIF_HAVE_*` plumbing reaching any test executable's
+  compile definitions today, `sizeof_f90.f90` not even testing the other optional
+  kinds it could, so verification here is a throwaway program compiled by hand
+  against the installed `mpif` with and without the CMake fix -- the same "There
+  is no specific subroutine" failure the scalar fix above reproduces, on
+  `MPI_SIZEOF(int16)` instead. Adding that plumbing for one guard was judged more
+  than this fix needs; a future change that wants it for more than one optional
+  kind should build it once, for all of them.
 - **A user-defined reduction operator receives its buffers, from all three
   interfaces.** `MPI_User_function`'s `invec` and `inoutvec` were
   `INTEGER(KIND=MPI_ADDRESS_KIND)` by reference in `mpi_f08`, where MPI-5.0

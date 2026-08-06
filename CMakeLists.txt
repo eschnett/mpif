@@ -63,6 +63,16 @@ check_fortran_source_compiles(
 check_fortran_source_compiles(
   "
   program test
+    integer*16 :: x
+  end
+  "
+  HAVE_INTEGER16
+  SRC_EXT f90
+)
+
+check_fortran_source_compiles(
+  "
+  program test
     real*2 :: x
   end program
   "
@@ -300,6 +310,7 @@ target_include_directories(mpifort_abi
 target_compile_definitions(mpifort_abi PRIVATE
   ENABLE_FORTRAN
   $<$<BOOL:${HAVE_LOGICAL16}>:MPIF_HAVE_LOGICAL16>
+  $<$<BOOL:${HAVE_INTEGER16}>:MPIF_HAVE_INTEGER16>
   $<$<BOOL:${HAVE_REAL2}>:MPIF_HAVE_REAL2>
   $<$<BOOL:${HAVE_REAL16}>:MPIF_HAVE_REAL16>
   $<$<BOOL:${MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND}>:MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND>
