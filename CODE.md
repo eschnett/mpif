@@ -707,3 +707,41 @@ mechanism that replaced them and the evidence it is right.
   `MPI_Type_delete_attr_function` gives none and where the other twelve
   predefined callbacks give none; that is an inconsistency in the standard, and
   mpif follows the abstract interface.
+
+- **`MPI_Copy_function` and `MPI_Delete_function` give `extra_state` default
+  `INTEGER`, not `INTEGER(MPI_ADDRESS_KIND)`.** These are the two deprecated
+  MPI-1 abstract interfaces `MPI_Keyval_create` takes, declared in
+  `src/mpif_f08_types.F90`. Chapter 16's own binding, `SUBROUTINE
+  COPY_FUNCTION(OLDCOMM, KEYVAL, EXTRA_STATE, ATTRIBUTE_VAL_IN,
+  ATTRIBUTE_VAL_OUT, FLAG, IERR)`, declares every argument `INTEGER` with no
+  exception -- unlike `MPI_Comm_copy_attr_function` and its relatives, where
+  `extra_state` genuinely is address-sized. mpif had it address-sized in both
+  interfaces anyway: `data/apis.json` gives the parameter kind `EXTRA_STATE2`,
+  which is the MPI-1 kind and which `dev/mpiapi.jl` maps to plain `integer`
+  everywhere else that reads it -- the generated `MPI_Keyval_create_f08`
+  wrapper and the C trampolines `fortran_copy_fn_10`/`fortran_delete_fn_10` in
+  `src/mpif_callbacks.c` all already agreed with the standard -- but the two
+  hand-written abstract interfaces did not.
+
+  Two failure modes followed from the one wrong kind. A callback written the
+  way the standard writes it, plain `INTEGER extra_state` and no intents, as a
+  module procedure, could not be passed to `MPI_Keyval_create` at all: "There
+  is no specific subroutine for the generic 'mpi_keyval_create'", the
+  underlying mismatch being `extra_state`'s kind against
+  `PROCEDURE(MPI_Copy_function)`. A callback written to match mpif's interface
+  instead compiled, and at run time read 8 bytes through the trampoline's
+  pointer to `comm_copy_attr_10`, a 4-byte `MPI_Fint` -- silent stack
+  corruption on any write through it.
+
+  `dev/check-f08-bindings.jl` never saw this: it compares the 18 callback
+  abstract interfaces against A.1.3, and `MPI_Copy_function` and
+  `MPI_Delete_function` are deprecated and not among them. That appendix
+  section is prose interleaved with the declarations, with running-header page
+  and line numbers spliced into `pdftotext -layout`'s output mid-sentence, and
+  extending the parser to it was not attempted for that reason.
+  `test/keyval_create_f08.f90` is what checks these two: it declares
+  `my_copy`/`my_delete` exactly as Chapter 16 writes them, which is the compile
+  half of the assertion, and runs `MPI_Keyval_create` for real over
+  `MPI_COMM_WORLD`, checking the copy callback's `extra_state` and
+  `attribute_val_in` and that a duplicate carries the copied attribute, which
+  is the runtime half.

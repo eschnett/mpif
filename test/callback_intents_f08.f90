@@ -46,7 +46,7 @@ contains
        attribute_val_out, flag, ierror)
     type(MPI_Comm) :: oldcomm
     integer :: keyval
-    integer(MPI_ADDRESS_KIND) :: extra_state
+    integer :: extra_state
     integer :: attribute_val_in
     integer :: attribute_val_out
     logical :: flag
@@ -60,7 +60,7 @@ contains
     type(MPI_Comm) :: comm
     integer :: keyval
     integer :: attribute_val
-    integer(MPI_ADDRESS_KIND) :: extra_state
+    integer :: extra_state
     integer :: ierror
     ierror = MPI_SUCCESS
   end subroutine delete_fn

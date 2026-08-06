@@ -405,9 +405,8 @@ module mpif_f08_types
   ! declares them. That is what the generalized request callbacks did until the
   ! intents came off, and it was equally true of every other callback here.
   !
-  ! Where the direction genuinely matters the standard says so in prose, and for
-  ! `extra_state` it deliberately does not: a callback may update it -- MPICH's
-  ! greqf test requires a `free_fn` that decrements it to be seen by the caller.
+  ! Where the direction genuinely matters the standard says so in prose; these
+  ! abstract interfaces simply carry no INTENTs at all, `extra_state` included.
   !
   ! The buffers of MPI_User_function and of the datarep conversion functions are
   ! TYPE(C_PTR), VALUE, which is what the standard gives them and also what makes
@@ -421,7 +420,7 @@ module mpif_f08_types
        implicit none
        type(MPI_Comm) :: oldcomm
        integer :: keyval
-       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer :: extra_state
        integer :: attribute_val_in
        integer :: attribute_val_out
        logical :: flag
@@ -438,7 +437,7 @@ module mpif_f08_types
        type(MPI_Comm) :: comm
        integer :: keyval
        integer :: attribute_val
-       integer(MPI_ADDRESS_KIND) :: extra_state
+       integer :: extra_state
        integer :: ierror
      end subroutine MPI_Delete_function
   end interface
