@@ -57,8 +57,12 @@
 # expectations that had nothing wrong with them.
 #
 # Measured across all twelve variants in CI, plus two environments outside it.
-# Five entries are `flaky` rather than `xfail` because two runs disagreed about
-# them, in a pattern matching neither architecture nor toolchain.
+# There are no `flaky` entries at the moment. The last three -- `typecntsf`,
+# `typecntsf08` and `typecntsf90`, MISSING.md "MPI_Type_get_contents converts
+# uninitialised memory" -- were removed after three consecutive clean CI runs
+# (30936230034, 30941008705, 30951119166) once the alltoallw handle-array fix
+# in 96bcc29 took the two entries that had been the evidence they still fired,
+# `nonblocking_inpf` and `nonblocking_inpf90`, out of the picture.
 #
 # Where a reason names an entry in MISSING.md, that entry is the record; where it
 # says "untriaged", nobody has looked yet, and the symptom is quoted so that
@@ -178,9 +182,6 @@ xfail openmpi/*/*/*/x86_64     f08  spawnmultf90       # Open MPI cannot TCP con
 xfail */*/*/*/*                f08  statusconv         # C file spelling the ABI's MPI_F08_Status as MPICH's MPI_F08_status
 xfail */*/*/*/*                f08  test14             # noncontiguous subarray to a nonblocking call, which MPI_SUBARRAYS_SUPPORTED == .FALSE. forbids
 xfail */*/*/*/*                f08  test15             # noncontiguous subarray to a nonblocking call, which MPI_SUBARRAYS_SUPPORTED == .FALSE. forbids
-flaky mpich/*/*/*/*            f77  typecntsf          # MISSING.md "MPI_Type_get_contents converts uninitialised memory"; passed on every MPICH variant in 30861875404, 30863777064 and 30905286536. These three are now the only tests that exercise that defect -- nonblocking_inpf and nonblocking_inpf90 were cited here as proof it still fired and were the alltoallw in-place over-read instead, now fixed -- so nothing says it still fires. Remove all three on the next clean run
-flaky mpich/*/*/*/*            f08  typecntsf08        # MISSING.md "MPI_Type_get_contents converts uninitialised memory"; passed on every MPICH variant in 30861875404, 30863777064 and 30905286536. These three are now the only tests that exercise that defect -- nonblocking_inpf and nonblocking_inpf90 were cited here as proof it still fired and were the alltoallw in-place over-read instead, now fixed -- so nothing says it still fires. Remove all three on the next clean run
-flaky mpich/*/*/*/*            f90  typecntsf90        # MISSING.md "MPI_Type_get_contents converts uninitialised memory"; passed on every MPICH variant in 30861875404, 30863777064 and 30905286536. These three are now the only tests that exercise that defect -- nonblocking_inpf and nonblocking_inpf90 were cited here as proof it still fired and were the alltoallw in-place over-read instead, now fixed -- so nothing says it still fires. Remove all three on the next clean run
 xfail openmpi/*/*/*/*          f77  typesnamef         # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"
 xfail openmpi/*/*/*/*          f08  typesnamef08       # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"
 xfail openmpi/*/*/*/*          f90  typesnamef90       # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"

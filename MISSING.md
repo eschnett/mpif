@@ -1467,22 +1467,25 @@ writes it.
    gates, on three consecutive runs agreeing. Do not carry the i686 list over to
    it: they are different 32-bit ABIs, a 64-bit type being eight-byte aligned on
    armhf and four-byte on i386.
-4. **Remove the three remaining `flaky` entries**, which is now the simple
-   deletion it once looked like -- but for a reason, not for a count. What kept
+4. ~~**Remove the three remaining `flaky` entries**~~ -- done. What kept
    them was that `nonblocking_inpf` and `nonblocking_inpf90` had gone on failing
    after `MPI_Type_get_contents` was patched, which read as the same
    uninitialised read still firing. It was not: neither test calls
    `MPI_Type_get_contents`. Both call `MPI_IALLTOALLW` with `MPI_IN_PLACE` and a
    one-element `stypes(1)`, and they were the alltoallw in-place over-read, which
-   is fixed and has a guard-page test. That leaves `typecntsf`, `typecntsf90` and
-   `typecntsf08` as the only tests that ever exercised the get_contents defect,
-   with nothing left that says it still fires. Remove them on the next clean CI
-   run; the reasons in `ci-scripts/suite/mpich-suite-xfail.txt` say so.
+   is fixed and has a guard-page test. That left `typecntsf`, `typecntsf90` and
+   `typecntsf08` as the only tests that ever exercised the get_contents defect.
+   Three CI runs after the alltoallw fix (`96bcc29`) landed --
+   30936230034, 30941008705 and 30951119166 -- passed all three, on all seven
+   MPICH job variants each time, with nothing left that says the defect still
+   fires. The three `flaky` lines are gone from
+   `ci-scripts/suite/mpich-suite-xfail.txt`.
 
    The caution that came with the old item was still the right one, and is worth
    keeping in mind for its own sake: one green run is not evidence that a
-   nondeterministic failure has stopped. What settles it here is a mechanism, not
-   a tally.
+   nondeterministic failure has stopped. What settled it here was a mechanism --
+   the alltoallw fix accounting for the one pair that had kept the other three
+   looking flaky -- backed by three runs, not a tally.
 
 Two things are decided and not on this list, so that they are not picked up by
 mistake: assumed-rank choice buffers are not being taken for now, and `MPI_Sizeof`
@@ -1509,14 +1512,20 @@ every one of these with its reason, and the suite run fails on any difference
 from it. The table is for telling a change from the background noise at a
 glance.
 
-The MPICH rows wobble by one or two between runs, because the `flaky` entries in
-the list are genuinely nondeterministic -- in the run these numbers come from,
-`typecntsf` failed on `mpich/gcc/linux/aarch64` and passed on
-`mpich/gcc/linux/x86_64`, while `typecntsf90` did the opposite. Read the MPICH
-rows as approximate to that extent; the list, which excuses them either way, is
-what is exact. There are three such entries now rather than five: `nonblocking_inpf`
-and `nonblocking_inpf90` were never the nondeterminism they were filed under and
-now pass, so two sources of wobble are gone from the f77 and f90 columns.
+The MPICH rows below wobbled by one or two between runs at the time they were
+measured, because the list then still carried `flaky` entries that were
+genuinely nondeterministic -- in the run these numbers come from, `typecntsf`
+failed on `mpich/gcc/linux/aarch64` and passed on `mpich/gcc/linux/x86_64`,
+while `typecntsf90` did the opposite. Read the MPICH rows as approximate to
+that extent for this particular table; the list, which excused them either
+way at the time, is what was exact then. There are no `flaky` entries left
+now: `nonblocking_inpf` and `nonblocking_inpf90` were never the nondeterminism
+they were filed under and were removed once fixed, and `typecntsf`,
+`typecntsf90` and `typecntsf08` turned out to be the only tests that ever
+exercised the uninitialised-read defect and were removed after three
+consecutive clean CI runs confirmed it no longer fires (see item 4 of "Worth
+doing next"). A re-measurement after this table's commit would not show the
+same wobble.
 
 | variant                          | f77 | f90 | f08 |
 |----------------------------------|-----|-----|-----|
@@ -1597,10 +1606,14 @@ numbers are not a baseline for anything. The `attrmpi1f08` it reported as
 unexpectedly passing is the same 32-bit pass the arm32v7 run found, showing through
 a key that said `x86_64` and so matched the entries scoped to it.
 
-Fifty-eight entries cover them, for forty-nine distinct language-and-test pairs --
-three of them `flaky` rather than `xfail`. Six went away with the alltoallw
-handle-array fixes: the four `*/gcc/*` collective tests and the two
-`nonblocking_inp*` flaky ones, and a seventh with the aio patch, the two macOS
+Fifty-five entries cover them, for forty-six distinct language-and-test pairs --
+none of them `flaky` now. Nine went away with the alltoallw handle-array fixes:
+the four `*/gcc/*` collective tests, the two `nonblocking_inp*` flaky ones, and
+the three `typecnts*` flaky ones, which had been misread as the same
+uninitialised-read defect the `nonblocking_inp*` pair exercised and turned out to
+be the only tests that still did once that pair was gone -- three clean CI runs
+after 96bcc29 (30936230034, 30941008705, 30951119166) removed them in turn. A
+tenth went away with the aio patch, the two macOS
 `i_fcoll_test` rows collapsing into one for flang. All but one are accounted for, each
 either by an entry here or by a reason that stands on its own; the one is
 `i_fcoll_test` on CI's Linux runners. The rows above are
