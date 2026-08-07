@@ -201,7 +201,11 @@ MPIF_DEFINE_ERRHANDLER_SET(pmpi_errhandler_set_, PMPI_Comm_set_errhandler)
 
 #define MPIF_DEFINE_ERRHANDLER_GET(fname, comm_get_errhandler)                 \
   void fname(const MPI_Fint *comm, MPI_Fint *errhandler, MPI_Fint *ierror) {   \
-    MPI_Errhandler c_errhandler;                                               \
+    /* Initialised for the failure path, on which the conversion below runs    \
+       anyway; MPI_Errhandler_toint on an unwritten temporary may abort, as    \
+       MPIF_NEWTYPE_ON_SUCCESS records for datatypes. The generated wrappers   \
+       initialise their out-handle temporaries the same way. */                \
+    MPI_Errhandler c_errhandler = MPI_ERRHANDLER_NULL;                         \
     *ierror = comm_get_errhandler(MPI_Comm_fromint(*comm), &c_errhandler);     \
     *errhandler = MPI_Errhandler_toint(c_errhandler);                          \
   }

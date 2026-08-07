@@ -28,7 +28,12 @@ kind2null = Dict(["COMMUNICATOR" => "COMM",
                   "OPERATION" => "OP",
                   "REQUEST" => "REQUEST",
                   "SESSION" => "SESSION",
-                  "WINDOW" => "WINDOW"])
+                  # The null window is MPI_WIN_NULL, not MPI_WINDOW_NULL. The
+                  # entry was wrong from the start and harmless until the
+                  # out-handle initialisers below became its first user for
+                  # windows; nothing root_only or alltoallw-shaped ever names a
+                  # window.
+                  "WINDOW" => "WIN"])
 kind2type = Dict(["COMMUNICATOR" => "Comm",
                   "DATATYPE" => "Datatype",
                   "ERRHANDLER" => "Errhandler",
@@ -1002,7 +1007,17 @@ for key in sort(collect(keys(apis)))
                             push!(input_conversions,
                                   "MPI_$(kind2type[kind]) c_$parname = MPI_$(kind2fun[kind])_fromint(*$parname);")
                         else
-                            push!(input_conversions, "MPI_$(kind2type[kind]) c_$parname;")
+                            # Initialised to the null handle: MPI leaves this
+                            # unwritten on failure, and the conversion below runs
+                            # unconditionally, so an uninitialised temporary would
+                            # reach MPI_*_toint -- which is entitled to look a
+                            # garbage handle up and abort, exactly what
+                            # mpif_removed.c's MPIF_NEWTYPE_ON_SUCCESS exists to
+                            # avoid. The caller's out argument is undefined on
+                            # error either way; the null handle just makes it a
+                            # value toint is defined on.
+                            push!(input_conversions,
+                                  "MPI_$(kind2type[kind]) c_$parname = MPI_$(kind2null[kind])_NULL;")
                         end
                         push!(call_arguments, "&c_$(parname)")
                         push!(output_conversions,
@@ -1025,6 +1040,23 @@ for key in sort(collect(keys(apis)))
                             append!(input_conversions,
                                     ["for (int i=0; i<$count; ++i)",
                                      "  c_$parname[i] = MPI_$(kind2fun[kind])_fromint($parname[i]);"])
+                        else
+                            # Pre-filled with the null handle, for the same
+                            # reason the scalar above is initialised -- and here
+                            # the read is not confined to the failure path. The
+                            # one pure-out handle array in the standard is
+                            # MPI_Type_get_contents' array_of_datatypes, whose
+                            # caller passes the envelope's count *or more*, and
+                            # MPI writes only what the datatype has: the surplus
+                            # is legitimately unwritten even on success, and the
+                            # conversion below walks all of it. This is the very
+                            # defect ci-scripts/mpich-abi-type-get-contents.patch
+                            # fixes one level down, in MPICH's own ABI wrapper;
+                            # relying on that patch to null the surplus would tie
+                            # mpif to one implementation's fix for it.
+                            append!(input_conversions,
+                                    ["for (int i=0; i<$count; ++i)",
+                                     "  c_$parname[i] = MPI_$(kind2null[kind])_NULL;"])
                         end
                         push!(call_arguments, "c_$parname")
                         # Every element is converted back, not just the ones MPI

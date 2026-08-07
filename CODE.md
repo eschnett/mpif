@@ -921,6 +921,61 @@ mechanism that replaced them and the evidence it is right.
   `dev/check-f08-bindings.jl` reports no divergence, since no declaration
   changed; and both `test/` and the MPICH suite stayed green on `mpich/gcc`
   and `openmpi/gcc`.
+- **Out-handle temporaries are initialised to the null handle, so `toint`
+  never sees an unwritten one.** The last member of the class the entry above
+  describes, deferred from that sweep because handles are not flags: every
+  generated wrapper with a scalar out handle declared `MPI_Comm c_newcomm;`,
+  called MPI, and ran `*newcomm = MPI_Comm_toint(c_newcomm);` unconditionally
+  -- so a failing call converted an unwritten temporary. For a LOGICAL that is
+  a lint-level read; for a handle it is worse, `MPI_*_toint` being entitled to
+  look a garbage handle up in a table and abort, which is the very hazard
+  `src/mpif_removed.c`'s `MPIF_NEWTYPE_ON_SUCCESS` records for datatypes. The
+  temporaries are now `= MPI_$(kind2null[kind])_NULL`, 490 declarations across
+  the MPI, PMPI and `_c` bodies, from the one generator branch.
+
+  The one *pure-out handle array* in the standard is the interesting case,
+  because there the read is not confined to the failure path.
+  `MPI_Type_get_contents`' `array_of_datatypes` may be passed larger than the
+  envelope's count, and MPI writes only what the datatype has, so the surplus
+  is legitimately unwritten *on success* -- and the wrapper converts all
+  `*max_datatypes` entries back. That is byte for byte the defect this project
+  found and patched one level down, in MPICH's own ABI wrapper
+  (`ci-scripts/mpich-abi-type-get-contents.patch`, "MPICH:
+  `MPI_Type_get_contents` converts uninitialised memory" in `MISSING.md`);
+  mpif's copy of it survived that diagnosis unnoticed, and only the patch's
+  own pre-fill of MPICH's temporary was keeping the surplus entries null here.
+  The array is now pre-filled with `MPI_DATATYPE_NULL` before the call --
+  MPICH's patched wrapper no longer load-bearing for mpif's -- which also
+  makes the Fortran caller's surplus entries deterministically
+  `MPI_DATATYPE_NULL` rather than whatever the implementation left. The
+  in/inout arrays need nothing: `fromint` already fills every element of
+  those, and `MPI_Type_get_contents` is the only routine in `apis.json` with
+  an out-direction handle array. The same initialisation went by hand into
+  `MPIF_DEFINE_ERRHANDLER_GET` in `src/mpif_removed.c`, whose deprecated
+  `MPI_Errhandler_get` was the one hand-written wrapper still converting
+  unconditionally from an unwritten temporary.
+
+  First use of `kind2null` for a window found the table entry wrong:
+  `"WINDOW" => "WINDOW"` produced `MPI_WINDOW_NULL`, a name that exists
+  nowhere -- the constant is `MPI_WIN_NULL`. It had been harmless from the
+  day the table was written, nothing `root_only` or alltoallw-shaped ever
+  naming a window; the fourteen `MPI_Win` out-handle initialisers were its
+  first instantiation, and the build refused them. The entry now reads
+  `"WINDOW" => "WIN"`, with the history at the table.
+
+  No test can fail on this, for the same reason as the entry above plus one:
+  a caller may not inspect an out argument after a failing call, and the
+  surplus-entries case is masked locally by the very MPICH patch this removes
+  the dependence on -- a test asserting the surplus comes back null would
+  pass either way here, which is what makes a test worthless by this
+  project's own rule. `git diff gen/` is the verification: 490 matched
+  declaration pairs gaining ` = MPI_*_NULL` and four two-line pre-fill loops
+  (`MPI_Type_get_contents` and `_c`, MPI and PMPI), nothing else. No f08
+  declaration and no Cray pointer changed, so `dev/check-f08-bindings.jl` and
+  `ci-scripts/check-headers.sh` have nothing to say; `test/` is 56 of 56 on
+  `mpich/gcc` and `openmpi/gcc`, and the MPICH suite on
+  `mpich/gcc/darwin/26/arm64` reports no differences against
+  `ci-scripts/suite/mpich-suite-xfail.txt`.
 - **The f08 twins of `MPI_CONVERSION_FN_NULL`/`_C` now set `ierror`, agreeing
   with their `mpif.h`/`mpi` module twins.** `src/mpif_attr_fns.F90`'s
   `MPI_CONVERSION_FN_NULL`/`_C` set `ierror = MPI_ERR_INTERN` deliberately: the
