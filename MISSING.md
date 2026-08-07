@@ -1285,10 +1285,13 @@ The build-one-run-other machinery (see "Choosing the MPI at run time" in
   cross job compares the mpich-built and openmpi-built mpif installations:
   `include/` must be identical and the library's exported and undefined
   symbol lists must be identical, both fatal. The libraries' bytes are
-  compared too but only reported, until byte identity has been measured
-  across enough runners to be required with a straight face; debug paths and
-  linker ids are the kind of thing that could differ without meaning
-  anything.
+  compared too but only reported, and the first CI run (run 31211307432,
+  2026-08-07) measured them as differing on every platform even though both
+  jobs build the same sources in identically named directories -- locally the
+  difference is debug-info build paths (`build-mpich-llvm` against
+  `build-openmpi-llvm`), and linker ids and timestamps are the same kind of
+  meaningless noise. So the byte comparison stays informational; the symbol
+  lists are the assertion with teeth.
 
 ### Assumed-rank choice buffers
 
