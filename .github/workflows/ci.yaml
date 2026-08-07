@@ -357,62 +357,6 @@ jobs:
           cmake --build build-tests --parallel
           ctest --test-dir build-tests --output-on-failure
 
-      # The same library and the same tests, built with AddressSanitizer. What
-      # it adds is a diagnosis: a memory error in mpif's own conversion layer
-      # becomes a report naming the file, the line and the Fortran caller,
-      # instead of a corrupted MPI several calls later or -- as measured -- 69
-      # passing tests. Both defects this project has fixed there were pinned
-      # down by hand with an mmap'ed guard page, before this existed.
-      #
-      # Narrowly gated, because it is a second full build of mpif and its tests
-      # for a signal that does not vary with the MPI underneath: mpif's C is
-      # identical whichever implementation it is loaded next to, and the local
-      # runs that established this were clean against both. One os and one mpi,
-      # but *both* toolchains, because those are two different mechanisms
-      # rather than two compilers -- gfortran has a `-fsanitize` of its own and
-      # instruments the Fortran too, while flang has none as of LLVM 22, so
-      # there the C is instrumented and the runtime has to be named on the
-      # Fortran link line by hand. Each is exercised only here.
-      #
-      # Leak checking is off: LSan defaults to on under Linux, and what it
-      # would report is the MPI's own allocations surviving MPI_Finalize, seen
-      # from an instrumented process next to an uninstrumented library.
-      - name: Build and test mpif with AddressSanitizer
-        if: matrix.os == 'ubuntu-24.04' && matrix.mpi == 'mpich'
-        env:
-          ASAN_OPTIONS: detect_leaks=0
-        run: |
-          asan_prefix=${RUNNER_TEMP}/opt/mpif-asan
-          cmake \
-              -Bbuild-asan \
-              -DBUILD_SHARED_LIBS=ON \
-              -DCMAKE_BUILD_TYPE=Debug \
-              -DCMAKE_C_COMPILER="${CC}" \
-              -DCMAKE_Fortran_COMPILER="${FC}" \
-              -DCMAKE_INSTALL_PREFIX="${asan_prefix}" \
-              -DMPI_HOME="${MPI_PREFIX}" \
-              -DMPIF_SANITIZE=address
-          cmake --build build-asan --parallel
-          cmake --install build-asan
-          # A sanitizer build that lost its flags is indistinguishable from a
-          # clean one by testing alone; this reads the object code instead.
-          ci-scripts/check-sanitizer-build.sh "${asan_prefix}"
-          cmake \
-              -Stest \
-              -Bbuild-asan-tests \
-              -DCMAKE_BUILD_TYPE=Debug \
-              -DCMAKE_C_COMPILER="${CC}" \
-              -DCMAKE_Fortran_COMPILER="${FC}" \
-              -DMPI_C_COMPILER="${MPI_PREFIX}/bin/mpicc" \
-              -DMPI_Fortran_COMPILER="${asan_prefix}/bin/mpifort" \
-              -DMPI_C_HEADER_DIR="${MPI_PREFIX}/include" \
-              -DMPI_C_LIB_NAMES=mpi_abi \
-              -DMPI_mpi_abi_LIBRARY="${MPI_PREFIX}/lib/libmpi_abi.${SHLIB_EXT}" \
-              -DMPIEXEC_EXECUTABLE="${MPI_PREFIX}/bin/mpiexec" \
-              -DMPIF_TEST_MPI_LIBRARY=MPICH
-          cmake --build build-asan-tests --parallel
-          ctest --test-dir build-asan-tests --output-on-failure
-
       # MPICH's own suite has ~300 Fortran tests across mpif.h, `use mpi` and
       # `use mpi_f08`, and disables all of them for the standard ABI because the
       # ABI has no Fortran bindings -- which is what mpif supplies. Far broader
@@ -502,6 +446,156 @@ jobs:
   #   default at run time. That is the loader-level mechanism applications use,
   #   tested directly; MPIF_TEST_MPI_LIBRARY makes the tests assert the swap
   #   actually happened.
+  # A sanitizer build of mpif, on the MPI the build jobs already installed.
+  #
+  # What it adds is a diagnosis. A memory error in mpif's own conversion layer
+  # -- which allocates, copies strings both directions and walks handle arrays
+  # whose length it works out itself -- becomes a report naming the file, the
+  # line and the Fortran caller, instead of a corrupted MPI several calls later.
+  # That is measured, not hoped for: a one-byte heap overflow put back into
+  # mpif_strdup_f2c_trim failed info_get_string_f08 with all four frames under
+  # a sanitizer build, and passed all 69 tests under an ordinary one. Both
+  # memory defects this project has fixed there were pinned down by hand with an
+  # mmap'ed guard page, before this existed. See "Sanitizer builds" in CODE.md.
+  #
+  # One mpi and one os, but both toolchains, because the toolchains are two
+  # different mechanisms rather than two compilers: gfortran has a -fsanitize of
+  # its own and instruments the Fortran too, while flang has none as of LLVM 22,
+  # so there the C is instrumented and the runtime has to be named on the
+  # Fortran link line by hand. Each is exercised only here. The implementations
+  # and the operating systems are not a second axis worth paying for -- mpif's C
+  # is the same object code whichever MPI is loaded next to it, and it links no
+  # MPI at all (see "Choosing the MPI at run time" in CODE.md).
+  #
+  # It takes the MPI prefix from the build job's artifact rather than installing
+  # one, the way `cross` does, so this job costs a runner and not an MPI build.
+  # Only opt/mpi-mpich is wanted out of that archive; the ordinary mpif prefix
+  # rides along in it and is deliberately not used -- every path below names the
+  # -asan prefix this job installs.
+  sanitize:
+    name: sanitize / ${{ matrix.toolchain }}
+    runs-on: ubuntu-24.04
+    needs: build
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [gcc, llvm]
+
+    env:
+      # LeakSanitizer is on by default under Linux, and what it would report is
+      # the MPI's own allocations surviving MPI_Finalize -- seen from an
+      # instrumented process standing next to an uninstrumented library, which
+      # is this job's whole arrangement. ASAN_OPTIONS=detect_leaks=1 is how to
+      # ask the question anyway, knowing what else is in the answer.
+      ASAN_OPTIONS: detect_leaks=0
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # Only what compiles mpif and test/: nothing here builds an MPI, so no
+      # autotools and no ccache. Same versions as the build and cross jobs, the
+      # restored prefix's wrappers naming these compilers bare.
+      - name: Install dependencies (GCC)
+        if: matrix.toolchain == 'gcc'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake gfortran libhwloc-dev
+      - name: Install dependencies (LLVM)
+        if: matrix.toolchain == 'llvm'
+        run: |
+          curl -fsSLO https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 21
+          sudo apt-get update
+          sudo apt-get install -y \
+              clang-21 \
+              cmake \
+              flang-21 \
+              libc++-21-dev \
+              libc++abi-21-dev \
+              libhwloc-dev \
+              libomp-21-dev \
+              lld-21 \
+              llvm-21
+
+      - name: Select toolchain
+        run: |
+          case "${{ matrix.toolchain }}" in
+              gcc)  cc=gcc      cxx=g++       fc=gfortran ;;
+              llvm) cc=clang-21 cxx=clang++-21 fc=flang-21 ;;
+          esac
+          {
+              echo "CC=${cc}"
+              echo "CXX=${cxx}"
+              echo "FC=${fc}"
+          } >>"${GITHUB_ENV}"
+          for var in cc cxx fc; do
+              command -v "${!var}"
+              "${!var}" --version | head -1
+          done
+
+      # The MPI prefix at the exact absolute path the build job used, so its
+      # wrappers, RPATHs and baked defaults are valid again.
+      - uses: actions/download-artifact@v4
+        with:
+          name: prefixes-mpich-${{ matrix.toolchain }}-ubuntu-24.04
+
+      - name: Unpack the MPI prefix
+        run: |
+          tar -C "${RUNNER_TEMP}" -xzf \
+              "prefixes-mpich-${{ matrix.toolchain }}-ubuntu-24.04.tar.gz"
+          # Set here and not in the job's `env:`, which cannot see the
+          # `runner` context -- the same reason the build job has a "Set up
+          # paths" step.
+          echo "MPI_PREFIX=${RUNNER_TEMP}/opt/mpi-mpich" >>"${GITHUB_ENV}"
+          echo "LD_LIBRARY_PATH=${RUNNER_TEMP}/opt/mpi-mpich/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" >>"${GITHUB_ENV}"
+          ls "${RUNNER_TEMP}/opt"
+
+      - name: Check the MPI installation
+        run: ci-scripts/check-mpi-install.sh "${MPI_PREFIX}"
+
+      - name: Configure, build, and install mpif with AddressSanitizer
+        run: |
+          cmake \
+              -Bbuild-asan \
+              -DBUILD_SHARED_LIBS=ON \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_C_COMPILER="${CC}" \
+              -DCMAKE_Fortran_COMPILER="${FC}" \
+              -DCMAKE_INSTALL_PREFIX="${RUNNER_TEMP}/opt/mpif-mpich-asan" \
+              -DMPI_HOME="${MPI_PREFIX}" \
+              -DMPIF_SANITIZE=address
+          cmake --build build-asan --parallel
+          cmake --install build-asan
+
+      # A sanitizer build whose flags never reached the compiler works, and
+      # passes all 69 tests, which is exactly what a correct one does on clean
+      # code -- no test can tell the two apart. This reads the object code.
+      - name: Check that the library is really instrumented
+        run: ci-scripts/check-sanitizer-build.sh "${RUNNER_TEMP}/opt/mpif-mpich-asan"
+
+      - name: Build and run test/ against the sanitizer mpif
+        run: |
+          asan_prefix=${RUNNER_TEMP}/opt/mpif-mpich-asan
+          cmake \
+              -Stest \
+              -Bbuild-asan-tests \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_C_COMPILER="${CC}" \
+              -DCMAKE_Fortran_COMPILER="${FC}" \
+              -DMPI_C_COMPILER="${MPI_PREFIX}/bin/mpicc" \
+              -DMPI_Fortran_COMPILER="${asan_prefix}/bin/mpifort" \
+              -DMPI_C_HEADER_DIR="${MPI_PREFIX}/include" \
+              -DMPI_C_LIB_NAMES=mpi_abi \
+              -DMPI_mpi_abi_LIBRARY="${MPI_PREFIX}/lib/libmpi_abi.so" \
+              -DMPIEXEC_EXECUTABLE="${MPI_PREFIX}/bin/mpiexec" \
+              -DMPIF_TEST_MPI_LIBRARY=MPICH
+          cmake --build build-asan-tests --parallel
+          ctest --test-dir build-asan-tests --output-on-failure
+
   # - the MPICH suite relinks against the runtime MPI (test-mpich-suite.sh
   #   exports MPIF_MPI_PREFIX from its first argument): its harness runs
   #   through the system perl and shells, from which macOS SIP strips DYLD_*,

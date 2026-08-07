@@ -387,13 +387,23 @@ requires undefined `__asan_*`-family references in the installed library.
 `scripts/macos-build-mpif.sh` runs it after every sanitizer install, and CI
 runs it before the tests.
 
-CI runs this on `ubuntu-24.04`/`mpich` only, and on both toolchains: the two
-toolchains are the two link shapes above, which is a real difference, while
-the two implementations and the two operating systems are not -- mpif's C is
-the same object code whichever MPI is loaded next to it. The MPICH suite is
-not run under a sanitizer; its expected-failure baseline is keyed per variant,
-and a sanitizer variant would need its own triage before it could gate
-anything.
+In CI this is the `sanitize / <toolchain>` job, on `ubuntu-24.04`/`mpich` only
+and on both toolchains: the two toolchains are the two link shapes above, which
+is a real difference, while the two implementations and the two operating
+systems are not -- mpif's C is the same object code whichever MPI is loaded
+next to it. It takes its MPI from the build job's uploaded prefix rather than
+installing one, the way `cross` does, so it costs a runner and not an MPI
+build.
+
+It was a *step* inside two of the build jobs first, for exactly that saving,
+and that was the wrong shape: a step is invisible in the jobs list, cannot be
+re-run on its own, and reports a sanitizer failure under the name of an
+unrelated variant. The artifact makes a standalone job nearly as cheap, and
+`cross` had already established the pattern.
+
+The MPICH suite is not run under a sanitizer; its expected-failure baseline is
+keyed per variant, and a sanitizer variant would need its own triage before it
+could gate anything.
 
 ## Verified as correct
 
