@@ -16,6 +16,12 @@ source "$(dirname "${BASH_SOURCE[0]}")/macos-common.sh" "$@"
 # MPIEXEC_ARGS, for the reasons spelled out there: it refuses to oversubscribe,
 # and on macOS it picks a non-loopback interface it cannot configure and then
 # hangs. Overridable the same way.
+#
+# MPICH adds nothing, so the array stays empty there, and `"${cmake_args[@]}"` on
+# an empty array is an unbound variable under `set -u` in bash 3.2, which macOS
+# ships -- the same trap ci-scripts/suite/test-mpich-suite.sh documents. It killed
+# every MPICH run of this script at the cmake line, so the guarded expansion below
+# is not decoration.
 cmake_args=()
 if [[ ${mpi} == openmpi ]]; then
     cmake_args+=("-DMPIEXEC_PREFLAGS=${MPIF_TEST_MPIEXEC_PREFLAGS:---oversubscribe;--mca;btl_tcp_if_include;lo0}")
@@ -34,6 +40,6 @@ cmake \
     -DMPI_C_LIB_NAMES=mpi_abi \
     -DMPI_mpi_abi_LIBRARY="${mpi_prefix}/lib/libmpi_abi.${shlib_ext}" \
     -DMPIEXEC_EXECUTABLE="${mpi_prefix}/bin/mpiexec" \
-    "${cmake_args[@]}"
+    ${cmake_args[@]+"${cmake_args[@]}"}
 cmake --build "${build}-tests" --parallel
 ctest --test-dir "${build}-tests" --output-on-failure
