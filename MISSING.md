@@ -1130,6 +1130,55 @@ keep failing while mpif follows the standard. Nothing to fix on this side.
 
 ## Missing features
 
+### What the runtime consistency checks deliberately do not do
+
+`mpif_check_version` and `mpif_check_environment` (src/mpif_check.c; the
+section "Runtime consistency checks" in CODE.md has their semantics) drew
+three boundaries worth recording, so that the absent pieces read as decisions
+rather than oversights.
+
+**There is no `mpif_get_version` query.** The original sketch had one -- three
+INTEGERs out, the loaded library's version -- and it was dropped in favour of
+`mpif_check_version(major, minor, patch)` taking the caller's compile-time
+constants. The point of knowing the loaded version is comparing it against the
+version compiled against, and a query hands that comparison to every caller to
+reimplement, each with its own idea of what compatible means; the check form
+keeps the rule in the library, next to the version it compares, where it is
+the SameMajorVersion rule CMakeLists.txt already applies at configure time. A
+caller that wants the numbers for display can still get the library's build
+from `mpifort -showme:version`, and a library too old to have
+`mpif_check_version_` at all fails at symbol resolution, which is a cruder
+message but still a startup failure rather than silent skew.
+
+**There are no `mpif_pcheck_version`/`mpif_pcheck_environment` P forms.**
+MPI-5.0 section 15.2 requires P entry points of MPI procedures, which these
+are not -- they are mpif's own, nothing a profiling layer knows to intercept,
+and there is nothing underneath them worth profiling. Contrast
+`mpif_psizeof_*`, which exist because `MPI_SIZEOF` is the standard's. So the
+`mpif_p` grep rule in CODE.md finds no P forms for these two, and that is not
+a gap.
+
+**`mpif_check_environment` reads `MPI_Abi_get_fortran_booleans` and never
+writes.** When the library has boolean values registered and they disagree
+with the compiler that built mpif, that is exactly the cross-compiler skew the
+function exists to catch, and it aborts. When nothing is registered it passes
+silently rather than registering mpif's own values: MPI-5.0 section 20.4.1
+makes the first setter permanent, so calling `MPI_Abi_set_fortran_booleans`
+from a checker that may run at any time would be a behavioral change disguised
+as a check. Whether mpif should register its booleans at initialization is a
+real question -- but its own, to be decided somewhere that runs exactly once,
+not here.
+
+One measurement note: `test/CMakeLists.txt`'s `check_env_mpiexec_fail` drives
+the wrong-mpiexec detection by running the binary without a launcher and with
+`SLURM_NTASKS=4` in the environment, on the expectation that neither MPICH's
+nor Open MPI's singleton initialization reacts to that variable without the
+rest of the SLURM environment. That was measured, not assumed, on
+`mpich/gcc/darwin/26/arm64` and `openmpi/llvm/darwin/26/arm64` (and the other
+two local variants) on 2026-08-07; CI measures it on its own rows on every
+run. If an implementation someday grows a SLURM detector keyed on that
+variable alone, this is the test that starts failing.
+
 ### Assumed-rank choice buffers
 
 The bindings declare choice buffers as `integer :: buf(*)` guarded by

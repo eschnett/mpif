@@ -1,6 +1,17 @@
 #!/bin/bash
 
-# Check that every Cray pointer in mpif_constants.h is the variable C
+# Two consistency checks on mpif's headers.
+#
+# First: mpif's version. It is written down twice -- `project(mpif VERSION
+# x.y.z)` in CMakeLists.txt, which is what src/mpif_check.c gets compiled
+# with, and the MPIF_VERSION/MPIF_SUBVERSION/MPIF_PATCH parameters in
+# include/mpif_constants.h, which is what callers see -- and nothing else ties
+# the two together. (SOVERSION is deliberately not compared: CMakeLists.txt
+# declares it an independent single number.) mpif_check_environment compares
+# the same pair at run time, which catches an install mixing pieces of two
+# builds; this catches the plain edit-one-forget-the-other in CI.
+#
+# Second: that every Cray pointer in mpif_constants.h is the variable C
 # initialises.
 #
 # The sentinels -- MPI_BOTTOM, MPI_STATUS_IGNORE and the rest -- are Cray
@@ -19,6 +30,29 @@ header="$srcdir/include/mpif_constants.h"
 csrc="$srcdir/src/mpif_constants.c"
 
 status=0
+
+cmake_version="$(sed -n 's/^ *mpif VERSION \([0-9][0-9.]*\).*/\1/p' "$srcdir/CMakeLists.txt")"
+if [ -z "$cmake_version" ]; then
+  echo "CMakeLists.txt: found no 'mpif VERSION x.y.z' line to compare against" >&2
+  status=1
+else
+  for pair in "MPIF_VERSION:1" "MPIF_SUBVERSION:2" "MPIF_PATCH:3"; do
+    param="${pair%:*}"
+    component="$(echo "$cmake_version" | cut -d. -f"${pair#*:}")"
+    declared="$(sed -n "s/^ *integer, parameter :: $param *= *\([0-9][0-9]*\).*/\1/p" "$header")"
+    if [ -z "$declared" ]; then
+      echo "$header: found no 'integer, parameter :: $param = ...' line" >&2
+      status=1
+    elif [ "$declared" != "$component" ]; then
+      echo "$header: $param is $declared but CMakeLists.txt says mpif VERSION $cmake_version" >&2
+      status=1
+    fi
+  done
+fi
+
+if [ $status -eq 0 ]; then
+  echo "mpif_constants.h: MPIF_VERSION/MPIF_SUBVERSION/MPIF_PATCH match CMakeLists.txt's $cmake_version"
+fi
 
 while read -r ptr target; do
   # The pointer variable must appear in a common block of the same name...

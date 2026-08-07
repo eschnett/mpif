@@ -3,6 +3,12 @@ module mpi_f08
   use mpif_f08_constants
   use mpif_f08_functions
 
+  ! mpif's own runtime consistency checks. The same external subroutines serve
+  ! all three bindings -- their arguments are default INTEGERs with no handles
+  ! among them, so mpi_f08 needs no separate procedures; see
+  ! src/mpif_check_fns.F90.
+  use mpif_check_fns
+
   ! The predefined attribute callbacks, under the names MPI-5.0 gives them in
   ! Appendix A.4. They are renamed here rather than declared under these names in
   ! src/mpif_f08_attr_fns.F90, because that would make their global symbols

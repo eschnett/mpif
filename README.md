@@ -18,6 +18,15 @@ generalized requests, attribute copy and delete functions, and the
 datarep conversion functions -- through trampolines that give the C
 library a C function and call the Fortran one behind it.
 
+Beyond the standard's API, mpif provides two runtime consistency
+checks of its own, `mpif_check_version` and `mpif_check_environment`.
+The ABI moves the choice of MPI library -- and of mpif itself -- to
+run time, where the build can no longer vouch that the launcher, the
+library and the caller belong together; these two verify it at
+startup, cheaply enough to call in every run, and abort with a
+diagnostic when something disagrees. The section "Runtime consistency
+checks" in `CODE.md` has the details.
+
 One known defect remains, and MPICH's Fortran test suite reports it: an
 attribute set from Fortran is not visible to C as a pointer, where
 MPI-5.0 section 19.3.7 requires that it is. Assumed-rank choice buffers

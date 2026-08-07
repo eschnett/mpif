@@ -117,6 +117,63 @@ add_mpi_test(alltoallw_inplace_guard
 # answer.
 add_mpi_test(alltoallw_inter_f08    SOURCES alltoallw_inter_f08.f90   NPROCS 3      LIBS MPI::MPI_Fortran)
 
+# mpif's own runtime consistency checks. The positive tests call both routines
+# before MPI_Init, between MPI_Init and MPI_Finalize, and after MPI_Finalize;
+# a failure aborts, so running to completion is the assertion. Three ranks for
+# the f08 one so the token ring, the head count and the cross-rank comparisons
+# are non-degenerate. check_c links MPI::MPI_Fortran too: the routines live in
+# libmpifort_abi, which plain MPI::MPI_C does not pull in.
+add_mpi_test(check_f                SOURCES check_f.f                               LIBS MPI::MPI_Fortran)
+add_mpi_test(check_f90              SOURCES check_f90.f90                           LIBS MPI::MPI_Fortran)
+add_mpi_test(check_f08              SOURCES check_f08.f90             NPROCS 3      LIBS MPI::MPI_Fortran)
+add_mpi_test(check_c                SOURCES check_c.c                               LIBS MPI::MPI_Fortran MPI::MPI_C)
+
+# The optional environment variables, reusing the check_f90 binary under
+# mpiexec. One positive run in which every variable holds -- "mpi" is a
+# case-insensitive substring of both "MPICH ..." and "Open MPI ...", and two
+# ranks on the one local node satisfy the node counts -- and one expected
+# abort per variable. The abort tests pass on the diagnostic rather than the
+# exit status (PASS_REGULAR_EXPRESSION decides regardless of it): the
+# pre-initialization failure path raises SIGABRT, which WILL_FAIL would report
+# as an exception, and under mpiexec the launcher absorbs the signal anyway.
+function(add_check_env_test name nprocs env)
+  add_test(
+    NAME ${name}
+    COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${nprocs}
+            ${MPIEXEC_PREFLAGS} $<TARGET_FILE:check_f90> ${MPIEXEC_POSTFLAGS}
+    )
+  set_tests_properties(${name} PROPERTIES ENVIRONMENT "${env}")
+  if(ARGC GREATER 3)
+    set_tests_properties(${name} PROPERTIES PASS_REGULAR_EXPRESSION "${ARGV3}")
+  endif()
+endfunction()
+add_check_env_test(check_env 2
+  "MPIF_SIZE=2;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=2;MPIF_MPI_LIBRARY=mpi")
+add_check_env_test(check_env_size_fail 2 "MPIF_SIZE=3"
+  "mpif: mpif_check_environment: ")
+add_check_env_test(check_env_nodes_fail 2 "MPIF_NUM_NODES=2"
+  "mpif: mpif_check_environment: ")
+add_check_env_test(check_env_nodesize_fail 2 "MPIF_NODE_SIZE=1"
+  "mpif: mpif_check_environment: ")
+add_check_env_test(check_env_library_fail 1 "MPIF_MPI_LIBRARY=not-a-real-mpi"
+  "mpif: mpif_check_environment: ")
+
+# The wrong-mpiexec failure: run *without* a launcher, so MPI_Init comes up as
+# a singleton, with a launcher variable claiming four processes. SLURM_NTASKS
+# rather than PMI_SIZE or OMPI_COMM_WORLD_SIZE because neither implementation's
+# singleton initialization should react to it without the rest of the SLURM
+# environment.
+add_test(NAME check_env_mpiexec_fail COMMAND $<TARGET_FILE:check_f90>)
+set_tests_properties(check_env_mpiexec_fail PROPERTIES
+  ENVIRONMENT "SLURM_NTASKS=4"
+  PASS_REGULAR_EXPRESSION "mpif: mpif_check_environment: ")
+
+# The version handshake's failure path: a major version the loaded library
+# cannot be.
+add_mpi_test(check_version_fail_f90 SOURCES check_version_fail_f90.f90 NPROCS 1     LIBS MPI::MPI_Fortran)
+set_tests_properties(check_version_fail_f90 PROPERTIES
+  PASS_REGULAR_EXPRESSION "mpif: mpif_check_version: ")
+
 # Root-only arguments, which mpif converts only where they are significant and
 # used to convert on rank 0 instead of at the root. Both need more than one rank
 # for the same reason: at one rank every process is the root.

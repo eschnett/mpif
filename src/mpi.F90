@@ -4,6 +4,7 @@ module mpi
   use mpif_functions
   use mpif_cptr
   use mpif_attr_fns
+  use mpif_check_fns
 
   ! MPI-5.0 section 19.1.3 requires the mpi module to "Define the derived type
   ! MPI_Status and all named handle types that are used in the mpi_f08 module",

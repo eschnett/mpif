@@ -1,4 +1,5 @@
       include "mpif_attr_fns.h"
+      include "mpif_check_fns.h"
 
       double precision, external :: MPI_Wtick, PMPI_Wtick
       double precision, external :: MPI_Wtime, PMPI_Wtime

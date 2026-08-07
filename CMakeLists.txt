@@ -290,6 +290,8 @@ add_library(mpifort_abi SHARED
   src/mpif_attr_fns.F90
   src/mpif_attrs.c
   src/mpif_callbacks.c
+  src/mpif_check.c
+  src/mpif_check_fns.F90
   src/mpif_constants.c
   src/mpif_logical.F90
   src/mpif_logical.c
@@ -309,6 +311,12 @@ target_include_directories(mpifort_abi
 )
 target_compile_definitions(mpifort_abi PRIVATE
   ENABLE_FORTRAN
+  # mpif's own version, for src/mpif_check.c. Not spelled MPIF_VERSION /
+  # MPIF_SUBVERSION / MPIF_PATCH: these definitions reach the preprocessed
+  # .F90 sources too, and src/mpif_f08_constants.F90 spells those tokens.
+  MPIF_VERSION_MAJOR=${PROJECT_VERSION_MAJOR}
+  MPIF_VERSION_MINOR=${PROJECT_VERSION_MINOR}
+  MPIF_VERSION_PATCH=${PROJECT_VERSION_PATCH}
   $<$<BOOL:${HAVE_LOGICAL16}>:MPIF_HAVE_LOGICAL16>
   $<$<BOOL:${HAVE_INTEGER16}>:MPIF_HAVE_INTEGER16>
   $<$<BOOL:${HAVE_REAL2}>:MPIF_HAVE_REAL2>
@@ -327,6 +335,7 @@ target_link_libraries(mpifort_abi PRIVATE MPI::MPI_C)
 list(APPEND public_headers
   include/mpif.h
   include/mpif_attr_fns.h
+  include/mpif_check_fns.h
   include/mpif_constants.h
   include/mpif_functions.h
 )
@@ -346,6 +355,7 @@ install(TARGETS mpifort_abi EXPORT mpifort_abiTargets
 
 install(FILES
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_attr_fns.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_check_fns.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_constants.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_cptr.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_attr_fns.mod

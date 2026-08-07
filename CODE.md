@@ -75,9 +75,13 @@ instead declares a second, distinct set in its `mpi_constants`, so its `use mpi`
 
 Only what the MPI standard defines may be spelled `MPI_` or `mpi_`; everything
 mpif invents is `mpif_` or `MPIF_`. Two modules are the standard's and keep their
-names, `mpi` and `mpi_f08`; the eight mpif provides beneath them are
+names, `mpi` and `mpi_f08`; the twelve mpif provides beneath them are
 `mpif_constants`, `mpif_handle_types`, `mpif_types`, `mpif_functions`,
-`mpif_cptr`, `mpif_f08_constants`, `mpif_f08_types` and `mpif_f08_functions`.
+`mpif_cptr`, `mpif_attr_fns`, `mpif_check_fns`, `mpif_f08_constants`,
+`mpif_f08_types`, `mpif_f08_functions`, `mpif_f08_attr_fns` and `mpif_f08_raw`.
+(This sentence used to say eight and name eight, which was already three short
+of the truth when `mpif_check_fns` became the twelfth: the attr_fns pair and
+`mpif_f08_raw` had been added without it being updated.)
 Their `.mod` files follow, which also removes a real collision: MPICH installs an
 `mpi_constants.mod` and Open MPI an `mpi_types.mod` and `mpi_f08_types.mod` of
 their own, and mpif used to ship files of exactly those names. `mpi_types` is
@@ -125,6 +129,61 @@ directly after it -- `mpif_pwin_allocate_c_cptr` for `mpif_win_allocate_c_cptr`,
 `mpif_psizeof_logical1` for `mpif_sizeof_logical1`. One rule, and one that greps:
 `mpif_p` finds every invented PMPI name. A `pmpif_` prefix would have been neither
 `mpif_` nor anything the standard reserves, so it is not that.
+
+## Runtime consistency checks
+
+`mpif_check_version` and `mpif_check_environment`, in `src/mpif_check.c` with
+their Fortran declarations in `include/mpif_check_fns.h`, exist because the
+standard-ABI design moves the choice of MPI library -- and of mpif itself --
+to run time, where the build can no longer vouch for anything. MPI-5.0
+chapter 20 frames the ABI version macros exactly this way, as being in the
+header "so that applications can check for consistency between the compilation
+environment and the properties of the implementation at runtime"; these two
+routines are that check done once, in the library.
+
+`mpif_check_version(major, minor, patch)` takes the caller's compile-time
+`MPIF_VERSION`, `MPIF_SUBVERSION` and `MPIF_PATCH` and aborts unless the loaded
+library has the same major version and is at least as new in (minor, patch) --
+the rule `write_basic_package_version_file(... COMPATIBILITY
+SameMajorVersion)` in CMakeLists.txt already applies at configure time,
+enforced again where the resolved shared library can differ from the one CMake
+saw. An older library may lack entry points and constants the caller's headers
+already name; a newer minor or patch only adds and fixes.
+
+`mpif_check_environment()` checks what it can and aborts on the first
+inconsistency; the file's header comment enumerates the checks, the optional
+`MPIF_MPI_LIBRARY`/`MPIF_SIZE`/`MPIF_NUM_NODES`/`MPIF_NODE_SIZE` environment
+variables, and the wrong-mpiexec detection through the launcher's own
+`PMI_SIZE`/`OMPI_COMM_WORLD_SIZE`/`SLURM_NTASKS`/`SLURM_NPROCS`. Two contracts
+matter to callers. What runs depends on MPI's state: MPI-5.0 section 11.4.1,
+Table 11.1, is the list of functions callable at any time, and outside the
+initialized-and-not-finalized window only the version and library-name checks
+it permits are made, the rest skipped silently. And inside that window the
+function is *collective over MPI_COMM_WORLD* -- every process must call it or
+its collectives hang; the local checks run before the first collective so that
+a detectable mismatch aborts rather than hangs, and the communication runs on
+an `MPI_Comm_dup` of `MPI_COMM_WORLD` so that a wildcard receive the
+application already posted cannot swallow the smoke test's token.
+
+All three bindings share the two external symbols `mpif_check_version_` and
+`mpif_check_environment_`: the arguments are default INTEGERs with no handles
+among them, so unlike the attribute callbacks there is nothing for `mpi_f08`
+to declare differently, and `include/mpif_check_fns.h` serves mpif.h and both
+modules from one interface block. C callers get no installed header -- nothing
+needs one yet -- and declare the C forms themselves:
+`void mpif_check_version(int major, int minor, int patch)` and
+`void mpif_check_environment(void)`; `test/check_c.c` is that idiom working.
+
+mpif's own version is written down twice, as `project(mpif VERSION x.y.z)` in
+CMakeLists.txt -- which reaches `src/mpif_check.c` as the
+`MPIF_VERSION_MAJOR/_MINOR/_PATCH` compile definitions, deliberately not named
+`MPIF_VERSION` and friends because compile definitions reach the preprocessed
+`.F90` sources and `src/mpif_f08_constants.F90` spells those tokens -- and as
+the parameters in `include/mpif_constants.h`. Two guards keep the copies
+honest: `ci-scripts/check-headers.sh` compares them in CI, and
+`mpif_check_environment` compares them at run time through
+`mpif_check_header_version` in `src/mpif_check_fns.F90`, which catches what
+the CI check cannot -- an install mixing pieces of two builds.
 
 ## Verified as correct
 
