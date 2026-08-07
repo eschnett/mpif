@@ -67,7 +67,7 @@ Building and installing an MPI:
 | `install-mpi-header.sh` | install the MPI Forum's official ABI `mpi.h` over the implementation's own |
 | `prune-install.sh` | delete everything the standard ABI does not define, from a list |
 | `mpich-prune.txt`, `openmpi-prune.txt` | those lists |
-| `mpich-abi-util-one-copy.patch` | local fix carried against MPICH 5.0.1; see MISSING.md |
+| `mpich-abi-*.patch`, `openmpi-*.patch` | fixes carried against the pinned releases; each says in its preamble what it is and why, and MISSING.md has the stories |
 | `check-mpi-install.sh` | assert that what was installed is the standard ABI and nothing else |
 | `check-headers.sh` | check that every Cray pointer in `mpif_constants.h` is the variable C initialises; run by the `checks` job in CI, and needs no MPI or compiler |
 | `flang-darwin-shim.sh` | works around flang's `-Wl,` handling on macOS, for MPICH's libtool |
@@ -93,7 +93,10 @@ matches the MPICH the recipe here knows how to build.
 - `.github/workflows/ci.yaml` -- twelve variants natively, and the authority on
   what mpif supports, plus one built in a container: the 32-bit i386 one, which a
   matrix entry cannot express because the suite's variant key ends in `uname -m`
-  and a `-m32` build on an x86_64 runner still says `x86_64`.
+  and a `-m32` build on an x86_64 runner still says `x86_64`. Six `cross` jobs
+  then pair the two implementations per (os, toolchain) -- mpif built against
+  one, tests run against the other -- gated against the runtime MPI's rows of
+  the expected-failures list.
 - `docker/*.dockerfile` -- seven Linux variants: MPICH and Open MPI, gcc and
   flang, on amd64, arm64v8, the i386 that CI runs in a container, and the arm32v7
   that CI has no runner for and that qemu makes too slow to run per push. The two

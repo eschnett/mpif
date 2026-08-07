@@ -2,4 +2,42 @@
 
 include("${CMAKE_CURRENT_LIST_DIR}/mpifTargets.cmake")
 
+# libmpifort_abi deliberately links no MPI library (see "Choosing the MPI at
+# run time" in CODE.md): the application is what links `mpi_abi`, per MPI-5.0
+# section 20.2.1, and which MPI that is gets decided here, in the *consumer's*
+# configure, not by whatever mpif happened to be built against. Attaching the
+# ABI library to the imported target keeps one-line consumption working --
+#     target_link_libraries(app PRIVATE mpif::mpifort_abi)
+# -- where without it the executable would link, on macOS, and then die at
+# its first MPI call, no libmpi_abi having been loaded to resolve the
+# library's dynamic-lookup references.
+#
+# A plain find_library rather than find_dependency(MPI COMPONENTS C): FindMPI
+# only answers for enabled languages, so it would force every pure-Fortran
+# consumer to enable C -- and the one library the application may need to
+# depend on directly is `mpi_abi` anyway. Honors an explicit
+# MPI_mpi_abi_LIBRARY (FindMPI's spelling, which the test harnesses pin),
+# then MPI_HOME, then the usual search including CMAKE_PREFIX_PATH.
+if(NOT MPIF_MPI_ABI_LIBRARY)
+  if(MPI_mpi_abi_LIBRARY)
+    set(MPIF_MPI_ABI_LIBRARY "${MPI_mpi_abi_LIBRARY}"
+      CACHE FILEPATH "The MPI ABI library that applications link")
+  else()
+    find_library(MPIF_MPI_ABI_LIBRARY
+      NAMES mpi_abi
+      HINTS ${MPI_HOME} ENV MPI_HOME
+      PATH_SUFFIXES lib
+      DOC "The MPI ABI library that applications link")
+  endif()
+endif()
+if(NOT MPIF_MPI_ABI_LIBRARY)
+  message(FATAL_ERROR "mpif: no MPI ABI library (libmpi_abi) found. Point "
+    "CMAKE_PREFIX_PATH or MPI_HOME at an MPI implementing the standard ABI, "
+    "or set MPIF_MPI_ABI_LIBRARY (or FindMPI's MPI_mpi_abi_LIBRARY) to the "
+    "library itself.")
+endif()
+
+set_property(TARGET mpif::mpifort_abi APPEND PROPERTY
+  INTERFACE_LINK_LIBRARIES "${MPIF_MPI_ABI_LIBRARY}")
+
 check_required_components(mpif)

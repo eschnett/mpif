@@ -274,6 +274,83 @@ get one. Nothing on this side is implicated -- mpif's own 32-bit defects are fix
 and recorded under "`MPI_Count` is `int64_t` where `MPI_Aint` is a pointer" in
 `CODE.md`.
 
+### MPICH: the ABI library's `-version-info` never reached libtool — fixed upstream, carried as an upstream patch
+
+MPICH 5.0.1 installs its ABI library as `libmpi_abi.so.0` (macOS:
+`libmpi_abi.0.dylib`, compatibility version 1.0.0) where the convention says
+`libmpi_abi.so.1`. The convention is real and matters: Open MPI's
+`ompi/VERSION` states that Open MPI, MPICH and the Forum's ABI stubs set the
+SONAME "by convention" so that "every implementation of a given ABI version
+must expose the same SONAME" and applications can "switch between MPI
+implementations ... without recompiling" -- and warns "DO NOT reset to
+0:0:0". MPICH *intends* to follow it: `maint/version.m4:44` defines
+`libmpi_abi_so_version_m4` as `1:0:0`. Two bugs kept the value from ever
+reaching the link line: `configure.ac` spelled the macro
+`libmpi_abi_so_verion_m4` -- missing the "s", so m4 left the literal token in
+place -- and `ABI_ABIVERSIONFLAGS` was never `AC_SUBST`'d, so even the bogus
+string never reached the Makefiles and libtool fell back to its `0:0:0`
+default. Upstream fixed both on `main` in commit `bb167f1c` ("config:
+actually apply libmpi_abi.so version-info"); `ci-scripts/install-mpich.sh`
+fetches that commit by URL and applies it, the same way it carries the other
+upstream fix this release lacks.
+
+Without the fix the two implementations' versioned names disagree, and the
+loader cannot substitute one MPI for the other under an already-linked
+executable -- there is no file with the recorded name in the other prefix,
+and on macOS dyld would additionally reject the compatibility-version
+mismatch (1.0.0 against 2.0.0). That substitution is the mechanism the whole
+cross-testing design rests on, so `ci-scripts/check-mpi-install.sh` asserts
+the versioned name -- and, on macOS, the compatibility version, both fields
+gating the swap -- on every installed prefix. Measured after the fix: both
+implementations ship `libmpi_abi.1.dylib` with current and compatibility
+version 2.0.0 (libtool `1:0:0` maps to leaf `.{c-a}`, compatibility `c-a+1`),
+and a `mpif_info` linked against MPICH runs unchanged against Open MPI under
+`DYLD_LIBRARY_PATH`, reporting the swapped library and passing
+`mpif_check_environment`.
+
+### MPICH: strong `MPI_*` exports on Darwin break substituting the library — carried as a local patch
+
+Found by the first cross-run of `test/` on macOS: every test whose executable
+references a C `MPI_*` symbol directly, linked against Open MPI's
+`libmpi_abi` and executed with MPICH's put first by `DYLD_LIBRARY_PATH`,
+died in the loader --
+
+    dyld: Symbol not found: _MPI_Abort
+    Expected as weak-def export from some loaded dylib
+
+-- while the mirror pairing, linked against MPICH and run against Open MPI,
+passed, and so did every Fortran-only test in both directions (their MPI
+references resolve inside `libmpifort_abi`, whose dynamic-lookup binding
+accepts any export).
+
+The asymmetry is the export *style*. The ABI implementations export `MPI_*`
+as weak definitions -- the Forum's mpi-abi-stubs say "each MPI_Xxx function
+is a weak symbol", Open MPI's binding generator documents the same and its
+`libmpi_abi` measures `weak external` throughout -- and on Mach-O that
+convention is binding, literally: a client linked against a weak-def export
+records a weak-def-coalesce fixup, which the loader satisfies only from
+another weak definition. A strong one is rejected outright, hence the message
+above. Two strong-exporting implementations would also interoperate; it is
+the *mix* that cannot work, and MPICH is the odd one out: its weak-symbol
+machinery offers `#pragma weak x = y`, HP secondary definitions, Cray
+duplicates and `__attribute__((weak, alias))`, none of which Mach-O supports,
+so on Darwin it falls back to compiling the bindings twice and exporting
+strong `MPI_*`. ELF is indifferent -- its lookup does not distinguish weak
+definitions from strong -- which is why only macOS sees this.
+
+`ci-scripts/mpich-abi-darwin-weak.patch` fixes it in the binding generator
+(`maint/local_python/binding_c.py`, the same file two other carried patches
+touch, because `autogen.sh` regenerates the bindings): the separate
+MPI-from-PMPI compile gains `#pragma weak` on each public definition, on
+`__APPLE__` only. `fortran/f2c_abi_mpich.c` does the same for the
+handle-conversion functions mpif injects -- `f2c_abi_openmpi.c` had already
+made its forwarders weak, matching its implementation's convention.
+`ci-scripts/check-mpi-install.sh` asserts the export style on Darwin, so a
+prefix that regresses to strong exports fails in a second instead of failing
+one direction of a cross-run twenty minutes in. Not reported upstream yet;
+MPICH presumably wants the same on Darwin for its own sake, macOS clients of
+other ABI implementations being unable to switch *to* MPICH 5.0.1 otherwise.
+
 ### MPICH: partitioned communication is not implemented
 
 `MPI_Psend_init` aborts inside MPI whatever the bindings do: `MPID_Psend_init` is
@@ -1178,6 +1255,40 @@ rest of the SLURM environment. That was measured, not assumed, on
 two local variants) on 2026-08-07; CI measures it on its own rows on every
 run. If an implementation someday grows a SLURM detector keyed on that
 variable alone, this is the test that starts failing.
+
+### What the cross-tests deliberately do not do
+
+The build-one-run-other machinery (see "Choosing the MPI at run time" in
+`CODE.md`) draws three lines worth recording, each with its reason:
+
+- **The MPICH suite's cross-runs relink against the runtime MPI instead of
+  swapping the library under fixed binaries.** The swap needs
+  `DYLD_LIBRARY_PATH` on macOS, and SIP strips `DYLD_*` from the environment
+  across every exec of a protected binary -- `runtests` is `/usr/bin/perl`
+  and the mpiexec filter runs through `/bin/bash`, so the variable would be
+  gone before any test ran, silently, and the tests would load the rpath'd
+  default while the launcher belonged to the other implementation. The suite
+  also recompiles every test on every run, so "fixed binaries" never
+  described it anyway. `test/` is where the same-binary swap is tested, under
+  `ctest`, whose process chain (cmake's ctest, the prefix's mpiexec, the test)
+  contains no SIP-protected link. Verified on this machine: the swap works
+  under ctest and the identity check (`MPIF_TEST_MPI_LIBRARY`) would fail
+  loudly if it silently stopped happening.
+
+- **`find_package(MPI)`'s one link check stays.** Configuring mpif still
+  compiles and links one trivial MPI program (`MPI_C_WORKS`) against the MPI
+  found at `MPI_HOME`. That is a link against the generic ABI library, it
+  runs nothing, and nothing from it is baked into the build; removing it
+  would mean replacing FindMPI outright for no gain in independence.
+
+- **Byte identity of the two libraries is reported, not required.** CI's
+  cross job compares the mpich-built and openmpi-built mpif installations:
+  `include/` must be identical and the library's exported and undefined
+  symbol lists must be identical, both fatal. The libraries' bytes are
+  compared too but only reported, until byte identity has been measured
+  across enough runners to be required with a straight face; debug paths and
+  linker ids are the kind of thing that could differ without meaning
+  anything.
 
 ### Assumed-rank choice buffers
 

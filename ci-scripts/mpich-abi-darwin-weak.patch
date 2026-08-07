@@ -1,0 +1,44 @@
+Make the ABI library's public MPI_* symbols weak definitions on Darwin.
+
+Local fix, not yet reported upstream. The MPI standard ABI's implementations
+export MPI_* as weak definitions -- the Forum's mpi-abi-stubs say "each
+MPI_Xxx function is a weak symbol", and Open MPI's generator documents the
+same convention -- because on Mach-O a client linked against a weak-exporting
+libmpi_abi records a weak-def-coalesce binding, which the loader will only
+satisfy from another weak definition. MPICH's weak-symbol machinery has no
+branch Mach-O can use (no weak aliases), so on Darwin it falls back to
+compiling the bindings twice and exports *strong* MPI_* -- and an application
+linked against Open MPI's libmpi_abi then dies under MPICH's with
+
+    dyld: Symbol not found: _MPI_Abort
+    Expected as weak-def export from some loaded dylib
+
+which is measured, not inferred. This patches the binding generator (the
+generated c_binding_abi.c and io_abi.c are rebuilt by autogen.sh, so patching
+them directly would be overwritten): in the separate MPI-from-PMPI compile,
+each public definition gains `#pragma weak` on __APPLE__. ELF platforms are
+untouched -- they take the weak-alias branch anyway, and ELF symbol lookup
+does not distinguish weak from strong definitions.
+
+fortran/f2c_abi_mpich.c carries the same treatment for the handle-conversion
+functions mpif injects, and ci-scripts/check-mpi-install.sh asserts the
+export style so a regression cannot land silently.
+
+--- a/maint/local_python/binding_c.py	2026-08-07 14:33:17
++++ b/maint/local_python/binding_c.py	2026-08-07 14:33:17
+@@ -1281,6 +1281,15 @@
+     G.out.append("#ifndef MPICH_MPI_FROM_PMPI")
+     G.out.append("#undef %s" % func_name)
+     G.out.append("#define %s P%s" % (func_name, func_name))
++    G.out.append("#elif defined(__APPLE__)")
++    G.out.append("/* The public MPI_* symbol must be a weak definition, matching the other")
++    G.out.append(" * implementations of the MPI standard ABI: a Mach-O client linked against")
++    G.out.append(" * a weak-exporting libmpi_abi binds MPI_* through a weak-def-only lookup")
++    G.out.append(" * that a strong definition does not satisfy, so mixing export styles")
++    G.out.append(" * breaks substituting one implementation's libmpi_abi for another's")
++    G.out.append(" * under an already-linked application. Mach-O has no weak aliases, hence")
++    G.out.append(" * this separate compile; the pragma makes the definition below weak. */")
++    G.out.append("#pragma weak %s" % func_name)
+     G.out.append("#endif /* MPICH_MPI_FROM_PMPI */")
+     G.out.append("")
+ 

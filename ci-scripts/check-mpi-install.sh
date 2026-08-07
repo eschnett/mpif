@@ -77,6 +77,57 @@ if [[ -z ${library} ]]; then
     exit 1
 fi
 
+# The versioned name is a cross-implementation convention, not an accident:
+# every implementation of ABI version 1 exposes libmpi_abi.so.1 (Linux SONAME),
+# or on Darwin libmpi_abi.1.dylib with compatibility version 2.0.0 (both from
+# libtool `-version-info 1:0:0`), so the dynamic loader can substitute one
+# implementation for another under an already-linked application. See Open
+# MPI's ompi/VERSION for the convention's statement. MPICH 5.0.1 misses it --
+# its -version-info never reached libtool, fixed upstream in commit bb167f1c,
+# which install-mpich.sh applies -- and a prefix with the wrong name silently
+# breaks the runtime swap. Both Darwin fields matter: the leaf name is what
+# DYLD_LIBRARY_PATH matches, and dyld separately gates on the compatibility
+# version.
+if [[ $(uname) == Darwin ]]; then
+    id=$(otool -D "${library}" | tail -n 1)
+    if [[ $(basename "${id}") != libmpi_abi.1.dylib ]]; then
+        echo "error: the ABI library's install name is ${id};" >&2
+        echo "       the convention for ABI version 1 is libmpi_abi.1.dylib" >&2
+        exit 1
+    fi
+    compat=$(otool -l "${library}" |
+                 awk '/LC_ID_DYLIB/{f=1} f && /compatibility version/{print $3; exit}')
+    if [[ ${compat} != 2.0.0 ]]; then
+        echo "error: the ABI library's compatibility version is ${compat:-missing};" >&2
+        echo "       the convention for ABI version 1 (-version-info 1:0:0) is 2.0.0" >&2
+        exit 1
+    fi
+    # The export *style* gates the swap too, on Darwin only: a client linked
+    # against a weak-exporting libmpi_abi binds MPI_* through a weak-def-only
+    # lookup that a strong definition does not satisfy. The convention (the
+    # Forum stubs, Open MPI, and MPICH via mpich-abi-darwin-weak.patch) is
+    # weak, so a strong export here means a silently unswappable prefix.
+    # grep without -q: this script runs under pipefail, and -q exits at the
+    # first match, handing nm a SIGPIPE that fails the pipeline on success.
+    if ! nm -m "${library}" | grep 'weak external _MPI_Init$' >/dev/null; then
+        echo "error: the ABI library exports MPI_Init as a strong symbol;" >&2
+        echo "       the convention is a weak definition, without which the" >&2
+        echo "       loader cannot substitute this library for another" >&2
+        echo "       implementation's under an already-linked application." >&2
+        nm -m "${library}" | grep '_MPI_Init$' >&2
+        exit 1
+    fi
+else
+    soname=$(readelf -d "${library}" |
+                 sed -n 's/.*(SONAME).*\[\(.*\)\].*/\1/p')
+    if [[ ${soname} != libmpi_abi.so.1 ]]; then
+        echo "error: the ABI library's SONAME is ${soname:-missing};" >&2
+        echo "       the convention for ABI version 1 is libmpi_abi.so.1" >&2
+        exit 1
+    fi
+fi
+echo "The ABI library carries the conventional versioned name for ABI version 1"
+
 dependencies_of() {
     if [[ $(uname) == Darwin ]]; then
         otool -L "$1"

@@ -118,6 +118,15 @@ to be empty.
     bash scripts/macos-test-mpif.sh    <mpich|openmpi> <gcc|llvm>   # test/, rebuilt from scratch
     bash scripts/macos-test-mpich-suite.sh <mpich|openmpi> <gcc|llvm>  # MPICH's Fortran suite
 
+The variant names the mpif under test; which MPI the tests *run* against is by
+default the one that installation remembers (`mpifort -showme:mpiprefix`
+prints it), and `MPIF_RUN_MPI=<mpich|openmpi>` runs them against the other
+implementation instead -- the cross test, whose results must match the runtime
+MPI's native results exactly. `test/` cross-runs swap the loader's search path
+under unchanged binaries; the suite relinks, and gets its own tree
+(`mpi/tests-<variant>-run-<runmpi>`), so a cross suite run does not collide
+with a native one. See "Choosing the MPI at run time" in `CODE.md`.
+
 `test/` is mpif's own and should be entirely green; the MPICH suite is the broad
 one, and the counts it reports are recorded under "Suite baseline" in
 `MISSING.md`. To run

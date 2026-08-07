@@ -8,6 +8,16 @@ project(
 
 find_package(MPI REQUIRED COMPONENTS C Fortran)
 
+# What the library-identity tests expect MPI_Get_library_version to answer:
+# mpif_check_environment compares this case-insensitively as a substring. The
+# default "mpi" matches both "MPICH ..." and "Open MPI ...", so the tests pass
+# under either implementation; CI passes "MPICH" or "Open MPI" for the
+# *runtime* MPI, and in a cross-configuration -- binaries linked against one
+# implementation, executed against the other via the loader's search path --
+# that is what proves the swap actually happened.
+set(MPIF_TEST_MPI_LIBRARY "mpi" CACHE STRING
+  "Substring that MPI_Get_library_version must contain, asserted by the env-check and mpif_info tests")
+
 enable_testing()
 
 # Most of these tests are single-rank and run the executable directly. NPROCS
@@ -148,7 +158,7 @@ function(add_check_env_test name nprocs env)
   endif()
 endfunction()
 add_check_env_test(check_env 2
-  "MPIF_SIZE=2;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=2;MPIF_MPI_LIBRARY=mpi")
+  "MPIF_SIZE=2;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=2;MPIF_MPI_LIBRARY=${MPIF_TEST_MPI_LIBRARY}")
 add_check_env_test(check_env_size_fail 2 "MPIF_SIZE=3"
   "mpif: mpif_check_environment: ")
 add_check_env_test(check_env_nodes_fail 2 "MPIF_NUM_NODES=2"
@@ -185,11 +195,11 @@ add_test(
           ${MPIEXEC_PREFLAGS} ${mpif_bindir}/mpif_info ${MPIEXEC_POSTFLAGS}
   )
 set_tests_properties(mpif_info PROPERTIES
-  ENVIRONMENT "MPIF_SIZE=3;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=3;MPIF_MPI_LIBRARY=mpi"
+  ENVIRONMENT "MPIF_SIZE=3;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=3;MPIF_MPI_LIBRARY=${MPIF_TEST_MPI_LIBRARY}"
   PASS_REGULAR_EXPRESSION "mpif_check_environment: passed")
 add_test(NAME mpif_info_singleton COMMAND ${mpif_bindir}/mpif_info)
 set_tests_properties(mpif_info_singleton PROPERTIES
-  ENVIRONMENT "MPIF_SIZE=1;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=1;MPIF_MPI_LIBRARY=mpi"
+  ENVIRONMENT "MPIF_SIZE=1;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=1;MPIF_MPI_LIBRARY=${MPIF_TEST_MPI_LIBRARY}"
   PASS_REGULAR_EXPRESSION "mpif_check_environment: passed")
 
 # The version handshake's failure path: a major version the loaded library

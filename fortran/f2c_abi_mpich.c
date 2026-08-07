@@ -2,6 +2,55 @@
 
 #include "mpi_abi.h"
 
+// On Darwin the public MPI_* symbols must be weak definitions, matching the
+// other implementations of the MPI standard ABI (and what
+// ci-scripts/mpich-abi-darwin-weak.patch does for MPICH's own bindings): a
+// Mach-O client linked against a weak-exporting libmpi_abi binds MPI_*
+// through a weak-def-only lookup that a strong definition does not satisfy,
+// so mixing export styles breaks substituting one implementation's
+// libmpi_abi for another's under an already-linked application. The pragmas
+// mark the definitions below weak; ELF needs nothing, its lookup not
+// distinguishing weak definitions from strong ones. f2c_abi_openmpi.c is the
+// same decision made for the other implementation's toolbox.
+#if defined(__APPLE__)
+#pragma weak MPI_Comm_c2f
+#pragma weak MPI_Comm_f2c
+#pragma weak MPI_Comm_fromint
+#pragma weak MPI_Comm_toint
+#pragma weak MPI_Errhandler_c2f
+#pragma weak MPI_Errhandler_f2c
+#pragma weak MPI_File_c2f
+#pragma weak MPI_File_f2c
+#pragma weak MPI_File_fromint
+#pragma weak MPI_File_toint
+#pragma weak MPI_Group_c2f
+#pragma weak MPI_Group_f2c
+#pragma weak MPI_Info_c2f
+#pragma weak MPI_Info_f2c
+#pragma weak MPI_Info_fromint
+#pragma weak MPI_Info_toint
+#pragma weak MPI_Message_c2f
+#pragma weak MPI_Message_f2c
+#pragma weak MPI_Op_c2f
+#pragma weak MPI_Op_f2c
+#pragma weak MPI_Op_fromint
+#pragma weak MPI_Op_toint
+#pragma weak MPI_Request_c2f
+#pragma weak MPI_Request_f2c
+#pragma weak MPI_Session_c2f
+#pragma weak MPI_Session_f2c
+#pragma weak MPI_Status_c2f
+#pragma weak MPI_Status_c2f08
+#pragma weak MPI_Status_f082c
+#pragma weak MPI_Status_f2c
+#pragma weak MPI_Type_c2f
+#pragma weak MPI_Type_f2c
+#pragma weak MPI_Win_c2f
+#pragma weak MPI_Win_f2c
+#pragma weak MPI_Win_fromint
+#pragma weak MPI_Win_toint
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////
 // Types
 

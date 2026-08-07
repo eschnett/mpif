@@ -7,9 +7,21 @@
 #
 # MPICH supports "-compile-info" and "-link-info".
 
+# The MPI this mpif was built against is only a *default*. Applications link a
+# generic -lmpi_abi from $MPIF_MPI_PREFIX/lib, so the executable's sole direct
+# MPI dependency is the ABI library's conventional versioned name
+# (libmpi_abi.so.1 / libmpi_abi.1.dylib), the same for every implementation:
+# - at link time, MPIF_MPI_PREFIX selects a different default (and rpath);
+# - at run time, LD_LIBRARY_PATH / DYLD_LIBRARY_PATH puts another
+#   implementation in front of the rpath'd default, same binary, no relink.
+# On ELF, @MPIF_LINKER_DTAGS_FLAG@ is -Wl,--enable-new-dtags so the baked
+# default is DT_RUNPATH, which LD_LIBRARY_PATH precedes; DT_RPATH would
+# shadow the override.
+
 MPIF_FC=${MPIF_FC:-@CMAKE_Fortran_COMPILER@}
 MPIF_FCFLAGS=${MPIF_FCFLAGS:-@CMAKE_Fortran_FLAGS@ @MPIF_Fortran_FLAGS_STR@}
-MPIF_FCLIBS=${MPIF_FCLIBS:- -L@CMAKE_INSTALL_PREFIX@/lib -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/lib -lmpifort_abi @MPI_C_LINK_FLAGS_STR@ @MPI_C_LIBRARIES_STR@}
+MPIF_MPI_PREFIX=${MPIF_MPI_PREFIX:-@MPIF_MPI_PREFIX@}
+MPIF_FCLIBS=${MPIF_FCLIBS:- -L@CMAKE_INSTALL_PREFIX@/lib -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/lib -lmpifort_abi -L${MPIF_MPI_PREFIX}/lib -Wl,-rpath,${MPIF_MPI_PREFIX}/lib -lmpi_abi}
 
 case "$1" in
     -showme:command)
@@ -21,7 +33,7 @@ case "$1" in
         exit 0
         ;;
     -showme:link)
-        echo "$MPIF_FCFLAGS @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ $MPIF_FCLIBS"
+        echo "$MPIF_FCFLAGS @LINK_FLAGS@ @MPIF_LINKER_DTAGS_FLAG@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ $MPIF_FCLIBS"
         exit 0
         ;;
     -showme:incdirs)
@@ -36,6 +48,13 @@ case "$1" in
         echo "$MPIF_FCLIBS"
         exit 0
         ;;
+    -showme:mpiprefix)
+        # The MPI prefix this invocation links by default: the build-time MPI,
+        # unless MPIF_MPI_PREFIX in the environment says otherwise. Tests and
+        # scripts derive mpiexec and mpicc from this instead of naming an MPI.
+        echo "$MPIF_MPI_PREFIX"
+        exit 0
+        ;;
     -showme:version)
         echo "@PROJECT_NAME@ @PROJECT_VERSION@"
         echo "@PROJECT_DESCRIPTION@"
@@ -43,11 +62,11 @@ case "$1" in
         exit 0
         ;;
     -showme:help)
-        echo "$0 {-showme:{command|compile|link|incdirs|libdirs|libs|version|help}|-show*} args"
+        echo "$0 {-showme:{command|compile|link|incdirs|libdirs|libs|mpiprefix|version|help}|-show*} args"
         exit 0
         ;;
     -show*)
-        echo "$MPIF_FC $MPIF_FCFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ $MPIF_FCLIBS"
+        echo "$MPIF_FC $MPIF_FCFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ @MPIF_LINKER_DTAGS_FLAG@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ $MPIF_FCLIBS"
         exit 0
         ;;
 esac
@@ -74,7 +93,7 @@ done
 if [ $linking != true ]; then
     exec $MPIF_FC $MPIF_FCFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ "$@"
 elif [ $add_rpath != true ]; then
-    exec $MPIF_FC $MPIF_FCFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@_dylibs -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" $MPIF_FCLIBS
+    exec $MPIF_FC $MPIF_FCFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ @MPIF_LINKER_DTAGS_FLAG@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" $MPIF_FCLIBS
 else
-    exec $MPIF_FC $MPIF_FCFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" $MPIF_FCLIBS
+    exec $MPIF_FC $MPIF_FCFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ @MPIF_LINKER_DTAGS_FLAG@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" $MPIF_FCLIBS
 fi

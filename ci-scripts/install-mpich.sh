@@ -25,8 +25,22 @@
 set -euo pipefail
 
 MPICH_VERSION=5.0.1
-# https://github.com/pmodels/mpich/commit/689a0869c8f58167e3b0b5db13f8ce8db5f24009
-MPICH_PATCH_COMMIT=689a0869c8f58167e3b0b5db13f8ce8db5f24009
+# Upstream fixes that are on `main` but not in the release above, fetched from
+# https://github.com/pmodels/mpich/commit/<commit>.patch and applied in order:
+# - 689a0869: the fix behind mpich-abi-util-one-copy.patch, in the form that
+#   applies to files this release still generates differently.
+# - bb167f1c: "config: actually apply libmpi_abi.so version-info". The ABI
+#   library's `-version-info 1:0:0` never reached libtool (a misspelled m4
+#   macro, `libmpi_abi_so_verion_m4`, and a missing AC_SUBST), so libmpi_abi
+#   was installed as libmpi_abi.so.0 / libmpi_abi.0.dylib instead of the
+#   conventional libmpi_abi.so.1 that every implementation of ABI version 1
+#   exposes so applications can switch implementations without relinking.
+#   Open MPI already ships libmpi_abi.so.1; without this fix the two versioned
+#   names disagree and the loader cannot substitute one MPI for the other.
+MPICH_PATCH_COMMITS=(
+    689a0869c8f58167e3b0b5db13f8ce8db5f24009
+    bb167f1c850c85705733e8aa35d7d9810b2947b6
+)
 
 prefix=${1:-}
 prepare_only=${MPI_PREPARE_ONLY:-0}
@@ -41,10 +55,10 @@ nprocs=$(getconf _NPROCESSORS_ONLN)
 
 # Fixes applied to the source tree below. Each patch says in its own preamble
 # what it is, where it comes from and why it is still needed here. The first is an
-# upstream fix that is on `main` but not in the release above -- the fix downloaded
-# by URL as ${MPICH_PATCH_COMMIT} is the same idea, and this is the one whose
-# upstream commit does not apply to this release. The other two are local fixes for
-# defects not reported upstream yet, and their preambles say so.
+# upstream fix that is on `main` but not in the release above -- the first commit in
+# ${MPICH_PATCH_COMMITS} is the same idea, and this is the one whose upstream commit
+# does not apply to this release. The others are local fixes for defects not
+# reported upstream yet, and their preambles say so.
 #
 # These are applied before `autogen.sh` runs, so a patch against a file that
 # autogen regenerates would be overwritten without a word. That is why
@@ -54,6 +68,7 @@ patches=(
     "${scriptdir}/mpich-abi-util-one-copy.patch"
     "${scriptdir}/mpich-abi-f90-datatypes.patch"
     "${scriptdir}/mpich-abi-type-get-contents.patch"
+    "${scriptdir}/mpich-abi-darwin-weak.patch"
 )
 
 # A prefix is not usable when `make install` is done with it, only when the
@@ -118,10 +133,11 @@ fi
 tree=${srcdir}/mpich-${MPICH_VERSION}
 # The stamp records what the prepared tree contains, so anything that changes
 # that tree -- other than the bindings themselves -- belongs in its name. That
-# includes the patches above and this script, since it patches the tree too:
-# without the checksum, editing either would silently reuse a tree prepared by an
-# older version.
-stamp=${srcdir}/prepared-${MPICH_VERSION}-${MPICH_PATCH_COMMIT}-$(cat "${BASH_SOURCE[0]}" "${patches[@]}" | cksum | cut -d' ' -f1)
+# includes the patches above, the upstream commits fetched by URL (their hashes
+# are part of this script's text) and this script itself, since it patches the
+# tree too: without the checksum, editing any of them would silently reuse a
+# tree prepared by an older version.
+stamp=${srcdir}/prepared-${MPICH_VERSION}-$(cat "${BASH_SOURCE[0]}" "${patches[@]}" | cksum | cut -d' ' -f1)
 
 # Copy in the Fortran/C handle conversion functions. Only the contents of this
 # file vary from run to run, so this happens on every run, including when the
@@ -143,9 +159,11 @@ else
     tar xzf "mpich-${MPICH_VERSION}.tar.gz"
     cd "${tree}"
 
-    curl -fsSL -o mpich.patch \
-         "https://github.com/pmodels/mpich/commit/${MPICH_PATCH_COMMIT}.patch"
-    patch -p1 <mpich.patch
+    for commit in "${MPICH_PATCH_COMMITS[@]}"; do
+        curl -fsSL -o "mpich-${commit}.patch" \
+             "https://github.com/pmodels/mpich/commit/${commit}.patch"
+        patch -p1 <"mpich-${commit}.patch"
+    done
 
     # Carry the upstream fixes this release does not have yet. `git apply`
     # rather than `patch`, because it refuses to apply with fuzz: once a release

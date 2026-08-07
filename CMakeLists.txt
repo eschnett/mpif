@@ -45,6 +45,37 @@ endif()
 
 find_package(MPI REQUIRED COMPONENTS C)
 
+# What mpif takes from the MPI found above -- and what it deliberately does
+# not. The library built here works with *any* MPI implementing the standard
+# ABI, so nothing implementation-specific may be baked into it: it uses the
+# ABI `mpi.h` (identical across implementations) and nothing else. The MPI
+# prefix is remembered only as the *default* that the installed wrapper and
+# mpif_info link against, overridable at link time (MPIF_MPI_PREFIX in
+# bin/mpifort.in) and at run time (the loader's search path).
+if(MPI_HOME)
+  set(MPIF_MPI_PREFIX "${MPI_HOME}")
+else()
+  list(GET MPI_C_LIBRARIES 0 _mpif_mpi_first_lib)
+  get_filename_component(_mpif_mpi_libdir "${_mpif_mpi_first_lib}" DIRECTORY)
+  get_filename_component(MPIF_MPI_PREFIX "${_mpif_mpi_libdir}" DIRECTORY)
+endif()
+# The ABI library alone, for mpif_info: MPI-5.0 section 20.2.1 requires that
+# implementations "not require more than mpi_abi or its versioned variant as
+# the sole direct dependency of the application binary", and MPI_C_LIBRARIES
+# lists more than that (MPICH adds libpmpi_abi, Open MPI libopen_mpi -- both
+# internal, both reached transitively from libmpi_abi).
+set(MPIF_MPI_ABI_LIBRARY "")
+foreach(_mpif_lib IN LISTS MPI_C_LIBRARIES)
+  if(_mpif_lib MATCHES "libmpi_abi")
+    set(MPIF_MPI_ABI_LIBRARY "${_mpif_lib}")
+    break()
+  endif()
+endforeach()
+if(NOT MPIF_MPI_ABI_LIBRARY)
+  message(FATAL_ERROR "MPI_C_LIBRARIES (${MPI_C_LIBRARIES}) names no libmpi_abi;"
+    " mpif requires an MPI that implements the standard ABI")
+endif()
+
 # Check for Fortran features
 
 include(CheckFortranCompilerFlag)
@@ -331,7 +362,25 @@ if(APPLE)
   # Ensure that there is only one instance of our MPI common blocks
   target_link_options(mpifort_abi INTERFACE "LINKER:-commons,use_dylibs")
 endif()
-target_link_libraries(mpifort_abi PRIVATE MPI::MPI_C)
+# The library links NO MPI: its MPI_*/PMPI_* references stay undefined and
+# resolve at load time from the libmpi_abi that the application links, which
+# is the standard's own model -- MPI-5.0 section 20.2.1 makes mpi_abi "the
+# sole direct dependency of the application binary". Linking MPI::MPI_C here
+# would record the build-time implementation's library set (MPICH's
+# libpmpi_abi, Open MPI's libopen_mpi, and their absolute paths on macOS) in
+# an artifact that must work with either implementation; a cross-run would
+# then load two MPI libraries at once. Only the header's include directory is
+# taken, and as a plain path rather than through MPI::MPI_C, whose interface
+# compile definitions would leak MPICH's -DMPI_ABI into the compile line --
+# inert today, but a per-implementation difference in what is supposed to be
+# an implementation-independent build.
+target_include_directories(mpifort_abi PRIVATE ${MPI_C_INCLUDE_DIRS})
+if(APPLE)
+  # ELF shared libraries may have undefined symbols by default; ld64 needs to
+  # be told. Symbols marked for dynamic lookup bind flat at load time, from
+  # whatever images the executable brought in.
+  target_link_options(mpifort_abi PRIVATE "LINKER:-undefined,dynamic_lookup")
+endif()
 list(APPEND public_headers
   include/mpif.h
   include/mpif_attr_fns.h
@@ -407,8 +456,18 @@ if(APPLE)
   set(LINK_FLAGS "-Wl,-commons,use_dylibs")
 endif()
 
-list(JOIN MPI_C_LINK_FLAGS " " MPI_C_LINK_FLAGS_STR)
-list(JOIN MPI_C_LIBRARIES " " MPI_C_LIBRARIES_STR)
+# The wrapper links applications with a generic `-lmpi_abi` from
+# $MPIF_MPI_PREFIX/lib rather than the absolute library list FindMPI reports:
+# the executable's sole direct MPI dependency is the ABI library's
+# conventional versioned name, the same for every implementation, so the
+# loader's search path can substitute another MPI at run time. On ELF the
+# baked default must be DT_RUNPATH, which LD_LIBRARY_PATH precedes -- DT_RPATH
+# would shadow the override.
+if(APPLE)
+  set(MPIF_LINKER_DTAGS_FLAG "")
+else()
+  set(MPIF_LINKER_DTAGS_FLAG "-Wl,--enable-new-dtags")
+endif()
 configure_file(bin/mpifort.in bin/mpifc @ONLY)
 configure_file(bin/mpifort.in bin/mpifort @ONLY)
 install(
@@ -420,24 +479,40 @@ install(
 # mpif_info, the diagnostic that prints what a launched setup actually loaded
 # and runs mpif_check_environment. Not part of the mpifort_abiTargets export
 # set: it is a program, not something to link against.
+#
+# It is linked like an ordinary application on purpose: mpifort_abi, the ABI
+# library (only -- not MPI_C_LIBRARIES, whose extra entries would make the
+# build implementation a direct dependency), and the default rpath. It finds
+# its MPI exactly the way user binaries do, so what it reports is what an
+# application will experience -- a dlopen design was considered and rejected
+# because a probe that selects its MPI through a private mechanism does not
+# test the mechanism applications use. src/mpif_info_dladdr.c reports which
+# libmpi_abi file the loader actually resolved, and its direct MPI_Init
+# reference is also what obliges the executable to link -lmpi_abi.
 
-add_executable(mpif_info src/mpif_info.f90)
+add_executable(mpif_info src/mpif_info.f90 src/mpif_info_dladdr.c)
 target_compile_options(mpif_info PRIVATE
   $<$<COMPILE_LANGUAGE:Fortran>:${MPIF_Fortran_FLAGS_LIST}>
 )
-target_link_libraries(mpif_info PRIVATE mpifort_abi MPI::MPI_C)
+target_include_directories(mpif_info PRIVATE ${MPI_C_INCLUDE_DIRS})
+target_link_libraries(mpif_info PRIVATE mpifort_abi ${MPIF_MPI_ABI_LIBRARY} ${CMAKE_DL_LIBS})
+if(NOT APPLE)
+  # The default MPI below must be DT_RUNPATH, not DT_RPATH, so that
+  # LD_LIBRARY_PATH can put another implementation in front of it.
+  target_link_options(mpif_info PRIVATE "LINKER:--enable-new-dtags")
+endif()
 # The installed binary must find libmpifort_abi -- whose install name is
-# @rpath/libmpifort_abi.1.dylib -- and, on Linux, the MPI libraries by bare
-# SONAME. Nothing else in this project needs an RPATH: the library's consumers
-# get theirs from bin/mpifort.in, which bakes in the same absolute paths that
-# are used here. Without this, `cmake --install` strips the build RPATH and
-# installs nothing in its place, and bin/mpif_info dies at load.
-set(MPIF_INFO_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
-foreach(lib IN LISTS MPI_C_LIBRARIES)
-  get_filename_component(libdir "${lib}" DIRECTORY)
-  list(APPEND MPIF_INFO_RPATH "${libdir}")
-endforeach()
-list(REMOVE_DUPLICATES MPIF_INFO_RPATH)
+# @rpath/libmpifort_abi.1.dylib -- and the *default* MPI: on Linux the
+# executable records the ABI library's bare SONAME, on macOS its absolute
+# install name, and either way the loader's search path can override the
+# default at run time. Nothing else in this project needs an RPATH: the
+# library's consumers get theirs from bin/mpifort.in, which bakes in the same
+# default. Without this, `cmake --install` strips the build RPATH and installs
+# nothing in its place, and bin/mpif_info dies at load.
+set(MPIF_INFO_RPATH
+  "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}"
+  "${MPIF_MPI_PREFIX}/lib"
+)
 # Linked with the install RPATH from the start: rewriting it at install time
 # is what CMake does by default, and on macOS install_name_tool cannot grow
 # the load commands when the install paths are longer than the build ones

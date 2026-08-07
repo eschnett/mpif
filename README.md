@@ -39,6 +39,37 @@ the standard offers and which both other implementations offer for
 `mpif.h` and the `mpi` module. `MISSING.md` has both, with everything
 else outstanding and the reasons.
 
+## Running with a different MPI library
+
+mpif is built against the C MPI ABI, so one mpif build works with any MPI
+implementation that provides the ABI. The library `libmpifort_abi` names no
+MPI library at all; an application links `-lmpi_abi` (through mpif's
+`mpifort` wrapper) and records only the ABI library's conventional versioned
+name, `libmpi_abi.so.1`, which every conforming implementation shares. Which
+implementation actually loads is decided by the dynamic loader:
+
+- By default, the MPI that mpif was built against (the wrapper bakes an
+  rpath to it; `mpifort -showme:mpiprefix` prints which one that is).
+- At run time, put another implementation first on the loader's search
+  path -- the same binary runs unchanged:
+
+      LD_LIBRARY_PATH=<other-prefix>/lib <other-prefix>/bin/mpiexec -n 2 ./app
+
+  (`DYLD_LIBRARY_PATH` on macOS.)
+- At link time, choose a different default with
+  `MPIF_MPI_PREFIX=<other-prefix> mpifort ...`.
+
+The installed `mpif_info` binary verifies a setup: it prints the pathname of
+the `libmpi_abi` file the loader actually resolved, the implementation's own
+version string, and then runs mpif's runtime consistency checks, which abort
+if the launcher and the loaded library do not belong together:
+
+    DYLD_LIBRARY_PATH=<other-prefix>/lib <other-prefix>/bin/mpiexec -n 2 mpif_info
+
+The one thing that cannot be mixed is Fortran compilers: mpif's modules and
+library serve applications built with the same Fortran compiler family that
+built mpif (gcc and llvm Fortran are not ABI-compatible).
+
 ## Documentation
 
 Three working notes, none of them referred to by the source tree:

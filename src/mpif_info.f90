@@ -22,10 +22,21 @@ program mpif_info
   use mpi_f08
   implicit none
 
+  ! Which file the loader resolved libmpi_abi to; see src/mpif_info_dladdr.c.
+  interface
+     subroutine mpif_info_loaded_library(path, length) &
+          bind(C, name="mpif_info_loaded_library")
+       use, intrinsic :: iso_c_binding, only: c_char, c_int
+       character(kind=c_char), intent(out) :: path(*)
+       integer(c_int), value :: length
+     end subroutine mpif_info_loaded_library
+  end interface
+
   integer :: version, subversion
   integer :: abi_major, abi_minor
 
   character(MPI_MAX_LIBRARY_VERSION_STRING) :: library_version
+  character(4096) :: library_path
   integer :: resultlen
 
   integer :: world_size, world_rank
@@ -75,6 +86,10 @@ program mpif_info
      call MPI_Get_library_version(library_version, resultlen)
      print '("MPI implementation:")'
      print '("   ",a)', trim(library_version)
+
+     call mpif_info_loaded_library(library_path, len(library_path))
+     print '("MPI library loaded from:")'
+     print '("   ",a)', trim(library_path)
 
      print '("Processes: ",i0)', world_size
 

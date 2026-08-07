@@ -24,6 +24,18 @@
 #
 #   <language> is one or more of f77, f90, f08; all three by default.
 #
+#   <mpi-prefix> is the MPI the suite *runs against*, and it is authoritative:
+#   this script exports MPIF_MPI_PREFIX so mpif's wrapper links the suite's
+#   Fortran tests against exactly this MPI, whatever default the mpif under
+#   test was built with. Passing an mpif built against the *other*
+#   implementation is therefore a supported cross-test, and its results are
+#   gated against the same expected-failures rows as a native run of
+#   <mpi-prefix> -- which is the assertion that results depend only on the
+#   runtime MPI. (The tests are relinked rather than swapped underneath via
+#   DYLD_LIBRARY_PATH because macOS SIP strips DYLD_* across the system perl
+#   and shells this harness runs through; the same-binary swap is test/'s
+#   job.)
+#
 # Environment:
 #   CXX              C++ compiler for the suite's configure to satisfy libtool
 #                    with (default: c++). Nothing is compiled with it.
@@ -70,6 +82,12 @@ languages=("$@")
 if [[ ${#languages[@]} -eq 0 ]]; then
     languages=(f77 f90 f08)
 fi
+
+# The runtime MPI argument is authoritative for linking too; see the usage
+# comment above. Absolute, because the wrapper turns it into -L and -rpath
+# and the suite builds in directories it cd's into.
+MPIF_MPI_PREFIX=$(cd "${mpi_prefix}" && pwd)
+export MPIF_MPI_PREFIX
 
 scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 # The MPI install scripts are the directory above: this one and the two files it

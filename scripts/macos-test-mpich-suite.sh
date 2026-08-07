@@ -7,6 +7,16 @@
 #
 # Usage: scripts/macos-test-mpich-suite.sh <mpich|openmpi> <gcc|llvm>
 #
+# The variant arguments name the mpif under test (mpi/mpif-<variant>); the MPI
+# the suite runs against is by default the one that installation remembers,
+# read back from its wrapper (-showme:mpiprefix) rather than respecified here.
+#
+# Set MPIF_RUN_MPI=<mpich|openmpi> to run the suite against the other
+# implementation instead -- the cross test. test-mpich-suite.sh relinks the
+# suite's tests against its first argument (it exports MPIF_MPI_PREFIX), and
+# gates the outcome against the runtime MPI's expected-failure rows, so a
+# cross run must report exactly what a native run of that runtime MPI reports.
+#
 # Set MPIF_KEEP_TESTS=1 to keep the compiled test executables, which is what a
 # debugger needs to get a backtrace out of a crashing test; see
 # ci-scripts/suite/test-mpich-suite.sh for the other environment variables.
@@ -15,9 +25,28 @@ set -euo pipefail
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source "${here}/macos-common.sh" "$@"
 
-# Keep the suite next to everything else a variant needs, so that a rerun skips
-# the download and the configure
-export MPICH_TESTS_DIR=${MPICH_TESTS_DIR:-${repodir}/mpi/tests-${variant}}
+if [[ -n ${MPIF_RUN_MPI:-} ]]; then
+    run_mpi=${MPIF_RUN_MPI}
+    case ${run_mpi} in
+        mpich | openmpi) ;;
+        *)
+            echo "error: MPIF_RUN_MPI must be mpich or openmpi, not '${run_mpi}'" >&2
+            exit 1
+            ;;
+    esac
+    run_mpi_prefix=${repodir}/mpi/${run_mpi}-${toolchain}
+    # A cross run gets its own tree: MPICH_TESTS_DIR names the *pairing*, not
+    # just the variant, because two suite runs sharing a tree rebuild and
+    # delete executables under each other ("Only one suite run per variant at
+    # a time" in CLAUDE.md), and a cross run may well run beside a native one.
+    export MPICH_TESTS_DIR=${MPICH_TESTS_DIR:-${repodir}/mpi/tests-${variant}-run-${run_mpi}}
+else
+    run_mpi=${mpi}
+    run_mpi_prefix=$("${mpif_prefix}/bin/mpifort" -showme:mpiprefix)
+    # Keep the suite next to everything else a variant needs, so that a rerun
+    # skips the download and the configure
+    export MPICH_TESTS_DIR=${MPICH_TESTS_DIR:-${repodir}/mpi/tests-${variant}}
+fi
 
 # Two things Open MPI needs here, both overridable by setting MPIEXEC_ARGS.
 #
@@ -42,7 +71,7 @@ export MPICH_TESTS_DIR=${MPICH_TESTS_DIR:-${repodir}/mpi/tests-${variant}}
 # intercommunicator hangs the same way, with no Fortran involved.
 #
 # The CI step does the same, with lo instead of lo0 on Linux.
-if [[ ${mpi} == openmpi ]]; then
+if [[ ${run_mpi} == openmpi ]]; then
     export MPIEXEC_ARGS="${MPIEXEC_ARGS:---oversubscribe --mca btl_tcp_if_include lo0}"
 fi
 
@@ -73,8 +102,8 @@ fi
 # fails immediately with "Named port ... does not exist" rather than timing out,
 # which is a different symptom and was not chased, the loopback being the answer
 # either way.
-if [[ ${mpi} == mpich ]]; then
+if [[ ${run_mpi} == mpich ]]; then
     export MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE="${MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE:-lo0}"
 fi
 
-exec "${repodir}/ci-scripts/suite/test-mpich-suite.sh" "${mpi_prefix}" "${mpif_prefix}"
+exec "${repodir}/ci-scripts/suite/test-mpich-suite.sh" "${run_mpi_prefix}" "${mpif_prefix}"

@@ -188,12 +188,26 @@ the CI check cannot -- an install mixing pieces of two builds.
 The checks have an installed face: `bin/mpif_info`, from `src/mpif_info.f90`,
 run under mpiexec (or as a singleton) prints what the launched setup actually
 loaded -- mpif's version, the MPI and ABI versions against the headers', the
-`MPI_Get_library_version` string, the process count and per-node layout, the
-`MPI_Abi_get_info` and `MPI_Abi_get_fortran_info` keys and the Fortran
-booleans -- and then runs both checks, so a broken setup aborts below the
-information that diagnoses it. It is written against mpif's own `mpi_f08`
-module, making a working `mpif_info` a standing demonstration that the
-bindings, the library and the loaded MPI agree.
+`MPI_Get_library_version` string, the pathname of the `libmpi_abi` file the
+loader resolved (`src/mpif_info_dladdr.c`, `dladdr` on the address of
+`MPI_Init`), the process count and per-node layout, the `MPI_Abi_get_info`
+and `MPI_Abi_get_fortran_info` keys and the Fortran booleans -- and then runs
+both checks, so a broken setup aborts below the information that diagnoses
+it. It is written against mpif's own `mpi_f08` module, making a working
+`mpif_info` a standing demonstration that the bindings, the library and the
+loaded MPI agree.
+
+`mpif_info` is linked like an ordinary application on purpose: `mpifort_abi`,
+the ABI library alone (`MPIF_MPI_ABI_LIBRARY`, filtered out of
+`MPI_C_LIBRARIES` so that MPICH's `libpmpi_abi` and Open MPI's `libopen_mpi`
+do not become direct dependencies), and the default rpath. It finds its MPI
+exactly the way user binaries do, so what it reports is what an application
+will experience. A dlopen design -- selecting the library from an environment
+variable at run time -- was considered and rejected: a probe that chooses its
+MPI through a private mechanism can report success while the user's
+application, resolving through the loader's search path, loads something
+else. The `dladdr` helper's direct `MPI_Init` reference is also what obliges
+the executable to link `-lmpi_abi`, keeping its shape honest.
 
 It is also the project's only installed executable, which is why it is the
 only thing in CMakeLists.txt with an RPATH. Everything else that runs links
@@ -201,16 +215,82 @@ through `bin/mpifort`, which passes `-Wl,-rpath,<prefix>/lib`;
 `libmpifort_abi`'s install name is `@rpath/libmpifort_abi.1.dylib`, so a
 consumer must supply that rpath, and a CMake-installed executable has its
 build rpath stripped at install with nothing put in its place. `mpif_info`
-therefore carries an `INSTALL_RPATH` of the same absolute paths the wrapper
-bakes in -- mpif's libdir plus the directories of `MPI_C_LIBRARIES`, the
-latter because Linux records bare SONAMEs where macOS records the MPICH
-build's absolute install names -- and is linked with it from the start
-(`BUILD_WITH_INSTALL_RPATH`), because rewriting a shorter build rpath into
-longer install paths is exactly the case macOS's `install_name_tool` refuses
-("larger updated load commands do not fit"). The `mpif_info` and
-`mpif_info_singleton` entries in `test/CMakeLists.txt` run the *installed*
-binary, so the rpath is tested on every run; removing it was measured to die
-in dyld with `Library not loaded: @rpath/libmpifort_abi.1.dylib`.
+therefore carries an `INSTALL_RPATH` of mpif's libdir plus the default MPI's
+libdir -- the same two directories the wrapper bakes in -- and is linked with
+it from the start (`BUILD_WITH_INSTALL_RPATH`), because rewriting a shorter
+build rpath into longer install paths is exactly the case macOS's
+`install_name_tool` refuses ("larger updated load commands do not fit"). The
+`mpif_info` and `mpif_info_singleton` entries in `test/CMakeLists.txt` run
+the *installed* binary, so the rpath is tested on every run; removing it was
+measured to die in dyld with `Library not loaded:
+@rpath/libmpifort_abi.1.dylib`.
+
+## Choosing the MPI at run time
+
+mpif is built against the C MPI ABI, and a build made against one
+implementation works, unchanged, with any other that provides the ABI. That
+is not automatic; three arrangements make it true, and each replaced
+something that quietly tied the build to its implementation.
+
+**`libmpifort_abi` links no MPI.** Its `MPI_*` and `PMPI_*` references stay
+undefined in the shared library and resolve at load time from whatever
+`libmpi_abi` the application brought in -- ELF allows that by default, ld64
+needs `-undefined dynamic_lookup`. This is the standard's own model: MPI-5.0
+section 20.2.1 requires that implementations "not require more than mpi_abi
+or its versioned variant as the sole direct dependency of the application
+binary", so the application links the MPI and the binding library follows it.
+It used to link `MPI::MPI_C`, which recorded the build implementation's whole
+library set -- MPICH's `libpmpi_abi`, Open MPI's `libopen_mpi`, absolute
+paths on macOS -- in the one artifact that must not care; a cross-run would
+have loaded two MPI libraries at once. Only the header's include directory is
+taken now, and as a plain path rather than through `MPI::MPI_C`, whose
+interface compile definitions leaked MPICH's `-DMPI_ABI` into every compile
+-- inert, since no source spells that token, but a per-implementation
+difference with no business existing. The measurable consequence: the
+installed `include/` and the library's entire symbol table are identical
+whichever MPI the build was configured against, and CI's cross job asserts
+exactly that.
+
+**Applications link `-lmpi_abi`, and the loader picks the implementation.**
+`bin/mpifort.in` links `-lmpifort_abi` plus a generic `-lmpi_abi` from
+`$MPIF_MPI_PREFIX/lib`, where `MPIF_MPI_PREFIX` defaults to the baked
+build-time prefix and the environment can override it per link;
+`-showme:mpiprefix` reports it, which is how the test scripts derive mpiexec
+and mpicc from the installation instead of naming an MPI themselves. The
+executable then records only the ABI library's conventional versioned name --
+`libmpi_abi.so.1` on Linux, `libmpi_abi.1.dylib` with compatibility version
+2.0.0 on macOS, the same for every implementation of ABI version 1; the
+convention is stated in Open MPI's `ompi/VERSION`, and MPICH 5.0.1 misses it
+only by a typo (see MISSING.md) -- plus an rpath to the default prefix. So
+the run-time chooser is the loader's search path: nothing set, the rpath'd
+default loads; `LD_LIBRARY_PATH=<other>/lib` (macOS: `DYLD_LIBRARY_PATH`)
+puts the other implementation in front, same binary, no relink. On ELF the
+wrapper passes `-Wl,--enable-new-dtags` so the baked default is `DT_RUNPATH`,
+which `LD_LIBRARY_PATH` precedes; `DT_RPATH` would be searched first and
+shadow the override. On macOS the export *style* gates the swap as well: the
+implementations export `MPI_*` as weak definitions, and a Mach-O client
+linked against a weak-def export binds through a weak-def-only lookup that a
+strong definition does not satisfy -- MPICH 5.0.1 exports strong on Darwin
+and is patched, see MISSING.md "strong `MPI_*` exports on Darwin".
+`ci-scripts/check-mpi-install.sh` asserts the versioned name -- and, on
+Darwin, the compatibility version and the weak export -- on every installed
+prefix, because a prefix that gets any of them wrong breaks the swap
+silently.
+
+**CI tests the claim from both ends.** The twelve build jobs test each mpif
+against its remembered default, read back through `-showme:mpiprefix`. Six
+cross jobs then take both implementations' prefixes and run the two cross
+pairings, two ways on purpose: `test/` swaps the runtime under unchanged
+binaries via the loader's search path -- the mechanism applications use,
+tested directly, with `MPIF_TEST_MPI_LIBRARY` making the tests assert which
+implementation `MPI_Get_library_version` actually reports -- while the MPICH
+suite relinks against the runtime MPI (`test-mpich-suite.sh` exports
+`MPIF_MPI_PREFIX` from its first argument), because its harness runs through
+the system perl and shells, from which macOS SIP strips `DYLD_*`, and it
+recompiles every test per run anyway. A suite cross-run is gated against the
+*runtime* MPI's rows of `mpich-suite-xfail.txt` -- the same rows as that
+MPI's native run -- which is the requirement "results depend only on the MPI
+it runs with" enforced by the existing list, with no new keys.
 
 ## Verified as correct
 
