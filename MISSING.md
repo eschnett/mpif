@@ -204,6 +204,93 @@ different reason. Its `--mca btl_tcp_if_include lo0` *is* passed by the scripts,
 that being a choice Open MPI gets wrong on every host rather than a property of
 this one.
 
+### FreeBSD is tested in a VM, and its variant is not triaged yet
+
+GitHub has no FreeBSD runner, so the `freebsd` job in `.github/workflows/ci.yaml`
+is an Ubuntu runner that boots a FreeBSD 14.3 VM through `vmactions/freebsd-vm`
+and runs the ordinary recipe inside it: `ci-scripts/install-mpich.sh`, then mpif,
+then `test/`, then MPICH's Fortran suite. One variant,
+`mpich/gcc/freebsd/14/amd64`.
+
+Why a third operating system at all: it is a libc, a linker and a toolchain
+layout that nothing else here covers, and mpif's assumptions had never been run
+on it. What that turned up before the job could even be written is the argument
+for it, and both were in the recipe rather than in the bindings:
+
+- `#!/bin/bash` is not a path FreeBSD has. Every script in `ci-scripts/` now says
+  `#!/usr/bin/env bash`. Invoking them as `bash <script>` would not have been
+  enough: `install-mpich.sh` runs `prune-install.sh`, `install-mpi-header.sh` and
+  `check-mpi-install.sh` by pathname, and `test-mpich-suite.sh` hands
+  `mpiexec-filter.sh` to `runtests`, which executes it -- so the shebang is what
+  runs, in five places nobody would think to wrap.
+- The two `readelf` implementations print `SONAME` differently. GNU binutils
+  writes `(SONAME) Library soname: [libmpi_abi.so.1]`; the ELF Tool Chain
+  `readelf` that FreeBSD ships in base is understood to write the name bare in
+  the last field, without brackets -- that much is inferred, no FreeBSD host
+  having been available to ask. `check-mpi-install.sh` read only the bracketed
+  form with a `sed`, and an unbracketed one would have left `soname` empty and
+  reported a missing SONAME on an installation that has one, the check failing on
+  itself rather than on the thing it guards. It now takes what is in brackets
+  where there are brackets and the last field otherwise, so it holds for either
+  format; that much was measured, against a line of each kind.
+- `getconf _NPROCESSORS_ONLN` is what the parallel-build width comes from, and
+  FreeBSD's `getconf(1)` does not document that variable. The three scripts that
+  ask now fall back to `sysctl -n hw.ncpu` and then to 4, rather than to an empty
+  `-j`. Inferred from the manual page, not measured: it may well answer.
+
+Three things the job does that the Linux jobs do not, each for a stated reason:
+
+- **GNU make on PATH as `make`.** The suite needs it beyond doubt: `runtests`
+  shells out to `make` for every test it builds -- line 1103 of
+  `test/mpi/runtests`, ``my $output = `make $programname 2>&1`; `` -- with nothing
+  of ours in between, so a `MAKE` variable would reach MPICH's own build and not
+  this. Whether that build needs GNU make too is assumed rather than established;
+  one symlink ahead of FreeBSD's `make` settles both questions at once, which is
+  why neither was chased.
+- **The compilers are found, not named.** The `gcc` package installs
+  `gfortran13` and the metaport adds an unversioned symlink to whichever version
+  is current; the job takes the unversioned link if it is there and a versioned
+  one otherwise, and derives `CC` and `CXX` from the same suffix so that all
+  three come from one GCC. Pinning `gfortran13` here would rot the next time the
+  default moves.
+- **`MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=lo0`**, as
+  `scripts/macos-test-mpich-suite.sh` sets it and for the same reason -- see
+  "Every MPICH spawn test fails when the host's own name resolves to another
+  host" above. Set preemptively rather than after seeing it fail, which is a
+  departure from how that flag was justified on this machine: a VM's own name
+  need not resolve to anything, and the failure mode is one 180-second timeout
+  per spawn test, which would eat the job's budget before saying anything useful.
+
+MPICH and gcc only. Open MPI refuses to run as root without
+`--allow-run-as-root`, and which user the VM action's `run` block gets is the
+action's business rather than something to depend on, while MPICH's launcher does
+not care; and the prebuilt llvm packages have no flang -- `devel/llvm20` and its
+siblings carry a `FLANG` option and it is off, so `pkg install llvm20` gives
+clang and no Fortran, and getting one would mean building llvm from source inside
+the VM. Both are reasons to leave the second axis alone rather than
+cost-saving, though it is that too. With one implementation there is also no
+cross-run to make here: the claim that a build against one MPI works with the
+other is the `cross` jobs' business, and it is about mpif's own artifact rather
+than about the platform, so testing it once per (os, toolchain) that has both
+implementations is what it needs.
+
+**Not triaged.** The variant has no `triaged` line in
+`ci-scripts/suite/mpich-suite-xfail.txt`, so its suite differences are reported
+and cannot fail the run; `test/` gates as everywhere else, being mpif's own and
+expected green. That is the rule working as intended -- a platform arrives
+measured-but-not-gating rather than either silent or red -- and the first run is
+what supplies the list. One prediction to check against it: `attrmpi1f08` is
+listed per 64-bit architecture, and FreeBSD's `uname -m` says `amd64` where Linux
+and macOS say `x86_64`, so it will appear as an unexpected failure until an
+`amd64` line is added. `uname -m` is the machine's own word and is not
+normalised, which the header of that file now says.
+
+Nothing here has been run: this machine is macOS on arm64, and the VM is an
+x86_64 image on an Ubuntu runner, so the whole of this entry is the recipe's
+reasoning and not a measurement. The two defects above are the exception -- the
+shebang is a fact about FreeBSD's filesystem, and the `readelf` fix was checked
+against both output formats directly.
+
 ## External blockers
 
 ### The ABI header gets the partitioned-communication count wrong, twice — carried as a local patch
@@ -1624,13 +1711,19 @@ writes it.
    the test's own `No Errors` -- and this one is neither: the aio message is absent,
    and the test passes on Ubuntu 26.04 while failing on 24.04. Start where the
    spawn eleven were solved: the "## Test output" block in the run's tap file.
-3. **Triage `mpich/gcc/linux/26.04/armv7l`**, the one 32-bit variant still
+3. **Triage `mpich/gcc/freebsd/14/amd64`**, the new one, from the first green
+   `freebsd` job: read its suite differences out of the log, give each a reason,
+   add the `xfail` lines and then the `triaged` line. Expect `attrmpi1f08` among
+   them for the spelling reason above, and treat anything else as a real question
+   about a platform nothing here had run on -- the point of adding it. "FreeBSD is
+   tested in a VM" under "Not defects" has what the job does and why.
+4. **Triage `mpich/gcc/linux/26.04/armv7l`**, the one 32-bit variant still
    without a `triaged` line, so it is reported and cannot fail a run. It is
    emulated and local-only, which is why it is behind the i686 one -- that now
    gates, on three consecutive runs agreeing. Do not carry the i686 list over to
    it: they are different 32-bit ABIs, a 64-bit type being eight-byte aligned on
    armhf and four-byte on i386.
-4. ~~**Remove the three remaining `flaky` entries**~~ -- done. What kept
+5. ~~**Remove the three remaining `flaky` entries**~~ -- done. What kept
    them was that `nonblocking_inpf` and `nonblocking_inpf90` had gone on failing
    after `MPI_Type_get_contents` was patched, which read as the same
    uninitialised read still firing. It was not: neither test calls
@@ -1686,7 +1779,7 @@ now: `nonblocking_inpf` and `nonblocking_inpf90` were never the nondeterminism
 they were filed under and were removed once fixed, and `typecntsf`,
 `typecntsf90` and `typecntsf08` turned out to be the only tests that ever
 exercised the uninitialised-read defect and were removed after three
-consecutive clean CI runs confirmed it no longer fires (see item 4 of "Worth
+consecutive clean CI runs confirmed it no longer fires (see item 5 of "Worth
 doing next"). A re-measurement after this table's commit would not show the
 same wobble.
 
@@ -1836,13 +1929,14 @@ Three things the twelve-way measurement settled that guesswork had got wrong:
   Homebrew compilers, about three cores -- reports no differences against it.
   That is the evidence that the key needs nothing finer than architecture.
 
-Every variant CI runs is declared `triaged` -- the twelve above and
-`mpich/gcc/linux/13/i686`, which is all thirteen jobs -- so any difference there
-now fails the run. Fifteen `triaged` lines in all, the other two being the
-environments outside CI. The one variant still not gating is
-`mpich/gcc/linux/26.04/armv7l`, which CI does not run: `.github/workflows/ci.yaml`
-builds only the `linux/386` container, and the arm32v7 image is emulated and
-local-only.
+Thirteen of CI's fourteen variants are declared `triaged` -- the twelve above and
+`mpich/gcc/linux/13/i686` -- so any difference there now fails the run. Eighteen
+`triaged` lines in all, the other five being environments outside CI. Two
+variants do not gate: `mpich/gcc/freebsd/14/amd64`, which CI runs and nobody has
+measured yet, under "FreeBSD is tested in a VM" above; and
+`mpich/gcc/linux/26.04/armv7l`, which CI does not run at all, since
+`.github/workflows/ci.yaml` builds only the `linux/386` container and the arm32v7
+image is emulated and local-only.
 
 The twelve rest on a single measurement each, which is thin for a flaky test, so
 expect some churn: a flaky entry surfaces as an unexpected pass, which is the

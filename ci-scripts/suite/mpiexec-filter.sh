@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Run mpiexec, dropping launcher banners that would otherwise look like test
 # output.

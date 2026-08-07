@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Build and install MPICH with the MPI standard ABI, extended with the
 # Fortran/C handle conversion functions (`MPI_Comm_c2f` and friends) that
@@ -51,7 +51,11 @@ fi
 
 scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 repodir=$(cd "${scriptdir}/.." && pwd)
-nprocs=$(getconf _NPROCESSORS_ONLN)
+# glibc and macOS answer `getconf _NPROCESSORS_ONLN`; FreeBSD's getconf(1) does
+# not document it, so fall back to the sysctl that does, and to a plausible
+# number rather than to an empty `-j`, which would be an unbounded build.
+nprocs=$(getconf _NPROCESSORS_ONLN 2>/dev/null ||
+             sysctl -n hw.ncpu 2>/dev/null || echo 4)
 
 # Fixes applied to the source tree below. Each patch says in its own preamble
 # what it is, where it comes from and why it is still needed here. The first is an

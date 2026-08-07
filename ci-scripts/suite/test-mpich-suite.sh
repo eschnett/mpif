@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Run the Fortran part of MPICH's own MPI test suite against an installed MPI
 # and an installed mpif.
@@ -94,7 +94,12 @@ scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 # reads live apart from them so that editing the expected-failures list cannot
 # invalidate a cached MPI build. See the comment in .github/workflows/ci.yaml.
 installdir=$(cd "${scriptdir}/.." && pwd)
-nprocs=$(getconf _NPROCESSORS_ONLN)
+# See install-mpich.sh for why this is not `getconf` alone. Only the summary
+# line reports this one, so a wrong answer would be cosmetic -- but a summary
+# that says how many cores the numbers came from should not be able to say
+# nothing.
+nprocs=$(getconf _NPROCESSORS_ONLN 2>/dev/null ||
+             sysctl -n hw.ncpu 2>/dev/null || echo 4)
 maxnp=${MPIEXEC_MAXNP:-4}
 
 # The suite compiles its C files with the implementation's own `mpicc` and its
@@ -144,9 +149,10 @@ fi
 # do not agree: the Docker images run Ubuntu 26.04 where CI's runners run 24.04,
 # and they differ over `MPI_Dist_graph_create` and `i_fcoll_test`.
 #
-# The version is coarse on purpose -- a distribution's VERSION_ID and macOS's major
-# version, so 24.04, 26.04, 15, 26. A finer one would churn every time a runner
-# image is refreshed, and expectations would go stale for no reason.
+# The version is coarse on purpose -- a distribution's VERSION_ID and the major
+# version of macOS or FreeBSD, so 24.04, 26.04, 15, 26, 14. A finer one would churn
+# every time a runner image is refreshed, and expectations would go stale for no
+# reason.
 #
 # An undetectable component becomes "unknown", which matches no entry and no
 # `triaged` line, so the run reports and cannot fail -- loudly wrong rather than
@@ -176,6 +182,11 @@ else
             # VERSION_ID is the release, and for the distributions used here it is
             # already the whole identity: Ubuntu's 24.04 against 26.04
             variant_osversion=$(. /etc/os-release 2>/dev/null && echo "${VERSION_ID:-}")
+            ;;
+        freebsd)
+            # `uname -r` is 14.3-RELEASE; the major version alone, as on Darwin,
+            # so that a patch release does not retire the variant's row
+            variant_osversion=$(uname -r | cut -d. -f1)
             ;;
         *)
             variant_osversion=

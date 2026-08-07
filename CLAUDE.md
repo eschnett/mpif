@@ -26,7 +26,8 @@ own prefix under `mpi/`:
 
 `kern.aioprocmax` is 16 here, against tens of thousands on Linux, which is why the
 Open MPI defect that `ci-scripts/openmpi-fbtl-posix-aio.patch` fixes showed up on
-macOS and nowhere else. CI runs twelve variants; this
+macOS and nowhere else. CI runs twelve variants natively, plus a 32-bit i386
+container and a FreeBSD VM; this
 machine is `<mpi>/<toolchain>/darwin/26/arm64`, which is *not* one of CI's rows --
 theirs are macos-15 and Ubuntu. Do not expect the suite baseline table to match a
 local run.

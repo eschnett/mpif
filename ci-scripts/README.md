@@ -91,12 +91,16 @@ matches the MPICH the recipe here knows how to build.
 ## Where else these are used
 
 - `.github/workflows/ci.yaml` -- twelve variants natively, and the authority on
-  what mpif supports, plus one built in a container: the 32-bit i386 one, which a
-  matrix entry cannot express because the suite's variant key ends in `uname -m`
-  and a `-m32` build on an x86_64 runner still says `x86_64`. Six `cross` jobs
-  then pair the two implementations per (os, toolchain) -- mpif built against
-  one, tests run against the other -- gated against the runtime MPI's rows of
-  the expected-failures list.
+  what mpif supports, plus two the matrix cannot express. One is built in a
+  container: the 32-bit i386 one, which a matrix entry cannot express because the
+  suite's variant key ends in `uname -m` and a `-m32` build on an x86_64 runner
+  still says `x86_64`. The other is FreeBSD, which has no runner at all, so the
+  `freebsd` job boots a VM on an Ubuntu one and runs these same scripts inside
+  it; MISSING.md "FreeBSD is tested in a VM" says what that job does differently
+  and why, and it is the reason the scripts here say `#!/usr/bin/env bash` rather
+  than `#!/bin/bash`. Six `cross` jobs then pair the two implementations per (os,
+  toolchain) -- mpif built against one, tests run against the other -- gated
+  against the runtime MPI's rows of the expected-failures list.
 - `docker/*.dockerfile` -- seven Linux variants: MPICH and Open MPI, gcc and
   flang, on amd64, arm64v8, the i386 that CI runs in a container, and the arm32v7
   that CI has no runner for and that qemu makes too slow to run per push. The two

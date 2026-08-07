@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Run flang on macOS, rewriting the Darwin linker options that flang does not
 # accept but that libtool passes to the Fortran compiler when linking a shared

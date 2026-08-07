@@ -37,9 +37,16 @@
 #       change its mind, since it gives up both halves of the comparison.
 #
 # <mpi> is mpich or openmpi, <toolchain> gcc or llvm, <os> the lowercased
-# `uname -s`, <os-version> a distribution's VERSION_ID or macOS's major version,
-# and <arch> `uname -m` -- so darwin/15/arm64, linux/24.04/x86_64 or
-# linux/26.04/aarch64. <language> is f77, f90 or f08.
+# `uname -s`, <os-version> a distribution's VERSION_ID or the major version of
+# macOS or FreeBSD, and <arch> `uname -m` -- so darwin/15/arm64,
+# linux/24.04/x86_64, linux/26.04/aarch64 or freebsd/14/amd64. <language> is
+# f77, f90 or f08.
+#
+# `uname -m` is the machine's own word for the architecture and not a normalised
+# one: the same 64-bit x86 is x86_64 on Linux and macOS and amd64 on FreeBSD. So
+# an entry that is really about 64-bit-ness -- `attrmpi1f08` below is the example,
+# listed once per 64-bit arch -- needs a line per spelling, and a `*/*/*/*/x86_64`
+# selector says nothing about FreeBSD.
 #
 # Both of the last two are in the key because environments that agree on
 # everything else still disagree -- and not always over the thing the component
@@ -91,6 +98,13 @@ triaged openmpi/llvm/linux/24.04/aarch64
 # i686 regardless. The armv7l image is the other 32-bit ABI and is not covered by
 # this line; see MISSING.md "Triage the two 32-bit variants".
 triaged mpich/gcc/linux/13/i686
+
+# `mpich/gcc/freebsd/14/amd64`, which the `freebsd` job in
+# .github/workflows/ci.yaml runs in a VM, has no line here and has never been
+# measured: it is reported and cannot fail a run. Expect its first run to report
+# `attrmpi1f08` among the differences whatever else it says, since that entry is
+# per 64-bit architecture and amd64 is a spelling no line above carries yet.
+# MISSING.md "FreeBSD is tested in a VM" has the rest.
 
 # Measured outside CI, which the OS version in the key now tells apart from it:
 # this machine runs macOS 26 where the runners run 15, and the Docker images run

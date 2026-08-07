@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Install the official MPI ABI header into an MPI installation, replacing
 # whatever `mpi.h` the implementation shipped.

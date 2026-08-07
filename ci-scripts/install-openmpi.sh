@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Build and install OpenMPI with the MPI standard ABI, extended with the
 # Fortran/C handle conversion functions (`MPI_Comm_c2f` and friends) that
@@ -42,7 +42,9 @@ fi
 
 scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 repodir=$(cd "${scriptdir}/.." && pwd)
-nprocs=$(getconf _NPROCESSORS_ONLN)
+# See install-mpich.sh for why this is not `getconf` alone
+nprocs=$(getconf _NPROCESSORS_ONLN 2>/dev/null ||
+             sysctl -n hw.ncpu 2>/dev/null || echo 4)
 
 # Fixes applied to the source tree below. Each patch says in its own preamble what
 # it is, where it comes from and why it is still needed here. The one here is a

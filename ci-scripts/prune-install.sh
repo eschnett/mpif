@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Remove the files that an MPI installation must not expose to mpif.
 #

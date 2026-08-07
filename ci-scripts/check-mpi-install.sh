@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Check that a pruned MPI installation is still usable, by compiling and
 # linking a trivial program with the installed wrapper compiler.
@@ -118,8 +118,19 @@ if [[ $(uname) == Darwin ]]; then
         exit 1
     fi
 else
-    soname=$(readelf -d "${library}" |
-                 sed -n 's/.*(SONAME).*\[\(.*\)\].*/\1/p')
+    # Two readelf implementations print this differently, and the check has to
+    # survive both: GNU binutils writes `0x...  (SONAME)  Library soname:
+    # [libmpi_abi.so.1]`, while the ELF Tool Chain readelf that FreeBSD has in
+    # base writes `SONAME  libmpi_abi.so.1` with no brackets at all. So take
+    # what is in brackets where there are brackets, and the last field
+    # otherwise. Matching only the GNU form would leave `soname` empty on
+    # FreeBSD and report a missing SONAME on an installation that has one.
+    soname=$(readelf -d "${library}" | awk '
+        /SONAME/ {
+            if (match($0, /\[[^]]+\]/)) print substr($0, RSTART + 1, RLENGTH - 2)
+            else print $NF
+            exit
+        }')
     if [[ ${soname} != libmpi_abi.so.1 ]]; then
         echo "error: the ABI library's SONAME is ${soname:-missing};" >&2
         echo "       the convention for ABI version 1 is libmpi_abi.so.1" >&2
