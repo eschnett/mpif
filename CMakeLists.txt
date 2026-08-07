@@ -300,6 +300,149 @@ else()
   set(GCC_ATTRIBUTES_NO_ARG_CHECK "!disabled ")
 endif()
 
+# Sanitizers
+#
+# `-DMPIF_SANITIZE=address` builds mpif with AddressSanitizer, which is what
+# makes a memory error in mpif's own code a report with a backtrace instead of
+# a corrupted MPI three calls later. mpif's C is where that matters: the
+# conversion layer allocates, copies strings and walks handle arrays, and both
+# memory defects this project has fixed so far -- the `MPI_Info_get_string`
+# overrun and the `array_of_commands` scan -- were there, each pinned down by
+# hand with an mmap'ed guard page because no sanitizer build existed.
+#
+# It is off by default. The instrumented library is a different library --
+# slower, and carrying a dependency on the sanitizer runtime -- so it is built
+# beside the ordinary one rather than instead of it; see the `MPIF_SANITIZE`
+# handling in `scripts/macos-common.sh`, which gives it its own build tree and
+# its own prefix.
+#
+# MemorySanitizer, the one that would answer "was this byte ever written",
+# is deliberately not among the options: see `MISSING.md` "MemorySanitizer
+# cannot be run against an MPI".
+set(MPIF_SANITIZE "" CACHE STRING
+  "Sanitizers to build mpif with, semicolon-separated (e.g. address, or address;undefined). Empty builds without.")
+
+set(MPIF_SANITIZE_C_FLAGS "")
+set(MPIF_SANITIZE_Fortran_FLAGS "")
+set(MPIF_SANITIZE_LIBRARIES "")
+set(MPIF_SANITIZE_RPATH "")
+
+if(MPIF_SANITIZE)
+  include(CheckCSourceCompiles)
+  list(JOIN MPIF_SANITIZE "," MPIF_SANITIZE_CSV)
+  set(_mpif_san_flags "-fsanitize=${MPIF_SANITIZE_CSV}" -fno-omit-frame-pointer)
+
+  # Both probes link as well as compile, and linking is the half that decides:
+  # every compiler here *accepts* `-fsanitize=address` on the command line, and
+  # the ones that cannot do it fail at the link with `library 'asan' not found`
+  # -- MacPorts' and Homebrew's GCC ship no libsanitizer on macOS. A probe that
+  # only compiled would report those as working and produce an "instrumented"
+  # build that is nothing of the kind.
+  set(_mpif_saved_flags "${CMAKE_REQUIRED_FLAGS}")
+  set(_mpif_saved_link "${CMAKE_REQUIRED_LINK_OPTIONS}")
+  string(JOIN " " CMAKE_REQUIRED_FLAGS ${_mpif_san_flags})
+  set(CMAKE_REQUIRED_LINK_OPTIONS ${_mpif_san_flags})
+  check_c_source_compiles("int main(void) { return 0; }" MPIF_SANITIZE_C_WORKS)
+  check_fortran_source_compiles("end" MPIF_SANITIZE_Fortran_WORKS SRC_EXT f90)
+  set(CMAKE_REQUIRED_FLAGS "${_mpif_saved_flags}")
+  set(CMAKE_REQUIRED_LINK_OPTIONS "${_mpif_saved_link}")
+
+  if(NOT MPIF_SANITIZE_C_WORKS)
+    message(FATAL_ERROR
+      "MPIF_SANITIZE=${MPIF_SANITIZE}, but ${CMAKE_C_COMPILER} cannot build and "
+      "link \"-fsanitize=${MPIF_SANITIZE_CSV}\". See "
+      "${CMAKE_BINARY_DIR}/CMakeFiles/CMakeConfigureLog.yaml for what it said. "
+      "A missing libasan/libubsan is the usual answer -- GCC on macOS ships "
+      "none -- and the cure is a toolchain that has one, Clang here.")
+  endif()
+
+  set(MPIF_SANITIZE_C_FLAGS ${_mpif_san_flags})
+
+  if(MPIF_SANITIZE_Fortran_WORKS)
+    # gfortran: instrument the Fortran too, and let its own driver bring in the
+    # runtime at the link.
+    set(MPIF_SANITIZE_Fortran_FLAGS ${_mpif_san_flags})
+  else()
+    # flang has no `-fsanitize` at all as of LLVM 22 -- the string appears in
+    # its `--help` only inside the description of `-fomit-frame-pointer`. So
+    # the Fortran half of mpif is uninstrumented, and, since a Fortran source
+    # in the target makes flang the *link* driver, the sanitizer runtime has to
+    # be named on the link line by hand rather than asked for by flag.
+    #
+    # That the arrangement works at all was measured before it was built: an
+    # ASan-instrumented C dylib loaded transitively by an uninstrumented flang
+    # executable reports a heap-buffer-overflow identically to a fully
+    # instrumented control, flang frames and all. The runtime is a dependency
+    # of libmpifort_abi, so it is loaded by dyld before `main`, which is what
+    # ASan requires; being loaded late (`dlopen`, `DYLD_INSERT_LIBRARIES`) is
+    # what it refuses.
+    #
+    # On macOS the C objects would otherwise link *silently*: the library is
+    # built with `-undefined dynamic_lookup`, so its unresolved `___asan_*`
+    # references look like the MPI ones and are left for load time. Naming the
+    # runtime here is therefore not an optimisation, it is the difference
+    # between a diagnostic at configure time and a dyld failure at run time.
+    foreach(_mpif_san IN LISTS MPIF_SANITIZE)
+      # The runtime is not named after the flag: `-fsanitize=address` is served
+      # by libclang_rt.asan, `undefined` by ubsan. Anything not in this table is
+      # passed through under its own name, which either finds a runtime or
+      # produces the diagnostic below.
+      set(_mpif_san_rt "${_mpif_san}")
+      if(_mpif_san STREQUAL "address")
+        set(_mpif_san_rt asan)
+      elseif(_mpif_san STREQUAL "undefined")
+        set(_mpif_san_rt ubsan_standalone)
+      elseif(_mpif_san STREQUAL "thread")
+        set(_mpif_san_rt tsan)
+      elseif(_mpif_san STREQUAL "leak")
+        set(_mpif_san_rt lsan)
+      endif()
+      if(APPLE)
+        set(_mpif_san_candidates "libclang_rt.${_mpif_san_rt}_osx_dynamic.dylib")
+      else()
+        # The unsuffixed name is the per-target layout LLVM has used since 18;
+        # the suffixed one is what older resource directories carry.
+        set(_mpif_san_candidates
+          "libclang_rt.${_mpif_san_rt}.so"
+          "libclang_rt.${_mpif_san_rt}-${CMAKE_SYSTEM_PROCESSOR}.so")
+      endif()
+      unset(_mpif_san_lib)
+      foreach(_mpif_cand IN LISTS _mpif_san_candidates)
+        # `-print-file-name` echoes its argument back unchanged when it knows
+        # nothing about it, so "is it an absolute path that exists" is the test.
+        execute_process(
+          COMMAND "${CMAKE_C_COMPILER}" "-print-file-name=${_mpif_cand}"
+          OUTPUT_VARIABLE _mpif_cand_path
+          OUTPUT_STRIP_TRAILING_WHITESPACE
+          ERROR_QUIET)
+        if(IS_ABSOLUTE "${_mpif_cand_path}" AND EXISTS "${_mpif_cand_path}")
+          set(_mpif_san_lib "${_mpif_cand_path}")
+          break()
+        endif()
+      endforeach()
+      if(NOT _mpif_san_lib)
+        message(FATAL_ERROR
+          "MPIF_SANITIZE lists \"${_mpif_san}\", ${CMAKE_C_COMPILER} can build "
+          "with it, but ${CMAKE_Fortran_COMPILER} cannot -- and none of "
+          "${_mpif_san_candidates} was found, so its runtime cannot be put on "
+          "the Fortran link line either. Ask "
+          "\"${CMAKE_C_COMPILER}\" -print-runtime-dir for where it looked.")
+      endif()
+      get_filename_component(_mpif_san_dir "${_mpif_san_lib}" DIRECTORY)
+      list(APPEND MPIF_SANITIZE_LIBRARIES "${_mpif_san_lib}")
+      list(APPEND MPIF_SANITIZE_RPATH "${_mpif_san_dir}")
+    endforeach()
+    list(REMOVE_DUPLICATES MPIF_SANITIZE_RPATH)
+    message(STATUS "Sanitizer runtime for the Fortran link: ${MPIF_SANITIZE_LIBRARIES}")
+  endif()
+endif()
+# The wrapper hands the Fortran flags to whatever it compiles, so that an
+# application built by a sanitizer mpif is instrumented too -- and, on ELF,
+# links the runtime directly rather than reaching it through libmpifort_abi,
+# which is what ASan's `verify_asan_link_order` asks for. Empty in the flang
+# case, where there is no flag to hand over.
+list(JOIN MPIF_SANITIZE_Fortran_FLAGS " " MPIF_SANITIZE_Fortran_FLAGS_STR)
+
 add_library(mpifort_abi SHARED
   # MPI Fortran header files
   include/mpif.h
@@ -357,7 +500,19 @@ target_compile_definitions(mpifort_abi PRIVATE
 )
 target_compile_options(mpifort_abi PRIVATE
   $<$<COMPILE_LANGUAGE:Fortran>:${MPIF_Fortran_FLAGS_LIST}>
+  $<$<COMPILE_LANGUAGE:C>:${MPIF_SANITIZE_C_FLAGS}>
+  $<$<COMPILE_LANGUAGE:Fortran>:${MPIF_SANITIZE_Fortran_FLAGS}>
 )
+# The link, in whichever of the two shapes the Fortran compiler allows: its own
+# `-fsanitize` flag where it has one, the runtime library and an rpath to it
+# where it has not. Both are PUBLIC, so an executable linking mpifort_abi
+# inherits them; the tests and mpif_info do exactly that.
+target_link_options(mpifort_abi PUBLIC ${MPIF_SANITIZE_Fortran_FLAGS})
+target_link_libraries(mpifort_abi PUBLIC ${MPIF_SANITIZE_LIBRARIES})
+if(MPIF_SANITIZE_RPATH)
+  set_property(TARGET mpifort_abi APPEND PROPERTY BUILD_RPATH ${MPIF_SANITIZE_RPATH})
+  set_property(TARGET mpifort_abi APPEND PROPERTY INSTALL_RPATH ${MPIF_SANITIZE_RPATH})
+endif()
 if(APPLE)
   # Ensure that there is only one instance of our MPI common blocks
   target_link_options(mpifort_abi INTERFACE "LINKER:-commons,use_dylibs")
@@ -493,6 +648,8 @@ install(
 add_executable(mpif_info src/mpif_info.f90 src/mpif_info_dladdr.c)
 target_compile_options(mpif_info PRIVATE
   $<$<COMPILE_LANGUAGE:Fortran>:${MPIF_Fortran_FLAGS_LIST}>
+  $<$<COMPILE_LANGUAGE:C>:${MPIF_SANITIZE_C_FLAGS}>
+  $<$<COMPILE_LANGUAGE:Fortran>:${MPIF_SANITIZE_Fortran_FLAGS}>
 )
 target_include_directories(mpif_info PRIVATE ${MPI_C_INCLUDE_DIRS})
 target_link_libraries(mpif_info PRIVATE mpifort_abi ${MPIF_MPI_ABI_LIBRARY} ${CMAKE_DL_LIBS})
@@ -512,6 +669,11 @@ endif()
 set(MPIF_INFO_RPATH
   "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}"
   "${MPIF_MPI_PREFIX}/lib"
+  # In a sanitizer build the runtime is a dependency of libmpifort_abi, which
+  # carries its own rpath to it -- but BUILD_WITH_INSTALL_RPATH below replaces
+  # this binary's entire rpath with this list, so the directory has to be named
+  # again rather than inherited from the link.
+  ${MPIF_SANITIZE_RPATH}
 )
 # Linked with the install RPATH from the start: rewriting it at install time
 # is what CMake does by default, and on macOS install_name_tool cannot grow

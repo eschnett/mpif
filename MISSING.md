@@ -1758,6 +1758,48 @@ abstract interfaces say, and `test/callback_intents_f08.f90` holds those two
 together at compile time, one callback per interface written the way the standard
 writes it.
 
+### MemorySanitizer cannot be run against an MPI
+
+mpif has an AddressSanitizer build -- `-DMPIF_SANITIZE=address`, described under
+"Sanitizer builds" in `CODE.md` -- and deliberately no MemorySanitizer one,
+although MSan is the sanitizer that would answer the question this project has
+actually had to ask twice: was this byte ever written? Both times the answer
+came from reading code. `MPI_Type_get_contents` converting uninitialised memory
+is above under "External blockers"; mpif's own instance, the out-LOGICAL
+conversions reading `c_flag` unconditionally after a failed call, is under
+"Verified as correct" in `CODE.md`, and its own entry says the defect "is not
+reliably observable without a sanitiser build this project does not run
+routinely". ASan does not change that: it answers where a pointer points, not
+what a byte holds.
+
+MSan cannot be made to work here, for three reasons, any one of which is
+enough:
+
+- **It requires the whole process instrumented.** MSan tracks initialisedness
+  through every store, so a value produced by uninstrumented code is
+  indistinguishable from an uninitialised one, and the standard remedy --
+  rebuild the dependencies with MSan -- means rebuilding libmpi. That is
+  precisely the library mpif must not assume anything about: the point of the
+  standard ABI is that the implementation is someone else's binary, swapped at
+  run time by the loader (see "Choosing the MPI at run time" in `CODE.md`). An
+  MSan build that only worked against a specially rebuilt MPI would not be
+  testing mpif's situation. ASan's boundary is workable in a way MSan's is not
+  exactly here: ASan asks about addresses, and an address is meaningful whoever
+  allocated it.
+- **The Fortran half cannot be instrumented at all.** flang has no `-fsanitize`
+  of any kind as of LLVM 22, and MSan is Clang-only -- gfortran does not offer
+  it, `gfortran -fsanitize=memory` being rejected outright with "unrecognized
+  argument". So no toolchain here can instrument both languages, and MSan
+  tolerates a gap far less than ASan does.
+- **It is unavailable on this machine's platform.** `clang -fsanitize=memory`
+  on arm64 Darwin answers "unsupported option ... for target
+  arm64-apple-darwin"; MSan is a Linux/FreeBSD/NetBSD x86-64 facility.
+
+What is left for the uninitialised-memory question is what has been used: read
+the code, and, where a specific buffer is in doubt, an `mmap`ed guard page for
+the out-of-bounds half of it. Recorded here so that "add an MSan build" is not
+proposed again as though it were an oversight.
+
 ## Worth doing next, roughly in order
 
 1. **Fortran-set attribute values as C sees them**, the one mpif defect the suite

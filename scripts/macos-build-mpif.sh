@@ -4,6 +4,12 @@
 # scripts/macos-install-mpi.sh.
 #
 # Usage: scripts/macos-build-mpif.sh <mpich|openmpi> <gcc|llvm>
+#
+# Environment:
+#   MPIF_SANITIZE  build with these sanitizers (`address`, or a list such as
+#                  `address,undefined`) into a build tree and prefix of their
+#                  own, leaving the ordinary build alone. See
+#                  scripts/macos-common.sh.
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/macos-common.sh" "$@"
@@ -30,6 +36,13 @@ cmake \
     -DCMAKE_C_COMPILER="${CC}" \
     -DCMAKE_Fortran_COMPILER="${FC}" \
     -DCMAKE_INSTALL_PREFIX="${mpif_prefix}" \
-    -DMPI_HOME="${mpi_prefix}"
+    -DMPI_HOME="${mpi_prefix}" \
+    -DMPIF_SANITIZE="${sanitize}"
 cmake --build "${build}" --parallel
 cmake --install "${build}"
+
+# A sanitizer build that quietly came out uninstrumented passes every test, so
+# nothing downstream would notice. Ask the object code instead.
+if [[ -n ${sanitize} ]]; then
+    bash "${repodir}/ci-scripts/check-sanitizer-build.sh" "${mpif_prefix}"
+fi

@@ -357,6 +357,62 @@ jobs:
           cmake --build build-tests --parallel
           ctest --test-dir build-tests --output-on-failure
 
+      # The same library and the same tests, built with AddressSanitizer. What
+      # it adds is a diagnosis: a memory error in mpif's own conversion layer
+      # becomes a report naming the file, the line and the Fortran caller,
+      # instead of a corrupted MPI several calls later or -- as measured -- 69
+      # passing tests. Both defects this project has fixed there were pinned
+      # down by hand with an mmap'ed guard page, before this existed.
+      #
+      # Narrowly gated, because it is a second full build of mpif and its tests
+      # for a signal that does not vary with the MPI underneath: mpif's C is
+      # identical whichever implementation it is loaded next to, and the local
+      # runs that established this were clean against both. One os and one mpi,
+      # but *both* toolchains, because those are two different mechanisms
+      # rather than two compilers -- gfortran has a `-fsanitize` of its own and
+      # instruments the Fortran too, while flang has none as of LLVM 22, so
+      # there the C is instrumented and the runtime has to be named on the
+      # Fortran link line by hand. Each is exercised only here.
+      #
+      # Leak checking is off: LSan defaults to on under Linux, and what it
+      # would report is the MPI's own allocations surviving MPI_Finalize, seen
+      # from an instrumented process next to an uninstrumented library.
+      - name: Build and test mpif with AddressSanitizer
+        if: matrix.os == 'ubuntu-24.04' && matrix.mpi == 'mpich'
+        env:
+          ASAN_OPTIONS: detect_leaks=0
+        run: |
+          asan_prefix=${RUNNER_TEMP}/opt/mpif-asan
+          cmake \
+              -Bbuild-asan \
+              -DBUILD_SHARED_LIBS=ON \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_C_COMPILER="${CC}" \
+              -DCMAKE_Fortran_COMPILER="${FC}" \
+              -DCMAKE_INSTALL_PREFIX="${asan_prefix}" \
+              -DMPI_HOME="${MPI_PREFIX}" \
+              -DMPIF_SANITIZE=address
+          cmake --build build-asan --parallel
+          cmake --install build-asan
+          # A sanitizer build that lost its flags is indistinguishable from a
+          # clean one by testing alone; this reads the object code instead.
+          ci-scripts/check-sanitizer-build.sh "${asan_prefix}"
+          cmake \
+              -Stest \
+              -Bbuild-asan-tests \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_C_COMPILER="${CC}" \
+              -DCMAKE_Fortran_COMPILER="${FC}" \
+              -DMPI_C_COMPILER="${MPI_PREFIX}/bin/mpicc" \
+              -DMPI_Fortran_COMPILER="${asan_prefix}/bin/mpifort" \
+              -DMPI_C_HEADER_DIR="${MPI_PREFIX}/include" \
+              -DMPI_C_LIB_NAMES=mpi_abi \
+              -DMPI_mpi_abi_LIBRARY="${MPI_PREFIX}/lib/libmpi_abi.${SHLIB_EXT}" \
+              -DMPIEXEC_EXECUTABLE="${MPI_PREFIX}/bin/mpiexec" \
+              -DMPIF_TEST_MPI_LIBRARY=MPICH
+          cmake --build build-asan-tests --parallel
+          ctest --test-dir build-asan-tests --output-on-failure
+
       # MPICH's own suite has ~300 Fortran tests across mpif.h, `use mpi` and
       # `use mpi_f08`, and disables all of them for the standard ABI because the
       # ABI has no Fortran bindings -- which is what mpif supplies. Far broader

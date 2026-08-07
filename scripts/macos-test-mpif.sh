@@ -15,6 +15,9 @@
 #                 so a swap that silently failed to happen fails the tests.
 #   MPIF_TEST_MPIEXEC_PREFLAGS
 #                 overrides the Open MPI launcher flags below.
+#   MPIF_SANITIZE test the sanitizer mpif built with the same variable set,
+#                 rather than the ordinary one: it selects a different prefix
+#                 and a different build tree. See scripts/macos-common.sh.
 #
 # The variant arguments name the mpif under test (mpi/mpif-<variant>); which
 # MPI the tests then link is *not* respecified here but read back from the

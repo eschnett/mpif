@@ -156,6 +156,11 @@ Different variants are different trees and do not collide.
 Set `MPIF_KEEP_TESTS=1` to stop `runtests` deleting each executable after it
 runs, which is what a debugger needs to turn "test failed" into a backtrace.
 
+Set `MPIF_SANITIZE=address` on the first two scripts to build and test an
+AddressSanitizer mpif. It is a fifth variant rather than a mode: its own build
+tree and its own prefix, both tagged `-sanitize-address`, so it does not
+disturb the four above. `llvm` only here. See "Verifying a fix" below.
+
 Neither of the first two scripts installs the MPI they build against; that is
 `scripts/macos-install-mpi.sh <mpich|openmpi> <gcc|llvm>`, and it builds the
 implementation from source, so it costs a good deal more than the others. It is
@@ -265,12 +270,29 @@ where a user-defined keyval turned out not to reproduce the bug at all and
 For a bug that lives in the generator, put it back the same way: edit
 `dev/mpiapi.jl` and rerun it, never `gen/`.
 
-For memory errors, note that ASan is close to useless here: the faulting write is
-usually inside libmpi, which is not instrumented, and is often a hand-rolled copy
-loop rather than an intercepted libc call. A guard page works instead -- `mmap`
-two pages, `mprotect` the second `PROT_NONE`, and place the buffer so its last
-byte ends the first page. That is how the `MPI_Info_get_string` overrun and the
-`array_of_commands` scan were both pinned down.
+For memory errors there is now a sanitizer build, and it is the first thing to
+reach for when the suspect is mpif's own code:
+
+    MPIF_SANITIZE=address bash scripts/macos-build-mpif.sh mpich llvm
+    MPIF_SANITIZE=address bash scripts/macos-test-mpif.sh  mpich llvm
+
+It installs beside the ordinary build rather than over it -- its own build tree
+and its own prefix, both tagged `-sanitize-address` -- so both are available
+without a rebuild. `llvm` only: MacPorts' GCC ships no libsanitizer on macOS,
+and CMake stops rather than producing an uninstrumented build under a sanitizer
+name. See "Sanitizer builds" in `CODE.md` for what it reaches and how it is
+linked, which differs by toolchain because flang has no `-fsanitize`.
+
+What it does *not* fix is the case that paragraph used to be about. Where the
+faulting write is inside libmpi, ASan still sees nothing unless the write goes
+through an intercepted libc routine, and it is often a hand-rolled copy loop.
+A guard page works there -- `mmap` two pages, `mprotect` the second
+`PROT_NONE`, and place the buffer so its last byte ends the first page. That is
+how the `MPI_Info_get_string` overrun and the `array_of_commands` scan were both
+pinned down, before the sanitizer build existed. And for uninitialised memory
+neither instrument helps: MSan is the one that would, and cannot be run here at
+all -- `MISSING.md` "MemorySanitizer cannot be run against an MPI" has the three
+reasons.
 
 ## Stale build artifacts were the biggest time sink
 

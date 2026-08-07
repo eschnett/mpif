@@ -292,6 +292,109 @@ recompiles every test per run anyway. A suite cross-run is gated against the
 MPI's native run -- which is the requirement "results depend only on the MPI
 it runs with" enforced by the existing list, with no new keys.
 
+## Sanitizer builds
+
+`-DMPIF_SANITIZE=address` builds mpif with AddressSanitizer. It is off by
+default and installs beside the ordinary build rather than over it:
+
+    MPIF_SANITIZE=address bash scripts/macos-build-mpif.sh mpich llvm
+    MPIF_SANITIZE=address bash scripts/macos-test-mpif.sh  mpich llvm
+
+which use `build-mpich-llvm-sanitize-address` and
+`mpi/mpif-mpich-llvm-sanitize-address`, leaving the untagged pair alone, so a
+suspected memory error can be run both ways without a rebuild. The MPI
+underneath is the ordinary uninstrumented one, shared with the untagged build.
+That is the arrangement, not a shortcut: mpif's whole job is to be correct
+across the ABI boundary into a library it did not build, and instrumenting the
+process while leaving the library alone is what that boundary looks like from
+the inside.
+
+**What it is for.** mpif's C is a conversion layer -- it allocates, copies
+strings both directions, and walks handle arrays whose length it has to work
+out for itself. Both memory defects this project has found there, the
+`MPI_Info_get_string` overrun and the `array_of_commands` scan, were pinned
+down by hand with an `mmap`ed guard page because no sanitizer build existed;
+and `src/mpif_strings.c`, `src/mpif_attrs.c`, `src/mpif_callbacks.c` and the
+26 generated conversions that zero a `MPI_Fint` out-argument (see the
+uninitialised-`c_flag` entry below) are all places where a test can only ask
+whether the answer came out right, not whether getting it involved a write
+that was out of bounds.
+
+**How far the instrumentation reaches, measured.** Building `mpich-llvm` with
+`MPIF_SANITIZE=address` and a one-byte heap overflow put back into
+`mpif_strdup_f2c_trim` (`memcpy(res, str + begin, len + 1)`,
+`src/mpif_strings.c:67`) failed `info_get_string_f08` with
+
+    ERROR: AddressSanitizer: heap-buffer-overflow
+      #1 mpif_strdup_f2c_trim mpif_strings.c:67
+      #2 mpi_info_set_ mpif_functions.c:12964
+      #3 mpi_info_set_f08_ mpif_f08_wrappers.F90:18026
+      #4 _QQmain info_get_string_f08.f90:34
+
+-- the C frame, the generated conversion, the f08 wrapper and the Fortran
+caller's line. The same overflow in the ordinary build passed all 69 tests.
+That pair is the justification for the whole thing; the diagnosis is what is
+new, not the failure.
+
+Without the bug, all 69 tests pass under ASan against both MPICH and Open MPI
+on this machine, so the uninstrumented MPI next door produces no false
+reports. It is not silent about libmpi either, but only where a call goes
+through an intercepted libc routine: ASan's `memcpy`/`strcpy` interceptors are
+process-wide and check any pointer whose allocation ASan owns, so an
+implementation writing past a buffer mpif allocated is caught, while its own
+hand-rolled copy loops are not. That is the limit CLAUDE.md's guard-page
+advice is about, and it has not moved.
+
+**Two link shapes, because flang has no `-fsanitize`.** gfortran has one, and
+in that case the Fortran is instrumented too and its own driver brings in the
+runtime. flang has none as of LLVM 22 -- the string appears in its `--help`
+only inside the description of `-fomit-frame-pointer` -- so there only the C
+is instrumented, and, because a Fortran source in the target makes flang the
+*link* driver, the runtime has to be named on the link line by hand:
+CMakeLists.txt asks the C compiler `-print-file-name=libclang_rt.asan…` and
+appends the answer plus an rpath to its directory. The runtime name is not the
+flag name (`address` is served by `asan`, `undefined` by
+`ubsan_standalone`), and the file name differs by platform
+(`libclang_rt.asan_osx_dynamic.dylib`, against `libclang_rt.asan-x86_64.so`
+where the unsuffixed `libclang_rt.asan.so` does not resolve -- both measured,
+the second in an `ubuntu:24.04` container).
+
+That the split arrangement works at all was measured before it was built: an
+ASan-instrumented C dylib loaded transitively by an *uninstrumented* flang
+executable reports a heap-buffer-overflow identically to a fully instrumented
+control, flang frames and all. What ASan requires is that its runtime be
+loaded before `main`, which a dependency-of-a-dependency satisfies; what it
+refuses is being loaded late, by `dlopen` or `DYLD_INSERT_LIBRARIES`.
+
+**Two things that would otherwise be silent, and are not.** A toolchain that
+cannot do it fails at configure time rather than producing an uninstrumented
+build under a sanitizer name: the probes in CMakeLists.txt compile *and link*,
+which is the half that decides, since every compiler here accepts
+`-fsanitize=address` on the command line and the ones without a runtime fail
+at the link with `library 'asan' not found`. That is what GCC on macOS does --
+neither MacPorts' nor Homebrew's ships libsanitizer -- so `gcc` is not a
+sanitizer toolchain on this machine and says so. And on macOS the C objects
+would otherwise link silently even without a runtime, the library being built
+with `-undefined dynamic_lookup`, which makes an unresolved `___asan_*` look
+like the MPI references it is surrounded by; naming the runtime turns a dyld
+failure at run time into a diagnostic at configure time.
+
+The other silent failure is a build whose flags never arrived: it works, and
+passes all 69 tests, which is exactly what a correct sanitizer build does on
+clean code. No test can tell the two apart, so
+`ci-scripts/check-sanitizer-build.sh` reads the object code instead and
+requires undefined `__asan_*`-family references in the installed library.
+`scripts/macos-build-mpif.sh` runs it after every sanitizer install, and CI
+runs it before the tests.
+
+CI runs this on `ubuntu-24.04`/`mpich` only, and on both toolchains: the two
+toolchains are the two link shapes above, which is a real difference, while
+the two implementations and the two operating systems are not -- mpif's C is
+the same object code whichever MPI is loaded next to it. The MPICH suite is
+not run under a sanitizer; its expected-failure baseline is keyed per variant,
+and a sanitizer variant would need its own triage before it could gate
+anything.
+
 ## Verified as correct
 
 How the parts that look surprising actually work, recorded so that they do not

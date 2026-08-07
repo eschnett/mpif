@@ -19,7 +19,13 @@
 # shadow the override.
 
 MPIF_FC=${MPIF_FC:-@CMAKE_Fortran_COMPILER@}
-MPIF_FCFLAGS=${MPIF_FCFLAGS:-@CMAKE_Fortran_FLAGS@ @MPIF_Fortran_FLAGS_STR@}
+# MPIF_SANITIZE_Fortran_FLAGS_STR is empty unless this is a sanitizer build
+# *and* the Fortran compiler has a -fsanitize of its own (gfortran does, flang
+# does not). Where it is not empty it belongs here rather than only in the link
+# line: an application compiled without it is uninstrumented, and on ELF the
+# executable then reaches the sanitizer runtime only through libmpifort_abi,
+# which is what ASan's verify_asan_link_order complains about.
+MPIF_FCFLAGS=${MPIF_FCFLAGS:-@CMAKE_Fortran_FLAGS@ @MPIF_Fortran_FLAGS_STR@ @MPIF_SANITIZE_Fortran_FLAGS_STR@}
 MPIF_MPI_PREFIX=${MPIF_MPI_PREFIX:-@MPIF_MPI_PREFIX@}
 MPIF_FCLIBS=${MPIF_FCLIBS:- -L@CMAKE_INSTALL_PREFIX@/lib -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/lib -lmpifort_abi -L${MPIF_MPI_PREFIX}/lib -Wl,-rpath,${MPIF_MPI_PREFIX}/lib -lmpi_abi}
 
