@@ -58,6 +58,16 @@ is mpif's own `test/`, which deliberately never spawns.
 
 - **Commit on `main`.** No feature branches in this repo. Do not push unless
   asked.
+- **Write the commit subject in the imperative.** "Keep the Fortran wrapper's
+  flags off the C compiler", not "The Fortran wrapper's flags were reaching the C
+  compiler": the subject says what applying the commit *does*, which is how git's
+  own tooling phrases it -- `git revert` writes "Revert ...", `git merge` writes
+  "Merge ...". One line, and short enough that `git log --oneline` does not cut
+  it. A change that cannot be summarised in one line is not a reason to write a
+  longer subject; it is what the body is for. Add one, after a blank line, and put
+  the reasoning there: what changed, why, and what was measured, in the prose these
+  three files use. The commits before this rule was written are mostly declarative
+  sentences, and they are left as they are.
 - **Ask the standard.** MPI-5.0 is the authority, not what an implementation
   happens to do and not what seems reasonable. Keep a copy at
   `doc/mpi50-report.pdf` (git-ignored); `pdftotext -layout` makes it greppable.
