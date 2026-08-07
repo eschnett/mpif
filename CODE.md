@@ -337,8 +337,8 @@ That pair is the justification for the whole thing; the diagnosis is what is
 new, not the failure.
 
 Without the bug, all 69 tests pass under ASan against both MPICH and Open MPI
-on this machine, so the uninstrumented MPI next door produces no false
-reports. It is not silent about libmpi either, but only where a call goes
+on this machine, and against MPICH under both toolchains on Linux, so the
+uninstrumented MPI next door produces no false reports. It is not silent about libmpi either, but only where a call goes
 through an intercepted libc routine: ASan's `memcpy`/`strcpy` interceptors are
 process-wide and check any pointer whose allocation ASan owns, so an
 implementation writing past a buffer mpif allocated is caught, while its own
@@ -362,9 +362,61 @@ the second in an `ubuntu:24.04` container).
 That the split arrangement works at all was measured before it was built: an
 ASan-instrumented C dylib loaded transitively by an *uninstrumented* flang
 executable reports a heap-buffer-overflow identically to a fully instrumented
-control, flang frames and all. What ASan requires is that its runtime be
-loaded before `main`, which a dependency-of-a-dependency satisfies; what it
-refuses is being loaded late, by `dlopen` or `DYLD_INSERT_LIBRARIES`.
+control, flang frames and all.
+
+**On ELF the executable has to link the runtime, and lead with it.** That was
+the one thing macOS could not have told us, and it broke the first CI run of
+this on both toolchains. ASan refuses to start when its runtime is not first in
+the process's initial library list --
+
+    ASan runtime does not come first in initial library list; you should either
+    link runtime to your application or manually preload it with LD_PRELOAD.
+
+-- because anything loaded ahead of it wins the symbol lookup for `malloc`, and
+libc is ahead of it whenever the runtime is reached as a
+dependency-of-a-dependency through libmpifort_abi. So it is an error and not a
+warning, and `verify_asan_link_order=0` is not the answer: it would buy a build
+that runs and tracks nothing, which is the failure this whole section is
+arranged to prevent. Darwin has no such rule, which is why the transitive
+arrangement above was enough there and is still what the library itself relies
+on.
+
+The wrapper therefore names the runtime in `MPIF_FCLIBS`, and two details of
+that are not cosmetic. It goes **first**, because DT_NEEDED follows link order.
+And it goes among the *libraries* rather than in the flags, because
+`find_package(MPI)` does not pass the wrapper's report through unchanged: it
+copies `-showme:compile` into `INTERFACE_COMPILE_OPTIONS` verbatim but keeps
+only the `-Wl,` forms from `-showme:link`. A `-fsanitize=address` in the
+wrapper's flags therefore reaches the compile and is dropped from the link,
+which is worse than not having it -- the probe object acquires `__asan_*`
+references that nothing resolves, and the configure dies on
+
+    undefined reference to symbol '__asan_unregister_globals'
+    /lib/…/libasan.so.8: error adding symbols: DSO missing from command line
+
+with `Could NOT find MPI_Fortran (missing: MPI_Fortran_WORKS)` as the only
+thing printed on the console. That was the gfortran half of the failure; the
+flang half, whose wrapper carried no such flag, got as far as building all 69
+tests and then failed every one of them on the link-order line.
+
+`-Wl,--no-as-needed` leads the whole thing on ELF and is deliberately never
+restored. The executable references no sanitizer symbol of its own, so GNU ld's
+default `--as-needed` drops the runtime as a library that contributed nothing
+-- with it named but not pinned, `readelf -d` showed libmpifort_abi first and
+no libasan at all. The matching `--as-needed` cannot be restored because
+FindMPI hoists every `-Wl,` form ahead of the object file and appends the
+libraries at the end, so the closing flag lands next to its opener and cancels
+it before reaching what it was meant to stop covering. Leaving it on also
+covers libmpifort_abi and libmpi_abi, which is harmless and arguably right --
+MPI-5.0 section 20.2.1 wants libmpi_abi recorded as a direct dependency anyway.
+
+`mpif_info` needs the same thing said separately, being the one executable the
+wrapper does not link: CMake emits a target's libraries in the order given, so
+the runtime is listed ahead of `mpifort_abi` there by hand. Under gfortran this
+had worked by accident, mpifort_abi's PUBLIC `-fsanitize=address` link option
+reaching the target and letting the driver order the runtime itself; under
+flang there is no such flag, and `mpif_info` and `mpif_info_singleton` were the
+only two of the 69 still failing once the wrapper was fixed.
 
 **Two things that would otherwise be silent, and are not.** A toolchain that
 cannot do it fails at configure time rather than producing an uninstrumented
@@ -399,7 +451,9 @@ It was a *step* inside two of the build jobs first, for exactly that saving,
 and that was the wrong shape: a step is invisible in the jobs list, cannot be
 re-run on its own, and reports a sanitizer failure under the name of an
 unrelated variant. The artifact makes a standalone job nearly as cheap, and
-`cross` had already established the pattern.
+`cross` had already established the pattern. Its first green run is also where
+the ELF link-order requirement above was found, which is the argument for the
+job existing: three local macOS runs had all passed.
 
 The MPICH suite is not run under a sanitizer; its expected-failure baseline is
 keyed per variant, and a sanitizer variant would need its own triage before it

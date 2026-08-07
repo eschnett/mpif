@@ -596,6 +596,24 @@ jobs:
           cmake --build build-asan-tests --parallel
           ctest --test-dir build-asan-tests --output-on-failure
 
+      # FindMPI suppresses the compile and link output of its own probes -- a
+      # bare "missing: MPI_Fortran_WORKS" is all the console gets -- and the
+      # detail goes here. The build job carries the same step for the same
+      # reason.
+      - name: Show CMake's check logs
+        if: failure()
+        run: |
+          for dir in build-asan build-asan-tests; do
+              for log in "${dir}"/CMakeFiles/CMakeConfigureLog.yaml \
+                         "${dir}"/CMakeFiles/CMakeError.log; do
+                  if [[ -f ${log} ]]; then
+                      echo "::group::${log}"
+                      cat "${log}"
+                      echo "::endgroup::"
+                  fi
+              done
+          done
+
   # - the MPICH suite relinks against the runtime MPI (test-mpich-suite.sh
   #   exports MPIF_MPI_PREFIX from its first argument): its harness runs
   #   through the system perl and shells, from which macOS SIP strips DYLD_*,
