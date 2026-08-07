@@ -767,26 +767,39 @@ jobs:
   # SONAME differently -- and both are fixed in ci-scripts/ rather than worked
   # around here.
   #
-  # MPICH and gcc only, and not just for cost:
-  # - Open MPI refuses to run as root without --allow-run-as-root, and what user
-  #   the VM action's `run` block gets is its business, not something to depend
-  #   on. MPICH's launcher does not care.
-  # - flang: the llvm ports carry a `FLANG` option and it is off by default, so
-  #   `pkg install llvm20` gives clang and no Fortran compiler at all, and getting
-  #   one would mean building llvm from source inside the VM.
-  # So this is one variant, `mpich/gcc/freebsd/14/amd64`, and note the last
-  # component: FreeBSD's `uname -m` says amd64 where Linux says x86_64, so it
-  # matches none of the existing per-architecture rows of the expected-failures
-  # list and the ones that are really about 64-bit-ness need an amd64 twin when
-  # this variant is triaged. Until then it has no `triaged` line, so the suite
-  # reports its differences and cannot fail the run -- which is the point of that
-  # rule: a platform arrives measured-but-not-gating rather than either silent or
-  # red.
+  # The compilers are the platform's own mix, which is neither of the two
+  # toolchains the matrix above knows. C and C++ come from the base system, whose
+  # compiler is clang -- FreeBSD ships no GCC at all -- so `cc` and `c++` here are
+  # what a FreeBSD user compiles with. Fortran has to come from a package, and it
+  # has to be gfortran: no llvm port builds flang, `FLANG` being in
+  # `OPTIONS_DEFINE` and in no `OPTIONS_DEFAULT` for devel/llvm20 through
+  # llvm23 (its build wants ~10 GB per process), and there is no standalone flang
+  # port, so no binary package has one. gfortran from the `gcc` metaport is what
+  # FreeBSD's own ports tree compiles Fortran software with.
+  #
+  # So `clang+gfortran`, and the suite's variant key calls it
+  # `mpich/gcc/freebsd/14/amd64`: that component is detected from mpif's own
+  # `mpifort --version`, so it names the *Fortran* compiler, which is the one an
+  # expected-failures list of Fortran tests is about. Two things follow from the
+  # key and are worth knowing before reading a failure here:
+  # - `amd64` is FreeBSD's own word for what Linux and macOS call x86_64, so the
+  #   per-architecture rows of that list match nothing here, and the ones that are
+  #   really about 64-bit-ness need an amd64 twin when this variant is triaged.
+  # - Until then it has no `triaged` line, so the suite reports its differences
+  #   and cannot fail the run, which is how a platform nobody has measured
+  #   arrives.
+  #
+  # MPICH only. Open MPI refuses to run as root without --allow-run-as-root, and
+  # the action's `run` block is root (measured: `$HOME` is /root), so covering it
+  # would mean passing that flag everywhere on one platform alone.
   freebsd:
-    name: mpich / gcc / freebsd (VM)
+    name: mpich / clang+gfortran / freebsd (VM)
     runs-on: ubuntu-24.04
-    # Two to three times the `build` jobs' budget: this one has no MPI cache (see
-    # below), and everything it does runs inside a VM.
+    # Generous, this one having no MPI cache (see below) and running everything
+    # inside a VM. Measured on the first run: 90 seconds to boot the VM and
+    # install the packages, then six and a half minutes for MPICH from source
+    # (`autogen.sh` included), mpif, and building all of test/ -- so the suite,
+    # which that run never reached, is the only part whose cost is still unknown.
     timeout-minutes: 180
 
     steps:
@@ -818,10 +831,26 @@ jobs:
           # this they would be rsync'ed back at the end of the job.
           copyback: false
           # Root-only work, and all of it: `run` below installs nothing.
-          # python3 is for MPICH's `autogen.sh`, which the install script runs
-          # because the patches it applies reach the binding generators; curl,
-          # git, bash and gmake are not in the base system.
+          #
+          # The `gcc` metaport is here for gfortran alone; C and C++ come from the
+          # base system. python3 is for MPICH's `autogen.sh`, which the install
+          # script runs because the patches it applies reach the binding
+          # generators; curl, git, bash and gmake are not in the base system.
+          #
+          # The image's hostname is `freebsd` and nothing resolves it, which is
+          # not a curiosity: MPICH's ch3:nemesis:tcp resolves the host's own name
+          # to build the business card, so with more than one process every
+          # MPI_Init dies with "GetSockInterfaceAddr(372): gethostbyname failed,
+          # freebsd (errno 2)". That is measured -- it failed the 15 tests of
+          # test/ that use two or more ranks, and passed the other 54, in the run
+          # of 911f78f. Fixed at the root, by giving the name an address, rather
+          # than by telling MPICH which interface to use: an MPI is entitled to
+          # resolve the name the system gave it, the same would have had to be
+          # said again for Open MPI or any other implementation, and provisioning
+          # a VM we boot ourselves is not the same thing as papering over a
+          # defect on a machine we found.
           prepare: |
+            printf '127.0.0.1 %s\n' "$(hostname)" >>/etc/hosts
             pkg install -y \
                 autoconf \
                 automake \
@@ -864,29 +893,30 @@ jobs:
             export PATH
             make --version | head -1
 
-            # The gcc package installs versioned binaries -- gfortran13, not
-            # gfortran -- and the metaport adds unversioned symlinks to the
-            # default version beside them; which GCC that is moves with the
-            # ports tree. So find the compiler rather than pinning a version
-            # here that pkg would outgrow without saying so: the unversioned
-            # link if it is there, otherwise a versioned one, and derive the C
-            # and C++ compilers from the same suffix so that all three come
-            # from one GCC.
-            fc=""
+            # C and C++ from the base system, which on FreeBSD is clang. `cc`
+            # and `c++` rather than `clang` and `clang++`, because those are the
+            # names the platform guarantees.
+            CC=cc
+            CXX=c++
+
+            # Fortran from the package, and gfortran because there is no
+            # packaged flang; see the comment on this job. The `gcc` metaport
+            # installs `gfortran` as a symlink to whichever version is current
+            # and `gfortran14` beside it, so find the compiler rather than
+            # pinning a version here that pkg would outgrow without saying so.
+            # Kept a bare name, as in the jobs above, so that the wrapper
+            # compilers MPICH and mpif install do not record a path.
+            FC=""
             for candidate in /usr/local/bin/gfortran /usr/local/bin/gfortran[0-9]*; do
                 if [ -x "${candidate}" ]; then
-                    fc=${candidate}
+                    FC=${candidate##*/}
                     break
                 fi
             done
-            if [ -z "${fc}" ]; then
+            if [ -z "${FC}" ]; then
                 echo "no gfortran in /usr/local/bin" >&2
                 exit 1
             fi
-            suffix=${fc#/usr/local/bin/gfortran}
-            CC=gcc${suffix}
-            CXX=g++${suffix}
-            FC=gfortran${suffix}
             export CC CXX FC
             ${CC} --version | head -1
             ${FC} --version | head -1
@@ -936,17 +966,14 @@ jobs:
             cmake --build build-tests --parallel
             ctest --test-dir build-tests --output-on-failure
 
-            # Keep MPICH's nemesis TCP module on the loopback interface. The
-            # suite spawns, and a spawned child connects back to whatever
-            # address the business card carries, which comes from what
-            # `gethostname()` resolves to -- in a VM that is nothing in
-            # particular, and each such test then burns runtests' 180-second
-            # timeout. MISSING.md "MPICH: a spawned child connects back to
-            # whatever `gethostname()` resolves to" is the same problem on a
-            # workstation, and scripts/macos-test-mpich-suite.sh does the same
-            # thing for the same reason.
-            MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=lo0
+            # No MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE here, unlike
+            # scripts/macos-test-mpich-suite.sh: the `/etc/hosts` line in
+            # `prepare` gives the host's own name an address, so the business
+            # card a spawned child connects back to is 127.0.0.1 and the
+            # loopback is what MPICH picks anyway. On that machine the name
+            # resolves to a *different* host, which is not ours to fix, hence
+            # the CVAR there and not here.
             MPICH_TESTS_DIR=${work}/tests
-            export MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE MPICH_TESTS_DIR
+            export MPICH_TESTS_DIR
             bash ci-scripts/suite/test-mpich-suite.sh \
                 "${mpi_prefix}" "${MPIF_PREFIX}"

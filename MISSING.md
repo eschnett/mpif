@@ -212,6 +212,25 @@ and runs the ordinary recipe inside it: `ci-scripts/install-mpich.sh`, then mpif
 then `test/`, then MPICH's Fortran suite. One variant,
 `mpich/gcc/freebsd/14/amd64`.
 
+**The compilers are the platform's own mix, and it is neither of the two
+toolchains the matrix uses.** C and C++ come from the base system, which on
+FreeBSD is clang: there is no GCC in base, so `cc` is what a FreeBSD user
+compiles with, and the job uses it. Fortran cannot come from LLVM there at all --
+`FLANG` appears in `OPTIONS_DEFINE` and in no `OPTIONS_DEFAULT` for devel/llvm20
+through llvm23, its build wanting around 10 GB per process, and there is no
+standalone flang port, so no binary package holds one. gfortran from the `gcc`
+metaport, which is what FreeBSD's own ports tree compiles Fortran software with,
+is therefore the only choice, and the mix is the representative one rather than a
+compromise. The job's first version used GCC for C as well; that was changed once
+someone asked the obvious question, since the point of a third operating system
+is to compile the way that system does.
+
+The variant key still says `gcc`, and correctly: `test-mpich-suite.sh` detects
+that component from mpif's own `mpifort --version`, so it names the Fortran
+compiler -- which is the one an expected-failures list of Fortran tests is about.
+A reader who takes `gcc` there to mean the C compiler too will be wrong on this
+one row, which is why this paragraph exists.
+
 Why a third operating system at all: it is a libc, a linker and a toolchain
 layout that nothing else here covers, and mpif's assumptions had never been run
 on it. What that turned up before the job could even be written is the argument
@@ -247,32 +266,23 @@ Three things the job does that the Linux jobs do not, each for a stated reason:
   this. Whether that build needs GNU make too is assumed rather than established;
   one symlink ahead of FreeBSD's `make` settles both questions at once, which is
   why neither was chased.
-- **The compilers are found, not named.** The `gcc` package installs
-  `gfortran13` and the metaport adds an unversioned symlink to whichever version
-  is current; the job takes the unversioned link if it is there and a versioned
-  one otherwise, and derives `CC` and `CXX` from the same suffix so that all
-  three come from one GCC. Pinning `gfortran13` here would rot the next time the
-  default moves.
-- **`MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=lo0`**, as
-  `scripts/macos-test-mpich-suite.sh` sets it and for the same reason -- see
-  "Every MPICH spawn test fails when the host's own name resolves to another
-  host" above. Set preemptively rather than after seeing it fail, which is a
-  departure from how that flag was justified on this machine: a VM's own name
-  need not resolve to anything, and the failure mode is one 180-second timeout
-  per spawn test, which would eat the job's budget before saying anything useful.
+- **gfortran is found, not named.** The metaport installs `gfortran` as a symlink
+  to whichever version is current and `gfortran14` beside it, and which version
+  that is moves with the ports tree, so the job takes the unversioned link if it
+  is there and a versioned one otherwise. The first run resolved it to GNU Fortran
+  14.2.0; pinning `gfortran14` here would rot the next time the default moves.
+- **A `/etc/hosts` line giving the host's own name an address**, which is what the
+  first run turned out to need. See the next entry: the image's hostname is
+  `freebsd` and nothing resolved it, so every MPI_Init with more than one process
+  died in `gethostbyname`.
 
-MPICH and gcc only. Open MPI refuses to run as root without
-`--allow-run-as-root`, and which user the VM action's `run` block gets is the
-action's business rather than something to depend on, while MPICH's launcher does
-not care; and the prebuilt llvm packages have no flang -- `devel/llvm20` and its
-siblings carry a `FLANG` option and it is off, so `pkg install llvm20` gives
-clang and no Fortran, and getting one would mean building llvm from source inside
-the VM. Both are reasons to leave the second axis alone rather than
-cost-saving, though it is that too. With one implementation there is also no
-cross-run to make here: the claim that a build against one MPI works with the
-other is the `cross` jobs' business, and it is about mpif's own artifact rather
-than about the platform, so testing it once per (os, toolchain) that has both
-implementations is what it needs.
+MPICH only. Open MPI refuses to run as root without `--allow-run-as-root`, and
+the action's `run` block *is* root -- measured, `$HOME` being `/root` in the log --
+so covering it would mean carrying that flag on one platform alone. With one
+implementation there is also no cross-run to make here: the claim that a build
+against one MPI works with the other is the `cross` jobs' business, and it is
+about mpif's own artifact rather than about the platform, so testing it once per
+(os, toolchain) that has both implementations is what it needs.
 
 **Not triaged.** The variant has no `triaged` line in
 `ci-scripts/suite/mpich-suite-xfail.txt`, so its suite differences are reported
@@ -285,11 +295,61 @@ and macOS say `x86_64`, so it will appear as an unexpected failure until an
 `amd64` line is added. `uname -m` is the machine's own word and is not
 normalised, which the header of that file now says.
 
-Nothing here has been run: this machine is macOS on arm64, and the VM is an
-x86_64 image on an Ubuntu runner, so the whole of this entry is the recipe's
-reasoning and not a measurement. The two defects above are the exception -- the
-shebang is a fact about FreeBSD's filesystem, and the `readelf` fix was checked
-against both output formats directly.
+**What the first run measured**, job 93003881286 of run 31220529798, on the commit
+that added the job. It got further than the recipe's reasoning could promise:
+MPICH 5.0.1 configured, built and installed against `cc` and GNU Fortran 14.2.0,
+`check-mpi-install.sh` passed -- so the SONAME reader above works on FreeBSD's
+`readelf`, which had been the inference this whole entry was least sure of -- mpif
+configured, built and installed, and `test/` built all 69 tests. Then 15 of them
+failed on the hostname, below, and the job stopped there: the suite never ran, so
+there is still no FreeBSD row to triage. The gmake shim worked (GNU Make 4.4.1),
+`getconf`'s fallback was never needed or noticed either way, and nothing in the
+build itself complained about the platform.
+
+### A FreeBSD VM's own name does not resolve, and MPICH needs it to
+
+`vmactions/freebsd-vm`'s image has hostname `freebsd` and nothing that resolves
+it: no `/etc/hosts` entry, no DNS. MPICH's ch3:nemesis:tcp resolves the host's own
+name to build the business card, so every `MPI_Init` in a job with more than one
+process dies before running any of the test:
+
+    Fatal error in internal_Init: Internal MPI error!, error stack:
+    internal_Init(45193)...............: MPI_Init(argc=0x0, argv=0x0) failed
+    ...
+    MPID_nem_tcp_get_business_card(400):
+    GetSockInterfaceAddr(372)..........: gethostbyname failed, freebsd (errno 2)
+
+Measured, and the pattern is exact: 15 of `test/`'s 69 tests failed, and they are
+precisely the 15 that launch two or more ranks -- the seven `alltoallw` ones,
+`check_f08`, the four multi-rank `check_env` ones, `mpif_info`, `gather_root_f08`
+and `gather_inter_f08`. The other 54 passed, including every single-rank one:
+`mpif_info_singleton`, which runs the binary directly, and
+`check_version_fail_f90` and `check_env_library_fail`, which go through `mpiexec`
+at `-n 1`. MPICH does not build a business card for a one-process job, so nothing
+resolves anything and the same binary is fine.
+
+Nothing to do with mpif, which is why it is here rather than under "Errors": the
+failure is inside `MPI_Init`, in the C library, before a binding is reached, and
+the error text names the C function that failed.
+
+Fixed by appending `127.0.0.1 <hostname>` to `/etc/hosts` in the job's `prepare`
+step. Deliberately *not* fixed with `MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=lo0`,
+which is what the job originally carried for the suite step only and which would
+also have worked: an MPI is entitled to resolve the name the system gave it, the
+CVAR is MPICH's alone so Open MPI or any future implementation would need the same
+thing said again in its own vocabulary, and the root cause is a VM image we boot
+ourselves rather than a machine we found.
+
+That last point is the difference from "Every MPICH spawn test fails when the
+host's own name resolves to another host" above, where the same class of failure
+was *not* fixed at the root. There the name resolves to a real and wrong address
+on a network this repository does not administer, and hiding it would hide it from
+the next person too. Here the name resolves to nothing on a machine the workflow
+creates three lines earlier, and giving it an address is provisioning.
+
+The CVAR's other job does not arise either. It exists partly to keep the business
+card on the loopback so a spawned child can reach its parent; with the name
+mapped to 127.0.0.1 the card carries the loopback anyway.
 
 ## External blockers
 
