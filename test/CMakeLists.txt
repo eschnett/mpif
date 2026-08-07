@@ -168,6 +168,30 @@ set_tests_properties(check_env_mpiexec_fail PROPERTIES
   ENVIRONMENT "SLURM_NTASKS=4"
   PASS_REGULAR_EXPRESSION "mpif: mpif_check_environment: ")
 
+# mpif_info is installed by the main project; running it here is what
+# verifies its INSTALL_RPATH -- every other executable in this file gets its
+# rpath from the mpifort wrapper, that one has to carry its own. The test
+# project knows mpif's prefix only through MPI_Fortran_COMPILER, so the
+# binary's path is derived from the wrapper's. Both runs set the full
+# complement of MPIF_* variables, so the environment check inside checks them
+# for real: "mpi" is a case-insensitive substring of both implementations'
+# library strings, and the counts hold on the one local node. Passing on the
+# final line of output rather than the exit status alone, so a binary that
+# silently printed nothing would fail.
+get_filename_component(mpif_bindir "${MPI_Fortran_COMPILER}" DIRECTORY)
+add_test(
+  NAME mpif_info
+  COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} 3
+          ${MPIEXEC_PREFLAGS} ${mpif_bindir}/mpif_info ${MPIEXEC_POSTFLAGS}
+  )
+set_tests_properties(mpif_info PROPERTIES
+  ENVIRONMENT "MPIF_SIZE=3;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=3;MPIF_MPI_LIBRARY=mpi"
+  PASS_REGULAR_EXPRESSION "mpif_check_environment: passed")
+add_test(NAME mpif_info_singleton COMMAND ${mpif_bindir}/mpif_info)
+set_tests_properties(mpif_info_singleton PROPERTIES
+  ENVIRONMENT "MPIF_SIZE=1;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=1;MPIF_MPI_LIBRARY=mpi"
+  PASS_REGULAR_EXPRESSION "mpif_check_environment: passed")
+
 # The version handshake's failure path: a major version the loaded library
 # cannot be.
 add_mpi_test(check_version_fail_f90 SOURCES check_version_fail_f90.f90 NPROCS 1     LIBS MPI::MPI_Fortran)

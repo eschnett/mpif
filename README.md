@@ -24,8 +24,11 @@ The ABI moves the choice of MPI library -- and of mpif itself -- to
 run time, where the build can no longer vouch that the launcher, the
 library and the caller belong together; these two verify it at
 startup, cheaply enough to call in every run, and abort with a
-diagnostic when something disagrees. The section "Runtime consistency
-checks" in `CODE.md` has the details.
+diagnostic when something disagrees. The installed `mpif_info` binary
+is the same thing as a command: `mpiexec -n 4 mpif_info` prints what
+that setup actually loaded -- versions, implementation, process and
+node layout -- and then runs the checks. The section "Runtime
+consistency checks" in `CODE.md` has the details.
 
 One known defect remains, and MPICH's Fortran test suite reports it: an
 attribute set from Fortran is not visible to C as a pointer, where
@@ -50,7 +53,8 @@ Three working notes, none of them referred to by the source tree:
 
 ## Directory structure
 
-- `bin`: scripts (`mpifort`)
+- `bin`: scripts (`mpifort`); the `mpif_info` diagnostic is built from
+  `src/mpif_info.f90` and installed here too
 - `data`: the machine-readable MPI standard
 - `dev`: development scripts; the code generator lives here
 - `gen`: generated code

@@ -416,3 +416,36 @@ install(
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
+
+# mpif_info, the diagnostic that prints what a launched setup actually loaded
+# and runs mpif_check_environment. Not part of the mpifort_abiTargets export
+# set: it is a program, not something to link against.
+
+add_executable(mpif_info src/mpif_info.f90)
+target_compile_options(mpif_info PRIVATE
+  $<$<COMPILE_LANGUAGE:Fortran>:${MPIF_Fortran_FLAGS_LIST}>
+)
+target_link_libraries(mpif_info PRIVATE mpifort_abi MPI::MPI_C)
+# The installed binary must find libmpifort_abi -- whose install name is
+# @rpath/libmpifort_abi.1.dylib -- and, on Linux, the MPI libraries by bare
+# SONAME. Nothing else in this project needs an RPATH: the library's consumers
+# get theirs from bin/mpifort.in, which bakes in the same absolute paths that
+# are used here. Without this, `cmake --install` strips the build RPATH and
+# installs nothing in its place, and bin/mpif_info dies at load.
+set(MPIF_INFO_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+foreach(lib IN LISTS MPI_C_LIBRARIES)
+  get_filename_component(libdir "${lib}" DIRECTORY)
+  list(APPEND MPIF_INFO_RPATH "${libdir}")
+endforeach()
+list(REMOVE_DUPLICATES MPIF_INFO_RPATH)
+# Linked with the install RPATH from the start: rewriting it at install time
+# is what CMake does by default, and on macOS install_name_tool cannot grow
+# the load commands when the install paths are longer than the build ones
+# ("larger updated load commands do not fit"). The binary is only ever run
+# installed, so the build-tree copy pointing at the install prefix costs
+# nothing.
+set_target_properties(mpif_info PROPERTIES
+  INSTALL_RPATH "${MPIF_INFO_RPATH}"
+  BUILD_WITH_INSTALL_RPATH TRUE
+)
+install(TARGETS mpif_info RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

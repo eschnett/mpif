@@ -185,6 +185,33 @@ honest: `ci-scripts/check-headers.sh` compares them in CI, and
 `mpif_check_header_version` in `src/mpif_check_fns.F90`, which catches what
 the CI check cannot -- an install mixing pieces of two builds.
 
+The checks have an installed face: `bin/mpif_info`, from `src/mpif_info.f90`,
+run under mpiexec (or as a singleton) prints what the launched setup actually
+loaded -- mpif's version, the MPI and ABI versions against the headers', the
+`MPI_Get_library_version` string, the process count and per-node layout, the
+`MPI_Abi_get_info` and `MPI_Abi_get_fortran_info` keys and the Fortran
+booleans -- and then runs both checks, so a broken setup aborts below the
+information that diagnoses it. It is written against mpif's own `mpi_f08`
+module, making a working `mpif_info` a standing demonstration that the
+bindings, the library and the loaded MPI agree.
+
+It is also the project's only installed executable, which is why it is the
+only thing in CMakeLists.txt with an RPATH. Everything else that runs links
+through `bin/mpifort`, which passes `-Wl,-rpath,<prefix>/lib`;
+`libmpifort_abi`'s install name is `@rpath/libmpifort_abi.1.dylib`, so a
+consumer must supply that rpath, and a CMake-installed executable has its
+build rpath stripped at install with nothing put in its place. `mpif_info`
+therefore carries an `INSTALL_RPATH` of the same absolute paths the wrapper
+bakes in -- mpif's libdir plus the directories of `MPI_C_LIBRARIES`, the
+latter because Linux records bare SONAMEs where macOS records the MPICH
+build's absolute install names -- and is linked with it from the start
+(`BUILD_WITH_INSTALL_RPATH`), because rewriting a shorter build rpath into
+longer install paths is exactly the case macOS's `install_name_tool` refuses
+("larger updated load commands do not fit"). The `mpif_info` and
+`mpif_info_singleton` entries in `test/CMakeLists.txt` run the *installed*
+binary, so the rpath is tested on every run; removing it was measured to die
+in dyld with `Library not loaded: @rpath/libmpifort_abi.1.dylib`.
+
 ## Verified as correct
 
 How the parts that look surprising actually work, recorded so that they do not
