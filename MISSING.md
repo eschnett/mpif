@@ -295,16 +295,30 @@ and macOS say `x86_64`, so it will appear as an unexpected failure until an
 `amd64` line is added. `uname -m` is the machine's own word and is not
 normalised, which the header of that file now says.
 
-**What the first run measured**, job 93003881286 of run 31220529798, on the commit
-that added the job. It got further than the recipe's reasoning could promise:
-MPICH 5.0.1 configured, built and installed against `cc` and GNU Fortran 14.2.0,
-`check-mpi-install.sh` passed -- so the SONAME reader above works on FreeBSD's
-`readelf`, which had been the inference this whole entry was least sure of -- mpif
-configured, built and installed, and `test/` built all 69 tests. Then 15 of them
-failed on the hostname, below, and the job stopped there: the suite never ran, so
-there is still no FreeBSD row to triage. The gmake shim worked (GNU Make 4.4.1),
-`getconf`'s fallback was never needed or noticed either way, and nothing in the
-build itself complained about the platform.
+**What the runs have measured so far.** Two, neither green, and each got further
+than the one before:
+
+- Job 93003881286 of run 31220529798, on `911f78f`, with GCC 14.2 for C as well
+  as Fortran. MPICH 5.0.1 configured, built and installed; `check-mpi-install.sh`
+  passed, so the SONAME reader above does work on FreeBSD's `readelf`, which had
+  been this entry's least certain inference; mpif configured, built and installed;
+  `test/` built all 69 tests. Then 15 of them failed on the hostname -- the next
+  entry -- and the job stopped. The gmake shim worked (GNU Make 4.4.1) and nothing
+  in the build complained about the platform. 90 seconds for the VM and the
+  packages, six and a half minutes for everything through building `test/`.
+- Job 93009719330 of run 31222427386, on `9d69cd5`, with FreeBSD clang 19.1.7 for
+  C and the same gfortran. MPICH and mpif built again -- so a clang-built MPICH
+  and a gfortran-built mpif go together, which was the switch's open question --
+  and this time `test/` failed to *build* two of its mixed C-and-Fortran targets:
+  the Fortran wrapper's `-fallow-argument-mismatch` was reaching the C compiler,
+  which gcc had only warned about. That is CODE.md "`mpifort -showme:compile`
+  reports gfortran's Fortran-only flags", fixed in `test/CMakeLists.txt` and
+  verified on this machine in both directions, no FreeBSD needed.
+
+So still unmeasured after two runs: whether the `/etc/hosts` line actually fixes
+the hostname failure -- nothing in run 2 ran an MPI program, `check-mpi-install.sh`
+compiling and linking one but not executing it -- and the whole of the suite,
+which no run has reached. There is still no FreeBSD row to triage.
 
 ### A FreeBSD VM's own name does not resolve, and MPICH needs it to
 

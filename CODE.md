@@ -1325,3 +1325,41 @@ mechanism that replaced them and the evidence it is right.
   bytes", with the stack trace naming `mpi_comm_spawn_multiple_` at the exact
   `malloc` line; after it, "0 leaks for 0 total leaked bytes", same program,
   same run.
+
+- **`mpifort -showme:compile` reports gfortran's Fortran-only flags, and a
+  consumer must keep them off its C compiler.** `bin/mpifort.in` bakes
+  `@MPIF_Fortran_FLAGS_STR@` into `MPIF_FCFLAGS`, which for gfortran is
+  `-fallow-argument-mismatch -fcray-pointer`, and that is right rather than an
+  oversight: `mpif.h`'s sentinels *are* Cray pointers, so user code that includes
+  it needs the second flag, and the first is what lets an `mpif.h` caller pass a
+  buffer whose type does not match the dummy argument -- which is the whole idiom
+  of the include-file interface. `MPIF_FCFLAGS` is overridable, and
+  `-showme:compile` prints exactly what the wrapper would use.
+
+  What is not obvious is what a consumer does with that. `find_package(MPI)`
+  reads the wrapper and puts the flags into `MPI::MPI_Fortran`'s
+  `INTERFACE_COMPILE_OPTIONS` *unguarded*, and CMake applies a target's interface
+  compile options to every language compiled in the target that consumes it. So a
+  target with both C and Fortran sources -- `test/`'s `interlanguage`, `c2f` and
+  `datarep_c` -- hands gfortran's two flags to the C compiler as well.
+  `test/CMakeLists.txt` therefore rewrites that property as
+  `$<$<COMPILE_LANGUAGE:Fortran>:...>` right after `find_package`, and any project
+  mixing the two languages in one target wants the same three lines.
+
+  It survived twelve CI variants because it needs the two compilers to come from
+  different projects. gcc's C frontend only warns -- "command-line option
+  `-fallow-argument-mismatch` is valid for Fortran but not for C" -- so the gcc
+  variants compiled it and said so in passing; the llvm variants never had the
+  flag at all, `check_fortran_compiler_flag` rejecting it under flang. FreeBSD is
+  the first environment here that compiles C with clang and Fortran with gfortran,
+  and clang errors: `cc: error: unknown argument: '-fallow-argument-mismatch'`,
+  which failed `interlanguage` and `c2f` in run 31222427386.
+
+  Verified both ways on this machine, which needed no FreeBSD: a `gcc`-built
+  test tree had the two flags in `C_FLAGS` in
+  `build-mpich-gcc-tests/CMakeFiles/interlanguage.dir/flags.make` all along, and
+  `clang -fallow-argument-mismatch -c` reproduces the error in one line while
+  `gcc-mp-15` accepts it with the warning. With the guard, `test/` configured with
+  `CMAKE_C_COMPILER=clang` and `CMAKE_Fortran_COMPILER=gfortran-mp-15` -- FreeBSD's
+  combination -- builds and passes 69 of 69; with the guard reverted, that same
+  tree fails to compile `interlanguage.c` with the CI error verbatim.

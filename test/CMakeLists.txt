@@ -8,6 +8,29 @@ project(
 
 find_package(MPI REQUIRED COMPONENTS C Fortran)
 
+# Keep the Fortran wrapper's flags off the C compiler. FindMPI reads
+# `mpifort -showme:compile` and puts what it prints into MPI::MPI_Fortran's
+# INTERFACE_COMPILE_OPTIONS *unguarded*, and CMake applies a target's interface
+# compile options to every language in the target that consumes it. mpif's
+# wrapper reports gfortran's `-fallow-argument-mismatch` and `-fcray-pointer` --
+# which mpif.h genuinely needs, the sentinels being Cray pointers -- so the three
+# targets below that mix C and Fortran (`interlanguage`, `c2f`, `datarep_c`) hand
+# both flags to the C compiler as well.
+#
+# That went unnoticed on every variant until FreeBSD, because it depends on the
+# two compilers coming from different projects: gcc's C frontend only warns
+# ("command-line option '-fallow-argument-mismatch' is valid for Fortran but not
+# for C"), flang rejects the flag so the check in the parent project never adds
+# it, and clang errors outright. FreeBSD compiles C with clang and Fortran with
+# gfortran, and got `cc: error: unknown argument:
+# '-fallow-argument-mismatch'`. Verified on this machine too: the flag was in
+# `C_FLAGS` in a gcc build's flags.make all along.
+get_target_property(mpif_test_fortran_options MPI::MPI_Fortran INTERFACE_COMPILE_OPTIONS)
+if(mpif_test_fortran_options)
+  set_property(TARGET MPI::MPI_Fortran PROPERTY INTERFACE_COMPILE_OPTIONS
+    "$<$<COMPILE_LANGUAGE:Fortran>:${mpif_test_fortran_options}>")
+endif()
+
 # What the library-identity tests expect MPI_Get_library_version to answer:
 # mpif_check_environment compares this case-insensitively as a substring. The
 # default "mpi" matches both "MPICH ..." and "Open MPI ...", so the tests pass
