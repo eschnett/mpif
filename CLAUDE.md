@@ -16,13 +16,39 @@ bindings, which the installs here prune away.
     julia      1.12, for dev/mpiapi.jl and dev/check-f08-bindings.jl
     pdftotext  /opt/local/bin/pdftotext, from MacPorts poppler
 
-Two implementations times two toolchains gives four local variants, each with its
-own prefix under `mpi/`:
+Two implementations times two toolchains gives four local variants. `build/` is
+grouped by *stage* rather than by variant, so that each stage can be built, and
+re-run, without disturbing the others:
 
-    mpi/mpich-gcc  mpi/mpich-llvm  mpi/openmpi-gcc  mpi/openmpi-llvm   the MPI
-    mpi/mpif-<variant>                                                mpif itself
-    mpi/src-<variant>                                                 unpacked source
-    build-<variant>  build-<variant>-tests                            build trees
+    build/mpi/<variant>              the MPI               4
+    build/mpi-src/<variant>          its unpacked source   4
+    build/mpif/<variant>             mpif itself           4
+    build/mpif-build/<variant>       mpif's CMake tree     4
+    build/test/<variant>-run-<r>     test/                 8
+    build/suite/<variant>-run-<r>    the MPICH suite       8
+    build/consume/<variant>          the consume test      4
+
+`<variant>` is `<mpi>-<toolchain>` entire, so those read `build/mpi/mpich-gcc`
+and so on. `<r>` is the *runtime* MPI: there are eight of each test because one
+installed mpif serves both implementations, and both pairings are measured rather
+than one inferred from the other.
+
+A sanitizer build appends `-sanitize-address` to the variant, so
+`build/mpif/mpich-llvm-sanitize-address`. It gets no `mpi` or `mpi-src` of its
+own: the MPI underneath is shared and uninstrumented, so that build is made
+against `build/mpi/mpich-llvm`.
+
+`rm -rf build` starts over. The ignore rule is `/build*/`, anchored on purpose,
+so a stray build tree anywhere else shows up in `git status` rather than hiding.
+
+The MPI and mpif stages leave an `install-complete` marker in their prefix, and a
+later run of the same stage does nothing unless `MPIF_REBUILD=1` says otherwise.
+That is what makes the sixteen test runs affordable, and it has a cost --- see
+"Stale build artifacts were the biggest time sink" below, which is about the one
+mistake it lets through.
+
+This is not the layout CI and the Docker images use, and deliberately so; see
+"CI and the Docker images keep their own directory layouts" in `MISSING.md`.
 
 `kern.aioprocmax` is 16 here, against tens of thousands on Linux, which is why the
 Open MPI defect that `ci-scripts/openmpi-fbtl-posix-aio.patch` fixes showed up on
@@ -126,59 +152,66 @@ to be empty.
 ## Building and testing
 
     bash scripts/macos-build-mpif.sh   <mpich|openmpi> <gcc|llvm>   # build and install mpif
-    bash scripts/macos-test-mpif.sh    <mpich|openmpi> <gcc|llvm>   # test/, rebuilt from scratch
-    bash scripts/macos-test-mpich-suite.sh <mpich|openmpi> <gcc|llvm>  # MPICH's Fortran suite
+    bash scripts/macos-test-mpif.sh    <mpich|openmpi> <gcc|llvm> [<run-mpi>]
+    bash scripts/macos-test-mpich-suite.sh <mpich|openmpi> <gcc|llvm> [<run-mpi>]
+    bash scripts/macos-test-consume.sh <mpich|openmpi> <gcc|llvm>
 
-The variant names the mpif under test; which MPI the tests *run* against is by
-default the one that installation remembers (`mpifort -showme:mpiprefix`
-prints it), and `MPIF_RUN_MPI=<mpich|openmpi>` runs them against the other
-implementation instead -- the cross test, whose results must match the runtime
-MPI's native results exactly. `test/` cross-runs swap the loader's search path
-under unchanged binaries; the suite relinks, and gets its own tree
-(`mpi/tests-<variant>-run-<runmpi>`), so a cross suite run does not collide
-with a native one. See "Choosing the MPI at run time" in `CODE.md`.
+    bash dev/build-macos-all.sh [mpi|mpif|test|suite|consume|sanitize|all ...]
+
+The first two arguments name the mpif under test. The third names the MPI the
+tests *run* against and defaults to the first, so a native run is two words and a
+cross run is three. A cross run's results must match the runtime MPI's native
+results exactly. `test/` cross-runs swap the loader's search path under unchanged
+binaries; the suite relinks, through the `MPIF_MPI_PREFIX` the wrapper reads from
+the environment. Each of the eight pairings gets its own tree, so none of them
+collides with another and any two can run at once. See "Choosing the MPI at run
+time" in `CODE.md`.
+
+`dev/build-macos-all.sh` drives the matrix a stage at a time; with no argument it
+does all of them in order. Since the build stages skip when they are already
+marked complete, `dev/build-macos-all.sh test` costs the eight test runs and
+nothing else --- and, for the same reason, will not notice an edit to `src/`.
+`MPIF_REBUILD=1 dev/build-macos-all.sh mpif test` is the version that will.
 
 `test/` is mpif's own and should be entirely green; the MPICH suite is the broad
 one, and the counts it reports are recorded under "Suite baseline" in
 `MISSING.md`. To run
 one directory of the suite rather than all of it:
 
-    cd mpi/tests-<variant>/mpich-5.0.1/test/mpi/f90/rma
+    cd build/suite/<variant>-run-<runtime>/mpich-5.0.1/test/mpi/f90/rma
     MPIF_REAL_MPIEXEC=<mpi-prefix>/bin/mpiexec ../../runtests -tests=testlist \
         -mpiexec=<repo>/ci-scripts/suite/mpiexec-filter.sh -maxnp=4
-
-`<variant>` is `<mpi>-<toolchain>` entire, so that first path is
-`mpi/tests-mpich-gcc/...`; it read `tests-<variant>-gcc` here until August 2026,
-which is a directory that has never existed.
 
 A hand-run `runtests` gets none of what the wrapper scripts export, and on this
 network that matters: add `MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=lo0` for MPICH, or
 `MPIEXEC_ARGS` as `scripts/macos-test-mpich-suite.sh` sets it for Open MPI,
 whenever the directory contains spawn tests. See "This machine" above for why.
 
-**Only one suite run per variant at a time.** `MPICH_TESTS_DIR` defaults to
-`mpi/tests-<variant>`, so two runs of the same variant -- a scripted one and a
-hand-run `runtests`, say -- are the same tree, and the second rebuilds and deletes
-executables under the first. The scripted run also unpacks the suite again at the
-start, which pulls the directory out from under anything already running in it.
-Different variants are different trees and do not collide.
+**Only one suite run per pairing at a time.** `MPICH_TESTS_DIR` defaults to
+`build/suite/<variant>-run-<runtime>`, so two runs of the same pairing -- a
+scripted one and a hand-run `runtests`, say -- are the same tree, and the second
+rebuilds and deletes executables under the first. The scripted run also unpacks
+the suite again at the start, which pulls the directory out from under anything
+already running in it. Different pairings are different trees and do not collide,
+and so are the sanitizer ones, which carry `-sanitize-address` in the variant.
 
 Set `MPIF_KEEP_TESTS=1` to stop `runtests` deleting each executable after it
 runs, which is what a debugger needs to turn "test failed" into a backtrace.
 
 Set `MPIF_SANITIZE=address` on the first two scripts to build and test an
-AddressSanitizer mpif. It is a fifth variant rather than a mode: its own build
-tree and its own prefix, both tagged `-sanitize-address`, so it does not
-disturb the four above. `llvm` only here. See "Verifying a fix" below.
+AddressSanitizer mpif. It is a fifth variant rather than a mode:
+`build/mpif/<variant>-sanitize-address` and the test trees to match, so it does
+not disturb the four above. `llvm` only here. See "Verifying a fix" below.
 
 Neither of the first two scripts installs the MPI they build against; that is
 `scripts/macos-install-mpi.sh <mpich|openmpi> <gcc|llvm>`, and it builds the
 implementation from source, so it costs a good deal more than the others. It is
 what to run when `find_package(MPI)` starts reporting that
-`mpi/<mpi>-<toolchain>/include` does not exist.
+`build/mpi/<mpi>-<toolchain>/include` does not exist.
 
-**Never `make install` an MPI into `mpi/<variant>` by hand.** The prefix is not
-finished when `make install` is: the install script then repoints the wrapper
+**Never `make install` an MPI into `build/mpi/<variant>` by hand.** The prefix
+is not finished when `make install` is: the install script then repoints the
+wrapper
 compilers at the ABI library, prunes the implementation's own headers, Fortran
 modules and non-ABI libraries away, and puts the official ABI `mpi.h` in place of
 the one it shipped. Skip those and the prefix still builds everything, and the
@@ -200,13 +233,13 @@ the `configure` and `make` it started, and those orphans keep creating files in 
 source tree, so the next run's `rm -rf` of that tree fails with "Directory not
 empty" and the run aborts on a message that looks like a build error and is not.
 Check `ps` for the source directory's path before restarting, and if a tree has
-already been half-removed, delete `mpi/src-<variant>` outright rather than
+already been half-removed, delete `build/mpi-src/<variant>` outright rather than
 reasoning about what is left of it.
 
 An install script that does not finish now takes its prefix with it, for the same
 reason: `make install` runs well before the four steps that make the prefix a
 standard-ABI one, and an interrupt anywhere in between used to leave something
-that looked complete. So **a missing `mpi/<variant>` means the last install
+that looked complete. So **a missing `build/mpi/<variant>` means the last install
 failed**, and the cure is to run it again -- there is no half-installed prefix to
 recognise any more, which is the point.
 
@@ -308,20 +341,75 @@ reasons.
 
 Four separate "regressions" during one session turned out to be stale artifacts,
 including a `dyld: Symbol not found: ___mpi_cptr_MOD_mpi_alloc_mem_cptr` that
-looked alarming and meant nothing. The rule that removes the whole class: **the
-three build-and-test scripts delete their build directory and start over every
-time.**
-There is nothing to clean by hand, and no state to reason about.
+looked alarming and meant nothing. The rule that removed the whole class was that
+every script deleted its build directory and started over. **That is now true of
+the test stages only**, and the paragraphs below are why the exception is where
+it is.
 
-- `scripts/macos-build-mpif.sh` removes `build-<variant>` and the mpif
-  installation.
-- `scripts/macos-test-mpif.sh` removes `build-<variant>-tests`.
+- `scripts/macos-test-mpif.sh` removes `build/test/<variant>-run-<runtime>`.
+- `scripts/macos-test-consume.sh` removes `build/consume/<variant>`.
 - `scripts/macos-test-mpich-suite.sh` unpacks the suite again and reconfigures
-  it, so `mpi/tests-<variant>/mpich-<version>` is new on every run.
+  it, so `build/suite/<variant>-run-<runtime>/mpich-<version>` is new on every
+  run.
 
-What survives is downloaded source only -- the MPI source tree under
-`mpi/src-<variant>`, whose reuse the install script's stamp guards, and the
-MPICH tarball. Both cost a download and no correctness.
+The two *build* stages instead skip when their prefix carries an
+`install-complete` marker, and `MPIF_REBUILD=1` makes them delete and rebuild
+anyway. That was chosen on 2026-08-08 with the cost understood: sixteen test runs
+against four MPIs and four mpifs meant re-paying for an MPI install, which is
+tens of minutes, over and over.
+
+**What it costs is exactly the failure this section is named after.** Edit a
+binding, rerun a test stage, and it will test the old mpif and pass. The marker
+is a plain file, not a checksum of the inputs, so nothing notices. That is
+deliberate rather than lazy: a checksum cannot be made complete here, because
+`ci-scripts/install-mpi-header.sh` clones `mpi-forum/mpi-abi-stubs` at whatever
+HEAD is that day, and a marker that looked authoritative without being so would
+be worse than one that plainly says "I was here".
+
+What replaces prevention is provenance. Each marker records the time, the commit
+and whether the tree was dirty, and each mpif marker names the MPI marker it was
+built against; every stage that consumes one prints it. So a run against a stale
+build says so on screen instead of being indistinguishable from a fresh one. When
+in doubt, `MPIF_REBUILD=1`.
+
+What survives is the MPI source tree under `build/mpi-src/<variant>`, whose reuse
+the install script's stamp guards, and the MPICH tarball. The tarball costs a
+download and no correctness. **The source tree is not that**, and this paragraph
+said it was until 2026-08-07: the MPI is configured and built *in place* there,
+so the tree holds hundreds of megabytes of build output as well as the download,
+and that output records the prefix it was built for. MPICH's libtool settles it
+-- `hardcode_action=immediate` with `relink_command=""` in each `.la`, and
+`--disable-dependency-tracking` besides -- so re-running `./configure` with a
+different `--prefix` relinks nothing, and the installed library keeps the old
+directory in its install name. The stamp does not notice, because it is keyed on
+the install script's checksum and says only that the tree was downloaded,
+patched and `autogen`'d.
+
+That is only a hazard when the prefix moves, which is why it went unnoticed for
+so long: the stamp's own reasons for a miss all delete the tree. It surfaced when
+`mpi/src-<variant>` was moved to `build/<variant>/mpi-src`, where `otool -D` on
+the tree's `libmpi_abi.1.dylib` still named `mpi/mpich-gcc/lib`. The layout moved
+again a day later, to `build/mpi-src/<variant>` with the prefix at
+`build/mpi/<variant>`, and the same clean was needed a second time -- so this is a
+property of the trees rather than a one-off, and any future move of either path
+has to do it again.
+
+`make distclean` is the obvious cure and does not work: MPICH's `src/mpl` is
+configured as a subproject whose generated Makefile has no `clean` target, so
+both `distclean` and `clean` stop at `No rule to make target 'clean'`. What
+worked was deleting the link output outright,
+
+    find <tree> \( -name '*.o' -o -name '*.lo' -o -name '*.a' -o -name '*.la' \
+                -o -name '*.dylib' \) -delete
+    find <tree> -type d -name .libs -exec rm -rf {} +
+
+which leaves the download, the patches and the `autogen` output -- everything the
+stamp actually certifies -- and forces the next `./configure` and `make` to link
+against the new prefix. Everything else that names a path in there is configure
+output, and a fresh `./configure` rewrites all of it; `grep -rIl "$PWD/mpi/"`
+finding nothing but `Makefile`, `config.status`, `.pc` files and generated
+headers is what that looks like. If a library ever advertises a directory that
+does not exist, this is where to look.
 
 The cost is a few minutes per run, which buys back far more than it spends:
 
@@ -333,8 +421,9 @@ The cost is a few minutes per run, which buys back far more than it spends:
   `ar: .libs/mtest_f77.o: No such file or directory`, and every test in the suite
   then "fails to build". The `util/` libraries matter as much as the tests:
   `libmtest_f08.a` holds `MTest_Init` and is compiled against mpif's modules.
-- `ctest` on its own does **not** rebuild. `ctest --test-dir build-<variant>-tests`
-  will happily rerun a binary built against a previous mpif and report a pass.
+- `ctest` on its own does **not** rebuild.
+  `ctest --test-dir build/test/<variant>-run-<runtime>` will happily rerun a binary
+  built against a previous mpif and report a pass.
   Use `scripts/macos-test-mpif.sh`, which reconfigures and rebuilds first.
 
 ## `docker run` is not the same environment as a buildx `RUN`

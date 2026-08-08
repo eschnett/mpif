@@ -5,17 +5,18 @@
 # ci-scripts/suite/mpich-suite-xfail.txt -- which lists the failures that are expected
 # -- in either direction. Run it on its own to iterate on a difference.
 #
-# Usage: scripts/macos-test-mpich-suite.sh <mpich|openmpi> <gcc|llvm>
+# Usage: scripts/macos-test-mpich-suite.sh <mpich|openmpi> <gcc|llvm> [<mpich|openmpi>]
 #
-# The variant arguments name the mpif under test (mpi/mpif-<variant>); the MPI
-# the suite runs against is by default the one that installation remembers,
-# read back from its wrapper (-showme:mpiprefix) rather than respecified here.
+# The first two arguments name the mpif under test (build/mpif/<variant>). The
+# third names the MPI the suite runs against and defaults to the first.
 #
-# Set MPIF_RUN_MPI=<mpich|openmpi> to run the suite against the other
-# implementation instead -- the cross test. test-mpich-suite.sh relinks the
-# suite's tests against its first argument (it exports MPIF_MPI_PREFIX), and
-# gates the outcome against the runtime MPI's expected-failure rows, so a
-# cross run must report exactly what a native run of that runtime MPI reports.
+# Giving the other implementation is the cross test: test-mpich-suite.sh relinks
+# the suite's tests against its first argument (it exports MPIF_MPI_PREFIX), and
+# gates the outcome against the *runtime* MPI's expected-failure rows, so a cross
+# run must report exactly what a native run of that runtime MPI reports. Each of
+# the eight combinations gets its own tree, build/suite/<variant>-run-<runtime>,
+# because two suite runs sharing a tree rebuild and delete executables under each
+# other ("Only one suite run per variant at a time" in CLAUDE.md).
 #
 # Set MPIF_KEEP_TESTS=1 to keep the compiled test executables, which is what a
 # debugger needs to get a backtrace out of a crashing test; see
@@ -23,30 +24,20 @@
 
 set -euo pipefail
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+takes_run_mpi=yes
 source "${here}/macos-common.sh" "$@"
 
-if [[ -n ${MPIF_RUN_MPI:-} ]]; then
-    run_mpi=${MPIF_RUN_MPI}
-    case ${run_mpi} in
-        mpich | openmpi) ;;
-        *)
-            echo "error: MPIF_RUN_MPI must be mpich or openmpi, not '${run_mpi}'" >&2
-            exit 1
-            ;;
-    esac
-    run_mpi_prefix=${repodir}/mpi/${run_mpi}-${toolchain}
-    # A cross run gets its own tree: MPICH_TESTS_DIR names the *pairing*, not
-    # just the variant, because two suite runs sharing a tree rebuild and
-    # delete executables under each other ("Only one suite run per variant at
-    # a time" in CLAUDE.md), and a cross run may well run beside a native one.
-    export MPICH_TESTS_DIR=${MPICH_TESTS_DIR:-${repodir}/mpi/tests-${variant}-run-${run_mpi}}
-else
-    run_mpi=${mpi}
-    run_mpi_prefix=$("${mpif_prefix}/bin/mpifort" -showme:mpiprefix)
-    # Keep the suite next to everything else a variant needs, so that a rerun
-    # skips the download and the configure
-    export MPICH_TESTS_DIR=${MPICH_TESTS_DIR:-${repodir}/mpi/tests-${variant}}
-fi
+require_marker "${mpif_prefix}" \
+    "${MPIF_SANITIZE:+MPIF_SANITIZE=${MPIF_SANITIZE} }scripts/macos-build-mpif.sh ${mpi} ${toolchain}"
+require_marker "${run_mpi_prefix}" \
+    "scripts/macos-install-mpi.sh ${run_mpi} ${toolchain}"
+
+echo "Running the MPICH suite on the mpif in build/mpif/${tagged}, against ${run_mpi}:"
+show_marker "${mpif_prefix}"
+
+check_native_prefix_agrees "$("${mpif_prefix}/bin/mpifort" -showme:mpiprefix)"
+
+export MPICH_TESTS_DIR=${MPICH_TESTS_DIR:-${suite_dir}}
 
 # Two things Open MPI needs here, both overridable by setting MPIEXEC_ARGS.
 #

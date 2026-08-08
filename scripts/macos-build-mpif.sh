@@ -10,9 +10,25 @@
 #                  `address,undefined`) into a build tree and prefix of their
 #                  own, leaving the ordinary build alone. See
 #                  scripts/macos-common.sh.
+#   MPIF_REBUILD   rebuild even though the prefix is already marked complete.
+#
+# The MPI has to be installed already; this refuses to start otherwise rather
+# than configuring against a prefix that is missing or half-written.
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/macos-common.sh" "$@"
+
+require_marker "${mpi_prefix}" "scripts/macos-install-mpi.sh ${mpi} ${toolchain}"
+
+if marker_present "${mpif_prefix}" && [[ -z ${rebuild} ]]; then
+    echo "mpif is already installed in build/mpif/${tagged}:"
+    show_marker "${mpif_prefix}"
+    echo "Set MPIF_REBUILD=1 to build it again."
+    exit 0
+fi
+
+echo "Building mpif against the MPI in build/mpi/${variant}:"
+show_marker "${mpi_prefix}"
 
 # mpif is only mpif if the MPI underneath it exposes the standard ABI and
 # nothing else. The install scripts now take a half-installed prefix away with
@@ -46,3 +62,10 @@ cmake --install "${build}"
 if [[ -n ${sanitize} ]]; then
     bash "${repodir}/ci-scripts/check-sanitizer-build.sh" "${mpif_prefix}"
 fi
+
+# Last, after the sanitizer check, so the marker means the whole stage finished.
+# The MPI's own marker line goes in it because a reinstall at the same path can
+# change what libmpi_abi's install name says while the path itself is unchanged,
+# and then this mpif is stale without any path having moved.
+write_marker "${mpif_prefix}" "mpif: ${mpi}, ${toolchain}${sanitize:+, sanitize=${sanitize}}" \
+    "mpi      build/mpi/${variant} $(sed -n 2p "${mpi_prefix}/install-complete")"

@@ -130,7 +130,7 @@ triaged openmpi/llvm/darwin/26/arm64
 # the stamp that would have caught it, since the stamp is checked by the install
 # script and nothing else. Reinstalling re-prepared the tree and the four passed.
 # **Measure a variant from a prefix the install script has just written**, not
-# from whatever `mpi/<variant>` happens to hold.
+# from whatever `build/<variant>/mpi` happens to hold.
 
 # --- Accounted for -------------------------------------------------------------
 #

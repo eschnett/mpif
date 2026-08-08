@@ -2,43 +2,49 @@
 
 # Build and run the tests in test/ against an installed mpif.
 #
-# Usage: scripts/macos-test-mpif.sh <mpich|openmpi> <gcc|llvm>
+# Usage: scripts/macos-test-mpif.sh <mpich|openmpi> <gcc|llvm> [<mpich|openmpi>]
+#
+# The first two arguments name the mpif under test (build/mpif/<variant>); which
+# MPI the tests then *link* is not respecified here but read back from the
+# installed wrapper (-showme:mpiprefix), so this script tests the default the
+# installation actually remembers.
+#
+# The third names the MPI to *run* against, and defaults to the first. Giving the
+# other implementation is the cross test: the binaries still link the remembered
+# default, and DYLD_LIBRARY_PATH puts the runtime implementation in front of it
+# at ctest time -- the same-binary cross test, exercising exactly the loader
+# mechanism applications use. The launcher and the expected
+# MPI_Get_library_version string come from the runtime MPI, so a swap that
+# silently failed to happen fails the tests. Each of the eight combinations gets
+# its own tree, build/test/<variant>-run-<runtime>, because the two configure the
+# same directory differently and each deletes it before configuring.
 #
 # Environment:
-#   MPIF_RUN_MPI  <mpich|openmpi>: run the tests against this MPI instead of
-#                 the default remembered by the mpif under test. The binaries
-#                 still *link* the remembered default; DYLD_LIBRARY_PATH puts
-#                 the runtime implementation in front of it at ctest time --
-#                 the same-binary cross test, exercising exactly the loader
-#                 mechanism applications use. The launcher and the expected
-#                 MPI_Get_library_version string come from the runtime MPI,
-#                 so a swap that silently failed to happen fails the tests.
 #   MPIF_TEST_MPIEXEC_PREFLAGS
 #                 overrides the Open MPI launcher flags below.
 #   MPIF_SANITIZE test the sanitizer mpif built with the same variable set,
 #                 rather than the ordinary one: it selects a different prefix
 #                 and a different build tree. See scripts/macos-common.sh.
-#
-# The variant arguments name the mpif under test (mpi/mpif-<variant>); which
-# MPI the tests then link is *not* respecified here but read back from the
-# installed wrapper (-showme:mpiprefix), so this script tests the default the
-# installation actually remembers.
 
 set -euo pipefail
+takes_run_mpi=yes
 source "$(dirname "${BASH_SOURCE[0]}")/macos-common.sh" "$@"
 
-link_mpi_prefix=$("${mpif_prefix}/bin/mpifort" -showme:mpiprefix)
+require_marker "${mpif_prefix}" \
+    "${MPIF_SANITIZE:+MPIF_SANITIZE=${MPIF_SANITIZE} }scripts/macos-build-mpif.sh ${mpi} ${toolchain}"
+require_marker "${run_mpi_prefix}" \
+    "scripts/macos-install-mpi.sh ${run_mpi} ${toolchain}"
 
-run_mpi=${MPIF_RUN_MPI:-${mpi}}
+echo "Testing the mpif in build/mpif/${tagged}, running against ${run_mpi}:"
+show_marker "${mpif_prefix}"
+
+link_mpi_prefix=$("${mpif_prefix}/bin/mpifort" -showme:mpiprefix)
+check_native_prefix_agrees "${link_mpi_prefix}"
+
 case ${run_mpi} in
     mpich)   run_mpi_library=MPICH ;;
     openmpi) run_mpi_library="Open MPI" ;;
-    *)
-        echo "error: MPIF_RUN_MPI must be mpich or openmpi, not '${run_mpi}'" >&2
-        exit 1
-        ;;
 esac
-run_mpi_prefix=${repodir}/mpi/${run_mpi}-${toolchain}
 
 # The alltoallw tests need more than one rank, hence a launcher. It is pinned
 # rather than left to find_package(MPI), which found an unrelated miniforge
@@ -61,10 +67,10 @@ if [[ ${run_mpi} == openmpi ]]; then
     cmake_args+=("-DMPIEXEC_PREFLAGS=${MPIF_TEST_MPIEXEC_PREFLAGS:---oversubscribe;--mca;btl_tcp_if_include;lo0}")
 fi
 
-rm -rf "${build}-tests"
+rm -rf "${tests_build}"
 cmake \
     -S "${repodir}/test" \
-    -B "${build}-tests" \
+    -B "${tests_build}" \
     -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_C_COMPILER="${CC}" \
     -DCMAKE_Fortran_COMPILER="${FC}" \
@@ -76,13 +82,13 @@ cmake \
     -DMPIEXEC_EXECUTABLE="${run_mpi_prefix}/bin/mpiexec" \
     -DMPIF_TEST_MPI_LIBRARY="${run_mpi_library}" \
     ${cmake_args[@]+"${cmake_args[@]}"}
-cmake --build "${build}-tests" --parallel
+cmake --build "${tests_build}" --parallel
 
-if [[ -n ${MPIF_RUN_MPI:-} ]]; then
+if [[ ${run_mpi} != "${mpi}" ]]; then
     # The cross run: same binaries, the runtime MPI put in front of the linked
     # default by the loader's search path.
     DYLD_LIBRARY_PATH="${run_mpi_prefix}/lib" \
-        ctest --test-dir "${build}-tests" --output-on-failure
+        ctest --test-dir "${tests_build}" --output-on-failure
 else
-    ctest --test-dir "${build}-tests" --output-on-failure
+    ctest --test-dir "${tests_build}" --output-on-failure
 fi

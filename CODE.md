@@ -300,10 +300,11 @@ default and installs beside the ordinary build rather than over it:
     MPIF_SANITIZE=address bash scripts/macos-build-mpif.sh mpich llvm
     MPIF_SANITIZE=address bash scripts/macos-test-mpif.sh  mpich llvm
 
-which use `build-mpich-llvm-sanitize-address` and
-`mpi/mpif-mpich-llvm-sanitize-address`, leaving the untagged pair alone, so a
-suspected memory error can be run both ways without a rebuild. The MPI
-underneath is the ordinary uninstrumented one, shared with the untagged build.
+which install to `build/mpif/mpich-llvm-sanitize-address`, leaving
+`build/mpif/mpich-llvm` alone, so a suspected memory error can be run both ways
+without a rebuild. The MPI underneath is the ordinary uninstrumented one,
+`build/mpi/mpich-llvm`, shared with the untagged build -- which is why the
+sanitizer variant gets no `build/mpi` entry of its own.
 That is the arrangement, not a shortcut: mpif's whole job is to be correct
 across the ABI boundary into a library it did not build, and instrumenting the
 process while leaving the library alone is what that boundary looks like from

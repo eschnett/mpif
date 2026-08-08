@@ -26,6 +26,80 @@ symptom does not diagnose it again, and so that the decision not to add an
 expected-failure entry for them is on the record: an `xfail` line would have
 made a broken environment permanent.
 
+### The local build stages skip when already installed, and can therefore be stale
+
+On 2026-08-08 the local build was split into independent stages -- four MPI
+installs, four mpif installs, eight `test/` runs and eight suite runs -- and each
+build stage was given an `install-complete` marker that a rerun of that stage
+checks and stops on. `MPIF_REBUILD=1` deletes and rebuilds regardless. The layout
+that goes with it is in `CLAUDE.md`.
+
+The reason is arithmetic. Sixteen test runs across four MPIs and four mpifs used
+to mean re-paying for an MPI install, which is tens of minutes, every time the
+chain was run; the two build stages were being redone to reach the test stages
+that were actually being iterated on.
+
+**The marker is a plain file and not a checksum of the inputs, and that is the
+part worth arguing.** A checksum would catch an edit to `src/` and a plain marker
+does not, so editing a binding and rerunning a test stage tests the old mpif and
+passes -- which is exactly the class of failure `CLAUDE.md`'s longest section is
+named after. Two things decided it anyway. First, the checksum cannot be made
+complete: `ci-scripts/install-mpi-header.sh:24-25` does a `git clone --depth 1` of
+`mpi-forum/mpi-abi-stubs` at whatever HEAD is that day, so nothing computed from
+files in this repository says what an MPI prefix was built from, and a marker that
+looked authoritative without being so is worse than one that plainly says "I was
+here". Second, the existing `prepared-<version>-<cksum>` stamp in
+`ci-scripts/install-mpich.sh:144` is the cautionary example rather than the
+precedent: it is a genuine checksum, and it still missed the case in `CLAUDE.md`
+"the MPI is configured and built in place there", because what it covers and what
+actually determines the result are not the same set.
+
+So the mitigation is provenance rather than prevention. Each marker records the
+time, the commit, whether the tree was dirty and the compilers; an mpif marker
+also names the MPI marker it was built against, because a reinstall at the same
+path changes what `libmpi_abi`'s install name says without the path moving. Every
+stage that consumes a marker prints it, so a run against a stale build says so on
+screen instead of being indistinguishable from a fresh one.
+
+Only the two *build* stages skip. The test, suite and consume trees are still
+deleted and rebuilt on every run, and that asymmetry is deliberate: those are
+cheap, and they are where the two mechanisms in `CLAUDE.md` that silently reuse
+stale binaries live -- `runtests` rebuilds a test only when its executable is
+missing, and `ctest` alone does not rebuild at all.
+
+### CI and the Docker images keep their own directory layouts
+
+On 2026-08-07 everything the local scripts build moved from `mpi/` and twelve
+`build-*` directories at the repo root into one `build/`, and on 2026-08-08 that
+was regrouped by stage and given the markers the entry above describes;
+`CLAUDE.md` has the layout. `.github/workflows/ci.yaml` and
+`docker/*.dockerfile` were deliberately left as they were, and this entry is so
+that the divergence reads as a decision rather than as three places somebody
+forgot.
+
+The reason is that the problem being solved does not exist there. The scatter
+was a working tree accumulating twenty-two artifact directories over months;
+CI's live in `$RUNNER_TEMP` and the images' in `/cactus`, both of which start
+empty and are thrown away. Of CI's trees only `build`, `build-tests`,
+`build-asan` and `build-asan-tests` are in the checkout at all, and `/build*/`
+already ignores them.
+
+The shapes also differ for stated reasons rather than by accident. CI's prefixes
+are keyed by implementation alone -- `opt/mpi-mpich`, not `opt/mpi-mpich-gcc` --
+because the toolchain is the job, and `ci.yaml:71-76` records that the cross job
+restores two implementations onto one runner and their absolute paths must not
+collide. The images put `mpif-<variant>` beside `/cactus/mpif` rather than under
+it because the source directory is what the staged `COPY`s populate, and nesting
+build output inside it changes what later layers see.
+
+Against that, renaming a CI path has already gone wrong once here:
+`ci.yaml:214-218` records having to bump a cache key prefix from `mpi-` to
+`mpi2-` after the last such rename, because stale caches restored to the old
+location and the result looked like a broken installation rather than a stale
+cache. Paying that again to make two unrelated trees rhyme is a bad trade. If
+convergence is ever wanted, the images are the safe half -- nothing there is
+keyed on a path -- and it belongs in its own commit.
+
 ### An unpruned Open MPI prefix, and the six handle-conversion I/O tests it fails
 
 On 2026-08-04 a local suite run on `openmpi/gcc/darwin/26/arm64` and
@@ -957,8 +1031,8 @@ up, so "the data never reaches the file". Both halves are too generous. The queu
 is small, but Open MPI derives its limit from the wrong sysctl, cannot retry the
 way it thinks it can, discards the failure when it happens, and then leaks the
 slots it did get. Four separable defects, and the last two are what turn a lost
-write into a dead file handle. Paths below are relative to `mpi/src-openmpi-gcc/ompi`
-(Open MPI 6.1.0a1).
+write into a dead file handle. Paths below are relative to the clone at
+`build/openmpi-gcc/mpi-src/ompi` (Open MPI 6.1.0a1).
 
 **The limit is per process, and Open MPI reads the system-wide one.**
 `ompi/mca/fbtl/posix/fbtl_posix.c:107` sets `ompi_fbtl_posix_max_prd_active_reqs`,

@@ -5,6 +5,13 @@
 # MPICH's Fortran test suite.
 #
 # Usage: scripts/macos-build.sh <mpich|openmpi> <gcc|llvm>
+#
+# The two build stages skip when their prefix is already marked complete, so
+# re-running this after a suite failure costs the tests and nothing else. Set
+# MPIF_REBUILD=1 to rebuild them anyway; see scripts/macos-common.sh.
+#
+# This is the native chain for one variant. dev/build-macos-all.sh drives the
+# whole matrix, including the cross runs, a stage at a time.
 
 set -euo pipefail
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)

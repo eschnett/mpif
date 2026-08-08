@@ -4,11 +4,21 @@
 # through find_package(mpif).
 #
 # Usage: scripts/macos-test-consume.sh <mpich|openmpi> <gcc|llvm>
+#
+# There is no runtime-MPI argument: this checks that find_package(mpif) resolves
+# and that what it produces runs, which is a property of the installation rather
+# than of either implementation, so it is only run natively.
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/macos-common.sh" "$@"
 
-build=${repodir}/test-consume/build-${variant}
+require_marker "${mpif_prefix}" \
+    "${MPIF_SANITIZE:+MPIF_SANITIZE=${MPIF_SANITIZE} }scripts/macos-build-mpif.sh ${mpi} ${toolchain}"
+
+echo "Consuming the mpif in build/mpif/${tagged}:"
+show_marker "${mpif_prefix}"
+
+build=${consume_build}
 
 rm -rf "${build}"
 cmake \
