@@ -2133,13 +2133,42 @@ expect some churn: a flaky entry surfaces as an unexpected pass, which is the
 mechanism working rather than failing. Three entries are already marked as seen
 on one variant only and therefore suspect.
 
-`test/`, mpif's own suite, was 32 of 32 and is now 51 of 51, the most recent
-additions being the seven alltoallw ones and, before them, the four PMPI ones --
-`pmpi_f`, `pmpi_f90`, `pmpi_f08` and `profile_f90` -- and `profile_f08`, which
-interposes an f08 specific. Green on all twelve variants in CI up to the PMPI
-five; `profile_f08` and the alltoallw seven have been run on
-`mpich/gcc/darwin/26/arm64`, `mpich/llvm/darwin/26/arm64` and
-`openmpi/gcc/darwin/26/arm64`, the rest being CI's to confirm.
+`test/`, mpif's own suite, was 32 of 32, then 51 of 51, and is now 69 of 69. The
+count is `ctest`'s and not `add_mpi_test`'s, which is 61: the runtime-check and
+`mpif_info` groups below register some of their cases with a bare `add_test`,
+because what they assert is about the environment a program was launched into
+rather than about a Fortran binding.
+
+The eighteen added since 51 are, newest first:
+
+- **Two for `mpif_info`** (`e6dad68`), the installed diagnostic: once under the
+  launcher and once as `mpif_info_singleton`, standalone, which is the case that
+  has no `MPI_COMM_WORLD` to describe.
+- **Eleven for the runtime consistency checks** (`fb32cb5`): `check_f`,
+  `check_f90`, `check_f08` and `check_c` call `mpif_check_version` and
+  `mpif_check_environment` from each binding mpif provides and from C,
+  `check_version_fail_f90` is the failing case, and six `check_env*` drive
+  `MPIF_SIZE`, `MPIF_NUM_NODES`, `MPIF_NODE_SIZE`, `MPIF_MPI_LIBRARY` and a run
+  with no launcher at all. `check_f08` wants three ranks and
+  `check_version_fail_f90` exactly one.
+- **One, `handle_types_f90`** (`66aac13`), for the `mpi` module gaining
+  `TYPE(MPI_Status)`, the handle types and the converters.
+- **One, `keyval_create_f08`** (`1904626`), for the two deprecated f08
+  callbacks' `extra_state` defaulting to `INTEGER`.
+- **Two, `gather_root_f08` and `gather_inter_f08`** (`12d45f7`), for root-only
+  arguments being converted at the root rather than on rank 0 -- two ranks and
+  three, the second because an intercommunicator is the case where the two
+  differ.
+- **One, `sizeof_f`** (`44116ed`), for `MPI_Sizeof`'s scalar, `CHARACTER` and
+  integer-typed forms in fixed form.
+
+Green on all twelve variants in CI up to the PMPI five. Everything since,
+including all eighteen above, has been run on all four local variants --
+`{mpich,openmpi}/{gcc,llvm}/darwin/26/arm64` -- as of 2026-08-08, each against
+both implementations at run time, and the two AddressSanitizer variants against
+both besides: twelve runs of 69 of 69. `openmpi/llvm/darwin/26/arm64` is in that
+set now, which it was not when this paragraph named three variants. CI's rows for
+the eighteen are still CI's to confirm.
 
 The alltoallw seven are the first tests here that need more than one rank, which
 `add_mpi_test`'s `NPROCS` supplies -- and they need it: at one rank a group size,
