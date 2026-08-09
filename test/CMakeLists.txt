@@ -238,3 +238,49 @@ add_mpi_test(gather_root_f08        SOURCES gather_root_f08.f90       NPROCS 2  
 # Three, so that the root is not the first process of its own group and MPI_ROOT
 # is the only thing that identifies it.
 add_mpi_test(gather_inter_f08       SOURCES gather_inter_f08.f90      NPROCS 3      LIBS MPI::MPI_Fortran)
+
+# TS 29113 choice buffers. The expected value of MPI_SUBARRAYS_SUPPORTED is
+# re-derived here -- "auto" runs the same probe the mpif build ran, an
+# explicit ON/OFF overrides it -- so subarrays_constants_f08 cannot pass
+# vacuously: an mpi_f08 whose constants disagree with what its buffers can do
+# fails the test whichever way the disagreement goes. A build configured with
+# -DMPIF_ENABLE_CFI=OFF on a capable toolchain has to pass OFF here too.
+set(MPIF_TEST_EXPECT_SUBARRAYS "auto" CACHE STRING
+  "Expected MPI_SUBARRAYS_SUPPORTED in mpi_f08: auto, ON or OFF")
+if(MPIF_TEST_EXPECT_SUBARRAYS STREQUAL "auto")
+  if(CMAKE_CROSSCOMPILING)
+    set(_mpif_test_cfi_probe_run OFF)
+  else()
+    set(_mpif_test_cfi_probe_run ON)
+  endif()
+  try_compile(MPIF_TEST_HAVE_CFI
+    ${CMAKE_CURRENT_BINARY_DIR}/cfi-probe
+    ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/cfi-probe
+    cfi-probe
+    CMAKE_FLAGS "-DMPIF_PROBE_RUN=${_mpif_test_cfi_probe_run}")
+  set(_mpif_test_expect ${MPIF_TEST_HAVE_CFI})
+else()
+  set(_mpif_test_expect ${MPIF_TEST_EXPECT_SUBARRAYS})
+endif()
+add_mpi_test(subarrays_constants_f08 SOURCES subarrays_constants_f08.F90 LIBS MPI::MPI_Fortran)
+if(_mpif_test_expect)
+  target_compile_definitions(subarrays_constants_f08 PRIVATE MPIF_EXPECT_SUBARRAYS=1)
+else()
+  target_compile_definitions(subarrays_constants_f08 PRIVATE MPIF_EXPECT_SUBARRAYS=0)
+endif()
+
+# Noncontiguous sections to nonblocking calls -- the case the constant names.
+# -O2 on purpose, like status_error_f08: ASYNCHRONOUS on the caller's arrays
+# is what holds the optimiser off across MPI_Wait, and -O0 would hide a
+# binding that lost the attribute.
+add_mpi_test(subarray_nonblocking_f08 SOURCES subarray_nonblocking_f08.f90 LIBS MPI::MPI_Fortran)
+target_compile_options(subarray_nonblocking_f08 PRIVATE $<$<COMPILE_LANGUAGE:Fortran>:-O2>)
+# Sentinels, layouts and shapes through descriptors. The blocking cases must
+# pass on the fallback branch too (compiler copy-in/copy-out is correct
+# there); on the TS branch they exercise the cdesc walker, the sentinel
+# recognition, and the reduction family's 6.9.1 contiguity refusal.
+add_mpi_test(inplace_cfi_f08        SOURCES inplace_cfi_f08.f90                     LIBS MPI::MPI_Fortran)
+add_mpi_test(bottom_cfi_f08         SOURCES bottom_cfi_f08.f90                      LIBS MPI::MPI_Fortran)
+add_mpi_test(scalar_char_cfi_f08    SOURCES scalar_char_cfi_f08.f90                 LIBS MPI::MPI_Fortran)
+target_compile_options(scalar_char_cfi_f08 PRIVATE $<$<COMPILE_LANGUAGE:Fortran>:-O2>)
+add_mpi_test(reduction_noncontig_cfi_f08 SOURCES reduction_noncontig_cfi_f08.f90  LIBS MPI::MPI_Fortran)
