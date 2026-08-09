@@ -13,9 +13,15 @@
 # interpose, and the two declarations have to match. gfortran compares them too,
 # but only warns, which a build this size will bury.
 #
-# The specifics carry Table 19.1's `_f08` token and the appendix does not, A.4
-# giving each binding under the name a program writes. Stripping the token is
-# what lines the two up.
+# The specifics carry a Table 19.1 token and the appendix does not, A.4 giving
+# each binding under the name a program writes. Stripping the token -- `_f08`,
+# or `_f08ts` where MPIF_HAVE_CFI gives a choice-buffer routine the assumed-rank
+# form -- is what lines the two up. Where the generated files carry
+# `#ifdef MPIF_HAVE_CFI` branches, each branch is parsed and compared on its
+# own, because the two declare the same routine under different specific names;
+# on the assumed-rank branch the buffers are held to A.4 verbatim, INTENT and
+# ASYNCHRONOUS included, and only the fallback branch keeps the recorded
+# buffer divergence below.
 #
 # The appendices give no PMPI bindings, so "the same declarations as their twin"
 # is the only thing there is to check about the second set -- and it is the thing a
@@ -246,6 +252,13 @@ function attributes(lhs)
         # a TYPE(C_PTR) take it by value, and one declared without VALUE would
         # receive something else entirely while reading the same in the type.
         "value" => match(r",\s*VALUE\b"i, lhs) !== nothing,
+        # ASYNCHRONOUS is part of what MPI_ASYNC_PROTECTS_NONBLOCKING promises:
+        # a nonblocking routine's buffer must carry it for the compiler to keep
+        # its hands off the actual argument until the request completes. Only
+        # the assumed-rank buffers are compared on it -- the fallback buffers
+        # are passed over wholesale below -- but it is recorded for every
+        # argument, which costs nothing and keeps the record uniform.
+        "asynchronous" => match(r",\s*ASYNCHRONOUS\b"i, lhs) !== nothing,
         "type" => strip(lhs),
         "base" => base_type(lhs))
 end
@@ -385,6 +398,48 @@ function parse_predefined_callbacks(attr_fns, mpi_f08)
 end
 
 """
+The lines a C preprocessor would keep, given the macros to treat as undefined.
+
+gen/'s .F90 files carry preprocessor branches: `MPIF_HAVE_CFI` selects the
+TS 29113 choice buffers over the `ignore_tkr` fallback, and the
+`MPIF_ADDRESS_KIND_DIFFERS_*` guards drop large-count specifics that would be
+ambiguous where the kinds coincide. Parsing the raw text would put both branches
+of the first in one dictionary slot -- `MPI_Send_f08ts` and `MPI_Send_f08` both
+strip to `MPI_Send` -- so the parse has to pick a branch. Every macro *not*
+named in `undefines` counts as defined, which preserves the old whole-file view
+for the `ADDRESS_KIND` guards: they have no `#else`, and defined shows every
+specific, exactly as ignoring the `#` lines used to. Only
+`#ifdef`/`#ifndef`/`#else`/`#endif` appear in these files, and anything else
+starting a line with `#` stops the run rather than being half-understood.
+"""
+function cpp_lines(lines, undefines)
+    kept = eltype(lines)[]
+    stack = Bool[]
+    for (n, ln) in enumerate(lines)
+        s = strip(ln)
+        if startswith(s, "#")
+            m = match(r"^#\s*(ifdef|ifndef|else|endif)\b\s*(\w*)", s)
+            m === nothing && error("line $n: unsupported preprocessor line: $s")
+            if m[1] == "ifdef"
+                push!(stack, m[2] ∉ undefines)
+            elseif m[1] == "ifndef"
+                push!(stack, m[2] ∈ undefines)
+            elseif m[1] == "else"
+                isempty(stack) && error("line $n: #else without #if")
+                stack[end] = !stack[end]
+            else
+                isempty(stack) && error("line $n: #endif without #if")
+                pop!(stack)
+            end
+        elseif all(stack)
+            push!(kept, ln)
+        end
+    end
+    isempty(stack) || error("$(length(stack)) unclosed #if at end of file")
+    return kept
+end
+
+"""
 The same shape, from a generated file, at a given indentation.
 
 Two callers, and comparing what they return is the point of having both. The
@@ -398,8 +453,8 @@ cross-check is a warning that a 100,000-line build will bury.
 A body's locals and executable statements need no special handling: a name that
 is not a dummy argument is dropped, and a statement carries no `::`.
 """
-function parse_generated(path, ind="  "; after=nothing)
-    lines = split(read(path, String), "\n")
+function parse_generated(path, ind="  "; after=nothing, undefines=Set{String}())
+    lines = cpp_lines(split(read(path, String), "\n"), undefines)
     routines = Dict{String,Any}()
     i, n = 1, length(lines)
     # gen/mpif_f08_functions.F90 holds two modules, and mpif_f08_raw's interface
@@ -449,8 +504,16 @@ Compare one set of declarations against the standard's.
 `where` names the appendix section, `what` names what is being checked against
 it, and `absent` explains a name the standard has and mpif does not. Returns
 (problems, a count of the `expected` divergences passed over).
+
+`check_async` holds the declarations to A.4's ASYNCHRONOUS as well, which is
+asked only of the MPIF_HAVE_CFI branch: there `MPI_ASYNC_PROTECTS_NONBLOCKING`
+is `.TRUE.`, and the attribute is the promise it names -- on the choice buffers
+and equally on the persistent collectives' metadata arrays and
+`MPI_Comm_idup`'s `newcomm`, which A.4 marks and a copy-in/out would break the
+same way. The fallback branch is the `.FALSE.` option and deliberately carries
+none.
 """
-function compare(std, ours, where, what, absent)
+function compare(std, ours, where, what, absent; check_async=false)
     problems = 0
     passed_over = Dict{String,Int}()
     over!(kind) = passed_over[kind] = get(passed_over, kind, 0) + 1
@@ -486,10 +549,16 @@ function compare(std, ours, where, what, absent)
         end
         for p in g["args"]
             sp, gp = s["params"][p], g["params"][p]
-            # A choice buffer is `TYPE(*), DIMENSION(..)` in the standard and
-            # `integer :: buf(*)` here, deliberately, so neither its type nor its
-            # missing intent is a finding. Count them and move on.
-            if occursin("DIMENSION(..)", sp["type"])
+            # A choice buffer is `TYPE(*), DIMENSION(..)` in the standard and,
+            # on the fallback branch, `integer :: buf(*)` here, deliberately, so
+            # there neither its type nor its missing intent is a finding: count
+            # them and move on. On the MPIF_HAVE_CFI branch mpif declares the
+            # same assumed-rank form the standard does, and then the buffer is
+            # compared like any other argument -- type, INTENT and ASYNCHRONOUS
+            # -- which is what pins the generator's intent overrides and the
+            # `asynchronous` field of apis.json to A.4.
+            if occursin("DIMENSION(..)", sp["type"]) &&
+               !occursin("dimension(..)", lowercase(gp["type"]))
                 over!("buffers")
                 continue
             end
@@ -518,6 +587,13 @@ function compare(std, ours, where, what, absent)
                         "\n         $where: $(sp["type"])" *
                         "\n         mpif:   $(gp["type"])")
             end
+            if check_async && sp["asynchronous"] != gp["asynchronous"]
+                problems += 1
+                println("ASYNC  $name / $p: $where says $(sp["asynchronous"] ? "ASYNCHRONOUS" : "no ASYNCHRONOUS"), " *
+                        "$what says $(gp["asynchronous"] ? "ASYNCHRONOUS" : "no ASYNCHRONOUS")" *
+                        "\n         $where: $(sp["type"])" *
+                        "\n         mpif:   $(gp["type"])")
+            end
         end
     end
     return problems, passed_over
@@ -542,54 +618,80 @@ function main()
     # against A.4 under its twin's name: nothing else states that the two are the
     # same binding, and the whole point of a PMPI name is that a call written
     # against one can be made through the other unchanged.
-    # The specifics carry Table 19.1's `_f08` token, which the appendix does not:
-    # A.4 gives the binding under the name a program writes, and the token names
-    # the procedure a call resolves to. Strip it, and the P with it, to compare.
-    unsuffix(name) = endswith(name, "_f08") ? name[1:end-4] : name
-    generated = parse_generated(gen_file, "     "; after="module mpif_f08_functions")
-    mpi_generated = Dict(unsuffix(kv[1]) => kv[2]
-                         for kv in generated if !startswith(kv[1], "PMPI_"))
-    pmpi_generated = Dict(unsuffix(kv[1][2:end]) => kv[2]
-                          for kv in generated if startswith(kv[1], "PMPI_"))
+    # The specifics carry a Table 19.1 token, which the appendix does not: A.4
+    # gives the binding under the name a program writes, and the token names the
+    # procedure a call resolves to -- `_f08` where the choice buffers are the
+    # `ignore_tkr` fallback and `_f08ts` where MPIF_HAVE_CFI selects the
+    # assumed-rank form. Strip either, and the P with it, to compare.
+    unsuffix(name) = endswith(name, "_f08ts") ? name[1:end-6] :
+                     endswith(name, "_f08") ? name[1:end-4] : name
 
-    # Every specific is declared twice, in the module and over its body. They are
-    # emitted from one pass and so ought to agree; this is what says they do,
-    # gfortran's own cross-check between the two being a warning rather than an
-    # error and easily lost in the build.
-    bodies = parse_generated(wrappers_file, "")
-    if keys(bodies) != keys(generated)
-        only_ifc = sort(collect(setdiff(keys(generated), keys(bodies))))
-        only_body = sort(collect(setdiff(keys(bodies), keys(generated))))
-        println("WRAPPERS declared and not defined: $only_ifc")
-        println("WRAPPERS defined and not declared: $only_body")
-        problems_wrappers = length(only_ifc) + length(only_body)
-    else
-        problems_wrappers = 0
-        for name in sort(collect(keys(generated)))
-            if generated[name] != bodies[name]
-                println("WRAPPERS $name: interface and body disagree")
-                problems_wrappers += 1
+    problems = 0
+    passed_over = Dict{String,Int}()
+
+    # The generated files are parsed once per preprocessor branch, since each
+    # branch declares the same routine under a different specific name and a
+    # single parse would land both in one slot. A file with no MPIF_HAVE_CFI in
+    # it has only one branch, and one pass.
+    passes = occursin("MPIF_HAVE_CFI", read(gen_file, String)) ?
+        ["MPIF_HAVE_CFI" => Set{String}(), "fallback" => Set(["MPIF_HAVE_CFI"])] :
+        ["" => Set{String}()]
+    for (passname, undefs) in passes
+        isempty(passname) ||
+            println("=== generated declarations, $passname branch ===\n")
+        generated = parse_generated(gen_file, "     ";
+                                    after="module mpif_f08_functions",
+                                    undefines=undefs)
+        mpi_generated = Dict(unsuffix(kv[1]) => kv[2]
+                             for kv in generated if !startswith(kv[1], "PMPI_"))
+        pmpi_generated = Dict(unsuffix(kv[1][2:end]) => kv[2]
+                              for kv in generated if startswith(kv[1], "PMPI_"))
+
+        # Every specific is declared twice, in the module and over its body. They
+        # are emitted from one pass and so ought to agree; this is what says they
+        # do, gfortran's own cross-check between the two being a warning rather
+        # than an error and easily lost in the build.
+        bodies = parse_generated(wrappers_file, ""; undefines=undefs)
+        if keys(bodies) != keys(generated)
+            only_ifc = sort(collect(setdiff(keys(generated), keys(bodies))))
+            only_body = sort(collect(setdiff(keys(bodies), keys(generated))))
+            println("WRAPPERS declared and not defined: $only_ifc")
+            println("WRAPPERS defined and not declared: $only_body")
+            problems_wrappers = length(only_ifc) + length(only_body)
+        else
+            problems_wrappers = 0
+            for name in sort(collect(keys(generated)))
+                if generated[name] != bodies[name]
+                    println("WRAPPERS $name: interface and body disagree")
+                    problems_wrappers += 1
+                end
             end
         end
-    end
-    println("$(length(generated)) specifics declared, $(length(bodies)) defined, " *
-            "$(problems_wrappers == 0 ? "identical" : "$problems_wrappers disagreeing")")
-    println()
+        problems += problems_wrappers
+        println("$(length(generated)) specifics declared, $(length(bodies)) defined, " *
+                "$(problems_wrappers == 0 ? "identical" : "$problems_wrappers disagreeing")")
+        println()
 
-    checks = [
-        (standard, mpi_generated, "A.4", "generated",
-         "not generated (hand-written or a callback)"),
-        (standard, pmpi_generated, "A.4", "generated PMPI, P stripped",
-         "not generated (hand-written or a callback)"),
+        for (n, args) in enumerate([
+            (standard, mpi_generated, "A.4", "generated",
+             "not generated (hand-written or a callback)"),
+            (standard, pmpi_generated, "A.4", "generated PMPI, P stripped",
+             "not generated (hand-written or a callback)"),
+        ])
+            n == 1 || println()
+            p, over = compare(args...; check_async=(passname == "MPIF_HAVE_CFI"))
+            problems += p
+            mergewith!(+, passed_over, over)
+        end
+        println()
+    end
+
+    for (n, args) in enumerate([
         (parse_standard_prototypes(pdf_path), parse_abstract_interfaces(types_file), "A.1.3",
          "in mpif_f08_types", "not declared here (deprecated, or C-only)"),
         (filter(kv -> haskey(predefined, kv[1]), standard), predefined, "A.4",
          "in mpif_f08_attr_fns", "not declared here"),
-    ]
-
-    problems = problems_wrappers
-    passed_over = Dict{String,Int}()
-    for (n, args) in enumerate(checks)
+    ])
         n == 1 || println()
         p, over = compare(args...)
         problems += p
