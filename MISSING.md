@@ -1,2090 +1,684 @@
 # Missing features and known errors
 
-What mpif gets wrong, does not do, or cannot do because something outside it is
-broken -- plus the decisions not to do something, which stay, since an unrecorded
-decision is indistinguishable from an oversight. Entries are removed once they are
-resolved, so the rest of this file is only ever the outstanding list. Nothing in
-the source tree refers to it.
+What mpif gets wrong, does not do, or cannot do because something outside it
+is broken — plus the decisions not to do something, which stay, since an
+unrecorded decision is indistinguishable from an oversight. Entries are
+removed once resolved (settled questions move to "Verified as correct" in
+`CODE.md`; the stories behind them to `HISTORY.md`); comments in the source
+tree and in `ci-scripts/suite/mpich-suite-xfail.txt` name entries here, so
+renaming an entry means grepping for its title.
 
-How the code is built and why it is right is `CODE.md`; how to build, test and
-verify it is `CLAUDE.md`. Findings here are checked against `data/apis.json`, the
-generated output, the official ABI header and the MPI-5.0 standard, rather than by
-reading the generator alone -- see "Checking a claim" in `CLAUDE.md`.
+Findings here are checked against `data/apis.json`, the generated output, the
+official ABI header and the MPI-5.0 standard — see "Checking a claim" in
+`CLAUDE.md`.
 
 ## Errors
 
-None outstanding. Entries here go away when they are fixed, and the ones worth
-not re-investigating afterwards are under "Verified as correct" in `CODE.md`;
-what else remains in this file is features mpif does not have, blockers outside
-it, and decisions.
+None outstanding.
 
 ## Not defects
 
-Failures that were investigated and turned out not to be mpif's, and not an
-implementation's either. They are here so that the next person who sees the same
-symptom does not diagnose it again, and so that the decision not to add an
-expected-failure entry for them is on the record: an `xfail` line would have
-made a broken environment permanent.
+Failures investigated and found to be neither mpif's nor an implementation's,
+recorded so the same symptom is not diagnosed twice — and so the decision not
+to `xfail` them is on the record, since an `xfail` line would make a broken
+environment permanent.
 
 ### The local build stages skip when already installed, and can therefore be stale
 
-On 2026-08-08 the local build was split into independent stages -- four MPI
-installs, four mpif installs, eight `test/` runs and eight suite runs -- and each
-build stage was given an `install-complete` marker that a rerun of that stage
-checks and stops on. `MPIF_REBUILD=1` deletes and rebuilds regardless. The layout
-that goes with it is in `CLAUDE.md`.
+The MPI and mpif build stages skip on an `install-complete` marker;
+`MPIF_REBUILD=1` rebuilds. Operational consequences are in `CLAUDE.md`
+"Build-stage caching". The decision worth defending:
 
-The reason is arithmetic. Sixteen test runs across four MPIs and four mpifs used
-to mean re-paying for an MPI install, which is tens of minutes, every time the
-chain was run; the two build stages were being redone to reach the test stages
-that were actually being iterated on.
-
-**The marker is a plain file and not a checksum of the inputs, and that is the
-part worth arguing.** A checksum would catch an edit to `src/` and a plain marker
-does not, so editing a binding and rerunning a test stage tests the old mpif and
-passes -- which is exactly the class of failure `CLAUDE.md`'s longest section is
-named after. Two things decided it anyway. First, the checksum cannot be made
-complete: `ci-scripts/install-mpi-header.sh:24-25` does a `git clone --depth 1` of
-`mpi-forum/mpi-abi-stubs` at whatever HEAD is that day, so nothing computed from
-files in this repository says what an MPI prefix was built from, and a marker that
-looked authoritative without being so is worse than one that plainly says "I was
-here". Second, the existing `prepared-<version>-<cksum>` stamp in
-`ci-scripts/install-mpich.sh:144` is the cautionary example rather than the
-precedent: it is a genuine checksum, and it still missed the case in `CLAUDE.md`
-"the MPI is configured and built in place there", because what it covers and what
-actually determines the result are not the same set.
-
-So the mitigation is provenance rather than prevention. Each marker records the
-time, the commit, whether the tree was dirty and the compilers; an mpif marker
-also names the MPI marker it was built against, because a reinstall at the same
-path changes what `libmpi_abi`'s install name says without the path moving. Every
-stage that consumes a marker prints it, so a run against a stale build says so on
-screen instead of being indistinguishable from a fresh one.
-
-Only the two *build* stages skip. The test, suite and consume trees are still
-deleted and rebuilt on every run, and that asymmetry is deliberate: those are
-cheap, and they are where the two mechanisms in `CLAUDE.md` that silently reuse
-stale binaries live -- `runtests` rebuilds a test only when its executable is
-missing, and `ctest` alone does not rebuild at all.
+- **The marker is a plain file, not a checksum of the inputs.** A complete
+  checksum is impossible — `ci-scripts/install-mpi-header.sh` clones
+  `mpi-forum/mpi-abi-stubs` at whatever HEAD is that day — and a marker that
+  looked authoritative without being so is worse than one that plainly says
+  "I was here". (The existing `prepared-<version>-<cksum>` stamp in
+  `install-mpich.sh` is the cautionary example: a genuine checksum that still
+  missed the relink-on-prefix-move case.)
+- Mitigation is provenance: each marker records time, commit, dirtiness and
+  compilers; an mpif marker names the MPI marker it was built against; every
+  consuming stage prints it.
+- Only the two *build* stages skip. The test, suite and consume trees are
+  deleted and rebuilt every run, deliberately: they are cheap, and they are
+  where the two silent-reuse mechanisms live (`runtests` rebuilds only
+  missing executables; `ctest` never rebuilds).
 
 ### CI and the Docker images keep their own directory layouts
 
-On 2026-08-07 everything the local scripts build moved from `mpi/` and twelve
-`build-*` directories at the repo root into one `build/`, and on 2026-08-08 that
-was regrouped by stage and given the markers the entry above describes;
-`CLAUDE.md` has the layout. `.github/workflows/ci.yaml` and
-`docker/*.dockerfile` were deliberately left as they were, and this entry is so
-that the divergence reads as a decision rather than as three places somebody
-forgot.
+The local scripts use the staged `build/` layout; `.github/workflows/ci.yaml`
+and `docker/*.dockerfile` deliberately do not.
 
-The reason is that the problem being solved does not exist there. The scatter
-was a working tree accumulating twenty-two artifact directories over months;
-CI's live in `$RUNNER_TEMP` and the images' in `/cactus`, both of which start
-empty and are thrown away. Of CI's trees only `build`, `build-tests`,
-`build-asan` and `build-asan-tests` are in the checkout at all, and `/build*/`
-already ignores them.
-
-The shapes also differ for stated reasons rather than by accident. CI's prefixes
-are keyed by implementation alone -- `opt/mpi-mpich`, not `opt/mpi-mpich-gcc` --
-because the toolchain is the job, and `ci.yaml:71-76` records that the cross job
-restores two implementations onto one runner and their absolute paths must not
-collide. The images put `mpif-<variant>` beside `/cactus/mpif` rather than under
-it because the source directory is what the staged `COPY`s populate, and nesting
-build output inside it changes what later layers see.
-
-Against that, renaming a CI path has already gone wrong once here:
-`ci.yaml:214-218` records having to bump a cache key prefix from `mpi-` to
-`mpi2-` after the last such rename, because stale caches restored to the old
-location and the result looked like a broken installation rather than a stale
-cache. Paying that again to make two unrelated trees rhyme is a bad trade. If
-convergence is ever wanted, the images are the safe half -- nothing there is
-keyed on a path -- and it belongs in its own commit.
+- The problem the layout solves (a working tree accumulating dozens of
+  artifact directories) does not exist there: CI's trees live in
+  `$RUNNER_TEMP`, the images' in `/cactus`, both thrown away.
+- CI's prefixes are keyed by implementation alone (`opt/mpi-mpich`) because
+  the toolchain is the job, and the cross job restores two implementations
+  onto one runner whose paths must not collide (`ci.yaml:71-76`).
+- The images put `mpif-<variant>` beside `/cactus/mpif` because the source
+  directory is what the staged `COPY`s populate.
+- Renaming a CI path has already cost a cache-key bump once (`mpi-` →
+  `mpi2-`, `ci.yaml:214-218`); paying that to make unrelated trees rhyme is a
+  bad trade. If convergence is ever wanted, the images are the safe half.
 
 ### An unpruned Open MPI prefix, and the six handle-conversion I/O tests it fails
 
-On 2026-08-04 a local suite run on `openmpi/gcc/darwin/26/arm64` and
-`openmpi/llvm/darwin/26/arm64` reported six unexpected failures, two in each
-language directory: `c2f2ciof90` and `c2f90multio` in `f08/io` and `f90/io`,
-`c2f2ciof` and `c2fmultio` in `f77/io`. They are the `MPI_File_c2f`/`MPI_File_f2c`
-round trips. `c2f2ciof90` printed "File: did not get expected group" and then
-aborted in `MPI_Group_compare` with `MPI_ERR_GROUP`; `c2f90multio` took a SIGSEGV
-whose only interesting frame was `MTest_Finalize`.
+Symptom: the six `MPI_File_c2f`/`f2c` round-trip tests (`c2f2ciof*`,
+`c2f*multio` across f77/f90/f08) fail on Open MPI — aborts in
+`MPI_Group_compare` with `MPI_ERR_GROUP`, or a SIGSEGV under
+`MTest_Finalize`.
 
-Nothing was wrong with `fortran/f2c_abi_openmpi.c` or with the declarations
-`fortran/mpi.h.patch` adds. MPI-5.0 section 19.3.4, "Transfer of Handles", gives
-`MPI_File MPI_File_f2c(MPI_Fint file)` and `MPI_Fint MPI_File_c2f(MPI_File
-file)`, which is what both the patch and the bindings declare, and
-`data/apis.json` agrees. Two cheap measurements would each have been enough to
-stop looking at the bindings, and both should come before reading them next
-time: the same six tests pass on MPICH -- all 22 of `f08/io` pass on
-`mpich/gcc/darwin/26/arm64`, and the MPICH prefixes differ from the Open MPI ones
-only in being correctly installed -- and `ci-scripts/suite/mpich-suite-xfail.txt`
-has no entry for any of them on the four Open MPI variants CI gates, so CI
-watches these tests pass against Open MPI on every run.
-
-What was wrong was `mpi/openmpi-gcc` and `mpi/openmpi-llvm`. Neither had had any
-of the three steps `ci-scripts/install-openmpi.sh` runs after `make install`. So
-`include/` still had Open MPI's own `mpi.h`, `mpif.h` and fourteen more entries
-where a pruned prefix has one; `lib/` still had `libmpi`, `libmpi_mpifh` and
-`libmpi_usempif08` beside `libmpi_abi`; `bin/` still had Open MPI's own
-`mpifort`; and `bin/mpicc` still said `-lmpi` rather than `-lmpi_abi`. That the
-script had not run at all, rather than run and failed partway, is what the
-preparation stamp in `mpi/src-openmpi-gcc` says: the only one there was from
-before the aio patch joined the patch list, and the script names a stamp after a
-checksum of itself and its patches, so a run since then would have left a second
-one. Everything in the prefix was newer than that, and newer than the suite tree
-built against it. The likeliest story -- inferred, not measured -- is a `make
-install` by hand from the prepared tree while the aio defect was being chased.
-
-That is enough to produce these six failures and no others, because the
-suite compiles its C with the implementation's `mpicc` and its Fortran with
-mpif's `mpifort`. Every Fortran-only test still went through mpif and the ABI
-library and was unaffected. The three mixed C/Fortran tests compiled their C
-against Open MPI's own `mpi.h`, where `MPI_COMM_WORLD` is
-`&ompi_mpi_comm_world`, and were linked by `mpifort` against the ABI library,
-where it is `(MPI_Comm) 257`. `nm` on the pieces shows both halves of that:
-`c2f902cio.o` has an undefined `_ompi_mpi_comm_world`, and in the executable
-`_MPI_Comm_group` and `_MPI_File_f2c` resolve to `libmpi_abi` while
-`_ompi_mpi_comm_world` resolves to `libopen_mpi`. So the C half handed the ABI a
-pointer where an integer handle was expected, and `MPI_Group_compare` said
-`MPI_ERR_GROUP`.
-
-The three C-only tests were worse off still, being the ones the suite compiles
-*and* links with the implementation's `mpicc`. `util/libmtest_la-mtest.o`
-carries the ABI value -- `MTest_Finalize` begins `mov x0, #0x101`, which is 257
--- having survived, by its timestamp, from a build made while the prefix was
-still correct, while the test itself was rebuilt against the native header and
-`libmpi`. So
-`MTest_Finalize` passed 257 to a `MPI_Comm_rank` that dereferences its argument.
-The fault address was `0x1f9`, which is `257 + 0xf8`, `0xf8` being the offset of
-the first field that implementation reads; `lldb` puts the faulting instruction
-at `MPI_Comm_rank + 60`, `ldr w0, [x6, #0xf8]` with `x6` holding `0x101`. Open
-MPI's own signal handler had reported the frame above it, `MTest_Finalize + 36`,
-because the crashing function sets up no frame of its own.
-
-Reinstalling both prefixes with `scripts/macos-install-mpi.sh openmpi <gcc|llvm>`
-fixed all six, on both toolchains. `openmpi/gcc/darwin/26/arm64` and
-`openmpi/llvm/darwin/26/arm64` each report no differences against the list, with
-`c2f2ciof` and `c2fmultio` ok in f77 and `c2f2ciof90` and `c2f90multio` ok in
-both f90 and f08; `test/` is 51 of 51 on both.
-
-### The install scripts were not atomic, which is how the prefix got that way
-
-Chasing the above turned up the more useful finding, and it retires the guess in
-the paragraph above that a hand-run `make install` was to blame -- it may have
-been, but it did not have to be. `install-openmpi.sh` and `install-mpich.sh`
-`make install` into the prefix and only then repoint the wrapper compilers,
-prune, fetch the ABI header and check. **Between the first of those and the last
-the prefix exists and is not a standard-ABI installation**, and one of the steps
-in between is a `git clone` from GitHub, so the window can close badly with
-nobody at the keyboard. Nothing removed the prefix when a run failed there and
-nothing re-examined it later; `scripts/macos-install-mpi.sh` removes the prefix
-at the *start* of a run, so a rerun cures it, but nothing says a rerun is owed.
-The install killed part-way through this very session landed just short of the
-window -- it died in `configure` and so left no prefix at all, where a minute
-later it would have left the bad one.
-
-Both scripts now discard a prefix that their run did not finish, so the next
-thing to look for it fails saying it is absent rather than quietly building
-against it. Getting that right took two corrections worth recording, both
-measured on the block copied verbatim out of the script:
-
-- `trap ... EXIT` does not run when the shell dies of an untrapped signal, so
-  Ctrl-C -- the likeliest way an install ends early -- left the prefix behind.
-- Naming `INT` alongside `EXIT` is still not enough, because bash runs a trapped
-  `INT` handler with a status of zero, and a handler that asks `$?` whether the
-  run failed concludes that it did not. `TERM` and `HUP` do not behave that way.
-  So signals get their own handler, which never consults `$?`.
-
-Six cases were checked: success keeps the prefix, a failure before `make install`
-leaves it untouched, a failure after it removes it, and `INT`, `TERM` and `HUP`
-all remove it. The success path is covered by more than that block: the
-`openmpi/llvm` prefix that this entry is about was reinstalled by the changed
-script from a clean source tree, and it finished and kept its prefix. One
-intermediate result was a defect in the test rather than in
-the script and is worth knowing about, since it will mislead anyone who retests
-this: a script run as `cmd &` inherits `SIGINT` ignored, and bash cannot trap a
-signal it inherited as ignored, so an interrupt test that backgrounds its subject
-reports that the handler does not work when it does. Signalling a foreground
-script is what shows the truth.
-
-Three more things changed so that this cannot cost a diagnosis twice.
-`ci-scripts/check-mpi-install.sh` used to claim it compiled "a program that uses
-the ABI" and did not: an unpruned prefix compiled and linked it perfectly well,
-which is why the check passed on both broken prefixes. It now asserts
-`MPI_ABI_VERSION` at compile time -- MPI-5.0 section 20.2 puts that macro in the header
-"so that applications can check for consistency between the compilation
-environment and the properties of the implementation", and an implementation
-without the ABI reports `-1`, which is exactly what Open MPI's own `mpi.h` says
--- and then checks that the executable the wrapper produced links `libmpi_abi`.
-The two halves catch different failures and both were needed: the header check
-fires on the prefix as found, and the link check on a prefix whose header has
-been replaced but whose wrapper has not, which is the state after
-`install-mpi-header.sh` alone. Each was confirmed by putting the bug back, on
-`mpi/openmpi-llvm` in each of those two states, and a correctly installed
-`mpi/mpich-gcc` still passes.
-
-The other two are the callers. `ci-scripts/suite/test-mpich-suite.sh` runs that
-check before it downloads anything, so a prefix that is not the standard ABI
-stops the run in a second instead of producing six mysterious failures twenty
-minutes later, and `scripts/macos-build-mpif.sh` runs it before configuring, on
-the same reasoning one step earlier: an mpif built against the wrong headers is
-wrong without failing to build, and everything downstream then tests that. The
-producer-side discard above cannot cover either case on its own, since a prefix
-written some other way -- by hand, which is what may well have happened here --
-never goes near the install script's traps.
-
-### Every MPICH spawn test fails when the host's own name resolves to another host
-
-Seen on 2026-08-06 on `mpich/gcc/darwin/26/arm64`, where three earlier runs had
-reported no differences. `f77/spawn/spawnf` failed and `f77/spawn/spawnargvf` then
-burned `runtests`' 180-second timeout, on the spawned child's `MPI_Init` rather
-than on anything the test did:
-
-    init_spawn(226): spawned process group was unable to connect back to the
-    parent on port <tag#0$description#Mac.pitp.io$port#65285$ifname#10.10.60.97$>
-    MPIDI_Comm_connect(787): Named port ... does not exist
-    MPIDI_Create_inter_root_communicator_connect(316): Connection timed out in
-    180 seconds
-
-`ifname#10.10.60.97` is the address MPICH published for the parent to be reached
-at, and this machine's `en0` is **10.10.60.110**. `Mac.pitp.io` is its own
-`hostname`, and it resolves to 10.10.60.97 -- a different host on the same subnet,
-139 ms away by `ping`. So MPICH resolved its own name, advertised somebody else's
-address, and the child dialled it. A stale DNS record or a DHCP lease that moved,
-either way outside this repository.
-
-Not mpif's, and proven so rather than argued: a fifteen-line C program that spawns
-a copy of itself, compiled with `mpi/mpich-gcc/bin/mpicc` and linked against
-MPICH's own ABI library with no mpif anywhere in it, fails with the identical error
-stack and the same port string. That is the measurement to take first if the spawn
-tests ever look broken again -- the child's connect-back is inside MPI_Init, where
-a Fortran binding has no part to play, so a Fortran spawn test failing this way
-says nothing about the binding.
-
-`MPIR_CVAR_CH3_INTERFACE_HOSTNAME=127.0.0.1` fixes it: MPICH here is a ch3 build --
-`MPIDI_Comm_connect` and `MPID_Comm_connect` are ch3's, and
-`src/mpid/ch3/src/ch3u_port.c` is where "Named port does not exist" comes from --
-and that CVAR is what tells it which address to advertise. The C reproducer passes
-with it set, and so does the suite. Deliberately *not* added to
-`scripts/macos-test-mpich-suite.sh`: it is a workaround for one machine's broken
-name resolution, and baking it in would hide the same breakage from the next person
-rather than showing it to them, which is the argument that keeps entries out of the
-`xfail` list too. Export it for the run, as was done here, and say so.
-
-The Open MPI analogue is under "External blockers" below -- "OpenMPI: left to
-itself it picks an interface it cannot use" -- and needs a different flag for a
-different reason. Its `--mca btl_tcp_if_include lo0` *is* passed by the scripts,
-that being a choice Open MPI gets wrong on every host rather than a property of
-this one.
+- Cause: a prefix that got `make install` but not the install script's
+  post-steps (repoint wrappers, prune native headers/libraries, install the
+  ABI `mpi.h`). The suite compiles C with the implementation's `mpicc` and
+  Fortran with mpif's `mpifort`, so mixed tests link half against native
+  handles (pointers) and half against ABI handles (small integers).
+- Cure: reinstall with `scripts/macos-install-mpi.sh`. Never `make install`
+  by hand (`CLAUDE.md`).
+- Guards, each confirmed by putting the bug back: the install scripts discard
+  a prefix their run did not finish (signals get their own trap handler —
+  bash runs a trapped `INT` with status 0, so the handler must not consult
+  `$?`); `ci-scripts/check-mpi-install.sh` asserts `MPI_ABI_VERSION` at
+  compile time *and* that the wrapper's executable links `libmpi_abi` (the
+  two catch different broken states); `test-mpich-suite.sh` and
+  `scripts/macos-build-mpif.sh` run that check before anything expensive,
+  since a prefix written by hand never goes near the install script's traps.
 
 ### FreeBSD is tested in a VM, and its variant is not triaged yet
 
-GitHub has no FreeBSD runner, so the `freebsd` job in `.github/workflows/ci.yaml`
-is an Ubuntu runner that boots a FreeBSD 14.3 VM through `vmactions/freebsd-vm`
-and runs the ordinary recipe inside it: `ci-scripts/install-mpich.sh`, then mpif,
-then `test/`, then MPICH's Fortran suite. One variant,
+GitHub has no FreeBSD runner; the `freebsd` job boots a FreeBSD 14.3 VM via
+`vmactions/freebsd-vm` and runs the ordinary recipe. One variant,
 `mpich/gcc/freebsd/14/amd64`.
 
-**The compilers are the platform's own mix, and it is neither of the two
-toolchains the matrix uses.** C and C++ come from the base system, which on
-FreeBSD is clang: there is no GCC in base, so `cc` is what a FreeBSD user
-compiles with, and the job uses it. Fortran cannot come from LLVM there at all --
-`FLANG` appears in `OPTIONS_DEFINE` and in no `OPTIONS_DEFAULT` for devel/llvm20
-through llvm23, its build wanting around 10 GB per process, and there is no
-standalone flang port, so no binary package holds one. gfortran from the `gcc`
-metaport, which is what FreeBSD's own ports tree compiles Fortran software with,
-is therefore the only choice, and the mix is the representative one rather than a
-compromise. The job's first version used GCC for C as well; that was changed once
-someone asked the obvious question, since the point of a third operating system
-is to compile the way that system does.
-
-The variant key still says `gcc`, and correctly: `test-mpich-suite.sh` detects
-that component from mpif's own `mpifort --version`, so it names the Fortran
-compiler -- which is the one an expected-failures list of Fortran tests is about.
-A reader who takes `gcc` there to mean the C compiler too will be wrong on this
-one row, which is why this paragraph exists.
-
-Why a third operating system at all: it is a libc, a linker and a toolchain
-layout that nothing else here covers, and mpif's assumptions had never been run
-on it. What that turned up before the job could even be written is the argument
-for it, and both were in the recipe rather than in the bindings:
-
-- `#!/bin/bash` is not a path FreeBSD has. Every script in `ci-scripts/` now says
-  `#!/usr/bin/env bash`. Invoking them as `bash <script>` would not have been
-  enough: `install-mpich.sh` runs `prune-install.sh`, `install-mpi-header.sh` and
-  `check-mpi-install.sh` by pathname, and `test-mpich-suite.sh` hands
-  `mpiexec-filter.sh` to `runtests`, which executes it -- so the shebang is what
-  runs, in five places nobody would think to wrap.
-- The two `readelf` implementations print `SONAME` differently. GNU binutils
-  writes `(SONAME) Library soname: [libmpi_abi.so.1]`; the ELF Tool Chain
-  `readelf` that FreeBSD ships in base is understood to write the name bare in
-  the last field, without brackets -- that much is inferred, no FreeBSD host
-  having been available to ask. `check-mpi-install.sh` read only the bracketed
-  form with a `sed`, and an unbracketed one would have left `soname` empty and
-  reported a missing SONAME on an installation that has one, the check failing on
-  itself rather than on the thing it guards. It now takes what is in brackets
-  where there are brackets and the last field otherwise, so it holds for either
-  format; that much was measured, against a line of each kind.
-- `getconf _NPROCESSORS_ONLN` is what the parallel-build width comes from, and
-  FreeBSD's `getconf(1)` does not document that variable. The three scripts that
-  ask now fall back to `sysctl -n hw.ncpu` and then to 4, rather than to an empty
-  `-j`. Inferred from the manual page, not measured: it may well answer.
-
-Three things the job does that the Linux jobs do not, each for a stated reason:
-
-- **GNU make on PATH as `make`.** The suite needs it beyond doubt: `runtests`
-  shells out to `make` for every test it builds -- line 1103 of
-  `test/mpi/runtests`, ``my $output = `make $programname 2>&1`; `` -- with nothing
-  of ours in between, so a `MAKE` variable would reach MPICH's own build and not
-  this. Whether that build needs GNU make too is assumed rather than established;
-  one symlink ahead of FreeBSD's `make` settles both questions at once, which is
-  why neither was chased.
-- **gfortran is found, not named.** The metaport installs `gfortran` as a symlink
-  to whichever version is current and `gfortran14` beside it, and which version
-  that is moves with the ports tree, so the job takes the unversioned link if it
-  is there and a versioned one otherwise. The first run resolved it to GNU Fortran
-  14.2.0; pinning `gfortran14` here would rot the next time the default moves.
-- **A `/etc/hosts` line giving the host's own name an address**, which is what the
-  first run turned out to need. See the next entry: the image's hostname is
-  `freebsd` and nothing resolved it, so every MPI_Init with more than one process
-  died in `gethostbyname`.
-
-MPICH only. Open MPI refuses to run as root without `--allow-run-as-root`, and
-the action's `run` block *is* root -- measured, `$HOME` being `/root` in the log --
-so covering it would mean carrying that flag on one platform alone. With one
-implementation there is also no cross-run to make here: the claim that a build
-against one MPI works with the other is the `cross` jobs' business, and it is
-about mpif's own artifact rather than about the platform, so testing it once per
-(os, toolchain) that has both implementations is what it needs.
-
-**Not triaged.** The variant has no `triaged` line in
-`ci-scripts/suite/mpich-suite-xfail.txt`, so its suite differences are reported
-and cannot fail the run; `test/` gates as everywhere else, being mpif's own and
-expected green. That is the rule working as intended -- a platform arrives
-measured-but-not-gating rather than either silent or red -- and the first run is
-what supplies the list. One prediction to check against it: `attrmpi1f08` is
-listed per 64-bit architecture, and FreeBSD's `uname -m` says `amd64` where Linux
-and macOS say `x86_64`, so it will appear as an unexpected failure until an
-`amd64` line is added. `uname -m` is the machine's own word and is not
-normalised, which the header of that file now says.
-
-**What the runs have measured so far.** Two, neither green, and each got further
-than the one before:
-
-- Job 93003881286 of run 31220529798, on `911f78f`, with GCC 14.2 for C as well
-  as Fortran. MPICH 5.0.1 configured, built and installed; `check-mpi-install.sh`
-  passed, so the SONAME reader above does work on FreeBSD's `readelf`, which had
-  been this entry's least certain inference; mpif configured, built and installed;
-  `test/` built all 69 tests. Then 15 of them failed on the hostname -- the next
-  entry -- and the job stopped. The gmake shim worked (GNU Make 4.4.1) and nothing
-  in the build complained about the platform. 90 seconds for the VM and the
-  packages, six and a half minutes for everything through building `test/`.
-- Job 93009719330 of run 31222427386, on `9d69cd5`, with FreeBSD clang 19.1.7 for
-  C and the same gfortran. MPICH and mpif built again -- so a clang-built MPICH
-  and a gfortran-built mpif go together, which was the switch's open question --
-  and this time `test/` failed to *build* two of its mixed C-and-Fortran targets:
-  the Fortran wrapper's `-fallow-argument-mismatch` was reaching the C compiler,
-  which gcc had only warned about. That is CODE.md "`mpifort -showme:compile`
-  reports gfortran's Fortran-only flags", fixed in `test/CMakeLists.txt` and
-  verified on this machine in both directions, no FreeBSD needed.
-
-So still unmeasured after two runs: whether the `/etc/hosts` line actually fixes
-the hostname failure -- nothing in run 2 ran an MPI program, `check-mpi-install.sh`
-compiling and linking one but not executing it -- and the whole of the suite,
-which no run has reached. There is still no FreeBSD row to triage.
-
-### A FreeBSD VM's own name does not resolve, and MPICH needs it to
-
-`vmactions/freebsd-vm`'s image has hostname `freebsd` and nothing that resolves
-it: no `/etc/hosts` entry, no DNS. MPICH's ch3:nemesis:tcp resolves the host's own
-name to build the business card, so every `MPI_Init` in a job with more than one
-process dies before running any of the test:
-
-    Fatal error in internal_Init: Internal MPI error!, error stack:
-    internal_Init(45193)...............: MPI_Init(argc=0x0, argv=0x0) failed
-    ...
-    MPID_nem_tcp_get_business_card(400):
-    GetSockInterfaceAddr(372)..........: gethostbyname failed, freebsd (errno 2)
-
-Measured, and the pattern is exact: 15 of `test/`'s 69 tests failed, and they are
-precisely the 15 that launch two or more ranks -- the seven `alltoallw` ones,
-`check_f08`, the four multi-rank `check_env` ones, `mpif_info`, `gather_root_f08`
-and `gather_inter_f08`. The other 54 passed, including every single-rank one:
-`mpif_info_singleton`, which runs the binary directly, and
-`check_version_fail_f90` and `check_env_library_fail`, which go through `mpiexec`
-at `-n 1`. MPICH does not build a business card for a one-process job, so nothing
-resolves anything and the same binary is fine.
-
-Nothing to do with mpif, which is why it is here rather than under "Errors": the
-failure is inside `MPI_Init`, in the C library, before a binding is reached, and
-the error text names the C function that failed.
-
-Fixed by appending `127.0.0.1 <hostname>` to `/etc/hosts` in the job's `prepare`
-step. Deliberately *not* fixed with `MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=lo0`,
-which is what the job originally carried for the suite step only and which would
-also have worked: an MPI is entitled to resolve the name the system gave it, the
-CVAR is MPICH's alone so Open MPI or any future implementation would need the same
-thing said again in its own vocabulary, and the root cause is a VM image we boot
-ourselves rather than a machine we found.
-
-That last point is the difference from "Every MPICH spawn test fails when the
-host's own name resolves to another host" above, where the same class of failure
-was *not* fixed at the root. There the name resolves to a real and wrong address
-on a network this repository does not administer, and hiding it would hide it from
-the next person too. Here the name resolves to nothing on a machine the workflow
-creates three lines earlier, and giving it an address is provisioning.
-
-The CVAR's other job does not arise either. It exists partly to keep the business
-card on the loopback so a spawned child can reach its parent; with the name
-mapped to 127.0.0.1 the card carries the loopback anyway.
+- **Compilers are the platform's own mix**: base-system clang for C (FreeBSD
+  has no GCC in base), gfortran from the `gcc` metaport for Fortran (no flang
+  port exists in binary form). The variant key still says `gcc`, correctly:
+  the toolchain component names the Fortran compiler, which is what an
+  expected-failures list of Fortran tests is about.
+- Platform accommodations, each for a stated reason: `#!/usr/bin/env bash`
+  in every `ci-scripts/` script (five are executed by pathname);
+  `check-mpi-install.sh` reads `readelf` SONAME output with or without
+  brackets (ELF Tool Chain vs binutils); parallel-build width falls back
+  `getconf` → `sysctl -n hw.ncpu` → 4; GNU make is symlinked onto PATH as
+  `make` (`runtests` shells out to bare `make`); gfortran is found via the
+  unversioned symlink, not pinned; a `/etc/hosts` line gives the VM's own
+  hostname an address — the image resolves `freebsd` to nothing, and MPICH's
+  business card needs it, so every multi-process `MPI_Init` otherwise dies in
+  `gethostbyname`. Fixed as provisioning (the workflow creates the VM) rather
+  than with the MPICH-only CVAR.
+- MPICH only: Open MPI refuses to run as root without `--allow-run-as-root`,
+  and the action's `run` block is root. No cross-run either — that claim is
+  about mpif's artifact, tested where both implementations exist.
+- **Not triaged**: no `triaged` line, so suite differences are reported and
+  cannot fail the run; `test/` gates as everywhere. Expect `attrmpi1f08`
+  among the differences (its xfail is enumerated per 64-bit architecture and
+  FreeBSD says `amd64` where Linux/macOS say `x86_64`).
+- Status: no run has reached the suite yet; the `/etc/hosts` fix is untested
+  by an actual MPI run. There is still no FreeBSD row to triage.
 
 ## External blockers
 
 ### The ABI header gets the partitioned-communication count wrong, twice — carried as a local patch
 
-`MPI_Psend_init` and `MPI_Precv_init` take an `MPI_Count` count. MPI-5.0's C
-binding is
+The ABI stubs header (`mpi-forum/mpi-abi-stubs`, fetched by
+`ci-scripts/install-mpi-header.sh`) declares `MPI_Psend_init`/`MPI_Precv_init`
+with an `int` count and invents `MPI_Psend_init_c`/`MPI_Precv_init_c`.
+MPI-5.0 gives the base forms an `MPI_Count` count and no `_c` form (the name
+appears nowhere in the standard; neither implementation defines it — a
+routine whose only form takes a count has nothing for `_c` to add).
 
-    int MPI_Psend_init(const void *buf, int partitions, MPI_Count count,
-                       MPI_Datatype datatype, int dest, int tag, MPI_Comm comm,
-                       MPI_Info info, MPI_Request *request)
-
-and both implementations agree with it. MPICH declares and defines exactly that in
-`src/binding/abi/c_binding_abi.c`. Open MPI generates it from a type class that
-exists to say so:
-
-    @Type.add_type('PARTITIONED_COUNT')
-    class TypePartitionedCount(Type):
-        def type_text(self, enable_count=False):
-            return 'MPI_Count'
-
--- `MPI_Count` whatever `enable_count` is, where the `DISP` class immediately
-below it returns `'MPI_Aint' if enable_count else 'int'`, which is what a type
-that really does have two forms looks like.
-
-The header mpif installs is alone in disagreeing. It comes from the MPI Forum's
-ABI stubs, <https://github.com/mpi-forum/mpi-abi-stubs>, fetched by
-`ci-scripts/install-mpi-header.sh`, and it declares the count `int` and then
-declares `MPI_Psend_init_c` and `MPI_Precv_init_c` taking `MPI_Count`, along with
-their `PMPI_` counterparts. **Neither name exists in MPI-5.0**: the string appears
-nowhere in the standard, in any language, and neither implementation defines one,
-because a routine whose only form already takes a count has nothing for a `_c`
-form to add. That is also why Appendix A.4 lists one Fortran binding for each and
-not two.
-
-The two errors hid each other -- the base form looked small, and a large form was
-offered that does not exist -- and between them they made the generated wrapper
-unsafe rather than merely limited: it took the count from Fortran as an
-`MPI_Count` and passed it to a prototype declaring `int`, so the call site
-materialised 32 bits where the callee reads 64. Small counts survived because the
-compiler extends the value into the register, which is the compiler being helpful
-rather than anything guaranteed.
-
-`fortran/mpi.h.patch` therefore corrects the four base prototypes and deletes the
-four phantom declarations, alongside the Fortran handle-conversion declarations
-the stubs omit that it already carried. **Drop those hunks once the stubs header
-is fixed**; `patch` will report them as already applied. Not reported upstream
-yet, and worth reporting.
-
-Nothing in mpif may generate or call the phantom names. `dev/mpiapi.jl` asserts
-that neither routine ever takes the `_c` path rather than leaving it to be noticed
-that nothing does, since a header declaring the name makes it look as though
-something should.
+- Unpatched, the generated wrapper passed an `MPI_Count` to a prototype
+  declaring `int` — 32 bits materialised where the callee reads 64.
+- `fortran/mpi.h.patch` corrects the four base prototypes and deletes the
+  four phantom declarations. **Drop those hunks once the stubs header is
+  fixed**; `patch` will report them already applied.
+- `dev/mpiapi.jl` asserts neither routine ever takes the `_c` path.
+- Not reported upstream yet, and worth reporting.
 
 ### OpenMPI: 32-bit environments are not supported
 
-Its own release notes say so, in one line: "32-bit environments are no longer
-supported", `docs/release-notes/platform.rst`. An older statement two files over
-survives from before that decision and is worth not being misled by --
-`docs/release-notes/compilers.rst` still says "32-bit platforms are only supported
-with a recent compiler that supports C11 atomics", which reads as a supported
-platform with a condition on it, where the note in `platform.rst` is the current
-answer.
-
-So the 32-bit variants are MPICH-only, and that is a scope limit rather than
-something to work around: `docker/mpich-gcc-i386.dockerfile` and
-`docker/mpich-gcc-arm32v7.dockerfile` have no Open MPI counterparts and should not
-get one. Nothing on this side is implicated -- mpif's own 32-bit defects are fixed
-and recorded under "`MPI_Count` is `int64_t` where `MPI_Aint` is a pointer" in
-`CODE.md`.
+Its release notes say so (`docs/release-notes/platform.rst`: "32-bit
+environments are no longer supported"; ignore the older conditional statement
+in `compilers.rst`). So the 32-bit variants are MPICH-only — a scope limit,
+not something to work around; the two 32-bit dockerfiles should not get
+Open MPI counterparts.
 
 ### MPICH: the ABI library's `-version-info` never reached libtool — fixed upstream, carried as an upstream patch
 
-MPICH 5.0.1 installs its ABI library as `libmpi_abi.so.0` (macOS:
-`libmpi_abi.0.dylib`, compatibility version 1.0.0) where the convention says
-`libmpi_abi.so.1`. The convention is real and matters: Open MPI's
-`ompi/VERSION` states that Open MPI, MPICH and the Forum's ABI stubs set the
-SONAME "by convention" so that "every implementation of a given ABI version
-must expose the same SONAME" and applications can "switch between MPI
-implementations ... without recompiling" -- and warns "DO NOT reset to
-0:0:0". MPICH *intends* to follow it: `maint/version.m4:44` defines
-`libmpi_abi_so_version_m4` as `1:0:0`. Two bugs kept the value from ever
-reaching the link line: `configure.ac` spelled the macro
-`libmpi_abi_so_verion_m4` -- missing the "s", so m4 left the literal token in
-place -- and `ABI_ABIVERSIONFLAGS` was never `AC_SUBST`'d, so even the bogus
-string never reached the Makefiles and libtool fell back to its `0:0:0`
-default. Upstream fixed both on `main` in commit `bb167f1c` ("config:
-actually apply libmpi_abi.so version-info"); `ci-scripts/install-mpich.sh`
-fetches that commit by URL and applies it, the same way it carries the other
-upstream fix this release lacks.
-
-Without the fix the two implementations' versioned names disagree, and the
-loader cannot substitute one MPI for the other under an already-linked
-executable -- there is no file with the recorded name in the other prefix,
-and on macOS dyld would additionally reject the compatibility-version
-mismatch (1.0.0 against 2.0.0). That substitution is the mechanism the whole
-cross-testing design rests on, so `ci-scripts/check-mpi-install.sh` asserts
-the versioned name -- and, on macOS, the compatibility version, both fields
-gating the swap -- on every installed prefix. Measured after the fix: both
-implementations ship `libmpi_abi.1.dylib` with current and compatibility
-version 2.0.0 (libtool `1:0:0` maps to leaf `.{c-a}`, compatibility `c-a+1`),
-and a `mpif_info` linked against MPICH runs unchanged against Open MPI under
-`DYLD_LIBRARY_PATH`, reporting the swapped library and passing
-`mpif_check_environment`.
+MPICH 5.0.1 installs `libmpi_abi.so.0` (macOS: `libmpi_abi.0.dylib`, compat
+1.0.0) where the convention — stated in Open MPI's `ompi/VERSION`, and what
+lets applications switch implementations without relinking — says
+`libmpi_abi.so.1`. Two bugs: `configure.ac` misspells the version macro
+(`libmpi_abi_so_verion_m4`), and `ABI_ABIVERSIONFLAGS` was never `AC_SUBST`'d.
+Fixed upstream in `bb167f1c`; `ci-scripts/install-mpich.sh` fetches and
+applies that commit. `check-mpi-install.sh` asserts the versioned name (and,
+on macOS, the compatibility version) on every installed prefix.
 
 ### MPICH: strong `MPI_*` exports on Darwin break substituting the library — carried as a local patch
 
-Found by the first cross-run of `test/` on macOS: every test whose executable
-references a C `MPI_*` symbol directly, linked against Open MPI's
-`libmpi_abi` and executed with MPICH's put first by `DYLD_LIBRARY_PATH`,
-died in the loader --
+The ABI implementations export `MPI_*` as weak definitions, and on Mach-O
+that is binding: a client linked against a weak-def export can only be
+satisfied by another weak definition, so an executable linked against
+Open MPI dies in dyld (`Symbol not found: _MPI_Abort ... Expected as weak-def
+export`) when MPICH's library is put first. MPICH's weak-symbol machinery has
+no Mach-O variant, so on Darwin it exports strong.
 
-    dyld: Symbol not found: _MPI_Abort
-    Expected as weak-def export from some loaded dylib
-
--- while the mirror pairing, linked against MPICH and run against Open MPI,
-passed, and so did every Fortran-only test in both directions (their MPI
-references resolve inside `libmpifort_abi`, whose dynamic-lookup binding
-accepts any export).
-
-The asymmetry is the export *style*. The ABI implementations export `MPI_*`
-as weak definitions -- the Forum's mpi-abi-stubs say "each MPI_Xxx function
-is a weak symbol", Open MPI's binding generator documents the same and its
-`libmpi_abi` measures `weak external` throughout -- and on Mach-O that
-convention is binding, literally: a client linked against a weak-def export
-records a weak-def-coalesce fixup, which the loader satisfies only from
-another weak definition. A strong one is rejected outright, hence the message
-above. Two strong-exporting implementations would also interoperate; it is
-the *mix* that cannot work, and MPICH is the odd one out: its weak-symbol
-machinery offers `#pragma weak x = y`, HP secondary definitions, Cray
-duplicates and `__attribute__((weak, alias))`, none of which Mach-O supports,
-so on Darwin it falls back to compiling the bindings twice and exporting
-strong `MPI_*`. ELF is indifferent -- its lookup does not distinguish weak
-definitions from strong -- which is why only macOS sees this.
-
-`ci-scripts/mpich-abi-darwin-weak.patch` fixes it in the binding generator
-(`maint/local_python/binding_c.py`, the same file two other carried patches
-touch, because `autogen.sh` regenerates the bindings): the separate
-MPI-from-PMPI compile gains `#pragma weak` on each public definition, on
-`__APPLE__` only. `fortran/f2c_abi_mpich.c` does the same for the
-handle-conversion functions mpif injects -- `f2c_abi_openmpi.c` had already
-made its forwarders weak, matching its implementation's convention.
-`ci-scripts/check-mpi-install.sh` asserts the export style on Darwin, so a
-prefix that regresses to strong exports fails in a second instead of failing
-one direction of a cross-run twenty minutes in. Not reported upstream yet;
-MPICH presumably wants the same on Darwin for its own sake, macOS clients of
-other ABI implementations being unable to switch *to* MPICH 5.0.1 otherwise.
+- `ci-scripts/mpich-abi-darwin-weak.patch` adds `#pragma weak` per public
+  definition in the binding generator, `__APPLE__` only;
+  `fortran/f2c_abi_mpich.c` does the same for the injected handle-conversion
+  functions. ELF lookup is indifferent, so only macOS sees this.
+- `check-mpi-install.sh` asserts the export style on Darwin.
+- Not reported upstream yet; MPICH presumably wants it for its own sake.
 
 ### MPICH: partitioned communication is not implemented
 
-`MPI_Psend_init` aborts inside MPI whatever the bindings do: `MPID_Psend_init` is
-an `MPIR_Assert(0)` at `src/mpid/ch3/src/mpid_part.c:12`, so the ch3 device this
-build uses implements none of partitioned communication. Nothing on this side can
-be judged by running it, which is why `test/partitioned_f08.f90` asserts at
-compile time and never executes its calls.
+`MPID_Psend_init` is an `MPIR_Assert(0)` in the ch3 device this build uses
+(`src/mpid/ch3/src/mpid_part.c:12`). Nothing on this side can be judged by
+running it, which is why `test/partitioned_f08.f90` asserts at compile time
+and never executes its calls.
 
 ### MPICH: `MPI_Type_create_f90_*` is a no-op in an ABI build — carried as a local patch
 
 <https://github.com/pmodels/mpich/issues/7929>
 
-`MPI_Type_create_f90_real`, `MPI_Type_create_f90_integer` and
-`MPI_Type_create_f90_complex` all reported `MPI_SUCCESS` and handed back a handle
-that `MPI_Type_toint` turned into 512 -- `0x200`, which is `MPI_DATATYPE_NULL`.
-Anything done with it then failed: `MPI_Type_contiguous` and
-`MPI_Type_get_envelope` both reported "Invalid datatype".
+The three routines returned `MPI_SUCCESS` and `MPI_DATATYPE_NULL`:
+`create_f90.c` selects stub implementations under
+`#ifndef HAVE_FORTRAN_BINDING`, and the ABI build undefines that macro — but
+the routines need the Fortran data *model* (`mpif90model.h`), not the
+bindings; one macro stood for both.
 
-Pure C, no Fortran involved; the reproducer is
-`bug-mpich-f90-datatypes/mpich-abi-f90-datatype-bug.c`, which round-trips each of
-the three and, for contrast, a predefined type and a derived one -- both of which
-survive.
-
-**The diagnosis this entry used to carry was wrong, and wrong in a way worth
-recording**: it said the handle conversion was at fault, that
-`ABI_Datatype_from_mpi` reverse-searches `abi_datatype_builtins[]` and fails to
-find a datatype that is predefined internally, and therefore that this and the
-attribute blocker below were one defect in the ABI's datatype conversion. None of
-that is what happens. The conversion is never reached with an interesting handle,
-because the routine that should produce one does nothing.
-
-`src/mpi/datatype/create_f90.c` carries two implementations of all three
-routines: the real ones, and stubs that do
-`*newtype = MPI_DATATYPE_NULL; return MPI_SUCCESS;`. The stubs are selected by
-`#ifndef HAVE_FORTRAN_BINDING`, and an ABI build undefines that macro --
-`src/binding/abi/mpi_abi_internal.h`, generated by `maint/gen_abi.py`, ends with
-
-    typedef int MPI_Fint;
-    typedef struct MPI_F08_status_dummy MPI_F08_status;
-    #undef HAVE_FORTRAN_BINDING
-
-which is right in itself, the standard ABI having no Fortran bindings, and which
-every ABI object sees because `abi_cppflags` puts `src/binding/abi` on the include
-path. So one build produces both: `create_f90.o` is 9496 bytes and has the
-`f90Types` cache, while `lib_libpmpi_abi_la-create_f90.o` is 832 bytes and holds
-three functions at 16-byte spacing. `nm -n` on the installed
-`libpmpi_abi.dylib` showed the three impls 16 bytes apart, which is what put the
-guard in the frame at all.
-
-What the routines need is the Fortran data *model* -- `src/include/mpif90model.h`,
-which configure generates from the Fortran compiler's own `precision()` and
-`range()` -- and not the Fortran *bindings*. One macro stood for both.
-
-`ci-scripts/mpich-abi-f90-datatypes.patch` therefore adds `MPIR_HAVE_F90_MODEL`,
-true when MPICH has Fortran bindings or when this is the standard-ABI build, and
-guards on that. `create_f90.c` is hand-written, so the patch survives the
-`autogen.sh` that `install-mpich.sh` runs; `mpi_abi_internal.h`, the other
-candidate, is generated. Unlike the other two patches this is not an upstream
-backport but a local fix, written here and carried while the defect is open
-upstream as #7929. The issue has the reproducer; the patch has not been offered,
-so if upstream fixes it another way this file and the patch follow that rather
-than the other way round.
-
-Five expected failures went green on it: `trf90`, `trf08`, `createf90`,
-`createf08` and `createf90types`. The error path came back too --
-`MPI_Type_create_f90_integer(100, &t)` now reports "No integer type with 100
-digits of range is available" where it used to report success -- and the
-reproducer goes from "BROKEN (6)" to "all ok (0 failures)".
-
-`bug-mpich-f90-datatypes/mpich-abi-f90-datatype-check.c` is the second half of
-that evidence, and worth having because the reproducer would be satisfied by a
-stub that returned some *wrong* type: it checks the extents against MPICH's own
-model map (8, 4 and 16), the combiner, the `(p, r)` the type was created with, the
-empty `array_of_datatypes` the standard requires of an unnamed predefined
-datatype, and that one handle comes back per request. That last is deliberately
-stronger than MPI-5.0, which gives a matching rule rather than a same-handle
-rule -- it is MPICH's `f90Types` cache, which the patch restores along with
-everything else, so a regression in it should be visible.
-
-Fixing it also made a second defect reachable, the entry below, which is where
-`createf90types` went next.
+- `ci-scripts/mpich-abi-f90-datatypes.patch` (local fix, not an upstream
+  backport) adds `MPIR_HAVE_F90_MODEL`, true with Fortran bindings or in the
+  standard-ABI build. Five suite tests went green on it.
+- Reproducer and checker in `bug-mpich-f90-datatypes/`; the issue has the
+  reproducer, not the patch — an upstream fix of another shape supersedes it.
 
 ### MPICH: `MPI_Type_get_contents` converts uninitialised memory — carried as a local patch
 
 <https://github.com/pmodels/mpich/issues/7930>
 
-The ABI wrapper allocates a temporary for the datatypes, calls the
-implementation, and then converts the caller's *maximum* rather than the number the
-datatype actually has:
+The ABI wrapper converts the caller's `max_datatypes` entries back, not the
+number the datatype has, from an uninitialised `MPL_malloc` buffer — and a
+datatype from `MPI_TYPE_CREATE_F90_*` is *required* to report an empty
+`array_of_datatypes`, so a correct caller hits it. Garbage that looks builtin
+aborts in `ABI_Datatype_from_mpi` (`MPIR_Assert`); garbage that does not is
+handed back. Heap contents decide which, so the failures looked
+nondeterministic (see `HISTORY.md`).
 
-    MPI_Datatype *array_of_datatypes = NULL;
-    if (max_datatypes > 0)
-        array_of_datatypes = MPL_malloc(sizeof(MPI_Datatype) * max_datatypes, MPL_MEM_OTHER);
-    int ret = internal_Type_get_contents(...);
-    for (int i = 0; i < max_datatypes; i++)
-        array_of_datatypes_abi[i] = ABI_Datatype_from_mpi(array_of_datatypes[i]);
-
-`MPL_malloc` does not initialise, so every entry past what the implementation
-filled is converted from whatever was on the heap. `ABI_Datatype_from_mpi`
-reverse-searches `abi_datatype_builtins[]` for any handle
-`MPIR_DATATYPE_IS_PREDEFINED` accepts and `MPIR_Assert(0)` when it finds none, so
-garbage that looks builtin aborts -- "Assertion failed in file
-src/binding/abi/mpi_abi_util.h at line 140" -- and garbage that does not gets a
-pointer derived from it and is handed back without complaint. `ret` is not
-consulted before the loop either, so this happens even when the implementation
-failed and filled nothing.
-
-The gap is not a caller error. MPI-5.0 requires "an empty array_of_datatypes" for a
-datatype from `MPI_TYPE_CREATE_F90_*`, so a caller passing `max_datatypes = 1` and
-getting `ndtypes == 0` has done nothing wrong -- and MPICH's own
-`test/mpi/f90/f90types/createf90types.c` does exactly that,
-`MPI_Type_get_contents(dtype, 2, 0, 1, ints, 0, &outtype)`. That is what started
-aborting once the entry above stopped handing `createf90types` a
-`MPI_DATATYPE_NULL` to bail out on, on some MPICH Linux variant or other every run
--- see below for why "which one" has no answer.
-
-**Reading uninitialised memory is why this assert has looked intermittent.** It is
-the recorded symptom of the `flaky` entries `typecntsf`, `typecntsf90` and
-`typecntsf08`, and two consecutive CI runs settled it for `createf90types` by
-disagreeing about which variants it fails on:
-
-    30846819244    mpich/gcc/linux/24.04/x86_64, mpich/gcc/linux/24.04/aarch64,
-                   mpich/llvm/linux/24.04/aarch64
-    30855216157    mpich/llvm/linux/24.04/x86_64 -- and the three above passed
-
-Same test, same assert, a different set of variants each time, with nothing
-relevant changed between them. So it is not a property of the toolchain or the
-architecture, and the first run's pattern was worth no conclusion at all: reading
-one run as "gcc on Linux plus llvm on aarch64" is the mistake this defect invites,
-and it was made here before the second run refuted it. What was on the heap decides
-it. That is also why `createf90types` must not be excused per variant if it ever
-needs excusing again.
-
-`ci-scripts/mpich-abi-type-get-contents.patch` initialises a pure-out handle array
-to the null handle before the call, so the surplus converts to `ABI_DATATYPE_NULL`,
-which every `ABI_*_from_mpi` returns on its first line. Zero-filling would not do:
-`MPI_DATATYPE_NULL` is `0x0c000000` and handle kind 0 is `HANDLE_KIND_INVALID`,
-which is not `HANDLE_IS_BUILTIN`, so a zeroed entry walks past the assert into
-`MPIR_Datatype_get_ptr`. Only `out` is initialised and not `inout`, an inout array
-being filled by the wrapper's own `to_mpi` loop first.
-
-It patches the generator, `maint/local_python/binding_c.py`, and not the
-`src/binding/abi/c_binding_abi.c` it produces, because `install-mpich.sh` patches
-before running `autogen.sh` and autogen regenerates that file -- a patch against it
-would be overwritten in silence. Two wrappers change and nothing else,
-`MPI_Type_get_contents` and its `_c` form. Reported upstream as #7930 and open;
-the reproducer went with it and this patch did not, so an upstream fix of another
-shape supersedes it rather than the other way round.
-
-`bug-mpich-type-get-contents/mpich-abi-type-get-contents-bug.c` is the reproducer,
-and it is built to show the read rather than the abort: it asks for four datatypes
-from a contiguous type that has one and prints all four, so it demonstrates the
-defect on a platform where the garbage happens not to abort. On macOS before the
-patch the three surplus entries came back as `201326592` where the ABI's null is
-`512`.
-
-CI run 30861875404 is the confirmation, all thirteen jobs green, and it settled more
-than `createf90types`: **every one of the five `flaky` entries passed on all six
-MPICH variants**, where the two runs before it had `typecntsf`, `typecntsf90` or
-`typecntsf08` failing on four variants between them. That is the same assert going
-away for the same reason, and it read at the time as though the five were
-candidates for removal rather than flakiness anybody still has to live with.
-
-Two runs later that looked refuted: `nonblocking_inpf` and `nonblocking_inpf90`
-failed on `mpich/llvm/linux/24.04/x86_64` in 30863777064, then passed again
-everywhere in 30905286536, while the three `typecnts*` passed in all three. The
-reading at the time was that the patch had removed most of the nondeterminism and
-not all of it -- the same uninitialised read, on one variant, in two of the five.
-
-**That reading was wrong, and the split between the two groups was the clue it
-should have been.** `nonblocking_inpf` and `nonblocking_inpf90` do not call
-`MPI_Type_get_contents` at all. They call `MPI_IALLTOALLW` with `MPI_IN_PLACE` and
-a one-element `stypes(1)`, and the read that made them flaky was mpif's own,
-converting one datatype per rank out of a one-element array -- defect 2 of the
-entry below. No patch to `MPI_Type_get_contents` could ever have touched them, and
-what varied between runs was the stack, not MPICH. So the three `typecnts*` were
-the only tests exercising this defect after all, they have been quiet for three
-runs and a local one, and nothing is left that says it still fires. See item 4 of
-"Worth doing next".
-
-The caution that came with the old reading was still right on its own terms, and
-is why the two groups were not deleted together: one green run is not evidence
-that a nondeterministic failure has stopped. It just was not the reason these two
-kept failing.
+- `ci-scripts/mpich-abi-type-get-contents.patch` pre-fills pure-out handle
+  arrays with the null handle. It patches the *generator*
+  (`maint/local_python/binding_c.py`) because `autogen.sh` regenerates
+  `c_binding_abi.c`. Zero-filling would not do: handle kind 0 is
+  `HANDLE_KIND_INVALID`, which walks past the assert.
+- Reproducer in `bug-mpich-type-get-contents/`, built to show the read on
+  platforms where the garbage happens not to abort. Filed without the patch.
 
 ### MPICH: the generalized request tests require `extra_state` to alias the caller's variable
 
 <https://github.com/pmodels/mpich/issues/7922>
 
-`greqf`, `greqf90` and `greqf08` -- MPICH's tests, but run against both
-implementations, so they fail on all twelve variants -- each set
-`extrastate = 1`, start a generalized
-request whose `free_fn` does `extrastate = extrastate - 1`, wait on it, and then
-require the *caller's* variable to read 0. The f08 one goes so far as to call
-`dummyupdate(extrastate)` first, to stop the compiler remembering what was
-stored -- so the dependency is deliberate, not an accident of the test.
+`greqf`/`greqf90`/`greqf08` (run against both implementations, so they fail
+on all twelve variants) require a `free_fn` writing through `extra_state` to
+change the *caller's* variable. The standard says otherwise: `extra_state` is
+`IN`/`INTENT(IN)`, the C prototypes take it by value, and chapter 19 gives no
+Fortran-specific licence. MPICH's own binding passes the actual argument's
+address through, so the tests pass there as a side effect of how it is built.
 
-The standard does not say that. `extra_state` is `IN` in the
-`MPI_GREQUEST_START` parameter table and `INTENT(IN)` in its f08 binding; the
-callbacks are "passed the extra_state argument that was associated with the
-request by the starting call MPI_GREQUEST_START" (section 13.2), which describes
-a value being handed over; and the C prototypes all take `void *extra_state` by
-value, so a C callback provably cannot write back to the caller's variable at
-all -- only through it. Chapter 19, Support for Fortran, says nothing about
-`extra_state` anywhere, so there is no Fortran-specific licence either. The one
-phrase that points the other way, "extra_state can be used to maintain
-user-defined state for the request", means in C what it says: point it at
-something.
-
-What makes the tests pass under MPICH's own binding is how that binding is
-built rather than a decision about semantics. `mpi_grequest_start_` in
-`src/binding/fortran/mpif_h/fortran_binding.c` passes the Fortran actual
-argument's address straight through as the C `extra_state` value and hands the
-Fortran procedures to MPI unwrapped, so a callback's `extrastate` dummy lands on
-the caller's variable as a side effect.
-
-mpif copies instead, so the three tests fail. They report "Free routine not
-called", which is wrong and worth knowing before chasing it: the test sets
-`freefncall = 0`, declares `common /fnccalls/ freefncall` in `free_fn`, and then
-never increments it, so the counter is always zero and the diagnostic always
-takes that branch. The real assertion is the `extrastate .ne. 0` above it, and
-`free_fn` does run. Matching the tests would mean holding a pointer into the
-caller's frame for the lifetime of the request, which is a dangling pointer as
-soon as the request outlives the scope it was started in -- a hazard MPICH's
-binding has and mpif would be adopting on purpose. `test/grequest_f08.f90` asserts the opposite
-of what MPICH's tests assert, and deliberately.
-
-This is the same shape as the `spawnargvf90` entry below: a suite test that
-codifies its own implementation rather than the standard. Nothing to fix on this
-side.
+- Matching them would mean holding a pointer into the caller's frame for the
+  request's lifetime — dangling as soon as the request outlives the scope.
+  mpif copies; `test/grequest_f08.f90` asserts the opposite of MPICH's tests,
+  deliberately.
+- Before chasing the tests' "Free routine not called": the message is wrong —
+  the test never increments its counter, so that branch is always taken; the
+  real assertion is `extrastate .ne. 0` above it, and `free_fn` does run.
 
 ### Registered datareps are not implemented, by either implementation
 
-`MPI_Register_datarep` forwards its Fortran callbacks correctly now, and nothing
-will ever call them. Both implementations decline the feature before mpif's
-trampolines can matter:
+`MPI_Register_datarep` forwards its Fortran callbacks correctly now, and
+nothing will ever call them:
 
-- MPICH's ROMIO rejects a non-NULL conversion function outright --
-  `src/mpi/romio/mpi-io/io_impl.c` returns `MPI_ERR_CONVERSION` with "Read and
-  Write datarep conversions are currently not supported by MPI-IO" if either
-  `read_conversion_fn` or `write_conversion_fn` is non-NULL. It will register a
-  datarep whose conversions are both `MPI_CONVERSION_FN_NULL` and whose extent
-  function is real, but `MPI_File_set_view` then refuses the name: the same file
-  accepts only `native`, `external32` and `internal`, anything else being
-  `MPI_ERR_UNSUPPORTED_DATAREP`, "Only native data representation currently
-  supported". So even a datarep MPICH accepts can never be used, and the extent
-  callback never fires either.
-- Open MPI is worse than briefer: it accepts the call and does nothing.
-  `ompi/mca/io/ompio/io_ompio_component.c`'s `register_datarep` is
-  `return OMPI_ERROR;` and nothing else, but that line is dead code --
-  `mca_io_base_register_datarep` calls `io_register_datarep` only on components
-  whose type version is `2, 0, 0`, and `ompio` registers itself as
-  `MCA_IO_BASE_VERSION_3_0_0`. No component is ever consulted, `ret` stays
-  `OMPI_SUCCESS`, and `MPI_Register_datarep` is a silent no-op. Registering the
-  same datarep twice therefore also succeeds, where MPICH reports
-  `MPI_ERR_DUP_DATAREP`. Worth reporting upstream, and not yet.
+- MPICH's ROMIO rejects non-NULL conversion functions
+  (`MPI_ERR_CONVERSION`), and `MPI_File_set_view` accepts only `native`,
+  `external32` and `internal` anyway, so even an accepted datarep can never
+  be used.
+- Open MPI accepts the call and does nothing: `ompio` registers as component
+  version 3.0.0 and only 2.0.0 components are consulted for
+  `register_datarep`, so `MPI_Register_datarep` is a silent no-op (and
+  duplicate registration wrongly succeeds). Worth reporting upstream, not
+  yet; needs a reproducer first.
 
-That is the whole feature, not an edge of it, so there is nothing to work around
-and nothing to report: both are honest about it in the error message. What mpif
-can be held to is that it no longer refuses the call before MPI sees it, which
-is what `test/datarep_f08.f90` asserts on the one combination ROMIO accepts --
-and that is all it asserts, since anything past registration diverges between
-the two implementations -- and
-that the trampolines marshal correctly, which `test/datarep_c.c` asserts by
-calling them directly. The second is the substitute for an end-to-end test and
-should be replaced by one if an implementation ever grows the feature.
+What mpif can be held to: it no longer refuses the call before MPI sees it
+(`test/datarep_f08.f90`, on the one combination ROMIO accepts), and the
+trampolines marshal correctly (`test/datarep_c.c` calls them directly — the
+substitute for an end-to-end test until an implementation grows the feature).
 
 ### MPICH: attributes on predefined datatypes abort in ABI builds — carried as a local patch
 
 <https://github.com/pmodels/mpich/issues/7916>
 
-`MPI_Type_set_attr` and `MPI_Type_get_attr` abort inside MPICH for any
-predefined datatype when it is built for the standard ABI:
-`MPII_Attr_delete_c_proxy` converts the handle back with
-`ABI_Handle_from_mpi`, whose datatype case reverse-searches
-`abi_datatype_builtins[]` and asserts when the handle is not found. Derived
-datatypes and communicator attributes are unaffected. The reproducer sent with
-the issue is `bug-mpich-7916/mpich-abi-attr-bug.c`; it is pure C, with no
-Fortran involved.
+Where weak symbols are unavailable (macOS: `#pragma weak` ICEs gcc on
+Mach-O), MPICH builds a separate profiling library, and
+`mpi_abi_util.c` — which holds the `abi_datatype_builtins[]` table and its
+initialiser — was compiled into both libraries. `MPI_Init` fills
+`libmpi_abi`'s copy; the attribute proxies live in `libpmpi_abi`, whose copy
+stays zeros, so `MPI_Type_set/get_attr` on a predefined datatype asserts.
+Linux builds have weak symbols, one library, one table, and cannot hit it.
 
-The table is searched and comes up empty because there are two of them.
-`src/binding/abi/mpi_abi_util.c`, which defines `abi_datatype_builtins[]`,
-`abi_op_builtins[]` and the `ABI_init_builtins()` that fills them, is listed in
-`mpi_abi_sources`, and that is compiled into both `libmpi_abi` and
-`libpmpi_abi`. Where weak symbols are unavailable those really are two
-libraries, so each gets its own copy: `MPI_Init` is in `libmpi_abi` and fills
-that one, while `libpmpi_abi`, which holds the implementation and therefore the
-attribute proxies, keeps a table of zeros. The forward direction never notices,
-because the entry points that convert an incoming handle are in `libmpi_abi` --
-which is why setting the attribute works and only the callback aborts.
-
-That makes it a macOS problem in practice. `configure` asks for weak symbols and
-gives up on them, since `#pragma weak PFoo = Foo` makes gcc ICE on Mach-O
-(`internal compiler error: in assemble_alias`), so `NEEDSPLIB=yes` and the
-separate profiling library gets built. A Linux build has weak symbols, one
-library and one table, and cannot hit this.
-
-Fixed upstream on `main` by
-[2eb9a812](https://github.com/pmodels/mpich/commit/2eb9a812025d5b22703fd35398714ba1c9e4f218)
-("abi: double inclusion of mpi_abi_util.c under noweak", 2026-06-13), which
-moves the file into a new `mpi_abi_core_sources` that goes into the profiling
-library alone. The commit predates the issue by seven weeks and does not
-reference it, and the issue is still open; nothing has been released with the
-fix, 5.0.1 being the latest tag. It is therefore carried locally as
-`ci-scripts/mpich-abi-util-one-copy.patch`, applied by
-`ci-scripts/install-mpich.sh`. **Drop the patch once a release picks the fix
-up**; `git apply` refuses fuzz, so it will fail loudly rather than land
-somewhere unintended, and the prepared-tree stamp covers the patches, so
-removing it re-prepares rather than reusing an older tree.
-
-The patch is a local copy rather than the upstream commit downloaded by URL,
-which is what this script does for its other fix, because the upstream one does
-not apply to 5.0.1: `main` has renamed the convenience-library variables in
-`Makefile.am` (`@mpllib@` to `@mpl_lib@` and so on) and dropped
-`fortran_binding_abi.c` from `mpi_abi_sources`, and both change the context the
-commit's hunks expect. The change itself is unaltered.
-
-Two other routes were considered and rejected. There is no configure switch that
-does away with the second library: `NEEDSPLIB` is derived from whether weak
-symbols work rather than asked for, weak aliases cannot be made to work on
-Mach-O, and dropping `libpmpi_abi` would take the `PMPI_` entry points with it,
-which the ABI requires. Calling `ABI_init_builtins()` from
-`ABI_Datatype_from_mpi` itself would also work, and would need no `automake`
-rerun, but it papers over the duplication rather than removing it and diverges
-from what upstream did.
+- Fixed upstream on `main` by
+  [2eb9a812](https://github.com/pmodels/mpich/commit/2eb9a812025d5b22703fd35398714ba1c9e4f218),
+  unreleased; carried as `ci-scripts/mpich-abi-util-one-copy.patch`, a local
+  copy because the upstream commit does not apply to 5.0.1. **Drop the patch
+  once a release picks the fix up** — `git apply` refuses fuzz, so it fails
+  loudly.
+- Reproducer: `bug-mpich-7916/mpich-abi-attr-bug.c`, pure C.
 
 ### OpenMPI: an empty info value was rejected — fixed upstream, patch dropped
 
 <https://github.com/open-mpi/ompi/issues/14246>
 
-`MPI_Info_set(info, "key", "")` returned `MPI_ERR_INFO_VALUE` (33) under Open MPI
-and `MPI_SUCCESS` under MPICH. The ABI defines that class as "Value longer than
-MPI_MAX_INFO_VAL", and the standard gives the empty value a defined meaning on
-two reserved keys -- for both `"mpi_memory_alloc_kinds"` and
-`"mpi_assert_memory_alloc_kinds"`, "A value corresponding to the empty string
-represents no memory allocation kinds" -- so there was no way to say that through
-an info object.
+`MPI_Info_set(info, "key", "")` returned `MPI_ERR_INFO_VALUE`; the standard
+gives the empty value a defined meaning on two reserved keys. Fixed upstream
+(commit `5e21b7b2`, PR 14247), now an ancestor of the pinned commit, so the
+local patch is gone. Reproducer: `bug-ompi-info-value/`.
 
-Fixed upstream on `main` by
-[5e21b7b2](https://github.com/open-mpi/ompi/commit/5e21b7b21f8b4e52c06b5527eb344958325cbb30)
-(pull request 14247), which removes the zero-length test on the value and leaves
-the empty *key* rejected. That commit was not on the ABI branch mpif builds from,
-so it was carried locally as `ci-scripts/openmpi-info-set-empty-value.patch`,
-applied by `ci-scripts/install-openmpi.sh`.
-
-The ABI branch had it as of `6cb5ef1d`, the commit `install-openmpi.sh` used to
-pin. That PR, open-mpi/ompi#13280, has since merged into `main` -- `main`'s tip
-is now what `install-openmpi.sh` pins, currently `003e0ca0`, and `6cb5ef1d` is
-an ancestor of it -- so the patch is gone and `patches=()` is empty either way.
-The evidence is `ompi/mpi/c/info_set.c.in` at that commit: the value check
-reads
-`if ((NULL == value) || (@MPI_MAX_INFO_VAL@ <= value_length))` with no
-`0 == value_length` term, and the file carries the 2026 Squyres copyright line
-the upstream commit added. `patch --dry-run` against it reports "Reversed (or
-previously applied) patch detected", which is the same finding from the other
-direction.
-
-Two notes for the next fix that has to be carried. The patch was a local copy
-rather than the upstream `.patch` downloaded by URL, which is what
-`install-mpich.sh` does for its own fix, because the upstream one did not apply
-to the ABI branch: it templated the constant as `@MPI_MAX_INFO_VAL@` where the
-rest of `main` wrote `MPI_MAX_INFO_VAL`, and the commit's other hunks touched a
-changelog and tests the branch did not have in the same state -- both branch
-and main are one tree now that the merge has happened, but the historical
-mismatch is why a hand-carried patch was needed at the time. And an empty
-`patches` array is not free in bash 3.2, which is what macOS has: under `set -u`
-a bare `"${patches[@]}"` is an unbound variable rather than nothing, so the two
-places that expand it -- the stamp's `cksum` and the apply loop -- use
-`${patches[@]+"${patches[@]}"}`.
-
-It reaches Fortran through the stripping of leading and trailing blanks that the
-standard requires of info keys and values: a value of nothing but spaces becomes
-the empty string. `test/info_blanks_f08.f90` avoids asserting on it so that
-mpif's own tests do not fail on an implementation that has not taken the fix --
-still the right thing, since the assertion would be about the implementation
-rather than about mpif.
-The reproducer sent with the issue is
-`bug-ompi-info-value/ompi-empty-info-value.c`; it is pure C, and exits 0 on
-MPICH and 1 on an unpatched Open MPI.
+- It reaches Fortran through blank-stripping: a value of all spaces becomes
+  the empty string. `test/info_blanks_f08.f90` deliberately does not assert
+  on it, the assertion being about the implementation rather than mpif.
+- Note for the next carried patch: under macOS bash 3.2 with `set -u`, an
+  empty `patches` array must be expanded as `${patches[@]+"${patches[@]}"}`.
 
 ### OpenMPI: `MPI_Info_create_env` changes across `MPI_Init`
 
 <https://github.com/open-mpi/ompi/issues/14297>
 
-The info object it returns before `MPI_Init` differs from the one it returns
-after, which is what fails `infocrenvf` and `infocrenvf90` -- those compare two
-env infos created at different points and expect them to agree. The `host` values
-below are this machine's name as it was that day and are not a fixed property of
-it: DHCP moves the name between `Redshift.local` and `Mac.pitp.io`, which the
-hostname caution under "Suite baseline" records costing a suite run its MPICH
-spawn tests. Re-measure it rather than expecting these two strings:
-
-    key         before MPI_Init      after MPI_Init
-    maxprocs    0                    1
-    soft        0                    1
-    host        Redshift.local       Redshift
-    wdir        (not set)            (set)
-
-Two arguments here, and the weaker one was the only one this entry made until
-2026-08-08. The weaker: `MPI_Info_create_env` describes how the process was
-started, which does not change when MPI is initialised, and MPI-5.0 requires that
-"multiple calls to this procedure that are given the same input arguments will
-produce info objects consistent with the definition of MPI_INFO_ENV" (chapter 10,
-p. 475). The Fortran binding has no `argc`/`argv`, so any two calls in one process
-are given the same input arguments necessarily, and the pre-`MPI_Init` call is
-explicitly allowed -- the same page makes this one of the few procedures callable
-before MPI is initialised. MPICH's two agree and it passes the test.
-
-The weakness is that the same page's advice to users anticipates the sparse case
-precisely: with `argc` 0 and `argv` NULL, or in Fortran where those arguments do
-not exist, the object may be unpopulated or incompletely populated, because the
-procedure is local and the implementation may not be able to determine the correct
-values. That is a fair account of Open MPI's position before init, where there is
-no PMIx connection to ask, and §11.2.1 separately says the object need not carry a
-pair for every predefined key -- so the missing `wdir` is defensible outright.
-
-The stronger argument does not compare the two calls at all. §11.2.1 defines
-`maxprocs` as the maximum number of MPI processes to start, and its advice to
-users insists these are the values *requested* of the launch mechanism rather than
-what was obtained. No launch that produced a running process requested zero of
-them, so `maxprocs=0` contradicts the definition of the key on its own, and `soft`
-is the same shape. What the advice excuses is incompleteness, not a value that
-cannot be true; the fix it points at is to omit the key, which the standard
-permits, rather than to fill it with a placeholder indistinguishable from an
-answer. `host` is the weakest of the four, `Redshift.local` and `Redshift` both
-being names for the host where the standard says only "Hostname."
-
-It matters beyond the suite -- two test names, three rows in
-`ci-scripts/suite/mpich-suite-xfail.txt`, one per language -- because this
-procedure exists for the Sessions
-Model -- asking how the process was launched without the World Model is its stated
-purpose -- so reading `maxprocs` before initialising is the intended use and gets a
-plausible wrong number rather than an error.
-
-Not an mpif problem: a pure C program that creates an env info before and after
-`MPI_Init` and prints both shows the same divergence, with no Fortran involved.
-That program was not kept, and `bug-ompi-info-create-env/` should have it.
+The env info differs before and after `MPI_Init` (`maxprocs` and `soft` 0
+before, 1 after; `host` differs; `wdir` unset before), failing `infocrenvf`
+and `infocrenvf90`. MPI-5.0 (ch. 10) requires multiple calls with the same
+input arguments to agree, and the Fortran binding has no arguments. The
+sparse pre-init object could be defended as "incompletely populated" —
+but §11.2.1 defines `maxprocs` as the value *requested*, and no launch
+requested zero processes, so the placeholder contradicts the key's
+definition; the permitted fix is to omit the key. Matters beyond the suite:
+asking how the process was launched without the World Model is the
+procedure's stated purpose. Pure C, no reproducer kept —
+`bug-ompi-info-create-env/` should get one.
 
 ### OpenMPI: object names where the standard asks for an empty string
 
 <https://github.com/open-mpi/ompi/issues/14298> (the window half)
 
-MPI-5.0 section 7.8 gives `MPI_WIN_GET_NAME` and `MPI_TYPE_GET_NAME` "the name
-previously stored on the *object*, or an empty string if no such name exists", and
-excepts only predefined datatypes: "Named predefined datatypes have the default
-names of the datatype name." Open MPI names two things the standard leaves
-nameless, which is six suite tests. `bug-ompi-object-names/ompi-object-names.c`
-prints both and exits nonzero on the first; it is pure C, no Fortran involved:
+MPI-5.0 §7.8: get_name returns "the name previously stored on the object, or
+an empty string if no such name exists". Reproducer:
+`bug-ompi-object-names/ompi-object-names.c`, pure C.
 
-    fresh window              MPICH len= 0 ""          Open MPI len=13 "rdma window 3"
-    fresh derived datatype    MPICH len= 0 ""          Open MPI len= 0 ""
-    dup of a named datatype   MPICH len= 0 ""          Open MPI len=17 "Dup a vector type"
-
-- **A fresh window has a name.** `MPI_Win_create` and then `MPI_Win_get_name`
-  yields `"rdma window 3"`, where nobody has called `MPI_Win_set_name`. The
-  standard is explicit, so this is a defect, and it is what `winnamef`,
-  `winnamef90` and `winnamef08` report as "Did not get empty name from new
-  window". Setting and getting a name works, so only the default is wrong.
-
-  The window layer is not what does it. `ompi_win_construct` allocates `w_name`
-  and sets `w_name[0] = '\0'`, `ompi/win/win.c:173`, which is right. The one-sided
-  component then overwrites it once the window is built, `ompi_win_set_name(win,
-  name)` with a name it has just composed. Four components do this and each
-  composes a different string, while a fifth does not do it at all:
-
-      rdma       "rdma window %s"               osc_rdma_component.c:1586
-      ucx        "ucx window %s"                osc_ucx_component.c:672
-      portals4   "portals4 window %d"           osc_portals4_component.c:442
-      ubcl       "ubcl window %d, built on %s"  osc_ubcl.c:413
-      sm         (never calls set_name)
-
-  So whether a fresh window has a name, and what it says, is a function of which
-  osc component won selection -- which is the strongest form of the complaint,
-  since it makes this an inconsistency inside Open MPI rather than a deliberate
-  extension it could defend. The `3` is not a window counter but the
-  communicator's CID, through `ompi_comm_print_cid`, so the string also moves with
-  how many communicators the program has made.
-
-  The reason they set it is worth carrying into any patch: the only consumer of
-  `w_name` inside Open MPI is the debug dump at `ompi/win/win.c:85`, "Dumping
-  information for window: %s". Deleting the four calls is a three-line change per
-  component and passes the tests, and it blanks that dump, so a fix that expects
-  to survive review wants a separate internal label or a string synthesised inside
-  `ompi_win_dump`, leaving `w_name` for what the standard says it is.
-
-  Line numbers are against the pinned clone `003e0ca` (2026-08-05), which is what
-  `install-openmpi.sh` builds; `main` may have moved.
-- **`MPI_TYPE_DUP` invents one.** Duplicating a datatype named `"a vector type"`
-  gives the duplicate the name `"Dup a vector type"` -- not a copy of the name but
-  a new one, stored by nobody. `typesnamef`, `typesnamef90` and `typesnamef08`
-  require the duplicate's name to be empty and report "(type2) Expected length 0,
-  got 17".
-
-  This half is weaker: the standard does not say whether `MPI_TYPE_DUP` carries
-  the name over, and "exactly the same properties as oldtype" could be read either
-  way. What it does say is "previously stored", and "Dup a vector type" was never
-  stored by anyone, so a synthesised name is hard to defend under either reading.
-  MPICH leaves it empty and the test codifies that; between the two, mpif can only
-  follow whichever implementation it is built against.
-
-Nothing to fix on this side either way. The window half is open upstream as
-open-mpi/ompi#14298; the dup half is still only worth asking about, and is not
-recorded here as having been asked, since the standard could settle it in a
-sentence and Open MPI is not obviously the party to ask.
+- **A fresh window has a name** (`"rdma window 3"`): each osc component
+  overwrites the correctly-empty `w_name` with its own composed string after
+  construction (`rdma`, `ucx`, `portals4`, `ubcl`; `sm` does not) — so the
+  answer depends on component selection, an inconsistency inside Open MPI.
+  Fails `winnamef*`. Any patch should note the only internal consumer of
+  `w_name` is the debug dump in `ompi/win/win.c`.
+- **`MPI_TYPE_DUP` invents a name** (`"Dup a vector type"`), which nobody
+  stored. Weaker: the standard does not say whether dup carries the name
+  over, but a synthesised name is hard to defend under either reading.
+  Fails `typesnamef*`. A question for the standard rather than a defect to
+  file; not recorded as having been asked.
 
 ### OpenMPI on macOS: a nonblocking collective write is lost when the aio queue fills — carried as a local patch
 
-`f08/io/i_fcoll_test` writes a 32³ integer array to a file through a
-`MPI_Type_create_darray` view with `MPI_File_iwrite_all`, reads it back with
-`MPI_File_iread_all`, and finds every element zero. Open MPI says why on the way
-past, once per process:
+Symptom: `f08/io/i_fcoll_test` reads back zeros;
+`mca_fbtl_posix_ipwritev: error in aio_write(): Resource temporarily
+unavailable`. Four separable defects in the posix fbtl (Open MPI 6.1.0a1):
 
-    mca_fbtl_posix_ipwritev: error in aio_write():  Resource temporarily unavailable
-    mca_fbtl_posix_ipreadv: error in aio_read(): errno 35 Resource temporarily unavailable
+1. The in-flight limit comes from `sysconf(_SC_AIO_MAX)` (system-wide
+   `kern.aiomax`, 90) where the per-process limit is `kern.aioprocmax` (16).
+2. The EAGAIN retry loop cannot work: slots are freed by `aio_return`, whose
+   only caller is the progress function, assigned *after* the loop.
+3. The failure is discarded — the ipwritev return value is assigned to
+   nothing, and `MPI_File_iwrite_all` is not collective in ompio (no fcoll
+   component implements it), so nothing aggregates the fragmented view.
+   `MPI_Wait` then reports `MPI_SUCCESS` on a request nobody progressed.
+4. The error path frees the aiocbs with operations outstanding and reaps
+   none, retiring every slot the process has — all later nonblocking file
+   I/O fails too.
 
-The first reading of this said that the macOS aio queue is small -- `sysctl
-kern.aioprocmax` is 16 here, against a Linux default in the tens of thousands,
-which is why it is a macOS entry -- and that Open MPI prints the message and gives
-up, so "the data never reaches the file". Both halves are too generous. The queue
-is small, but Open MPI derives its limit from the wrong sysctl, cannot retry the
-way it thinks it can, discards the failure when it happens, and then leaks the
-slots it did get. Four separable defects, and the last two are what turn a lost
-write into a dead file handle. Paths below are relative to the clone at
-`build/openmpi-gcc/mpi-src/ompi` (Open MPI 6.1.0a1).
-
-**The limit is per process, and Open MPI reads the system-wide one.**
-`ompi/mca/fbtl/posix/fbtl_posix.c:107` sets `ompi_fbtl_posix_max_prd_active_reqs`,
-the number of `aio_write`s it will keep in flight at once
-(`fbtl_posix_ipwritev.c:56`), from `sysconf(_SC_AIO_MAX)`. On macOS that reports
-`kern.aiomax`, 90 here, which is the *system-wide* total; what one process may
-have outstanding is `kern.aioprocmax`, 16. Measured, by declaring the variable
-`extern` in a program of one's own and printing it either side of the file open
-that runs the fbtl's `module_init`: 2048 -- the compiled-in default at
-`fbtl_posix.c:39` -- and then 90. So the batch is sized 5.6× what the process is
-allowed. It is not an MCA parameter: `sysconf` is the only thing that ever assigns
-it, so no run-time setting can bring it down.
-
-**Nothing can reap during the retry.** `fbtl_posix_ipwritev.c:113-130` does try:
-ten attempts per request with `mca_common_ompio_progress()` between them, which is
-the fix for open-mpi/ompi#8368, "Exceeding the max. number of pending aio requests
-on MacOS", closed in the 4.1 series. It cannot work here. A slot is released by
-`aio_return`, not by the operation finishing -- measurement (2) of
-`bug-ompi-aio-eagain/posix-aio-limit.c`: sixteen requests that have all completed
-still refuse a seventeenth, and accept it the moment they are reaped -- and the
-only caller of `aio_return` is `mca_fbtl_posix_progress`, which
-`mca_common_ompio_progress` reaches through `req->req_progress_fn`, assigned at
-`fbtl_posix_ipwritev.c:133`, *after* the loop. The ten attempts therefore iterate
-over a request that progress cannot see, and unless some unrelated ompio request
-happens to be reapable they are ten copies of one failure.
-
-**The failure is then dropped on the floor.** `fbtl_posix_ipwritev.c:128` returns
-`OMPI_ERROR`; `common_ompio_file_write.c:456` calls it as a statement and assigns
-the result to nothing. Which is also the whole of what `MPI_File_iwrite_all`
-does, because in ompio it is not collective at all: no component under
-`ompi/mca/fcoll/` sets `fcoll_file_iwrite_all`, so
-`mca_common_ompio_file_iwrite_all` takes its own else branch at
-`common_ompio_file_write.c:667` -- "WE fake it with individual non-blocking I/O
-operations" -- and nothing aggregates, so the io array is exactly as fragmented as
-the file view, 512 entries for the probe below. The backtrace has no fcoll frame
-in it: `PMPI_File_iwrite_all` → `mca_io_ompio_file_iwrite_all` →
-`mca_common_ompio_file_iwrite` → `mca_fbtl_posix_ipwritev`.
-
-**And the sixteen slots it did get are leaked.** The error path frees
-`data->prd_aio.aio_reqs` (`fbtl_posix_ipwritev.c:126`) while sixteen `aio_write`s
-are outstanding against those very control blocks -- undefined on POSIX's terms,
-which require an aiocb to stay valid until its operation completes -- and calls
-`aio_return` on none of them. Every slot the process has is retired for the life
-of the process, so every later nonblocking file operation fails at once, whatever
-its view.
-
-`bug-ompi-aio-eagain/ompi-aio-eagain-probe.c` counts all of that on one process,
-four `MPI_File_iwrite_all` calls in order, `mpiexec -n 1`:
-
-      (a) contiguous, control      MPI_Get_count =    64 of    64
-      (b) 512 blocks of 16         MPI_Get_count =     0 of  8192   <-- lost
-      (c) contiguous, after (b)    MPI_Get_count =     0 of    64   <-- lost
-      (d) contiguous, once more    MPI_Get_count =     0 of    64   <-- lost
-      file is 1984 bytes, a complete write leaves 65472 (16 blocks of 64 bytes landed)
-
-So "loses all of it" was wrong in detail, and the detail is the diagnosis: exactly
-`kern.aioprocmax` blocks reach the file, 16 of 512, and the file is left short.
-(c) and (d) are the leak -- single-request contiguous writes, identical to the
-control that had just succeeded. And the round trip reads back nothing not because
-the read is fragmented too but because the write has already retired every slot: a
-read-only run in a fresh process against a good file recovers 256 of 8192 integers,
-16 blocks again.
-
-The one thing in the interface that admits any of this is `MPI_Get_count` on the
-completed request, 0 where a success reports the lot. `MPI_File_iwrite_all` returns
-`MPI_SUCCESS`, `MPI_Test` reports the request complete on the first call, and
-`MPI_Wait` returns `MPI_SUCCESS` -- silence would be bad enough, and success is
-worse. That the request completes at all is worth its own sentence, since a request
-with no progress function ought to hang rather than succeed:
-`common_ompio_request.c:209` reads a null `req_progress_fn` as "this is a parent
-request", finds `req_num_subreqs == req_subreqs_completed` trivially at 0 == 0, and
-completes it with a status nobody has written. `MPI_ERROR` in it is uninitialised
-heap, which is why nothing can be read off it either.
-
-The blocking path is unaffected, measured: `MPI_File_write_all` through the same
-view transfers all 8192 and says so. `fbtl_posix_pwritev.c` contains no `aio_*`
-call at all, using `pwritev` and data sieving instead, so this is the nonblocking
-path's alone. `bug-ompi-aio-eagain/ompi-aio-eagain.c` remains the four-process
-version, closest to the test: MPICH round-trips the array, rerun today, and
-Open MPI does not. The noncontiguous view is the necessary part -- a contiguous one
-issues few enough requests to stay under the limit and passes -- which is why the
-test's `darray` is in that probe, and why the one-process probe reaches the same
-fragmentation with a vector type.
-
-There is no workaround at run time. Measured, each still failing:
-`--mca fbtl_posix_priority 0` (priority does not deselect the only component in the
-framework), `--mca fcoll individual` and `--mca fcoll_vulcan_async_io 0` (fcoll is
-not in this path at all, per the backtrace). `--mca fbtl ^posix` leaves no fbtl and
-the job dies. Open MPI 6.1 ships one `io` component, `ompio`, and one `fbtl`,
-`posix`, so there is nothing to switch to; ROMIO is gone. Raising `kern.aioprocmax`
-past 90, with `kern.aiomax` above the product of that and the ranks per node, ought
-to work -- inferred, not measured, since it needs root, and a test suite cannot ask
-for it anyway.
-
-So it is patched instead: `ci-scripts/openmpi-fbtl-posix-aio.patch`, applied by
-`ci-scripts/install-openmpi.sh`, whose preamble carries the reasoning hunk by hunk.
-It reads `kern.aioprocmax` on Darwin rather than `sysconf(_SC_AIO_MAX)` and exposes
-the value as an `fbtl_posix_max_aio_reqs` MCA parameter; replaces the retry with
-back-pressure, posting what the queue takes and leaving the rest to progress, which
-needs `mca_fbtl_posix_progress` to arm the next batch on the width of the active
-window rather than on a whole chunk; makes the two ompio callers act on what the
-fbtl returns; and reaps what was posted before freeing the aiocbs. Both reproducers
-in `bug-ompi-aio-eagain/` pass under it, and both fail again when the change is
-reverted and Open MPI rebuilt, which is what makes the attribution rather than the
-symptom the thing that was tested. `f08/io` under `openmpi/gcc` goes from three
-failures to two and `f90/io` and `f77/io` are unchanged at two; the patch builds
-warning-free under both gcc 15 and clang 22, and fixes both local Open MPI
-variants.
-
-Two things it deliberately leaves alone, both reachable only from a genuine I/O
-error rather than from a full queue: the same discarded return value at
-`common_ompio_file_write.c:241` and `common_ompio_file_read.c:265`, in the
-*blocking* paths, where the enclosing function's own error handling would have to be
-rethought; and the partial-completion re-post inside `mca_fbtl_posix_progress`,
-which on a failed `aio_write` returns with the request marked `EINPROGRESS` and
-nothing in flight, so the next progress call asks `aio_error` about an operation
-that was already reaped. Neither is this defect and neither is fixed.
-
-Reported upstream as open-mpi/ompi#14278, with all three probes inlined, and the
-patch is open-mpi/ompi#14279 against `main` -- three commits, each compiling on its
-own, the source identical to what was built and tested here. Every file it touches
-is byte-identical between `main` and the ABI-branch commit `install-openmpi.sh`
-pins, so nothing had to be ported. #8368 is referenced in both as the earlier
-attempt at the same thing, its fix being the retry loop that cannot retry. Two
-questions are put to the reviewers rather than decided here: whether the
-`sysctlbyname` belongs in OPAL, which their `AGENTS.md` says is where OS-specific
-`#if` blocks go, and which of the two untouched defects above to fold in. Should
-either answer change the shape of the patch, this file and
-`ci-scripts/openmpi-fbtl-posix-aio.patch` follow it rather than the other way
-round. The patch removed the
-`openmpi/*/darwin/*/*` xfail for `i_fcoll_test`. Of the two rows that were
-untriaged beside it, one is now accounted for and not by this: under flang the test
-prints `No Errors` and then flang's `STOP` adds "IEEE arithmetic exceptions
-signaled: INEXACT", which `runtests` counts as unexpected output, so
-`*/llvm/darwin/*/*` fails on both implementations for a reason that is not an MPI
-defect at all -- measured on `openmpi/llvm` and `mpich/llvm` here, and it is why the
-row said "passes under gfortran on the same MPI". What is left untriaged is
-`*/*/linux/24.04/*`, where the aio message is conspicuously absent from the output
-and this patch is not expected to change anything.
+- Reported as open-mpi/ompi#14278, patch open-mpi/ompi#14279;
+  carried as `ci-scripts/openmpi-fbtl-posix-aio.patch` (reads
+  `kern.aioprocmax` on Darwin, exposes it as an MCA parameter, replaces the
+  retry with back-pressure, acts on the fbtl's return, reaps before
+  freeing). Both reproducers in `bug-ompi-aio-eagain/` pass with it and fail
+  with it reverted. If upstream reshapes the fix, this entry and the patch
+  follow it.
+- There is no run-time workaround: measured, `fbtl_posix_priority`, `fcoll`
+  settings do nothing (fcoll is not in the path), `--mca fbtl ^posix` leaves
+  no fbtl, ROMIO is gone.
+- The blocking path (`pwritev`, no aio) is unaffected, measured.
+- Left alone, both reachable only from genuine I/O errors: the discarded
+  return values in the blocking paths, and the partial-completion re-post in
+  the progress function.
+- Related but distinct: `i_fcoll_test` under flang fails on both
+  implementations because flang's `STOP` prints an IEEE-exceptions line after
+  "No Errors", which `runtests` counts as unexpected output — not an MPI
+  defect. Still untriaged: `*/*/linux/24.04/*`, where the aio message is
+  absent and this patch changes nothing (see "Worth doing next").
 
 ### OpenMPI: left to itself it picks an interface it cannot use
 
-Not an mpif problem, and not really a blocker so much as a trap -- but the trap
-sprang twice, in different ways, and the second one had eleven suite tests
-attributed to the architecture for months.
-
-Everything here runs on one host, and Open MPI given a free choice of interface
-takes a non-loopback one and then fails on it:
-
-- **macOS**: it cannot configure the socket -- `setsockopt(TCP_NODELAY) failed:
-  Invalid argument (22)`, followed by its own warning that this "may end up
-  hanging". It does, in any test that communicates across a spawned
-  intercommunicator, and each one then burns runtests' 180-second timeout rather
-  than failing, so the suite looks stuck rather than broken. A pure C
-  spawn-and-send reproduces it.
-- **Linux on GitHub's x86_64 runners**: it picked the `docker0` bridge those
-  images have, at 172.17.0.1, which is not an interface anything here wants.
-
-`--mca btl_tcp_if_include lo0` on macOS and `lo` on Linux settles that half, and is
-passed in all three places that run the suite: the CI step,
-`scripts/macos-test-mpich-suite.sh` and each `docker/openmpi-*.dockerfile`.
+Everything here runs on one host, and Open MPI given a free choice takes a
+non-loopback interface and fails on it: on macOS
+`setsockopt(TCP_NODELAY) failed: Invalid argument`, then hangs (180 s per
+spawn test); on GitHub's x86_64 runners it picked the `docker0` bridge.
+`--mca btl_tcp_if_include lo0` (macOS) / `lo` (Linux) settles it, passed in
+all three places that run the suite: the CI step,
+`scripts/macos-test-mpich-suite.sh`, and each `docker/openmpi-*.dockerfile`.
 
 ### OpenMPI: a spawned child is not reachable over TCP on the x86_64 runners
 
-This is what fails the eleven Open MPI spawn tests that spent months attributed to
-the architecture. Each of them spawns children, prints "No Errors" -- so the test's
-own logic passes -- and then the job dies:
-
-    [runner:00000] *** An error occurred in Socket closed
-    [runner:00000] *** reported by process [3394764801,0]
-    [runner:00000] *** on a NULL communicator
-    [runner:00000] *** MPI_ERRORS_ARE_FATAL (processes in this communicator will
-    [runner:00000] ***    now abort, and MPI will try to terminate your MPI job)
-
-preceded, when Open MPI is allowed to say so, by a warning that it "failed to TCP
-connect to a peer MPI process" at `connect() to 127.0.0.1:1025 failed`. So the
-child is not reachable where the parent looks, and the teardown of the spawned
-intercommunicator is where that becomes fatal.
-
-Why only the x86_64 runners is not established. The arm64 ones, with the same Open
-MPI built from the same pinned commit and the same mpif, do not warn and do not
-abort; subtract the eleven and the two x86_64 rows equal their aarch64 twins,
-5 / 9 / 20 under gcc and 5 / 9 / 16 under llvm. Nothing Fortran-specific is in
-sight, and nothing on this side can be held to it, but it has not been reproduced
-in C either, for want of an x86_64 Linux Open MPI to hand.
-
-Two wrong turns are worth recording, because both were confident and both were
-CI's to refute.
-
-The first was the interface. With `docker0` in play the warning named 172.17.0.1
-and looked like a bridge problem; the loopback flag in the entry above was
-expected to cure it. It did not -- the warning came back naming 127.0.0.1.
-
-The second was the warning itself. Silencing it with
-`--mca btl_base_warn_peer_error 0` -- Open MPI's own knob, on by default -- was
-supposed to leave eleven passing tests passing, on the evidence that their output
-was "No Errors" plus that warning and nothing else. It was not nothing else:
-`runtests` prints at most ten lines of a test's output and then "... ...", and the
-abort above began at line eleven. Silencing the warning only uncovered it, and the
-tests failed just the same. **A diagnosis from `runtests`' console report is a
-diagnosis of the first ten lines** -- which is now fixed at the source rather than
-remembered: `ci-scripts/suite/test-mpich-suite.sh` prints the whole recorded output
-of every unexpected failure, from the TAP file, which is not truncated.
-
-So the eleven are expected failures again, in
-`ci-scripts/suite/mpich-suite-xfail.txt` under `openmpi/*/*/*/x86_64`, with the
-abort as the reason rather than the warning.
-
-The arithmetic that says the diagnosis is right: subtracting the eleven leaves the
-two Open MPI x86_64 rows in the baseline below identical to their aarch64 twins,
-5 / 9 / 20 under gcc and 5 / 9 / 16 under llvm, which is what "the same
-implementation on the same OS" should look like.
+Eleven Open MPI spawn tests print "No Errors" and then abort in teardown —
+"failed to TCP connect to a peer MPI process" at `127.0.0.1:1025`, then
+`An error occurred in Socket closed`. Why only the x86_64 runners is not
+established (the aarch64 runners, same Open MPI, same mpif, do not abort);
+not reproduced in C for want of an x86_64 Linux Open MPI to hand. Carried as
+expected failures under `openmpi/*/*/*/x86_64` with the abort as the reason.
+The arithmetic that supports the diagnosis: subtracting the eleven makes the
+x86_64 baseline rows equal their aarch64 twins.
 
 ### MPICH: a spawned child connects back to whatever `gethostname()` resolves to
 
-Not a defect in mpif, and not really one in MPICH either, but it fails every MPICH
-spawn test in the suite on a machine whose name resolves somewhere else, and it
-costs 180 seconds a test to do it, so it is worth knowing on sight. The local
-network here changed in August 2026 and it turned up the same day.
+Fails every MPICH spawn test in the suite, 180 seconds each, on a machine
+whose own name resolves somewhere else — this machine, since the local
+network changed in August 2026 (`CLAUDE.md` "This machine").
 
-`gethostname()` on this machine returns `Mac.pitp.io`. The DNS this network serves
-answers that with 10.41.6.x; `en0` holds 10.10.60.110. Nothing on the machine
-answers to the address its own name gives.
-
-MPICH is built `--with-device=ch3` here, and `GetSockInterfaceAddr` in
-`src/mpid/ch3/channels/nemesis/netmod/tcp/tcp_init.c:295` picks the address that
-goes into the business card from, in order, `MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE`,
-`MPIR_CVAR_CH3_INTERFACE_HOSTNAME`, `MPIR_pmi_hostname()`, and a scan for a single
-non-loopback address. With neither CVAR set the third wins, and it is the
-unresolvable name. So the parent advertises a port at an address that does not
-exist, the child cannot reach it, and:
-
-    init_spawn(226): spawned process group was unable to connect back to the
-        parent on port <tag#0$description#Mac.pitp.io$port#53122$ifname#10.41.6.89$>
-    MPIDI_Comm_connect(787): Named port tag#0$description#Mac.pitp.io$port#53122$
-        ifname#10.41.6.89$ does not exist
-    MPIDI_Create_inter_root_communicator_connect(316): Connection timed out in
-        180 seconds
-
-The `ifname#` field is the whole diagnosis: compare it against `ifconfig` and if
-the machine has no such address, this is that and nothing else needs looking at.
-Do not expect the same address twice -- the DNS round-robins, and three lookups
-minutes apart here gave 10.41.6.140, .89 and .65. Only the subnet is stable, and
-only until the network changes again.
-
-Measured, not inferred. A ten-line C program that calls `MPI_Comm_spawn` on itself
-reproduces it with no Fortran anywhere, which is what rules mpif out. Timings from
-that program, `mpiexec -n 2`, MPICH gcc:
-
-| setting | result |
-| --- | --- |
-| nothing set | fails, 180 s |
-| `MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=lo0` | passes, 0.08 s |
-| `MPIR_CVAR_CH3_INTERFACE_HOSTNAME=127.0.0.1` | passes |
-| `MPIR_CVAR_CH3_INTERFACE_HOSTNAME=localhost` | passes |
-| `MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=en0` | fails, 0.3 s, "does not exist" |
-
-The fix is the first of those, exported for MPICH by
-`scripts/macos-test-mpich-suite.sh`, which is where Open MPI already gets
-`--mca btl_tcp_if_include lo0` for an unrelated reason. The suite is one machine
-talking to itself, so the loopback is all it ever needed, and pinning to it makes
-the run independent of what the network is doing -- which is the point, the
-failure having arrived through no change to this repository at all.
-
-Two things deliberately not done. The interface CVAR rather than
-`MPIR_CVAR_CH3_INTERFACE_HOSTNAME=127.0.0.1`, which works equally well: MPICH
-errors out if both are set, and naming the interface leaves the choice of address
-to MPICH. And the last row is not chased. `en0` is a real address the machine
-really has, a plain TCP connect to it from this machine succeeds, and it still
-fails -- but fast, and with a different message, so it is a different thing;
-loopback is the answer regardless and the row is recorded only so the next person
-does not read it as a variant of the timeout.
-
-Nothing was added to `ci-scripts/suite/mpich-suite-xfail.txt`. These tests pass
-once the interface is pinned, so they are not expected failures; xfailing them
-would have hidden a working configuration behind a local network's DNS. CI is
-untouched for the same reason -- its runners' names resolve to their own
-addresses, `.github/workflows/ci.yaml` never calls the macOS script, and the
-baseline rows below were measured before this and still stand.
+- Mechanism: ch3:nemesis:tcp builds its business card from, in order,
+  `MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE`, `MPIR_CVAR_CH3_INTERFACE_HOSTNAME`,
+  `MPIR_pmi_hostname()`, then an interface scan. With neither CVAR set the
+  hostname wins, the parent advertises an address that is not its own, and
+  the child times out connecting back.
+- Diagnosis on sight: compare the `ifname#` field in the error against
+  `ifconfig`; if the machine has no such address, this is it. The DNS
+  round-robins, so do not expect the same address twice.
+- Measured with a ten-line C spawn program, no Fortran — which is what rules
+  mpif out. `NEMESIS_TCP_NETWORK_IFACE=lo0` passes in 0.08 s;
+  `CH3_INTERFACE_HOSTNAME=127.0.0.1` also works (MPICH errors if both are
+  set; the interface form leaves the address choice to MPICH).
+- Fix: `scripts/macos-test-mpich-suite.sh` exports
+  `MPIR_CVAR_NEMESIS_TCP_NETWORK_IFACE=lo0` for MPICH — the suite is one
+  machine talking to itself, so loopback is all it needs, and pinning it
+  makes the run independent of the network.
+- Deliberately **not** `xfail`ed and CI untouched: the tests pass with the
+  interface pinned, and CI runners' names resolve to themselves.
 
 ### MPICH: suite tests that cannot pass against a conforming binding
 
-Six of the suite's tests ask for something MPI-5.0 does not have, something only
-MPICH provides, or something the standard explicitly leaves to the implementation.
-None of them can pass here, and none is a defect on this side;
-`ci-scripts/suite/mpich-suite-xfail.txt` carries each with a reason pointing at
-this entry. The `spawnargvf90` entry below is a seventh of the same species,
-separate only because it is a disagreement between two copies of one test rather
-than with the standard.
+Each carried in `ci-scripts/suite/mpich-suite-xfail.txt` with a reason
+pointing here.
 
-- **`bsendf`, `bsendf90`** attach a `character dummy_buf(400)` and say why in a
-  comment: "we test a basic buffered send of 10 INTEGERs and assume a buffer of
-  400 CHARACTERs are sufficient to account for MPI_BSEND_OVERHEAD". Against the
-  standard ABI it is not. `MPI_BSEND_OVERHEAD` is 512 there -- a bound over all
-  implementations, where MPICH's own value is 96 and Open MPI's 128 -- and an ABI
-  build of MPICH checks against the ABI's number, so attaching 400 bytes fails
-  before anything is sent: "Buffer size of 400 is smaller than
-  MPI_BSEND_OVERHEAD (512)". The test would have to ask the constant rather than
-  guess it. This one is MPICH-only, and not because MPICH is stricter than the
-  ABI asks: Open MPI's `mca_pml_base_bsend_attach` has no size check beyond
-  `size <= 0`, which is why `bsendf` has always passed there and why `bsendf90`
-  is expected to now that it builds.
-
-  `bsendf90` was previously an mpif defect on top of this -- it failed to build
-  at all, on all twelve variants, on the `buffer_addr` declaration recorded under
-  "The f08 intents match Appendix A.4". Fixing that is what let it get as far as
-  the attach, and its expected failure is now MPICH-only and identical to
-  `bsendf`'s.
-- **`dgraph_wgtf`, `dgraph_unwgtf` and their f90 and f08 copies** ask
-  `MPI_Dist_graph_create` for a bidirectional ring with `reorder = .true.`, and
-  then check the neighbours `MPI_Dist_graph_neighbors` returns against the
-  caller's rank *in MPI_COMM_WORLD*. That is only valid if the reorder did not
-  reorder. MPI-5.0 says the opposite in the description of the routine: "If
-  reorder = false, all MPI processes will have the same rank in comm_dist_graph as
-  in comm_old. If reorder = true then the MPI library is free to remap to other
-  MPI processes (of comm_old) in order to improve communication on the edges of
-  the communication graph."
-
-  Open MPI takes the licence, through the `treematch` topology component --
-  `ompi/mca/topo/treematch/topo_treematch_dist_graph_create.c`, which walks hwloc's
-  view of the machine and permutes ranks for locality, falling back to the
-  identity when it cannot. In the arm64 Docker image it permutes, deterministically
-  and whether or not the run oversubscribes, and the same four processes in C give:
-
-      reorder=1   world rank 0 -> graph rank 2      srcs 0 3    <-- not neighbours of 0
-      reorder=1   world rank 1 -> graph rank 0      srcs 2 1
-      reorder=1   world rank 2 -> graph rank 1      srcs 0 3
-      reorder=0   world rank 1 -> graph rank 1      srcs 0 2    <-- correct ring
-      reorder=0   world rank 2 -> graph rank 2      srcs 3 1
-      reorder=0   world rank 3 -> graph rank 3      srcs 0 2
-
-  So the topology itself is right and the test's premise is wrong: with the reorder
-  off every neighbour is one step away, and with it on the ranks the test compares
-  are from two different communicators. Pure C, no Fortran, nothing for mpif to
-  fix. MPICH never remaps -- `topo_base_dist_graph_create.c` records `reorder` and
-  leaves the group alone -- which is what the test was written against.
-
-  Whether Open MPI remaps depends on the machine, so this is scoped in
-  `ci-scripts/suite/mpich-suite-xfail.txt` to the variants where it has been
-  seen rather than to Open MPI at large; CI's Open MPI runners pass these tests
-  today, and may stop at any time without anything having changed on this side.
-
-  Three variants now, not one. Both of this machine's Open MPI variants --
-  `openmpi/gcc/darwin/26/arm64` and `openmpi/llvm/darwin/26/arm64`, against Open
-  MPI `6cb5ef1d` -- fail the same six with the same message,
-  `MPI_Dist_graph_create() does not create a bidirectional ring graph!`. That
-  makes macOS 26 on arm64 the second environment to remap, the first being the
-  Ubuntu 26.04 arm64 Docker image, which is what remapping-depends-on-hwloc's-view
-  would predict.
-
-  The entries are `openmpi/*/darwin/26/arm64`: wildcarded over the toolchain,
-  pinned to the OS version. Both halves were decided by a run rather than by
-  taste. The toolchain is wildcarded because gcc and llvm fail identically, which
-  follows from `treematch` being C -- the Fortran compiler has no say in whether
-  it permutes. The OS version is pinned because macOS 15 and macOS 26 genuinely
-  disagree: CI's macos-15 Open MPI jobs pass these tests, so a `darwin/*/arm64`
-  selector would fail that job for "unexpectedly passes". Two macOS versions
-  parting company is the same kind of thing the OS version was put in the key for.
-- **`allctypesf`, `allctypesf90`, `allctypesf08`** run every predefined datatype
-  past `MPI_Type_get_name`, `MPI_LB` and `MPI_UB` among them. Those two were
-  removed in MPI-3.0 and appear nowhere in the ABI header -- `grep MPI_LB
-  mpi.h` finds nothing -- so mpif does not define them either, and the test
-  reports "Datatype MPI_LB not available in Fortran". Under `mpi_f08` it gets as
-  far as "For datatype MPI_LB found name MPI_DATATYPE_NULL", which is the
-  undeclared name defaulting to zero.
-- **`attrmpi1f08`** hands `MPI_COMM_NULL_COPY_FN` to `MPI_Keyval_create`. The
-  first is the MPI-2 callback, whose attribute arguments are address-sized; the
-  second is the MPI-1 routine, whose callbacks take plain INTEGERs. Mixing them
-  cannot typecheck, and does not: "Interface mismatch in dummy procedure
-  'copy_fn': Type mismatch in argument 'attribute_val_in'
-  (INTEGER(4)/INTEGER(8))". It fails to build.
-
-  On a 32-bit platform it builds and passes, since an address-sized INTEGER *is*
-  a plain INTEGER there and the two kinds in that message are one kind. So this
-  is the one entry in `ci-scripts/suite/mpich-suite-xfail.txt` enumerated per
-  64-bit architecture -- `arm64`, `aarch64`, `x86_64` -- rather than by `*`: the
-  selector matches a component exactly or by `*` and has no negation, and the
-  arm32v7 run reported the test as an unexpected pass while it was `*`, which is
-  the mechanism working.
-- **`statusconv`** has a C file declaring
-  `void c_f08_status_(MPI_F08_status *f08_status)`. The ABI spells that type
-  `MPI_F08_Status`, with a capital S; `MPI_F08_status` is MPICH's own name for
-  it. It fails to build, in C, before Fortran is involved.
-- **`profile1f90`, the f08 copy only**, does
-  `use :: mpi_f08, my_noname => mpi_send_f08ts`. `mpi_send_f08ts` is the scheme-1B
-  specific name of Table 19.1, the `TYPE(*), DIMENSION(..)` form, which mpif does
-  not use: it is scheme 1A, and 1B arrives with assumed-rank or not at all. So the
-  name the test interposes is one mpif does not have, and it fails to build.
-
-  Its f90 copy passes now. It used to fail for want of PMPI and was listed here
-  with the f08 one; the two turned out to be different problems, and only this one
-  is about a name. mpif offers `MPI_Send_f08` -- see "The mpi_f08 specific
-  procedure names" in `CODE.md` -- and will not offer
-  `MPI_Send_f08ts` until assumed-rank is taken, those two being one decision.
+- **`bsendf`, `bsendf90`** attach a 400-byte buffer for a 10-integer send.
+  The ABI's `MPI_BSEND_OVERHEAD` is 512 (a bound over all implementations;
+  MPICH's own is 96), and an ABI MPICH checks against it: "Buffer size of
+  400 is smaller than MPI_BSEND_OVERHEAD (512)". MPICH-only — Open MPI's
+  attach has no size check beyond `size <= 0`.
+- **`dgraph_wgtf`, `dgraph_unwgtf` + f90/f08 copies** create a ring with
+  `reorder = .true.` and then check neighbours against ranks in
+  MPI_COMM_WORLD — valid only if the reorder did not reorder, and MPI-5.0
+  explicitly frees the library to remap. Open MPI's `treematch` component
+  remaps (deterministically, machine-dependent); MPICH never does, which is
+  what the test was written against. Scoped in the xfail file to the
+  variants where remapping has been seen (`openmpi/*/darwin/26/arm64` and
+  the Ubuntu 26.04 arm64 image; toolchain wildcarded because `treematch` is
+  C, OS version pinned because macOS 15 does not remap) — CI's Open MPI
+  runners pass these today and may stop at any time without anything having
+  changed on this side.
+- **`allctypesf` + f90/f08** run `MPI_LB`/`MPI_UB` past `MPI_Type_get_name`;
+  both were removed in MPI-3.0 and are not in the ABI header, so mpif does
+  not define them either.
+- **`attrmpi1f08`** hands the MPI-2 callback `MPI_COMM_NULL_COPY_FN`
+  (address-sized attributes) to the MPI-1 routine `MPI_Keyval_create` (plain
+  INTEGER attributes); it cannot typecheck and fails to build. On a 32-bit
+  platform the kinds coincide and it *passes*, so its xfail is enumerated per
+  64-bit architecture (`arm64`, `aarch64`, `x86_64`) rather than `*`.
+- **`statusconv`** declares MPICH's own spelling `MPI_F08_status` where the
+  ABI says `MPI_F08_Status`; fails to build, in C.
+- **`f08/profile1f90`** interposes `mpi_send_f08ts`, the scheme-1B name mpif
+  does not have (mpif is scheme 1A; `_f08ts` arrives with assumed-rank or
+  not at all — one decision, see "Assumed-rank choice buffers"). Its f90
+  copy passes.
 
 ### MPICH: the f08 copy of `spawnargvf90` contradicts the standard and its own f90 copy
 
-Both copies spawn with `inargv(5) = " Ss"`. The f90 one expects the child to see
-`"Ss"`, and passes; the f08 one expects `" Ss"`, and fails with
-`Found arg Ss but expected  Ss`. MPI-5.0 is explicit for `argv` -- "In Fortran,
-leading and trailing spaces are always stripped, so that a string consisting of
-all spaces is considered an empty string" -- and MPICH's own binding strips both
-ends, so the f08 file is an inconsistent hand-conversion of the f90 one.
-
-`f08/spawn/spawnargvf90` and `f08/spawn/spawnargvf03` therefore fail, and will
-keep failing while mpif follows the standard. Nothing to fix on this side.
+Both copies spawn with `inargv(5) = " Ss"`. MPI-5.0 is explicit for `argv` —
+"leading and trailing spaces are always stripped" — and the f90 copy expects
+`"Ss"` and passes; the f08 copy expects `" Ss"` and fails. An inconsistent
+hand-conversion; `f08/spawn/spawnargvf90` and `spawnargvf03` keep failing
+while mpif follows the standard. Same species as pmodels/mpich#7922; no
+decision recorded on filing it.
 
 ## Missing features
 
 ### What the runtime consistency checks deliberately do not do
 
-`mpif_check_version` and `mpif_check_environment` (src/mpif_check.c; the
-section "Runtime consistency checks" in CODE.md has their semantics) drew
-three boundaries worth recording, so that the absent pieces read as decisions
-rather than oversights.
+(`src/mpif_check.c`; semantics in `CODE.md` "Runtime consistency checks".)
 
-**There is no `mpif_get_version` query.** The original sketch had one -- three
-INTEGERs out, the loaded library's version -- and it was dropped in favour of
-`mpif_check_version(major, minor, patch)` taking the caller's compile-time
-constants. The point of knowing the loaded version is comparing it against the
-version compiled against, and a query hands that comparison to every caller to
-reimplement, each with its own idea of what compatible means; the check form
-keeps the rule in the library, next to the version it compares, where it is
-the SameMajorVersion rule CMakeLists.txt already applies at configure time. A
-caller that wants the numbers for display can still get the library's build
-from `mpifort -showme:version`, and a library too old to have
-`mpif_check_version_` at all fails at symbol resolution, which is a cruder
-message but still a startup failure rather than silent skew.
-
-**There are no `mpif_pcheck_version`/`mpif_pcheck_environment` P forms.**
-MPI-5.0 section 15.2 requires P entry points of MPI procedures, which these
-are not -- they are mpif's own, nothing a profiling layer knows to intercept,
-and there is nothing underneath them worth profiling. Contrast
-`mpif_psizeof_*`, which exist because `MPI_SIZEOF` is the standard's. So the
-`mpif_p` grep rule in CODE.md finds no P forms for these two, and that is not
-a gap.
-
-**`mpif_check_environment` reads `MPI_Abi_get_fortran_booleans` and never
-writes.** When the library has boolean values registered and they disagree
-with the compiler that built mpif, that is exactly the cross-compiler skew the
-function exists to catch, and it aborts. When nothing is registered it passes
-silently rather than registering mpif's own values: MPI-5.0 section 20.4.1
-makes the first setter permanent, so calling `MPI_Abi_set_fortran_booleans`
-from a checker that may run at any time would be a behavioral change disguised
-as a check. Whether mpif should register its booleans at initialization is a
-real question -- but its own, to be decided somewhere that runs exactly once,
-not here.
-
-One measurement note: `test/CMakeLists.txt`'s `check_env_mpiexec_fail` drives
-the wrong-mpiexec detection by running the binary without a launcher and with
-`SLURM_NTASKS=4` in the environment, on the expectation that neither MPICH's
-nor Open MPI's singleton initialization reacts to that variable without the
-rest of the SLURM environment. That was measured, not assumed, on
-`mpich/gcc/darwin/26/arm64` and `openmpi/llvm/darwin/26/arm64` (and the other
-two local variants) on 2026-08-07; CI measures it on its own rows on every
-run. If an implementation someday grows a SLURM detector keyed on that
-variable alone, this is the test that starts failing.
+- **No `mpif_get_version` query.** The point of knowing the loaded version is
+  comparing it against the compiled-against one, and a query hands that
+  comparison to every caller to reimplement; `mpif_check_version` keeps the
+  SameMajorVersion rule in the library. A library too old to have the symbol
+  fails at resolution — crude, but a startup failure rather than silent skew.
+- **No `mpif_pcheck_*` P forms.** §15.2 requires P entry points of *MPI*
+  procedures; these are mpif's own, and there is nothing under them to
+  profile. (Contrast `mpif_psizeof_*`, which exist because `MPI_SIZEOF` is
+  the standard's.)
+- **`mpif_check_environment` reads `MPI_Abi_get_fortran_booleans` and never
+  writes.** Registered values disagreeing with mpif's compiler abort — the
+  skew the check exists for. Nothing registered passes silently: §20.4.1
+  makes the first setter permanent, so writing from a checker that may run
+  at any time would be a behavioural change disguised as a check. Whether
+  mpif should register its booleans at initialization is a real question,
+  for somewhere that runs exactly once.
+- Measurement note: `check_env_mpiexec_fail` runs the binary launcher-less
+  with `SLURM_NTASKS=4`, relying on neither implementation's singleton init
+  reacting to that variable alone — measured on all four local variants;
+  CI re-measures on every run. If an implementation grows such a detector,
+  this is the test that starts failing.
 
 ### What the cross-tests deliberately do not do
 
-The build-one-run-other machinery (see "Choosing the MPI at run time" in
-`CODE.md`) draws three lines worth recording, each with its reason:
+(See "Choosing the MPI at run time" in `CODE.md`.)
 
-- **The MPICH suite's cross-runs relink against the runtime MPI instead of
-  swapping the library under fixed binaries.** The swap needs
-  `DYLD_LIBRARY_PATH` on macOS, and SIP strips `DYLD_*` from the environment
-  across every exec of a protected binary -- `runtests` is `/usr/bin/perl`
-  and the mpiexec filter runs through `/bin/bash`, so the variable would be
-  gone before any test ran, silently, and the tests would load the rpath'd
-  default while the launcher belonged to the other implementation. The suite
-  also recompiles every test on every run, so "fixed binaries" never
-  described it anyway. `test/` is where the same-binary swap is tested, under
-  `ctest`, whose process chain (cmake's ctest, the prefix's mpiexec, the test)
-  contains no SIP-protected link. Verified on this machine: the swap works
-  under ctest and the identity check (`MPIF_TEST_MPI_LIBRARY`) would fail
-  loudly if it silently stopped happening.
-
-- **`find_package(MPI)`'s one link check stays.** Configuring mpif still
-  compiles and links one trivial MPI program (`MPI_C_WORKS`) against the MPI
-  found at `MPI_HOME`. That is a link against the generic ABI library, it
-  runs nothing, and nothing from it is baked into the build; removing it
-  would mean replacing FindMPI outright for no gain in independence.
-
+- **The suite's cross-runs relink rather than swap libraries under fixed
+  binaries**: macOS SIP strips `DYLD_*` across every exec of a protected
+  binary, and `runtests` is `/usr/bin/perl` — the variable would vanish
+  silently. The suite recompiles every test per run anyway. `test/` is where
+  the same-binary swap is tested, under `ctest`, whose process chain has no
+  SIP-protected link; `MPIF_TEST_MPI_LIBRARY` fails loudly if the swap
+  silently stops happening.
+- **`find_package(MPI)`'s one link check stays.** It links one trivial
+  program against the generic ABI library, runs nothing, and bakes nothing
+  in; removing it would mean replacing FindMPI for no gain.
 - **Byte identity of the two libraries is reported, not required.** CI's
-  cross job compares the mpich-built and openmpi-built mpif installations:
-  `include/` must be identical and the library's exported and undefined
-  symbol lists must be identical, both fatal. The libraries' bytes are
-  compared too but only reported, and the first CI run (run 31211307432,
-  2026-08-07) measured them as differing on every platform even though both
-  jobs build the same sources in identically named directories -- locally the
-  difference is debug-info build paths (`build-mpich-llvm` against
-  `build-openmpi-llvm`), and linker ids and timestamps are the same kind of
-  meaningless noise. So the byte comparison stays informational; the symbol
-  lists are the assertion with teeth.
+  cross job requires identical `include/` and identical exported/undefined
+  symbol lists; the bytes differ on every platform for meaningless reasons
+  (debug-info build paths, linker ids, timestamps).
 
 ### Assumed-rank choice buffers
 
-The bindings declare choice buffers as `integer :: buf(*)` guarded by
-`!dir$ ignore_tkr` and `!gcc$ attributes no_arg_check`, with no
-`TYPE(*), DIMENSION(..)` and no `ASYNCHRONOUS` anywhere. This is conforming --
-it is the standard's `.FALSE.` option, which `MPI_SUBARRAYS_SUPPORTED` and
-`MPI_ASYNC_PROTECTS_NONBLOCKING` advertise -- so it belongs here as an
-improvement rather than an error.
+Choice buffers are `integer :: buf(*)` under `!dir$ ignore_tkr` /
+`!gcc$ attributes no_arg_check` — the standard's `.FALSE.` option, which
+`MPI_SUBARRAYS_SUPPORTED` and `MPI_ASYNC_PROTECTS_NONBLOCKING` advertise.
+Conforming, so this is an improvement, not an error.
 
-This is also the one place where the f08 intents diverge from Appendix A.4, and
-deliberately: the standard gives an input choice buffer
-`TYPE(*), DIMENSION(..), INTENT(IN)` and mpif gives it no intent at all, in 207
-arguments across the bindings. Omitting it is what lets a wrapper hand the buffer
-on to a dummy that has none, and it forbids nothing a conforming program may do.
-`dev/check-f08-bindings.jl` counts these and passes them over; taking the
-assumed-rank option would bring the intents with it.
+**Not being taken for the time being** — a decision. The `.FALSE.` option
+conforms, both implementations offer the same one to `mpif.h` and the `mpi`
+module, and the other option means carrying a second mechanism alongside this
+one for compilers without Fortran 2018. What it costs and what taking it
+would involve, kept so the shape of the work is known (nothing below is a
+plan):
 
-**Not being taken for the time being** -- a decision, so that the question is not
-reopened by whoever reads the rest of this section and finds it inviting. The
-`.FALSE.` option conforms, both implementations offer the same one to `mpif.h` and
-the `mpi` module, and the cost of the other is a second mechanism to carry
-alongside this one for compilers without Fortran 2018. Everything below is what
-taking it would involve, kept because the shape of the work is worth knowing and
-because the reasons could change; nothing below is a plan.
-
-The cost is two suite tests, and the suite says exactly what it is. MPICH's
-`f08/subarray` directory walks one array through fifteen cases, and the only two
-that fail are `test14` and `test15`:
-
-    test8   Send/Recv  2d array column slice iar_2d(:,2:6:2)        No Errors
-    test9   Send/Recv  2d array column slice iar_2d(1:7:3,2:6:2)    No Errors
-    test12  Isend/Irecv array slice iar(2:7)                        No Errors
-    test14  Isend/Irecv 2d column slice iar_2d(:,2:6:2)             Found 27 errors
-    test15  Isend/Irecv 2d column slice iar_2d(1:7:3,2:6:2)         Found 9 errors
-
-The pattern is the mechanism: `test8` and `test9` pass the same noncontiguous
-slices to a *blocking* call, where the compiler's copy-in/copy-out is correct;
-`test12` passes a *contiguous* slice to a nonblocking one, where no copy is made;
-`test14` and `test15` combine noncontiguous with nonblocking, and the copy dies at
-the wrapper's return, before `MPI_Wait`. 27 and 9 are the element counts of the two
-slices, so nothing arrives at all. Both tests declare the array `ASYNCHRONOUS`,
-which is the program's half of the contract, and then neither consults
-`MPI_SUBARRAYS_SUPPORTED` before relying on it -- so they cannot pass against a
-conforming `.FALSE.` implementation, and they are in
-`ci-scripts/suite/mpich-suite-xfail.txt` with that reason rather than as untriaged.
-
-Taking the other option would mean declaring choice buffers
-`TYPE(*), DIMENSION(..), ASYNCHRONOUS` in the nonblocking, split-collective and
-persistent routines and setting both constants to `.true.`. The gain is that
-noncontiguous subarrays become valid buffers in nonblocking calls; today the
-compiler passes them by in-and-out-copy through a scratch array, which is fine
-for blocking calls and invalid for nonblocking ones, where the copy dies before
-the request completes. It would also confine mpif to compilers with Fortran 2018
-assumed-rank support, so the two mechanisms would have to coexist, selected by
-the same kind of `check_fortran_source_compiles` probe that already picks
-`ignore_tkr` over `no_arg_check`.
-
-Both implementations take that option, and both draw the line in the same place
-as mpif does -- `.TRUE.` in `mpi_f08` only, `.FALSE.` in the `mpi` module and
-`mpif.h`, which the standard allows and which is why
-`include/mpif_constants.h`'s `.false.` stays right whatever happens here.
-
-- MPICH sets both `.true.` unconditionally in
-  `src/binding/fortran/use_mpi_f08/mpi_f08_compile_constants.f90`, and `.FALSE.`
-  in `use_mpi/mpifnoext.h`.
-- Open MPI decides at configure time: `config/ompi_setup_mpi_fortran.m4` starts
-  both at `.false.` and raises them to `.true.` only if `OMPI_FORTRAN_HAVE_TS`,
-  its TS 29113 probe, succeeds. `ompi/include/mpif-config.h.in` hardcodes
-  `.false.`.
-
-Their implementations are the same shape, and it is the shape mpif would have to
-grow, because the interesting work is not the Fortran declaration but what C
-does with the descriptor it then receives:
-
-- MPICH has 291 `MPIR_*_cdesc` entry points in
-  `use_mpi_f08/wrappers_c/f08_cdesc.c`, about 7,900 lines, over a 107-line
-  `cdesc.c`. Each takes a `CFI_cdesc_t *`, and where `!CFI_is_contiguous(buf)`
-  it calls `cdesc_create_datatype`, which walks the descriptor's dimensions and
-  builds an `MPI_Type_create_hvector` chain per stride, passes count 1, and
-  frees the temporary immediately after the call -- safe for a nonblocking call
-  because the request holds its own reference.
-- Open MPI has 144 `*_ts.c.in` templates and a 138-line
-  `use-mpi-f08/base/ts.c`, whose `OMPI_CFI_2_C` does the same job.
-
-Everything either of them calls is public C API, so mpif can do it without help
-from the implementation. What mpif would have to change beyond writing that
-layer:
-
-- The route to C. An f08 wrapper currently calls the `mpi` module's binding,
-  which calls the C symbol: `MPI_Send` -> `MPIF_Send` -> `mpi_send_`. An
-  assumed-rank dummy cannot go that way, since the f90 layer's dummy is
-  `integer :: buf(*)` and passing to it reintroduces the copy. The 150 routines
-  with a choice buffer would need `bind(C)` interfaces straight to new C entry
-  points taking `CFI_cdesc_t *`, which pulls in the `bind(C)` entry below for
-  those routines.
-- The sentinels. `MPI_BOTTOM` and `MPI_IN_PLACE` reach C as plain addresses
-  today; behind a descriptor the recognition moves into the cdesc wrapper, as
-  MPICH's comparison against `&MPIR_F08_MPI_BOTTOM` shows. "Buffer sentinels
-  reach C intact" in `CODE.md` would have to be re-verified on the new path rather
-  than inherited.
-- `ASYNCHRONOUS` is the cheap half and the data is already in hand: `apis.json`
-  marks 142 buffer parameters across 96 routines `asynchronous`, and
-  `dev/mpiapi.jl` never reads the field -- the word appears nowhere in `gen/` or
-  `include/`.
-
-For scale, `apis.json` has 150 routines with a choice buffer and 222 buffer
-parameters between them.
+- Cost today: two suite tests, `f08/subarray` `test14`/`test15` —
+  noncontiguous slices to *nonblocking* calls, where the compiler's
+  copy-in/copy-out dies before `MPI_Wait`. (Blocking + noncontiguous and
+  nonblocking + contiguous both pass.) The tests rely on `ASYNCHRONOUS`
+  without consulting `MPI_SUBARRAYS_SUPPORTED`, so they cannot pass against
+  a conforming `.FALSE.` implementation; xfail'd with that reason. Also the
+  `_f08ts` names (`profile1f90`'s f08 copy) and the 207 `INTENT(IN)`s on
+  input choice buffers, which arrive with assumed-rank.
+- Taking it: declare choice buffers `TYPE(*), DIMENSION(..), ASYNCHRONOUS`
+  in the nonblocking/split-collective/persistent routines, set both
+  constants `.true.` in `mpi_f08` only (both implementations draw the line
+  there; `include/mpif_constants.h`'s `.false.` stays right regardless).
+  The real work is C-side: new `CFI_cdesc_t*` entry points for the ~150
+  routines with a choice buffer, building a datatype from the descriptor
+  where it is noncontiguous (MPICH's `cdesc_create_datatype` shape —
+  everything it calls is public C API); `bind(C)` interfaces straight to
+  them (the f90 route would reintroduce the copy); sentinel recognition
+  moves into the cdesc wrapper and "Buffer sentinels reach C intact" must be
+  re-verified on the new path. `ASYNCHRONOUS` itself is cheap: `apis.json`
+  marks 142 buffer parameters `asynchronous` and the generator currently
+  never reads the field.
 
 ### The mpi module's `_c` names
 
-`gen/mpif_functions.F90` declares `MPI_Send_c`, `MPI_Recv_c` and 157 more beside
-their small-count namesakes, so `use mpi` and `mpif.h` can reach the large-count
-C entry points. The standard gives no such binding. A.5, which is the appendix
-for `mpif.h` and the `mpi` module, contains not one `!(_c)` marker where A.4 has
-331, and section 19.1.4 says why: "In older Fortran bindings (mpif.h
-(deprecated) and use mpi), no new interfaces and no new specific procedures for
-larger types are provided beyond what existed in MPI-3.1; all MPI procedures have
-the same types as in the versions prior to MPI-4.0."
+`gen/mpif_functions.F90` declares `MPI_Send_c` and its kin beside the
+small-count names, so `use mpi` and `mpif.h` can reach the large-count entry
+points. The standard gives no such binding (A.5 has no `!(_c)` markers;
+§19.1.4 says the older bindings gained nothing beyond MPI-3.1).
 
-Noticed while giving the `mpi_f08` specifics their Table 19.1 names, which is
-where the same question had a clear answer: there the plain `_c` names went, the
-standard saying invoking them is erroneous. Here it is less clear-cut, and the
-argument runs both ways.
-
-For removing them: `MPI_Send_c` is a name the standard defines in C and not in
-Fortran, so declaring it in the `mpi` module puts an mpif invention in the `MPI_`
-namespace, which the Namespace section of `CODE.md` says nothing may do. Neither
-MPICH
-nor Open MPI declares one.
-
-For keeping them: without them a program limited to `mpif.h` or the `mpi` module
-cannot send more than `huge(0)` elements at all, since those bindings have no
-polymorphism to reach the large-count form with -- that is the deficiency the
-quoted sentence describes rather than a facility it withholds. And the names cost
-little to keep: `mpif.h` has implicit interfaces, so `call MPI_SEND_C(...)` finds
-`mpi_send_c_` whether or not anything declares it, and that symbol has to exist
-for the f08 layer regardless.
-
-Unresolved, and left alone deliberately rather than swept along with the f08
-change: the two are not the same question, and this one is a judgement about
-whether mpif should offer a useful non-standard name where the standard offers
-nothing. Whoever settles it should decide the `mpif.h` half with it.
-
-`MPI_CONVERSION_FN_NULL_C` is one more member of the same cluster, found while
-adding the handle types to the `mpi` module and recorded here to be settled with
-the rest rather than on its own. `src/mpif_attr_fns.F90` defines it and
-`include/mpif_attr_fns.h` declares it `external`, so both `use mpi` and `mpif.h`
-have the name; the standard gives it to C and `mpi_f08` only. Section 19.2 says
-the large-count conversion callback "is provided within each of these two
-language bindings", meaning the C `_c` prototypes and `mpi_f08`'s abstract
-interfaces, and A.1.1's table of defined constants is explicit where §19.2 is
-only implicit: against `MPI_CONVERSION_FN_NULL_C` the mpif.h/`mpi`-module column
-reads `(n/a)`, where `MPI_CONVERSION_FN_NULL` on the line above has
-`DATAREP_CONVERSION_FUNCTION`. A.5.12 lists `MPI_CONVERSION_FN_NULL` and not the
-`_C` form. So it is the `MPI_Send_c` question again -- a large-count name in the
-older bindings that the standard puts only in the newer two -- with the same
-arguments on both sides, and no code change here either way.
+- For removing: it puts an mpif invention in the `MPI_` namespace, against
+  the Namespace rule in `CODE.md`; neither implementation declares one.
+- For keeping: without them the older bindings cannot send more than
+  `huge(0)` elements at all, and the underlying symbols must exist for the
+  f08 layer regardless.
+- **Unresolved, deliberately** — a judgement about offering a useful
+  non-standard name. Whoever settles it should decide the `mpif.h` half with
+  it, and `MPI_CONVERSION_FN_NULL_C` too: `src/mpif_attr_fns.F90` defines it
+  and `include/mpif_attr_fns.h` declares it for the older bindings, where
+  A.1.1 marks it `(n/a)` outside C and `mpi_f08` — the same question, no
+  code change either way.
 
 ### Fortran-set attribute values are not visible to C as a pointer
 
-An attribute set from Fortran and read from C comes back as the value where
-MPI-5.0 requires the address of it. Section 19.3.7:
+The one mpif defect the suite still reports (four tests on all twelve
+variants: `attrlangf90/f08`, `fandcattrf90/f08`). MPI-5.0 §19.3.7: when an
+integer-valued attribute is accessed from C, get_attr must return "the
+address of (a pointer to) the integer-valued attribute". mpif's wrapper
+hands MPI the value itself (`MPI_Comm_set_attr(comm, keyval,
+(void*)*attribute_val)`), so a conforming C reader dereferences a number.
+Only the Fortran-sets/C-gets cases are wrong; the other directions are
+correct.
 
-> MPI supports two types of attributes: address-valued (pointer) attributes, and
-> integer-valued attributes. C attribute functions put and get address-valued
-> attributes. Fortran attribute functions put and get integer-valued attributes.
-> When an integer-valued attribute is accessed from C, then `MPI_XXX_get_attr`
-> will return the address of (a pointer to) the integer-valued attribute, which
-> is a pointer to `MPI_Aint` if the attribute was stored with Fortran
-> `MPI_XXX_SET_ATTR`, and a pointer to `int` if it was stored with the deprecated
-> Fortran `MPI_ATTR_PUT`.
+What a fix needs — a feature, not a correction:
 
-mpif's wrapper hands MPI the value itself -- `mpi_comm_set_attr_` calls
-`MPI_Comm_set_attr(comm, keyval, (void*)*attribute_val)` -- so what MPI stores is
-an address-valued attribute whose "address" is the user's number. A conforming C
-reader then dereferences it. Of the nine cross-language cases the test suite
-enumerates, that is cases 4 and 7 -- Fortran sets, C gets -- and only those:
+- storage owned by mpif with a stable address, one `MPI_Aint` per
+  (object, keyval) pair;
+- a language tag per stored attribute (the standard's advice to implementors
+  says so), since mpif cannot see the implementation's tag through the ABI;
+- a lifetime: release on delete, on overwrite, and on the object's free —
+  the keyval registry in `src/mpif_callbacks.c` is where it would go, but
+  the key is wider and the frees are new;
+- copy-callback handling: a duplicated attribute needs storage of its own
+  (`fandcattrf90` tests exactly this).
 
-- Fortran sets and Fortran gets is self-consistent, since `mpif_attr_value`
-  returns user-defined attributes verbatim;
-- C sets and Fortran gets is right, and for the reason the same section gives:
-  "When an address-valued attribute is accessed from Fortran, then
-  MPI_XXX_GET_ATTR will convert the address into an integer";
-- the deprecated `MPI_ATTR_PUT` form has the same defect one size down, C
-  expecting a pointer to `int`.
-
-Four suite tests fail on it, on all twelve variants: `attrlangf90` and
-`attrlangf08`, whose whole subject is the nine cases, and `fandcattrf90` and
-`fandcattrf08`, whose header says the rule out loud -- "The C attribute copy
-function should be passed a pointer to the Fortran attribute value (e.g., it
-should dereference it to check its value)". Both crash rather than report,
-`attrlangf90` in `cmpif2read_` at the `MPI_Aint` it was given to dereference:
-
-    frame #0: cmpif2read_(..., msg="F2 to c dup") at attrlangc.c:453
-    frame #1: f2toctest_ at attrlangf90.f90:747
-    stop reason = EXC_BAD_ACCESS (address=0x1b69b4be86b2915)
-
-which is the value the Fortran side stored. That is the whole diagnosis, and it
-was confirmed by a probe rather than read off the crash: Fortran sets an
-address-sized attribute, C reads it and finds the value; C sets one, Fortran reads
-it and finds the address, correctly.
-
-What a fix needs, and why it is a feature rather than a correction:
-
-- **Storage owned by mpif.** The value has to live somewhere with a stable
-  address for as long as the attribute exists, and mpif has to hand MPI that
-  address instead of the value. One `MPI_Aint` per (object, keyval) pair, not per
-  keyval: the same keyval carries a different value on every communicator.
-- **A language tag.** `MPI_XXX_GET_ATTR` from Fortran must return the value for a
-  Fortran-set attribute and the address for a C-set one, so the wrapper has to
-  know which it is looking at. The standard's own advice to implementors says as
-  much -- "This requires that attributes be tagged either as 'C' or 'Fortran'" --
-  and mpif cannot see the implementation's tag through the ABI, so it needs its
-  own record of the pairs it set.
-- **A lifetime.** The storage has to be released when the attribute is deleted or
-  the object freed, which means noticing `MPI_XXX_DELETE_ATTR`, `MPI_XXX_SET_ATTR`
-  overwriting a value, and the object's own free. mpif already keeps a keyval
-  registry for the attribute callbacks in `src/mpif_callbacks.c`, so there is
-  somewhere for this to go, but the key is wider and the frees are new.
-- **The copy callbacks.** `MPI_COMM_DUP` invokes the copy callback for each
-  attribute, and a C callback on a Fortran-set attribute is passed the same
-  pointer, so a duplicated attribute needs storage of its own. `fandcattrf90`
-  tests exactly this.
-
-There is no test in `test/` for it, deliberately: a test asserting what mpif
-cannot do yet would be a failing test rather than an assertion, and the four suite
-tests above already state the requirement. Write one with the fix.
+No test in `test/`, deliberately: it would be a failing test rather than an
+assertion, and the four suite tests state the requirement. Write one with
+the fix.
 
 ### `bind(C)`
 
-Nothing is declared `bind(C)`. All 1180 generated entry points -- the 590 MPI
-names and their 590 PMPI twins -- rely on the compiler lowercasing names and
-appending a single underscore, and on hidden character
-lengths being appended at the end of the argument list as `size_t`. That is
-correct for gfortran 8 and later and for flang, and an unstated assumption
-otherwise -- gfortran before 8 passed hidden lengths as `int`.
+Nothing is declared `bind(C)`. All generated entry points rely on the
+compiler lowercasing names and appending one underscore, and on hidden
+character lengths being appended as `size_t`. Correct for gfortran ≥ 8 and
+flang; an unstated assumption otherwise (gfortran < 8 passed hidden lengths
+as `int`).
 
 ### Publishing the Fortran type information to the MPI library
 
-Not needed as things stand, and recorded here only so the question is not
-reopened. mpif builds against an implementation that has its own Fortran
-bindings -- MPICH is configured `--enable-fortran` -- so the implementation
-already knows the Fortran type sizes and boolean representation, and
-`test/version_c.c` asserts as much: it aborts if either
-`MPI_Abi_get_fortran_booleans` reports `is_set == 0` or
-`MPI_Abi_get_fortran_info` returns `MPI_INFO_NULL`. mpif's own boolean values
-come from Fortran directly, through the common blocks in
-`src/mpif_logical.F90`, so nothing has to be published for those either.
+Not needed as things stand: mpif builds against implementations that have
+their own Fortran bindings, so the library already knows the type sizes and
+boolean representation — `test/version_c.c` asserts it. The set-side calls
+(`MPI_Abi_set_fortran_info`/`_booleans`) would only be needed to make mpif
+the *sole* provider, so the implementation could be built without Fortran —
+worth remembering as an option (it would sidestep the flang/libtool problems
+on macOS), but a change of approach, and the first setter is permanent, so
+the two modes cannot simply be combined.
 
-`MPI_Abi_set_fortran_info` and `MPI_Abi_set_fortran_booleans` would only be
-needed to make mpif the *sole* provider of that information, so that the
-implementation could be built with `--enable-fortran=no`. That is worth
-remembering as an option -- it would also sidestep the flang/libtool problems on
-macOS -- but it is a change of approach rather than a missing feature, and
-MPICH's `MPIR_Abi_set_fortran_info_impl` returns `MPI_ERR_ABI` if the values are
-already set, so the two cannot simply be combined.
+### Hand-maintained pieces that could drift
 
-### Generated callback interfaces and definitions
-
-Two hand-maintained pieces describe callbacks that `apis.json` already
-describes, and can therefore drift from it:
-
-- the f08 abstract interfaces (`MPI_User_function`,
-  `MPI_Comm_copy_attr_function`, ...) in `src/mpif_f08_types.F90`, all 18 of
-  which are in the JSON;
-- the predefined callbacks in `src/mpif_attr_fns.F90`, all 14 of which are in
-  the JSON as `predefined_function` entries.
-
-An audit of the latter against the JSON found the types all correct and three
-divergences, all now corrected. They were what stood between the JSON and these
-two pieces being generated, so what is left of that job is the generating:
-
-- `MPI_NULL_DELETE_FN`'s last argument was `ierr` where the JSON says `ierror`,
-  and A.5 with it -- `MPI_NULL_DELETE_FN(COMM, KEYVAL, ATTRIBUTE_VAL,
-  EXTRA_STATE, IERROR)` against `IERR` for `MPI_NULL_COPY_FN` and `MPI_DUP_FN`
-  two lines above. So the standard is inconsistent across its own three MPI-1
-  callbacks and the JSON is faithful to it; mpif now is too, all three names
-  matching, which for external subprograms is a matter of documentation rather
-  than of linkage.
-- `MPI_TYPE_NULL_DELETE_FN`'s `ierror` has kind `ERROR_CODE_SHOW_INTENT`, which
-  was in none of the generator's kind lists, so generating these would have hit
-  `@assert false`. It is now in `int_kinds` beside `ERROR_CODE`, which is all it
-  is: the suffix is about A.4 showing an INTENT(OUT) that the abstract interface
-  does not, and mpif follows the abstract interface. Whether a callback's
-  arguments carry intents at all is a question about callbacks and not about this
-  kind -- they do not, in any of the 18.
-- `MPI_CONVERSION_FN_NULL`'s `userbuf` and `filebuf` have kind `C_BUFFER3`, which
-  `aint_kinds` mapped to `integer(MPI_ADDRESS_KIND)`. That is right where the
-  parameter really is an address, as in `MPI_Alloc_mem`, and wrong here: A.5 gives
-  a conversion callback `<TYPE> USERBUF(*)`, a choice buffer, and A.1.3 gives
-  `TYPE(C_PTR), VALUE`. `C_BUFFER3` and `C_BUFFER4` have moved out of
-  `aint_kinds` to join `C_BUFFER2` among the kinds that are a choice buffer in the
-  `mpi` module and a `TYPE(C_PTR)` in `mpi_f08`. The earlier worry that "the kind
-  alone does not say which" turned out to be unfounded: these two kinds appear on
-  callbacks and nowhere else, so they do say. `dev/mpiapi.jl` asserts exactly that
-  where it drops callbacks and predefined functions, so the claim is checked on
-  every run rather than believed, and `gen/` is byte-identical across the change.
-
-The abstract interfaces themselves are no longer among the divergences, in either
-respect. Their intents went first -- there are none, in any of the 18, which is
-how MPI-5.0 declares every callback it has -- and the last of their types
-followed: `MPI_User_function`'s `invec` and `inoutvec` and the datarep conversion
-functions' `userbuf` and `filebuf` are `TYPE(C_PTR), VALUE` as the standard gives
-them, where all four used to be `integer(MPI_ADDRESS_KIND)` by reference.
-
-What is left is the risk of drift, and it is smaller than it was: the argument for
-generating these two pieces was that nothing checked them, and now
-`dev/check-f08-bindings.jl` does -- the abstract interfaces against A.1.3 and the
-f08 predefined callbacks against A.4, on the same terms as the generated
-wrappers. That is where the argument-name slip above was found. `mpif.h`'s and the
-`mpi` module's own predefined callbacks, in `src/mpif_attr_fns.F90`, are the one
-set still checked by nothing but the audit recorded here; A.5 gives them, so the
-same tool could reach them, and the `ierr`/`ierror` correction above is the kind of
-thing it would have said rather than left to an audit. `src/mpif_f08_attr_fns.F90` also copies whatever the
-abstract interfaces say, and `test/callback_intents_f08.f90` holds those two
-together at compile time, one callback per interface written the way the standard
-writes it.
+- The f08 callback abstract interfaces (`src/mpif_f08_types.F90`) and the
+  predefined callbacks (`src/mpif_attr_fns.F90`,
+  `src/mpif_f08_attr_fns.F90`) describe things `apis.json` also describes,
+  and are not generated. The known divergences are fixed and the generator's
+  kind tables now accommodate them, so generating them is what remains of
+  the job. Drift risk is smaller than it was:
+  `dev/check-f08-bindings.jl` holds the f08 sets to A.1.3/A.4; the
+  `mpif.h`/`mpi`-module predefined callbacks are the one set checked by
+  nothing but a past audit (A.5 gives them, so the same tool could reach
+  them).
+- `src/mpif_f08_constants.F90` re-exports constants from the `mpi` module by
+  hand, one `use` and one `public` line per name, and nothing diffs those
+  lists against `include/mpif_constants.h` — one missing pair among hundreds
+  is invisible (it has happened; `test/version_f08.f90` pins the instance).
 
 ### MemorySanitizer cannot be run against an MPI
 
-mpif has an AddressSanitizer build -- `-DMPIF_SANITIZE=address`, described under
-"Sanitizer builds" in `CODE.md` -- and deliberately no MemorySanitizer one,
-although MSan is the sanitizer that would answer the question this project has
-actually had to ask twice: was this byte ever written? Both times the answer
-came from reading code. `MPI_Type_get_contents` converting uninitialised memory
-is above under "External blockers"; mpif's own instance, the out-LOGICAL
-conversions reading `c_flag` unconditionally after a failed call, is under
-"Verified as correct" in `CODE.md`, and its own entry says the defect "is not
-reliably observable without a sanitiser build this project does not run
-routinely". ASan does not change that: it answers where a pointer points, not
-what a byte holds.
+MSan is the instrument that would answer "was this byte ever written", and
+it cannot be used here; any one reason is enough:
 
-MSan cannot be made to work here, for three reasons, any one of which is
-enough:
+- It requires the whole process instrumented, i.e. rebuilding libmpi — the
+  very library mpif must not assume anything about. ASan's boundary is
+  workable (an address is meaningful whoever allocated it); MSan's is not.
+- No toolchain here can instrument both languages: flang has no `-fsanitize`
+  at all, and MSan is Clang-only.
+- It is unavailable on arm64 Darwin regardless.
 
-- **It requires the whole process instrumented.** MSan tracks initialisedness
-  through every store, so a value produced by uninstrumented code is
-  indistinguishable from an uninitialised one, and the standard remedy --
-  rebuild the dependencies with MSan -- means rebuilding libmpi. That is
-  precisely the library mpif must not assume anything about: the point of the
-  standard ABI is that the implementation is someone else's binary, swapped at
-  run time by the loader (see "Choosing the MPI at run time" in `CODE.md`). An
-  MSan build that only worked against a specially rebuilt MPI would not be
-  testing mpif's situation. ASan's boundary is workable in a way MSan's is not
-  exactly here: ASan asks about addresses, and an address is meaningful whoever
-  allocated it.
-- **The Fortran half cannot be instrumented at all.** flang has no `-fsanitize`
-  of any kind as of LLVM 22, and MSan is Clang-only -- gfortran does not offer
-  it, `gfortran -fsanitize=memory` being rejected outright with "unrecognized
-  argument". So no toolchain here can instrument both languages, and MSan
-  tolerates a gap far less than ASan does.
-- **It is unavailable on this machine's platform.** `clang -fsanitize=memory`
-  on arm64 Darwin answers "unsupported option ... for target
-  arm64-apple-darwin"; MSan is a Linux/FreeBSD/NetBSD x86-64 facility.
-
-What is left for the uninitialised-memory question is what has been used: read
-the code, and, where a specific buffer is in doubt, an `mmap`ed guard page for
-the out-of-bounds half of it. Recorded here so that "add an MSan build" is not
-proposed again as though it were an oversight.
+What is left is reading the code and, for a specific buffer, an `mmap`ed
+guard page. Recorded so "add an MSan build" is not proposed again as though
+it were an oversight.
 
 ## Worth doing next, roughly in order
 
-1. **Fortran-set attribute values as C sees them**, the one mpif defect the suite
-   still reports, above under "Missing features". Four tests, a specification that
-   says exactly what is wanted, and a design question -- where the storage lives
-   and how its lifetime is tied to the attribute -- that is the whole of the work.
-2. **`i_fcoll_test`, the last untriaged entry**, on CI's Linux runners.
-   `ci-scripts/suite/mpich-suite-xfail.txt` has the symptom. The two that used to
-   be beside it are gone -- the macOS Open MPI case is patched and above, and the
-   flang one turned out to be flang's `STOP` printing an IEEE-exception line past
-   the test's own `No Errors` -- and this one is neither: the aio message is absent,
-   and the test passes on Ubuntu 26.04 while failing on 24.04. Start where the
-   spawn eleven were solved: the "## Test output" block in the run's tap file.
-3. **Triage `mpich/gcc/freebsd/14/amd64`**, the new one, from the first green
-   `freebsd` job: read its suite differences out of the log, give each a reason,
-   add the `xfail` lines and then the `triaged` line. Expect `attrmpi1f08` among
-   them for the spelling reason above, and treat anything else as a real question
-   about a platform nothing here had run on -- the point of adding it. "FreeBSD is
-   tested in a VM" under "Not defects" has what the job does and why.
-4. **Triage `mpich/gcc/linux/26.04/armv7l`**, the one 32-bit variant still
-   without a `triaged` line, so it is reported and cannot fail a run. It is
-   emulated and local-only, which is why it is behind the i686 one -- that now
-   gates, on three consecutive runs agreeing. Do not carry the i686 list over to
-   it: they are different 32-bit ABIs, a 64-bit type being eight-byte aligned on
-   armhf and four-byte on i386.
-5. ~~**Remove the three remaining `flaky` entries**~~ -- done. What kept
-   them was that `nonblocking_inpf` and `nonblocking_inpf90` had gone on failing
-   after `MPI_Type_get_contents` was patched, which read as the same
-   uninitialised read still firing. It was not: neither test calls
-   `MPI_Type_get_contents`. Both call `MPI_IALLTOALLW` with `MPI_IN_PLACE` and a
-   one-element `stypes(1)`, and they were the alltoallw in-place over-read, which
-   is fixed and has a guard-page test. That left `typecntsf`, `typecntsf90` and
-   `typecntsf08` as the only tests that ever exercised the get_contents defect.
-   Three CI runs after the alltoallw fix (`96bcc29`) landed --
-   30936230034, 30941008705 and 30951119166 -- passed all three, on all seven
-   MPICH job variants each time, with nothing left that says the defect still
-   fires. The three `flaky` lines are gone from
-   `ci-scripts/suite/mpich-suite-xfail.txt`.
+1. **Fortran-set attribute values as C sees them** — the one mpif defect the
+   suite still reports; see "Missing features" above.
+2. **`i_fcoll_test` on CI's Linux runners, the last untriaged entry** in
+   `ci-scripts/suite/mpich-suite-xfail.txt`. Not the macOS aio defect (the
+   message is absent) and not the flang `STOP` output; passes on Ubuntu
+   26.04, fails on 24.04. Start from the "## Test output" block in the run's
+   TAP file.
+3. **Triage `mpich/gcc/freebsd/14/amd64`** from the first green `freebsd`
+   job: read the differences, give each a reason, add the `xfail` lines and
+   then the `triaged` line. Expect `attrmpi1f08` (the `amd64` spelling);
+   treat anything else as a real question about a platform nothing here had
+   run on.
+4. **Triage `mpich/gcc/linux/26.04/armv7l`**, the one 32-bit variant without
+   a `triaged` line (emulated, local-only; CI does not run it). Do not carry
+   the i686 list over: different 32-bit ABIs, different alignment.
 
-   The caution that came with the old item was still the right one, and is worth
-   keeping in mind for its own sake: one green run is not evidence that a
-   nondeterministic failure has stopped. What settled it here was a mechanism --
-   the alltoallw fix accounting for the one pair that had kept the other three
-   looking flaky -- backed by three runs, not a tally.
+Upstream reporting status — the sections above are the authority; this is a
+summary:
 
-Two things are decided and not on this list, so that they are not picked up by
-mistake: assumed-rank choice buffers are not being taken for now, and `MPI_Sizeof`
-stays as it is, covering rank zero and rank one. Both are recorded where they
-belong -- the first in its own section here, the second under "Verified as
-correct" in `CODE.md`.
-
-Three things are worth reporting upstream and are not yet. **The sections above are
-the authority and this paragraph is a summary of them**, which is worth saying
-because it has already been wrong: it counted three until 2026-08-08, and was wrong
-when written rather than merely out of date -- it named the three that had
-reproducers in `bug-*/` and overlooked three carrying the same "not reported" note
-in their own sections. Where the two disagree, the sections are right.
-
-One is Open MPI's: `MPI_Register_datarep` being a silent no-op because `ompio`
-registers as version 3.0.0 and only 2.0.0 components are ever consulted. It has
-neither a fix nor a reproducer, and should get the second before it is filed --
-the only one of the three in that state.
-
-The second is MPICH's and has a fix carried here rather than a reproducer: the
-strong `MPI_*` exports on Darwin, `ci-scripts/mpich-abi-darwin-weak.patch`, with
-nothing to run beyond the cross-run that found it.
-
-The third is not an implementation's at all: the ABI stubs header's partitioned
-count, which goes to `mpi-forum/mpi-abi-stubs`, with the correction already in
-`fortran/mpi.h.patch`.
-
-Five have gone upstream since this list was written, all still open there:
-
-- the lost nonblocking collective write on macOS, open-mpi/ompi#14278 for the
-  defect and open-mpi/ompi#14279 for the fix. It is the only one so far to go
-  upstream with the patch rather than the reproducer alone, which is what all three
-  above are still short of;
-- `MPI_Info_create_env` diverging across `MPI_Init`, open-mpi/ompi#14297, filed
-  without a reproducer because none was kept;
-- the name on a fresh window, open-mpi/ompi#14298, filed with
-  `bug-ompi-object-names/`. Only the window half went: the `MPI_TYPE_DUP` half of
-  that entry is a question for the standard rather than a defect to file, and
-  nothing records it as having been asked;
-- `MPI_Type_create_f90_*` compiling to stubs in an ABI build, pmodels/mpich#7929,
-  filed with `bug-mpich-f90-datatypes/` and without
-  `ci-scripts/mpich-abi-f90-datatypes.patch`;
-- `MPI_Type_get_contents` converting uninitialised memory, pmodels/mpich#7930,
-  filed with `bug-mpich-type-get-contents/` and without
-  `ci-scripts/mpich-abi-type-get-contents.patch`.
-
-Where a patch was held back, the local one is provisional: an upstream fix of a
-different shape supersedes it, and the entry above says so in each case.
-
-One more is undecided rather than unreported: the f08 copy of `spawnargvf90`
-contradicting the standard and its own f90 copy is a suite-test defect of the same
-species as pmodels/mpich#7922, and nothing here records a decision either way on
-filing it.
+- Not yet reported: the ABI stubs header's partitioned count (goes to
+  `mpi-forum/mpi-abi-stubs`; correction already in `fortran/mpi.h.patch`);
+  MPICH's strong Darwin exports (patch carried, nothing to run);
+  Open MPI's `MPI_Register_datarep` no-op (needs a reproducer first).
+- Filed and open: open-mpi/ompi#14278/#14279 (aio, with patch),
+  open-mpi/ompi#14297 (info_create_env), open-mpi/ompi#14298 (window name),
+  pmodels/mpich#7929 (f90 datatypes), pmodels/mpich#7930 (get_contents),
+  pmodels/mpich#7922 (grequest tests). Where a patch was held back, the
+  local one is provisional: an upstream fix of a different shape supersedes
+  it.
+- Undecided: filing the `spawnargvf90` f08-copy inconsistency.
 
 ## Suite baseline
 
-All twelve variants, from the CI run of `baa7f65`, as failures out of 104 f77,
-122 f90 and 136 f08 tests. `ci-scripts/suite/mpich-suite-xfail.txt` is the authority: it names
-every one of these with its reason, and the suite run fails on any difference
-from it. The table is for telling a change from the background noise at a
-glance.
+`ci-scripts/suite/mpich-suite-xfail.txt` is the authority: it names every
+expected failure with its reason, and a suite run fails on any difference
+from it, in either direction. Count entries rather than trusting a number:
 
-The MPICH rows below wobbled by one or two between runs at the time they were
-measured, because the list then still carried `flaky` entries that were
-genuinely nondeterministic -- in the run these numbers come from, `typecntsf`
-failed on `mpich/gcc/linux/aarch64` and passed on `mpich/gcc/linux/x86_64`,
-while `typecntsf90` did the opposite. Read the MPICH rows as approximate to
-that extent for this particular table; the list, which excused them either
-way at the time, is what was exact then. There are no `flaky` entries left
-now: `nonblocking_inpf` and `nonblocking_inpf90` were never the nondeterminism
-they were filed under and were removed once fixed, and `typecntsf`,
-`typecntsf90` and `typecntsf08` turned out to be the only tests that ever
-exercised the uninitialised-read defect and were removed after three
-consecutive clean CI runs confirmed it no longer fires (see item 5 of "Worth
-doing next"). A re-measurement after this table's commit would not show the
-same wobble.
+    awk '$1=="xfail"||$1=="flaky"' ci-scripts/suite/mpich-suite-xfail.txt | wc -l
+
+The table below is CI's twelve native variants, as failures out of 104 f77,
+122 f90 and 136 f08 tests, for telling a change from the background noise at
+a glance. It derives from the run of `baa7f65` adjusted for fixes landed
+since (derivations in `HISTORY.md`); some rows are inferred from their twin
+rather than re-measured, and CI is what confirms them.
 
 | variant                          | f77 | f90 | f08 |
 |----------------------------------|-----|-----|-----|
@@ -2101,270 +695,31 @@ same wobble.
 | openmpi/llvm/linux/24.04/x86_64  |   8 |  12 |  18 |
 | openmpi/llvm/linux/24.04/aarch64 |   5 |   7 |  15 |
 
-The f08 column's six gcc rows are lower than the run they come from by the four
-`*/gcc/*` collective tests -- `alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08`
-and `vw_inplacef08` -- which the alltoallw handle-array fixes turned green. They are
-inferred, and inferred as *equal to their llvm twin* rather than as four less:
-those four were the only f08 difference between the toolchains, so the two rows of
-a pair should now coincide, and on four of the six pairs subtracting four gives
-exactly that. On the two MPICH pairs it gives one less, which is the flaky wobble
-the paragraph above describes rather than a real difference, so the twin is the
-number to trust. Measured only on this machine, whose OS version is in no row:
-`mpich/gcc/darwin/26/arm64` and `openmpi/gcc/darwin/26/arm64` both report no
-differences against the list, at 3/5/11 and 7/9/17, on three MPICH runs and two
-Open MPI ones.
+- This machine's rows are not in the table (`darwin/26`): measured locally,
+  `mpich/gcc/darwin/26/arm64` reports no differences at 3/5/11 and
+  `openmpi/gcc/darwin/26/arm64` at 7/9/17.
+- The two Open MPI x86_64 rows are higher by exactly the eleven spawn tests
+  ("a spawned child is not reachable over TCP" above).
+- Thirteen of CI's fourteen variants are `triaged` (the twelve above plus
+  `mpich/gcc/linux/13/i686`, which gates on three consecutive agreeing
+  runs), so any difference there fails the run. Not gating:
+  `mpich/gcc/freebsd/14/amd64` (unmeasured) and
+  `mpich/gcc/linux/26.04/armv7l` (emulated, local-only). The other
+  `triaged` lines are environments outside CI.
+- Most rows rest on a single measurement, so expect some churn: a flaky
+  entry surfaces as an unexpected pass, which is the mechanism working.
+- `test/`, mpif's own suite, is 69 of 69 (`ctest`'s count; `add_mpi_test`
+  registers 61 — the runtime-check and `mpif_info` groups use bare
+  `add_test` for cases that are about the launch environment rather than a
+  binding). Green on all four local variants, each against both runtime
+  MPIs, and the AddressSanitizer variants likewise.
 
-Every row is two lower in f90 and one lower in f08 than the run it comes from,
-which is the PMPI interface arriving: `wtimef90` in both languages and
-`profile1f90` in f90 all pass now, and their entries are gone from the list. The
-first two only ever needed the names to exist. The third is the interesting one --
-it is MPICH's own profiling test, intercepting `mpi_send_` and `mpi_recv_` and
-calling `pmpi_send`/`pmpi_recv`, so it says that the mechanism works and not
-merely that the names link. Its f08 copy still fails, and on a different thing
-again: it interposes `mpi_send_f08ts`, a scheme-1B name that belongs to
-assumed-rank. See "The mpi_f08 specific procedure names".
+Two ways a *local* suite run goes wrong for reasons that are not the code:
 
-Measured on `mpich/gcc/darwin/26/arm64`, which reports no differences against the
-list after the change, and inferred for the other eleven: nothing about these three
-is implementation- or toolchain-specific, all three were expected to fail on `*/*`
-before, and CI is what confirms it.
-
-Every Open MPI f90 row is one lower again than the run it comes from: `bsendf90`
-used to fail to build everywhere and now builds, and fails only on MPICH -- see
-"suite tests that cannot pass against a conforming binding". That is inferred
-rather than measured, from `bsendf`, which is the same test with the same
-400-byte buffer and has always been expected to fail on MPICH alone; CI is what
-confirms it, on all four Open MPI variants at once.
-
-The two Open MPI x86_64 rows are the measured ones again: the eleven spawn tests
-there fail, on the abort recorded under "a spawned child is not reachable over TCP
-on the x86_64 runners", and subtracting them is what would make those rows equal to
-their aarch64 twins. Two attempts to remove them -- the interface, then the warning
--- were both refuted by CI, which is what the rows are for.
-
-The table has no 32-bit row. `mpich/gcc/linux/13/i686` now gates, on three
-consecutive runs -- 30861875404, 30863777064 and 30905286536 -- reporting it under
-its own key with no differences; `mpich/gcc/linux/26.04/armv7l` is still
-untriaged. What one run of that one reported, after the kinds were fixed: the whole
-suite ran, and the only differences from the list were the `flaky` entries going
-both ways -- `nonblocking_inpf` and `nonblocking_inpf90` passing, `typecntsf`,
-`typecntsf90` and `typecntsf08` failing, all of which the list excused either way
--- plus `attrmpi1f08` passing, which is the entry now enumerated per 64-bit
-architecture above. The first two are no longer in the list at all, being the
-alltoallw in-place over-read rather than the get_contents read they were filed
-under, so a rerun of that variant has two fewer excuses and should still show no
-differences. So nothing 32-bit-specific is outstanding on that
-variant, on one measurement. Do not carry one list to the other, the two being
-different 32-bit ABIs.
-
-`mpich/gcc/linux/13/i686` has still not been measured under its own name. Its first
-CI run reported `mpich/gcc/linux/13/x86_64` instead -- `uname -m` in a buildx
-`linux/386` build returns the host's architecture, described under "Working on
-this" -- so that run compared a 32-bit build against the 64-bit rows and its
-numbers are not a baseline for anything. The `attrmpi1f08` it reported as
-unexpectedly passing is the same 32-bit pass the arm32v7 run found, showing through
-a key that said `x86_64` and so matched the entries scoped to it.
-
-Fifty-five entries cover them, for forty-six distinct language-and-test pairs --
-none of them `flaky` now. Nine went away with the alltoallw handle-array fixes:
-the four `*/gcc/*` collective tests, the two `nonblocking_inp*` flaky ones, and
-the three `typecnts*` flaky ones, which had been misread as the same
-uninitialised-read defect the `nonblocking_inp*` pair exercised and turned out to
-be the only tests that still did once that pair was gone -- three clean CI runs
-after 96bcc29 (30936230034, 30941008705, 30951119166) removed them in turn. A
-tenth went away with the aio patch, the two macOS
-`i_fcoll_test` rows collapsing into one for flang. All but one are accounted for, each
-either by an entry here or by a reason that stands on its own; the one is
-`i_fcoll_test` on CI's Linux runners. The rows above are
-CI's, so they do not count the twelve `dgraph` entries, six for a Docker variant
-and six for this machine's two Open MPI variants, which share one selector.
-
-Those two numbers were "fifty-four" and "fifty-two" for a while and were wrong
-when written down, the file having gained entries without them being updated: the
-real figures at the commit before the 32-bit work were 65 and 63, and they were 65
-and 55 before the alltoallw fixes removed six. Count them rather than trusting the
-sentence, and prefer a count over a memory of one:
-
-    awk '$1=="xfail"||$1=="flaky"' ci-scripts/suite/mpich-suite-xfail.txt | wc -l
-
-Triage has taken twenty-four untriaged pairs down to two, and resolved them into
-four mpif bugs, two MPICH ones, three Open MPI ones, a decision, a test asserting
-more than the standard says -- the `dgraph` pair, where Open MPI is within its
-rights -- and eleven that were never failures at all, the spawn tests that a
-launcher warning was failing for them. One of those attributions has since moved:
-the four `*/gcc/*` collective tests were counted against MPICH and are mpif's, so
-the mpif column gained a bug and the MPICH column lost one. An entry can be
-triaged and still be pointing at the wrong culprit. Every one came from running the test rather
-than reading it, or from reading what the run printed: the four attribute tests
-crash in a C frame that names the defect, `test14` and `test15` sit in a directory
-whose thirteen passing neighbours say what the mechanism is, the two Open MPI name
-cases and the aio one reproduce in C in a dozen lines, and the spawn eleven needed
-nothing but the "## Test output" block that every CI run had been recording all
-along. The earlier version of this section had four rows and
-claimed every failure was attributable, both of which were wrong: MPICH looked
-far worse than Open MPI only because those rows predated the handle-table patch,
-and most of the failures had never been diagnosed.
-
-Three things the twelve-way measurement settled that guesswork had got wrong:
-
-- **The architecture belongs in the key**, though not for the reason it was put
-  there. Eleven Open MPI spawn tests failed on `linux/x86_64` and passed on
-  `linux/aarch64`, and two MPICH tests differ the other way; keyed on
-  `mpi/toolchain/os` alone, each set would read as an unexpected pass on whichever
-  runner ran second. The spawn eleven turned out not to be about the ISA at all --
-  a warning the x86_64 runners produce and the arm64 ones do not, for reasons not
-  established -- so read the component as "a different environment" rather than as
-  a claim about the instruction set. The two MPICH tests keep it in the key.
-- **`alltoallwf08`, `nonblockingf08`, `nonblocking_inpf08` and `vw_inplacef08`
-  are a gcc problem, not an MPICH one.** They failed under gcc on *both*
-  implementations and passed under llvm on both, so the selector was `*/gcc/*/*`.
-  That much held up and was the thing that eventually solved them: it is mpif's
-  own defect, gfortran repacking an assumed-size `%MPI_VAL` into a zero-length
-  temporary, and the four now pass everywhere. Two guesses were withdrawn along
-  the way -- first that they were about compiler-made buffer copies for
-  noncontiguous subarrays, then that MPICH's `mpi_abi_util.h:140` was asserting on
-  a datatype only it knows about. See the withdrawn `ABI_Datatype_from_mpi` entry.
-  The lesson that survives both is the selector's: *`*/gcc/*` on both
-  implementations means the bug is on our side of the boundary*, and it was
-  visible from the first measurement.
-- **`mpich/gcc/darwin/arm64` transfers between machines.** Its list was measured
-  here, on MacPorts gcc 15.2 with twelve cores, and CI's macos-15 runner --
-  Homebrew compilers, about three cores -- reports no differences against it.
-  That is the evidence that the key needs nothing finer than architecture.
-
-Thirteen of CI's fourteen variants are declared `triaged` -- the twelve above and
-`mpich/gcc/linux/13/i686` -- so any difference there now fails the run. Eighteen
-`triaged` lines in all, the other five being environments outside CI. Two
-variants do not gate: `mpich/gcc/freebsd/14/amd64`, which CI runs and nobody has
-measured yet, under "FreeBSD is tested in a VM" above; and
-`mpich/gcc/linux/26.04/armv7l`, which CI does not run at all, since
-`.github/workflows/ci.yaml` builds only the `linux/386` container and the arm32v7
-image is emulated and local-only.
-
-The twelve rest on a single measurement each, which is thin for a flaky test, so
-expect some churn: a flaky entry surfaces as an unexpected pass, which is the
-mechanism working rather than failing. Three entries are already marked as seen
-on one variant only and therefore suspect.
-
-`test/`, mpif's own suite, was 32 of 32, then 51 of 51, and is now 69 of 69. The
-count is `ctest`'s and not `add_mpi_test`'s, which is 61: the runtime-check and
-`mpif_info` groups below register some of their cases with a bare `add_test`,
-because what they assert is about the environment a program was launched into
-rather than about a Fortran binding.
-
-The eighteen added since 51 are, newest first:
-
-- **Two for `mpif_info`** (`e6dad68`), the installed diagnostic: once under the
-  launcher and once as `mpif_info_singleton`, standalone, which is the case that
-  has no `MPI_COMM_WORLD` to describe.
-- **Eleven for the runtime consistency checks** (`fb32cb5`): `check_f`,
-  `check_f90`, `check_f08` and `check_c` call `mpif_check_version` and
-  `mpif_check_environment` from each binding mpif provides and from C,
-  `check_version_fail_f90` is the failing case, and six `check_env*` drive
-  `MPIF_SIZE`, `MPIF_NUM_NODES`, `MPIF_NODE_SIZE`, `MPIF_MPI_LIBRARY` and a run
-  with no launcher at all. `check_f08` wants three ranks and
-  `check_version_fail_f90` exactly one.
-- **One, `handle_types_f90`** (`66aac13`), for the `mpi` module gaining
-  `TYPE(MPI_Status)`, the handle types and the converters.
-- **One, `keyval_create_f08`** (`1904626`), for the two deprecated f08
-  callbacks' `extra_state` defaulting to `INTEGER`.
-- **Two, `gather_root_f08` and `gather_inter_f08`** (`12d45f7`), for root-only
-  arguments being converted at the root rather than on rank 0 -- two ranks and
-  three, the second because an intercommunicator is the case where the two
-  differ.
-- **One, `sizeof_f`** (`44116ed`), for `MPI_Sizeof`'s scalar, `CHARACTER` and
-  integer-typed forms in fixed form.
-
-Green on all twelve variants in CI up to the PMPI five. Everything since,
-including all eighteen above, has been run on all four local variants --
-`{mpich,openmpi}/{gcc,llvm}/darwin/26/arm64` -- as of 2026-08-08, each against
-both implementations at run time, and the two AddressSanitizer variants against
-both besides: twelve runs of 69 of 69. `openmpi/llvm/darwin/26/arm64` is in that
-set now, which it was not when this paragraph named three variants. CI's rows for
-the eighteen are still CI's to confirm.
-
-The alltoallw seven are the first tests here that need more than one rank, which
-`add_mpi_test`'s `NPROCS` supplies -- and they need it: at one rank a group size,
-a remote group size and a neighbour count all coincide, so every wrong length is
-the right one. `MPIEXEC_EXECUTABLE` is pinned by
-`scripts/macos-test-mpif.sh` rather than left to `find_package(MPI)`, which
-detected an unrelated miniforge install here and would have run them against an
-MPI that mpif was not built against.
-
-Two of the four had to be written differently than first drafted, and both for
-reasons about MPI rather than about PMPI. `pmpi_f90` freed the address rather than
-the buffer -- `MPI_FREE_MEM` takes a choice buffer, so an address-kind baseptr has
-to go back through `C_F_POINTER` first, as `test/alloc_mem_cptr.f90` already did.
-And `pmpi_f08` hung: a blocking send to self is allowed to block until the
-matching receive is posted, and on MPICH it does, so the small-count case is a
-`PMPI_Sendrecv` and the nonblocking one an `PMPI_Irecv` before its `PMPI_Send`.
-
-Passing the f08 status through to C instead of converting it moved nothing, and
-was not meant to: it removes the temporary, the conversion and all 77 `loc()`
-comparisons, leaving what the wrappers do observably the same. The numbers being
-unchanged is the result to want from it.
-
-`mprobef08` accounts for the last f08 failure removed, one on each variant. It
-had two causes, and the second is the interesting one: mpif declared
-`TYPE(MPI_Status), INTENT(OUT)` where the standard declares plain
-`TYPE(MPI_Status)`, and INTENT(OUT) tells the compiler that the caller's stored
-`status%MPI_ERROR` cannot be read, so at -O2 the store is deleted before the call
-happens. The suite compiles with -O2 and caught it; `test/` compiles with -O0 and
-did not.
-
-Exporting the predefined attribute callbacks from the `mpi` and `mpi_f08`
-modules moved f90 and f08 and left f77 exactly where it was, which is the
-confirmation that it was the modules at fault: `mpif.h` had always declared them.
-Six f90 tests and four f08 tests went green on both implementations --
-`attrmpi1f90`, `commattr2f90`, `commattr3f90`, `commattr4f90`, `typeattr3f90`,
-`winattr2f90`, and the `f08` counterparts of four of those -- and nothing
-regressed.
-
-The toolchains now agree exactly on f77, f90 and f08. They used to differ by four
-tests, the same four on both MPI implementations, all failing under gfortran and
-passing under flang:
-
-    alltoallwf08   nonblockingf08   nonblocking_inpf08   vw_inplacef08
-
-**Their shape was a lead, and it was the wrong one -- worth recording, because it
-was plausible for months and cost the four that long.** All four are nonblocking
-or in-place collectives, which is exactly the case "Assumed-rank choice buffers"
-above describes: with `MPI_SUBARRAYS_SUPPORTED` false a noncontiguous actual
-argument reaches the wrapper as a compiler-made copy, and for a nonblocking call
-that copy dies before the request completes. Two compilers need not make the same
-copy, so the difference looked like one about what each chose to copy. That reading
-made the four a cost of declining assumed-rank rather than a defect to fix, which
-is the kind of conclusion that stops anyone looking.
-
-It was none of it right. What the four have in common is not the buffer, it is
-`alltoallw`: every one of them calls a member of that family, which is the only
-one in the standard whose Fortran binding takes an *assumed-size array of
-handles*. The compiler-made copy that mattered was of `sendtypes`, not of a choice
-buffer, and gfortran making it while flang does not is the whole of the toolchain
-split. The entry for the withdrawn `ABI_Datatype_from_mpi` diagnosis has it in
-full. The general lesson is about which similarity to follow: three of the four
-being nonblocking is a coincidence of the directory, and the fourth,
-`vw_inplacef08`, is not nonblocking at all -- which the lead had to explain away
-and did not.
-
-One caution about these numbers: the Open MPI run needs the loopback workaround
-that `scripts/macos-test-mpich-suite.sh` applies by default -- without it the
-spawn tests hang rather than fail, each burning `runtests`' 180-second timeout,
-and the run appears stuck.
-
-Two ways a *local* suite run goes wrong for reasons that are not the code, both
-of which have now cost a run:
-
-- **Do not rebuild while a suite run is going.** The three build-and-test scripts
-  delete and reinstall what they own, so `scripts/macos-build-mpif.sh` run against
-  a variant whose suite is mid-flight removes the `mpifort` that `runtests` is
-  calling. Every remaining test then reports `Failed to build ...  /bin/sh:
-  .../bin/mpifort: No such file or directory`, which looks like a catastrophic
-  regression and is nothing at all.
-- **MPICH's spawn tests depend on the machine's hostname staying put.** One run
-  here failed them with `spawned process group was unable to connect back to the
-  parent on port <... $description#Mac.pitp.io$ ... $ifname#10.10.60.90$>` and
-  `Connection timed out in 180 seconds`, while `hostname` afterwards reported
-  `Redshift.local`. The name changed under the run -- DHCP, a network move -- so
-  the child could not reach the address the parent had published. Rerun before
-  believing it; the same suite had reported no differences twice within the hour.
+- **Do not rebuild while a suite run is going**: `scripts/macos-build-mpif.sh`
+  removes the `mpifort` the running suite is using, and every remaining test
+  reports `Failed to build ... mpifort: No such file or directory` — looks
+  catastrophic, means nothing.
+- **MPICH's spawn tests depend on the machine's hostname staying put.** If
+  the name changes under the run (DHCP, a network move), the child cannot
+  reach the address the parent published. Rerun before believing it.

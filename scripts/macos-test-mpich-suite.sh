@@ -16,7 +16,7 @@
 # run must report exactly what a native run of that runtime MPI reports. Each of
 # the eight combinations gets its own tree, build/suite/<variant>-run-<runtime>,
 # because two suite runs sharing a tree rebuild and delete executables under each
-# other ("Only one suite run per variant at a time" in CLAUDE.md).
+# other ("Only one suite run per pairing at a time" in CLAUDE.md).
 #
 # Set MPIF_KEEP_TESTS=1 to keep the compiled test executables, which is what a
 # debugger needs to get a backtrace out of a crashing test; see

@@ -72,7 +72,7 @@ built mpif (gcc and llvm Fortran are not ABI-compatible).
 
 ## Documentation
 
-Three working notes, none of them referred to by the source tree:
+Four working notes:
 
 - `CODE.md`: what the code is made of, how the pieces fit, and why the
   arrangements that look odd are the ones they are.
@@ -81,6 +81,8 @@ Three working notes, none of them referred to by the source tree:
 - `CLAUDE.md`: how to build, test and verify it, and the traps that have cost
   the most time. Written for an AI agent working in the repository, and useful
   to anyone else for the same reason.
+- `HISTORY.md`: condensed record of past failures and withdrawn diagnoses;
+  the other three describe the current state only.
 
 ## Directory structure
 

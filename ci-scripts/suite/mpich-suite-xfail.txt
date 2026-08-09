@@ -96,7 +96,7 @@ triaged openmpi/llvm/linux/24.04/aarch64
 # only because docker/mpich-gcc-i386.dockerfile makes it -- which is the thing
 # those runs had to confirm, since locally the image runs under qemu and would say
 # i686 regardless. The armv7l image is the other 32-bit ABI and is not covered by
-# this line; see MISSING.md "Triage the two 32-bit variants".
+# this line; see "Worth doing next" in MISSING.md.
 triaged mpich/gcc/linux/13/i686
 
 # `mpich/gcc/freebsd/14/amd64`, which the `freebsd` job in
