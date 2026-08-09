@@ -887,17 +887,29 @@ for key in sort(collect(keys(apis)))
                     # assumed-size array A.5 asks for. Nothing generated reaches
                     # these two, callbacks being dropped above, which is asserted
                     # there rather than assumed here.
+                    # Three spellings of "skip TKR checking on this dummy", each
+                    # a comment to the compilers that use the others:
+                    # `!dir$ ignore_tkr` for flang, Cray and NVIDIA (Cray/SGI
+                    # lineage, despite what the next sentinel suggests), `!gcc$`
+                    # for gfortran, and `!dec$ attributes no_arg_check` for
+                    # ifort and ifx, which implement neither of the first two --
+                    # Intel's directive reference has no IGNORE_TKR, and MPICH's
+                    # confdb/aclocal_fc.m4 keeps `dec` and `dir` as separate
+                    # flavors for the same reason.
                     push!(f_declarations, "!dir\$ ignore_tkr(trk) $parname")
                     push!(f_declarations, "!gcc\$ attributes no_arg_check :: $parname")
+                    push!(f_declarations, "!dec\$ attributes no_arg_check :: $parname")
                     push!(f_declarations, "integer :: $parname(*)")
                     f08_cptr = kind == "C_BUFFER2" ? "type(C_PTR), intent($f08_param_direction)" : "type(C_PTR), value"
                     push!(f08_declarations, "$f08_cptr :: $parname")
                 else
                     push!(f_declarations, "!dir\$ ignore_tkr(trk) $parname")
                     push!(f_declarations, "!gcc\$ attributes no_arg_check :: $parname")
+                    push!(f_declarations, "!dec\$ attributes no_arg_check :: $parname")
                     push!(f_declarations, "integer :: $parname(*)")
                     push!(f08_declarations, "!dir\$ ignore_tkr(tkr) $parname")
                     push!(f08_declarations, "!gcc\$ attributes no_arg_check :: $parname")
+                    push!(f08_declarations, "!dec\$ attributes no_arg_check :: $parname")
                     push!(f08_declarations, "integer :: $parname(*)")
                 end
             elseif kind ∈ keys(kind2type)
@@ -2081,6 +2093,7 @@ for key in sort(collect(keys(apis)))
             # wrappers were module procedures the two were one declaration, so the
             # question did not arise.
             startswith(decl, "!dir\$") || startswith(decl, "!gcc\$") ||
+                startswith(decl, "!dec\$") ||
                 push!(f08_wrapper_bodies, "  $decl")
         end
         for decl in f08_call_temp_declarations

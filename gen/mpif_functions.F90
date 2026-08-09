@@ -192,6 +192,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
@@ -220,6 +221,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
@@ -248,6 +250,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
@@ -276,6 +279,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
@@ -414,11 +418,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -440,11 +446,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -466,11 +474,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -492,11 +502,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -520,11 +532,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -550,11 +564,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -580,11 +596,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -610,11 +628,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -639,11 +659,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -667,11 +689,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -695,11 +719,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -723,11 +749,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -753,11 +781,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -785,11 +815,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -817,11 +849,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -849,11 +883,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -905,9 +941,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -929,9 +967,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -953,9 +993,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -977,9 +1019,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -1003,9 +1047,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -1031,9 +1077,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -1059,9 +1107,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -1087,9 +1137,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -1114,11 +1166,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -1140,11 +1194,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -1166,11 +1222,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -1192,11 +1250,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -1220,11 +1280,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -1250,11 +1312,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -1280,11 +1344,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -1310,11 +1376,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -1340,12 +1408,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -1370,12 +1440,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -1400,12 +1472,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -1430,12 +1504,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -1462,12 +1538,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -1496,12 +1574,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -1530,12 +1610,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -1564,12 +1646,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -1596,12 +1680,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -1626,12 +1712,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -1656,12 +1744,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -1686,12 +1776,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -1718,12 +1810,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -1752,12 +1846,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -1786,12 +1882,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -1820,12 +1918,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -1980,6 +2080,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: count
     integer :: datatype
@@ -2000,6 +2101,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -2020,6 +2122,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: count
     integer :: datatype
@@ -2040,6 +2143,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -2062,6 +2166,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: count
     integer :: datatype
@@ -2086,6 +2191,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -2110,6 +2216,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: count
     integer :: datatype
@@ -2134,6 +2241,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -2157,6 +2265,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -2179,6 +2288,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -2201,6 +2311,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -2223,6 +2334,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -2246,6 +2358,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -2270,6 +2383,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -2294,6 +2408,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -2318,6 +2433,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -2337,6 +2453,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: size
     integer :: ierror
@@ -2351,6 +2468,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
@@ -2365,6 +2483,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: size
     integer :: ierror
@@ -2379,6 +2498,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
@@ -2393,6 +2513,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer_addr
     !gcc$ attributes no_arg_check :: buffer_addr
+    !dec$ attributes no_arg_check :: buffer_addr
     integer :: buffer_addr(*)
     integer :: size
     integer :: ierror
@@ -2407,6 +2528,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer_addr
     !gcc$ attributes no_arg_check :: buffer_addr
+    !dec$ attributes no_arg_check :: buffer_addr
     integer :: buffer_addr(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
@@ -2421,6 +2543,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer_addr
     !gcc$ attributes no_arg_check :: buffer_addr
+    !dec$ attributes no_arg_check :: buffer_addr
     integer :: buffer_addr(*)
     integer :: size
     integer :: ierror
@@ -2435,6 +2558,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer_addr
     !gcc$ attributes no_arg_check :: buffer_addr
+    !dec$ attributes no_arg_check :: buffer_addr
     integer :: buffer_addr(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
@@ -2823,6 +2947,7 @@ module mpif_functions
     integer :: comm
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: size
     integer :: ierror
@@ -2839,6 +2964,7 @@ module mpif_functions
     integer :: comm
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
@@ -2855,6 +2981,7 @@ module mpif_functions
     integer :: comm
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: size
     integer :: ierror
@@ -2871,6 +2998,7 @@ module mpif_functions
     integer :: comm
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
@@ -3151,6 +3279,7 @@ module mpif_functions
     integer :: comm
     !dir$ ignore_tkr(trk) buffer_addr
     !gcc$ attributes no_arg_check :: buffer_addr
+    !dec$ attributes no_arg_check :: buffer_addr
     integer :: buffer_addr(*)
     integer :: size
     integer :: ierror
@@ -3167,6 +3296,7 @@ module mpif_functions
     integer :: comm
     !dir$ ignore_tkr(trk) buffer_addr
     !gcc$ attributes no_arg_check :: buffer_addr
+    !dec$ attributes no_arg_check :: buffer_addr
     integer :: buffer_addr(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
@@ -3183,6 +3313,7 @@ module mpif_functions
     integer :: comm
     !dir$ ignore_tkr(trk) buffer_addr
     !gcc$ attributes no_arg_check :: buffer_addr
+    !dec$ attributes no_arg_check :: buffer_addr
     integer :: buffer_addr(*)
     integer :: size
     integer :: ierror
@@ -3199,6 +3330,7 @@ module mpif_functions
     integer :: comm
     !dir$ ignore_tkr(trk) buffer_addr
     !gcc$ attributes no_arg_check :: buffer_addr
+    !dec$ attributes no_arg_check :: buffer_addr
     integer :: buffer_addr(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
@@ -3998,12 +4130,15 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     !dir$ ignore_tkr(trk) compare_addr
     !gcc$ attributes no_arg_check :: compare_addr
+    !dec$ attributes no_arg_check :: compare_addr
     integer :: compare_addr(*)
     !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
+    !dec$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer :: datatype
     integer :: target_rank
@@ -4026,12 +4161,15 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     !dir$ ignore_tkr(trk) compare_addr
     !gcc$ attributes no_arg_check :: compare_addr
+    !dec$ attributes no_arg_check :: compare_addr
     integer :: compare_addr(*)
     !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
+    !dec$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer :: datatype
     integer :: target_rank
@@ -4337,9 +4475,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -4361,9 +4501,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -4385,9 +4527,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -4409,9 +4553,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -4435,9 +4581,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -4463,9 +4611,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -4491,9 +4641,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -4519,9 +4671,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -4539,6 +4693,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
   end subroutine MPI_F_sync_reg
 
@@ -4549,6 +4704,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
   end subroutine PMPI_F_sync_reg
 
@@ -4566,9 +4722,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
+    !dec$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer :: datatype
     integer :: target_rank
@@ -4592,9 +4750,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
+    !dec$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer :: datatype
     integer :: target_rank
@@ -5021,6 +5181,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5041,6 +5202,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5061,6 +5223,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5081,6 +5244,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5101,6 +5265,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5121,6 +5286,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5141,6 +5307,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5161,6 +5328,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5183,6 +5351,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5205,6 +5374,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5227,6 +5397,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5249,6 +5420,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5271,6 +5443,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5293,6 +5466,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5315,6 +5489,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5337,6 +5512,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5357,6 +5533,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5377,6 +5554,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5397,6 +5575,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5417,6 +5596,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5437,6 +5617,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5457,6 +5638,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5477,6 +5659,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5497,6 +5680,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5517,6 +5701,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5537,6 +5722,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5557,6 +5743,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5577,6 +5764,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5599,6 +5787,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5621,6 +5810,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5643,6 +5833,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5665,6 +5856,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5687,6 +5879,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5709,6 +5902,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5731,6 +5925,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5753,6 +5948,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5773,6 +5969,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5793,6 +5990,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5813,6 +6011,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5833,6 +6032,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5913,6 +6113,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5933,6 +6134,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5953,6 +6155,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -5973,6 +6176,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -5993,6 +6197,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6013,6 +6218,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6033,6 +6239,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6053,6 +6260,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6072,6 +6280,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6090,6 +6299,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6108,6 +6318,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6126,6 +6337,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6143,6 +6355,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -6159,6 +6372,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -6179,6 +6393,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6201,6 +6416,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6223,6 +6439,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6245,6 +6462,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6267,6 +6485,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6289,6 +6508,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6311,6 +6531,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6333,6 +6554,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6354,6 +6576,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6374,6 +6597,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6394,6 +6618,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6414,6 +6639,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6431,6 +6657,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -6447,6 +6674,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -6465,6 +6693,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6485,6 +6714,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6505,6 +6735,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6525,6 +6756,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6544,6 +6776,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6562,6 +6795,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6580,6 +6814,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6598,6 +6833,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6615,6 +6851,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -6631,6 +6868,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -6649,6 +6887,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6669,6 +6908,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6689,6 +6929,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6709,6 +6950,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6941,6 +7183,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -6961,6 +7204,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -6981,6 +7225,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7001,6 +7246,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7021,6 +7267,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7041,6 +7288,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7061,6 +7309,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7081,6 +7330,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7100,6 +7350,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7118,6 +7369,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7136,6 +7388,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7154,6 +7407,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7171,6 +7425,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -7187,6 +7442,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -7207,6 +7463,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7229,6 +7486,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7251,6 +7509,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7273,6 +7532,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7295,6 +7555,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7317,6 +7578,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7339,6 +7601,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7361,6 +7624,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7382,6 +7646,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7402,6 +7667,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7422,6 +7688,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7442,6 +7709,7 @@ module mpif_functions
     integer(MPI_OFFSET_KIND) :: offset
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7459,6 +7727,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -7475,6 +7744,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -7493,6 +7763,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7513,6 +7784,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7533,6 +7805,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7553,6 +7826,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7572,6 +7846,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7590,6 +7865,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7608,6 +7884,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7626,6 +7903,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7643,6 +7921,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -7659,6 +7938,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: status(MPI_STATUS_SIZE)
     integer :: ierror
@@ -7677,6 +7957,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7697,6 +7978,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7717,6 +7999,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -7737,6 +8020,7 @@ module mpif_functions
     integer :: fh
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -7788,6 +8072,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
+    !dec$ attributes no_arg_check :: base
     integer :: base(*)
     integer :: ierror
   end subroutine MPI_Free_mem
@@ -7800,6 +8085,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
+    !dec$ attributes no_arg_check :: base
     integer :: base(*)
     integer :: ierror
   end subroutine PMPI_Free_mem
@@ -7819,11 +8105,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -7847,11 +8135,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -7875,11 +8165,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -7903,11 +8195,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -7933,11 +8227,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -7965,11 +8261,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -7997,11 +8295,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -8029,11 +8329,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -8060,11 +8362,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -8090,11 +8394,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -8120,11 +8426,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -8150,11 +8458,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -8182,11 +8492,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -8216,11 +8528,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -8250,11 +8564,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -8284,11 +8600,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -8315,6 +8633,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
@@ -8341,6 +8660,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
@@ -8367,6 +8687,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
@@ -8393,6 +8714,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
@@ -8423,11 +8745,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
     !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
+    !dec$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer :: result_count
     integer :: result_datatype
@@ -8459,11 +8783,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
     !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
+    !dec$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer(MPI_COUNT_KIND) :: result_count
     integer :: result_datatype
@@ -8495,11 +8821,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
     !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
+    !dec$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer :: result_count
     integer :: result_datatype
@@ -8531,11 +8859,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
     !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
+    !dec$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer(MPI_COUNT_KIND) :: result_count
     integer :: result_datatype
@@ -8557,6 +8887,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) location
     !gcc$ attributes no_arg_check :: location
+    !dec$ attributes no_arg_check :: location
     integer :: location(*)
     integer(MPI_ADDRESS_KIND) :: address
     integer :: ierror
@@ -8571,6 +8902,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) location
     !gcc$ attributes no_arg_check :: location
+    !dec$ attributes no_arg_check :: location
     integer :: location(*)
     integer(MPI_ADDRESS_KIND) :: address
     integer :: ierror
@@ -9451,11 +9783,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -9479,11 +9813,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -9507,11 +9843,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -9535,11 +9873,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -9564,11 +9904,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -9594,11 +9936,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -9624,11 +9968,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -9654,11 +10000,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -9682,9 +10030,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -9708,9 +10058,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -9734,9 +10086,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -9760,9 +10114,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -9787,11 +10143,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -9815,11 +10173,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -9843,11 +10203,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -9871,11 +10233,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -9901,12 +10265,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -9933,12 +10299,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -9965,12 +10333,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -9997,12 +10367,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -10029,12 +10401,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -10061,12 +10435,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -10093,12 +10469,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -10125,12 +10503,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -10177,6 +10557,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: count
     integer :: datatype
@@ -10199,6 +10580,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -10221,6 +10603,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: count
     integer :: datatype
@@ -10243,6 +10626,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -10266,6 +10650,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -10290,6 +10675,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -10314,6 +10700,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -10338,6 +10725,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -10362,9 +10750,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -10388,9 +10778,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -10414,9 +10806,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -10440,9 +10834,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -10468,11 +10864,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -10498,11 +10896,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -10528,11 +10928,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -10558,11 +10960,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -10589,11 +10993,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -10621,11 +11027,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -10653,11 +11061,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -10685,11 +11095,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -10752,6 +11164,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -10772,6 +11185,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -10792,6 +11206,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -10812,6 +11227,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -10835,11 +11251,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -10863,11 +11281,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -10891,11 +11311,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -10919,11 +11341,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -10948,11 +11372,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -10978,11 +11404,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -11008,11 +11436,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -11038,11 +11468,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -11067,11 +11499,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -11095,11 +11529,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -11123,11 +11559,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -11151,11 +11589,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -11181,12 +11621,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -11213,12 +11655,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -11245,12 +11689,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -11277,12 +11723,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -11309,12 +11757,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -11341,12 +11791,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -11373,12 +11825,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -11405,12 +11859,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -11938,6 +12394,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -11962,6 +12419,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -11986,6 +12444,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -12010,6 +12469,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -12035,9 +12495,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -12063,9 +12525,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -12091,9 +12555,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -12119,9 +12585,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -12146,9 +12614,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: datatype
@@ -12172,9 +12642,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer :: datatype
@@ -12198,9 +12670,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: datatype
@@ -12224,9 +12698,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer :: datatype
@@ -12250,9 +12726,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: datatype
@@ -12276,9 +12754,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: datatype
@@ -12302,9 +12782,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: datatype
@@ -12328,9 +12810,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: datatype
@@ -12354,6 +12838,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -12378,6 +12863,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -12402,6 +12888,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -12426,6 +12913,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -12470,9 +12958,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -12496,9 +12986,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -12522,9 +13014,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -12548,9 +13042,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -12576,11 +13072,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -12606,11 +13104,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -12636,11 +13136,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -12666,11 +13168,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -12697,12 +13201,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: displs(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -12729,12 +13235,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -12761,12 +13269,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: displs(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -12793,12 +13303,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -12822,6 +13334,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -12846,6 +13359,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -12870,6 +13384,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -12894,6 +13409,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -12923,6 +13439,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
@@ -12930,6 +13447,7 @@ module mpif_functions
     integer :: sendtag
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -12959,6 +13477,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
@@ -12966,6 +13485,7 @@ module mpif_functions
     integer :: sendtag
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -12995,6 +13515,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
@@ -13002,6 +13523,7 @@ module mpif_functions
     integer :: sendtag
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -13031,6 +13553,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
@@ -13038,6 +13561,7 @@ module mpif_functions
     integer :: sendtag
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -13064,6 +13588,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -13092,6 +13617,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -13120,6 +13646,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -13148,6 +13675,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -13174,6 +13702,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -13198,6 +13727,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -13222,6 +13752,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -13246,6 +13777,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -13384,6 +13916,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -13404,6 +13937,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -13424,6 +13958,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -13444,6 +13979,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -13466,11 +14002,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -13492,11 +14030,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -13518,11 +14058,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -13544,11 +14086,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -13572,11 +14116,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -13602,11 +14148,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -13632,11 +14180,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -13662,11 +14212,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -13691,11 +14243,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -13719,11 +14273,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -13747,11 +14303,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -13775,11 +14333,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -13805,11 +14365,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -13837,11 +14399,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -13869,11 +14433,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: displs(*)
@@ -13901,11 +14467,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
@@ -13930,11 +14498,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -13956,11 +14526,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -13982,11 +14554,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -14008,11 +14582,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -14036,11 +14612,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -14066,11 +14644,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -14096,11 +14676,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -14126,11 +14708,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -14156,12 +14740,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -14186,12 +14772,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -14216,12 +14804,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -14246,12 +14836,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -14278,12 +14870,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -14312,12 +14906,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -14346,12 +14942,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: rdispls(*)
@@ -14380,12 +14978,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -14412,12 +15012,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -14442,12 +15044,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -14472,12 +15076,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -14502,12 +15108,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -14534,12 +15142,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -14568,12 +15178,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -14602,12 +15214,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -14636,12 +15250,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: sdispls(*)
     integer :: sendtypes(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer(MPI_ADDRESS_KIND) :: rdispls(*)
@@ -14790,11 +15406,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer :: incount
     integer :: datatype
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer :: outsize
     integer :: position
@@ -14816,11 +15434,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND) :: incount
     integer :: datatype
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND) :: outsize
     integer(MPI_COUNT_KIND) :: position
@@ -14842,11 +15462,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer :: incount
     integer :: datatype
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer :: outsize
     integer :: position
@@ -14868,11 +15490,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND) :: incount
     integer :: datatype
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND) :: outsize
     integer(MPI_COUNT_KIND) :: position
@@ -14895,11 +15519,13 @@ module mpif_functions
     character*(*) :: datarep
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer :: incount
     integer :: datatype
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_ADDRESS_KIND) :: outsize
     integer(MPI_ADDRESS_KIND) :: position
@@ -14921,11 +15547,13 @@ module mpif_functions
     character*(*) :: datarep
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND) :: incount
     integer :: datatype
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND) :: outsize
     integer(MPI_COUNT_KIND) :: position
@@ -14947,11 +15575,13 @@ module mpif_functions
     character*(*) :: datarep
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer :: incount
     integer :: datatype
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_ADDRESS_KIND) :: outsize
     integer(MPI_ADDRESS_KIND) :: position
@@ -14973,11 +15603,13 @@ module mpif_functions
     character*(*) :: datarep
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND) :: incount
     integer :: datatype
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND) :: outsize
     integer(MPI_COUNT_KIND) :: position
@@ -15252,6 +15884,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: partitions
     integer(MPI_COUNT_KIND) :: count
@@ -15280,6 +15913,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: partitions
     integer(MPI_COUNT_KIND) :: count
@@ -15340,6 +15974,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: partitions
     integer(MPI_COUNT_KIND) :: count
@@ -15368,6 +16003,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: partitions
     integer(MPI_COUNT_KIND) :: count
@@ -15423,6 +16059,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
@@ -15449,6 +16086,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
@@ -15475,6 +16113,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
@@ -15501,6 +16140,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
@@ -15549,6 +16189,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
@@ -15579,6 +16220,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
@@ -15609,6 +16251,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
@@ -15639,6 +16282,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
@@ -15666,6 +16310,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -15690,6 +16335,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -15714,6 +16360,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -15738,6 +16385,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -15762,6 +16410,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -15786,6 +16435,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -15810,6 +16460,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -15834,6 +16485,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -15858,9 +16510,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -15884,9 +16538,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -15910,9 +16566,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -15936,9 +16594,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -15964,9 +16624,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -15994,9 +16656,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -16024,9 +16688,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -16054,9 +16720,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -16080,9 +16748,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     !dir$ ignore_tkr(trk) inoutbuf
     !gcc$ attributes no_arg_check :: inoutbuf
+    !dec$ attributes no_arg_check :: inoutbuf
     integer :: inoutbuf(*)
     integer :: count
     integer :: datatype
@@ -16102,9 +16772,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     !dir$ ignore_tkr(trk) inoutbuf
     !gcc$ attributes no_arg_check :: inoutbuf
+    !dec$ attributes no_arg_check :: inoutbuf
     integer :: inoutbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -16124,9 +16796,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     !dir$ ignore_tkr(trk) inoutbuf
     !gcc$ attributes no_arg_check :: inoutbuf
+    !dec$ attributes no_arg_check :: inoutbuf
     integer :: inoutbuf(*)
     integer :: count
     integer :: datatype
@@ -16146,9 +16820,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     !dir$ ignore_tkr(trk) inoutbuf
     !gcc$ attributes no_arg_check :: inoutbuf
+    !dec$ attributes no_arg_check :: inoutbuf
     integer :: inoutbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -16169,9 +16845,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: datatype
@@ -16193,9 +16871,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer :: datatype
@@ -16217,9 +16897,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: datatype
@@ -16241,9 +16923,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer :: datatype
@@ -16265,9 +16949,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: datatype
@@ -16289,9 +16975,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: datatype
@@ -16313,9 +17001,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: datatype
@@ -16337,9 +17027,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: datatype
@@ -16363,9 +17055,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: datatype
@@ -16391,9 +17085,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: datatype
@@ -16419,9 +17115,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: datatype
@@ -16447,9 +17145,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: datatype
@@ -16475,9 +17175,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: datatype
@@ -16503,9 +17205,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer :: datatype
@@ -16531,9 +17235,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcounts(*)
     integer :: datatype
@@ -16559,9 +17265,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcounts(*)
     integer :: datatype
@@ -16872,6 +17580,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
@@ -16900,6 +17609,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
@@ -16928,6 +17638,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
@@ -16956,6 +17667,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
@@ -16988,11 +17700,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
     !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
+    !dec$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer :: result_count
     integer :: result_datatype
@@ -17026,11 +17740,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
     !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
+    !dec$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer(MPI_COUNT_KIND) :: result_count
     integer :: result_datatype
@@ -17064,11 +17780,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
     !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
+    !dec$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer :: result_count
     integer :: result_datatype
@@ -17102,11 +17820,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
     !dir$ ignore_tkr(trk) result_addr
     !gcc$ attributes no_arg_check :: result_addr
+    !dec$ attributes no_arg_check :: result_addr
     integer :: result_addr(*)
     integer(MPI_COUNT_KIND) :: result_count
     integer :: result_datatype
@@ -17136,6 +17856,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
@@ -17164,6 +17885,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
@@ -17192,6 +17914,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer :: origin_count
     integer :: origin_datatype
@@ -17220,6 +17943,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) origin_addr
     !gcc$ attributes no_arg_check :: origin_addr
+    !dec$ attributes no_arg_check :: origin_addr
     integer :: origin_addr(*)
     integer(MPI_COUNT_KIND) :: origin_count
     integer :: origin_datatype
@@ -17245,6 +17969,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -17267,6 +17992,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -17289,6 +18015,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -17311,6 +18038,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -17334,6 +18062,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -17358,6 +18087,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -17382,6 +18112,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -17406,6 +18137,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -17429,9 +18161,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -17453,9 +18187,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -17477,9 +18213,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -17501,9 +18239,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -17527,9 +18267,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -17555,9 +18297,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -17583,9 +18327,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: count
     integer :: datatype
@@ -17611,9 +18357,11 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -17639,11 +18387,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -17667,11 +18417,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -17695,11 +18447,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -17723,11 +18477,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -17753,11 +18509,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -17785,11 +18543,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -17817,11 +18577,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -17849,11 +18611,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -17880,12 +18644,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: displs(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -17910,12 +18676,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -17940,12 +18708,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: displs(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -17970,12 +18740,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -18002,12 +18774,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: displs(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -18036,12 +18810,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -18070,12 +18846,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcounts(*)
     integer :: displs(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -18104,12 +18882,14 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcounts(*)
     integer(MPI_ADDRESS_KIND) :: displs(*)
     integer :: sendtype
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -18133,6 +18913,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -18155,6 +18936,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -18177,6 +18959,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -18199,6 +18982,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -18222,6 +19006,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -18246,6 +19031,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -18270,6 +19056,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -18294,6 +19081,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -18323,6 +19111,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
@@ -18330,6 +19119,7 @@ module mpif_functions
     integer :: sendtag
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -18359,6 +19149,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
@@ -18366,6 +19157,7 @@ module mpif_functions
     integer :: sendtag
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -18395,6 +19187,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer :: sendcount
     integer :: sendtype
@@ -18402,6 +19195,7 @@ module mpif_functions
     integer :: sendtag
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer :: recvcount
     integer :: recvtype
@@ -18431,6 +19225,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) sendbuf
     !gcc$ attributes no_arg_check :: sendbuf
+    !dec$ attributes no_arg_check :: sendbuf
     integer :: sendbuf(*)
     integer(MPI_COUNT_KIND) :: sendcount
     integer :: sendtype
@@ -18438,6 +19233,7 @@ module mpif_functions
     integer :: sendtag
     !dir$ ignore_tkr(trk) recvbuf
     !gcc$ attributes no_arg_check :: recvbuf
+    !dec$ attributes no_arg_check :: recvbuf
     integer :: recvbuf(*)
     integer(MPI_COUNT_KIND) :: recvcount
     integer :: recvtype
@@ -18464,6 +19260,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -18492,6 +19289,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -18520,6 +19318,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -18548,6 +19347,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -18571,6 +19371,7 @@ module mpif_functions
     integer :: session
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: size
     integer :: ierror
@@ -18587,6 +19388,7 @@ module mpif_functions
     integer :: session
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
@@ -18603,6 +19405,7 @@ module mpif_functions
     integer :: session
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer :: size
     integer :: ierror
@@ -18619,6 +19422,7 @@ module mpif_functions
     integer :: session
     !dir$ ignore_tkr(trk) buffer
     !gcc$ attributes no_arg_check :: buffer
+    !dec$ attributes no_arg_check :: buffer
     integer :: buffer(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
@@ -18683,6 +19487,7 @@ module mpif_functions
     integer :: session
     !dir$ ignore_tkr(trk) buffer_addr
     !gcc$ attributes no_arg_check :: buffer_addr
+    !dec$ attributes no_arg_check :: buffer_addr
     integer :: buffer_addr(*)
     integer :: size
     integer :: ierror
@@ -18699,6 +19504,7 @@ module mpif_functions
     integer :: session
     !dir$ ignore_tkr(trk) buffer_addr
     !gcc$ attributes no_arg_check :: buffer_addr
+    !dec$ attributes no_arg_check :: buffer_addr
     integer :: buffer_addr(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
@@ -18715,6 +19521,7 @@ module mpif_functions
     integer :: session
     !dir$ ignore_tkr(trk) buffer_addr
     !gcc$ attributes no_arg_check :: buffer_addr
+    !dec$ attributes no_arg_check :: buffer_addr
     integer :: buffer_addr(*)
     integer :: size
     integer :: ierror
@@ -18731,6 +19538,7 @@ module mpif_functions
     integer :: session
     !dir$ ignore_tkr(trk) buffer_addr
     !gcc$ attributes no_arg_check :: buffer_addr
+    !dec$ attributes no_arg_check :: buffer_addr
     integer :: buffer_addr(*)
     integer(MPI_COUNT_KIND) :: size
     integer :: ierror
@@ -19005,6 +19813,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -19027,6 +19836,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -19049,6 +19859,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -19071,6 +19882,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -19094,6 +19906,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -19118,6 +19931,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -19142,6 +19956,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer :: count
     integer :: datatype
@@ -19166,6 +19981,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) buf
     !gcc$ attributes no_arg_check :: buf
+    !dec$ attributes no_arg_check :: buf
     integer :: buf(*)
     integer(MPI_COUNT_KIND) :: count
     integer :: datatype
@@ -21290,11 +22106,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer :: insize
     integer :: position
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer :: outcount
     integer :: datatype
@@ -21316,11 +22134,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND) :: insize
     integer(MPI_COUNT_KIND) :: position
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND) :: outcount
     integer :: datatype
@@ -21342,11 +22162,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer :: insize
     integer :: position
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer :: outcount
     integer :: datatype
@@ -21368,11 +22190,13 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND) :: insize
     integer(MPI_COUNT_KIND) :: position
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND) :: outcount
     integer :: datatype
@@ -21395,11 +22219,13 @@ module mpif_functions
     character*(*) :: datarep
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_ADDRESS_KIND) :: insize
     integer(MPI_ADDRESS_KIND) :: position
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer :: outcount
     integer :: datatype
@@ -21421,11 +22247,13 @@ module mpif_functions
     character*(*) :: datarep
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND) :: insize
     integer(MPI_COUNT_KIND) :: position
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND) :: outcount
     integer :: datatype
@@ -21447,11 +22275,13 @@ module mpif_functions
     character*(*) :: datarep
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_ADDRESS_KIND) :: insize
     integer(MPI_ADDRESS_KIND) :: position
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer :: outcount
     integer :: datatype
@@ -21473,11 +22303,13 @@ module mpif_functions
     character*(*) :: datarep
     !dir$ ignore_tkr(trk) inbuf
     !gcc$ attributes no_arg_check :: inbuf
+    !dec$ attributes no_arg_check :: inbuf
     integer :: inbuf(*)
     integer(MPI_COUNT_KIND) :: insize
     integer(MPI_COUNT_KIND) :: position
     !dir$ ignore_tkr(trk) outbuf
     !gcc$ attributes no_arg_check :: outbuf
+    !dec$ attributes no_arg_check :: outbuf
     integer :: outbuf(*)
     integer(MPI_COUNT_KIND) :: outcount
     integer :: datatype
@@ -21803,6 +22635,7 @@ module mpif_functions
     integer :: win
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
+    !dec$ attributes no_arg_check :: base
     integer :: base(*)
     integer(MPI_ADDRESS_KIND) :: size
     integer :: ierror
@@ -21819,6 +22652,7 @@ module mpif_functions
     integer :: win
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
+    !dec$ attributes no_arg_check :: base
     integer :: base(*)
     integer(MPI_ADDRESS_KIND) :: size
     integer :: ierror
@@ -21881,6 +22715,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
+    !dec$ attributes no_arg_check :: base
     integer :: base(*)
     integer(MPI_ADDRESS_KIND) :: size
     integer :: disp_unit
@@ -21903,6 +22738,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
+    !dec$ attributes no_arg_check :: base
     integer :: base(*)
     integer(MPI_ADDRESS_KIND) :: size
     integer(MPI_ADDRESS_KIND) :: disp_unit
@@ -21925,6 +22761,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
+    !dec$ attributes no_arg_check :: base
     integer :: base(*)
     integer(MPI_ADDRESS_KIND) :: size
     integer :: disp_unit
@@ -21947,6 +22784,7 @@ module mpif_functions
     implicit none
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
+    !dec$ attributes no_arg_check :: base
     integer :: base(*)
     integer(MPI_ADDRESS_KIND) :: size
     integer(MPI_ADDRESS_KIND) :: disp_unit
@@ -22074,6 +22912,7 @@ module mpif_functions
     integer :: win
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
+    !dec$ attributes no_arg_check :: base
     integer :: base(*)
     integer :: ierror
   end subroutine MPI_Win_detach
@@ -22088,6 +22927,7 @@ module mpif_functions
     integer :: win
     !dir$ ignore_tkr(trk) base
     !gcc$ attributes no_arg_check :: base
+    !dec$ attributes no_arg_check :: base
     integer :: base(*)
     integer :: ierror
   end subroutine PMPI_Win_detach
