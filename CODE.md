@@ -244,6 +244,73 @@ arrangements make that true:
   is keyed per variant, and a sanitizer variant would need its own triage
   before it could gate anything.
 
+## The cdesc layer
+
+The `MPIF_HAVE_CFI` branch of `mpi_f08`, where choice buffers are
+`TYPE(*), DIMENSION(..)`: an `MPI_Send_f08ts` wrapper forwards its
+assumed-rank dummy to a `bind(C)` interface (module `mpif_f08_cdesc`, in
+`gen/mpif_f08_functions.F90`) whose C side, in `gen/mpif_f08_cdesc.c`,
+receives each buffer as a `CFI_cdesc_t*`. The probe that turns the branch
+on, the compiler support that motivates it and the decisions it carries are
+under "Assumed-rank choice buffers" in `MISSING.md`; this is how a
+descriptor becomes a call.
+
+Each buffer's crossing is classified in `dev/mpiapi.jl` (`cfi_classify`,
+held to a frozen per-class tally so a new `apis.json` reclassifies loudly):
+
+- **walk** — the buffer owns the scalar (count, datatype) pair that follows
+  it: point-to-point, RMA, file I/O, `MPI_Bcast`, the fixed sides of the
+  collectives. A sentinel, a scalar (rank 0) or a contiguous descriptor
+  passes its base address with count and datatype untouched; anything else
+  goes to `mpif_cdesc_create_datatype` (`src/mpif_cdesc.c`), which wraps the
+  datatype in one contiguous-or-hvector level per descriptor dimension —
+  MPICH's `cdesc_create_datatype` shape, reworked: everything is `MPI_Count`
+  and the `PMPI_*_c` constructors; a descriptor element longer than the
+  datatype (a `character(len=8)` buffer under `MPI_CHARACTER`) folds the
+  factor into a contiguous base type where MPICH only asserts under error
+  checking; only the outermost type is committed. The call gets count 1 and
+  the walked type, freed right after — legal even for a nonblocking call,
+  the request holding its own reference. A root-only buffer walks under
+  `q_at_root`, so a non-root rank never walks against `MPI_DATATYPE_NULL`.
+- **contig** — the reduction family (the §6.9.1 predefined-operator rule),
+  the v/w collectives and `MPI_Reduce_scatter` (counts are arrays), the
+  raw-byte pack buffers, and the partitioned inits (a walked type cannot
+  preserve the partitioning): sentinel or contiguous passes through,
+  anything else is `MPI_ERR_BUFFER` — returned through `ierror` without
+  invoking the error handler, which is what MPICH's layer does with its own
+  walk errors, and loud where MPICH instead corrupts or aborts (its
+  `MPIR_Reduce_cdesc` walks a datatype `MPI_SUM` is not defined on).
+- **addr** — attach/detach, `MPI_Win_create`, `MPI_Free_mem`,
+  `MPI_Get_address`, `MPI_F_sync_reg`, the read/write `_end` halves and the
+  single-element RMA routines: the base address, whatever the layout.
+
+The entry points reuse the ordinary wrappers' conversion machinery
+verbatim — handle-array VLAs, `q_at_root`, string duplication — with the
+buffer names rewritten to the hoisted base addresses (`q_sendbuf`), because
+in these entries the buffer's own name is a descriptor pointer; the vw
+collectives' `sendbuf != MPI_IN_PLACE` guard is the reference that made
+that necessary. Statuses cross as `MPI_Status*` directly, and an in-string's
+hidden length becomes an explicit `integer(c_size_t), value` argument,
+`bind(C)` passing no hidden ones. Sentinels need recognising but never
+translating: the Fortran sentinels live *at* the C constants' addresses, so
+a sentinel descriptor's base address is the C sentinel already
+(`mpif_cdesc_is_sentinel` is three pointer compares — and belt-and-braces,
+a one-element sentinel actual being contiguous anyway).
+
+What the tests pin, and what they cannot: `test/subarray_nonblocking_f08.f90`
+(compiled `-O2`, like every test whose assertion is about the caller's
+optimiser) fails if the walker ignores strides;
+`test/scalar_char_cfi_f08.f90` fails if the element-length factor breaks;
+`test/subarrays_constants_f08.F90` re-derives the expected
+`MPI_SUBARRAYS_SUPPORTED` from the same probe at test-configure time, so a
+build whose constants disagree with its buffers fails whichever way the
+disagreement goes. Dropping ASYNCHRONOUS from the generated declarations
+fails *no* runtime test here — measured, all 75 pass without it — so the
+guard for that class is static: `dev/check-f08-bindings.jl` compares the
+attribute against A.4 on the TS branch, all 216 buffers and the 59
+asynchronous metadata arguments, and reported 762 divergences when it was
+put back.
+
 ## Verified as correct
 
 How the parts that look surprising actually work, recorded so that they do
@@ -251,30 +318,36 @@ not get re-investigated. Several were defects once; `HISTORY.md` has how they
 were found and verified.
 
 - **The mpi_f08 specific procedure names.** The specifics behind the generics
-  are `MPI_Send_f08` and `MPI_Send_c_f08` (Table 19.1 scheme 1A; §19.1.4 puts
-  `_c` before the token, cf. `PMPI_Reduce_scatter_block_init_c_f08ts`), and
-  their PMPI twins likewise. They are *external* procedures
+  follow Table 19.1, and which scheme depends on the buffers: a routine with
+  a choice buffer is scheme 1B under `MPIF_HAVE_CFI` — `MPI_Send_f08ts`,
+  `MPI_Send_c_f08ts` (§19.1.4 puts `_c` before the token, cf.
+  `PMPI_Reduce_scatter_block_init_c_f08ts`) — and scheme 1A on the fallback
+  branch and for every bufferless routine, `MPI_Send_f08` / `MPI_Send_c_f08`;
+  PMPI twins likewise. They are *external* procedures
   (`gen/mpif_f08_wrappers.F90`), declared as interface bodies in
   `mpif_f08_functions`: §19.1.5 wants a profiling routine to "interpose
   itself as the MPI library routine", and a module procedure's symbol is the
   compiler's to mangle. `test/profile_f08.f90` interposes
-  `MPI_Comm_rank_f08` and reaches the real one through `PMPI_Comm_rank`.
+  `MPI_Comm_rank_f08` and reaches the real one through `PMPI_Comm_rank`; the
+  suite's `f08/profile1f90` interposes `mpi_send_f08ts` and passes wherever
+  the TS branch is on.
   Consequences:
   - **No plain `_c` specifics in `mpi_f08`** except `MPI_Op_create_c` and
     `MPI_Register_datarep_c` — §19.1.4 makes invoking any other erroneous,
     and only those two need explicit large-count names (the callback
     prototype alone distinguishes them). This matches MPICH.
   - The `#ifdef` guards on conditionally-emitted `_c` specifics cover the
-    interface, the public line and the body.
-  - `!dir$ ignore_tkr` / `!gcc$ attributes no_arg_check` sit on the interface
+    interface, the public line and the body, and nest with the
+    `MPIF_HAVE_CFI` branch where a buffer routine has one
+    (`MPI_Win_create_c`).
+  - On the fallback branch, `!dir$ ignore_tkr` / `!gcc$ attributes
+    no_arg_check` / `!dec$ attributes no_arg_check` sit on the interface
     bodies, not the definitions — flang requires it, and the directives relax
-    what a *caller* sees anyway.
+    what a *caller* sees anyway. The three spellings cover flang/Cray/NVIDIA,
+    gfortran, and ifort/ifx respectively, each a comment to the others.
   - The declaration written twice is the cost; `dev/check-f08-bindings.jl`
-    compares the two sets, argument names and order included.
-  - What this does not provide: the scheme-1B `_f08ts` names
-    (`TYPE(*), DIMENSION(..)`), which arrive with assumed-rank or not at all
-    — see "Assumed-rank choice buffers" in `MISSING.md`. That is why the
-    suite's `f08/profile1f90` cannot pass.
+    compares the two sets, argument names and order included, once per
+    preprocessor branch.
 - **The PMPI profiling interface.** Every MPI procedure has a `PMPI_` form in
   all three interfaces, each calling C's `PMPI_` entry point (MPI-5.0 §15.2.1
   and §19.1.5). The generated half is one more turn of the loop in
@@ -320,7 +393,11 @@ were found and verified.
   sentinels have common blocks of their own (a gfortran workaround, described
   where they are declared in `src/mpif_f08_types.F90`) but are initialised
   from the same C constants, so the addresses agree across all three
-  interfaces.
+  interfaces. This holds on the cdesc path by construction: the descriptor a
+  compiler builds for a sentinel actual has the sentinel's address as its
+  base address, and that address *is* the C constant, so the entry point
+  passes it through like any other buffer — re-verified there by
+  `test/bottom_cfi_f08.f90` and `test/inplace_cfi_f08.f90`.
 - `MPI_Wtime`, `MPI_Wtick`, `MPI_Aint_add` and `MPI_Aint_diff` are
   hand-written rather than generated. `MPI_Sizeof` is a hand-written generic
   in `src/mpif_types.F90`. `MPI_Status_f2f08`/`MPI_Status_f082f` live in
@@ -375,10 +452,13 @@ were found and verified.
   unchanged.
 - **`MPI_Sizeof` stays as it is, covering rank zero and rank one — in
   `mpif.h` too.** A Fortran generic needs a specific per type, kind *and*
-  rank; covering every rank means sixteen specifics apiece, and assumed-rank
-  is not being taken. MPICH stops in the same place, and `MPI_Sizeof` is
-  deprecated with its `mpi_f08` form removed, so the routine least worth the
-  mechanism. Details that are decisions, not oversights:
+  rank; covering every rank means sixteen specifics apiece. Assumed-rank
+  would collapse them, but it lives behind `MPIF_HAVE_CFI` and `MPI_Sizeof`
+  belongs to `mpif.h` and the `mpi` module, which stay on the directive form
+  everywhere — branching a deprecated routine's generic across the axis is
+  more mechanism than the routine is worth. MPICH stops in the same place,
+  and `MPI_Sizeof` is deprecated with its `mpi_f08` form removed. Details
+  that are decisions, not oversights:
   - `mpif.h`'s generics have scalar *and* array specifics per type (the
     scalar external names are suffixed `_s`; `src/mpif_sizeof.c` emits four
     names per type). `test/sizeof_f.f` covers both.

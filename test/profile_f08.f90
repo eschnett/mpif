@@ -6,8 +6,10 @@
 ! replace it. In mpi_f08 the wrappers used to be module procedures named
 ! MPI_Comm_rank, so a call resolved to a symbol the compiler had mangled and
 ! nothing could stand in front of it. They are external procedures now, named as
-! Table 19.1 scheme 1A gives them -- `MPI_Comm_rank_f08`, since mpif implements
-! choice buffers with `ignore_tkr` rather than `TYPE(*), DIMENSION(..)` -- so the
+! Table 19.1 gives them -- `MPI_Comm_rank_f08` always, this routine having no
+! choice buffer; a buffer routine is `MPI_Send_f08ts` where MPIF_HAVE_CFI makes
+! its buffers `TYPE(*), DIMENSION(..)` and `MPI_Send_f08` on the `ignore_tkr`
+! fallback (the suite's f08/profile1f90 interposes the former) -- so the
 ! program below can define its own and have `call MPI_Comm_rank(...)` land in it.
 !
 ! Section 19.1.5 is what this asserts: a profiling routine "should provide the

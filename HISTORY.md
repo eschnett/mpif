@@ -212,6 +212,11 @@ The table in `MISSING.md` derives from the CI run of `baa7f65`, adjusted:
   failing only on MPICH, inferred from `bsendf`.
 - The MPICH rows wobbled by one or two between runs while the genuinely
   flaky `typecnts*` entries still existed; they no longer do.
+- Every row's f08 column is three lower for the assumed-rank choice buffers
+  (`f08/subarray` test14 and test15, and `profile1f90`'s f08 copy); measured
+  on all four `darwin/26/arm64` pairings, inferred for the rest — every CI
+  toolchain passes the `MPIF_HAVE_CFI` probe, so no CI row is expected to
+  stay on the fallback.
 
 Other one-time results recorded when they happened:
 

@@ -23,14 +23,16 @@
       integer, parameter :: MPI_INTEGER_KIND    = kind(0)
 
 !     Fortran Support
-!     Both are .false. because choice buffers are declared with a
-!     compiler-dependent mechanism that overrides type checking
-!     (ignore_tkr, no_arg_check) instead of with the Fortran 2018
-!     assumed-type and assumed-rank notation, and because no argument
-!     is declared ASYNCHRONOUS. The standard permits this, and requires
-!     it of mpif.h, whose interfaces are implicit. The consequence is
-!     that noncontiguous subarrays may be invalid as buffers in
-!     nonblocking calls.
+!     Both are .false. here, for mpif.h and the mpi module: their choice
+!     buffers are declared with a compiler-dependent mechanism that
+!     overrides type checking (ignore_tkr, no_arg_check) instead of with
+!     the Fortran 2018 assumed-type and assumed-rank notation, and no
+!     argument is declared ASYNCHRONOUS. The standard permits this, and
+!     requires it of mpif.h, whose interfaces are implicit. The
+!     consequence is that noncontiguous subarrays may be invalid as
+!     buffers in nonblocking calls. mpi_f08 overrides both to .true.
+!     where MPIF_HAVE_CFI gives it assumed-rank buffers; see
+!     src/mpif_f08_constants.F90.
       logical, parameter :: MPI_SUBARRAYS_SUPPORTED = .false.
       logical, parameter :: MPI_ASYNC_PROTECTS_NONBLOCKING = .false.
 

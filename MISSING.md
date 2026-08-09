@@ -438,10 +438,11 @@ pointing here.
   64-bit architecture (`arm64`, `aarch64`, `x86_64`) rather than `*`.
 - **`statusconv`** declares MPICH's own spelling `MPI_F08_status` where the
   ABI says `MPI_F08_Status`; fails to build, in C.
-- **`f08/profile1f90`** interposes `mpi_send_f08ts`, the scheme-1B name mpif
-  does not have (mpif is scheme 1A; `_f08ts` arrives with assumed-rank or
-  not at all — one decision, see "Assumed-rank choice buffers"). Its f90
-  copy passes.
+- **`f08/profile1f90`** interposes `mpi_send_f08ts`, the scheme-1B specific
+  name — which mpif now has wherever `MPIF_HAVE_CFI` is on, so the test
+  passes there and is no longer in the xfail file. A variant whose probe
+  falls back to `ignore_tkr` is scheme 1A again and would need a
+  per-variant xfail re-added; no such variant exists in CI or locally.
 
 ### MPICH: the f08 copy of `spawnargvf90` contradicts the standard and its own f90 copy
 
@@ -501,39 +502,76 @@ decision recorded on filing it.
 
 ### Assumed-rank choice buffers
 
-Choice buffers are `integer :: buf(*)` under `!dir$ ignore_tkr` /
-`!gcc$ attributes no_arg_check` — the standard's `.FALSE.` option, which
-`MPI_SUBARRAYS_SUPPORTED` and `MPI_ASYNC_PROTECTS_NONBLOCKING` advertise.
-Conforming, so this is an improvement, not an error.
+**Taken on 2026-08-09, for `mpi_f08` and where the toolchain can do it** —
+reversing the decision this section carried before that date. Where CMake's
+`MPIF_HAVE_CFI` probe passes, `mpi_f08`'s choice buffers are
+`TYPE(*), DIMENSION(..)` with INTENT and ASYNCHRONOUS exactly as A.4 gives
+them, under Table 19.1's scheme-1B `_f08ts` names, routed through `bind(C)`
+interfaces to the cdesc entry points of `gen/mpif_f08_cdesc.c`, and
+`MPI_SUBARRAYS_SUPPORTED` and `MPI_ASYNC_PROTECTS_NONBLOCKING` are `.TRUE.`
+there. `mpif.h` and the `mpi` module keep `integer buf(*)` under the
+directives and `.FALSE.`, the line MPICH draws too. See "The cdesc layer" in
+`CODE.md` for how a descriptor becomes a call.
 
-**Not being taken for the time being** — a decision. The `.FALSE.` option
-conforms, both implementations offer the same one to `mpif.h` and the `mpi`
-module, and the other option means carrying a second mechanism alongside this
-one for compilers without Fortran 2018. What it costs and what taking it
-would involve, kept so the shape of the work is known (nothing below is a
-plan):
+The probe (`cmake/cfi-probe/`) compiles, links and runs a two-language
+program and checks the descriptors' contents, never compile acceptance
+alone: nvfortran accepts the gfortran directive without honoring it
+(open-mpi/ompi#11582), and MPICH's compile-only TS check false-passed and
+then died at link (pmodels/mpich#6505). A toolchain that fails it — or
+`-DMPIF_ENABLE_CFI=OFF`, which is how the branch stays testable — keeps
+the old form, which stands in the `#else` branches of `gen/`: regenerating
+with `emit_cfi = false` in `dev/mpiapi.jl` reproduces the pre-axis files
+byte for byte, and any generator change owes that branch the same check.
 
-- Cost today: two suite tests, `f08/subarray` `test14`/`test15` —
-  noncontiguous slices to *nonblocking* calls, where the compiler's
-  copy-in/copy-out dies before `MPI_Wait`. (Blocking + noncontiguous and
-  nonblocking + contiguous both pass.) The tests rely on `ASYNCHRONOUS`
-  without consulting `MPI_SUBARRAYS_SUPPORTED`, so they cannot pass against
-  a conforming `.FALSE.` implementation; xfail'd with that reason. Also the
-  `_f08ts` names (`profile1f90`'s f08 copy) and the 207 `INTENT(IN)`s on
-  input choice buffers, which arrive with assumed-rank.
-- Taking it: declare choice buffers `TYPE(*), DIMENSION(..), ASYNCHRONOUS`
-  in the nonblocking/split-collective/persistent routines, set both
-  constants `.true.` in `mpi_f08` only (both implementations draw the line
-  there; `include/mpif_constants.h`'s `.false.` stays right regardless).
-  The real work is C-side: new `CFI_cdesc_t*` entry points for the ~150
-  routines with a choice buffer, building a datatype from the descriptor
-  where it is noncontiguous (MPICH's `cdesc_create_datatype` shape —
-  everything it calls is public C API); `bind(C)` interfaces straight to
-  them (the f90 route would reintroduce the copy); sentinel recognition
-  moves into the cdesc wrapper and "Buffer sentinels reach C intact" must be
-  re-verified on the new path. `ASYNCHRONOUS` itself is cheap: `apis.json`
-  marks 142 buffer parameters `asynchronous` and the generator currently
-  never reads the field.
+Why the reasons changed. The cost recorded here was "a second mechanism …
+for compilers without Fortran 2018", and by 2026 that names two shrinking
+lineages. Measured on this machine (gfortran 15, flang 22): `bind(C)`
+assumed-rank, `ISO_Fortran_binding.h` descriptors, no-copy noncontiguous
+sections, scalar and character actuals, ASYNCHRONOUS — all work. Documented:
+ifort since 16.0, ifx (full F2018) since 2023.0, Cray CCE since 8.7. The
+holdouts are nvfortran (CFI capped at rank 7, `SELECT RANK` never planned,
+the vendor's full F2018 being its LLVM-flang successor) and classic-flang
+AOCC ≤ 5.2 (no assumed-rank at all; AOCC 6 is announced as LLVM-flang
+based) — and both lineages implement `!dir$ ignore_tkr` natively, so the
+fallback covers exactly them. LLVM flang's own assumed-rank completed after
+the 19 branch (llvm-project#95990, filed because MPICH's mpi_f08 would not
+build); flang 20.1 is the first release with it. Two corrections recorded
+on the way: *released* Open MPI (≤ 5.0.x) hard-codes
+`MPI_SUBARRAYS_SUPPORTED = .false.` with every compiler — its
+`OMPI_FORTRAN_HAVE_TS` probe and "ts" bindings exist only on `main` — and
+Intel implements neither `!dir$ ignore_tkr` (Cray/SGI lineage, not DEC)
+nor `!gcc$`, which is why the fallback emits
+`!dec$ attributes no_arg_check` as a third spelling.
+
+What remains are decisions, not oversights:
+
+- **The reduction family requires contiguous buffers**, refusing a
+  noncontiguous section with `MPI_ERR_BUFFER`. MPI-5.0 §6.9.1: "Predefined
+  operators work only with the MPI types listed in Section 6.9.2 and
+  Section 6.9.4" — a datatype walked from the descriptor's strides may not
+  meet `MPI_SUM`, and under a user-defined op the walked type would reach
+  the user's function in place of the one they wrote it against. MPICH's
+  cdesc layer walks anyway and its own library then aborts —
+  "MPI_Op operation not defined for this datatype", measured here when the
+  first version of this path copied MPICH's shape. Packing instead would
+  need completion hooks for the nonblocking and persistent forms. The RMA
+  accumulates stay walkable: §12.3.4 admits derived types whose basic
+  components are one predefined type. `test/reduction_noncontig_cfi_f08.f90`
+  pins the refusal; `test/inplace_cfi_f08.f90` the sentinel beside it.
+- **The v/w collectives, `MPI_Reduce_scatter`, the raw-byte pack buffers
+  and the partitioned init routines also require contiguity** — no scalar
+  (count, datatype) pair to walk with, or a partitioning a walked type
+  could not preserve. The same loud refusal, where MPICH passes the base
+  address silently and sends the wrong bytes.
+- **A cdesc-layer error returns through `ierror` without invoking the
+  communicator's error handler** — MPICH's layer does the same. Under
+  `MPI_ERRORS_ARE_FATAL` a program sees a return code here where the
+  standard would have it abort.
+- `mpif_cdesc_is_sentinel` is belt and braces: a sentinel actual is a
+  one-element array, always contiguous, so it cannot reach the walker
+  anyway. A drill removing it fails no test, and it stays because it
+  documents intent and guards a compiler that reports a one-element
+  section noncontiguous.
 
 ### The mpi module's `_c` names
 
@@ -583,11 +621,13 @@ the fix.
 
 ### `bind(C)`
 
-Nothing is declared `bind(C)`. All generated entry points rely on the
-compiler lowercasing names and appending one underscore, and on hidden
-character lengths being appended as `size_t`. Correct for gfortran ≥ 8 and
-flang; an unstated assumption otherwise (gfortran < 8 passed hidden lengths
-as `int`).
+Only the cdesc interfaces (module `mpif_f08_cdesc`, `MPIF_HAVE_CFI` branch)
+are declared `bind(C)`; there the descriptors require it and the strings'
+lengths are explicit `integer(c_size_t), value` arguments. Every other
+generated entry point relies on the compiler lowercasing names and appending
+one underscore, and on hidden character lengths being appended as `size_t`.
+Correct for gfortran ≥ 8 and flang; an unstated assumption otherwise
+(gfortran < 8 passed hidden lengths as `int`).
 
 ### Publishing the Fortran type information to the MPI library
 
@@ -682,22 +722,23 @@ rather than re-measured, and CI is what confirms them.
 
 | variant                          | f77 | f90 | f08 |
 |----------------------------------|-----|-----|-----|
-| mpich/gcc/darwin/15/arm64        |   3 |   9 |  14 |
-| mpich/gcc/linux/24.04/x86_64     |   3 |  10 |  15 |
-| mpich/gcc/linux/24.04/aarch64    |   4 |   9 |  15 |
-| mpich/llvm/darwin/15/arm64       |   3 |   9 |  14 |
-| mpich/llvm/linux/24.04/x86_64    |   4 |  10 |  15 |
-| mpich/llvm/linux/24.04/aarch64   |   4 |  10 |  15 |
-| openmpi/gcc/darwin/15/arm64      |   5 |   7 |  15 |
-| openmpi/gcc/linux/24.04/x86_64   |   8 |  12 |  18 |
-| openmpi/gcc/linux/24.04/aarch64  |   5 |   7 |  15 |
-| openmpi/llvm/darwin/15/arm64     |   5 |   7 |  15 |
-| openmpi/llvm/linux/24.04/x86_64  |   8 |  12 |  18 |
-| openmpi/llvm/linux/24.04/aarch64 |   5 |   7 |  15 |
+| mpich/gcc/darwin/15/arm64        |   3 |   9 |  11 |
+| mpich/gcc/linux/24.04/x86_64     |   3 |  10 |  12 |
+| mpich/gcc/linux/24.04/aarch64    |   4 |   9 |  12 |
+| mpich/llvm/darwin/15/arm64       |   3 |   9 |  11 |
+| mpich/llvm/linux/24.04/x86_64    |   4 |  10 |  12 |
+| mpich/llvm/linux/24.04/aarch64   |   4 |  10 |  12 |
+| openmpi/gcc/darwin/15/arm64      |   5 |   7 |  12 |
+| openmpi/gcc/linux/24.04/x86_64   |   8 |  12 |  15 |
+| openmpi/gcc/linux/24.04/aarch64  |   5 |   7 |  12 |
+| openmpi/llvm/darwin/15/arm64     |   5 |   7 |  12 |
+| openmpi/llvm/linux/24.04/x86_64  |   8 |  12 |  15 |
+| openmpi/llvm/linux/24.04/aarch64 |   5 |   7 |  12 |
 
-- This machine's rows are not in the table (`darwin/26`): measured locally,
-  `mpich/gcc/darwin/26/arm64` reports no differences at 3/5/11 and
-  `openmpi/gcc/darwin/26/arm64` at 7/9/17.
+- This machine's rows are not in the table (`darwin/26`): measured locally
+  after the assumed-rank change, `mpich/gcc/darwin/26/arm64` reports no
+  differences at 3/5/8, `mpich/llvm` at 3/5/9, `openmpi/gcc` at 7/9/13 and
+  `openmpi/llvm` at 7/9/14.
 - The two Open MPI x86_64 rows are higher by exactly the eleven spawn tests
   ("a spawned child is not reachable over TCP" above).
 - Thirteen of CI's fourteen variants are `triaged` (the twelve above plus
@@ -708,8 +749,8 @@ rather than re-measured, and CI is what confirms them.
   `triaged` lines are environments outside CI.
 - Most rows rest on a single measurement, so expect some churn: a flaky
   entry surfaces as an unexpected pass, which is the mechanism working.
-- `test/`, mpif's own suite, is 69 of 69 (`ctest`'s count; `add_mpi_test`
-  registers 61 — the runtime-check and `mpif_info` groups use bare
+- `test/`, mpif's own suite, is 75 of 75 (`ctest`'s count; `add_mpi_test`
+  registers 67 — the runtime-check and `mpif_info` groups use bare
   `add_test` for cases that are about the launch environment rather than a
   binding). Green on all four local variants, each against both runtime
   MPIs, and the AddressSanitizer variants likewise.

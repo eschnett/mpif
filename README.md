@@ -32,12 +32,15 @@ consistency checks" in `CODE.md` has the details.
 
 One known defect remains, and MPICH's Fortran test suite reports it: an
 attribute set from Fortran is not visible to C as a pointer, where
-MPI-5.0 section 19.3.7 requires that it is. Assumed-rank choice buffers
-are not implemented either, which is a conforming choice rather than a
-defect -- `MPI_SUBARRAYS_SUPPORTED` is `.FALSE.`, which is the option
-the standard offers and which both other implementations offer for
-`mpif.h` and the `mpi` module. `MISSING.md` has both, with everything
-else outstanding and the reasons.
+MPI-5.0 section 19.3.7 requires that it is. `mpi_f08`'s choice buffers
+are assumed rank (`TYPE(*), DIMENSION(..)`) wherever the toolchain's
+TS 29113 support passes a build-time probe, and `MPI_SUBARRAYS_SUPPORTED`
+is `.TRUE.` there -- noncontiguous array sections are then valid buffers
+in nonblocking calls; on toolchains without that support, and always in
+`mpif.h` and the `mpi` module, the buffers stay `ignore_tkr` with
+`.FALSE.`, the conforming option both other implementations offer for
+those two. `MISSING.md` has both, with everything else outstanding and
+the reasons.
 
 ## Running with a different MPI library
 

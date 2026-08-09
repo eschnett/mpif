@@ -102,15 +102,20 @@ pinned to `lo0`, and mpif's own `test/` never spawns.
       bash ci-scripts/check-headers.sh  # Cray pointers against their common blocks
 
   The first reads `doc/mpi50-report.pdf` and compares intents, declared types,
-  `VALUE`, argument names and argument order against the standard's
-  appendices: `gen/mpif_f08_functions.F90` against A.4, the callback abstract
-  interfaces of `src/mpif_f08_types.F90` against A.1.3, the predefined
-  callbacks of `src/mpif_f08_attr_fns.F90` against A.4, and the PMPI forms of
-  the first and third against the same appendices under their twins' names.
-  It also compares the 1180 f08 specifics' two declarations — interface and
-  body — against each other, and exits nonzero on anything it cannot account
-  for. Run it after changing how any f08 argument is declared, generated or
-  not. It needs the git-ignored PDF, so it cannot run in CI.
+  `VALUE`, `ASYNCHRONOUS`, argument names and argument order against the
+  standard's appendices: `gen/mpif_f08_functions.F90` against A.4, the
+  callback abstract interfaces of `src/mpif_f08_types.F90` against A.1.3, the
+  predefined callbacks of `src/mpif_f08_attr_fns.F90` against A.4, and the
+  PMPI forms of the first and third against the same appendices under their
+  twins' names. The generated files are parsed once per preprocessor branch —
+  with `MPIF_HAVE_CFI` and without — because each branch declares a
+  choice-buffer routine under a different specific name; the assumed-rank
+  branch's buffers are held to A.4 verbatim, and only the fallback branch
+  keeps the recorded no-intent divergence. It also compares the 1180 f08
+  specifics' two declarations — interface and body — against each other, and
+  exits nonzero on anything it cannot account for. Run it after changing how
+  any f08 argument is declared, generated or not. It needs the git-ignored
+  PDF, so it cannot run in CI.
 
   The second is CI's `checks` job and is the only thing that catches a
   `pointer (P, X)` whose name does not match its `common /P/ P`: both
@@ -123,7 +128,12 @@ pinned to `lo0`, and mpif's own `test/` never spawns.
   routine (git aligns the copy against the original and reports thousands of
   phantom deletions). Turn the new axis off instead — e.g. shorten the
   `for pmpi in [false, true]` loop — regenerate, and require `git diff gen/`
-  to be empty.
+  to be empty. The TS 29113 axis has its own switch, `emit_cfi` in
+  `dev/mpiapi.jl`: with it `false` the output must match the last pre-axis
+  tree (the committed files carry both branches, so plain `git diff` no
+  longer works for this one — compare against
+  `git show <pre-axis-commit>:gen/...`), which is what proves the
+  `ignore_tkr` fallback untouched.
 
 ## Building and testing
 
@@ -197,6 +207,13 @@ To run one directory of the suite rather than all of it:
   libsanitizer on macOS, and CMake stops rather than producing an
   uninstrumented build under a sanitizer name). See "Verifying a fix" below
   and "Sanitizer builds" in `CODE.md`.
+- `MPIF_ENABLE_CFI=0` on `scripts/macos-build-mpif.sh` forces the
+  `ignore_tkr` fallback on a toolchain whose TS 29113 probe would pass —
+  how that branch stays testable. It reuses the ordinary prefix rather than
+  getting a variant of its own, so rebuild with `MPIF_REBUILD=1` (and
+  without it) afterwards, and expect `test/subarrays_constants_f08` to need
+  `-DMPIF_TEST_EXPECT_SUBARRAYS=OFF` if you run the test stage against such
+  a build by hand.
 
 ### Suite gating
 
