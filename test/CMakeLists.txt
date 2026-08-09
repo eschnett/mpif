@@ -248,6 +248,7 @@ add_mpi_test(gather_inter_f08       SOURCES gather_inter_f08.f90      NPROCS 3  
 set(MPIF_TEST_EXPECT_SUBARRAYS "auto" CACHE STRING
   "Expected MPI_SUBARRAYS_SUPPORTED in mpi_f08: auto, ON or OFF")
 if(MPIF_TEST_EXPECT_SUBARRAYS STREQUAL "auto")
+  include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/cfi-include-dir.cmake)
   if(CMAKE_CROSSCOMPILING)
     set(_mpif_test_cfi_probe_run OFF)
   else()
@@ -257,7 +258,9 @@ if(MPIF_TEST_EXPECT_SUBARRAYS STREQUAL "auto")
     ${CMAKE_CURRENT_BINARY_DIR}/cfi-probe
     ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/cfi-probe
     cfi-probe
-    CMAKE_FLAGS "-DMPIF_PROBE_RUN=${_mpif_test_cfi_probe_run}")
+    CMAKE_FLAGS
+      "-DMPIF_PROBE_RUN=${_mpif_test_cfi_probe_run}"
+      "-DMPIF_PROBE_CFI_INCLUDE_DIR=${MPIF_CFI_INCLUDE_DIR}")
   set(_mpif_test_expect ${MPIF_TEST_HAVE_CFI})
 else()
   set(_mpif_test_expect ${MPIF_TEST_EXPECT_SUBARRAYS})

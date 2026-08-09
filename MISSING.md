@@ -561,7 +561,13 @@ The probe (`cmake/cfi-probe/`) compiles, links and runs a two-language
 program and checks the descriptors' contents, never compile acceptance
 alone: nvfortran accepts the gfortran directive without honoring it
 (open-mpi/ompi#11582), and MPICH's compile-only TS check false-passed and
-then died at link (pmodels/mpich#6505). A toolchain that fails it — or
+then died at link (pmodels/mpich#6505). Where the C compiler does not ship
+`ISO_Fortran_binding.h` — Homebrew's clang and flang are separate kegs, and
+FreeBSD compiles C with clang and Fortran with gfortran —
+`cmake/cfi-include-dir.cmake` finds the Fortran compiler's copy and copies
+that one header into a directory of its own (never `-I` where it lives:
+gfortran's sits beside gcc's `stddef.h`, which clang rejects); the probe and
+the cdesc sources use the same answer. A toolchain that fails the probe — or
 `-DMPIF_ENABLE_CFI=OFF`, which is how the branch stays testable — keeps
 the old form, which stands in the `#else` branches of `gen/`: regenerating
 with `emit_cfi = false` in `dev/mpiapi.jl` reproduces the pre-axis files

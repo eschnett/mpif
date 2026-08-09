@@ -211,6 +211,10 @@ set(CMAKE_REQUIRED_FLAGS "${saved_CMAKE_REQUIRED_FLAGS}")
 option(MPIF_ENABLE_CFI
   "Use TS 29113 assumed-rank choice buffers in mpi_f08 where the toolchain supports them" ON)
 if(MPIF_ENABLE_CFI)
+  # Where the C compiler cannot find ISO_Fortran_binding.h on its own, this
+  # finds the Fortran compiler's copy; the probe and the cdesc sources use
+  # the same answer.
+  include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cfi-include-dir.cmake)
   if(CMAKE_CROSSCOMPILING)
     set(_mpif_cfi_probe_run OFF)
   else()
@@ -223,9 +227,11 @@ if(MPIF_ENABLE_CFI)
     CMAKE_FLAGS
       "-DMPIF_PROBE_Fortran_FLAGS=${MPIF_Fortran_FLAGS_STR}"
       "-DMPIF_PROBE_RUN=${_mpif_cfi_probe_run}"
+      "-DMPIF_PROBE_CFI_INCLUDE_DIR=${MPIF_CFI_INCLUDE_DIR}"
     OUTPUT_VARIABLE _mpif_cfi_probe_output)
 else()
   set(MPIF_HAVE_CFI FALSE)
+  set(MPIF_CFI_INCLUDE_DIR "")
 endif()
 if(MPIF_HAVE_CFI)
   message(STATUS "TS 29113 assumed-rank choice buffers: yes (MPIF_HAVE_CFI)")
@@ -487,6 +493,12 @@ target_include_directories(mpifort_abi
     $<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+if(MPIF_HAVE_CFI AND MPIF_CFI_INCLUDE_DIR)
+  # The Fortran compiler's ISO_Fortran_binding.h, for gen/mpif_f08_cdesc.c
+  # and src/mpif_cdesc.c on toolchains whose C compiler does not ship it;
+  # see cmake/cfi-include-dir.cmake.
+  target_include_directories(mpifort_abi PRIVATE "${MPIF_CFI_INCLUDE_DIR}")
+endif()
 target_compile_definitions(mpifort_abi PRIVATE
   ENABLE_FORTRAN
   # mpif's own version, for src/mpif_check.c. Not spelled MPIF_VERSION /

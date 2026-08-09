@@ -97,7 +97,7 @@ RUN cmake --install build-openmpi-gcc
 
 RUN mkdir test
 WORKDIR /cactus/mpif/test
-COPY test/CMakeLists.txt test/*.c test/*.f test/*.f90 .
+COPY test/CMakeLists.txt test/*.c test/*.f test/*.f90 test/*.F90 .
 
 # Configure tests
 RUN <<EOF

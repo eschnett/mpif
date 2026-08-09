@@ -23,6 +23,12 @@ if(DEFINED MPIF_PROBE_Fortran_FLAGS)
     $<$<COMPILE_LANGUAGE:Fortran>:${_mpif_probe_fflags}>)
 endif()
 
+# The Fortran compiler's ISO_Fortran_binding.h, where the C compiler does not
+# ship one of its own; see cmake/cfi-include-dir.cmake in the caller.
+if(MPIF_PROBE_CFI_INCLUDE_DIR)
+  target_include_directories(cfi-probe PRIVATE "${MPIF_PROBE_CFI_INCLUDE_DIR}")
+endif()
+
 if(MPIF_PROBE_RUN)
   add_custom_command(TARGET cfi-probe POST_BUILD
     COMMAND cfi-probe
