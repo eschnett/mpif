@@ -519,19 +519,26 @@ emit_cfi = true
 #   the call, which is legal even for a nonblocking one: the request holds its
 #   own reference. Detected from the parameter list, and the detection is
 #   asserted below.
-# - `:share` -- the pair-less first buffer of the reduction family, whose
-#   (count, datatype) pair belongs to both buffers at once. One datatype
-#   argument serves both, so a noncontiguous section is accepted only where
-#   the other buffer is a sentinel, insignificant, or the same layout; MPICH
-#   passes the base address silently in the remaining cases and corrupts the
-#   data, and mpif returns MPI_ERR_BUFFER instead. Named per routine.
-# - `:contig` -- a data buffer with no scalar pair: the v/w collectives and
-#   MPI_Reduce_scatter, whose counts are arrays; MPI_Pack's `outbuf` and
-#   MPI_Unpack's `inbuf`, which are raw bytes; and the partitioned
-#   MPI_Psend_init/MPI_Precv_init, whose pair understates the buffer by the
-#   `partitions` factor and whose partitioning a walked datatype could not
-#   preserve. Sentinels and contiguous descriptors pass through; anything
-#   else is MPI_ERR_BUFFER, loudly, where MPICH is silently wrong.
+# - `:contig` -- a data buffer that cannot be walked. Three reasons, and the
+#   reduction family is the load-bearing one:
+#   - Every buffer of a reduction (MPI_Reduce and its relatives, named in
+#     cfi_reduction_routines below): MPI-5.0 6.9.1 says "Predefined operators
+#     work only with the MPI types listed in Section 6.9.2 and Section
+#     6.9.4", so handing MPI_SUM a walked hvector is erroneous -- MPICH's
+#     cdesc layer does exactly that and its own library then aborts with
+#     "MPI_Op operation not defined for this datatype", measured here -- and
+#     under a user-defined op the walked type would reach the user's
+#     function in place of the type they wrote it against. The RMA
+#     accumulates are different: 12.3.4 admits derived types whose basic
+#     components are one predefined type, so they stay `:walk`.
+#   - No scalar pair to walk with: the v/w collectives and
+#     MPI_Reduce_scatter, whose counts are arrays; MPI_Pack's `outbuf` and
+#     MPI_Unpack's `inbuf`, which are raw bytes.
+#   - The partitioned MPI_Psend_init/MPI_Precv_init, whose pair understates
+#     the buffer by the `partitions` factor and whose partitioning a walked
+#     datatype could not preserve.
+#   Sentinels and contiguous descriptors pass through; anything else is
+#   MPI_ERR_BUFFER, loudly, where MPICH corrupts or aborts.
 # - `:addr` -- address semantics: what matters is where the buffer starts,
 #   not its layout. The attach family, MPI_Win_create/attach/detach,
 #   MPI_Free_mem, MPI_Get_address, MPI_F_sync_reg, the six read/write `_end`
@@ -560,15 +567,18 @@ cfi_addr_buffers = Set([
     ("MPI_Fetch_and_op", "result_addr"),
 ])
 
-# The reduction family: first buffer `:share`, second `:walk`, one pair for
-# both. Not MPI_Reduce_scatter_block and friends, whose sendbuf holds
-# group-size times what the pair describes and can never share the walked
-# type; their sendbuf is `:contig` by the no-pair rule.
-cfi_share_routines = Set(["MPI_Allreduce", "MPI_Allreduce_init", "MPI_Iallreduce",
-                          "MPI_Exscan", "MPI_Exscan_init", "MPI_Iexscan",
-                          "MPI_Scan", "MPI_Scan_init", "MPI_Iscan",
-                          "MPI_Reduce", "MPI_Reduce_init", "MPI_Ireduce",
-                          "MPI_Reduce_local"])
+# The reduction family whose every buffer is `:contig`, per the 6.9.1 rule
+# quoted above. MPI_Reduce_scatter, MPI_Reduce_scatter_block and their
+# variants land in the same place without being named: their counts are
+# arrays or their sendbuf has no pair, so the no-pair rule already refuses
+# to walk them.
+cfi_reduction_routines = Set(["MPI_Allreduce", "MPI_Allreduce_init", "MPI_Iallreduce",
+                              "MPI_Exscan", "MPI_Exscan_init", "MPI_Iexscan",
+                              "MPI_Scan", "MPI_Scan_init", "MPI_Iscan",
+                              "MPI_Reduce", "MPI_Reduce_init", "MPI_Ireduce",
+                              "MPI_Reduce_local",
+                              "MPI_Reduce_scatter_block", "MPI_Reduce_scatter_block_init",
+                              "MPI_Ireduce_scatter_block"])
 
 # A.4 declares most `in` buffers INTENT(IN) and these not: their pointer is
 # what the routine keeps, so the caller's object is not a pure input. Found by
@@ -601,7 +611,7 @@ function cfi_classify(name, parameters)
             classes[parname] = (kind = :addr,)
             continue
         end
-        if name ∈ ("MPI_Psend_init", "MPI_Precv_init")
+        if name ∈ ("MPI_Psend_init", "MPI_Precv_init") || name ∈ cfi_reduction_routines
             classes[parname] = (kind = :contig,)
             continue
         end
@@ -626,14 +636,6 @@ function cfi_classify(name, parameters)
         classes[parname] = pair == nothing ? (kind = :contig,) :
             (kind = :walk, count = pair.count, datatype = pair.datatype)
     end
-    if name ∈ cfi_share_routines
-        @assert length(buffer_idxs) == 2 name
-        first_name = parameters[buffer_idxs[1]]["name"]
-        second_name = parameters[buffer_idxs[2]]["name"]
-        @assert classes[first_name].kind == :contig (name, classes[first_name])
-        @assert classes[second_name].kind == :walk (name, classes[second_name])
-        classes[first_name] = (kind = :share, partner = second_name)
-    end
     return classes
 end
 
@@ -641,7 +643,7 @@ end
 # loudly rather than silently: counted over the classified routines after the
 # main loop and compared against these, which were read off the enumeration of
 # 2026-08-09 and checked by hand against the argument lists.
-cfi_expected_class_counts = Dict(:walk => 132, :share => 13, :contig => 51, :addr => 20)
+cfi_expected_class_counts = Dict(:walk => 116, :contig => 80, :addr => 20)
 cfi_class_counts = Dict{Symbol,Int}()
 
 # The two routines with ASYNCHRONOUS arguments and no choice buffer --
@@ -2344,15 +2346,13 @@ for key in sort(collect(keys(apis)))
                     "q_at_root && "
                 end
 
-                share_of = Dict(c.partner => b for (b, c) in cfi_classes if c.kind == :share)
-
                 for p in parameters
                     p["kind"] == "BUFFER" || continue
                     b = p["name"]
                     cls = cfi_classes[b]
-                    if cls.kind ∈ (:addr, :share)
-                        # :addr passes the base address whatever the layout;
-                        # :share is emitted with its partner's walk below.
+                    if cls.kind == :addr
+                        # Address semantics: the base address, whatever the
+                        # layout.
                         continue
                     elseif cls.kind == :contig
                         guard = root_only_of[b] ? at_root_guard!() : ""
@@ -2374,46 +2374,15 @@ for key in sort(collect(keys(apis)))
                         "MPI_Count q_$(b)_count = *$cnt;",
                         "int q_$(b)_owned = 0;"])
                     push!(walk_names, b)
-                    s = get(share_of, b, nothing)
-                    if s == nothing
-                        guard = root_only_of[b] ? at_root_guard!() : ""
-                        append!(cdesc_checks, [
-                            "if (q_cdesc_err == MPI_SUCCESS && $(guard)!mpif_cdesc_is_sentinel(q_$b) && $b->rank != 0 && !CFI_is_contiguous($b)) {",
-                            "  q_cdesc_err = mpif_cdesc_create_datatype($b, q_$(b)_count, q_$(b)_type, &q_$(b)_type);",
-                            "  if (q_cdesc_err == MPI_SUCCESS) {",
-                            "    q_$(b)_count = 1;",
-                            "    q_$(b)_owned = 1;",
-                            "  }",
-                            "}"])
-                    else
-                        # One (count, datatype) pair serves both buffers, so a
-                        # noncontiguous section on either side is acceptable
-                        # only where the other is a sentinel, insignificant, or
-                        # the same layout -- then one walked datatype fits both.
-                        # Anything else is MPI_ERR_BUFFER, where MPICH passes
-                        # the base address and corrupts the data silently.
-                        @assert !root_only_of[s] (name, s)
-                        sig_b = root_only_of[b] ? at_root_guard!() : ""
-                        append!(cdesc_checks, [
-                            "{",
-                            "  const int q_$(s)_nc = !mpif_cdesc_is_sentinel(q_$s) && $s->rank != 0 && !CFI_is_contiguous($s);",
-                            "  const int q_$(b)_sig = $(sig_b)!mpif_cdesc_is_sentinel(q_$b);",
-                            "  const int q_$(b)_nc = q_$(b)_sig && $b->rank != 0 && !CFI_is_contiguous($b);",
-                            "  if (q_cdesc_err == MPI_SUCCESS && (q_$(s)_nc || q_$(b)_nc)) {",
-                            "    const int q_$(s)_sig = !mpif_cdesc_is_sentinel(q_$s);",
-                            "    if ((q_$(s)_nc && q_$(b)_sig && !(q_$(b)_nc && mpif_cdesc_same_layout($s, $b))) ||",
-                            "        (q_$(b)_nc && q_$(s)_sig && !(q_$(s)_nc && mpif_cdesc_same_layout($s, $b)))) {",
-                            "      q_cdesc_err = MPI_ERR_BUFFER;",
-                            "    } else {",
-                            "      q_cdesc_err = mpif_cdesc_create_datatype(q_$(s)_nc ? $s : $b, q_$(b)_count, q_$(b)_type, &q_$(b)_type);",
-                            "      if (q_cdesc_err == MPI_SUCCESS) {",
-                            "        q_$(b)_count = 1;",
-                            "        q_$(b)_owned = 1;",
-                            "      }",
-                            "    }",
-                            "  }",
-                            "}"])
-                    end
+                    guard = root_only_of[b] ? at_root_guard!() : ""
+                    append!(cdesc_checks, [
+                        "if (q_cdesc_err == MPI_SUCCESS && $(guard)!mpif_cdesc_is_sentinel(q_$b) && $b->rank != 0 && !CFI_is_contiguous($b)) {",
+                        "  q_cdesc_err = mpif_cdesc_create_datatype($b, q_$(b)_count, q_$(b)_type, &q_$(b)_type);",
+                        "  if (q_cdesc_err == MPI_SUCCESS) {",
+                        "    q_$(b)_count = 1;",
+                        "    q_$(b)_owned = 1;",
+                        "  }",
+                        "}"])
                 end
 
                 cdesc_err_block = String[]

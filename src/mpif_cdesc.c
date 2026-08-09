@@ -100,15 +100,6 @@ fail:
   return err;
 }
 
-int mpif_cdesc_same_layout(const CFI_cdesc_t *a, const CFI_cdesc_t *b) {
-  if (a->rank != b->rank || a->elem_len != b->elem_len)
-    return 0;
-  for (int i = 0; i < a->rank; ++i)
-    if (a->dim[i].extent != b->dim[i].extent || a->dim[i].sm != b->dim[i].sm)
-      return 0;
-  return 1;
-}
-
 #else
 
 // ISO C requires something in a translation unit.

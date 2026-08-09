@@ -20,12 +20,6 @@
 int mpif_cdesc_create_datatype(const CFI_cdesc_t *cdesc, MPI_Count oldcount,
                                MPI_Datatype oldtype, MPI_Datatype *newtype);
 
-// Whether two descriptors describe the same element size and stride pattern,
-// so that one datatype built from either serves both. This is what lets a
-// routine whose two buffers share one (count, datatype) pair -- MPI_Reduce
-// and its family -- accept a noncontiguous section for both sides at once.
-int mpif_cdesc_same_layout(const CFI_cdesc_t *a, const CFI_cdesc_t *b);
-
 // The buffer sentinels, by address. src/mpif_constants.c points the Fortran
 // MPI_BOTTOM, MPI_IN_PLACE and MPI_BUFFER_AUTOMATIC at the C constants
 // themselves -- (void*)0, 1 and 2 in the standard ABI -- so the base_addr of

@@ -1088,43 +1088,22 @@ void mpi_allreduce_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Allreduce(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_allreduce_c_cdesc(
@@ -1140,43 +1119,22 @@ void mpi_allreduce_c_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Allreduce_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_allreduce_cdesc(
@@ -1192,43 +1150,22 @@ void pmpi_allreduce_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Allreduce(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_allreduce_c_cdesc(
@@ -1244,43 +1181,22 @@ void pmpi_allreduce_c_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Allreduce_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_allreduce_init_cdesc(
@@ -1299,46 +1215,25 @@ void mpi_allreduce_init_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Allreduce_init(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_allreduce_init_c_cdesc(
@@ -1357,46 +1252,25 @@ void mpi_allreduce_init_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Allreduce_init_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_allreduce_init_cdesc(
@@ -1415,46 +1289,25 @@ void pmpi_allreduce_init_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Allreduce_init(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_allreduce_init_c_cdesc(
@@ -1473,46 +1326,25 @@ void pmpi_allreduce_init_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Allreduce_init_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_alltoall_cdesc(
@@ -3666,43 +3498,22 @@ void mpi_exscan_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Exscan(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_exscan_c_cdesc(
@@ -3718,43 +3529,22 @@ void mpi_exscan_c_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Exscan_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_exscan_cdesc(
@@ -3770,43 +3560,22 @@ void pmpi_exscan_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Exscan(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_exscan_c_cdesc(
@@ -3822,43 +3591,22 @@ void pmpi_exscan_c_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Exscan_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_exscan_init_cdesc(
@@ -3877,46 +3625,25 @@ void mpi_exscan_init_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Exscan_init(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_exscan_init_c_cdesc(
@@ -3935,46 +3662,25 @@ void mpi_exscan_init_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Exscan_init_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_exscan_init_cdesc(
@@ -3993,46 +3699,25 @@ void pmpi_exscan_init_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Exscan_init(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_exscan_init_c_cdesc(
@@ -4051,46 +3736,25 @@ void pmpi_exscan_init_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Exscan_init_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_f_sync_reg_cdesc(
@@ -10904,45 +10568,24 @@ void mpi_iallreduce_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Iallreduce(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_iallreduce_c_cdesc(
@@ -10960,45 +10603,24 @@ void mpi_iallreduce_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Iallreduce_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_iallreduce_cdesc(
@@ -11016,45 +10638,24 @@ void pmpi_iallreduce_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Iallreduce(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_iallreduce_c_cdesc(
@@ -11072,45 +10673,24 @@ void pmpi_iallreduce_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Iallreduce_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_ialltoall_cdesc(
@@ -12140,45 +11720,24 @@ void mpi_iexscan_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Iexscan(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_iexscan_c_cdesc(
@@ -12196,45 +11755,24 @@ void mpi_iexscan_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Iexscan_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_iexscan_cdesc(
@@ -12252,45 +11790,24 @@ void pmpi_iexscan_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Iexscan(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_iexscan_c_cdesc(
@@ -12308,45 +11825,24 @@ void pmpi_iexscan_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Iexscan_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_igather_cdesc(
@@ -14542,46 +14038,25 @@ void mpi_ireduce_cdesc(
       q_at_root = q_comm_rank == *root;
     }
   }
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Ireduce(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     *root,
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_ireduce_c_cdesc(
@@ -14621,46 +14096,25 @@ void mpi_ireduce_c_cdesc(
       q_at_root = q_comm_rank == *root;
     }
   }
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Ireduce_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     *root,
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_ireduce_cdesc(
@@ -14700,46 +14154,25 @@ void pmpi_ireduce_cdesc(
       q_at_root = q_comm_rank == *root;
     }
   }
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Ireduce(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     *root,
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_ireduce_c_cdesc(
@@ -14779,46 +14212,25 @@ void pmpi_ireduce_c_cdesc(
       q_at_root = q_comm_rank == *root;
     }
   }
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Ireduce_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     *root,
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_ireduce_scatter_cdesc(
@@ -14976,36 +14388,24 @@ void mpi_ireduce_scatter_block_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *recvcount;
-  int q_recvbuf_owned = 0;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
-  if (q_cdesc_err == MPI_SUCCESS && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf)) {
-    q_cdesc_err = mpif_cdesc_create_datatype(recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-    if (q_cdesc_err == MPI_SUCCESS) {
-      q_recvbuf_count = 1;
-      q_recvbuf_owned = 1;
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Ireduce_scatter_block(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_ireduce_scatter_block_c_cdesc(
@@ -15023,36 +14423,24 @@ void mpi_ireduce_scatter_block_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *recvcount;
-  int q_recvbuf_owned = 0;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
-  if (q_cdesc_err == MPI_SUCCESS && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf)) {
-    q_cdesc_err = mpif_cdesc_create_datatype(recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-    if (q_cdesc_err == MPI_SUCCESS) {
-      q_recvbuf_count = 1;
-      q_recvbuf_owned = 1;
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Ireduce_scatter_block_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_ireduce_scatter_block_cdesc(
@@ -15070,36 +14458,24 @@ void pmpi_ireduce_scatter_block_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *recvcount;
-  int q_recvbuf_owned = 0;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
-  if (q_cdesc_err == MPI_SUCCESS && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf)) {
-    q_cdesc_err = mpif_cdesc_create_datatype(recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-    if (q_cdesc_err == MPI_SUCCESS) {
-      q_recvbuf_count = 1;
-      q_recvbuf_owned = 1;
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Ireduce_scatter_block(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_ireduce_scatter_block_c_cdesc(
@@ -15117,36 +14493,24 @@ void pmpi_ireduce_scatter_block_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *recvcount;
-  int q_recvbuf_owned = 0;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
-  if (q_cdesc_err == MPI_SUCCESS && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf)) {
-    q_cdesc_err = mpif_cdesc_create_datatype(recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-    if (q_cdesc_err == MPI_SUCCESS) {
-      q_recvbuf_count = 1;
-      q_recvbuf_owned = 1;
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Ireduce_scatter_block_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_irsend_cdesc(
@@ -15340,45 +14704,24 @@ void mpi_iscan_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Iscan(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_iscan_c_cdesc(
@@ -15396,45 +14739,24 @@ void mpi_iscan_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Iscan_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_iscan_cdesc(
@@ -15452,45 +14774,24 @@ void pmpi_iscan_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Iscan(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_iscan_c_cdesc(
@@ -15508,45 +14809,24 @@ void pmpi_iscan_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Iscan_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_iscatter_cdesc(
@@ -20756,44 +20036,23 @@ void mpi_reduce_cdesc(
       q_at_root = q_comm_rank == *root;
     }
   }
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Reduce(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     *root,
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_reduce_c_cdesc(
@@ -20831,44 +20090,23 @@ void mpi_reduce_c_cdesc(
       q_at_root = q_comm_rank == *root;
     }
   }
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Reduce_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     *root,
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_reduce_cdesc(
@@ -20906,44 +20144,23 @@ void pmpi_reduce_cdesc(
       q_at_root = q_comm_rank == *root;
     }
   }
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Reduce(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     *root,
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_reduce_c_cdesc(
@@ -20981,44 +20198,23 @@ void pmpi_reduce_c_cdesc(
       q_at_root = q_comm_rank == *root;
     }
   }
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Reduce_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     *root,
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_reduce_init_cdesc(
@@ -21059,38 +20255,19 @@ void mpi_reduce_init_cdesc(
       q_at_root = q_comm_rank == *root;
     }
   }
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Reduce_init(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     *root,
     MPI_Comm_fromint(*comm),
@@ -21098,8 +20275,6 @@ void mpi_reduce_init_cdesc(
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_reduce_init_c_cdesc(
@@ -21140,38 +20315,19 @@ void mpi_reduce_init_c_cdesc(
       q_at_root = q_comm_rank == *root;
     }
   }
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Reduce_init_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     *root,
     MPI_Comm_fromint(*comm),
@@ -21179,8 +20335,6 @@ void mpi_reduce_init_c_cdesc(
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_reduce_init_cdesc(
@@ -21221,38 +20375,19 @@ void pmpi_reduce_init_cdesc(
       q_at_root = q_comm_rank == *root;
     }
   }
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Reduce_init(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     *root,
     MPI_Comm_fromint(*comm),
@@ -21260,8 +20395,6 @@ void pmpi_reduce_init_cdesc(
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_reduce_init_c_cdesc(
@@ -21302,38 +20435,19 @@ void pmpi_reduce_init_c_cdesc(
       q_at_root = q_comm_rank == *root;
     }
   }
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (q_at_root && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Reduce_init_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     *root,
     MPI_Comm_fromint(*comm),
@@ -21341,8 +20455,6 @@ void pmpi_reduce_init_c_cdesc(
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_reduce_local_cdesc(
@@ -21357,42 +20469,21 @@ void mpi_reduce_local_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_inbuf = inbuf->base_addr;
   void* const q_inoutbuf = inoutbuf->base_addr;
-  MPI_Datatype q_inoutbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_inoutbuf_count = *count;
-  int q_inoutbuf_owned = 0;
-  {
-    const int q_inbuf_nc = !mpif_cdesc_is_sentinel(q_inbuf) && inbuf->rank != 0 && !CFI_is_contiguous(inbuf);
-    const int q_inoutbuf_sig = !mpif_cdesc_is_sentinel(q_inoutbuf);
-    const int q_inoutbuf_nc = q_inoutbuf_sig && inoutbuf->rank != 0 && !CFI_is_contiguous(inoutbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_inbuf_nc || q_inoutbuf_nc)) {
-      const int q_inbuf_sig = !mpif_cdesc_is_sentinel(q_inbuf);
-      if ((q_inbuf_nc && q_inoutbuf_sig && !(q_inoutbuf_nc && mpif_cdesc_same_layout(inbuf, inoutbuf))) ||
-          (q_inoutbuf_nc && q_inbuf_sig && !(q_inbuf_nc && mpif_cdesc_same_layout(inbuf, inoutbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_inbuf_nc ? inbuf : inoutbuf, q_inoutbuf_count, q_inoutbuf_type, &q_inoutbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_inoutbuf_count = 1;
-          q_inoutbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_inbuf) && inbuf->rank != 0 && !CFI_is_contiguous(inbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_inoutbuf) && inoutbuf->rank != 0 && !CFI_is_contiguous(inoutbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_inoutbuf_owned)
-      PMPI_Type_free(&q_inoutbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Reduce_local(
     q_inbuf,
     q_inoutbuf,
-    (int)q_inoutbuf_count,
-    q_inoutbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op)
   );
-  if (q_inoutbuf_owned)
-    PMPI_Type_free(&q_inoutbuf_type);
 }
 
 void mpi_reduce_local_c_cdesc(
@@ -21407,42 +20498,21 @@ void mpi_reduce_local_c_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_inbuf = inbuf->base_addr;
   void* const q_inoutbuf = inoutbuf->base_addr;
-  MPI_Datatype q_inoutbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_inoutbuf_count = *count;
-  int q_inoutbuf_owned = 0;
-  {
-    const int q_inbuf_nc = !mpif_cdesc_is_sentinel(q_inbuf) && inbuf->rank != 0 && !CFI_is_contiguous(inbuf);
-    const int q_inoutbuf_sig = !mpif_cdesc_is_sentinel(q_inoutbuf);
-    const int q_inoutbuf_nc = q_inoutbuf_sig && inoutbuf->rank != 0 && !CFI_is_contiguous(inoutbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_inbuf_nc || q_inoutbuf_nc)) {
-      const int q_inbuf_sig = !mpif_cdesc_is_sentinel(q_inbuf);
-      if ((q_inbuf_nc && q_inoutbuf_sig && !(q_inoutbuf_nc && mpif_cdesc_same_layout(inbuf, inoutbuf))) ||
-          (q_inoutbuf_nc && q_inbuf_sig && !(q_inbuf_nc && mpif_cdesc_same_layout(inbuf, inoutbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_inbuf_nc ? inbuf : inoutbuf, q_inoutbuf_count, q_inoutbuf_type, &q_inoutbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_inoutbuf_count = 1;
-          q_inoutbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_inbuf) && inbuf->rank != 0 && !CFI_is_contiguous(inbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_inoutbuf) && inoutbuf->rank != 0 && !CFI_is_contiguous(inoutbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_inoutbuf_owned)
-      PMPI_Type_free(&q_inoutbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Reduce_local_c(
     q_inbuf,
     q_inoutbuf,
-    q_inoutbuf_count,
-    q_inoutbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op)
   );
-  if (q_inoutbuf_owned)
-    PMPI_Type_free(&q_inoutbuf_type);
 }
 
 void pmpi_reduce_local_cdesc(
@@ -21457,42 +20527,21 @@ void pmpi_reduce_local_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_inbuf = inbuf->base_addr;
   void* const q_inoutbuf = inoutbuf->base_addr;
-  MPI_Datatype q_inoutbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_inoutbuf_count = *count;
-  int q_inoutbuf_owned = 0;
-  {
-    const int q_inbuf_nc = !mpif_cdesc_is_sentinel(q_inbuf) && inbuf->rank != 0 && !CFI_is_contiguous(inbuf);
-    const int q_inoutbuf_sig = !mpif_cdesc_is_sentinel(q_inoutbuf);
-    const int q_inoutbuf_nc = q_inoutbuf_sig && inoutbuf->rank != 0 && !CFI_is_contiguous(inoutbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_inbuf_nc || q_inoutbuf_nc)) {
-      const int q_inbuf_sig = !mpif_cdesc_is_sentinel(q_inbuf);
-      if ((q_inbuf_nc && q_inoutbuf_sig && !(q_inoutbuf_nc && mpif_cdesc_same_layout(inbuf, inoutbuf))) ||
-          (q_inoutbuf_nc && q_inbuf_sig && !(q_inbuf_nc && mpif_cdesc_same_layout(inbuf, inoutbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_inbuf_nc ? inbuf : inoutbuf, q_inoutbuf_count, q_inoutbuf_type, &q_inoutbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_inoutbuf_count = 1;
-          q_inoutbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_inbuf) && inbuf->rank != 0 && !CFI_is_contiguous(inbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_inoutbuf) && inoutbuf->rank != 0 && !CFI_is_contiguous(inoutbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_inoutbuf_owned)
-      PMPI_Type_free(&q_inoutbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Reduce_local(
     q_inbuf,
     q_inoutbuf,
-    (int)q_inoutbuf_count,
-    q_inoutbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op)
   );
-  if (q_inoutbuf_owned)
-    PMPI_Type_free(&q_inoutbuf_type);
 }
 
 void pmpi_reduce_local_c_cdesc(
@@ -21507,42 +20556,21 @@ void pmpi_reduce_local_c_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_inbuf = inbuf->base_addr;
   void* const q_inoutbuf = inoutbuf->base_addr;
-  MPI_Datatype q_inoutbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_inoutbuf_count = *count;
-  int q_inoutbuf_owned = 0;
-  {
-    const int q_inbuf_nc = !mpif_cdesc_is_sentinel(q_inbuf) && inbuf->rank != 0 && !CFI_is_contiguous(inbuf);
-    const int q_inoutbuf_sig = !mpif_cdesc_is_sentinel(q_inoutbuf);
-    const int q_inoutbuf_nc = q_inoutbuf_sig && inoutbuf->rank != 0 && !CFI_is_contiguous(inoutbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_inbuf_nc || q_inoutbuf_nc)) {
-      const int q_inbuf_sig = !mpif_cdesc_is_sentinel(q_inbuf);
-      if ((q_inbuf_nc && q_inoutbuf_sig && !(q_inoutbuf_nc && mpif_cdesc_same_layout(inbuf, inoutbuf))) ||
-          (q_inoutbuf_nc && q_inbuf_sig && !(q_inbuf_nc && mpif_cdesc_same_layout(inbuf, inoutbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_inbuf_nc ? inbuf : inoutbuf, q_inoutbuf_count, q_inoutbuf_type, &q_inoutbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_inoutbuf_count = 1;
-          q_inoutbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_inbuf) && inbuf->rank != 0 && !CFI_is_contiguous(inbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_inoutbuf) && inoutbuf->rank != 0 && !CFI_is_contiguous(inoutbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_inoutbuf_owned)
-      PMPI_Type_free(&q_inoutbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Reduce_local_c(
     q_inbuf,
     q_inoutbuf,
-    q_inoutbuf_count,
-    q_inoutbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op)
   );
-  if (q_inoutbuf_owned)
-    PMPI_Type_free(&q_inoutbuf_type);
 }
 
 void mpi_reduce_scatter_cdesc(
@@ -21682,34 +20710,22 @@ void mpi_reduce_scatter_block_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *recvcount;
-  int q_recvbuf_owned = 0;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
-  if (q_cdesc_err == MPI_SUCCESS && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf)) {
-    q_cdesc_err = mpif_cdesc_create_datatype(recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-    if (q_cdesc_err == MPI_SUCCESS) {
-      q_recvbuf_count = 1;
-      q_recvbuf_owned = 1;
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Reduce_scatter_block(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_reduce_scatter_block_c_cdesc(
@@ -21725,34 +20741,22 @@ void mpi_reduce_scatter_block_c_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *recvcount;
-  int q_recvbuf_owned = 0;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
-  if (q_cdesc_err == MPI_SUCCESS && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf)) {
-    q_cdesc_err = mpif_cdesc_create_datatype(recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-    if (q_cdesc_err == MPI_SUCCESS) {
-      q_recvbuf_count = 1;
-      q_recvbuf_owned = 1;
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Reduce_scatter_block_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_reduce_scatter_block_cdesc(
@@ -21768,34 +20772,22 @@ void pmpi_reduce_scatter_block_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *recvcount;
-  int q_recvbuf_owned = 0;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
-  if (q_cdesc_err == MPI_SUCCESS && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf)) {
-    q_cdesc_err = mpif_cdesc_create_datatype(recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-    if (q_cdesc_err == MPI_SUCCESS) {
-      q_recvbuf_count = 1;
-      q_recvbuf_owned = 1;
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Reduce_scatter_block(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_reduce_scatter_block_c_cdesc(
@@ -21811,34 +20803,22 @@ void pmpi_reduce_scatter_block_c_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *recvcount;
-  int q_recvbuf_owned = 0;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
-  if (q_cdesc_err == MPI_SUCCESS && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf)) {
-    q_cdesc_err = mpif_cdesc_create_datatype(recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-    if (q_cdesc_err == MPI_SUCCESS) {
-      q_recvbuf_count = 1;
-      q_recvbuf_owned = 1;
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Reduce_scatter_block_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_reduce_scatter_block_init_cdesc(
@@ -21857,37 +20837,25 @@ void mpi_reduce_scatter_block_init_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *recvcount;
-  int q_recvbuf_owned = 0;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
-  if (q_cdesc_err == MPI_SUCCESS && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf)) {
-    q_cdesc_err = mpif_cdesc_create_datatype(recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-    if (q_cdesc_err == MPI_SUCCESS) {
-      q_recvbuf_count = 1;
-      q_recvbuf_owned = 1;
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Reduce_scatter_block_init(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_reduce_scatter_block_init_c_cdesc(
@@ -21906,37 +20874,25 @@ void mpi_reduce_scatter_block_init_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *recvcount;
-  int q_recvbuf_owned = 0;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
-  if (q_cdesc_err == MPI_SUCCESS && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf)) {
-    q_cdesc_err = mpif_cdesc_create_datatype(recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-    if (q_cdesc_err == MPI_SUCCESS) {
-      q_recvbuf_count = 1;
-      q_recvbuf_owned = 1;
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Reduce_scatter_block_init_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_reduce_scatter_block_init_cdesc(
@@ -21955,37 +20911,25 @@ void pmpi_reduce_scatter_block_init_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *recvcount;
-  int q_recvbuf_owned = 0;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
-  if (q_cdesc_err == MPI_SUCCESS && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf)) {
-    q_cdesc_err = mpif_cdesc_create_datatype(recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-    if (q_cdesc_err == MPI_SUCCESS) {
-      q_recvbuf_count = 1;
-      q_recvbuf_owned = 1;
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Reduce_scatter_block_init(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_reduce_scatter_block_init_c_cdesc(
@@ -22004,37 +20948,25 @@ void pmpi_reduce_scatter_block_init_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *recvcount;
-  int q_recvbuf_owned = 0;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
-  if (q_cdesc_err == MPI_SUCCESS && !mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf)) {
-    q_cdesc_err = mpif_cdesc_create_datatype(recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-    if (q_cdesc_err == MPI_SUCCESS) {
-      q_recvbuf_count = 1;
-      q_recvbuf_owned = 1;
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Reduce_scatter_block_init_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *recvcount,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_reduce_scatter_init_cdesc(
@@ -23202,43 +22134,22 @@ void mpi_scan_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Scan(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_scan_c_cdesc(
@@ -23254,43 +22165,22 @@ void mpi_scan_c_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Scan_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_scan_cdesc(
@@ -23306,43 +22196,22 @@ void pmpi_scan_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Scan(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_scan_c_cdesc(
@@ -23358,43 +22227,22 @@ void pmpi_scan_c_cdesc(
   int q_cdesc_err = MPI_SUCCESS;
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Scan_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm)
   );
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_scan_init_cdesc(
@@ -23413,46 +22261,25 @@ void mpi_scan_init_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Scan_init(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_scan_init_c_cdesc(
@@ -23471,46 +22298,25 @@ void mpi_scan_init_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = MPI_Scan_init_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_scan_init_cdesc(
@@ -23529,46 +22335,25 @@ void pmpi_scan_init_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Scan_init(
     q_sendbuf,
     q_recvbuf,
-    (int)q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void pmpi_scan_init_c_cdesc(
@@ -23587,46 +22372,25 @@ void pmpi_scan_init_c_cdesc(
   void* const q_sendbuf = sendbuf->base_addr;
   void* const q_recvbuf = recvbuf->base_addr;
   MPI_Request c_request = MPI_REQUEST_NULL;
-  MPI_Datatype q_recvbuf_type = MPI_Type_fromint(*datatype);
-  MPI_Count q_recvbuf_count = *count;
-  int q_recvbuf_owned = 0;
-  {
-    const int q_sendbuf_nc = !mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf);
-    const int q_recvbuf_sig = !mpif_cdesc_is_sentinel(q_recvbuf);
-    const int q_recvbuf_nc = q_recvbuf_sig && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf);
-    if (q_cdesc_err == MPI_SUCCESS && (q_sendbuf_nc || q_recvbuf_nc)) {
-      const int q_sendbuf_sig = !mpif_cdesc_is_sentinel(q_sendbuf);
-      if ((q_sendbuf_nc && q_recvbuf_sig && !(q_recvbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf))) ||
-          (q_recvbuf_nc && q_sendbuf_sig && !(q_sendbuf_nc && mpif_cdesc_same_layout(sendbuf, recvbuf)))) {
-        q_cdesc_err = MPI_ERR_BUFFER;
-      } else {
-        q_cdesc_err = mpif_cdesc_create_datatype(q_sendbuf_nc ? sendbuf : recvbuf, q_recvbuf_count, q_recvbuf_type, &q_recvbuf_type);
-        if (q_cdesc_err == MPI_SUCCESS) {
-          q_recvbuf_count = 1;
-          q_recvbuf_owned = 1;
-        }
-      }
-    }
-  }
+  if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
+  if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
+    q_cdesc_err = MPI_ERR_BUFFER;
   if (q_cdesc_err != MPI_SUCCESS) {
-    if (q_recvbuf_owned)
-      PMPI_Type_free(&q_recvbuf_type);
     *ierror = q_cdesc_err;
     return;
   }
   *ierror = PMPI_Scan_init_c(
     q_sendbuf,
     q_recvbuf,
-    q_recvbuf_count,
-    q_recvbuf_type,
+    *count,
+    MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
     MPI_Comm_fromint(*comm),
     MPI_Info_fromint(*info),
     &c_request
   );
   *request = MPI_Request_toint(c_request);
-  if (q_recvbuf_owned)
-    PMPI_Type_free(&q_recvbuf_type);
 }
 
 void mpi_scatter_cdesc(
