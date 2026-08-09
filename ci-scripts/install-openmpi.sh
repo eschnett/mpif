@@ -48,8 +48,10 @@ nprocs=$(getconf _NPROCESSORS_ONLN 2>/dev/null ||
 
 # Fixes applied to the source tree below. Each patch says in its own preamble what
 # it is, where it comes from and why it is still needed here. The one here is a
-# local fix for a defect not reported upstream yet, and its preamble says so; the
-# one that used to be, for the empty `MPI_Info_set` value, is upstream as of the
+# local fix carried ahead of upstream for a defect that is reported --
+# open-mpi/ompi#14278, with the patch itself open as #14279 -- and its preamble
+# says so; the one that used to be here, for the empty `MPI_Info_set` value, is
+# upstream as of the
 # commit above and was dropped. The array is expanded with the `${a[@]+...}`
 # guard throughout so that being empty -- which it was, and may be again -- is not
 # an unbound variable under `set -u` in bash 3.2, which is what macOS has.

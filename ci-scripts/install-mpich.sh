@@ -61,8 +61,9 @@ nprocs=$(getconf _NPROCESSORS_ONLN 2>/dev/null ||
 # what it is, where it comes from and why it is still needed here. The first is an
 # upstream fix that is on `main` but not in the release above -- the first commit in
 # ${MPICH_PATCH_COMMITS} is the same idea, and this is the one whose upstream commit
-# does not apply to this release. The others are local fixes for defects not
-# reported upstream yet, and their preambles say so.
+# does not apply to this release. The others are local fixes, and their preambles
+# say where each stands: f90-datatypes is pmodels/mpich#7929 and type-get-contents
+# is #7930, both open upstream; darwin-weak is not reported yet.
 #
 # These are applied before `autogen.sh` runs, so a patch against a file that
 # autogen regenerates would be overwritten without a word. That is why

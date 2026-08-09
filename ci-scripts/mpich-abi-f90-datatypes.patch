@@ -1,7 +1,9 @@
 Implement MPI_Type_create_f90_* in the standard-ABI build
 
 Not an upstream backport, unlike the other patches this script applies: a local
-fix for a defect not reported upstream yet, and worth reporting.
+fix for a defect reported as <https://github.com/pmodels/mpich/issues/7929> and
+not fixed upstream yet. The issue carries the reproducer, not this patch, so if
+upstream takes a different shape this file follows it.
 
 In an ABI build, `MPI_Type_create_f90_real`, `MPI_Type_create_f90_integer` and
 `MPI_Type_create_f90_complex` all report MPI_SUCCESS and hand back

@@ -1,7 +1,9 @@
 Stop MPI_Type_get_contents converting uninitialised memory
 
 Not an upstream backport, like mpich-abi-f90-datatypes.patch beside it: a local
-fix for a defect not reported upstream yet, and worth reporting.
+fix for a defect reported as <https://github.com/pmodels/mpich/issues/7930> and
+not fixed upstream yet. The issue carries the reproducer, not this patch, so if
+upstream takes a different shape this file follows it.
 
 The ABI wrapper for `MPI_Type_get_contents` allocates a temporary for the
 datatypes, calls the implementation, and then converts `max_datatypes` of them --

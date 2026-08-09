@@ -596,6 +596,8 @@ compile time and never executes its calls.
 
 ### MPICH: `MPI_Type_create_f90_*` is a no-op in an ABI build — carried as a local patch
 
+<https://github.com/pmodels/mpich/issues/7929>
+
 `MPI_Type_create_f90_real`, `MPI_Type_create_f90_integer` and
 `MPI_Type_create_f90_complex` all reported `MPI_SUCCESS` and handed back a handle
 that `MPI_Type_toint` turned into 512 -- `0x200`, which is `MPI_DATATYPE_NULL`.
@@ -642,8 +644,10 @@ true when MPICH has Fortran bindings or when this is the standard-ABI build, and
 guards on that. `create_f90.c` is hand-written, so the patch survives the
 `autogen.sh` that `install-mpich.sh` runs; `mpi_abi_internal.h`, the other
 candidate, is generated. Unlike the other two patches this is not an upstream
-backport but a local fix for a defect **not reported upstream yet**, which is
-worth doing.
+backport but a local fix, written here and carried while the defect is open
+upstream as #7929. The issue has the reproducer; the patch has not been offered,
+so if upstream fixes it another way this file and the patch follow that rather
+than the other way round.
 
 Five expected failures went green on it: `trf90`, `trf08`, `createf90`,
 `createf08` and `createf90types`. The error path came back too --
@@ -665,6 +669,8 @@ Fixing it also made a second defect reachable, the entry below, which is where
 `createf90types` went next.
 
 ### MPICH: `MPI_Type_get_contents` converts uninitialised memory — carried as a local patch
+
+<https://github.com/pmodels/mpich/issues/7930>
 
 The ABI wrapper allocates a temporary for the datatypes, calls the
 implementation, and then converts the caller's *maximum* rather than the number the
@@ -725,8 +731,9 @@ It patches the generator, `maint/local_python/binding_c.py`, and not the
 `src/binding/abi/c_binding_abi.c` it produces, because `install-mpich.sh` patches
 before running `autogen.sh` and autogen regenerates that file -- a patch against it
 would be overwritten in silence. Two wrappers change and nothing else,
-`MPI_Type_get_contents` and its `_c` form. Not reported upstream yet, and worth
-reporting.
+`MPI_Type_get_contents` and its `_c` form. Reported upstream as #7930 and open;
+the reproducer went with it and this patch did not, so an upstream fix of another
+shape supersedes it rather than the other way round.
 
 `bug-mpich-type-get-contents/mpich-abi-type-get-contents-bug.c` is the reproducer,
 and it is built to show the read rather than the abort: it asks for four datatypes
@@ -907,7 +914,7 @@ from what upstream did.
 
 ### OpenMPI: an empty info value was rejected — fixed upstream, patch dropped
 
-https://github.com/open-mpi/ompi/issues/14246
+<https://github.com/open-mpi/ompi/issues/14246>
 
 `MPI_Info_set(info, "key", "")` returned `MPI_ERR_INFO_VALUE` (33) under Open MPI
 and `MPI_SUCCESS` under MPICH. The ABI defines that class as "Value longer than
@@ -961,9 +968,15 @@ MPICH and 1 on an unpatched Open MPI.
 
 ### OpenMPI: `MPI_Info_create_env` changes across `MPI_Init`
 
+<https://github.com/open-mpi/ompi/issues/14297>
+
 The info object it returns before `MPI_Init` differs from the one it returns
 after, which is what fails `infocrenvf` and `infocrenvf90` -- those compare two
-env infos created at different points and expect them to agree. On this machine:
+env infos created at different points and expect them to agree. The `host` values
+below are this machine's name as it was that day and are not a fixed property of
+it: DHCP moves the name between `Redshift.local` and `Mac.pitp.io`, which the
+hostname caution under "Suite baseline" records costing a suite run its MPICH
+spawn tests. Re-measure it rather than expecting these two strings:
 
     key         before MPI_Init      after MPI_Init
     maxprocs    0                    1
@@ -971,15 +984,49 @@ env infos created at different points and expect them to agree. On this machine:
     host        Redshift.local       Redshift
     wdir        (not set)            (set)
 
-`MPI_Info_create_env` describes how the process was started, which does not
-change when MPI is initialised, so the two should agree. MPICH's do, and it
-passes the test.
+Two arguments here, and the weaker one was the only one this entry made until
+2026-08-08. The weaker: `MPI_Info_create_env` describes how the process was
+started, which does not change when MPI is initialised, and MPI-5.0 requires that
+"multiple calls to this procedure that are given the same input arguments will
+produce info objects consistent with the definition of MPI_INFO_ENV" (chapter 10,
+p. 475). The Fortran binding has no `argc`/`argv`, so any two calls in one process
+are given the same input arguments necessarily, and the pre-`MPI_Init` call is
+explicitly allowed -- the same page makes this one of the few procedures callable
+before MPI is initialised. MPICH's two agree and it passes the test.
+
+The weakness is that the same page's advice to users anticipates the sparse case
+precisely: with `argc` 0 and `argv` NULL, or in Fortran where those arguments do
+not exist, the object may be unpopulated or incompletely populated, because the
+procedure is local and the implementation may not be able to determine the correct
+values. That is a fair account of Open MPI's position before init, where there is
+no PMIx connection to ask, and §11.2.1 separately says the object need not carry a
+pair for every predefined key -- so the missing `wdir` is defensible outright.
+
+The stronger argument does not compare the two calls at all. §11.2.1 defines
+`maxprocs` as the maximum number of MPI processes to start, and its advice to
+users insists these are the values *requested* of the launch mechanism rather than
+what was obtained. No launch that produced a running process requested zero of
+them, so `maxprocs=0` contradicts the definition of the key on its own, and `soft`
+is the same shape. What the advice excuses is incompleteness, not a value that
+cannot be true; the fix it points at is to omit the key, which the standard
+permits, rather than to fill it with a placeholder indistinguishable from an
+answer. `host` is the weakest of the four, `Redshift.local` and `Redshift` both
+being names for the host where the standard says only "Hostname."
+
+It matters beyond the suite -- two test names, three rows in
+`ci-scripts/suite/mpich-suite-xfail.txt`, one per language -- because this
+procedure exists for the Sessions
+Model -- asking how the process was launched without the World Model is its stated
+purpose -- so reading `maxprocs` before initialising is the intended use and gets a
+plausible wrong number rather than an error.
 
 Not an mpif problem: a pure C program that creates an env info before and after
 `MPI_Init` and prints both shows the same divergence, with no Fortran involved.
-Not reported upstream yet.
+That program was not kept, and `bug-ompi-info-create-env/` should have it.
 
 ### OpenMPI: object names where the standard asks for an empty string
+
+<https://github.com/open-mpi/ompi/issues/14298> (the window half)
 
 MPI-5.0 section 7.8 gives `MPI_WIN_GET_NAME` and `MPI_TYPE_GET_NAME` "the name
 previously stored on the *object*, or an empty string if no such name exists", and
@@ -997,6 +1044,35 @@ prints both and exits nonzero on the first; it is pure C, no Fortran involved:
   standard is explicit, so this is a defect, and it is what `winnamef`,
   `winnamef90` and `winnamef08` report as "Did not get empty name from new
   window". Setting and getting a name works, so only the default is wrong.
+
+  The window layer is not what does it. `ompi_win_construct` allocates `w_name`
+  and sets `w_name[0] = '\0'`, `ompi/win/win.c:173`, which is right. The one-sided
+  component then overwrites it once the window is built, `ompi_win_set_name(win,
+  name)` with a name it has just composed. Four components do this and each
+  composes a different string, while a fifth does not do it at all:
+
+      rdma       "rdma window %s"               osc_rdma_component.c:1586
+      ucx        "ucx window %s"                osc_ucx_component.c:672
+      portals4   "portals4 window %d"           osc_portals4_component.c:442
+      ubcl       "ubcl window %d, built on %s"  osc_ubcl.c:413
+      sm         (never calls set_name)
+
+  So whether a fresh window has a name, and what it says, is a function of which
+  osc component won selection -- which is the strongest form of the complaint,
+  since it makes this an inconsistency inside Open MPI rather than a deliberate
+  extension it could defend. The `3` is not a window counter but the
+  communicator's CID, through `ompi_comm_print_cid`, so the string also moves with
+  how many communicators the program has made.
+
+  The reason they set it is worth carrying into any patch: the only consumer of
+  `w_name` inside Open MPI is the debug dump at `ompi/win/win.c:85`, "Dumping
+  information for window: %s". Deleting the four calls is a three-line change per
+  component and passes the tests, and it blanks that dump, so a fix that expects
+  to survive review wants a separate internal label or a string synthesised inside
+  `ompi_win_dump`, leaving `w_name` for what the standard says it is.
+
+  Line numbers are against the pinned clone `003e0ca` (2026-08-05), which is what
+  `install-openmpi.sh` builds; `main` may have moved.
 - **`MPI_TYPE_DUP` invents one.** Duplicating a datatype named `"a vector type"`
   gives the duplicate the name `"Dup a vector type"` -- not a copy of the name but
   a new one, stored by nobody. `typesnamef`, `typesnamef90` and `typesnamef08`
@@ -1010,9 +1086,10 @@ prints both and exits nonzero on the first; it is pure C, no Fortran involved:
   MPICH leaves it empty and the test codifies that; between the two, mpif can only
   follow whichever implementation it is built against.
 
-Nothing to fix on this side either way. The window half is worth reporting
-upstream and is not yet; the dup half is worth asking about, since the standard
-could settle it in a sentence.
+Nothing to fix on this side either way. The window half is open upstream as
+open-mpi/ompi#14298; the dup half is still only worth asking about, and is not
+recorded here as having been asked, since the standard could settle it in a
+sentence and Open MPI is not obviously the party to ask.
 
 ### OpenMPI on macOS: a nonblocking collective write is lost when the aio queue fills — carried as a local patch
 
@@ -1939,16 +2016,52 @@ stays as it is, covering rank zero and rank one. Both are recorded where they
 belong -- the first in its own section here, the second under "Verified as
 correct" in `CODE.md`.
 
-Three things are worth reporting upstream and are not yet. Two are Open MPI: the
-`MPI_Info_create_env` divergence across `MPI_Init`, and the name on a fresh window.
-The third is MPICH's, and is the one with a fix attached rather than just a
-reproducer: `MPI_Type_create_f90_*` compiling to stubs in an ABI build,
-`bug-mpich-f90-datatypes/` plus `ci-scripts/mpich-abi-f90-datatypes.patch`.
+Three things are worth reporting upstream and are not yet. **The sections above are
+the authority and this paragraph is a summary of them**, which is worth saying
+because it has already been wrong: it counted three until 2026-08-08, and was wrong
+when written rather than merely out of date -- it named the three that had
+reproducers in `bug-*/` and overlooked three carrying the same "not reported" note
+in their own sections. Where the two disagree, the sections are right.
 
-The lost nonblocking collective write on macOS was the fourth and is now reported:
-open-mpi/ompi#14278 for the defect, open-mpi/ompi#14279 for the fix. It is the
-first of these to go upstream with the patch rather than the reproducer alone,
-which is what the other three are still short of.
+One is Open MPI's: `MPI_Register_datarep` being a silent no-op because `ompio`
+registers as version 3.0.0 and only 2.0.0 components are ever consulted. It has
+neither a fix nor a reproducer, and should get the second before it is filed --
+the only one of the three in that state.
+
+The second is MPICH's and has a fix carried here rather than a reproducer: the
+strong `MPI_*` exports on Darwin, `ci-scripts/mpich-abi-darwin-weak.patch`, with
+nothing to run beyond the cross-run that found it.
+
+The third is not an implementation's at all: the ABI stubs header's partitioned
+count, which goes to `mpi-forum/mpi-abi-stubs`, with the correction already in
+`fortran/mpi.h.patch`.
+
+Five have gone upstream since this list was written, all still open there:
+
+- the lost nonblocking collective write on macOS, open-mpi/ompi#14278 for the
+  defect and open-mpi/ompi#14279 for the fix. It is the only one so far to go
+  upstream with the patch rather than the reproducer alone, which is what all three
+  above are still short of;
+- `MPI_Info_create_env` diverging across `MPI_Init`, open-mpi/ompi#14297, filed
+  without a reproducer because none was kept;
+- the name on a fresh window, open-mpi/ompi#14298, filed with
+  `bug-ompi-object-names/`. Only the window half went: the `MPI_TYPE_DUP` half of
+  that entry is a question for the standard rather than a defect to file, and
+  nothing records it as having been asked;
+- `MPI_Type_create_f90_*` compiling to stubs in an ABI build, pmodels/mpich#7929,
+  filed with `bug-mpich-f90-datatypes/` and without
+  `ci-scripts/mpich-abi-f90-datatypes.patch`;
+- `MPI_Type_get_contents` converting uninitialised memory, pmodels/mpich#7930,
+  filed with `bug-mpich-type-get-contents/` and without
+  `ci-scripts/mpich-abi-type-get-contents.patch`.
+
+Where a patch was held back, the local one is provisional: an upstream fix of a
+different shape supersedes it, and the entry above says so in each case.
+
+One more is undecided rather than unreported: the f08 copy of `spawnargvf90`
+contradicting the standard and its own f90 copy is a suite-test defect of the same
+species as pmodels/mpich#7922, and nothing here records a decision either way on
+filing it.
 
 ## Suite baseline
 
