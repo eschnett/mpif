@@ -179,7 +179,6 @@ xfail */llvm/darwin/*/*        f08  i_fcoll_test       # not a failure: flang's 
 xfail openmpi/*/*/*/*          f77  infocrenvf         # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
 xfail openmpi/*/*/*/*          f08  infocrenvf90       # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
 xfail openmpi/*/*/*/*          f90  infocrenvf90       # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
-xfail */*/*/*/*                f08  profile1f90        # defines mpi_send_f08ts, MPICH's scheme-1B specific name; mpif is 1A. CODE.md "The mpi_f08 specific procedure names"
 xfail */*/*/*/*                f08  spawnargvf03       # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
 xfail */*/*/*/*                f08  spawnargvf90       # MISSING.md "MPICH: the f08 copy of spawnargvf90 contradicts the standard"
 xfail openmpi/*/*/*/x86_64     f77  spawnargvf         # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
@@ -194,8 +193,6 @@ xfail openmpi/*/*/*/x86_64     f08  spawnf90           # Open MPI cannot TCP con
 xfail openmpi/*/*/*/x86_64     f08  spawnmultf03       # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
 xfail openmpi/*/*/*/x86_64     f08  spawnmultf90       # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
 xfail */*/*/*/*                f08  statusconv         # C file spelling the ABI's MPI_F08_Status as MPICH's MPI_F08_status
-xfail */*/*/*/*                f08  test14             # noncontiguous subarray to a nonblocking call, which MPI_SUBARRAYS_SUPPORTED == .FALSE. forbids
-xfail */*/*/*/*                f08  test15             # noncontiguous subarray to a nonblocking call, which MPI_SUBARRAYS_SUPPORTED == .FALSE. forbids
 xfail openmpi/*/*/*/*          f77  typesnamef         # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"
 xfail openmpi/*/*/*/*          f08  typesnamef08       # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"
 xfail openmpi/*/*/*/*          f90  typesnamef90       # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"
