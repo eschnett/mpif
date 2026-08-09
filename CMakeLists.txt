@@ -194,6 +194,45 @@ check_fortran_source_compiles(
 )
 set(CMAKE_REQUIRED_FLAGS "${saved_CMAKE_REQUIRED_FLAGS}")
 
+# TS 29113 choice buffers
+#
+# Where the toolchain passes an assumed-rank actual to a bind(C) routine as a
+# C descriptor the C compiler can read, mpi_f08 declares its choice buffers
+# `TYPE(*), DIMENSION(..)` and routes them through the cdesc entry points, and
+# advertises MPI_SUBARRAYS_SUPPORTED and MPI_ASYNC_PROTECTS_NONBLOCKING as
+# .TRUE.; everywhere else it keeps the ignore_tkr fallback and .FALSE.. The
+# probe is a real two-language program (cmake/cfi-probe/) that compiles,
+# links CFI_is_contiguous and, unless cross-compiling, runs and checks the
+# descriptors it receives -- never compile acceptance alone, which both
+# open-mpi/ompi#11582 and pmodels/mpich#6505 show to be untrustworthy here.
+#
+# -DMPIF_ENABLE_CFI=OFF forces the fallback on a capable toolchain, which is
+# how the fallback branch stays testable.
+option(MPIF_ENABLE_CFI
+  "Use TS 29113 assumed-rank choice buffers in mpi_f08 where the toolchain supports them" ON)
+if(MPIF_ENABLE_CFI)
+  if(CMAKE_CROSSCOMPILING)
+    set(_mpif_cfi_probe_run OFF)
+  else()
+    set(_mpif_cfi_probe_run ON)
+  endif()
+  try_compile(MPIF_HAVE_CFI
+    ${CMAKE_CURRENT_BINARY_DIR}/cfi-probe
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/cfi-probe
+    cfi-probe
+    CMAKE_FLAGS
+      "-DMPIF_PROBE_Fortran_FLAGS=${MPIF_Fortran_FLAGS_STR}"
+      "-DMPIF_PROBE_RUN=${_mpif_cfi_probe_run}"
+    OUTPUT_VARIABLE _mpif_cfi_probe_output)
+else()
+  set(MPIF_HAVE_CFI FALSE)
+endif()
+if(MPIF_HAVE_CFI)
+  message(STATUS "TS 29113 assumed-rank choice buffers: yes (MPIF_HAVE_CFI)")
+else()
+  message(STATUS "TS 29113 assumed-rank choice buffers: no (mpi_f08 keeps the ignore_tkr fallback and MPI_SUBARRAYS_SUPPORTED = .false.)")
+endif()
+
 # Sanitizers
 #
 # `-DMPIF_SANITIZE=address` builds mpif with AddressSanitizer, which is what
@@ -421,11 +460,13 @@ add_library(mpifort_abi SHARED
   # Implementation
   include/mpif_attrs.h
   include/mpif_callbacks.h
+  include/mpif_cdesc.h
   include/mpif_logical.h
   include/mpif_strings.h
   src/mpif_attr_fns.F90
   src/mpif_attrs.c
   src/mpif_callbacks.c
+  src/mpif_cdesc.c
   src/mpif_check.c
   src/mpif_check_fns.F90
   src/mpif_constants.c
@@ -459,6 +500,7 @@ target_compile_definitions(mpifort_abi PRIVATE
   $<$<BOOL:${HAVE_REAL16}>:MPIF_HAVE_REAL16>
   $<$<BOOL:${MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND}>:MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND>
   $<$<BOOL:${MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND}>:MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND>
+  $<$<BOOL:${MPIF_HAVE_CFI}>:MPIF_HAVE_CFI>
 )
 target_compile_options(mpifort_abi PRIVATE
   $<$<COMPILE_LANGUAGE:Fortran>:${MPIF_Fortran_FLAGS_LIST}>
