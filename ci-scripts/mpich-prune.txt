@@ -38,5 +38,4 @@ lib/libmpichf90.*
 lib/libmpifort.*
 lib/libmpl.*
 lib/libopa.*
-lib/libpmpi.*                          # does not exist on all architectures
 lib/pkgconfig/mpich.pc

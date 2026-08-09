@@ -3,8 +3,8 @@
 #include "mpi_abi.h"
 
 // On Darwin the public MPI_* symbols must be weak definitions, matching the
-// other implementations of the MPI standard ABI (and what
-// ci-scripts/mpich-abi-darwin-weak.patch does for MPICH's own bindings): a
+// other implementations of the MPI standard ABI (and what MPICH's own binding
+// generator now emits for its half of the library): a
 // Mach-O client linked against a weak-exporting libmpi_abi binds MPI_*
 // through a weak-def-only lookup that a strong definition does not satisfy,
 // so mixing export styles breaks substituting one implementation's

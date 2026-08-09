@@ -82,10 +82,10 @@ fi
 # or on Darwin libmpi_abi.1.dylib with compatibility version 2.0.0 (both from
 # libtool `-version-info 1:0:0`), so the dynamic loader can substitute one
 # implementation for another under an already-linked application. See Open
-# MPI's ompi/VERSION for the convention's statement. MPICH 5.0.1 misses it --
-# its -version-info never reached libtool, fixed upstream in commit bb167f1c,
-# which install-mpich.sh applies -- and a prefix with the wrong name silently
-# breaks the runtime swap. Both Darwin fields matter: the leaf name is what
+# MPI's ompi/VERSION for the convention's statement. MPICH released 5.0.1
+# without it -- its -version-info never reached libtool, fixed upstream in
+# commit bb167f1c, an ancestor of the commit install-mpich.sh pins -- and a
+# prefix with the wrong name silently breaks the runtime swap. Both Darwin fields matter: the leaf name is what
 # DYLD_LIBRARY_PATH matches, and dyld separately gates on the compatibility
 # version.
 if [[ $(uname) == Darwin ]]; then
@@ -105,8 +105,10 @@ if [[ $(uname) == Darwin ]]; then
     # The export *style* gates the swap too, on Darwin only: a client linked
     # against a weak-exporting libmpi_abi binds MPI_* through a weak-def-only
     # lookup that a strong definition does not satisfy. The convention (the
-    # Forum stubs, Open MPI, and MPICH via mpich-abi-darwin-weak.patch) is
-    # weak, so a strong export here means a silently unswappable prefix.
+    # Forum stubs, Open MPI, and MPICH since it grew a weak-symbols-without-alias
+    # branch) is weak, so a strong export here means a silently unswappable
+    # prefix. This is the only guard now: MPICH used to need a local patch here,
+    # and it was dropped once this check passed without it.
     # grep without -q: this script runs under pipefail, and -q exits at the
     # first match, handing nm a SIGPIPE that fails the pipeline on success.
     if ! nm -m "${library}" | grep 'weak external _MPI_Init$' >/dev/null; then

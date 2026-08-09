@@ -1,8 +1,9 @@
 // The other half of mpich-abi-f90-datatype-bug.c. That one asks whether
 // MPI_Type_create_f90_* return anything usable at all, which is what the defect
 // took away -- MPI_SUCCESS with MPI_DATATYPE_NULL, from the stubs an ABI build
-// used to compile. This one asks whether what they return is *right*, so that
-// ci-scripts/mpich-abi-f90-datatypes.patch is held to more than non-nullness.
+// used to compile. This one asks whether what they return is *right*, so that a
+// fix is held to more than non-nullness. Fixed on `main` by 66cd5734; both
+// halves pass on the commit ci-scripts/install-mpich.sh pins.
 //
 // The expected values come from MPICH's own generated model,
 // src/include/mpif90model.h: an integer map of {range: bytes} = {2:1, 4:2, 9:4,

@@ -143,32 +143,75 @@ in `compilers.rst`). So the 32-bit variants are MPICH-only — a scope limit,
 not something to work around; the two 32-bit dockerfiles should not get
 Open MPI counterparts.
 
-### MPICH: the ABI library's `-version-info` never reached libtool — fixed upstream, carried as an upstream patch
+### MPICH is built from `main`, not from a release
 
-MPICH 5.0.1 installs `libmpi_abi.so.0` (macOS: `libmpi_abi.0.dylib`, compat
-1.0.0) where the convention — stated in Open MPI's `ompi/VERSION`, and what
-lets applications switch implementations without relinking — says
-`libmpi_abi.so.1`. Two bugs: `configure.ac` misspells the version macro
-(`libmpi_abi_so_verion_m4`), and `ABI_ABIVERSIONFLAGS` was never `AC_SUBST`'d.
-Fixed upstream in `bb167f1c`; `ci-scripts/install-mpich.sh` fetches and
-applies that commit. `check-mpi-install.sh` asserts the versioned name (and,
-on macOS, the compatibility version) on every installed prefix.
+`ci-scripts/install-mpich.sh` clones pmodels/mpich and checks out
+`MPICH_COMMIT`, currently `ab53493d` (2026-08-04, 512 commits past v5.0.1).
+The *test suite* still comes from the v5.0.1 tarball — `MPICH_VERSION` in the
+same file, which `ci-scripts/suite/test-mpich-suite.sh` reads by name — so
+moving `MPICH_COMMIT` is a one-variable experiment against one
+expected-failure list.
 
-### MPICH: strong `MPI_*` exports on Darwin break substituting the library — carried as a local patch
+Why: building v5.0.1 here took seven carried fixes, and `main` has since made
+every one of them unnecessary, each in a shape of its own — MPICH is carried
+unpatched now, which no other stage of this project manages:
+
+| carried for v5.0.1 | on `main` |
+|---|---|
+| fetched commit `689a0869` | obsolete — rewrites code `main` no longer has |
+| fetched commit `bb167f1c`, the `libmpi_abi.so.1` version-info | an ancestor |
+| `mpich-abi-util-one-copy.patch` (#7916) | `2eb9a812`, and no separate `libpmpi_abi` is built at all |
+| `mpich-abi-f90-datatypes.patch` (#7929) | `66cd5734`, "create_f90 do not depend on fortran" |
+| `mpich-abi-type-get-contents.patch` (#7930) | `31d79547`, "fix output datatype conversion in `MPI_Type_get_contents`" |
+| `fortran/mpich-disable-file.patch` | `MPI_File_{c2f,f2c}` are no longer generated into the ABI library |
+| `mpich-abi-darwin-weak.patch` | a weak-symbols-without-alias branch; measured identical with and without the patch |
+
+Measured on `darwin/26/arm64` before adopting it: all six pairings that touch
+MPICH report the suite's expected failures exactly, at the same counts as
+v5.0.1 (3/5/8 `mpich/gcc`, 3/5/9 `mpich/llvm`, 7/9/13 and 7/9/14 for the
+Open MPI-runtime crosses); `test/` is 75 of 75 on each; `consume` passes on
+both toolchains. The three reproducers under `bug-mpich-*/` pass. Nothing was
+gained in the suite, because each of those defects was already worked around;
+what changed is that the workarounds went away.
+
+- The retired patches are gone rather than kept for the release path: with
+  them deleted, `MPICH_COMMIT` is the only supported way to build. Recovering
+  the v5.0.1 recipe means `git show` on the commit that removed them.
+- `git apply` refuses fuzz, which is how three of the seven retired
+  themselves: they stopped applying and said so. The other four had to be
+  checked by hand — two fetched commits that are ancestors or obsolete, one
+  file upstream no longer generates, and the Darwin export style, which was
+  settled by building the same commit both ways and comparing `nm`.
+- Following an unreleased tree is the cost. The stamp in `MPI_SRC_DIR` is
+  keyed on the commit, so a bump re-prepares the tree rather than reusing a
+  stale one, and CI's `mpi-src` cache key hashes `ci-scripts/install-*.sh`.
+- Still not fixed on `main`: partitioned communication, and the suite
+  disagreements below (`greqf*`, `bsendf*`, `statusconv`, `spawnargvf90`),
+  which are about the tests rather than the library.
+
+### MPICH: strong `MPI_*` exports on Darwin broke substituting the library — fixed upstream
 
 The ABI implementations export `MPI_*` as weak definitions, and on Mach-O
 that is binding: a client linked against a weak-def export can only be
 satisfied by another weak definition, so an executable linked against
-Open MPI dies in dyld (`Symbol not found: _MPI_Abort ... Expected as weak-def
-export`) when MPICH's library is put first. MPICH's weak-symbol machinery has
-no Mach-O variant, so on Darwin it exports strong.
+Open MPI died in dyld (`Symbol not found: _MPI_Abort ... Expected as weak-def
+export`) when MPICH's library was put first. MPICH's weak-symbol machinery had
+no branch Mach-O could use, so on Darwin it exported strong, and a local patch
+added `#pragma weak` per public definition in the binding generator.
 
-- `ci-scripts/mpich-abi-darwin-weak.patch` adds `#pragma weak` per public
-  definition in the binding generator, `__APPLE__` only;
-  `fortran/f2c_abi_mpich.c` does the same for the injected handle-conversion
-  functions. ELF lookup is indifferent, so only macOS sees this.
-- `check-mpi-install.sh` asserts the export style on Darwin.
-- Not reported upstream yet; MPICH presumably wants it for its own sake.
+`main` now has a weak-symbols-*without*-alias branch — `#pragma weak X` plus a
+wrapper calling `PX` — and `HAVE_PRAGMA_WEAK` is the macro `configure` defines
+on this platform, so the exports are already weak and the patch was dropped.
+Measured rather than assumed: two prefixes built from the same commit, one with
+the patch and one without, export the same 694 `MPI_*` symbols, all 694 weak,
+none strong.
+
+- `check-mpi-install.sh` asserts the export style on every Darwin prefix, and
+  is now the only thing holding it. It is what a regression would trip.
+- `fortran/f2c_abi_mpich.c` still carries its own `#pragma weak` for the
+  handle-conversion functions mpif injects; those are mpif's code and nothing
+  upstream covers them.
+- ELF lookup is indifferent to weak-vs-strong, so only macOS ever saw this.
 
 ### MPICH: partitioned communication is not implemented
 
@@ -177,41 +220,40 @@ no Mach-O variant, so on Darwin it exports strong.
 running it, which is why `test/partitioned_f08.f90` asserts at compile time
 and never executes its calls.
 
-### MPICH: `MPI_Type_create_f90_*` is a no-op in an ABI build — carried as a local patch
+### MPICH: `MPI_Type_create_f90_*` was a no-op in an ABI build — fixed upstream
 
 <https://github.com/pmodels/mpich/issues/7929>
 
 The three routines returned `MPI_SUCCESS` and `MPI_DATATYPE_NULL`:
-`create_f90.c` selects stub implementations under
+`create_f90.c` selected stub implementations under
 `#ifndef HAVE_FORTRAN_BINDING`, and the ABI build undefines that macro — but
 the routines need the Fortran data *model* (`mpif90model.h`), not the
 bindings; one macro stood for both.
 
-- `ci-scripts/mpich-abi-f90-datatypes.patch` (local fix, not an upstream
-  backport) adds `MPIR_HAVE_F90_MODEL`, true with Fortran bindings or in the
-  standard-ABI build. Five suite tests went green on it.
-- Reproducer and checker in `bug-mpich-f90-datatypes/`; the issue has the
-  reproducer, not the patch — an upstream fix of another shape supersedes it.
+Fixed on `main` by `66cd5734`, "create_f90 do not depend on fortran", which
+removes the dependency rather than splitting the macro; the local patch that
+split it is gone. Reproducer and checker in `bug-mpich-f90-datatypes/`, both
+passing on the pinned commit.
 
-### MPICH: `MPI_Type_get_contents` converts uninitialised memory — carried as a local patch
+### MPICH: `MPI_Type_get_contents` converted uninitialised memory — fixed upstream
 
 <https://github.com/pmodels/mpich/issues/7930>
 
-The ABI wrapper converts the caller's `max_datatypes` entries back, not the
+The ABI wrapper converted the caller's `max_datatypes` entries back, not the
 number the datatype has, from an uninitialised `MPL_malloc` buffer — and a
 datatype from `MPI_TYPE_CREATE_F90_*` is *required* to report an empty
-`array_of_datatypes`, so a correct caller hits it. Garbage that looks builtin
-aborts in `ABI_Datatype_from_mpi` (`MPIR_Assert`); garbage that does not is
-handed back. Heap contents decide which, so the failures looked
+`array_of_datatypes`, so a correct caller hit it. Garbage that looked builtin
+aborted in `ABI_Datatype_from_mpi` (`MPIR_Assert`); garbage that did not was
+handed back. Heap contents decided which, so the failures looked
 nondeterministic (see `HISTORY.md`).
 
-- `ci-scripts/mpich-abi-type-get-contents.patch` pre-fills pure-out handle
-  arrays with the null handle. It patches the *generator*
-  (`maint/local_python/binding_c.py`) because `autogen.sh` regenerates
-  `c_binding_abi.c`. Zero-filling would not do: handle kind 0 is
-  `HANDLE_KIND_INVALID`, which walks past the assert.
-- Reproducer in `bug-mpich-type-get-contents/`, built to show the read on
-  platforms where the garbage happens not to abort. Filed without the patch.
+Fixed on `main` by `31d79547`: the temporary is `MPL_calloc`'d and the
+conversion skips the zero entries. Note the shape — the surplus is left
+**exactly as the caller passed it**, not set to the null handle, which is all
+the standard asks for. `bug-mpich-type-get-contents/` seeds a sentinel and
+checks for that; it used to demand the null handle, and so called a fixed
+MPICH broken. mpif's own generated bindings still null their pure-out handle
+arrays themselves (`dev/mpiapi.jl`) rather than depend on any of this.
 
 ### MPICH: the generalized request tests require `extra_state` to alias the caller's variable
 
@@ -252,25 +294,27 @@ What mpif can be held to: it no longer refuses the call before MPI sees it
 trampolines marshal correctly (`test/datarep_c.c` calls them directly — the
 substitute for an end-to-end test until an implementation grows the feature).
 
-### MPICH: attributes on predefined datatypes abort in ABI builds — carried as a local patch
+### MPICH: attributes on predefined datatypes aborted in ABI builds — fixed upstream
 
 <https://github.com/pmodels/mpich/issues/7916>
 
-Where weak symbols are unavailable (macOS: `#pragma weak` ICEs gcc on
-Mach-O), MPICH builds a separate profiling library, and
+Where weak symbols were unavailable (macOS: `#pragma weak` ICEs gcc on
+Mach-O), MPICH built a separate profiling library, and
 `mpi_abi_util.c` — which holds the `abi_datatype_builtins[]` table and its
-initialiser — was compiled into both libraries. `MPI_Init` fills
-`libmpi_abi`'s copy; the attribute proxies live in `libpmpi_abi`, whose copy
-stays zeros, so `MPI_Type_set/get_attr` on a predefined datatype asserts.
-Linux builds have weak symbols, one library, one table, and cannot hit it.
+initialiser — was compiled into both libraries. `MPI_Init` filled
+`libmpi_abi`'s copy; the attribute proxies lived in `libpmpi_abi`, whose copy
+stayed zeros, so `MPI_Type_set/get_attr` on a predefined datatype asserted.
+Linux builds had weak symbols, one library, one table, and could not hit it.
 
-- Fixed upstream on `main` by
-  [2eb9a812](https://github.com/pmodels/mpich/commit/2eb9a812025d5b22703fd35398714ba1c9e4f218),
-  unreleased; carried as `ci-scripts/mpich-abi-util-one-copy.patch`, a local
-  copy because the upstream commit does not apply to 5.0.1. **Drop the patch
-  once a release picks the fix up** — `git apply` refuses fuzz, so it fails
-  loudly.
-- Reproducer: `bug-mpich-7916/mpich-abi-attr-bug.c`, pure C.
+Fixed on `main` by
+[2eb9a812](https://github.com/pmodels/mpich/commit/2eb9a812025d5b22703fd35398714ba1c9e4f218),
+and then made unreachable: `main` grew a weak-symbols-without-alias branch
+(`HAVE_PRAGMA_WEAK` is now the macro `configure` defines here), so no second
+library is built anywhere and there is no second table to leave uninitialised.
+`lib/libpmpi.*` is out of `ci-scripts/mpich-prune.txt` for that reason —
+`prune-install.sh` warns about a pattern that matches nothing, and a permanent
+warning on every install is worth less than the pattern. Reproducer:
+`bug-mpich-7916/mpich-abi-attr-bug.c`, pure C, passing on the pinned commit.
 
 ### OpenMPI: an empty info value was rejected — fixed upstream, patch dropped
 
@@ -696,14 +740,14 @@ summary:
 
 - Not yet reported: the ABI stubs header's partitioned count (goes to
   `mpi-forum/mpi-abi-stubs`; correction already in `fortran/mpi.h.patch`);
-  MPICH's strong Darwin exports (patch carried, nothing to run);
   Open MPI's `MPI_Register_datarep` no-op (needs a reproducer first).
 - Filed and open: open-mpi/ompi#14278/#14279 (aio, with patch),
   open-mpi/ompi#14297 (info_create_env), open-mpi/ompi#14298 (window name),
-  pmodels/mpich#7929 (f90 datatypes), pmodels/mpich#7930 (get_contents),
   pmodels/mpich#7922 (grequest tests). Where a patch was held back, the
   local one is provisional: an upstream fix of a different shape supersedes
-  it.
+  it — which is what happened to pmodels/mpich#7929 (f90 datatypes) and
+  #7930 (get_contents), both fixed on `main` in a shape of upstream's own
+  and both still open as issues.
 - Undecided: filing the `spawnargvf90` f08-copy inconsistency.
 
 ## Suite baseline

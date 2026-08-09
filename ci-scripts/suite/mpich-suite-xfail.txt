@@ -116,21 +116,18 @@ triaged openmpi/gcc/linux/26.04/aarch64
 triaged openmpi/gcc/darwin/26/arm64
 triaged openmpi/llvm/darwin/26/arm64
 
-# All four of this machine's variants are measured now, one run each against
-# MPICH 5.0.1 and Open MPI 6cb5ef1d. Three matched the list exactly; Open MPI
-# contributed the six `dgraph` entries below, on both toolchains alike.
+# All four of this machine's variants are measured, one run each; Open MPI
+# contributed the six `dgraph` entries below, on both toolchains alike. Remeasured
+# unchanged when MPICH moved from 5.0.1 to `main` at ab53493d -- all six pairings
+# that touch MPICH reported no differences, which is what let all seven carried
+# fixes go; MISSING.md "MPICH is built from `main`" has the accounting.
 #
-# The mpich/llvm line took two runs to earn, and the first was wrong in a way
-# worth recording. It reported `createf90`, `createf90types`, `trf90` and `trf08`
-# failing -- which is precisely MISSING.md "MPI_Type_create_f90_* is a no-op in an
-# ABI build", the defect ci-scripts/mpich-abi-f90-datatypes.patch fixes. The
-# variant had not regressed: `mpi/mpich-llvm` had been built from a source tree
-# prepared before that patch existed, `MPIR_HAVE_F90_MODEL` appearing 0 times in
-# its create_f90.c against 5 in the gcc tree. Reusing an installed prefix skips
-# the stamp that would have caught it, since the stamp is checked by the install
-# script and nothing else. Reinstalling re-prepared the tree and the four passed.
 # **Measure a variant from a prefix the install script has just written**, not
-# from whatever `build/<variant>/mpi` happens to hold.
+# from whatever `build/mpi/<variant>` happens to hold. Once cost two runs here:
+# an mpich/llvm prefix built from a source tree prepared before a patch existed
+# reported four f90-datatype tests failing, and the variant had not regressed.
+# Reusing an installed prefix skips the stamp that would have caught it, since
+# the stamp is checked by the install script and nothing else.
 
 # --- Accounted for -------------------------------------------------------------
 #

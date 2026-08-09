@@ -16,7 +16,7 @@
 #                     (e.g. /opt/local for MacPorts, /opt/homebrew for Homebrew)
 #   MPI_SRC_DIR       where to download and build. Defaults to a temporary
 #                     directory that is removed afterwards. If it already holds
-#                     a tree prepared for this version, the download and
+#                     a tree prepared for this commit, the clone and
 #                     `autogen.sh` steps are skipped -- this is what CI caches.
 #   MPI_PREPARE_ONLY  set to 1 to only prepare the source tree (download,
 #                     bindings, autogen) and stop before configuring; <prefix>
@@ -24,23 +24,26 @@
 
 set -euo pipefail
 
+# The *library* is built from a commit on pmodels/mpich `main`, not from a
+# release. Building v5.0.1 here took seven carried fixes -- two upstream commits
+# fetched by URL and five patches; `main` has since made every one of them
+# unnecessary, each in a shape of its own, so nothing is carried and nothing is
+# measurably different: all four local variants report the suite's expected
+# failures exactly, on both runtimes. MISSING.md "MPICH is built from `main`"
+# says which fix went where.
+#
+# Pinned to a commit rather than to the branch name, for the reason
+# install-openmpi.sh gives: a floating ref would never invalidate the cached,
+# prepared tree in MPI_SRC_DIR, and a moving upstream is exactly what the stamp
+# below exists to notice.
+MPICH_COMMIT=ab53493dad85ffee0fc95812b250e1c8dacf7982
+
+# The *test suite* stays on the last release, and this is the variable
+# ci-scripts/suite/test-mpich-suite.sh reads out of this file (by name, with
+# sed) to fetch it. Holding the tests still while the library moves is what
+# makes a change of MPICH_COMMIT a one-variable experiment against one
+# expected-failure list.
 MPICH_VERSION=5.0.1
-# Upstream fixes that are on `main` but not in the release above, fetched from
-# https://github.com/pmodels/mpich/commit/<commit>.patch and applied in order:
-# - 689a0869: the fix behind mpich-abi-util-one-copy.patch, in the form that
-#   applies to files this release still generates differently.
-# - bb167f1c: "config: actually apply libmpi_abi.so version-info". The ABI
-#   library's `-version-info 1:0:0` never reached libtool (a misspelled m4
-#   macro, `libmpi_abi_so_verion_m4`, and a missing AC_SUBST), so libmpi_abi
-#   was installed as libmpi_abi.so.0 / libmpi_abi.0.dylib instead of the
-#   conventional libmpi_abi.so.1 that every implementation of ABI version 1
-#   exposes so applications can switch implementations without relinking.
-#   Open MPI already ships libmpi_abi.so.1; without this fix the two versioned
-#   names disagree and the loader cannot substitute one MPI for the other.
-MPICH_PATCH_COMMITS=(
-    689a0869c8f58167e3b0b5db13f8ce8db5f24009
-    bb167f1c850c85705733e8aa35d7d9810b2947b6
-)
 
 prefix=${1:-}
 prepare_only=${MPI_PREPARE_ONLY:-0}
@@ -57,24 +60,17 @@ repodir=$(cd "${scriptdir}/.." && pwd)
 nprocs=$(getconf _NPROCESSORS_ONLN 2>/dev/null ||
              sysctl -n hw.ncpu 2>/dev/null || echo 4)
 
-# Fixes applied to the source tree below. Each patch says in its own preamble
-# what it is, where it comes from and why it is still needed here. The first is an
-# upstream fix that is on `main` but not in the release above -- the first commit in
-# ${MPICH_PATCH_COMMITS} is the same idea, and this is the one whose upstream commit
-# does not apply to this release. The others are local fixes, and their preambles
-# say where each stands: f90-datatypes is pmodels/mpich#7929 and type-get-contents
-# is #7930, both open upstream; darwin-weak is not reported yet.
+# Fixes applied to the source tree below -- none at the moment, and the loop is
+# kept because the next one will want it. Two things a patch put back here has to
+# respect: `git apply` rather than `patch`, so that it fails loudly rather than
+# with fuzz once upstream moves the code under it; and the fact that these run
+# *before* `autogen.sh`, so a patch against a file autogen regenerates must
+# target the generator (`maint/local_python/binding_c.py`) rather than its output
+# (`src/binding/abi/c_binding_abi.c`), or it will be overwritten without a word.
 #
-# These are applied before `autogen.sh` runs, so a patch against a file that
-# autogen regenerates would be overwritten without a word. That is why
-# type-get-contents patches `maint/local_python/binding_c.py` rather than the
-# `src/binding/abi/c_binding_abi.c` it generates.
-patches=(
-    "${scriptdir}/mpich-abi-util-one-copy.patch"
-    "${scriptdir}/mpich-abi-f90-datatypes.patch"
-    "${scriptdir}/mpich-abi-type-get-contents.patch"
-    "${scriptdir}/mpich-abi-darwin-weak.patch"
-)
+# The array is expanded with the `${a[@]+...}` guard throughout so that being
+# empty is not an unbound variable under `set -u` in bash 3.2, which macOS has.
+patches=()
 
 # A prefix is not usable when `make install` is done with it, only when the
 # steps after it are: until the wrapper compilers select the ABI, the
@@ -135,14 +131,13 @@ else
     scratch_srcdir=${srcdir}
 fi
 
-tree=${srcdir}/mpich-${MPICH_VERSION}
+tree=${srcdir}/mpich
 # The stamp records what the prepared tree contains, so anything that changes
 # that tree -- other than the bindings themselves -- belongs in its name. That
-# includes the patches above, the upstream commits fetched by URL (their hashes
-# are part of this script's text) and this script itself, since it patches the
-# tree too: without the checksum, editing any of them would silently reuse a
+# includes the commit, the patches above and this script itself, since it patches
+# the tree too: without the checksum, editing any of them would silently reuse a
 # tree prepared by an older version.
-stamp=${srcdir}/prepared-${MPICH_VERSION}-$(cat "${BASH_SOURCE[0]}" "${patches[@]}" | cksum | cut -d' ' -f1)
+stamp=${srcdir}/prepared-${MPICH_COMMIT}-$(cat "${BASH_SOURCE[0]}" ${patches[@]+"${patches[@]}"} | cksum | cut -d' ' -f1)
 
 # Copy in the Fortran/C handle conversion functions. Only the contents of this
 # file vary from run to run, so this happens on every run, including when the
@@ -159,23 +154,19 @@ else
     rm -rf "${tree}"
 
     # Download
-    cd "${srcdir}"
-    curl -fsSLO "https://www.mpich.org/static/downloads/${MPICH_VERSION}/mpich-${MPICH_VERSION}.tar.gz"
-    tar xzf "mpich-${MPICH_VERSION}.tar.gz"
+    git clone --quiet --depth 1 https://github.com/pmodels/mpich.git "${tree}"
     cd "${tree}"
+    git fetch --quiet --depth 1 origin "${MPICH_COMMIT}"
+    git checkout --quiet "${MPICH_COMMIT}"
+    git submodule update --init --recursive
 
-    for commit in "${MPICH_PATCH_COMMITS[@]}"; do
-        curl -fsSL -o "mpich-${commit}.patch" \
-             "https://github.com/pmodels/mpich/commit/${commit}.patch"
-        patch -p1 <"mpich-${commit}.patch"
-    done
-
-    # Carry the upstream fixes this release does not have yet. `git apply`
-    # rather than `patch`, because it refuses to apply with fuzz: once a release
-    # picks a fix up, or moves the code it touches, the patch stops applying and
-    # says so here rather than landing somewhere unintended. This runs before
-    # the bindings are hooked in below, which edits one of the same files.
-    for patch in "${patches[@]}"; do
+    # Carry the fixes upstream does not have. `git apply` rather than `patch`,
+    # because it refuses to apply with fuzz: once upstream picks a fix up, or
+    # moves the code it touches, the patch stops applying and says so here
+    # rather than landing somewhere unintended -- which is how three of the seven
+    # fixes this script used to carry were retired. This runs before the bindings
+    # are hooked in below, which edits one of the same files.
+    for patch in ${patches[@]+"${patches[@]}"}; do
         echo "Applying $(basename "${patch}")"
         git apply "${patch}"
     done
@@ -274,15 +265,15 @@ if ! grep -q '^build_libtool_libs=yes' libtool; then
     exit 1
 fi
 
-# Remove the MPI_File_{c2f,f2c} bindings, which are not part of the ABI. This
-# has to happen after `configure`, which regenerates the file. Testing for the
-# symbol rather than letting `patch` detect an already-applied patch keeps this
-# portable to Apple's `patch`, and works whether or not the source tree was
-# restored from a cache.
+# MPI_File_{c2f,f2c} are not part of the ABI, and mpif supplies its own in
+# fortran/f2c_abi_mpich.c. MPICH used to generate them into the ABI library, and
+# a patch removed them; `main` no longer generates them, so all that is left is
+# the assertion that they are still absent -- two definitions of the same symbol
+# would be a link error, and this says which one is unexpected.
 if grep -q 'MPI_File_c2f' src/binding/abi/io_abi.c; then
-    patch -p1 <"${repodir}/fortran/mpich-disable-file.patch"
-else
-    echo "The MPI_File_{c2f,f2c} bindings are already disabled"
+    echo "error: MPICH's ABI library defines MPI_File_c2f again;" >&2
+    echo "error: it would collide with fortran/f2c_abi_mpich.c's definition" >&2
+    exit 1
 fi
 
 # Build and install. `V=1` because automake's silent rules hide the libtool

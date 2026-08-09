@@ -1239,11 +1239,12 @@ for key in sort(collect(keys(apis)))
                             # caller passes the envelope's count *or more*, and
                             # MPI writes only what the datatype has: the surplus
                             # is legitimately unwritten even on success, and the
-                            # conversion below walks all of it. This is the very
-                            # defect ci-scripts/mpich-abi-type-get-contents.patch
-                            # fixes one level down, in MPICH's own ABI wrapper;
-                            # relying on that patch to null the surplus would tie
-                            # mpif to one implementation's fix for it.
+                            # conversion below walks all of it. MPICH had the
+                            # very same defect one level down, in its own ABI
+                            # wrapper (pmodels/mpich#7930, fixed on `main` by
+                            # 31d79547ba); relying on an implementation's fix to
+                            # null the surplus would tie mpif to that
+                            # implementation.
                             append!(input_conversions,
                                     ["for (int i=0; i<$count; ++i)",
                                      "  c_$parname[i] = MPI_$(kind2null[kind])_NULL;"])

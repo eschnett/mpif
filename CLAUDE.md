@@ -162,6 +162,12 @@ pinned to `lo0`, and mpif's own `test/` never spawns.
   exist. **A missing `build/mpi/<variant>` means the last install failed**;
   the scripts discard a prefix their run did not finish, so the cure is to
   run the install again.
+- **Both implementations are pinned to a commit, not a release** —
+  `MPICH_COMMIT` and `OMPI_COMMIT` in `ci-scripts/install-*.sh`. The MPICH
+  *suite* is separate and stays on the last release (`MPICH_VERSION` in the
+  same file), so bumping the library is one variable against one
+  expected-failure list. `MISSING.md` "MPICH is built from `main`" says what
+  following it bought and what it costs.
 - **Never `make install` an MPI into `build/mpi/<variant>` by hand.** The
   install script afterwards repoints the wrapper compilers at the ABI
   library, prunes the implementation's own headers, Fortran modules and

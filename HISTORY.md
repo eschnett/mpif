@@ -138,6 +138,23 @@ Once the biggest time sink in the project; the rules in `CLAUDE.md`
   them to external procedures is also what forced the ignore_tkr directives
   onto the interface bodies (gcc accepted them in the bodies; flang refused
   to build — the sort of thing only building both catches).
+- **All seven MPICH workarounds**, when the pin moved from the v5.0.1 tarball
+  to `main` at `ab53493d` (2026-08-09). Upstream had fixed each in a shape of
+  its own: three patches stopped applying, two fetched commits stopped being
+  needed, one patched a file MPICH no longer generates, and the last —
+  the Darwin weak-export patch — turned out to be redundant, measured by
+  building the same commit with and without it and comparing `nm` (694 `MPI_*`
+  exports, all weak, both ways). All six pairings that touch MPICH reported
+  the suite's expected failures unchanged. The move bought no test — every one
+  of those defects was already worked around — only the workarounds
+  themselves. `MISSING.md` "MPICH is built from `main`" carries the table.
+
+  One trap it left: `bug-mpich-type-get-contents/` reported a *fixed* MPICH
+  as broken. It had checked that the surplus entries came back as
+  `MPI_DATATYPE_NULL`, which is the shape mpif's own patch chose; upstream's
+  fix leaves them exactly as the caller passed them, which the standard also
+  allows. A probe that asserts one particular fix rather than the absence of
+  the defect fails on the next fix. It seeds a sentinel now.
 
 ## Environment and harness traps, each paid for once
 

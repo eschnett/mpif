@@ -43,6 +43,12 @@
 //
 // Each step is printed before it is attempted, so the last line of output
 // identifies where it stopped.
+//
+// Fixed on `main` by 2eb9a812, and then made unreachable: MPICH grew a
+// weak-symbols-without-alias branch, so Darwin no longer builds the second
+// library whose second copy of the table was the whole defect. Kept as the
+// check, not as an open report -- it passes on the commit
+// ci-scripts/install-mpich.sh pins.
 
 #include <mpi.h>
 

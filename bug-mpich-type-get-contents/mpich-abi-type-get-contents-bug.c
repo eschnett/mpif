@@ -27,13 +27,25 @@
 // conforming program does. MPICH's createf90types passes max_datatypes = 1 for a
 // type whose envelope reports 0.
 //
-// Pure C, no Fortran involved. Exits nonzero when a surplus entry is not null.
-// Fixed by ci-scripts/mpich-abi-type-get-contents.patch.
+// Pure C, no Fortran involved. Exits nonzero when a surplus entry was written.
+//
+// Fixed upstream on `main` by 31d79547ba, which callocs the temporary and skips
+// the zero entries when converting back -- so the surplus is now left exactly as
+// the caller passed it in, rather than set to the null handle. The check below
+// therefore asks whether the entries were *touched*, seeded with a sentinel: a
+// probe that insisted on MPI_DATATYPE_NULL would report a fixed MPICH as broken,
+// which it did before this was rewritten. The standard requires nothing of the
+// surplus; the defect was the conversion, not the value.
 
 #include <mpi.h>
+#include <stdint.h>
 #include <stdio.h>
 
 enum { MAXD = 4 };
+
+// Seeded into the surplus entries and expected back unchanged. Never printed
+// through MPI_Type_toint, which would dereference it.
+#define SENTINEL ((MPI_Datatype)(uintptr_t)0xDEADBEEF)
 
 int main(int argc, char **argv) {
   MPI_Init(&argc, &argv);
@@ -60,7 +72,7 @@ int main(int argc, char **argv) {
   MPI_Aint adds[MAXD];
   MPI_Datatype dts[MAXD];
   for (int i = 0; i < MAXD; i++)
-    dts[i] = (MPI_Datatype)0;
+    dts[i] = SENTINEL;
 
   int err = MPI_Type_get_contents(dt, MAXD, MAXD, MAXD, ints, adds, dts);
   printf("MPI_Type_get_contents with max_datatypes=%d: err=%d\n", MAXD, err);
@@ -68,18 +80,22 @@ int main(int argc, char **argv) {
   int bad = 0;
   for (int i = 0; i < MAXD; i++) {
     if (i < ntypes) {
-      printf("  dts[%d] = %-12d filled by the implementation\n", i, MPI_Type_toint(dts[i]));
+      printf("  dts[%d] = %-14d filled by the implementation\n", i, MPI_Type_toint(dts[i]));
       continue;
     }
-    int is_null = dts[i] == MPI_DATATYPE_NULL;
-    printf("  dts[%d] = %-12d %s\n", i, MPI_Type_toint(dts[i]),
-           is_null ? "null, as it should be" : "NOT NULL -- converted from uninitialised memory");
-    if (!is_null)
+    // Either answer is fine: untouched is what a fixed wrapper leaves, and the
+    // null handle is what a wrapper that pre-fills the surplus leaves. What is
+    // not fine is anything else, which can only have come from the conversion.
+    int ok = dts[i] == SENTINEL || dts[i] == MPI_DATATYPE_NULL;
+    printf("  dts[%d] = %-14p %s\n", i, (void *)dts[i],
+           ok ? "untouched or null, as it should be"
+              : "WRITTEN -- converted from uninitialised memory");
+    if (!ok)
       ++bad;
   }
 
   MPI_Type_free(&dt);
   MPI_Finalize();
-  printf(bad ? "BROKEN (%d surplus entries were not null)\n" : "all ok (%d)\n", bad);
+  printf(bad ? "BROKEN (%d surplus entries were written)\n" : "all ok (%d)\n", bad);
   return bad != 0;
 }

@@ -62,12 +62,12 @@ Building and installing an MPI:
 
 | file | what it does |
 |------|--------------|
-| `install-mpich.sh` | download, patch, configure, build and install MPICH for the standard ABI |
+| `install-mpich.sh` | clone `main` at the pinned commit, configure, build and install MPICH for the standard ABI. It carries no patches at the moment -- MISSING.md "MPICH is built from `main`" says what it used to carry and where each went |
 | `install-openmpi.sh` | the same for Open MPI |
 | `install-mpi-header.sh` | install the MPI Forum's official ABI `mpi.h` over the implementation's own |
 | `prune-install.sh` | delete everything the standard ABI does not define, from a list |
 | `mpich-prune.txt`, `openmpi-prune.txt` | those lists |
-| `mpich-abi-*.patch`, `openmpi-*.patch` | fixes carried against the pinned releases; each says in its preamble what it is and why, and MISSING.md has the stories |
+| `openmpi-*.patch` | fixes carried against the pinned upstream trees; each says in its preamble what it is and why, and MISSING.md has the stories. `git apply` refuses fuzz, so one stops applying the day upstream moves the code under it -- which is how the MPICH ones were retired |
 | `check-mpi-install.sh` | assert that what was installed is the standard ABI and nothing else |
 | `check-headers.sh` | check that every Cray pointer in `mpif_constants.h` is the variable C initialises; run by the `checks` job in CI, and needs no MPI or compiler |
 | `flang-darwin-shim.sh` | works around flang's `-Wl,` handling on macOS, for MPICH's libtool |
@@ -85,8 +85,10 @@ Running the suite, in `suite/`:
 | `mpiexec-filter.sh` | drop the launcher banner Open MPI prints on every run, which the suite would otherwise read as test output |
 
 `test-mpich-suite.sh` takes the MPI prefix and the mpif prefix. It reads
-`MPICH_VERSION` out of `install-mpich.sh` one directory up, so the suite always
-matches the MPICH the recipe here knows how to build.
+`MPICH_VERSION` out of `install-mpich.sh` one directory up -- the last release,
+not the `MPICH_COMMIT` the library is built from. The tests are deliberately
+held still while the library moves, so that bumping the commit is one variable
+against one expected-failure list; see MISSING.md "MPICH is built from `main`".
 
 ## Where else these are used
 

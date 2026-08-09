@@ -171,8 +171,8 @@ arrangements make that true:
   `LD_LIBRARY_PATH` precedes. On macOS the export *style* gates the swap
   too: the implementations export `MPI_*` as weak definitions, and a Mach-O
   client linked against a weak-def export binds only to another weak
-  definition — MPICH 5.0.1 exports strong on Darwin and is patched (see
-  `MISSING.md` "strong `MPI_*` exports on Darwin").
+  definition (see `MISSING.md` "strong `MPI_*` exports on Darwin", which MPICH
+  needed a patch for until recently).
   `ci-scripts/check-mpi-install.sh` asserts the versioned name — and, on
   Darwin, the compatibility version and the weak export — on every installed
   prefix.
@@ -482,7 +482,7 @@ were found and verified.
 - **Predefined handles need no help from mpif.** The wrappers call
   `MPI_Comm_toint` and the rest directly; both implementations short-circuit
   predefined handles in their converters (MPICH: any handle in
-  `0x20..0x2eb`, stock 5.0.1; Open MPI:
+  `0x20..0x2eb`; Open MPI:
   `ompi_abi_handle_int_is_predefined` in all 22 converters). Former shims
   claiming "broken MPI implementations [only MPICH]" were removed after a C
   probe round-tripped all 103 predefined handles with zero failures. If a
