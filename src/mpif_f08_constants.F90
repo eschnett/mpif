@@ -12,9 +12,6 @@ module mpif_f08_constants
        MPI_OFFSET_KIND, &
        MPI_COUNT_KIND, &
        MPI_INTEGER_KIND, &
-       ! Fortran Support
-       MPI_SUBARRAYS_SUPPORTED, &
-       MPI_ASYNC_PROTECTS_NONBLOCKING, &
        ! Fortran 77 Status Size and Indices
        MPI_STATUS_SIZE, &
        MPI_SOURCE, &
@@ -235,10 +232,32 @@ module mpif_f08_constants
        MPI_ERRCODES_IGNORE, &
        MPI_UNWEIGHTED, &
        MPI_WEIGHTS_EMPTY
+#ifndef MPIF_HAVE_CFI
+  ! Fortran Support: re-exported from the mpi module only on the fallback
+  ! branch; with MPIF_HAVE_CFI the module declares its own .true. values
+  ! below, mpi_f08's choice buffers then being assumed rank and ASYNCHRONOUS
+  ! where the mpi module's stay ignore_tkr. A guarded second `use` statement
+  ! rather than a guard inside the list above: CMake's Fortran dependency
+  ! scanner loses the module edge when a preprocessor line interrupts a
+  ! continued statement, and then builds this file before mpi.mod exists.
+  use mpi, only: &
+       MPI_SUBARRAYS_SUPPORTED, &
+       MPI_ASYNC_PROTECTS_NONBLOCKING
+#endif
 
   implicit none
   private
   save
+
+#ifdef MPIF_HAVE_CFI
+  ! TS 29113 choice buffers: mpi_f08's are TYPE(*), DIMENSION(..) and the
+  ! nonblocking ones ASYNCHRONOUS, so mpi_f08 -- and mpi_f08 alone -- may
+  ! advertise both. include/mpif_constants.h stays .false. for mpif.h and the
+  ! mpi module, which keep ignore_tkr; MPICH and Open MPI draw the line in
+  ! the same place. See "Assumed-rank choice buffers" in MISSING.md.
+  logical, parameter :: MPI_SUBARRAYS_SUPPORTED = .true.
+  logical, parameter :: MPI_ASYNC_PROTECTS_NONBLOCKING = .true.
+#endif
 
   public :: &
        MPI_VERSION, &

@@ -477,6 +477,7 @@ add_library(mpifort_abi SHARED
   src/mpif_strings.c
   gen/mpif_functions.c
   gen/mpif_functions.F90
+  gen/mpif_f08_cdesc.c
   gen/mpif_f08_functions.F90
   gen/mpif_f08_wrappers.F90
 )

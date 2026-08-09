@@ -478,7 +478,10 @@ f08_wrapper_bodies = []
 # when using mpif.h and use mpi" -- so there the two forms stay two names, and
 # `gen/mpif_functions.F90` declares `MPI_Send` and `MPI_Send_c` side by side. See
 # "The mpi module's `_c` names" in MISSING.md for what is unresolved about that.
-f08_generic_specifics = Dict{String,Vector{String}}()
+# Per generic, the specific names of both preprocessor branches: (fallback,
+# MPIF_HAVE_CFI). They differ only for the choice-buffer routines, whose TS
+# branch carries Table 19.1's scheme-1B `_f08ts` token.
+f08_generic_specifics = Dict{String,Vector{Tuple{String,String}}}()
 f08_generic_guards = Dict{String,String}()
 f08_generic_order = []
 
@@ -489,6 +492,166 @@ f08_generic_order = []
 # the two different user callback prototypes despite their different type
 # signatures".
 f08_explicit_large_count = ["MPI_Op_create", "MPI_Register_datarep"]
+
+# The TS 29113 axis: assumed-rank choice buffers for mpi_f08, under
+# `#ifdef MPIF_HAVE_CFI` in the committed output, which CMakeLists.txt defines
+# where its probe finds a working descriptor path. On that branch every routine
+# with a choice buffer gets Table 19.1's scheme-1B specific names -- `_f08ts`,
+# `_c_f08ts` -- with the buffers declared `TYPE(*), DIMENSION(..)`, INTENT and
+# ASYNCHRONOUS as A.4 gives them, and the wrapper forwards the buffer to a
+# bind(C) interface (module `mpif_f08_cdesc`) whose C side, in
+# gen/mpif_f08_cdesc.c, receives a CFI descriptor and hands
+# src/mpif_cdesc.c's walker anything noncontiguous. The `#else` branch is
+# today's ignore_tkr form, byte for byte.
+#
+# `emit_cfi = false` turns the whole axis off and must regenerate today's
+# output exactly -- flip it, regenerate, and `git diff gen/` has to be empty;
+# see "A change to the generator that should not alter existing output" in
+# CLAUDE.md.
+emit_cfi = true
+
+# How each choice buffer crosses the descriptor boundary. Four answers, and
+# the dangerous ones are written down rather than inferred:
+#
+# - `:walk` -- the buffer owns the scalar (count, datatype) pair that follows
+#   it in the argument list. A noncontiguous descriptor becomes a derived
+#   datatype built from its strides, passed with count 1 and freed right after
+#   the call, which is legal even for a nonblocking one: the request holds its
+#   own reference. Detected from the parameter list, and the detection is
+#   asserted below.
+# - `:share` -- the pair-less first buffer of the reduction family, whose
+#   (count, datatype) pair belongs to both buffers at once. One datatype
+#   argument serves both, so a noncontiguous section is accepted only where
+#   the other buffer is a sentinel, insignificant, or the same layout; MPICH
+#   passes the base address silently in the remaining cases and corrupts the
+#   data, and mpif returns MPI_ERR_BUFFER instead. Named per routine.
+# - `:contig` -- a data buffer with no scalar pair: the v/w collectives and
+#   MPI_Reduce_scatter, whose counts are arrays; MPI_Pack's `outbuf` and
+#   MPI_Unpack's `inbuf`, which are raw bytes; and the partitioned
+#   MPI_Psend_init/MPI_Precv_init, whose pair understates the buffer by the
+#   `partitions` factor and whose partitioning a walked datatype could not
+#   preserve. Sentinels and contiguous descriptors pass through; anything
+#   else is MPI_ERR_BUFFER, loudly, where MPICH is silently wrong.
+# - `:addr` -- address semantics: what matters is where the buffer starts,
+#   not its layout. The attach family, MPI_Win_create/attach/detach,
+#   MPI_Free_mem, MPI_Get_address, MPI_F_sync_reg, the six read/write `_end`
+#   halves (whose data the `_begin` half described), and the single-element
+#   RMA routines MPI_Compare_and_swap and MPI_Fetch_and_op.
+cfi_addr_buffers = Set([
+    ("MPI_Buffer_attach", "buffer"),
+    ("MPI_Comm_attach_buffer", "buffer"),
+    ("MPI_Session_attach_buffer", "buffer"),
+    ("MPI_Free_mem", "base"),
+    ("MPI_Win_attach", "base"),
+    ("MPI_Win_create", "base"),
+    ("MPI_Win_detach", "base"),
+    ("MPI_Get_address", "location"),
+    ("MPI_F_sync_reg", "buf"),
+    ("MPI_File_read_all_end", "buf"),
+    ("MPI_File_read_at_all_end", "buf"),
+    ("MPI_File_read_ordered_end", "buf"),
+    ("MPI_File_write_all_end", "buf"),
+    ("MPI_File_write_at_all_end", "buf"),
+    ("MPI_File_write_ordered_end", "buf"),
+    ("MPI_Compare_and_swap", "origin_addr"),
+    ("MPI_Compare_and_swap", "compare_addr"),
+    ("MPI_Compare_and_swap", "result_addr"),
+    ("MPI_Fetch_and_op", "origin_addr"),
+    ("MPI_Fetch_and_op", "result_addr"),
+])
+
+# The reduction family: first buffer `:share`, second `:walk`, one pair for
+# both. Not MPI_Reduce_scatter_block and friends, whose sendbuf holds
+# group-size times what the pair describes and can never share the walked
+# type; their sendbuf is `:contig` by the no-pair rule.
+cfi_share_routines = Set(["MPI_Allreduce", "MPI_Allreduce_init", "MPI_Iallreduce",
+                          "MPI_Exscan", "MPI_Exscan_init", "MPI_Iexscan",
+                          "MPI_Scan", "MPI_Scan_init", "MPI_Iscan",
+                          "MPI_Reduce", "MPI_Reduce_init", "MPI_Ireduce",
+                          "MPI_Reduce_local"])
+
+# A.4 declares most `in` buffers INTENT(IN) and these not: their pointer is
+# what the routine keeps, so the caller's object is not a pure input. Found by
+# holding the generated declarations to A.4 with dev/check-f08-bindings.jl,
+# which is also what keeps this set honest -- an entry here that A.4 does not
+# support is a reported divergence, in either direction.
+cfi_no_intent_buffers = Set([
+    ("MPI_Buffer_attach", "buffer"),
+    ("MPI_Comm_attach_buffer", "buffer"),
+    ("MPI_Session_attach_buffer", "buffer"),
+    ("MPI_Win_attach", "base"),
+    ("MPI_Win_create", "base"),
+    ("MPI_Win_detach", "base"),
+    ("MPI_Get_address", "location"),
+])
+
+cfi_scalar_count_kinds = [int_count_kinds; count_kinds; aint_count_kinds]
+
+"""
+`nothing` for a routine without choice buffers; otherwise a Dict from buffer
+name to its crossing, per the taxonomy above.
+"""
+function cfi_classify(name, parameters)
+    buffer_idxs = [i for (i, p) in enumerate(parameters) if p["kind"] == "BUFFER"]
+    isempty(buffer_idxs) && return nothing
+    classes = Dict{String,Any}()
+    for (n, i) in enumerate(buffer_idxs)
+        parname = parameters[i]["name"]
+        if (name, parname) ∈ cfi_addr_buffers
+            classes[parname] = (kind = :addr,)
+            continue
+        end
+        if name ∈ ("MPI_Psend_init", "MPI_Precv_init")
+            classes[parname] = (kind = :contig,)
+            continue
+        end
+        # The region this buffer's pair would live in: strictly between it and
+        # the next buffer. Only the first count-kind scalar can be the pair's
+        # count, so a region that starts with a byte count and never reaches a
+        # datatype -- MPI_Unpack's (insize, position) -- stays pair-less.
+        hi = n < length(buffer_idxs) ? buffer_idxs[n+1] - 1 : length(parameters)
+        pair = nothing
+        for j in i+1:hi
+            q = parameters[j]
+            (q["kind"] ∈ cfi_scalar_count_kinds && q["length"] == nothing) || continue
+            for k in j+1:hi
+                r = parameters[k]
+                if r["kind"] == "DATATYPE" && r["length"] == nothing
+                    pair = (count = q["name"], datatype = r["name"])
+                    break
+                end
+            end
+            break
+        end
+        classes[parname] = pair == nothing ? (kind = :contig,) :
+            (kind = :walk, count = pair.count, datatype = pair.datatype)
+    end
+    if name ∈ cfi_share_routines
+        @assert length(buffer_idxs) == 2 name
+        first_name = parameters[buffer_idxs[1]]["name"]
+        second_name = parameters[buffer_idxs[2]]["name"]
+        @assert classes[first_name].kind == :contig (name, classes[first_name])
+        @assert classes[second_name].kind == :walk (name, classes[second_name])
+        classes[first_name] = (kind = :share, partner = second_name)
+    end
+    return classes
+end
+
+# The tally the classification is held to, so that a new apis.json changes it
+# loudly rather than silently: counted over the classified routines after the
+# main loop and compared against these, which were read off the enumeration of
+# 2026-08-09 and checked by hand against the argument lists.
+cfi_expected_class_counts = Dict(:walk => 132, :share => 13, :contig => 51, :addr => 20)
+cfi_class_counts = Dict{Symbol,Int}()
+
+# The two routines with ASYNCHRONOUS arguments and no choice buffer --
+# MPI_Comm_idup and MPI_Comm_idup_with_info, whose `newcomm` A.4 marks. They
+# keep their `_f08` names, and only that one declaration is branched.
+cfi_async_only_routines = Set{String}()
+
+f08_cdesc_interfaces = []
+f08_cdesc_types = Set{String}()
+c_cdesc_implementations = []
 
 append!(c_implementations,
         ["// Fortran-callable entry points, MPI_ and PMPI_ alike. See",
@@ -663,6 +826,19 @@ for key in sort(collect(keys(apis)))
     end
     if reported_count == nothing
         reported_count = request_count
+    end
+
+    # The TS 29113 crossing of every choice buffer here, or `nothing` for a
+    # routine without one; see cfi_classify above. Classified once per routine
+    # -- the answer does not depend on pmpi or embiggen -- and tallied for the
+    # frozen-count check after the loop.
+    cfi_classes = emit_cfi ? cfi_classify(name, parameters) : nothing
+    if cfi_classes !== nothing
+        for c in values(cfi_classes)
+            cfi_class_counts[c.kind] = get(cfi_class_counts, c.kind, 0) + 1
+        end
+    elseif emit_cfi && any(get(p, "asynchronous", false) for p in parameters)
+        push!(cfi_async_only_routines, name)
     end
 
     # Every routine is emitted twice, once under its MPI name and once under its
@@ -1955,6 +2131,373 @@ for key in sort(collect(keys(apis)))
         f08_use_line = needs_raw ?
             "  use mpif_f08_raw, only: $f08_name_f => $f_name" :
             "  use mpi, only: $f08_name_f => $f_name"
+
+        # ------------------------------------------------------------------
+        # The TS 29113 branch of this routine: the `_f08ts` declarations, the
+        # bind(C) interface and the cdesc C entry point. Everything here feeds
+        # the `#ifdef MPIF_HAVE_CFI` arms emitted further down; the `#else`
+        # arms are the untouched fallback.
+        emit_ts = cfi_classes !== nothing
+        f08_ts_name = name_c * "_f08ts"
+        f08_ts_declarations = nothing
+        ts_use_lines = nothing
+        ts_call_arguments = nothing
+        if emit_ts
+            # A choice-buffer routine is a subroutine with an `ierror`, except
+            # MPI_F_sync_reg, whose whole binding is `(buf)` and whose body is
+            # deliberately empty. Everything below leans on that shape.
+            @assert f_unit == "subroutine" name
+            @assert !any(p["kind"] ∈ cptr_out_kinds && p["param_direction"] == "out"
+                         for p in parameters) name
+            buffer_names = Set(keys(cfi_classes))
+            buffer_direction = Dict(p["name"] => p["param_direction"]
+                                    for p in parameters if p["kind"] == "BUFFER")
+            async_names = Set(p["name"] for p in parameters
+                              if get(p, "asynchronous", false))
+            root_only_of = Dict(p["name"] => p["root_only"]
+                                for p in parameters if p["kind"] == "BUFFER")
+            status_names = Set(p["name"] for p in parameters if p["kind"] == "STATUS")
+            @assert all(p["length"] == nothing
+                        for p in parameters if p["kind"] == "STATUS") name
+            @assert !any(p["kind"] ∈ ["STRING_ARRAY", "STRING_2DARRAY"]
+                         for p in parameters) name
+            @assert all(p["param_direction"] == "in" && !p["root_only"]
+                        for p in parameters
+                        if p["kind"] ∈ ["ARGUMENT_LIST", "STRING"]) name
+            in_strings = [p["name"] for p in parameters
+                          if p["kind"] ∈ ["ARGUMENT_LIST", "STRING"]]
+
+            # The A.4 declaration of a choice buffer: assumed type and rank,
+            # INTENT(IN) where the data is a pure input, ASYNCHRONOUS where
+            # apis.json marks it (which the checker holds to A.4).
+            ts_buffer_decl(parname) = begin
+                intent = buffer_direction[parname] == "in" &&
+                    (name, parname) ∉ cfi_no_intent_buffers ? ", intent(in)" : ""
+                async = parname ∈ async_names ? ", asynchronous" : ""
+                "type(*), dimension(..)$intent$async :: $parname"
+            end
+            # A non-buffer argument A.4 marks ASYNCHRONOUS -- the persistent
+            # collectives' metadata arrays -- gets the attribute spliced into
+            # its fallback declaration.
+            ts_async_decl(decl) = replace(decl, " :: " => ", asynchronous :: ")
+
+            f08_ts_declarations = String[]
+            replaced_buffers = 0
+            for decl in f08_declarations
+                if startswith(decl, "!dir\$") || startswith(decl, "!gcc\$") ||
+                   startswith(decl, "!dec\$")
+                    continue
+                end
+                m = match(r"^integer :: (\w+)\(\*\)$", decl)
+                if m !== nothing && m[1] ∈ buffer_names
+                    push!(f08_ts_declarations, ts_buffer_decl(m[1]))
+                    replaced_buffers += 1
+                    continue
+                end
+                m = match(r" :: (\w+)", decl)
+                if m !== nothing && m[1] ∈ async_names && m[1] ∉ buffer_names
+                    push!(f08_ts_declarations, ts_async_decl(decl))
+                    continue
+                end
+                push!(f08_ts_declarations, decl)
+            end
+            @assert replaced_buffers == length(buffer_names) name
+
+            # The bind(C) interface: the mpi module's view of the arguments --
+            # handles as INTEGER, via f_raw_declarations so a status is
+            # TYPE(MPI_Status) and a handle array TYPE(MPI_Datatype) -- with
+            # the buffers assumed-rank and the strings' hidden lengths made
+            # explicit, bind(C) passing none.
+            cdesc_declarations = String[]
+            replaced_buffers = 0
+            for decl in f_raw_declarations
+                if startswith(decl, "!dir\$") || startswith(decl, "!gcc\$") ||
+                   startswith(decl, "!dec\$")
+                    continue
+                end
+                m = match(r"^integer :: (\w+)\(\*\)$", decl)
+                if m !== nothing && m[1] ∈ buffer_names
+                    push!(cdesc_declarations, ts_buffer_decl(m[1]))
+                    replaced_buffers += 1
+                    continue
+                end
+                m = match(r"^character\*\((.*)\) :: (\w+)$", decl)
+                if m !== nothing
+                    @assert m[1] == "*" (name, decl)
+                    @assert m[2] ∈ in_strings (name, decl)
+                    push!(cdesc_declarations, "character(kind=c_char), intent(in) :: $(m[2])(*)")
+                    continue
+                end
+                push!(cdesc_declarations, decl)
+            end
+            @assert replaced_buffers == length(buffer_names) name
+            for s in in_strings
+                push!(cdesc_declarations, "integer(c_size_t), value :: length_$s")
+            end
+            cdesc_args = [f_arguments; ["length_$s" for s in in_strings]]
+
+            cdesc_name_f = "$(f08_name_f)_cdesc"
+            cdesc_name_c = lowercase(name_c) * "_cdesc"
+            imports = sort(unique([m[1] for m in
+                                   (match(r"^type\((MPI_\w+)\)", decl) for decl in cdesc_declarations)
+                                   if m !== nothing]))
+            union!(f08_cdesc_types, imports)
+            push!(f08_cdesc_interfaces, "")
+            push!(f08_cdesc_interfaces, "     subroutine $cdesc_name_f( &")
+            for (n, arg) in enumerate(cdesc_args)
+                comma = n < length(cdesc_args) ? "," : ""
+                push!(f08_cdesc_interfaces, "       $arg$comma &")
+            end
+            push!(f08_cdesc_interfaces, "     ) bind(c, name=\"$cdesc_name_c\")")
+            push!(f08_cdesc_interfaces, "       use mpif_constants")
+            isempty(in_strings) ||
+                push!(f08_cdesc_interfaces, "       use, intrinsic :: iso_c_binding, only: c_char, c_size_t")
+            isempty(imports) ||
+                push!(f08_cdesc_interfaces, "       import :: $(join(imports, ", "))")
+            push!(f08_cdesc_interfaces, "       implicit none")
+            for decl in cdesc_declarations
+                push!(f08_cdesc_interfaces, "       $decl")
+            end
+            push!(f08_cdesc_interfaces, "     end subroutine $cdesc_name_f")
+
+            # What the TS wrapper body imports and passes: the cdesc alias
+            # under the same local name, so the call statement is unchanged,
+            # and one explicit length per string.
+            ts_use_lines = ["  use mpif_f08_cdesc, only: $f08_name_f => $cdesc_name_f"]
+            isempty(in_strings) ||
+                push!(ts_use_lines, "  use, intrinsic :: iso_c_binding, only: c_size_t")
+            ts_call_arguments = [f08_call_arguments;
+                                 ["int(len($s), c_size_t)" for s in in_strings]]
+
+            # ---- the cdesc C entry point ----
+            if attributes["c_expressible"]
+                cdesc_input_arguments = map(input_arguments) do arg
+                    m = match(r"^(const )?void\* restrict const (\w+)$", arg)
+                    if m !== nothing && m[2] ∈ buffer_names
+                        return "const CFI_cdesc_t* restrict const $(m[2])"
+                    end
+                    m = match(r"^(const )?MPI_Fint\* restrict const (\w+)$", arg)
+                    if m !== nothing && m[2] ∈ status_names
+                        return "$(m[1] === nothing ? "" : m[1])MPI_Status* restrict const $(m[2])"
+                    end
+                    return arg
+                end
+
+                cdesc_state = deepcopy(state)
+                # In this entry a buffer's name is a descriptor pointer, so
+                # every reference the ordinary entry makes to the buffer --
+                # the vw collectives' `sendbuf != MPI_IN_PLACE` guard on
+                # converting `sendtypes` is the one that exists -- has to move
+                # to the base address, `q_<name>`, declared before the
+                # conversions run.
+                rewrite_buffers(line) = begin
+                    for p in parameters
+                        p["kind"] == "BUFFER" || continue
+                        line = replace(line, Regex("\\b$(p["name"])\\b") => "q_$(p["name"])")
+                    end
+                    line
+                end
+                cdesc_conversions = [rewrite_buffers(l) for l in input_conversions]
+                cdesc_output_conversions = [rewrite_buffers(l) for l in output_conversions]
+                cdesc_addresses = String[]
+                cdesc_prologue = String[]
+                cdesc_checks = String[]
+                cdesc_frees = String[]
+                cdesc_call_arguments = copy(call_arguments)
+                walk_names = String[]
+
+                replace_call_arg!(args, from, to) = begin
+                    idxs = findall(==(from), args)
+                    @assert Base.length(idxs) == 1 (name, from)
+                    args[idxs[1]] = to
+                end
+
+                # Every buffer's address, and the descriptor in its place in
+                # the argument list.
+                for p in parameters
+                    p["kind"] == "BUFFER" || continue
+                    b = p["name"]
+                    push!(cdesc_addresses, "void* const q_$b = $b->base_addr;")
+                    replace_call_arg!(cdesc_call_arguments, b, "q_$b")
+                end
+                for st in status_names
+                    for (i, a) in enumerate(cdesc_call_arguments)
+                        a == "(MPI_Status*)$st" && (cdesc_call_arguments[i] = st)
+                        a == "(const MPI_Status*)$st" && (cdesc_call_arguments[i] = st)
+                    end
+                end
+
+                need_err = any(c.kind != :addr for c in values(cfi_classes))
+                if need_err
+                    @assert any(p["name"] == "ierror" for p in parameters) name
+                    pushfirst!(cdesc_addresses, "int q_cdesc_err = MPI_SUCCESS;")
+                end
+
+                # `q_at_root`, for the buffers that are significant only at
+                # the root. Reuses the block the ordinary conversions already
+                # emit for a root_only count or datatype, and emits it (into
+                # the cdesc copy alone) where none of those exists --
+                # MPI_Reduce's recvbuf is root_only while its count and
+                # datatype are not.
+                at_root_guard!() = begin
+                    ensure_at_root!(cdesc_state, cdesc_conversions, name, parameters)
+                    "q_at_root && "
+                end
+
+                share_of = Dict(c.partner => b for (b, c) in cfi_classes if c.kind == :share)
+
+                for p in parameters
+                    p["kind"] == "BUFFER" || continue
+                    b = p["name"]
+                    cls = cfi_classes[b]
+                    if cls.kind ∈ (:addr, :share)
+                        # :addr passes the base address whatever the layout;
+                        # :share is emitted with its partner's walk below.
+                        continue
+                    elseif cls.kind == :contig
+                        guard = root_only_of[b] ? at_root_guard!() : ""
+                        append!(cdesc_checks, [
+                            "if ($(guard)!mpif_cdesc_is_sentinel(q_$b) && $b->rank != 0 && !CFI_is_contiguous($b))",
+                            "  q_cdesc_err = MPI_ERR_BUFFER;"])
+                        continue
+                    end
+                    @assert cls.kind == :walk
+                    cnt, dt = cls.count, cls.datatype
+                    dt_idxs = findall(a -> occursin("_fromint(*$dt)", a), cdesc_call_arguments)
+                    @assert Base.length(dt_idxs) == 1 (name, dt)
+                    dt_expr = cdesc_call_arguments[dt_idxs[1]]
+                    cdesc_call_arguments[dt_idxs[1]] = "q_$(b)_type"
+                    replace_call_arg!(cdesc_call_arguments, "*$cnt",
+                                      embiggen ? "q_$(b)_count" : "(int)q_$(b)_count")
+                    append!(cdesc_prologue, [
+                        "MPI_Datatype q_$(b)_type = $dt_expr;",
+                        "MPI_Count q_$(b)_count = *$cnt;",
+                        "int q_$(b)_owned = 0;"])
+                    push!(walk_names, b)
+                    s = get(share_of, b, nothing)
+                    if s == nothing
+                        guard = root_only_of[b] ? at_root_guard!() : ""
+                        append!(cdesc_checks, [
+                            "if (q_cdesc_err == MPI_SUCCESS && $(guard)!mpif_cdesc_is_sentinel(q_$b) && $b->rank != 0 && !CFI_is_contiguous($b)) {",
+                            "  q_cdesc_err = mpif_cdesc_create_datatype($b, q_$(b)_count, q_$(b)_type, &q_$(b)_type);",
+                            "  if (q_cdesc_err == MPI_SUCCESS) {",
+                            "    q_$(b)_count = 1;",
+                            "    q_$(b)_owned = 1;",
+                            "  }",
+                            "}"])
+                    else
+                        # One (count, datatype) pair serves both buffers, so a
+                        # noncontiguous section on either side is acceptable
+                        # only where the other is a sentinel, insignificant, or
+                        # the same layout -- then one walked datatype fits both.
+                        # Anything else is MPI_ERR_BUFFER, where MPICH passes
+                        # the base address and corrupts the data silently.
+                        @assert !root_only_of[s] (name, s)
+                        sig_b = root_only_of[b] ? at_root_guard!() : ""
+                        append!(cdesc_checks, [
+                            "{",
+                            "  const int q_$(s)_nc = !mpif_cdesc_is_sentinel(q_$s) && $s->rank != 0 && !CFI_is_contiguous($s);",
+                            "  const int q_$(b)_sig = $(sig_b)!mpif_cdesc_is_sentinel(q_$b);",
+                            "  const int q_$(b)_nc = q_$(b)_sig && $b->rank != 0 && !CFI_is_contiguous($b);",
+                            "  if (q_cdesc_err == MPI_SUCCESS && (q_$(s)_nc || q_$(b)_nc)) {",
+                            "    const int q_$(s)_sig = !mpif_cdesc_is_sentinel(q_$s);",
+                            "    if ((q_$(s)_nc && q_$(b)_sig && !(q_$(b)_nc && mpif_cdesc_same_layout($s, $b))) ||",
+                            "        (q_$(b)_nc && q_$(s)_sig && !(q_$(s)_nc && mpif_cdesc_same_layout($s, $b)))) {",
+                            "      q_cdesc_err = MPI_ERR_BUFFER;",
+                            "    } else {",
+                            "      q_cdesc_err = mpif_cdesc_create_datatype(q_$(s)_nc ? $s : $b, q_$(b)_count, q_$(b)_type, &q_$(b)_type);",
+                            "      if (q_cdesc_err == MPI_SUCCESS) {",
+                            "        q_$(b)_count = 1;",
+                            "        q_$(b)_owned = 1;",
+                            "      }",
+                            "    }",
+                            "  }",
+                            "}"])
+                    end
+                end
+
+                cdesc_err_block = String[]
+                if need_err
+                    # The error return frees whatever the walks above created
+                    # and whatever the string conversions strdup'd; the
+                    # ordinary output conversions never run on this path.
+                    string_frees = [l for l in output_conversions
+                                    if match(r"^free\(c_\w+\);$", l) !== nothing]
+                    @assert !any(occursin("q_at_root", l) for l in output_conversions if occursin("free(", l)) name
+                    push!(cdesc_err_block, "if (q_cdesc_err != MPI_SUCCESS) {")
+                    for b in walk_names
+                        append!(cdesc_err_block, [
+                            "  if (q_$(b)_owned)",
+                            "    PMPI_Type_free(&q_$(b)_type);"])
+                    end
+                    for l in string_frees
+                        push!(cdesc_err_block, "  $l")
+                    end
+                    append!(cdesc_err_block, ["  *ierror = q_cdesc_err;", "  return;", "}"])
+                end
+                for b in walk_names
+                    append!(cdesc_frees, [
+                        "if (q_$(b)_owned)",
+                        "  PMPI_Type_free(&q_$(b)_type);"])
+                end
+
+                push!(c_cdesc_implementations, "")
+                push!(c_cdesc_implementations, "void $cdesc_name_c(")
+                for (n, arg) in enumerate(cdesc_input_arguments)
+                    comma = n < Base.length(cdesc_input_arguments) ? "," : ""
+                    push!(c_cdesc_implementations, "  $arg$comma")
+                end
+                push!(c_cdesc_implementations, ")")
+                push!(c_cdesc_implementations, "{")
+                for l in cdesc_addresses
+                    push!(c_cdesc_implementations, "  $l")
+                end
+                for l in cdesc_conversions
+                    push!(c_cdesc_implementations, "  $l")
+                end
+                for l in cdesc_prologue
+                    push!(c_cdesc_implementations, "  $l")
+                end
+                for l in cdesc_checks
+                    push!(c_cdesc_implementations, "  $l")
+                end
+                for l in cdesc_err_block
+                    push!(c_cdesc_implementations, "  $l")
+                end
+                if any(p["name"] == "ierror" for p in parameters)
+                    push!(c_cdesc_implementations, "  *ierror = $name_c(")
+                else
+                    push!(c_cdesc_implementations, "  $name_c(")
+                end
+                for (n, arg) in enumerate(cdesc_call_arguments)
+                    comma = n < Base.length(cdesc_call_arguments) ? "," : ""
+                    push!(c_cdesc_implementations, "    $arg$comma")
+                end
+                push!(c_cdesc_implementations, "  );")
+                for l in cdesc_output_conversions
+                    push!(c_cdesc_implementations, "  $l")
+                end
+                for l in cdesc_frees
+                    push!(c_cdesc_implementations, "  $l")
+                end
+                push!(c_cdesc_implementations, "}")
+            else
+                # MPI_F_sync_reg: no C call to make, and the empty body is the
+                # point -- an opaque call boundary the optimiser cannot see
+                # through.
+                push!(c_cdesc_implementations, "")
+                push!(c_cdesc_implementations, "void $cdesc_name_c(")
+                for (n, arg) in enumerate(input_arguments)
+                    comma = n < Base.length(input_arguments) ? "," : ""
+                    arg2 = replace(arg, r"^void\* restrict const" => "const CFI_cdesc_t* restrict const")
+                    push!(c_cdesc_implementations, "  $arg2$comma")
+                end
+                push!(c_cdesc_implementations, ")")
+                push!(c_cdesc_implementations, "{")
+                push!(c_cdesc_implementations, "}")
+            end
+        end
+        # ------------------------------------------------------------------
         # Only overload when Fortran can actually tell the two apart, which is a
         # question about kinds and therefore about the platform. MPICH's
         # generator applies the same test, comparing the two kinds' sizes; it
@@ -2029,10 +2572,10 @@ for key in sort(collect(keys(apis)))
         # order matters only for reading: the small-count specific is emitted
         # first, so it comes first in the interface.
         if !haskey(f08_generic_specifics, f08_generic)
-            f08_generic_specifics[f08_generic] = String[]
+            f08_generic_specifics[f08_generic] = Tuple{String,String}[]
             push!(f08_generic_order, f08_generic)
         end
-        push!(f08_generic_specifics[f08_generic], f08_name)
+        push!(f08_generic_specifics[f08_generic], (f08_name, emit_ts ? f08_ts_name : f08_name))
         isempty(specific_guard) || (f08_generic_guards[f08_generic] = specific_guard)
 
         # The declaration, twice over: once as an interface body inside the
@@ -2043,7 +2586,45 @@ for key in sort(collect(keys(apis)))
         needs_cptr = any(p -> p["kind"] ∈ cptr_out_kinds && p["param_direction"] == "out",
                          parameters)
 
+        # The two routines with ASYNCHRONOUS arguments and no choice buffer
+        # keep their `_f08` names, and only the marked declarations are
+        # branched, in the interface and the body alike.
+        async_only = emit_cfi && cfi_classes === nothing &&
+            any(get(p, "asynchronous", false) for p in parameters)
+        async_only_names = async_only ?
+            Set(p["name"] for p in parameters if get(p, "asynchronous", false)) :
+            Set{String}()
+        emit_f08_decl!(out, indent, decl) = begin
+            m = async_only ? match(r" :: (\w+)", decl) : nothing
+            if m !== nothing && m[1] ∈ async_only_names
+                push!(out, "#ifdef MPIF_HAVE_CFI")
+                push!(out, "$indent$(replace(decl, " :: " => ", asynchronous :: "))")
+                push!(out, "#else")
+                push!(out, "$indent$decl")
+                push!(out, "#endif")
+            else
+                push!(out, "$indent$decl")
+            end
+        end
+
         isempty(specific_guard) || push!(f08_specific_interfaces, "#ifdef $specific_guard")
+        if emit_ts
+            push!(f08_specific_interfaces, "#ifdef MPIF_HAVE_CFI")
+            push!(f08_specific_interfaces, "     subroutine $f08_ts_name( &")
+            for (n, arg) in enumerate(f08_arguments)
+                comma = n < length(f08_arguments) ? "," : ""
+                push!(f08_specific_interfaces, "       $arg$comma &")
+            end
+            push!(f08_specific_interfaces, "     )")
+            push!(f08_specific_interfaces, "       use mpif_f08_constants")
+            push!(f08_specific_interfaces, "       use mpif_f08_types")
+            push!(f08_specific_interfaces, "       implicit none")
+            for decl in f08_ts_declarations
+                push!(f08_specific_interfaces, "       $decl")
+            end
+            push!(f08_specific_interfaces, "     end subroutine $f08_ts_name")
+            push!(f08_specific_interfaces, "#else")
+        end
         push!(f08_specific_interfaces, "     $f_unit $f08_name( &")
         for (n, arg) in enumerate(f08_arguments)
             comma = n < length(f08_arguments) ? "," : ""
@@ -2060,13 +2641,53 @@ for key in sort(collect(keys(apis)))
             push!(f08_specific_interfaces, "       $f_return_type :: result")
         end
         for decl in f08_declarations
-            push!(f08_specific_interfaces, "       $decl")
+            emit_f08_decl!(f08_specific_interfaces, "       ", decl)
         end
         push!(f08_specific_interfaces, "     end $f_unit $f08_name")
+        emit_ts && push!(f08_specific_interfaces, "#endif")
         isempty(specific_guard) || push!(f08_specific_interfaces, "#endif")
         push!(f08_specific_interfaces, "")
 
         isempty(specific_guard) || push!(f08_wrapper_bodies, "#ifdef $specific_guard")
+        if emit_ts
+            push!(f08_wrapper_bodies, "#ifdef MPIF_HAVE_CFI")
+            push!(f08_wrapper_bodies, "subroutine $f08_ts_name( &")
+            for (n, arg) in enumerate(f08_arguments)
+                comma = n < length(f08_arguments) ? "," : ""
+                push!(f08_wrapper_bodies, "  $arg$comma &")
+            end
+            push!(f08_wrapper_bodies, ")")
+            push!(f08_wrapper_bodies, "  use mpif_f08_constants")
+            push!(f08_wrapper_bodies, "  use mpif_f08_types")
+            for u in ts_use_lines
+                push!(f08_wrapper_bodies, u)
+            end
+            push!(f08_wrapper_bodies, "  implicit none")
+            # The TS declarations carry no directives, and INTENT and
+            # ASYNCHRONOUS are characteristics, so the body's declarations are
+            # the interface's, verbatim -- which dev/check-f08-bindings.jl
+            # holds them to.
+            for decl in f08_ts_declarations
+                push!(f08_wrapper_bodies, "  $decl")
+            end
+            for decl in f08_call_temp_declarations
+                push!(f08_wrapper_bodies, "  $decl")
+            end
+            for stmt in f08_call_temp_copyins
+                push!(f08_wrapper_bodies, "  $stmt")
+            end
+            push!(f08_wrapper_bodies, "  call $f08_name_f( &")
+            for (n, arg) in enumerate(ts_call_arguments)
+                comma = n < length(ts_call_arguments) ? "," : ""
+                push!(f08_wrapper_bodies, "    $arg$comma &")
+            end
+            push!(f08_wrapper_bodies, "  )")
+            for stmt in f08_call_temp_copyouts
+                push!(f08_wrapper_bodies, "  $stmt")
+            end
+            push!(f08_wrapper_bodies, "end subroutine $f08_ts_name")
+            push!(f08_wrapper_bodies, "#else")
+        end
         push!(f08_wrapper_bodies, "$f_unit $f08_name( &")
         for (n, arg) in enumerate(f08_arguments)
             comma = n < length(f08_arguments) ? "," : ""
@@ -2094,7 +2715,7 @@ for key in sort(collect(keys(apis)))
             # question did not arise.
             startswith(decl, "!dir\$") || startswith(decl, "!gcc\$") ||
                 startswith(decl, "!dec\$") ||
-                push!(f08_wrapper_bodies, "  $decl")
+                emit_f08_decl!(f08_wrapper_bodies, "  ", decl)
         end
         for decl in f08_call_temp_declarations
             push!(f08_wrapper_bodies, "  $decl")
@@ -2113,6 +2734,7 @@ for key in sort(collect(keys(apis)))
             push!(f08_wrapper_bodies, "  $stmt")
         end
         push!(f08_wrapper_bodies, "end $f_unit $f08_name")
+        emit_ts && push!(f08_wrapper_bodies, "#endif")
         isempty(specific_guard) || push!(f08_wrapper_bodies, "#endif")
         push!(f08_wrapper_bodies, "")
 
@@ -2167,6 +2789,13 @@ for key in sort(collect(keys(apis)))
     end                         # for pmpi, embiggen
 end                             # for api
 
+if emit_cfi
+    # The frozen tallies, so a new apis.json reclassifies loudly; see
+    # cfi_expected_class_counts above.
+    @assert cfi_class_counts == cfi_expected_class_counts cfi_class_counts
+    @assert cfi_async_only_routines == Set(["MPI_Comm_idup", "MPI_Comm_idup_with_info"]) cfi_async_only_routines
+end
+
 append!(f_interfaces,
         ["",
          "  end interface",
@@ -2180,28 +2809,46 @@ append!(f_interfaces,
 # a guarded companion makes the generic itself conditional: on the platform where
 # the two signatures coincide there is one specific to gather, which is all a
 # program there could pass anyway.
-for generic in sort(f08_generic_order)
-    specifics = f08_generic_specifics[generic]
-    guard = get(f08_generic_guards, generic, "")
+# One arm of a generic's interface block, for one branch's specific names. The
+# choice-buffer routines have different names on the two branches, and their
+# whole block is emitted once per branch under #ifdef MPIF_HAVE_CFI; everything
+# else gets the one unbranched block it always had.
+function emit_generic_block!(out, generic, names, guard)
     if isempty(guard)
-        append!(f08_generic_interfaces, ["  interface $generic"])
-        for s in specifics
-            push!(f08_generic_interfaces, "     procedure $s")
+        push!(out, "  interface $generic")
+        for s in names
+            push!(out, "     procedure $s")
         end
-        push!(f08_generic_interfaces, "  end interface $generic")
+        push!(out, "  end interface $generic")
     else
-        @assert length(specifics) == 2
-        append!(f08_generic_interfaces,
+        @assert length(names) == 2
+        append!(out,
                 ["#ifdef $guard",
                  "  interface $generic",
-                 "     procedure $(specifics[1])",
-                 "     procedure $(specifics[2])",
+                 "     procedure $(names[1])",
+                 "     procedure $(names[2])",
                  "  end interface $generic",
                  "#else",
                  "  interface $generic",
-                 "     procedure $(specifics[1])",
+                 "     procedure $(names[1])",
                  "  end interface $generic",
                  "#endif"])
+    end
+end
+
+for generic in sort(f08_generic_order)
+    specifics = f08_generic_specifics[generic]
+    guard = get(f08_generic_guards, generic, "")
+    names_fallback = [s[1] for s in specifics]
+    names_ts = [s[2] for s in specifics]
+    if names_ts != names_fallback
+        push!(f08_generic_interfaces, "#ifdef MPIF_HAVE_CFI")
+        emit_generic_block!(f08_generic_interfaces, generic, names_ts, guard)
+        push!(f08_generic_interfaces, "#else")
+        emit_generic_block!(f08_generic_interfaces, generic, names_fallback, guard)
+        push!(f08_generic_interfaces, "#endif")
+    else
+        emit_generic_block!(f08_generic_interfaces, generic, names_fallback, guard)
     end
     push!(f08_generic_interfaces, "")
 end
@@ -2215,7 +2862,15 @@ for generic in sort(f08_generic_order)
     for (n, s) in enumerate(f08_generic_specifics[generic])
         guarded = !isempty(guard) && n == 2
         guarded && push!(f08_implementations_public, "#ifdef $guard")
-        push!(f08_implementations_public, "  public :: $s")
+        if s[1] != s[2]
+            push!(f08_implementations_public, "#ifdef MPIF_HAVE_CFI")
+            push!(f08_implementations_public, "  public :: $(s[2])")
+            push!(f08_implementations_public, "#else")
+            push!(f08_implementations_public, "  public :: $(s[1])")
+            push!(f08_implementations_public, "#endif")
+        else
+            push!(f08_implementations_public, "  public :: $(s[1])")
+        end
         guarded && push!(f08_implementations_public, "#endif")
     end
 end
@@ -2241,8 +2896,36 @@ f08_raw_interfaces = [["! The mpi_f08 wrappers, MPI_ and PMPI_ alike, over a sec
                        "",
                        ]]
 
+# The bind(C) interfaces to the cdesc entry points of gen/mpif_f08_cdesc.c,
+# which the TS wrapper bodies call. The module exists only on the
+# MPIF_HAVE_CFI branch, like everything that names it.
+f08_cdesc_module = !emit_cfi ? [] :
+    [["#ifdef MPIF_HAVE_CFI",
+      "! The bind(C) interfaces to the cdesc entry points of",
+      "! gen/mpif_f08_cdesc.c, which receive the choice buffers as C",
+      "! descriptors. See dev/mpiapi.jl; do not edit.",
+      "",
+      "module mpif_f08_cdesc",
+      "  use mpif_constants",
+      "  use mpif_f08_types, only: $(join(sort(collect(f08_cdesc_types)), ", "))",
+      "  implicit none",
+      "  public",
+      "  save",
+      "",
+      "  interface",
+      ];
+     f08_cdesc_interfaces;
+     ["",
+      "  end interface",
+      "",
+      "end module mpif_f08_cdesc",
+      "#endif",
+      "",
+      ]]
+
 # The raw interfaces come first in the file: the wrapper bodies use them.
 f08_implementations = [f08_raw_interfaces;
+                       f08_cdesc_module;
                        f08_implementations_public;
                        f08_generic_interfaces;
                        ["  interface"];
@@ -2276,6 +2959,41 @@ println("Writing \"gen/mpif_f08_wrappers.F90\"...")
 open("gen/mpif_f08_wrappers.F90", "w") do f
     for body in f08_wrapper_bodies
         println(f, body)
+    end
+end
+
+# Not written at all with the axis off: the committed file then stays as it
+# is, which is what lets `emit_cfi = false` plus `git diff gen/` prove the
+# fallback untouched.
+if emit_cfi
+    println("Writing \"gen/mpif_f08_cdesc.c\"...")
+    open("gen/mpif_f08_cdesc.c", "w") do f
+        for line in ["// The cdesc entry points: Fortran-callable through the bind(C)",
+                     "// interfaces of module mpif_f08_cdesc, taking each choice buffer as a",
+                     "// CFI descriptor. Contiguous descriptors and the sentinels pass their",
+                     "// base address through; anything else goes to src/mpif_cdesc.c's",
+                     "// walker or is refused. See dev/mpiapi.jl; do not edit.",
+                     "",
+                     "#ifdef MPIF_HAVE_CFI",
+                     "",
+                     "#include <mpif_cdesc.h>",
+                     "#include <mpif_strings.h>",
+                     "#include <stdlib.h>",
+                     "#include <string.h>"]
+            println(f, line)
+        end
+        for impl in c_cdesc_implementations
+            println(f, impl)
+        end
+        for line in ["",
+                     "#else",
+                     "",
+                     "// ISO C requires something in a translation unit.",
+                     "typedef int mpif_f08_cdesc_unused;",
+                     "",
+                     "#endif"]
+            println(f, line)
+        end
     end
 end
 

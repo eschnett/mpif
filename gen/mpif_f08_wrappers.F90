@@ -296,6 +296,49 @@ subroutine PMPI_Abort_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Abort_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Accumulate_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Accumulate => MPIF_Accumulate_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Accumulate_f08ts
+#else
 subroutine MPI_Accumulate_f08( &
   origin_addr, &
   origin_count, &
@@ -337,7 +380,51 @@ subroutine MPI_Accumulate_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Accumulate_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Accumulate_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Accumulate_c => MPIF_Accumulate_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Accumulate_c_f08ts
+#else
 subroutine MPI_Accumulate_c_f08( &
   origin_addr, &
   origin_count, &
@@ -379,7 +466,51 @@ subroutine MPI_Accumulate_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Accumulate_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Accumulate_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Accumulate => PMPIF_Accumulate_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Accumulate_f08ts
+#else
 subroutine PMPI_Accumulate_f08( &
   origin_addr, &
   origin_count, &
@@ -421,7 +552,51 @@ subroutine PMPI_Accumulate_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Accumulate_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Accumulate_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Accumulate_c => PMPIF_Accumulate_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Accumulate_c_f08ts
+#else
 subroutine PMPI_Accumulate_c_f08( &
   origin_addr, &
   origin_count, &
@@ -463,6 +638,7 @@ subroutine PMPI_Accumulate_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Accumulate_c_f08
+#endif
 
 subroutine MPI_Add_error_class_f08( &
   errorclass, &
@@ -652,6 +828,43 @@ function PMPI_Aint_diff_f08( &
   )
 end function PMPI_Aint_diff_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Allgather_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Allgather => MPIF_Allgather_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgather_f08ts
+#else
 subroutine MPI_Allgather_f08( &
   sendbuf, &
   sendcount, &
@@ -687,7 +900,45 @@ subroutine MPI_Allgather_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgather_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Allgather_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Allgather_c => MPIF_Allgather_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgather_c_f08ts
+#else
 subroutine MPI_Allgather_c_f08( &
   sendbuf, &
   sendcount, &
@@ -723,7 +974,45 @@ subroutine MPI_Allgather_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgather_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Allgather_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Allgather => PMPIF_Allgather_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgather_f08ts
+#else
 subroutine PMPI_Allgather_f08( &
   sendbuf, &
   sendcount, &
@@ -759,7 +1048,45 @@ subroutine PMPI_Allgather_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgather_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Allgather_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Allgather_c => PMPIF_Allgather_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgather_c_f08ts
+#else
 subroutine PMPI_Allgather_c_f08( &
   sendbuf, &
   sendcount, &
@@ -795,7 +1122,51 @@ subroutine PMPI_Allgather_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgather_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Allgather_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Allgather_init => MPIF_Allgather_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgather_init_f08ts
+#else
 subroutine MPI_Allgather_init_f08( &
   sendbuf, &
   sendcount, &
@@ -837,7 +1208,51 @@ subroutine MPI_Allgather_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgather_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Allgather_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Allgather_init_c => MPIF_Allgather_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgather_init_c_f08ts
+#else
 subroutine MPI_Allgather_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -879,7 +1294,51 @@ subroutine MPI_Allgather_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgather_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Allgather_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Allgather_init => PMPIF_Allgather_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgather_init_f08ts
+#else
 subroutine PMPI_Allgather_init_f08( &
   sendbuf, &
   sendcount, &
@@ -921,7 +1380,51 @@ subroutine PMPI_Allgather_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgather_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Allgather_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Allgather_init_c => PMPIF_Allgather_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgather_init_c_f08ts
+#else
 subroutine PMPI_Allgather_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -963,7 +1466,48 @@ subroutine PMPI_Allgather_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgather_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Allgatherv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Allgatherv => MPIF_Allgatherv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgatherv_f08ts
+#else
 subroutine MPI_Allgatherv_f08( &
   sendbuf, &
   sendcount, &
@@ -1002,7 +1546,48 @@ subroutine MPI_Allgatherv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgatherv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Allgatherv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Allgatherv_c => MPIF_Allgatherv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgatherv_c_f08ts
+#else
 subroutine MPI_Allgatherv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -1041,7 +1626,48 @@ subroutine MPI_Allgatherv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgatherv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Allgatherv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Allgatherv => PMPIF_Allgatherv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgatherv_f08ts
+#else
 subroutine PMPI_Allgatherv_f08( &
   sendbuf, &
   sendcount, &
@@ -1080,7 +1706,48 @@ subroutine PMPI_Allgatherv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgatherv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Allgatherv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Allgatherv_c => PMPIF_Allgatherv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgatherv_c_f08ts
+#else
 subroutine PMPI_Allgatherv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -1119,7 +1786,54 @@ subroutine PMPI_Allgatherv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgatherv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Allgatherv_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Allgatherv_init => MPIF_Allgatherv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgatherv_init_f08ts
+#else
 subroutine MPI_Allgatherv_init_f08( &
   sendbuf, &
   sendcount, &
@@ -1164,7 +1878,54 @@ subroutine MPI_Allgatherv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgatherv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Allgatherv_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Allgatherv_init_c => MPIF_Allgatherv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allgatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allgatherv_init_c_f08ts
+#else
 subroutine MPI_Allgatherv_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -1209,7 +1970,54 @@ subroutine MPI_Allgatherv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgatherv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Allgatherv_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Allgatherv_init => PMPIF_Allgatherv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgatherv_init_f08ts
+#else
 subroutine PMPI_Allgatherv_init_f08( &
   sendbuf, &
   sendcount, &
@@ -1254,7 +2062,54 @@ subroutine PMPI_Allgatherv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgatherv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Allgatherv_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Allgatherv_init_c => PMPIF_Allgatherv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allgatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allgatherv_init_c_f08ts
+#else
 subroutine PMPI_Allgatherv_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -1299,6 +2154,7 @@ subroutine PMPI_Allgatherv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgatherv_init_c_f08
+#endif
 
 subroutine MPI_Alloc_mem_f08( &
   size, &
@@ -1354,6 +2210,40 @@ subroutine PMPI_Alloc_mem_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alloc_mem_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Allreduce_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Allreduce => MPIF_Allreduce_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allreduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allreduce_f08ts
+#else
 subroutine MPI_Allreduce_f08( &
   sendbuf, &
   recvbuf, &
@@ -1386,7 +2276,42 @@ subroutine MPI_Allreduce_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allreduce_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Allreduce_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Allreduce_c => MPIF_Allreduce_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allreduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allreduce_c_f08ts
+#else
 subroutine MPI_Allreduce_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -1419,7 +2344,42 @@ subroutine MPI_Allreduce_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allreduce_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Allreduce_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Allreduce => PMPIF_Allreduce_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allreduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allreduce_f08ts
+#else
 subroutine PMPI_Allreduce_f08( &
   sendbuf, &
   recvbuf, &
@@ -1452,7 +2412,42 @@ subroutine PMPI_Allreduce_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allreduce_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Allreduce_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Allreduce_c => PMPIF_Allreduce_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allreduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allreduce_c_f08ts
+#else
 subroutine PMPI_Allreduce_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -1485,7 +2480,48 @@ subroutine PMPI_Allreduce_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allreduce_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Allreduce_init_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Allreduce_init => MPIF_Allreduce_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allreduce_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allreduce_init_f08ts
+#else
 subroutine MPI_Allreduce_init_f08( &
   sendbuf, &
   recvbuf, &
@@ -1524,7 +2560,48 @@ subroutine MPI_Allreduce_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allreduce_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Allreduce_init_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Allreduce_init_c => MPIF_Allreduce_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Allreduce_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Allreduce_init_c_f08ts
+#else
 subroutine MPI_Allreduce_init_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -1563,7 +2640,48 @@ subroutine MPI_Allreduce_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allreduce_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Allreduce_init_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Allreduce_init => PMPIF_Allreduce_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allreduce_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allreduce_init_f08ts
+#else
 subroutine PMPI_Allreduce_init_f08( &
   sendbuf, &
   recvbuf, &
@@ -1602,7 +2720,48 @@ subroutine PMPI_Allreduce_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allreduce_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Allreduce_init_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Allreduce_init_c => PMPIF_Allreduce_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Allreduce_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Allreduce_init_c_f08ts
+#else
 subroutine PMPI_Allreduce_init_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -1641,7 +2800,45 @@ subroutine PMPI_Allreduce_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allreduce_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Alltoall_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Alltoall => MPIF_Alltoall_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoall_f08ts
+#else
 subroutine MPI_Alltoall_f08( &
   sendbuf, &
   sendcount, &
@@ -1677,7 +2874,45 @@ subroutine MPI_Alltoall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoall_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Alltoall_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Alltoall_c => MPIF_Alltoall_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoall_c_f08ts
+#else
 subroutine MPI_Alltoall_c_f08( &
   sendbuf, &
   sendcount, &
@@ -1713,7 +2948,45 @@ subroutine MPI_Alltoall_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoall_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Alltoall_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Alltoall => PMPIF_Alltoall_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoall_f08ts
+#else
 subroutine PMPI_Alltoall_f08( &
   sendbuf, &
   sendcount, &
@@ -1749,7 +3022,45 @@ subroutine PMPI_Alltoall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoall_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Alltoall_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Alltoall_c => PMPIF_Alltoall_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoall_c_f08ts
+#else
 subroutine PMPI_Alltoall_c_f08( &
   sendbuf, &
   sendcount, &
@@ -1785,7 +3096,51 @@ subroutine PMPI_Alltoall_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoall_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Alltoall_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Alltoall_init => MPIF_Alltoall_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoall_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoall_init_f08ts
+#else
 subroutine MPI_Alltoall_init_f08( &
   sendbuf, &
   sendcount, &
@@ -1827,7 +3182,51 @@ subroutine MPI_Alltoall_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoall_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Alltoall_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Alltoall_init_c => MPIF_Alltoall_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoall_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoall_init_c_f08ts
+#else
 subroutine MPI_Alltoall_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -1869,7 +3268,51 @@ subroutine MPI_Alltoall_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoall_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Alltoall_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Alltoall_init => PMPIF_Alltoall_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoall_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoall_init_f08ts
+#else
 subroutine PMPI_Alltoall_init_f08( &
   sendbuf, &
   sendcount, &
@@ -1911,7 +3354,51 @@ subroutine PMPI_Alltoall_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoall_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Alltoall_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Alltoall_init_c => PMPIF_Alltoall_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoall_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoall_init_c_f08ts
+#else
 subroutine PMPI_Alltoall_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -1953,7 +3440,51 @@ subroutine PMPI_Alltoall_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoall_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Alltoallv_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Alltoallv => MPIF_Alltoallv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallv_f08ts
+#else
 subroutine MPI_Alltoallv_f08( &
   sendbuf, &
   sendcounts, &
@@ -1995,7 +3526,51 @@ subroutine MPI_Alltoallv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Alltoallv_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Alltoallv_c => MPIF_Alltoallv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallv_c_f08ts
+#else
 subroutine MPI_Alltoallv_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -2037,7 +3612,51 @@ subroutine MPI_Alltoallv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Alltoallv_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Alltoallv => PMPIF_Alltoallv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallv_f08ts
+#else
 subroutine PMPI_Alltoallv_f08( &
   sendbuf, &
   sendcounts, &
@@ -2079,7 +3698,51 @@ subroutine PMPI_Alltoallv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Alltoallv_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Alltoallv_c => PMPIF_Alltoallv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallv_c_f08ts
+#else
 subroutine PMPI_Alltoallv_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -2121,7 +3784,57 @@ subroutine PMPI_Alltoallv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Alltoallv_init_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Alltoallv_init => MPIF_Alltoallv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallv_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallv_init_f08ts
+#else
 subroutine MPI_Alltoallv_init_f08( &
   sendbuf, &
   sendcounts, &
@@ -2169,7 +3882,57 @@ subroutine MPI_Alltoallv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Alltoallv_init_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Alltoallv_init_c => MPIF_Alltoallv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallv_init_c_f08ts
+#else
 subroutine MPI_Alltoallv_init_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -2217,7 +3980,57 @@ subroutine MPI_Alltoallv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Alltoallv_init_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Alltoallv_init => PMPIF_Alltoallv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallv_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallv_init_f08ts
+#else
 subroutine PMPI_Alltoallv_init_f08( &
   sendbuf, &
   sendcounts, &
@@ -2265,7 +4078,57 @@ subroutine PMPI_Alltoallv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Alltoallv_init_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Alltoallv_init_c => PMPIF_Alltoallv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallv_init_c_f08ts
+#else
 subroutine PMPI_Alltoallv_init_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -2313,7 +4176,51 @@ subroutine PMPI_Alltoallv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Alltoallw_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Alltoallw => MPIF_Alltoallw_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallw_f08ts
+#else
 subroutine MPI_Alltoallw_f08( &
   sendbuf, &
   sendcounts, &
@@ -2355,7 +4262,51 @@ subroutine MPI_Alltoallw_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallw_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Alltoallw_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Alltoallw_c => MPIF_Alltoallw_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallw_c_f08ts
+#else
 subroutine MPI_Alltoallw_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -2397,7 +4348,51 @@ subroutine MPI_Alltoallw_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallw_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Alltoallw_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Alltoallw => PMPIF_Alltoallw_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallw_f08ts
+#else
 subroutine PMPI_Alltoallw_f08( &
   sendbuf, &
   sendcounts, &
@@ -2439,7 +4434,51 @@ subroutine PMPI_Alltoallw_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallw_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Alltoallw_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Alltoallw_c => PMPIF_Alltoallw_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallw_c_f08ts
+#else
 subroutine PMPI_Alltoallw_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -2481,7 +4520,57 @@ subroutine PMPI_Alltoallw_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallw_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Alltoallw_init_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Alltoallw_init => MPIF_Alltoallw_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallw_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallw_init_f08ts
+#else
 subroutine MPI_Alltoallw_init_f08( &
   sendbuf, &
   sendcounts, &
@@ -2529,7 +4618,57 @@ subroutine MPI_Alltoallw_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallw_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Alltoallw_init_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Alltoallw_init_c => MPIF_Alltoallw_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Alltoallw_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Alltoallw_init_c_f08ts
+#else
 subroutine MPI_Alltoallw_init_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -2577,7 +4716,57 @@ subroutine MPI_Alltoallw_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallw_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Alltoallw_init_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Alltoallw_init => PMPIF_Alltoallw_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallw_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallw_init_f08ts
+#else
 subroutine PMPI_Alltoallw_init_f08( &
   sendbuf, &
   sendcounts, &
@@ -2625,7 +4814,57 @@ subroutine PMPI_Alltoallw_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallw_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Alltoallw_init_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Alltoallw_init_c => PMPIF_Alltoallw_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Alltoallw_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Alltoallw_init_c_f08ts
+#else
 subroutine PMPI_Alltoallw_init_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -2673,6 +4912,7 @@ subroutine PMPI_Alltoallw_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallw_init_c_f08
+#endif
 
 subroutine MPI_Attr_delete_f08( &
   comm, &
@@ -2902,6 +5142,37 @@ subroutine PMPI_Barrier_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Barrier_init_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Bcast_f08ts( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Bcast => MPIF_Bcast_cdesc
+  implicit none
+  type(*), dimension(..) :: buffer
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bcast( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bcast_f08ts
+#else
 subroutine MPI_Bcast_f08( &
   buffer, &
   count, &
@@ -2931,7 +5202,39 @@ subroutine MPI_Bcast_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bcast_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Bcast_c_f08ts( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Bcast_c => MPIF_Bcast_c_cdesc
+  implicit none
+  type(*), dimension(..) :: buffer
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bcast_c( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bcast_c_f08ts
+#else
 subroutine MPI_Bcast_c_f08( &
   buffer, &
   count, &
@@ -2961,7 +5264,39 @@ subroutine MPI_Bcast_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bcast_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Bcast_f08ts( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Bcast => PMPIF_Bcast_cdesc
+  implicit none
+  type(*), dimension(..) :: buffer
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bcast( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bcast_f08ts
+#else
 subroutine PMPI_Bcast_f08( &
   buffer, &
   count, &
@@ -2991,7 +5326,39 @@ subroutine PMPI_Bcast_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bcast_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Bcast_c_f08ts( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Bcast_c => PMPIF_Bcast_c_cdesc
+  implicit none
+  type(*), dimension(..) :: buffer
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bcast_c( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bcast_c_f08ts
+#else
 subroutine PMPI_Bcast_c_f08( &
   buffer, &
   count, &
@@ -3021,7 +5388,45 @@ subroutine PMPI_Bcast_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bcast_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Bcast_init_f08ts( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Bcast_init => MPIF_Bcast_init_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buffer
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bcast_init( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bcast_init_f08ts
+#else
 subroutine MPI_Bcast_init_f08( &
   buffer, &
   count, &
@@ -3057,7 +5462,45 @@ subroutine MPI_Bcast_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bcast_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Bcast_init_c_f08ts( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Bcast_init_c => MPIF_Bcast_init_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buffer
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bcast_init_c( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bcast_init_c_f08ts
+#else
 subroutine MPI_Bcast_init_c_f08( &
   buffer, &
   count, &
@@ -3093,7 +5536,45 @@ subroutine MPI_Bcast_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bcast_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Bcast_init_f08ts( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Bcast_init => PMPIF_Bcast_init_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buffer
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bcast_init( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bcast_init_f08ts
+#else
 subroutine PMPI_Bcast_init_f08( &
   buffer, &
   count, &
@@ -3129,7 +5610,45 @@ subroutine PMPI_Bcast_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bcast_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Bcast_init_c_f08ts( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Bcast_init_c => PMPIF_Bcast_init_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buffer
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bcast_init_c( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bcast_init_c_f08ts
+#else
 subroutine PMPI_Bcast_init_c_f08( &
   buffer, &
   count, &
@@ -3165,7 +5684,42 @@ subroutine PMPI_Bcast_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bcast_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Bsend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Bsend => MPIF_Bsend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bsend_f08ts
+#else
 subroutine MPI_Bsend_f08( &
   buf, &
   count, &
@@ -3198,7 +5752,42 @@ subroutine MPI_Bsend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bsend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Bsend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Bsend_c => MPIF_Bsend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bsend_c_f08ts
+#else
 subroutine MPI_Bsend_c_f08( &
   buf, &
   count, &
@@ -3231,7 +5820,42 @@ subroutine MPI_Bsend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bsend_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Bsend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Bsend => PMPIF_Bsend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bsend_f08ts
+#else
 subroutine PMPI_Bsend_f08( &
   buf, &
   count, &
@@ -3264,7 +5888,42 @@ subroutine PMPI_Bsend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bsend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Bsend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Bsend_c => PMPIF_Bsend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bsend_c_f08ts
+#else
 subroutine PMPI_Bsend_c_f08( &
   buf, &
   count, &
@@ -3297,7 +5956,45 @@ subroutine PMPI_Bsend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bsend_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Bsend_init_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Bsend_init => MPIF_Bsend_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bsend_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bsend_init_f08ts
+#else
 subroutine MPI_Bsend_init_f08( &
   buf, &
   count, &
@@ -3333,7 +6030,45 @@ subroutine MPI_Bsend_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bsend_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Bsend_init_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Bsend_init_c => MPIF_Bsend_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Bsend_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Bsend_init_c_f08ts
+#else
 subroutine MPI_Bsend_init_c_f08( &
   buf, &
   count, &
@@ -3369,7 +6104,45 @@ subroutine MPI_Bsend_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bsend_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Bsend_init_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Bsend_init => PMPIF_Bsend_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bsend_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bsend_init_f08ts
+#else
 subroutine PMPI_Bsend_init_f08( &
   buf, &
   count, &
@@ -3405,7 +6178,45 @@ subroutine PMPI_Bsend_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bsend_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Bsend_init_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Bsend_init_c => PMPIF_Bsend_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Bsend_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Bsend_init_c_f08ts
+#else
 subroutine PMPI_Bsend_init_c_f08( &
   buf, &
   count, &
@@ -3441,7 +6252,30 @@ subroutine PMPI_Bsend_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bsend_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Buffer_attach_f08ts( &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Buffer_attach => MPIF_Buffer_attach_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buffer
+  integer, intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Buffer_attach( &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Buffer_attach_f08ts
+#else
 subroutine MPI_Buffer_attach_f08( &
   buffer, &
   size, &
@@ -3462,7 +6296,30 @@ subroutine MPI_Buffer_attach_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Buffer_attach_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Buffer_attach_c_f08ts( &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Buffer_attach_c => MPIF_Buffer_attach_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buffer
+  integer(MPI_COUNT_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Buffer_attach_c( &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Buffer_attach_c_f08ts
+#else
 subroutine MPI_Buffer_attach_c_f08( &
   buffer, &
   size, &
@@ -3483,7 +6340,30 @@ subroutine MPI_Buffer_attach_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Buffer_attach_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Buffer_attach_f08ts( &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Buffer_attach => PMPIF_Buffer_attach_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buffer
+  integer, intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Buffer_attach( &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Buffer_attach_f08ts
+#else
 subroutine PMPI_Buffer_attach_f08( &
   buffer, &
   size, &
@@ -3504,7 +6384,30 @@ subroutine PMPI_Buffer_attach_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Buffer_attach_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Buffer_attach_c_f08ts( &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Buffer_attach_c => PMPIF_Buffer_attach_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buffer
+  integer(MPI_COUNT_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Buffer_attach_c( &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Buffer_attach_c_f08ts
+#else
 subroutine PMPI_Buffer_attach_c_f08( &
   buffer, &
   size, &
@@ -3525,6 +6428,7 @@ subroutine PMPI_Buffer_attach_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Buffer_attach_c_f08
+#endif
 
 subroutine MPI_Buffer_detach_f08( &
   buffer_addr, &
@@ -4262,6 +7166,31 @@ subroutine PMPI_Comm_accept_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_accept_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Comm_attach_buffer_f08ts( &
+  comm, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Comm_attach_buffer => MPIF_Comm_attach_buffer_cdesc
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(*), dimension(..), asynchronous :: buffer
+  integer, intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_attach_buffer( &
+    comm%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_attach_buffer_f08ts
+#else
 subroutine MPI_Comm_attach_buffer_f08( &
   comm, &
   buffer, &
@@ -4285,7 +7214,33 @@ subroutine MPI_Comm_attach_buffer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_attach_buffer_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Comm_attach_buffer_c_f08ts( &
+  comm, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Comm_attach_buffer_c => MPIF_Comm_attach_buffer_c_cdesc
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(*), dimension(..), asynchronous :: buffer
+  integer(MPI_COUNT_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Comm_attach_buffer_c( &
+    comm%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Comm_attach_buffer_c_f08ts
+#else
 subroutine MPI_Comm_attach_buffer_c_f08( &
   comm, &
   buffer, &
@@ -4309,7 +7264,33 @@ subroutine MPI_Comm_attach_buffer_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_attach_buffer_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Comm_attach_buffer_f08ts( &
+  comm, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Comm_attach_buffer => PMPIF_Comm_attach_buffer_cdesc
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(*), dimension(..), asynchronous :: buffer
+  integer, intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_attach_buffer( &
+    comm%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_attach_buffer_f08ts
+#else
 subroutine PMPI_Comm_attach_buffer_f08( &
   comm, &
   buffer, &
@@ -4333,7 +7314,33 @@ subroutine PMPI_Comm_attach_buffer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_attach_buffer_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Comm_attach_buffer_c_f08ts( &
+  comm, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Comm_attach_buffer_c => PMPIF_Comm_attach_buffer_c_cdesc
+  implicit none
+  type(MPI_Comm), intent(in) :: comm
+  type(*), dimension(..), asynchronous :: buffer
+  integer(MPI_COUNT_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Comm_attach_buffer_c( &
+    comm%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Comm_attach_buffer_c_f08ts
+#else
 subroutine PMPI_Comm_attach_buffer_c_f08( &
   comm, &
   buffer, &
@@ -4357,6 +7364,7 @@ subroutine PMPI_Comm_attach_buffer_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_attach_buffer_c_f08
+#endif
 
 subroutine MPI_Comm_call_errhandler_f08( &
   comm, &
@@ -5425,7 +8433,11 @@ subroutine MPI_Comm_idup_f08( &
   use mpi, only: MPIF_Comm_idup => MPI_Comm_idup
   implicit none
   type(MPI_Comm), intent(in) :: comm
+#ifdef MPIF_HAVE_CFI
+  type(MPI_Comm), intent(out), asynchronous :: newcomm
+#else
   type(MPI_Comm), intent(out) :: newcomm
+#endif
   type(MPI_Request), intent(out) :: request
   integer, intent(out), optional :: ierror
   integer :: tmp_ierror
@@ -5449,7 +8461,11 @@ subroutine PMPI_Comm_idup_f08( &
   use mpi, only: PMPIF_Comm_idup => PMPI_Comm_idup
   implicit none
   type(MPI_Comm), intent(in) :: comm
+#ifdef MPIF_HAVE_CFI
+  type(MPI_Comm), intent(out), asynchronous :: newcomm
+#else
   type(MPI_Comm), intent(out) :: newcomm
+#endif
   type(MPI_Request), intent(out) :: request
   integer, intent(out), optional :: ierror
   integer :: tmp_ierror
@@ -5475,7 +8491,11 @@ subroutine MPI_Comm_idup_with_info_f08( &
   implicit none
   type(MPI_Comm), intent(in) :: comm
   type(MPI_Info), intent(in) :: info
+#ifdef MPIF_HAVE_CFI
+  type(MPI_Comm), intent(out), asynchronous :: newcomm
+#else
   type(MPI_Comm), intent(out) :: newcomm
+#endif
   type(MPI_Request), intent(out) :: request
   integer, intent(out), optional :: ierror
   integer :: tmp_ierror
@@ -5502,7 +8522,11 @@ subroutine PMPI_Comm_idup_with_info_f08( &
   implicit none
   type(MPI_Comm), intent(in) :: comm
   type(MPI_Info), intent(in) :: info
+#ifdef MPIF_HAVE_CFI
+  type(MPI_Comm), intent(out), asynchronous :: newcomm
+#else
   type(MPI_Comm), intent(out) :: newcomm
+#endif
   type(MPI_Request), intent(out) :: request
   integer, intent(out), optional :: ierror
   integer :: tmp_ierror
@@ -6260,6 +9284,43 @@ subroutine PMPI_Comm_test_inter_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_test_inter_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Compare_and_swap_f08ts( &
+  origin_addr, &
+  compare_addr, &
+  result_addr, &
+  datatype, &
+  target_rank, &
+  target_disp, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Compare_and_swap => MPIF_Compare_and_swap_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  type(*), dimension(..), intent(in), asynchronous :: compare_addr
+  type(*), dimension(..), asynchronous :: result_addr
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Compare_and_swap( &
+    origin_addr, &
+    compare_addr, &
+    result_addr, &
+    datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Compare_and_swap_f08ts
+#else
 subroutine MPI_Compare_and_swap_f08( &
   origin_addr, &
   compare_addr, &
@@ -6295,7 +9356,45 @@ subroutine MPI_Compare_and_swap_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Compare_and_swap_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Compare_and_swap_f08ts( &
+  origin_addr, &
+  compare_addr, &
+  result_addr, &
+  datatype, &
+  target_rank, &
+  target_disp, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Compare_and_swap => PMPIF_Compare_and_swap_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  type(*), dimension(..), intent(in), asynchronous :: compare_addr
+  type(*), dimension(..), asynchronous :: result_addr
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Compare_and_swap( &
+    origin_addr, &
+    compare_addr, &
+    result_addr, &
+    datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Compare_and_swap_f08ts
+#else
 subroutine PMPI_Compare_and_swap_f08( &
   origin_addr, &
   compare_addr, &
@@ -6331,6 +9430,7 @@ subroutine PMPI_Compare_and_swap_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Compare_and_swap_f08
+#endif
 
 subroutine MPI_Dims_create_f08( &
   nnodes, &
@@ -6806,6 +9906,40 @@ subroutine PMPI_Error_string_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Error_string_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Exscan_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Exscan => MPIF_Exscan_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Exscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Exscan_f08ts
+#else
 subroutine MPI_Exscan_f08( &
   sendbuf, &
   recvbuf, &
@@ -6838,7 +9972,42 @@ subroutine MPI_Exscan_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Exscan_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Exscan_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Exscan_c => MPIF_Exscan_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Exscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Exscan_c_f08ts
+#else
 subroutine MPI_Exscan_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -6871,7 +10040,42 @@ subroutine MPI_Exscan_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Exscan_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Exscan_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Exscan => PMPIF_Exscan_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Exscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Exscan_f08ts
+#else
 subroutine PMPI_Exscan_f08( &
   sendbuf, &
   recvbuf, &
@@ -6904,7 +10108,42 @@ subroutine PMPI_Exscan_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Exscan_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Exscan_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Exscan_c => PMPIF_Exscan_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Exscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Exscan_c_f08ts
+#else
 subroutine PMPI_Exscan_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -6937,7 +10176,48 @@ subroutine PMPI_Exscan_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Exscan_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Exscan_init_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Exscan_init => MPIF_Exscan_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Exscan_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Exscan_init_f08ts
+#else
 subroutine MPI_Exscan_init_f08( &
   sendbuf, &
   recvbuf, &
@@ -6976,7 +10256,48 @@ subroutine MPI_Exscan_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Exscan_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Exscan_init_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Exscan_init_c => MPIF_Exscan_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Exscan_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Exscan_init_c_f08ts
+#else
 subroutine MPI_Exscan_init_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -7015,7 +10336,48 @@ subroutine MPI_Exscan_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Exscan_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Exscan_init_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Exscan_init => PMPIF_Exscan_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Exscan_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Exscan_init_f08ts
+#else
 subroutine PMPI_Exscan_init_f08( &
   sendbuf, &
   recvbuf, &
@@ -7054,7 +10416,48 @@ subroutine PMPI_Exscan_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Exscan_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Exscan_init_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Exscan_init_c => PMPIF_Exscan_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Exscan_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Exscan_init_c_f08ts
+#else
 subroutine PMPI_Exscan_init_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -7093,7 +10496,22 @@ subroutine PMPI_Exscan_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Exscan_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_F_sync_reg_f08ts( &
+  buf &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_F_sync_reg => MPIF_F_sync_reg_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  call MPIF_F_sync_reg( &
+    buf &
+  )
+end subroutine MPI_F_sync_reg_f08ts
+#else
 subroutine MPI_F_sync_reg_f08( &
   buf &
 )
@@ -7106,7 +10524,22 @@ subroutine MPI_F_sync_reg_f08( &
     buf &
   )
 end subroutine MPI_F_sync_reg_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_F_sync_reg_f08ts( &
+  buf &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_F_sync_reg => PMPIF_F_sync_reg_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  call PMPIF_F_sync_reg( &
+    buf &
+  )
+end subroutine PMPI_F_sync_reg_f08ts
+#else
 subroutine PMPI_F_sync_reg_f08( &
   buf &
 )
@@ -7119,7 +10552,45 @@ subroutine PMPI_F_sync_reg_f08( &
     buf &
   )
 end subroutine PMPI_F_sync_reg_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Fetch_and_op_f08ts( &
+  origin_addr, &
+  result_addr, &
+  datatype, &
+  target_rank, &
+  target_disp, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Fetch_and_op => MPIF_Fetch_and_op_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  type(*), dimension(..), asynchronous :: result_addr
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Fetch_and_op( &
+    origin_addr, &
+    result_addr, &
+    datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Fetch_and_op_f08ts
+#else
 subroutine MPI_Fetch_and_op_f08( &
   origin_addr, &
   result_addr, &
@@ -7155,7 +10626,45 @@ subroutine MPI_Fetch_and_op_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Fetch_and_op_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Fetch_and_op_f08ts( &
+  origin_addr, &
+  result_addr, &
+  datatype, &
+  target_rank, &
+  target_disp, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Fetch_and_op => PMPIF_Fetch_and_op_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  type(*), dimension(..), asynchronous :: result_addr
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Fetch_and_op( &
+    origin_addr, &
+    result_addr, &
+    datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Fetch_and_op_f08ts
+#else
 subroutine PMPI_Fetch_and_op_f08( &
   origin_addr, &
   result_addr, &
@@ -7191,6 +10700,7 @@ subroutine PMPI_Fetch_and_op_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Fetch_and_op_f08
+#endif
 
 subroutine MPI_File_call_errhandler_f08( &
   fh, &
@@ -7898,6 +11408,37 @@ subroutine PMPI_File_get_view_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_view_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iread_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iread => MPIF_File_iread_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_f08ts
+#else
 subroutine MPI_File_iread_f08( &
   fh, &
   buf, &
@@ -7927,7 +11468,39 @@ subroutine MPI_File_iread_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iread_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iread_c => MPIF_File_iread_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_c_f08ts
+#else
 subroutine MPI_File_iread_c_f08( &
   fh, &
   buf, &
@@ -7957,7 +11530,39 @@ subroutine MPI_File_iread_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iread_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iread => PMPIF_File_iread_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_f08ts
+#else
 subroutine PMPI_File_iread_f08( &
   fh, &
   buf, &
@@ -7987,7 +11592,39 @@ subroutine PMPI_File_iread_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iread_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iread_c => PMPIF_File_iread_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_c_f08ts
+#else
 subroutine PMPI_File_iread_c_f08( &
   fh, &
   buf, &
@@ -8017,7 +11654,39 @@ subroutine PMPI_File_iread_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iread_all_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iread_all => MPIF_File_iread_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_all_f08ts
+#else
 subroutine MPI_File_iread_all_f08( &
   fh, &
   buf, &
@@ -8047,7 +11716,39 @@ subroutine MPI_File_iread_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iread_all_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iread_all_c => MPIF_File_iread_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_all_c_f08ts
+#else
 subroutine MPI_File_iread_all_c_f08( &
   fh, &
   buf, &
@@ -8077,7 +11778,39 @@ subroutine MPI_File_iread_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iread_all_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iread_all => PMPIF_File_iread_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_all_f08ts
+#else
 subroutine PMPI_File_iread_all_f08( &
   fh, &
   buf, &
@@ -8107,7 +11840,39 @@ subroutine PMPI_File_iread_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iread_all_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iread_all_c => PMPIF_File_iread_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_all_c_f08ts
+#else
 subroutine PMPI_File_iread_all_c_f08( &
   fh, &
   buf, &
@@ -8137,7 +11902,42 @@ subroutine PMPI_File_iread_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iread_at_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iread_at => MPIF_File_iread_at_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_at_f08ts
+#else
 subroutine MPI_File_iread_at_f08( &
   fh, &
   offset, &
@@ -8170,7 +11970,42 @@ subroutine MPI_File_iread_at_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_at_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iread_at_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iread_at_c => MPIF_File_iread_at_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_at_c_f08ts
+#else
 subroutine MPI_File_iread_at_c_f08( &
   fh, &
   offset, &
@@ -8203,7 +12038,42 @@ subroutine MPI_File_iread_at_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_at_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iread_at_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iread_at => PMPIF_File_iread_at_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_at_f08ts
+#else
 subroutine PMPI_File_iread_at_f08( &
   fh, &
   offset, &
@@ -8236,7 +12106,42 @@ subroutine PMPI_File_iread_at_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_at_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iread_at_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iread_at_c => PMPIF_File_iread_at_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_at_c_f08ts
+#else
 subroutine PMPI_File_iread_at_c_f08( &
   fh, &
   offset, &
@@ -8269,7 +12174,42 @@ subroutine PMPI_File_iread_at_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_at_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iread_at_all_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iread_at_all => MPIF_File_iread_at_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_at_all_f08ts
+#else
 subroutine MPI_File_iread_at_all_f08( &
   fh, &
   offset, &
@@ -8302,7 +12242,42 @@ subroutine MPI_File_iread_at_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_at_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iread_at_all_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iread_at_all_c => MPIF_File_iread_at_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_at_all_c_f08ts
+#else
 subroutine MPI_File_iread_at_all_c_f08( &
   fh, &
   offset, &
@@ -8335,7 +12310,42 @@ subroutine MPI_File_iread_at_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_at_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iread_at_all_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iread_at_all => PMPIF_File_iread_at_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_at_all_f08ts
+#else
 subroutine PMPI_File_iread_at_all_f08( &
   fh, &
   offset, &
@@ -8368,7 +12378,42 @@ subroutine PMPI_File_iread_at_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_at_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iread_at_all_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iread_at_all_c => PMPIF_File_iread_at_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_at_all_c_f08ts
+#else
 subroutine PMPI_File_iread_at_all_c_f08( &
   fh, &
   offset, &
@@ -8401,7 +12446,39 @@ subroutine PMPI_File_iread_at_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_at_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iread_shared_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iread_shared => MPIF_File_iread_shared_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_shared_f08ts
+#else
 subroutine MPI_File_iread_shared_f08( &
   fh, &
   buf, &
@@ -8431,7 +12508,39 @@ subroutine MPI_File_iread_shared_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_shared_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iread_shared_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iread_shared_c => MPIF_File_iread_shared_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iread_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iread_shared_c_f08ts
+#else
 subroutine MPI_File_iread_shared_c_f08( &
   fh, &
   buf, &
@@ -8461,7 +12570,39 @@ subroutine MPI_File_iread_shared_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_shared_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iread_shared_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iread_shared => PMPIF_File_iread_shared_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_shared_f08ts
+#else
 subroutine PMPI_File_iread_shared_f08( &
   fh, &
   buf, &
@@ -8491,7 +12632,39 @@ subroutine PMPI_File_iread_shared_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_shared_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iread_shared_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iread_shared_c => PMPIF_File_iread_shared_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iread_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iread_shared_c_f08ts
+#else
 subroutine PMPI_File_iread_shared_c_f08( &
   fh, &
   buf, &
@@ -8521,7 +12694,39 @@ subroutine PMPI_File_iread_shared_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_shared_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iwrite_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iwrite => MPIF_File_iwrite_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_f08ts
+#else
 subroutine MPI_File_iwrite_f08( &
   fh, &
   buf, &
@@ -8551,7 +12756,39 @@ subroutine MPI_File_iwrite_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iwrite_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iwrite_c => MPIF_File_iwrite_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_c_f08ts
+#else
 subroutine MPI_File_iwrite_c_f08( &
   fh, &
   buf, &
@@ -8581,7 +12818,39 @@ subroutine MPI_File_iwrite_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iwrite_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iwrite => PMPIF_File_iwrite_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_f08ts
+#else
 subroutine PMPI_File_iwrite_f08( &
   fh, &
   buf, &
@@ -8611,7 +12880,39 @@ subroutine PMPI_File_iwrite_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iwrite_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iwrite_c => PMPIF_File_iwrite_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_c_f08ts
+#else
 subroutine PMPI_File_iwrite_c_f08( &
   fh, &
   buf, &
@@ -8641,7 +12942,39 @@ subroutine PMPI_File_iwrite_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iwrite_all_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iwrite_all => MPIF_File_iwrite_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_all_f08ts
+#else
 subroutine MPI_File_iwrite_all_f08( &
   fh, &
   buf, &
@@ -8671,7 +13004,39 @@ subroutine MPI_File_iwrite_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iwrite_all_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iwrite_all_c => MPIF_File_iwrite_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_all_c_f08ts
+#else
 subroutine MPI_File_iwrite_all_c_f08( &
   fh, &
   buf, &
@@ -8701,7 +13066,39 @@ subroutine MPI_File_iwrite_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iwrite_all_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iwrite_all => PMPIF_File_iwrite_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_all_f08ts
+#else
 subroutine PMPI_File_iwrite_all_f08( &
   fh, &
   buf, &
@@ -8731,7 +13128,39 @@ subroutine PMPI_File_iwrite_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iwrite_all_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iwrite_all_c => PMPIF_File_iwrite_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_all_c_f08ts
+#else
 subroutine PMPI_File_iwrite_all_c_f08( &
   fh, &
   buf, &
@@ -8761,7 +13190,42 @@ subroutine PMPI_File_iwrite_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iwrite_at_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iwrite_at => MPIF_File_iwrite_at_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_at_f08ts
+#else
 subroutine MPI_File_iwrite_at_f08( &
   fh, &
   offset, &
@@ -8794,7 +13258,42 @@ subroutine MPI_File_iwrite_at_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_at_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iwrite_at_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iwrite_at_c => MPIF_File_iwrite_at_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_at_c_f08ts
+#else
 subroutine MPI_File_iwrite_at_c_f08( &
   fh, &
   offset, &
@@ -8827,7 +13326,42 @@ subroutine MPI_File_iwrite_at_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_at_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iwrite_at_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iwrite_at => PMPIF_File_iwrite_at_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_at_f08ts
+#else
 subroutine PMPI_File_iwrite_at_f08( &
   fh, &
   offset, &
@@ -8860,7 +13394,42 @@ subroutine PMPI_File_iwrite_at_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_at_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iwrite_at_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iwrite_at_c => PMPIF_File_iwrite_at_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_at_c_f08ts
+#else
 subroutine PMPI_File_iwrite_at_c_f08( &
   fh, &
   offset, &
@@ -8893,7 +13462,42 @@ subroutine PMPI_File_iwrite_at_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_at_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iwrite_at_all_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iwrite_at_all => MPIF_File_iwrite_at_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_at_all_f08ts
+#else
 subroutine MPI_File_iwrite_at_all_f08( &
   fh, &
   offset, &
@@ -8926,7 +13530,42 @@ subroutine MPI_File_iwrite_at_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_at_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iwrite_at_all_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iwrite_at_all_c => MPIF_File_iwrite_at_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_at_all_c_f08ts
+#else
 subroutine MPI_File_iwrite_at_all_c_f08( &
   fh, &
   offset, &
@@ -8959,7 +13598,42 @@ subroutine MPI_File_iwrite_at_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_at_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iwrite_at_all_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iwrite_at_all => PMPIF_File_iwrite_at_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_at_all_f08ts
+#else
 subroutine PMPI_File_iwrite_at_all_f08( &
   fh, &
   offset, &
@@ -8992,7 +13666,42 @@ subroutine PMPI_File_iwrite_at_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_at_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iwrite_at_all_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iwrite_at_all_c => PMPIF_File_iwrite_at_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_at_all_c_f08ts
+#else
 subroutine PMPI_File_iwrite_at_all_c_f08( &
   fh, &
   offset, &
@@ -9025,7 +13734,39 @@ subroutine PMPI_File_iwrite_at_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_at_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iwrite_shared_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iwrite_shared => MPIF_File_iwrite_shared_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_shared_f08ts
+#else
 subroutine MPI_File_iwrite_shared_f08( &
   fh, &
   buf, &
@@ -9055,7 +13796,39 @@ subroutine MPI_File_iwrite_shared_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_shared_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_iwrite_shared_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_iwrite_shared_c => MPIF_File_iwrite_shared_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_iwrite_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_iwrite_shared_c_f08ts
+#else
 subroutine MPI_File_iwrite_shared_c_f08( &
   fh, &
   buf, &
@@ -9085,7 +13858,39 @@ subroutine MPI_File_iwrite_shared_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_shared_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iwrite_shared_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iwrite_shared => PMPIF_File_iwrite_shared_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_shared_f08ts
+#else
 subroutine PMPI_File_iwrite_shared_f08( &
   fh, &
   buf, &
@@ -9115,7 +13920,39 @@ subroutine PMPI_File_iwrite_shared_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_shared_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_iwrite_shared_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_iwrite_shared_c => PMPIF_File_iwrite_shared_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_iwrite_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_iwrite_shared_c_f08ts
+#else
 subroutine PMPI_File_iwrite_shared_c_f08( &
   fh, &
   buf, &
@@ -9145,6 +13982,7 @@ subroutine PMPI_File_iwrite_shared_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_shared_c_f08
+#endif
 
 subroutine MPI_File_open_f08( &
   comm, &
@@ -9248,6 +14086,37 @@ subroutine PMPI_File_preallocate_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_preallocate_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read => MPIF_File_read_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_f08ts
+#else
 subroutine MPI_File_read_f08( &
   fh, &
   buf, &
@@ -9277,7 +14146,39 @@ subroutine MPI_File_read_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_c => MPIF_File_read_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_c_f08ts
+#else
 subroutine MPI_File_read_c_f08( &
   fh, &
   buf, &
@@ -9307,7 +14208,39 @@ subroutine MPI_File_read_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read => PMPIF_File_read_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_f08ts
+#else
 subroutine PMPI_File_read_f08( &
   fh, &
   buf, &
@@ -9337,7 +14270,39 @@ subroutine PMPI_File_read_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_c => PMPIF_File_read_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_c_f08ts
+#else
 subroutine PMPI_File_read_c_f08( &
   fh, &
   buf, &
@@ -9367,7 +14332,39 @@ subroutine PMPI_File_read_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_all_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_all => MPIF_File_read_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_all_f08ts
+#else
 subroutine MPI_File_read_all_f08( &
   fh, &
   buf, &
@@ -9397,7 +14394,39 @@ subroutine MPI_File_read_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_all_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_all_c => MPIF_File_read_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_all_c_f08ts
+#else
 subroutine MPI_File_read_all_c_f08( &
   fh, &
   buf, &
@@ -9427,7 +14456,39 @@ subroutine MPI_File_read_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_all_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_all => PMPIF_File_read_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_all_f08ts
+#else
 subroutine PMPI_File_read_all_f08( &
   fh, &
   buf, &
@@ -9457,7 +14518,39 @@ subroutine PMPI_File_read_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_all_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_all_c => PMPIF_File_read_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_all_c_f08ts
+#else
 subroutine PMPI_File_read_all_c_f08( &
   fh, &
   buf, &
@@ -9487,7 +14580,36 @@ subroutine PMPI_File_read_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_all_begin_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_all_begin => MPIF_File_read_all_begin_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_all_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_all_begin_f08ts
+#else
 subroutine MPI_File_read_all_begin_f08( &
   fh, &
   buf, &
@@ -9514,7 +14636,36 @@ subroutine MPI_File_read_all_begin_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_all_begin_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_all_begin_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_all_begin_c => MPIF_File_read_all_begin_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_all_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_all_begin_c_f08ts
+#else
 subroutine MPI_File_read_all_begin_c_f08( &
   fh, &
   buf, &
@@ -9541,7 +14692,36 @@ subroutine MPI_File_read_all_begin_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_all_begin_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_all_begin_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_all_begin => PMPIF_File_read_all_begin_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_all_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_all_begin_f08ts
+#else
 subroutine PMPI_File_read_all_begin_f08( &
   fh, &
   buf, &
@@ -9568,7 +14748,36 @@ subroutine PMPI_File_read_all_begin_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_all_begin_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_all_begin_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_all_begin_c => PMPIF_File_read_all_begin_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_all_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_all_begin_c_f08ts
+#else
 subroutine PMPI_File_read_all_begin_c_f08( &
   fh, &
   buf, &
@@ -9595,7 +14804,33 @@ subroutine PMPI_File_read_all_begin_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_all_begin_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_all_end_f08ts( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_all_end => MPIF_File_read_all_end_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_all_end_f08ts
+#else
 subroutine MPI_File_read_all_end_f08( &
   fh, &
   buf, &
@@ -9619,7 +14854,33 @@ subroutine MPI_File_read_all_end_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_all_end_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_all_end_f08ts( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_all_end => PMPIF_File_read_all_end_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_all_end_f08ts
+#else
 subroutine PMPI_File_read_all_end_f08( &
   fh, &
   buf, &
@@ -9643,7 +14904,42 @@ subroutine PMPI_File_read_all_end_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_all_end_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_at_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_at => MPIF_File_read_at_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_f08ts
+#else
 subroutine MPI_File_read_at_f08( &
   fh, &
   offset, &
@@ -9676,7 +14972,42 @@ subroutine MPI_File_read_at_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_at_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_at_c => MPIF_File_read_at_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_c_f08ts
+#else
 subroutine MPI_File_read_at_c_f08( &
   fh, &
   offset, &
@@ -9709,7 +15040,42 @@ subroutine MPI_File_read_at_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_at_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_at => PMPIF_File_read_at_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_f08ts
+#else
 subroutine PMPI_File_read_at_f08( &
   fh, &
   offset, &
@@ -9742,7 +15108,42 @@ subroutine PMPI_File_read_at_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_at_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_at_c => PMPIF_File_read_at_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_c_f08ts
+#else
 subroutine PMPI_File_read_at_c_f08( &
   fh, &
   offset, &
@@ -9775,7 +15176,42 @@ subroutine PMPI_File_read_at_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_at_all_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_at_all => MPIF_File_read_at_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_all_f08ts
+#else
 subroutine MPI_File_read_at_all_f08( &
   fh, &
   offset, &
@@ -9808,7 +15244,42 @@ subroutine MPI_File_read_at_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_at_all_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_at_all_c => MPIF_File_read_at_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_all_c_f08ts
+#else
 subroutine MPI_File_read_at_all_c_f08( &
   fh, &
   offset, &
@@ -9841,7 +15312,42 @@ subroutine MPI_File_read_at_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_at_all_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_at_all => PMPIF_File_read_at_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_all_f08ts
+#else
 subroutine PMPI_File_read_at_all_f08( &
   fh, &
   offset, &
@@ -9874,7 +15380,42 @@ subroutine PMPI_File_read_at_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_at_all_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_at_all_c => PMPIF_File_read_at_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_all_c_f08ts
+#else
 subroutine PMPI_File_read_at_all_c_f08( &
   fh, &
   offset, &
@@ -9907,7 +15448,39 @@ subroutine PMPI_File_read_at_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_at_all_begin_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_at_all_begin => MPIF_File_read_at_all_begin_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at_all_begin( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_all_begin_f08ts
+#else
 subroutine MPI_File_read_at_all_begin_f08( &
   fh, &
   offset, &
@@ -9937,7 +15510,39 @@ subroutine MPI_File_read_at_all_begin_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_all_begin_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_at_all_begin_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_at_all_begin_c => MPIF_File_read_at_all_begin_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at_all_begin_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_all_begin_c_f08ts
+#else
 subroutine MPI_File_read_at_all_begin_c_f08( &
   fh, &
   offset, &
@@ -9967,7 +15572,39 @@ subroutine MPI_File_read_at_all_begin_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_all_begin_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_at_all_begin_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_at_all_begin => PMPIF_File_read_at_all_begin_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at_all_begin( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_all_begin_f08ts
+#else
 subroutine PMPI_File_read_at_all_begin_f08( &
   fh, &
   offset, &
@@ -9997,7 +15634,39 @@ subroutine PMPI_File_read_at_all_begin_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_all_begin_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_at_all_begin_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_at_all_begin_c => PMPIF_File_read_at_all_begin_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at_all_begin_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_all_begin_c_f08ts
+#else
 subroutine PMPI_File_read_at_all_begin_c_f08( &
   fh, &
   offset, &
@@ -10027,7 +15696,33 @@ subroutine PMPI_File_read_at_all_begin_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_all_begin_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_at_all_end_f08ts( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_at_all_end => MPIF_File_read_at_all_end_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_at_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_at_all_end_f08ts
+#else
 subroutine MPI_File_read_at_all_end_f08( &
   fh, &
   buf, &
@@ -10051,7 +15746,33 @@ subroutine MPI_File_read_at_all_end_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_all_end_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_at_all_end_f08ts( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_at_all_end => PMPIF_File_read_at_all_end_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_at_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_at_all_end_f08ts
+#else
 subroutine PMPI_File_read_at_all_end_f08( &
   fh, &
   buf, &
@@ -10075,7 +15796,39 @@ subroutine PMPI_File_read_at_all_end_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_all_end_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_ordered_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_ordered => MPIF_File_read_ordered_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_ordered( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_ordered_f08ts
+#else
 subroutine MPI_File_read_ordered_f08( &
   fh, &
   buf, &
@@ -10105,7 +15858,39 @@ subroutine MPI_File_read_ordered_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_ordered_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_ordered_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_ordered_c => MPIF_File_read_ordered_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_ordered_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_ordered_c_f08ts
+#else
 subroutine MPI_File_read_ordered_c_f08( &
   fh, &
   buf, &
@@ -10135,7 +15920,39 @@ subroutine MPI_File_read_ordered_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_ordered_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_ordered_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_ordered => PMPIF_File_read_ordered_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_ordered( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_ordered_f08ts
+#else
 subroutine PMPI_File_read_ordered_f08( &
   fh, &
   buf, &
@@ -10165,7 +15982,39 @@ subroutine PMPI_File_read_ordered_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_ordered_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_ordered_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_ordered_c => PMPIF_File_read_ordered_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_ordered_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_ordered_c_f08ts
+#else
 subroutine PMPI_File_read_ordered_c_f08( &
   fh, &
   buf, &
@@ -10195,7 +16044,36 @@ subroutine PMPI_File_read_ordered_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_ordered_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_ordered_begin_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_ordered_begin => MPIF_File_read_ordered_begin_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_ordered_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_ordered_begin_f08ts
+#else
 subroutine MPI_File_read_ordered_begin_f08( &
   fh, &
   buf, &
@@ -10222,7 +16100,36 @@ subroutine MPI_File_read_ordered_begin_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_ordered_begin_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_ordered_begin_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_ordered_begin_c => MPIF_File_read_ordered_begin_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_ordered_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_ordered_begin_c_f08ts
+#else
 subroutine MPI_File_read_ordered_begin_c_f08( &
   fh, &
   buf, &
@@ -10249,7 +16156,36 @@ subroutine MPI_File_read_ordered_begin_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_ordered_begin_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_ordered_begin_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_ordered_begin => PMPIF_File_read_ordered_begin_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_ordered_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_ordered_begin_f08ts
+#else
 subroutine PMPI_File_read_ordered_begin_f08( &
   fh, &
   buf, &
@@ -10276,7 +16212,36 @@ subroutine PMPI_File_read_ordered_begin_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_ordered_begin_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_ordered_begin_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_ordered_begin_c => PMPIF_File_read_ordered_begin_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_ordered_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_ordered_begin_c_f08ts
+#else
 subroutine PMPI_File_read_ordered_begin_c_f08( &
   fh, &
   buf, &
@@ -10303,7 +16268,33 @@ subroutine PMPI_File_read_ordered_begin_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_ordered_begin_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_ordered_end_f08ts( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_ordered_end => MPIF_File_read_ordered_end_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_ordered_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_ordered_end_f08ts
+#else
 subroutine MPI_File_read_ordered_end_f08( &
   fh, &
   buf, &
@@ -10327,7 +16318,33 @@ subroutine MPI_File_read_ordered_end_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_ordered_end_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_ordered_end_f08ts( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_ordered_end => PMPIF_File_read_ordered_end_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), asynchronous :: buf
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_ordered_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_ordered_end_f08ts
+#else
 subroutine PMPI_File_read_ordered_end_f08( &
   fh, &
   buf, &
@@ -10351,7 +16368,39 @@ subroutine PMPI_File_read_ordered_end_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_ordered_end_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_shared_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_shared => MPIF_File_read_shared_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_shared_f08ts
+#else
 subroutine MPI_File_read_shared_f08( &
   fh, &
   buf, &
@@ -10381,7 +16430,39 @@ subroutine MPI_File_read_shared_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_shared_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_read_shared_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_read_shared_c => MPIF_File_read_shared_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_read_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_read_shared_c_f08ts
+#else
 subroutine MPI_File_read_shared_c_f08( &
   fh, &
   buf, &
@@ -10411,7 +16492,39 @@ subroutine MPI_File_read_shared_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_shared_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_shared_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_shared => PMPIF_File_read_shared_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_shared_f08ts
+#else
 subroutine PMPI_File_read_shared_f08( &
   fh, &
   buf, &
@@ -10441,7 +16554,39 @@ subroutine PMPI_File_read_shared_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_shared_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_read_shared_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_read_shared_c => PMPIF_File_read_shared_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_read_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_read_shared_c_f08ts
+#else
 subroutine PMPI_File_read_shared_c_f08( &
   fh, &
   buf, &
@@ -10471,6 +16616,7 @@ subroutine PMPI_File_read_shared_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_shared_c_f08
+#endif
 
 subroutine MPI_File_seek_f08( &
   fh, &
@@ -10838,6 +16984,37 @@ subroutine PMPI_File_sync_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_sync_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write => MPIF_File_write_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_f08ts
+#else
 subroutine MPI_File_write_f08( &
   fh, &
   buf, &
@@ -10867,7 +17044,39 @@ subroutine MPI_File_write_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_c => MPIF_File_write_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_c_f08ts
+#else
 subroutine MPI_File_write_c_f08( &
   fh, &
   buf, &
@@ -10897,7 +17106,39 @@ subroutine MPI_File_write_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write => PMPIF_File_write_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_f08ts
+#else
 subroutine PMPI_File_write_f08( &
   fh, &
   buf, &
@@ -10927,7 +17168,39 @@ subroutine PMPI_File_write_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_c => PMPIF_File_write_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_c_f08ts
+#else
 subroutine PMPI_File_write_c_f08( &
   fh, &
   buf, &
@@ -10957,7 +17230,39 @@ subroutine PMPI_File_write_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_all_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_all => MPIF_File_write_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_all_f08ts
+#else
 subroutine MPI_File_write_all_f08( &
   fh, &
   buf, &
@@ -10987,7 +17292,39 @@ subroutine MPI_File_write_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_all_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_all_c => MPIF_File_write_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_all_c_f08ts
+#else
 subroutine MPI_File_write_all_c_f08( &
   fh, &
   buf, &
@@ -11017,7 +17354,39 @@ subroutine MPI_File_write_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_all_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_all => PMPIF_File_write_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_all( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_all_f08ts
+#else
 subroutine PMPI_File_write_all_f08( &
   fh, &
   buf, &
@@ -11047,7 +17416,39 @@ subroutine PMPI_File_write_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_all_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_all_c => PMPIF_File_write_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_all_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_all_c_f08ts
+#else
 subroutine PMPI_File_write_all_c_f08( &
   fh, &
   buf, &
@@ -11077,7 +17478,36 @@ subroutine PMPI_File_write_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_all_begin_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_all_begin => MPIF_File_write_all_begin_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_all_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_all_begin_f08ts
+#else
 subroutine MPI_File_write_all_begin_f08( &
   fh, &
   buf, &
@@ -11104,7 +17534,36 @@ subroutine MPI_File_write_all_begin_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_all_begin_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_all_begin_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_all_begin_c => MPIF_File_write_all_begin_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_all_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_all_begin_c_f08ts
+#else
 subroutine MPI_File_write_all_begin_c_f08( &
   fh, &
   buf, &
@@ -11131,7 +17590,36 @@ subroutine MPI_File_write_all_begin_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_all_begin_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_all_begin_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_all_begin => PMPIF_File_write_all_begin_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_all_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_all_begin_f08ts
+#else
 subroutine PMPI_File_write_all_begin_f08( &
   fh, &
   buf, &
@@ -11158,7 +17646,36 @@ subroutine PMPI_File_write_all_begin_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_all_begin_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_all_begin_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_all_begin_c => PMPIF_File_write_all_begin_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_all_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_all_begin_c_f08ts
+#else
 subroutine PMPI_File_write_all_begin_c_f08( &
   fh, &
   buf, &
@@ -11185,7 +17702,33 @@ subroutine PMPI_File_write_all_begin_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_all_begin_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_all_end_f08ts( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_all_end => MPIF_File_write_all_end_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_all_end_f08ts
+#else
 subroutine MPI_File_write_all_end_f08( &
   fh, &
   buf, &
@@ -11209,7 +17752,33 @@ subroutine MPI_File_write_all_end_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_all_end_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_all_end_f08ts( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_all_end => PMPIF_File_write_all_end_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_all_end_f08ts
+#else
 subroutine PMPI_File_write_all_end_f08( &
   fh, &
   buf, &
@@ -11233,7 +17802,42 @@ subroutine PMPI_File_write_all_end_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_all_end_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_at_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_at => MPIF_File_write_at_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_f08ts
+#else
 subroutine MPI_File_write_at_f08( &
   fh, &
   offset, &
@@ -11266,7 +17870,42 @@ subroutine MPI_File_write_at_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_at_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_at_c => MPIF_File_write_at_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_c_f08ts
+#else
 subroutine MPI_File_write_at_c_f08( &
   fh, &
   offset, &
@@ -11299,7 +17938,42 @@ subroutine MPI_File_write_at_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_at_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_at => PMPIF_File_write_at_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_f08ts
+#else
 subroutine PMPI_File_write_at_f08( &
   fh, &
   offset, &
@@ -11332,7 +18006,42 @@ subroutine PMPI_File_write_at_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_at_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_at_c => PMPIF_File_write_at_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_c_f08ts
+#else
 subroutine PMPI_File_write_at_c_f08( &
   fh, &
   offset, &
@@ -11365,7 +18074,42 @@ subroutine PMPI_File_write_at_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_at_all_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_at_all => MPIF_File_write_at_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_all_f08ts
+#else
 subroutine MPI_File_write_at_all_f08( &
   fh, &
   offset, &
@@ -11398,7 +18142,42 @@ subroutine MPI_File_write_at_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_at_all_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_at_all_c => MPIF_File_write_at_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_all_c_f08ts
+#else
 subroutine MPI_File_write_at_all_c_f08( &
   fh, &
   offset, &
@@ -11431,7 +18210,42 @@ subroutine MPI_File_write_at_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_at_all_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_at_all => PMPIF_File_write_at_all_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at_all( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_all_f08ts
+#else
 subroutine PMPI_File_write_at_all_f08( &
   fh, &
   offset, &
@@ -11464,7 +18278,42 @@ subroutine PMPI_File_write_at_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_all_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_at_all_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_at_all_c => PMPIF_File_write_at_all_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at_all_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_all_c_f08ts
+#else
 subroutine PMPI_File_write_at_all_c_f08( &
   fh, &
   offset, &
@@ -11497,7 +18346,39 @@ subroutine PMPI_File_write_at_all_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_all_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_at_all_begin_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_at_all_begin => MPIF_File_write_at_all_begin_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at_all_begin( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_all_begin_f08ts
+#else
 subroutine MPI_File_write_at_all_begin_f08( &
   fh, &
   offset, &
@@ -11527,7 +18408,39 @@ subroutine MPI_File_write_at_all_begin_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_all_begin_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_at_all_begin_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_at_all_begin_c => MPIF_File_write_at_all_begin_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at_all_begin_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_all_begin_c_f08ts
+#else
 subroutine MPI_File_write_at_all_begin_c_f08( &
   fh, &
   offset, &
@@ -11557,7 +18470,39 @@ subroutine MPI_File_write_at_all_begin_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_all_begin_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_at_all_begin_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_at_all_begin => PMPIF_File_write_at_all_begin_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at_all_begin( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_all_begin_f08ts
+#else
 subroutine PMPI_File_write_at_all_begin_f08( &
   fh, &
   offset, &
@@ -11587,7 +18532,39 @@ subroutine PMPI_File_write_at_all_begin_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_all_begin_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_at_all_begin_c_f08ts( &
+  fh, &
+  offset, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_at_all_begin_c => PMPIF_File_write_at_all_begin_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  integer(MPI_OFFSET_KIND), intent(in) :: offset
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at_all_begin_c( &
+    fh%MPI_VAL, &
+    offset, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_all_begin_c_f08ts
+#else
 subroutine PMPI_File_write_at_all_begin_c_f08( &
   fh, &
   offset, &
@@ -11617,7 +18594,33 @@ subroutine PMPI_File_write_at_all_begin_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_all_begin_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_at_all_end_f08ts( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_at_all_end => MPIF_File_write_at_all_end_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_at_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_at_all_end_f08ts
+#else
 subroutine MPI_File_write_at_all_end_f08( &
   fh, &
   buf, &
@@ -11641,7 +18644,33 @@ subroutine MPI_File_write_at_all_end_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_all_end_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_at_all_end_f08ts( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_at_all_end => PMPIF_File_write_at_all_end_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_at_all_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_at_all_end_f08ts
+#else
 subroutine PMPI_File_write_at_all_end_f08( &
   fh, &
   buf, &
@@ -11665,7 +18694,39 @@ subroutine PMPI_File_write_at_all_end_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_all_end_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_ordered_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_ordered => MPIF_File_write_ordered_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_ordered( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_ordered_f08ts
+#else
 subroutine MPI_File_write_ordered_f08( &
   fh, &
   buf, &
@@ -11695,7 +18756,39 @@ subroutine MPI_File_write_ordered_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_ordered_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_ordered_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_ordered_c => MPIF_File_write_ordered_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_ordered_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_ordered_c_f08ts
+#else
 subroutine MPI_File_write_ordered_c_f08( &
   fh, &
   buf, &
@@ -11725,7 +18818,39 @@ subroutine MPI_File_write_ordered_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_ordered_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_ordered_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_ordered => PMPIF_File_write_ordered_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_ordered( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_ordered_f08ts
+#else
 subroutine PMPI_File_write_ordered_f08( &
   fh, &
   buf, &
@@ -11755,7 +18880,39 @@ subroutine PMPI_File_write_ordered_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_ordered_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_ordered_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_ordered_c => PMPIF_File_write_ordered_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_ordered_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_ordered_c_f08ts
+#else
 subroutine PMPI_File_write_ordered_c_f08( &
   fh, &
   buf, &
@@ -11785,7 +18942,36 @@ subroutine PMPI_File_write_ordered_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_ordered_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_ordered_begin_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_ordered_begin => MPIF_File_write_ordered_begin_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_ordered_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_ordered_begin_f08ts
+#else
 subroutine MPI_File_write_ordered_begin_f08( &
   fh, &
   buf, &
@@ -11812,7 +18998,36 @@ subroutine MPI_File_write_ordered_begin_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_ordered_begin_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_ordered_begin_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_ordered_begin_c => MPIF_File_write_ordered_begin_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_ordered_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_ordered_begin_c_f08ts
+#else
 subroutine MPI_File_write_ordered_begin_c_f08( &
   fh, &
   buf, &
@@ -11839,7 +19054,36 @@ subroutine MPI_File_write_ordered_begin_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_ordered_begin_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_ordered_begin_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_ordered_begin => PMPIF_File_write_ordered_begin_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_ordered_begin( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_ordered_begin_f08ts
+#else
 subroutine PMPI_File_write_ordered_begin_f08( &
   fh, &
   buf, &
@@ -11866,7 +19110,36 @@ subroutine PMPI_File_write_ordered_begin_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_ordered_begin_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_ordered_begin_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_ordered_begin_c => PMPIF_File_write_ordered_begin_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_ordered_begin_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_ordered_begin_c_f08ts
+#else
 subroutine PMPI_File_write_ordered_begin_c_f08( &
   fh, &
   buf, &
@@ -11893,7 +19166,33 @@ subroutine PMPI_File_write_ordered_begin_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_ordered_begin_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_ordered_end_f08ts( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_ordered_end => MPIF_File_write_ordered_end_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_ordered_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_ordered_end_f08ts
+#else
 subroutine MPI_File_write_ordered_end_f08( &
   fh, &
   buf, &
@@ -11917,7 +19216,33 @@ subroutine MPI_File_write_ordered_end_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_ordered_end_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_ordered_end_f08ts( &
+  fh, &
+  buf, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_ordered_end => PMPIF_File_write_ordered_end_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_ordered_end( &
+    fh%MPI_VAL, &
+    buf, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_ordered_end_f08ts
+#else
 subroutine PMPI_File_write_ordered_end_f08( &
   fh, &
   buf, &
@@ -11941,7 +19266,39 @@ subroutine PMPI_File_write_ordered_end_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_ordered_end_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_shared_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_shared => MPIF_File_write_shared_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_shared_f08ts
+#else
 subroutine MPI_File_write_shared_f08( &
   fh, &
   buf, &
@@ -11971,7 +19328,39 @@ subroutine MPI_File_write_shared_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_shared_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_File_write_shared_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_File_write_shared_c => MPIF_File_write_shared_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_File_write_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_File_write_shared_c_f08ts
+#else
 subroutine MPI_File_write_shared_c_f08( &
   fh, &
   buf, &
@@ -12001,7 +19390,39 @@ subroutine MPI_File_write_shared_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_shared_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_shared_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_shared => PMPIF_File_write_shared_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_shared( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_shared_f08ts
+#else
 subroutine PMPI_File_write_shared_f08( &
   fh, &
   buf, &
@@ -12031,7 +19452,39 @@ subroutine PMPI_File_write_shared_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_shared_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_File_write_shared_c_f08ts( &
+  fh, &
+  buf, &
+  count, &
+  datatype, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_File_write_shared_c => PMPIF_File_write_shared_c_cdesc
+  implicit none
+  type(MPI_File), intent(in) :: fh
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_File_write_shared_c( &
+    fh%MPI_VAL, &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_File_write_shared_c_f08ts
+#else
 subroutine PMPI_File_write_shared_c_f08( &
   fh, &
   buf, &
@@ -12061,6 +19514,7 @@ subroutine PMPI_File_write_shared_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_shared_c_f08
+#endif
 
 subroutine MPI_Finalize_f08( &
   ierror &
@@ -12128,6 +19582,25 @@ subroutine PMPI_Finalized_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Finalized_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Free_mem_f08ts( &
+  base, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Free_mem => MPIF_Free_mem_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: base
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Free_mem( &
+    base, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Free_mem_f08ts
+#else
 subroutine MPI_Free_mem_f08( &
   base, &
   ierror &
@@ -12145,7 +19618,27 @@ subroutine MPI_Free_mem_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Free_mem_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Free_mem_f08ts( &
+  base, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Free_mem => PMPIF_Free_mem_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: base
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Free_mem( &
+    base, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Free_mem_f08ts
+#else
 subroutine PMPI_Free_mem_f08( &
   base, &
   ierror &
@@ -12163,7 +19656,48 @@ subroutine PMPI_Free_mem_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Free_mem_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Gather_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Gather => MPIF_Gather_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gather_f08ts
+#else
 subroutine MPI_Gather_f08( &
   sendbuf, &
   sendcount, &
@@ -12202,7 +19736,48 @@ subroutine MPI_Gather_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gather_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Gather_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Gather_c => MPIF_Gather_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gather_c_f08ts
+#else
 subroutine MPI_Gather_c_f08( &
   sendbuf, &
   sendcount, &
@@ -12241,7 +19816,48 @@ subroutine MPI_Gather_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gather_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Gather_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Gather => PMPIF_Gather_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gather_f08ts
+#else
 subroutine PMPI_Gather_f08( &
   sendbuf, &
   sendcount, &
@@ -12280,7 +19896,48 @@ subroutine PMPI_Gather_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gather_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Gather_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Gather_c => PMPIF_Gather_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gather_c_f08ts
+#else
 subroutine PMPI_Gather_c_f08( &
   sendbuf, &
   sendcount, &
@@ -12319,7 +19976,54 @@ subroutine PMPI_Gather_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gather_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Gather_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Gather_init => MPIF_Gather_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gather_init_f08ts
+#else
 subroutine MPI_Gather_init_f08( &
   sendbuf, &
   sendcount, &
@@ -12364,7 +20068,54 @@ subroutine MPI_Gather_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gather_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Gather_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Gather_init_c => MPIF_Gather_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gather_init_c_f08ts
+#else
 subroutine MPI_Gather_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -12409,7 +20160,54 @@ subroutine MPI_Gather_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gather_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Gather_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Gather_init => PMPIF_Gather_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gather_init_f08ts
+#else
 subroutine PMPI_Gather_init_f08( &
   sendbuf, &
   sendcount, &
@@ -12454,7 +20252,54 @@ subroutine PMPI_Gather_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gather_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Gather_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Gather_init_c => PMPIF_Gather_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gather_init_c_f08ts
+#else
 subroutine PMPI_Gather_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -12499,7 +20344,51 @@ subroutine PMPI_Gather_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gather_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Gatherv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Gatherv => MPIF_Gatherv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gatherv_f08ts
+#else
 subroutine MPI_Gatherv_f08( &
   sendbuf, &
   sendcount, &
@@ -12541,7 +20430,51 @@ subroutine MPI_Gatherv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gatherv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Gatherv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Gatherv_c => MPIF_Gatherv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gatherv_c_f08ts
+#else
 subroutine MPI_Gatherv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -12583,7 +20516,51 @@ subroutine MPI_Gatherv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gatherv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Gatherv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Gatherv => PMPIF_Gatherv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gatherv_f08ts
+#else
 subroutine PMPI_Gatherv_f08( &
   sendbuf, &
   sendcount, &
@@ -12625,7 +20602,51 @@ subroutine PMPI_Gatherv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gatherv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Gatherv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Gatherv_c => PMPIF_Gatherv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gatherv_c_f08ts
+#else
 subroutine PMPI_Gatherv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -12667,7 +20688,57 @@ subroutine PMPI_Gatherv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gatherv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Gatherv_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Gatherv_init => MPIF_Gatherv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gatherv_init_f08ts
+#else
 subroutine MPI_Gatherv_init_f08( &
   sendbuf, &
   sendcount, &
@@ -12715,7 +20786,57 @@ subroutine MPI_Gatherv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gatherv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Gatherv_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Gatherv_init_c => MPIF_Gatherv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Gatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Gatherv_init_c_f08ts
+#else
 subroutine MPI_Gatherv_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -12763,7 +20884,57 @@ subroutine MPI_Gatherv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gatherv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Gatherv_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Gatherv_init => PMPIF_Gatherv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gatherv_init_f08ts
+#else
 subroutine PMPI_Gatherv_init_f08( &
   sendbuf, &
   sendcount, &
@@ -12811,7 +20982,57 @@ subroutine PMPI_Gatherv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gatherv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Gatherv_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Gatherv_init_c => PMPIF_Gatherv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Gatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Gatherv_init_c_f08ts
+#else
 subroutine PMPI_Gatherv_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -12859,7 +21080,48 @@ subroutine PMPI_Gatherv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gatherv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Get_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Get => MPIF_Get_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_f08ts
+#else
 subroutine MPI_Get_f08( &
   origin_addr, &
   origin_count, &
@@ -12898,7 +21160,48 @@ subroutine MPI_Get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Get_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Get_c => MPIF_Get_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_c_f08ts
+#else
 subroutine MPI_Get_c_f08( &
   origin_addr, &
   origin_count, &
@@ -12937,7 +21240,48 @@ subroutine MPI_Get_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Get_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Get => PMPIF_Get_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_f08ts
+#else
 subroutine PMPI_Get_f08( &
   origin_addr, &
   origin_count, &
@@ -12976,7 +21320,48 @@ subroutine PMPI_Get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Get_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Get_c => PMPIF_Get_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_c_f08ts
+#else
 subroutine PMPI_Get_c_f08( &
   origin_addr, &
   origin_count, &
@@ -13015,7 +21400,60 @@ subroutine PMPI_Get_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Get_accumulate_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Get_accumulate => MPIF_Get_accumulate_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  type(*), dimension(..), asynchronous :: result_addr
+  integer, intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_accumulate_f08ts
+#else
 subroutine MPI_Get_accumulate_f08( &
   origin_addr, &
   origin_count, &
@@ -13066,7 +21504,60 @@ subroutine MPI_Get_accumulate_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_accumulate_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Get_accumulate_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Get_accumulate_c => MPIF_Get_accumulate_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  type(*), dimension(..), asynchronous :: result_addr
+  integer(MPI_COUNT_KIND), intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_accumulate_c_f08ts
+#else
 subroutine MPI_Get_accumulate_c_f08( &
   origin_addr, &
   origin_count, &
@@ -13117,7 +21608,60 @@ subroutine MPI_Get_accumulate_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_accumulate_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Get_accumulate_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Get_accumulate => PMPIF_Get_accumulate_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  type(*), dimension(..), asynchronous :: result_addr
+  integer, intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_accumulate_f08ts
+#else
 subroutine PMPI_Get_accumulate_f08( &
   origin_addr, &
   origin_count, &
@@ -13168,7 +21712,60 @@ subroutine PMPI_Get_accumulate_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_accumulate_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Get_accumulate_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Get_accumulate_c => PMPIF_Get_accumulate_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  type(*), dimension(..), asynchronous :: result_addr
+  integer(MPI_COUNT_KIND), intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_accumulate_c_f08ts
+#else
 subroutine PMPI_Get_accumulate_c_f08( &
   origin_addr, &
   origin_count, &
@@ -13219,7 +21816,30 @@ subroutine PMPI_Get_accumulate_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_accumulate_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Get_address_f08ts( &
+  location, &
+  address, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Get_address => MPIF_Get_address_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: location
+  integer(MPI_ADDRESS_KIND), intent(out) :: address
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Get_address( &
+    location, &
+    address, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Get_address_f08ts
+#else
 subroutine MPI_Get_address_f08( &
   location, &
   address, &
@@ -13240,7 +21860,30 @@ subroutine MPI_Get_address_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_address_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Get_address_f08ts( &
+  location, &
+  address, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Get_address => PMPIF_Get_address_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: location
+  integer(MPI_ADDRESS_KIND), intent(out) :: address
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Get_address( &
+    location, &
+    address, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Get_address_f08ts
+#else
 subroutine PMPI_Get_address_f08( &
   location, &
   address, &
@@ -13261,6 +21904,7 @@ subroutine PMPI_Get_address_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_address_f08
+#endif
 
 subroutine MPI_Get_count_f08( &
   status, &
@@ -14732,6 +23376,46 @@ subroutine PMPI_Group_union_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_union_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iallgather_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iallgather => MPIF_Iallgather_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iallgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iallgather_f08ts
+#else
 subroutine MPI_Iallgather_f08( &
   sendbuf, &
   sendcount, &
@@ -14770,7 +23454,48 @@ subroutine MPI_Iallgather_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iallgather_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iallgather_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iallgather_c => MPIF_Iallgather_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iallgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iallgather_c_f08ts
+#else
 subroutine MPI_Iallgather_c_f08( &
   sendbuf, &
   sendcount, &
@@ -14809,7 +23534,48 @@ subroutine MPI_Iallgather_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iallgather_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iallgather_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iallgather => PMPIF_Iallgather_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iallgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iallgather_f08ts
+#else
 subroutine PMPI_Iallgather_f08( &
   sendbuf, &
   sendcount, &
@@ -14848,7 +23614,48 @@ subroutine PMPI_Iallgather_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iallgather_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iallgather_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iallgather_c => PMPIF_Iallgather_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iallgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iallgather_c_f08ts
+#else
 subroutine PMPI_Iallgather_c_f08( &
   sendbuf, &
   sendcount, &
@@ -14887,7 +23694,51 @@ subroutine PMPI_Iallgather_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iallgather_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iallgatherv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iallgatherv => MPIF_Iallgatherv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iallgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iallgatherv_f08ts
+#else
 subroutine MPI_Iallgatherv_f08( &
   sendbuf, &
   sendcount, &
@@ -14929,7 +23780,51 @@ subroutine MPI_Iallgatherv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iallgatherv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iallgatherv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iallgatherv_c => MPIF_Iallgatherv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iallgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iallgatherv_c_f08ts
+#else
 subroutine MPI_Iallgatherv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -14971,7 +23866,51 @@ subroutine MPI_Iallgatherv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iallgatherv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iallgatherv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iallgatherv => PMPIF_Iallgatherv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iallgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iallgatherv_f08ts
+#else
 subroutine PMPI_Iallgatherv_f08( &
   sendbuf, &
   sendcount, &
@@ -15013,7 +23952,51 @@ subroutine PMPI_Iallgatherv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iallgatherv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iallgatherv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iallgatherv_c => PMPIF_Iallgatherv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iallgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iallgatherv_c_f08ts
+#else
 subroutine PMPI_Iallgatherv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -15055,7 +24038,45 @@ subroutine PMPI_Iallgatherv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iallgatherv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iallreduce_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iallreduce => MPIF_Iallreduce_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iallreduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iallreduce_f08ts
+#else
 subroutine MPI_Iallreduce_f08( &
   sendbuf, &
   recvbuf, &
@@ -15091,7 +24112,45 @@ subroutine MPI_Iallreduce_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iallreduce_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iallreduce_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iallreduce_c => MPIF_Iallreduce_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iallreduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iallreduce_c_f08ts
+#else
 subroutine MPI_Iallreduce_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -15127,7 +24186,45 @@ subroutine MPI_Iallreduce_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iallreduce_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iallreduce_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iallreduce => PMPIF_Iallreduce_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iallreduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iallreduce_f08ts
+#else
 subroutine PMPI_Iallreduce_f08( &
   sendbuf, &
   recvbuf, &
@@ -15163,7 +24260,45 @@ subroutine PMPI_Iallreduce_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iallreduce_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iallreduce_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iallreduce_c => PMPIF_Iallreduce_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iallreduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iallreduce_c_f08ts
+#else
 subroutine PMPI_Iallreduce_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -15199,7 +24334,48 @@ subroutine PMPI_Iallreduce_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iallreduce_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ialltoall_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ialltoall => MPIF_Ialltoall_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ialltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ialltoall_f08ts
+#else
 subroutine MPI_Ialltoall_f08( &
   sendbuf, &
   sendcount, &
@@ -15238,7 +24414,48 @@ subroutine MPI_Ialltoall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ialltoall_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ialltoall_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ialltoall_c => MPIF_Ialltoall_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ialltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ialltoall_c_f08ts
+#else
 subroutine MPI_Ialltoall_c_f08( &
   sendbuf, &
   sendcount, &
@@ -15277,7 +24494,48 @@ subroutine MPI_Ialltoall_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ialltoall_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ialltoall_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ialltoall => PMPIF_Ialltoall_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ialltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ialltoall_f08ts
+#else
 subroutine PMPI_Ialltoall_f08( &
   sendbuf, &
   sendcount, &
@@ -15316,7 +24574,48 @@ subroutine PMPI_Ialltoall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ialltoall_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ialltoall_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ialltoall_c => PMPIF_Ialltoall_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ialltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ialltoall_c_f08ts
+#else
 subroutine PMPI_Ialltoall_c_f08( &
   sendbuf, &
   sendcount, &
@@ -15355,7 +24654,54 @@ subroutine PMPI_Ialltoall_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ialltoall_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ialltoallv_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ialltoallv => MPIF_Ialltoallv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ialltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ialltoallv_f08ts
+#else
 subroutine MPI_Ialltoallv_f08( &
   sendbuf, &
   sendcounts, &
@@ -15400,7 +24746,54 @@ subroutine MPI_Ialltoallv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ialltoallv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ialltoallv_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ialltoallv_c => MPIF_Ialltoallv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ialltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ialltoallv_c_f08ts
+#else
 subroutine MPI_Ialltoallv_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -15445,7 +24838,54 @@ subroutine MPI_Ialltoallv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ialltoallv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ialltoallv_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ialltoallv => PMPIF_Ialltoallv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ialltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ialltoallv_f08ts
+#else
 subroutine PMPI_Ialltoallv_f08( &
   sendbuf, &
   sendcounts, &
@@ -15490,7 +24930,54 @@ subroutine PMPI_Ialltoallv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ialltoallv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ialltoallv_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ialltoallv_c => PMPIF_Ialltoallv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ialltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ialltoallv_c_f08ts
+#else
 subroutine PMPI_Ialltoallv_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -15535,7 +25022,54 @@ subroutine PMPI_Ialltoallv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ialltoallv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ialltoallw_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ialltoallw => MPIF_Ialltoallw_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ialltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ialltoallw_f08ts
+#else
 subroutine MPI_Ialltoallw_f08( &
   sendbuf, &
   sendcounts, &
@@ -15580,7 +25114,54 @@ subroutine MPI_Ialltoallw_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ialltoallw_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ialltoallw_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ialltoallw_c => MPIF_Ialltoallw_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ialltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ialltoallw_c_f08ts
+#else
 subroutine MPI_Ialltoallw_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -15625,7 +25206,54 @@ subroutine MPI_Ialltoallw_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ialltoallw_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ialltoallw_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ialltoallw => PMPIF_Ialltoallw_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ialltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ialltoallw_f08ts
+#else
 subroutine PMPI_Ialltoallw_f08( &
   sendbuf, &
   sendcounts, &
@@ -15670,7 +25298,54 @@ subroutine PMPI_Ialltoallw_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ialltoallw_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ialltoallw_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ialltoallw_c => PMPIF_Ialltoallw_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ialltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ialltoallw_c_f08ts
+#else
 subroutine PMPI_Ialltoallw_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -15715,6 +25390,7 @@ subroutine PMPI_Ialltoallw_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ialltoallw_c_f08
+#endif
 
 subroutine MPI_Ibarrier_f08( &
   comm, &
@@ -15758,6 +25434,40 @@ subroutine PMPI_Ibarrier_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ibarrier_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ibcast_f08ts( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ibcast => MPIF_Ibcast_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buffer
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ibcast( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ibcast_f08ts
+#else
 subroutine MPI_Ibcast_f08( &
   buffer, &
   count, &
@@ -15790,7 +25500,42 @@ subroutine MPI_Ibcast_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ibcast_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ibcast_c_f08ts( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ibcast_c => MPIF_Ibcast_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buffer
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ibcast_c( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ibcast_c_f08ts
+#else
 subroutine MPI_Ibcast_c_f08( &
   buffer, &
   count, &
@@ -15823,7 +25568,42 @@ subroutine MPI_Ibcast_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ibcast_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ibcast_f08ts( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ibcast => PMPIF_Ibcast_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buffer
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ibcast( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ibcast_f08ts
+#else
 subroutine PMPI_Ibcast_f08( &
   buffer, &
   count, &
@@ -15856,7 +25636,42 @@ subroutine PMPI_Ibcast_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ibcast_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ibcast_c_f08ts( &
+  buffer, &
+  count, &
+  datatype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ibcast_c => PMPIF_Ibcast_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buffer
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ibcast_c( &
+    buffer, &
+    count, &
+    datatype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ibcast_c_f08ts
+#else
 subroutine PMPI_Ibcast_c_f08( &
   buffer, &
   count, &
@@ -15889,7 +25704,45 @@ subroutine PMPI_Ibcast_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ibcast_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ibsend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ibsend => MPIF_Ibsend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ibsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ibsend_f08ts
+#else
 subroutine MPI_Ibsend_f08( &
   buf, &
   count, &
@@ -15925,7 +25778,45 @@ subroutine MPI_Ibsend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ibsend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ibsend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ibsend_c => MPIF_Ibsend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ibsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ibsend_c_f08ts
+#else
 subroutine MPI_Ibsend_c_f08( &
   buf, &
   count, &
@@ -15961,7 +25852,45 @@ subroutine MPI_Ibsend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ibsend_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ibsend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ibsend => PMPIF_Ibsend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ibsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ibsend_f08ts
+#else
 subroutine PMPI_Ibsend_f08( &
   buf, &
   count, &
@@ -15997,7 +25926,45 @@ subroutine PMPI_Ibsend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ibsend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ibsend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ibsend_c => PMPIF_Ibsend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ibsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ibsend_c_f08ts
+#else
 subroutine PMPI_Ibsend_c_f08( &
   buf, &
   count, &
@@ -16033,7 +26000,45 @@ subroutine PMPI_Ibsend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ibsend_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iexscan_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iexscan => MPIF_Iexscan_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iexscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iexscan_f08ts
+#else
 subroutine MPI_Iexscan_f08( &
   sendbuf, &
   recvbuf, &
@@ -16069,7 +26074,45 @@ subroutine MPI_Iexscan_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iexscan_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iexscan_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iexscan_c => MPIF_Iexscan_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iexscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iexscan_c_f08ts
+#else
 subroutine MPI_Iexscan_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -16105,7 +26148,45 @@ subroutine MPI_Iexscan_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iexscan_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iexscan_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iexscan => PMPIF_Iexscan_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iexscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iexscan_f08ts
+#else
 subroutine PMPI_Iexscan_f08( &
   sendbuf, &
   recvbuf, &
@@ -16141,7 +26222,45 @@ subroutine PMPI_Iexscan_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iexscan_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iexscan_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iexscan_c => PMPIF_Iexscan_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iexscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iexscan_c_f08ts
+#else
 subroutine PMPI_Iexscan_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -16177,7 +26296,51 @@ subroutine PMPI_Iexscan_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iexscan_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Igather_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Igather => MPIF_Igather_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Igather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Igather_f08ts
+#else
 subroutine MPI_Igather_f08( &
   sendbuf, &
   sendcount, &
@@ -16219,7 +26382,51 @@ subroutine MPI_Igather_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Igather_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Igather_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Igather_c => MPIF_Igather_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Igather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Igather_c_f08ts
+#else
 subroutine MPI_Igather_c_f08( &
   sendbuf, &
   sendcount, &
@@ -16261,7 +26468,51 @@ subroutine MPI_Igather_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Igather_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Igather_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Igather => PMPIF_Igather_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Igather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Igather_f08ts
+#else
 subroutine PMPI_Igather_f08( &
   sendbuf, &
   sendcount, &
@@ -16303,7 +26554,51 @@ subroutine PMPI_Igather_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Igather_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Igather_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Igather_c => PMPIF_Igather_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Igather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Igather_c_f08ts
+#else
 subroutine PMPI_Igather_c_f08( &
   sendbuf, &
   sendcount, &
@@ -16345,7 +26640,54 @@ subroutine PMPI_Igather_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Igather_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Igatherv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Igatherv => MPIF_Igatherv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Igatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Igatherv_f08ts
+#else
 subroutine MPI_Igatherv_f08( &
   sendbuf, &
   sendcount, &
@@ -16390,7 +26732,54 @@ subroutine MPI_Igatherv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Igatherv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Igatherv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Igatherv_c => MPIF_Igatherv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Igatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Igatherv_c_f08ts
+#else
 subroutine MPI_Igatherv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -16435,7 +26824,54 @@ subroutine MPI_Igatherv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Igatherv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Igatherv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Igatherv => PMPIF_Igatherv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Igatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Igatherv_f08ts
+#else
 subroutine PMPI_Igatherv_f08( &
   sendbuf, &
   sendcount, &
@@ -16480,7 +26916,54 @@ subroutine PMPI_Igatherv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Igatherv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Igatherv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Igatherv_c => PMPIF_Igatherv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Igatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Igatherv_c_f08ts
+#else
 subroutine PMPI_Igatherv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -16525,6 +27008,7 @@ subroutine PMPI_Igatherv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Igatherv_c_f08
+#endif
 
 subroutine MPI_Improbe_f08( &
   source, &
@@ -16592,6 +27076,37 @@ subroutine PMPI_Improbe_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Improbe_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Imrecv_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Imrecv => MPIF_Imrecv_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Imrecv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Imrecv_f08ts
+#else
 subroutine MPI_Imrecv_f08( &
   buf, &
   count, &
@@ -16621,7 +27136,39 @@ subroutine MPI_Imrecv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Imrecv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Imrecv_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Imrecv_c => MPIF_Imrecv_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Imrecv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Imrecv_c_f08ts
+#else
 subroutine MPI_Imrecv_c_f08( &
   buf, &
   count, &
@@ -16651,7 +27198,39 @@ subroutine MPI_Imrecv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Imrecv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Imrecv_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Imrecv => PMPIF_Imrecv_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Imrecv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Imrecv_f08ts
+#else
 subroutine PMPI_Imrecv_f08( &
   buf, &
   count, &
@@ -16681,7 +27260,39 @@ subroutine PMPI_Imrecv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Imrecv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Imrecv_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Imrecv_c => PMPIF_Imrecv_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Imrecv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Imrecv_c_f08ts
+#else
 subroutine PMPI_Imrecv_c_f08( &
   buf, &
   count, &
@@ -16711,7 +27322,48 @@ subroutine PMPI_Imrecv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Imrecv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ineighbor_allgather_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ineighbor_allgather => MPIF_Ineighbor_allgather_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_allgather_f08ts
+#else
 subroutine MPI_Ineighbor_allgather_f08( &
   sendbuf, &
   sendcount, &
@@ -16750,7 +27402,48 @@ subroutine MPI_Ineighbor_allgather_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_allgather_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ineighbor_allgather_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ineighbor_allgather_c => MPIF_Ineighbor_allgather_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_allgather_c_f08ts
+#else
 subroutine MPI_Ineighbor_allgather_c_f08( &
   sendbuf, &
   sendcount, &
@@ -16789,7 +27482,48 @@ subroutine MPI_Ineighbor_allgather_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_allgather_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ineighbor_allgather_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ineighbor_allgather => PMPIF_Ineighbor_allgather_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_allgather_f08ts
+#else
 subroutine PMPI_Ineighbor_allgather_f08( &
   sendbuf, &
   sendcount, &
@@ -16828,7 +27562,48 @@ subroutine PMPI_Ineighbor_allgather_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_allgather_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ineighbor_allgather_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ineighbor_allgather_c => PMPIF_Ineighbor_allgather_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_allgather_c_f08ts
+#else
 subroutine PMPI_Ineighbor_allgather_c_f08( &
   sendbuf, &
   sendcount, &
@@ -16867,7 +27642,51 @@ subroutine PMPI_Ineighbor_allgather_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_allgather_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ineighbor_allgatherv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ineighbor_allgatherv => MPIF_Ineighbor_allgatherv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_allgatherv_f08ts
+#else
 subroutine MPI_Ineighbor_allgatherv_f08( &
   sendbuf, &
   sendcount, &
@@ -16909,7 +27728,51 @@ subroutine MPI_Ineighbor_allgatherv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_allgatherv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ineighbor_allgatherv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ineighbor_allgatherv_c => MPIF_Ineighbor_allgatherv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_allgatherv_c_f08ts
+#else
 subroutine MPI_Ineighbor_allgatherv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -16951,7 +27814,51 @@ subroutine MPI_Ineighbor_allgatherv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_allgatherv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ineighbor_allgatherv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ineighbor_allgatherv => PMPIF_Ineighbor_allgatherv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_allgatherv_f08ts
+#else
 subroutine PMPI_Ineighbor_allgatherv_f08( &
   sendbuf, &
   sendcount, &
@@ -16993,7 +27900,51 @@ subroutine PMPI_Ineighbor_allgatherv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_allgatherv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ineighbor_allgatherv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ineighbor_allgatherv_c => PMPIF_Ineighbor_allgatherv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_allgatherv_c_f08ts
+#else
 subroutine PMPI_Ineighbor_allgatherv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -17035,7 +27986,48 @@ subroutine PMPI_Ineighbor_allgatherv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_allgatherv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ineighbor_alltoall_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ineighbor_alltoall => MPIF_Ineighbor_alltoall_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_alltoall_f08ts
+#else
 subroutine MPI_Ineighbor_alltoall_f08( &
   sendbuf, &
   sendcount, &
@@ -17074,7 +28066,48 @@ subroutine MPI_Ineighbor_alltoall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_alltoall_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ineighbor_alltoall_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ineighbor_alltoall_c => MPIF_Ineighbor_alltoall_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_alltoall_c_f08ts
+#else
 subroutine MPI_Ineighbor_alltoall_c_f08( &
   sendbuf, &
   sendcount, &
@@ -17113,7 +28146,48 @@ subroutine MPI_Ineighbor_alltoall_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_alltoall_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ineighbor_alltoall_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ineighbor_alltoall => PMPIF_Ineighbor_alltoall_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_alltoall_f08ts
+#else
 subroutine PMPI_Ineighbor_alltoall_f08( &
   sendbuf, &
   sendcount, &
@@ -17152,7 +28226,48 @@ subroutine PMPI_Ineighbor_alltoall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_alltoall_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ineighbor_alltoall_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ineighbor_alltoall_c => PMPIF_Ineighbor_alltoall_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_alltoall_c_f08ts
+#else
 subroutine PMPI_Ineighbor_alltoall_c_f08( &
   sendbuf, &
   sendcount, &
@@ -17191,7 +28306,54 @@ subroutine PMPI_Ineighbor_alltoall_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_alltoall_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ineighbor_alltoallv_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ineighbor_alltoallv => MPIF_Ineighbor_alltoallv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_alltoallv_f08ts
+#else
 subroutine MPI_Ineighbor_alltoallv_f08( &
   sendbuf, &
   sendcounts, &
@@ -17236,7 +28398,54 @@ subroutine MPI_Ineighbor_alltoallv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_alltoallv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ineighbor_alltoallv_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ineighbor_alltoallv_c => MPIF_Ineighbor_alltoallv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_alltoallv_c_f08ts
+#else
 subroutine MPI_Ineighbor_alltoallv_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -17281,7 +28490,54 @@ subroutine MPI_Ineighbor_alltoallv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_alltoallv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ineighbor_alltoallv_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ineighbor_alltoallv => PMPIF_Ineighbor_alltoallv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_alltoallv_f08ts
+#else
 subroutine PMPI_Ineighbor_alltoallv_f08( &
   sendbuf, &
   sendcounts, &
@@ -17326,7 +28582,54 @@ subroutine PMPI_Ineighbor_alltoallv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_alltoallv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ineighbor_alltoallv_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ineighbor_alltoallv_c => PMPIF_Ineighbor_alltoallv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_alltoallv_c_f08ts
+#else
 subroutine PMPI_Ineighbor_alltoallv_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -17371,7 +28674,54 @@ subroutine PMPI_Ineighbor_alltoallv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_alltoallv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ineighbor_alltoallw_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ineighbor_alltoallw => MPIF_Ineighbor_alltoallw_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_alltoallw_f08ts
+#else
 subroutine MPI_Ineighbor_alltoallw_f08( &
   sendbuf, &
   sendcounts, &
@@ -17416,7 +28766,54 @@ subroutine MPI_Ineighbor_alltoallw_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_alltoallw_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ineighbor_alltoallw_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ineighbor_alltoallw_c => MPIF_Ineighbor_alltoallw_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ineighbor_alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ineighbor_alltoallw_c_f08ts
+#else
 subroutine MPI_Ineighbor_alltoallw_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -17461,7 +28858,54 @@ subroutine MPI_Ineighbor_alltoallw_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_alltoallw_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ineighbor_alltoallw_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ineighbor_alltoallw => PMPIF_Ineighbor_alltoallw_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_alltoallw_f08ts
+#else
 subroutine PMPI_Ineighbor_alltoallw_f08( &
   sendbuf, &
   sendcounts, &
@@ -17506,7 +28950,54 @@ subroutine PMPI_Ineighbor_alltoallw_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_alltoallw_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ineighbor_alltoallw_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ineighbor_alltoallw_c => PMPIF_Ineighbor_alltoallw_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ineighbor_alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ineighbor_alltoallw_c_f08ts
+#else
 subroutine PMPI_Ineighbor_alltoallw_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -17551,6 +29042,7 @@ subroutine PMPI_Ineighbor_alltoallw_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_alltoallw_c_f08
+#endif
 
 subroutine MPI_Info_create_f08( &
   info, &
@@ -18416,6 +29908,43 @@ subroutine PMPI_Iprobe_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iprobe_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Irecv_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Irecv => MPIF_Irecv_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Irecv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Irecv_f08ts
+#else
 subroutine MPI_Irecv_f08( &
   buf, &
   count, &
@@ -18451,7 +29980,45 @@ subroutine MPI_Irecv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Irecv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Irecv_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Irecv_c => MPIF_Irecv_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Irecv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Irecv_c_f08ts
+#else
 subroutine MPI_Irecv_c_f08( &
   buf, &
   count, &
@@ -18487,7 +30054,45 @@ subroutine MPI_Irecv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Irecv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Irecv_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Irecv => PMPIF_Irecv_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Irecv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Irecv_f08ts
+#else
 subroutine PMPI_Irecv_f08( &
   buf, &
   count, &
@@ -18523,7 +30128,45 @@ subroutine PMPI_Irecv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Irecv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Irecv_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Irecv_c => PMPIF_Irecv_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Irecv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Irecv_c_f08ts
+#else
 subroutine PMPI_Irecv_c_f08( &
   buf, &
   count, &
@@ -18559,7 +30202,48 @@ subroutine PMPI_Irecv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Irecv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ireduce_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ireduce => MPIF_Ireduce_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ireduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ireduce_f08ts
+#else
 subroutine MPI_Ireduce_f08( &
   sendbuf, &
   recvbuf, &
@@ -18598,7 +30282,48 @@ subroutine MPI_Ireduce_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ireduce_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ireduce_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ireduce_c => MPIF_Ireduce_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ireduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ireduce_c_f08ts
+#else
 subroutine MPI_Ireduce_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -18637,7 +30362,48 @@ subroutine MPI_Ireduce_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ireduce_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ireduce_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ireduce => PMPIF_Ireduce_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ireduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ireduce_f08ts
+#else
 subroutine PMPI_Ireduce_f08( &
   sendbuf, &
   recvbuf, &
@@ -18676,7 +30442,48 @@ subroutine PMPI_Ireduce_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ireduce_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ireduce_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ireduce_c => PMPIF_Ireduce_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ireduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ireduce_c_f08ts
+#else
 subroutine PMPI_Ireduce_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -18715,7 +30522,45 @@ subroutine PMPI_Ireduce_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ireduce_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ireduce_scatter_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ireduce_scatter => MPIF_Ireduce_scatter_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ireduce_scatter( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ireduce_scatter_f08ts
+#else
 subroutine MPI_Ireduce_scatter_f08( &
   sendbuf, &
   recvbuf, &
@@ -18751,7 +30596,45 @@ subroutine MPI_Ireduce_scatter_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ireduce_scatter_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ireduce_scatter_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ireduce_scatter_c => MPIF_Ireduce_scatter_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ireduce_scatter_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ireduce_scatter_c_f08ts
+#else
 subroutine MPI_Ireduce_scatter_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -18787,7 +30670,45 @@ subroutine MPI_Ireduce_scatter_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ireduce_scatter_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ireduce_scatter_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ireduce_scatter => PMPIF_Ireduce_scatter_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ireduce_scatter( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ireduce_scatter_f08ts
+#else
 subroutine PMPI_Ireduce_scatter_f08( &
   sendbuf, &
   recvbuf, &
@@ -18823,7 +30744,45 @@ subroutine PMPI_Ireduce_scatter_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ireduce_scatter_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ireduce_scatter_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ireduce_scatter_c => PMPIF_Ireduce_scatter_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ireduce_scatter_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ireduce_scatter_c_f08ts
+#else
 subroutine PMPI_Ireduce_scatter_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -18859,7 +30818,45 @@ subroutine PMPI_Ireduce_scatter_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ireduce_scatter_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ireduce_scatter_block_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ireduce_scatter_block => MPIF_Ireduce_scatter_block_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ireduce_scatter_block( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ireduce_scatter_block_f08ts
+#else
 subroutine MPI_Ireduce_scatter_block_f08( &
   sendbuf, &
   recvbuf, &
@@ -18895,7 +30892,45 @@ subroutine MPI_Ireduce_scatter_block_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ireduce_scatter_block_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ireduce_scatter_block_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ireduce_scatter_block_c => MPIF_Ireduce_scatter_block_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ireduce_scatter_block_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ireduce_scatter_block_c_f08ts
+#else
 subroutine MPI_Ireduce_scatter_block_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -18931,7 +30966,45 @@ subroutine MPI_Ireduce_scatter_block_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ireduce_scatter_block_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ireduce_scatter_block_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ireduce_scatter_block => PMPIF_Ireduce_scatter_block_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ireduce_scatter_block( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ireduce_scatter_block_f08ts
+#else
 subroutine PMPI_Ireduce_scatter_block_f08( &
   sendbuf, &
   recvbuf, &
@@ -18967,7 +31040,45 @@ subroutine PMPI_Ireduce_scatter_block_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ireduce_scatter_block_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ireduce_scatter_block_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ireduce_scatter_block_c => PMPIF_Ireduce_scatter_block_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ireduce_scatter_block_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ireduce_scatter_block_c_f08ts
+#else
 subroutine PMPI_Ireduce_scatter_block_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -19003,7 +31114,45 @@ subroutine PMPI_Ireduce_scatter_block_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ireduce_scatter_block_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Irsend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Irsend => MPIF_Irsend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Irsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Irsend_f08ts
+#else
 subroutine MPI_Irsend_f08( &
   buf, &
   count, &
@@ -19039,7 +31188,45 @@ subroutine MPI_Irsend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Irsend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Irsend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Irsend_c => MPIF_Irsend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Irsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Irsend_c_f08ts
+#else
 subroutine MPI_Irsend_c_f08( &
   buf, &
   count, &
@@ -19075,7 +31262,45 @@ subroutine MPI_Irsend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Irsend_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Irsend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Irsend => PMPIF_Irsend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Irsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Irsend_f08ts
+#else
 subroutine PMPI_Irsend_f08( &
   buf, &
   count, &
@@ -19111,7 +31336,45 @@ subroutine PMPI_Irsend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Irsend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Irsend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Irsend_c => PMPIF_Irsend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Irsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Irsend_c_f08ts
+#else
 subroutine PMPI_Irsend_c_f08( &
   buf, &
   count, &
@@ -19147,6 +31410,7 @@ subroutine PMPI_Irsend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Irsend_c_f08
+#endif
 
 subroutine MPI_Is_thread_main_f08( &
   flag, &
@@ -19184,6 +31448,43 @@ subroutine PMPI_Is_thread_main_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Is_thread_main_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iscan_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iscan => MPIF_Iscan_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iscan_f08ts
+#else
 subroutine MPI_Iscan_f08( &
   sendbuf, &
   recvbuf, &
@@ -19219,7 +31520,45 @@ subroutine MPI_Iscan_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iscan_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iscan_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iscan_c => MPIF_Iscan_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iscan_c_f08ts
+#else
 subroutine MPI_Iscan_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -19255,7 +31594,45 @@ subroutine MPI_Iscan_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iscan_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iscan_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iscan => PMPIF_Iscan_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iscan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iscan_f08ts
+#else
 subroutine PMPI_Iscan_f08( &
   sendbuf, &
   recvbuf, &
@@ -19291,7 +31668,45 @@ subroutine PMPI_Iscan_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iscan_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iscan_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iscan_c => PMPIF_Iscan_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iscan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iscan_c_f08ts
+#else
 subroutine PMPI_Iscan_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -19327,7 +31742,51 @@ subroutine PMPI_Iscan_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iscan_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iscatter_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iscatter => MPIF_Iscatter_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iscatter( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iscatter_f08ts
+#else
 subroutine MPI_Iscatter_f08( &
   sendbuf, &
   sendcount, &
@@ -19369,7 +31828,51 @@ subroutine MPI_Iscatter_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iscatter_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iscatter_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iscatter_c => MPIF_Iscatter_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iscatter_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iscatter_c_f08ts
+#else
 subroutine MPI_Iscatter_c_f08( &
   sendbuf, &
   sendcount, &
@@ -19411,7 +31914,51 @@ subroutine MPI_Iscatter_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iscatter_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iscatter_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iscatter => PMPIF_Iscatter_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iscatter( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iscatter_f08ts
+#else
 subroutine PMPI_Iscatter_f08( &
   sendbuf, &
   sendcount, &
@@ -19453,7 +32000,51 @@ subroutine PMPI_Iscatter_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iscatter_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iscatter_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iscatter_c => PMPIF_Iscatter_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iscatter_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iscatter_c_f08ts
+#else
 subroutine PMPI_Iscatter_c_f08( &
   sendbuf, &
   sendcount, &
@@ -19495,7 +32086,54 @@ subroutine PMPI_Iscatter_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iscatter_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iscatterv_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iscatterv => MPIF_Iscatterv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iscatterv( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iscatterv_f08ts
+#else
 subroutine MPI_Iscatterv_f08( &
   sendbuf, &
   sendcounts, &
@@ -19540,7 +32178,54 @@ subroutine MPI_Iscatterv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iscatterv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Iscatterv_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Iscatterv_c => MPIF_Iscatterv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Iscatterv_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Iscatterv_c_f08ts
+#else
 subroutine MPI_Iscatterv_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -19585,7 +32270,54 @@ subroutine MPI_Iscatterv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iscatterv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iscatterv_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iscatterv => PMPIF_Iscatterv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iscatterv( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iscatterv_f08ts
+#else
 subroutine PMPI_Iscatterv_f08( &
   sendbuf, &
   sendcounts, &
@@ -19630,7 +32362,54 @@ subroutine PMPI_Iscatterv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iscatterv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Iscatterv_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Iscatterv_c => PMPIF_Iscatterv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Iscatterv_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Iscatterv_c_f08ts
+#else
 subroutine PMPI_Iscatterv_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -19675,7 +32454,45 @@ subroutine PMPI_Iscatterv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iscatterv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Isend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Isend => MPIF_Isend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Isend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Isend_f08ts
+#else
 subroutine MPI_Isend_f08( &
   buf, &
   count, &
@@ -19711,7 +32528,45 @@ subroutine MPI_Isend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Isend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Isend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Isend_c => MPIF_Isend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Isend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Isend_c_f08ts
+#else
 subroutine MPI_Isend_c_f08( &
   buf, &
   count, &
@@ -19747,7 +32602,45 @@ subroutine MPI_Isend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Isend_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Isend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Isend => PMPIF_Isend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Isend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Isend_f08ts
+#else
 subroutine PMPI_Isend_f08( &
   buf, &
   count, &
@@ -19783,7 +32676,45 @@ subroutine PMPI_Isend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Isend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Isend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Isend_c => PMPIF_Isend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Isend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Isend_c_f08ts
+#else
 subroutine PMPI_Isend_c_f08( &
   buf, &
   count, &
@@ -19819,7 +32750,60 @@ subroutine PMPI_Isend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Isend_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Isendrecv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Isendrecv => MPIF_Isendrecv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Isendrecv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Isendrecv_f08ts
+#else
 subroutine MPI_Isendrecv_f08( &
   sendbuf, &
   sendcount, &
@@ -19870,7 +32854,60 @@ subroutine MPI_Isendrecv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Isendrecv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Isendrecv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Isendrecv_c => MPIF_Isendrecv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Isendrecv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Isendrecv_c_f08ts
+#else
 subroutine MPI_Isendrecv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -19921,7 +32958,60 @@ subroutine MPI_Isendrecv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Isendrecv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Isendrecv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Isendrecv => PMPIF_Isendrecv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Isendrecv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Isendrecv_f08ts
+#else
 subroutine PMPI_Isendrecv_f08( &
   sendbuf, &
   sendcount, &
@@ -19972,7 +33062,60 @@ subroutine PMPI_Isendrecv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Isendrecv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Isendrecv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Isendrecv_c => PMPIF_Isendrecv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Isendrecv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Isendrecv_c_f08ts
+#else
 subroutine PMPI_Isendrecv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -20023,7 +33166,51 @@ subroutine PMPI_Isendrecv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Isendrecv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Isendrecv_replace_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Isendrecv_replace => MPIF_Isendrecv_replace_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Isendrecv_replace( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Isendrecv_replace_f08ts
+#else
 subroutine MPI_Isendrecv_replace_f08( &
   buf, &
   count, &
@@ -20065,7 +33252,51 @@ subroutine MPI_Isendrecv_replace_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Isendrecv_replace_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Isendrecv_replace_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Isendrecv_replace_c => MPIF_Isendrecv_replace_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Isendrecv_replace_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Isendrecv_replace_c_f08ts
+#else
 subroutine MPI_Isendrecv_replace_c_f08( &
   buf, &
   count, &
@@ -20107,7 +33338,51 @@ subroutine MPI_Isendrecv_replace_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Isendrecv_replace_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Isendrecv_replace_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Isendrecv_replace => PMPIF_Isendrecv_replace_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Isendrecv_replace( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Isendrecv_replace_f08ts
+#else
 subroutine PMPI_Isendrecv_replace_f08( &
   buf, &
   count, &
@@ -20149,7 +33424,51 @@ subroutine PMPI_Isendrecv_replace_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Isendrecv_replace_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Isendrecv_replace_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Isendrecv_replace_c => PMPIF_Isendrecv_replace_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Isendrecv_replace_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Isendrecv_replace_c_f08ts
+#else
 subroutine PMPI_Isendrecv_replace_c_f08( &
   buf, &
   count, &
@@ -20191,7 +33510,45 @@ subroutine PMPI_Isendrecv_replace_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Isendrecv_replace_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Issend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Issend => MPIF_Issend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Issend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Issend_f08ts
+#else
 subroutine MPI_Issend_f08( &
   buf, &
   count, &
@@ -20227,7 +33584,45 @@ subroutine MPI_Issend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Issend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Issend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Issend_c => MPIF_Issend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Issend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Issend_c_f08ts
+#else
 subroutine MPI_Issend_c_f08( &
   buf, &
   count, &
@@ -20263,7 +33658,45 @@ subroutine MPI_Issend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Issend_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Issend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Issend => PMPIF_Issend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Issend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Issend_f08ts
+#else
 subroutine PMPI_Issend_f08( &
   buf, &
   count, &
@@ -20299,7 +33732,45 @@ subroutine PMPI_Issend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Issend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Issend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Issend_c => PMPIF_Issend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Issend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Issend_c_f08ts
+#else
 subroutine PMPI_Issend_c_f08( &
   buf, &
   count, &
@@ -20335,6 +33806,7 @@ subroutine PMPI_Issend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Issend_c_f08
+#endif
 
 subroutine MPI_Keyval_create_f08( &
   copy_fn, &
@@ -20534,6 +34006,37 @@ subroutine PMPI_Mprobe_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Mprobe_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Mrecv_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Mrecv => MPIF_Mrecv_cdesc
+  implicit none
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Mrecv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Mrecv_f08ts
+#else
 subroutine MPI_Mrecv_f08( &
   buf, &
   count, &
@@ -20563,7 +34066,39 @@ subroutine MPI_Mrecv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Mrecv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Mrecv_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Mrecv_c => MPIF_Mrecv_c_cdesc
+  implicit none
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Mrecv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Mrecv_c_f08ts
+#else
 subroutine MPI_Mrecv_c_f08( &
   buf, &
   count, &
@@ -20593,7 +34128,39 @@ subroutine MPI_Mrecv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Mrecv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Mrecv_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Mrecv => PMPIF_Mrecv_cdesc
+  implicit none
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Mrecv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Mrecv_f08ts
+#else
 subroutine PMPI_Mrecv_f08( &
   buf, &
   count, &
@@ -20623,7 +34190,39 @@ subroutine PMPI_Mrecv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Mrecv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Mrecv_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  message, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Mrecv_c => PMPIF_Mrecv_c_cdesc
+  implicit none
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Message), intent(inout) :: message
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Mrecv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    message%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Mrecv_c_f08ts
+#else
 subroutine PMPI_Mrecv_c_f08( &
   buf, &
   count, &
@@ -20653,7 +34252,45 @@ subroutine PMPI_Mrecv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Mrecv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_allgather_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_allgather => MPIF_Neighbor_allgather_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgather_f08ts
+#else
 subroutine MPI_Neighbor_allgather_f08( &
   sendbuf, &
   sendcount, &
@@ -20689,7 +34326,45 @@ subroutine MPI_Neighbor_allgather_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgather_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_allgather_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_allgather_c => MPIF_Neighbor_allgather_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgather_c_f08ts
+#else
 subroutine MPI_Neighbor_allgather_c_f08( &
   sendbuf, &
   sendcount, &
@@ -20725,7 +34400,45 @@ subroutine MPI_Neighbor_allgather_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgather_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_allgather_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_allgather => PMPIF_Neighbor_allgather_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgather( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgather_f08ts
+#else
 subroutine PMPI_Neighbor_allgather_f08( &
   sendbuf, &
   sendcount, &
@@ -20761,7 +34474,45 @@ subroutine PMPI_Neighbor_allgather_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgather_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_allgather_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_allgather_c => PMPIF_Neighbor_allgather_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgather_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgather_c_f08ts
+#else
 subroutine PMPI_Neighbor_allgather_c_f08( &
   sendbuf, &
   sendcount, &
@@ -20797,7 +34548,51 @@ subroutine PMPI_Neighbor_allgather_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgather_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_allgather_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_allgather_init => MPIF_Neighbor_allgather_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgather_init_f08ts
+#else
 subroutine MPI_Neighbor_allgather_init_f08( &
   sendbuf, &
   sendcount, &
@@ -20839,7 +34634,51 @@ subroutine MPI_Neighbor_allgather_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgather_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_allgather_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_allgather_init_c => MPIF_Neighbor_allgather_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgather_init_c_f08ts
+#else
 subroutine MPI_Neighbor_allgather_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -20881,7 +34720,51 @@ subroutine MPI_Neighbor_allgather_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgather_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_allgather_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_allgather_init => PMPIF_Neighbor_allgather_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgather_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgather_init_f08ts
+#else
 subroutine PMPI_Neighbor_allgather_init_f08( &
   sendbuf, &
   sendcount, &
@@ -20923,7 +34806,51 @@ subroutine PMPI_Neighbor_allgather_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgather_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_allgather_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_allgather_init_c => PMPIF_Neighbor_allgather_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgather_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgather_init_c_f08ts
+#else
 subroutine PMPI_Neighbor_allgather_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -20965,7 +34892,48 @@ subroutine PMPI_Neighbor_allgather_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgather_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_allgatherv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_allgatherv => MPIF_Neighbor_allgatherv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgatherv_f08ts
+#else
 subroutine MPI_Neighbor_allgatherv_f08( &
   sendbuf, &
   sendcount, &
@@ -21004,7 +34972,48 @@ subroutine MPI_Neighbor_allgatherv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgatherv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_allgatherv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_allgatherv_c => MPIF_Neighbor_allgatherv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgatherv_c_f08ts
+#else
 subroutine MPI_Neighbor_allgatherv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -21043,7 +35052,48 @@ subroutine MPI_Neighbor_allgatherv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgatherv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_allgatherv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_allgatherv => PMPIF_Neighbor_allgatherv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgatherv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgatherv_f08ts
+#else
 subroutine PMPI_Neighbor_allgatherv_f08( &
   sendbuf, &
   sendcount, &
@@ -21082,7 +35132,48 @@ subroutine PMPI_Neighbor_allgatherv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgatherv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_allgatherv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_allgatherv_c => PMPIF_Neighbor_allgatherv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgatherv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgatherv_c_f08ts
+#else
 subroutine PMPI_Neighbor_allgatherv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -21121,7 +35212,54 @@ subroutine PMPI_Neighbor_allgatherv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgatherv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_allgatherv_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_allgatherv_init => MPIF_Neighbor_allgatherv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgatherv_init_f08ts
+#else
 subroutine MPI_Neighbor_allgatherv_init_f08( &
   sendbuf, &
   sendcount, &
@@ -21166,7 +35304,54 @@ subroutine MPI_Neighbor_allgatherv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgatherv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_allgatherv_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_allgatherv_init_c => MPIF_Neighbor_allgatherv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_allgatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_allgatherv_init_c_f08ts
+#else
 subroutine MPI_Neighbor_allgatherv_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -21211,7 +35396,54 @@ subroutine MPI_Neighbor_allgatherv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgatherv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_allgatherv_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_allgatherv_init => PMPIF_Neighbor_allgatherv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgatherv_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgatherv_init_f08ts
+#else
 subroutine PMPI_Neighbor_allgatherv_init_f08( &
   sendbuf, &
   sendcount, &
@@ -21256,7 +35488,54 @@ subroutine PMPI_Neighbor_allgatherv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgatherv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_allgatherv_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  displs, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_allgatherv_init_c => PMPIF_Neighbor_allgatherv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_allgatherv_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    displs, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_allgatherv_init_c_f08ts
+#else
 subroutine PMPI_Neighbor_allgatherv_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -21301,7 +35580,45 @@ subroutine PMPI_Neighbor_allgatherv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgatherv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_alltoall_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_alltoall => MPIF_Neighbor_alltoall_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoall_f08ts
+#else
 subroutine MPI_Neighbor_alltoall_f08( &
   sendbuf, &
   sendcount, &
@@ -21337,7 +35654,45 @@ subroutine MPI_Neighbor_alltoall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoall_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_alltoall_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_alltoall_c => MPIF_Neighbor_alltoall_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoall_c_f08ts
+#else
 subroutine MPI_Neighbor_alltoall_c_f08( &
   sendbuf, &
   sendcount, &
@@ -21373,7 +35728,45 @@ subroutine MPI_Neighbor_alltoall_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoall_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_alltoall_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_alltoall => PMPIF_Neighbor_alltoall_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoall( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoall_f08ts
+#else
 subroutine PMPI_Neighbor_alltoall_f08( &
   sendbuf, &
   sendcount, &
@@ -21409,7 +35802,45 @@ subroutine PMPI_Neighbor_alltoall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoall_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_alltoall_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_alltoall_c => PMPIF_Neighbor_alltoall_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoall_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoall_c_f08ts
+#else
 subroutine PMPI_Neighbor_alltoall_c_f08( &
   sendbuf, &
   sendcount, &
@@ -21445,7 +35876,51 @@ subroutine PMPI_Neighbor_alltoall_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoall_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_alltoall_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_alltoall_init => MPIF_Neighbor_alltoall_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoall_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoall_init_f08ts
+#else
 subroutine MPI_Neighbor_alltoall_init_f08( &
   sendbuf, &
   sendcount, &
@@ -21487,7 +35962,51 @@ subroutine MPI_Neighbor_alltoall_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoall_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_alltoall_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_alltoall_init_c => MPIF_Neighbor_alltoall_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoall_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoall_init_c_f08ts
+#else
 subroutine MPI_Neighbor_alltoall_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -21529,7 +36048,51 @@ subroutine MPI_Neighbor_alltoall_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoall_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_alltoall_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_alltoall_init => PMPIF_Neighbor_alltoall_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoall_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoall_init_f08ts
+#else
 subroutine PMPI_Neighbor_alltoall_init_f08( &
   sendbuf, &
   sendcount, &
@@ -21571,7 +36134,51 @@ subroutine PMPI_Neighbor_alltoall_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoall_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_alltoall_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_alltoall_init_c => PMPIF_Neighbor_alltoall_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoall_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoall_init_c_f08ts
+#else
 subroutine PMPI_Neighbor_alltoall_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -21613,7 +36220,51 @@ subroutine PMPI_Neighbor_alltoall_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoall_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_alltoallv_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_alltoallv => MPIF_Neighbor_alltoallv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallv_f08ts
+#else
 subroutine MPI_Neighbor_alltoallv_f08( &
   sendbuf, &
   sendcounts, &
@@ -21655,7 +36306,51 @@ subroutine MPI_Neighbor_alltoallv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_alltoallv_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_alltoallv_c => MPIF_Neighbor_alltoallv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallv_c_f08ts
+#else
 subroutine MPI_Neighbor_alltoallv_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -21697,7 +36392,51 @@ subroutine MPI_Neighbor_alltoallv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_alltoallv_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_alltoallv => PMPIF_Neighbor_alltoallv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer, intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallv( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallv_f08ts
+#else
 subroutine PMPI_Neighbor_alltoallv_f08( &
   sendbuf, &
   sendcounts, &
@@ -21739,7 +36478,51 @@ subroutine PMPI_Neighbor_alltoallv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_alltoallv_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_alltoallv_c => PMPIF_Neighbor_alltoallv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallv_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallv_c_f08ts
+#else
 subroutine PMPI_Neighbor_alltoallv_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -21781,7 +36564,57 @@ subroutine PMPI_Neighbor_alltoallv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_alltoallv_init_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_alltoallv_init => MPIF_Neighbor_alltoallv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallv_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallv_init_f08ts
+#else
 subroutine MPI_Neighbor_alltoallv_init_f08( &
   sendbuf, &
   sendcounts, &
@@ -21829,7 +36662,57 @@ subroutine MPI_Neighbor_alltoallv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_alltoallv_init_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_alltoallv_init_c => MPIF_Neighbor_alltoallv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallv_init_c_f08ts
+#else
 subroutine MPI_Neighbor_alltoallv_init_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -21877,7 +36760,57 @@ subroutine MPI_Neighbor_alltoallv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_alltoallv_init_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_alltoallv_init => PMPIF_Neighbor_alltoallv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer, intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallv_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallv_init_f08ts
+#else
 subroutine PMPI_Neighbor_alltoallv_init_f08( &
   sendbuf, &
   sendcounts, &
@@ -21925,7 +36858,57 @@ subroutine PMPI_Neighbor_alltoallv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_alltoallv_init_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtype, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtype, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_alltoallv_init_c => PMPIF_Neighbor_alltoallv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtype
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtype%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallv_init_c_f08ts
+#else
 subroutine PMPI_Neighbor_alltoallv_init_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -21973,7 +36956,51 @@ subroutine PMPI_Neighbor_alltoallv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_alltoallw_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_alltoallw => MPIF_Neighbor_alltoallw_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallw_f08ts
+#else
 subroutine MPI_Neighbor_alltoallw_f08( &
   sendbuf, &
   sendcounts, &
@@ -22015,7 +37042,51 @@ subroutine MPI_Neighbor_alltoallw_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallw_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_alltoallw_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_alltoallw_c => MPIF_Neighbor_alltoallw_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallw_c_f08ts
+#else
 subroutine MPI_Neighbor_alltoallw_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -22057,7 +37128,51 @@ subroutine MPI_Neighbor_alltoallw_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallw_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_alltoallw_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_alltoallw => PMPIF_Neighbor_alltoallw_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallw( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallw_f08ts
+#else
 subroutine PMPI_Neighbor_alltoallw_f08( &
   sendbuf, &
   sendcounts, &
@@ -22099,7 +37214,51 @@ subroutine PMPI_Neighbor_alltoallw_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallw_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_alltoallw_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_alltoallw_c => PMPIF_Neighbor_alltoallw_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
+  type(MPI_Datatype), intent(in) :: sendtypes(*)
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: rdispls(*)
+  type(MPI_Datatype), intent(in) :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallw_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallw_c_f08ts
+#else
 subroutine PMPI_Neighbor_alltoallw_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -22141,7 +37300,57 @@ subroutine PMPI_Neighbor_alltoallw_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallw_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_alltoallw_init_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_alltoallw_init => MPIF_Neighbor_alltoallw_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallw_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallw_init_f08ts
+#else
 subroutine MPI_Neighbor_alltoallw_init_f08( &
   sendbuf, &
   sendcounts, &
@@ -22189,7 +37398,57 @@ subroutine MPI_Neighbor_alltoallw_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallw_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Neighbor_alltoallw_init_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Neighbor_alltoallw_init_c => MPIF_Neighbor_alltoallw_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Neighbor_alltoallw_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Neighbor_alltoallw_init_c_f08ts
+#else
 subroutine MPI_Neighbor_alltoallw_init_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -22237,7 +37496,57 @@ subroutine MPI_Neighbor_alltoallw_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallw_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_alltoallw_init_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_alltoallw_init => PMPIF_Neighbor_alltoallw_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallw_init( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallw_init_f08ts
+#else
 subroutine PMPI_Neighbor_alltoallw_init_f08( &
   sendbuf, &
   sendcounts, &
@@ -22285,7 +37594,57 @@ subroutine PMPI_Neighbor_alltoallw_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallw_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Neighbor_alltoallw_init_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  sdispls, &
+  sendtypes, &
+  recvbuf, &
+  recvcounts, &
+  rdispls, &
+  recvtypes, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Neighbor_alltoallw_init_c => PMPIF_Neighbor_alltoallw_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: sdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: sendtypes(*)
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: rdispls(*)
+  type(MPI_Datatype), intent(in), asynchronous :: recvtypes(*)
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Neighbor_alltoallw_init_c( &
+    sendbuf, &
+    sendcounts, &
+    sdispls, &
+    sendtypes, &
+    recvbuf, &
+    recvcounts, &
+    rdispls, &
+    recvtypes, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Neighbor_alltoallw_init_c_f08ts
+#else
 subroutine PMPI_Neighbor_alltoallw_init_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -22333,6 +37692,7 @@ subroutine PMPI_Neighbor_alltoallw_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallw_init_c_f08
+#endif
 
 subroutine MPI_Op_commutative_f08( &
   op, &
@@ -22550,6 +37910,43 @@ subroutine PMPI_Open_port_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Open_port_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Pack_f08ts( &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Pack => MPIF_Pack_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: inbuf
+  integer, intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(*), dimension(..) :: outbuf
+  integer, intent(in) :: outsize
+  integer, intent(inout) :: position
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pack( &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pack_f08ts
+#else
 subroutine MPI_Pack_f08( &
   inbuf, &
   incount, &
@@ -22585,7 +37982,45 @@ subroutine MPI_Pack_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pack_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Pack_c_f08ts( &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Pack_c => MPIF_Pack_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: inbuf
+  integer(MPI_COUNT_KIND), intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(*), dimension(..) :: outbuf
+  integer(MPI_COUNT_KIND), intent(in) :: outsize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pack_c( &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pack_c_f08ts
+#else
 subroutine MPI_Pack_c_f08( &
   inbuf, &
   incount, &
@@ -22621,7 +38056,45 @@ subroutine MPI_Pack_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pack_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Pack_f08ts( &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Pack => PMPIF_Pack_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: inbuf
+  integer, intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(*), dimension(..) :: outbuf
+  integer, intent(in) :: outsize
+  integer, intent(inout) :: position
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pack( &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pack_f08ts
+#else
 subroutine PMPI_Pack_f08( &
   inbuf, &
   incount, &
@@ -22657,7 +38130,45 @@ subroutine PMPI_Pack_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pack_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Pack_c_f08ts( &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Pack_c => PMPIF_Pack_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: inbuf
+  integer(MPI_COUNT_KIND), intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(*), dimension(..) :: outbuf
+  integer(MPI_COUNT_KIND), intent(in) :: outsize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pack_c( &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pack_c_f08ts
+#else
 subroutine PMPI_Pack_c_f08( &
   inbuf, &
   incount, &
@@ -22693,7 +38204,47 @@ subroutine PMPI_Pack_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pack_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Pack_external_f08ts( &
+  datarep, &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Pack_external => MPIF_Pack_external_cdesc
+  use, intrinsic :: iso_c_binding, only: c_size_t
+  implicit none
+  character*(*), intent(in) :: datarep
+  type(*), dimension(..), intent(in) :: inbuf
+  integer, intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(*), dimension(..) :: outbuf
+  integer(MPI_ADDRESS_KIND), intent(in) :: outsize
+  integer(MPI_ADDRESS_KIND), intent(inout) :: position
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pack_external( &
+    datarep, &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    tmp_ierror, &
+    int(len(datarep), c_size_t) &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pack_external_f08ts
+#else
 subroutine MPI_Pack_external_f08( &
   datarep, &
   inbuf, &
@@ -22729,7 +38280,47 @@ subroutine MPI_Pack_external_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pack_external_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Pack_external_c_f08ts( &
+  datarep, &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Pack_external_c => MPIF_Pack_external_c_cdesc
+  use, intrinsic :: iso_c_binding, only: c_size_t
+  implicit none
+  character*(*), intent(in) :: datarep
+  type(*), dimension(..), intent(in) :: inbuf
+  integer(MPI_COUNT_KIND), intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(*), dimension(..) :: outbuf
+  integer(MPI_COUNT_KIND), intent(in) :: outsize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Pack_external_c( &
+    datarep, &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    tmp_ierror, &
+    int(len(datarep), c_size_t) &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Pack_external_c_f08ts
+#else
 subroutine MPI_Pack_external_c_f08( &
   datarep, &
   inbuf, &
@@ -22765,7 +38356,47 @@ subroutine MPI_Pack_external_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pack_external_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Pack_external_f08ts( &
+  datarep, &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Pack_external => PMPIF_Pack_external_cdesc
+  use, intrinsic :: iso_c_binding, only: c_size_t
+  implicit none
+  character*(*), intent(in) :: datarep
+  type(*), dimension(..), intent(in) :: inbuf
+  integer, intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(*), dimension(..) :: outbuf
+  integer(MPI_ADDRESS_KIND), intent(in) :: outsize
+  integer(MPI_ADDRESS_KIND), intent(inout) :: position
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pack_external( &
+    datarep, &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    tmp_ierror, &
+    int(len(datarep), c_size_t) &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pack_external_f08ts
+#else
 subroutine PMPI_Pack_external_f08( &
   datarep, &
   inbuf, &
@@ -22801,7 +38432,47 @@ subroutine PMPI_Pack_external_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pack_external_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Pack_external_c_f08ts( &
+  datarep, &
+  inbuf, &
+  incount, &
+  datatype, &
+  outbuf, &
+  outsize, &
+  position, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Pack_external_c => PMPIF_Pack_external_c_cdesc
+  use, intrinsic :: iso_c_binding, only: c_size_t
+  implicit none
+  character*(*), intent(in) :: datarep
+  type(*), dimension(..), intent(in) :: inbuf
+  integer(MPI_COUNT_KIND), intent(in) :: incount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(*), dimension(..) :: outbuf
+  integer(MPI_COUNT_KIND), intent(in) :: outsize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Pack_external_c( &
+    datarep, &
+    inbuf, &
+    incount, &
+    datatype%MPI_VAL, &
+    outbuf, &
+    outsize, &
+    position, &
+    tmp_ierror, &
+    int(len(datarep), c_size_t) &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Pack_external_c_f08ts
+#else
 subroutine PMPI_Pack_external_c_f08( &
   datarep, &
   inbuf, &
@@ -22837,6 +38508,7 @@ subroutine PMPI_Pack_external_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pack_external_c_f08
+#endif
 
 subroutine MPI_Pack_external_size_f08( &
   datarep, &
@@ -23266,6 +38938,49 @@ subroutine PMPI_Pready_range_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pready_range_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Precv_init_f08ts( &
+  buf, &
+  partitions, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Precv_init => MPIF_Precv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: partitions
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Precv_init( &
+    buf, &
+    partitions, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Precv_init_f08ts
+#else
 subroutine MPI_Precv_init_f08( &
   buf, &
   partitions, &
@@ -23307,7 +39022,51 @@ subroutine MPI_Precv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Precv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Precv_init_f08ts( &
+  buf, &
+  partitions, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Precv_init => PMPIF_Precv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: partitions
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Precv_init( &
+    buf, &
+    partitions, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Precv_init_f08ts
+#else
 subroutine PMPI_Precv_init_f08( &
   buf, &
   partitions, &
@@ -23349,6 +39108,7 @@ subroutine PMPI_Precv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Precv_init_f08
+#endif
 
 subroutine MPI_Probe_f08( &
   source, &
@@ -23404,6 +39164,49 @@ subroutine PMPI_Probe_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Probe_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Psend_init_f08ts( &
+  buf, &
+  partitions, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Psend_init => MPIF_Psend_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: partitions
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Psend_init( &
+    buf, &
+    partitions, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Psend_init_f08ts
+#else
 subroutine MPI_Psend_init_f08( &
   buf, &
   partitions, &
@@ -23445,7 +39248,51 @@ subroutine MPI_Psend_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Psend_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Psend_init_f08ts( &
+  buf, &
+  partitions, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Psend_init => PMPIF_Psend_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: partitions
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Psend_init( &
+    buf, &
+    partitions, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Psend_init_f08ts
+#else
 subroutine PMPI_Psend_init_f08( &
   buf, &
   partitions, &
@@ -23487,6 +39334,7 @@ subroutine PMPI_Psend_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Psend_init_f08
+#endif
 
 subroutine MPI_Publish_name_f08( &
   service_name, &
@@ -23536,6 +39384,46 @@ subroutine PMPI_Publish_name_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Publish_name_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Put_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Put => MPIF_Put_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Put( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Put_f08ts
+#else
 subroutine MPI_Put_f08( &
   origin_addr, &
   origin_count, &
@@ -23574,7 +39462,48 @@ subroutine MPI_Put_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Put_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Put_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Put_c => MPIF_Put_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Put_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Put_c_f08ts
+#else
 subroutine MPI_Put_c_f08( &
   origin_addr, &
   origin_count, &
@@ -23613,7 +39542,48 @@ subroutine MPI_Put_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Put_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Put_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Put => PMPIF_Put_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Put( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Put_f08ts
+#else
 subroutine PMPI_Put_f08( &
   origin_addr, &
   origin_count, &
@@ -23652,7 +39622,48 @@ subroutine PMPI_Put_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Put_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Put_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Put_c => PMPIF_Put_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Put_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Put_c_f08ts
+#else
 subroutine PMPI_Put_c_f08( &
   origin_addr, &
   origin_count, &
@@ -23691,6 +39702,7 @@ subroutine PMPI_Put_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Put_c_f08
+#endif
 
 subroutine MPI_Query_thread_f08( &
   provided, &
@@ -23728,6 +39740,52 @@ subroutine PMPI_Query_thread_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Query_thread_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Raccumulate_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Raccumulate => MPIF_Raccumulate_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Raccumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Raccumulate_f08ts
+#else
 subroutine MPI_Raccumulate_f08( &
   origin_addr, &
   origin_count, &
@@ -23772,7 +39830,54 @@ subroutine MPI_Raccumulate_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Raccumulate_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Raccumulate_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Raccumulate_c => MPIF_Raccumulate_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Raccumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Raccumulate_c_f08ts
+#else
 subroutine MPI_Raccumulate_c_f08( &
   origin_addr, &
   origin_count, &
@@ -23817,7 +39922,54 @@ subroutine MPI_Raccumulate_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Raccumulate_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Raccumulate_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Raccumulate => PMPIF_Raccumulate_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Raccumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Raccumulate_f08ts
+#else
 subroutine PMPI_Raccumulate_f08( &
   origin_addr, &
   origin_count, &
@@ -23862,7 +40014,54 @@ subroutine PMPI_Raccumulate_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Raccumulate_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Raccumulate_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Raccumulate_c => PMPIF_Raccumulate_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Raccumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Raccumulate_c_f08ts
+#else
 subroutine PMPI_Raccumulate_c_f08( &
   origin_addr, &
   origin_count, &
@@ -23907,7 +40106,45 @@ subroutine PMPI_Raccumulate_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Raccumulate_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Recv_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Recv => MPIF_Recv_cdesc
+  implicit none
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Recv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Recv_f08ts
+#else
 subroutine MPI_Recv_f08( &
   buf, &
   count, &
@@ -23943,7 +40180,45 @@ subroutine MPI_Recv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Recv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Recv_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Recv_c => MPIF_Recv_c_cdesc
+  implicit none
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Recv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Recv_c_f08ts
+#else
 subroutine MPI_Recv_c_f08( &
   buf, &
   count, &
@@ -23979,7 +40254,45 @@ subroutine MPI_Recv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Recv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Recv_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Recv => PMPIF_Recv_cdesc
+  implicit none
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Recv( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Recv_f08ts
+#else
 subroutine PMPI_Recv_f08( &
   buf, &
   count, &
@@ -24015,7 +40328,45 @@ subroutine PMPI_Recv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Recv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Recv_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Recv_c => PMPIF_Recv_c_cdesc
+  implicit none
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Recv_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Recv_c_f08ts
+#else
 subroutine PMPI_Recv_c_f08( &
   buf, &
   count, &
@@ -24051,7 +40402,45 @@ subroutine PMPI_Recv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Recv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Recv_init_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Recv_init => MPIF_Recv_init_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Recv_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Recv_init_f08ts
+#else
 subroutine MPI_Recv_init_f08( &
   buf, &
   count, &
@@ -24087,7 +40476,45 @@ subroutine MPI_Recv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Recv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Recv_init_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Recv_init_c => MPIF_Recv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Recv_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Recv_init_c_f08ts
+#else
 subroutine MPI_Recv_init_c_f08( &
   buf, &
   count, &
@@ -24123,7 +40550,45 @@ subroutine MPI_Recv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Recv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Recv_init_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Recv_init => PMPIF_Recv_init_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Recv_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Recv_init_f08ts
+#else
 subroutine PMPI_Recv_init_f08( &
   buf, &
   count, &
@@ -24159,7 +40624,45 @@ subroutine PMPI_Recv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Recv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Recv_init_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  source, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Recv_init_c => PMPIF_Recv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: source
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Recv_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    source, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Recv_init_c_f08ts
+#else
 subroutine PMPI_Recv_init_c_f08( &
   buf, &
   count, &
@@ -24195,7 +40698,45 @@ subroutine PMPI_Recv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Recv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce => MPIF_Reduce_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_f08ts
+#else
 subroutine MPI_Reduce_f08( &
   sendbuf, &
   recvbuf, &
@@ -24231,7 +40772,45 @@ subroutine MPI_Reduce_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_c => MPIF_Reduce_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_c_f08ts
+#else
 subroutine MPI_Reduce_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -24267,7 +40846,45 @@ subroutine MPI_Reduce_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce => PMPIF_Reduce_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_f08ts
+#else
 subroutine PMPI_Reduce_f08( &
   sendbuf, &
   recvbuf, &
@@ -24303,7 +40920,45 @@ subroutine PMPI_Reduce_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_c => PMPIF_Reduce_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_c_f08ts
+#else
 subroutine PMPI_Reduce_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -24339,7 +40994,51 @@ subroutine PMPI_Reduce_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_init_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_init => MPIF_Reduce_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_init_f08ts
+#else
 subroutine MPI_Reduce_init_f08( &
   sendbuf, &
   recvbuf, &
@@ -24381,7 +41080,51 @@ subroutine MPI_Reduce_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_init_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_init_c => MPIF_Reduce_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_init_c_f08ts
+#else
 subroutine MPI_Reduce_init_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -24423,7 +41166,51 @@ subroutine MPI_Reduce_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_init_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_init => PMPIF_Reduce_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_init_f08ts
+#else
 subroutine PMPI_Reduce_init_f08( &
   sendbuf, &
   recvbuf, &
@@ -24465,7 +41252,51 @@ subroutine PMPI_Reduce_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_init_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_init_c => PMPIF_Reduce_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_init_c_f08ts
+#else
 subroutine PMPI_Reduce_init_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -24507,7 +41338,39 @@ subroutine PMPI_Reduce_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_local_f08ts( &
+  inbuf, &
+  inoutbuf, &
+  count, &
+  datatype, &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_local => MPIF_Reduce_local_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: inbuf
+  type(*), dimension(..) :: inoutbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_local( &
+    inbuf, &
+    inoutbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_local_f08ts
+#else
 subroutine MPI_Reduce_local_f08( &
   inbuf, &
   inoutbuf, &
@@ -24537,7 +41400,39 @@ subroutine MPI_Reduce_local_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_local_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_local_c_f08ts( &
+  inbuf, &
+  inoutbuf, &
+  count, &
+  datatype, &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_local_c => MPIF_Reduce_local_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: inbuf
+  type(*), dimension(..) :: inoutbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_local_c( &
+    inbuf, &
+    inoutbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_local_c_f08ts
+#else
 subroutine MPI_Reduce_local_c_f08( &
   inbuf, &
   inoutbuf, &
@@ -24567,7 +41462,39 @@ subroutine MPI_Reduce_local_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_local_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_local_f08ts( &
+  inbuf, &
+  inoutbuf, &
+  count, &
+  datatype, &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_local => PMPIF_Reduce_local_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: inbuf
+  type(*), dimension(..) :: inoutbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_local( &
+    inbuf, &
+    inoutbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_local_f08ts
+#else
 subroutine PMPI_Reduce_local_f08( &
   inbuf, &
   inoutbuf, &
@@ -24597,7 +41524,39 @@ subroutine PMPI_Reduce_local_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_local_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_local_c_f08ts( &
+  inbuf, &
+  inoutbuf, &
+  count, &
+  datatype, &
+  op, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_local_c => PMPIF_Reduce_local_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: inbuf
+  type(*), dimension(..) :: inoutbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_local_c( &
+    inbuf, &
+    inoutbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_local_c_f08ts
+#else
 subroutine PMPI_Reduce_local_c_f08( &
   inbuf, &
   inoutbuf, &
@@ -24627,7 +41586,42 @@ subroutine PMPI_Reduce_local_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_local_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_scatter_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_scatter => MPIF_Reduce_scatter_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_f08ts
+#else
 subroutine MPI_Reduce_scatter_f08( &
   sendbuf, &
   recvbuf, &
@@ -24660,7 +41654,42 @@ subroutine MPI_Reduce_scatter_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_scatter_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_scatter_c => MPIF_Reduce_scatter_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_c_f08ts
+#else
 subroutine MPI_Reduce_scatter_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -24693,7 +41722,42 @@ subroutine MPI_Reduce_scatter_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_scatter_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_scatter => PMPIF_Reduce_scatter_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_f08ts
+#else
 subroutine PMPI_Reduce_scatter_f08( &
   sendbuf, &
   recvbuf, &
@@ -24726,7 +41790,42 @@ subroutine PMPI_Reduce_scatter_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_scatter_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_scatter_c => PMPIF_Reduce_scatter_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_c_f08ts
+#else
 subroutine PMPI_Reduce_scatter_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -24759,7 +41858,42 @@ subroutine PMPI_Reduce_scatter_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_scatter_block_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_scatter_block => MPIF_Reduce_scatter_block_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_block( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_block_f08ts
+#else
 subroutine MPI_Reduce_scatter_block_f08( &
   sendbuf, &
   recvbuf, &
@@ -24792,7 +41926,42 @@ subroutine MPI_Reduce_scatter_block_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_block_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_scatter_block_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_scatter_block_c => MPIF_Reduce_scatter_block_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_block_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_block_c_f08ts
+#else
 subroutine MPI_Reduce_scatter_block_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -24825,7 +41994,42 @@ subroutine MPI_Reduce_scatter_block_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_block_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_scatter_block_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_scatter_block => PMPIF_Reduce_scatter_block_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_block( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_block_f08ts
+#else
 subroutine PMPI_Reduce_scatter_block_f08( &
   sendbuf, &
   recvbuf, &
@@ -24858,7 +42062,42 @@ subroutine PMPI_Reduce_scatter_block_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_block_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_scatter_block_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_scatter_block_c => PMPIF_Reduce_scatter_block_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_block_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_block_c_f08ts
+#else
 subroutine PMPI_Reduce_scatter_block_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -24891,7 +42130,48 @@ subroutine PMPI_Reduce_scatter_block_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_block_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_scatter_block_init_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_scatter_block_init => MPIF_Reduce_scatter_block_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_block_init( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_block_init_f08ts
+#else
 subroutine MPI_Reduce_scatter_block_init_f08( &
   sendbuf, &
   recvbuf, &
@@ -24930,7 +42210,48 @@ subroutine MPI_Reduce_scatter_block_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_block_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_scatter_block_init_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_scatter_block_init_c => MPIF_Reduce_scatter_block_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_block_init_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_block_init_c_f08ts
+#else
 subroutine MPI_Reduce_scatter_block_init_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -24969,7 +42290,48 @@ subroutine MPI_Reduce_scatter_block_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_block_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_scatter_block_init_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_scatter_block_init => PMPIF_Reduce_scatter_block_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_block_init( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_block_init_f08ts
+#else
 subroutine PMPI_Reduce_scatter_block_init_f08( &
   sendbuf, &
   recvbuf, &
@@ -25008,7 +42370,48 @@ subroutine PMPI_Reduce_scatter_block_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_block_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_scatter_block_init_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcount, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_scatter_block_init_c => PMPIF_Reduce_scatter_block_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_block_init_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcount, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_block_init_c_f08ts
+#else
 subroutine PMPI_Reduce_scatter_block_init_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -25047,7 +42450,48 @@ subroutine PMPI_Reduce_scatter_block_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_block_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_scatter_init_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_scatter_init => MPIF_Reduce_scatter_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_init( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_init_f08ts
+#else
 subroutine MPI_Reduce_scatter_init_f08( &
   sendbuf, &
   recvbuf, &
@@ -25086,7 +42530,48 @@ subroutine MPI_Reduce_scatter_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Reduce_scatter_init_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Reduce_scatter_init_c => MPIF_Reduce_scatter_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Reduce_scatter_init_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Reduce_scatter_init_c_f08ts
+#else
 subroutine MPI_Reduce_scatter_init_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -25125,7 +42610,48 @@ subroutine MPI_Reduce_scatter_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_scatter_init_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_scatter_init => PMPIF_Reduce_scatter_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in), asynchronous :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_init( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_init_f08ts
+#else
 subroutine PMPI_Reduce_scatter_init_f08( &
   sendbuf, &
   recvbuf, &
@@ -25164,7 +42690,48 @@ subroutine PMPI_Reduce_scatter_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Reduce_scatter_init_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  recvcounts, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Reduce_scatter_init_c => PMPIF_Reduce_scatter_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: recvcounts(*)
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Reduce_scatter_init_c( &
+    sendbuf, &
+    recvbuf, &
+    recvcounts, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Reduce_scatter_init_c_f08ts
+#else
 subroutine PMPI_Reduce_scatter_init_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -25203,6 +42770,7 @@ subroutine PMPI_Reduce_scatter_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_init_c_f08
+#endif
 
 subroutine MPI_Register_datarep_f08( &
   datarep, &
@@ -25690,6 +43258,49 @@ subroutine PMPI_Request_get_status_some_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Request_get_status_some_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Rget_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Rget => MPIF_Rget_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rget( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rget_f08ts
+#else
 subroutine MPI_Rget_f08( &
   origin_addr, &
   origin_count, &
@@ -25731,7 +43342,51 @@ subroutine MPI_Rget_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rget_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Rget_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Rget_c => MPIF_Rget_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rget_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rget_c_f08ts
+#else
 subroutine MPI_Rget_c_f08( &
   origin_addr, &
   origin_count, &
@@ -25773,7 +43428,51 @@ subroutine MPI_Rget_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rget_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Rget_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Rget => PMPIF_Rget_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rget( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rget_f08ts
+#else
 subroutine PMPI_Rget_f08( &
   origin_addr, &
   origin_count, &
@@ -25815,7 +43514,51 @@ subroutine PMPI_Rget_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rget_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Rget_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Rget_c => PMPIF_Rget_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rget_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rget_c_f08ts
+#else
 subroutine PMPI_Rget_c_f08( &
   origin_addr, &
   origin_count, &
@@ -25857,7 +43600,63 @@ subroutine PMPI_Rget_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rget_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Rget_accumulate_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Rget_accumulate => MPIF_Rget_accumulate_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  type(*), dimension(..), asynchronous :: result_addr
+  integer, intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rget_accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rget_accumulate_f08ts
+#else
 subroutine MPI_Rget_accumulate_f08( &
   origin_addr, &
   origin_count, &
@@ -25911,7 +43710,63 @@ subroutine MPI_Rget_accumulate_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rget_accumulate_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Rget_accumulate_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Rget_accumulate_c => MPIF_Rget_accumulate_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  type(*), dimension(..), asynchronous :: result_addr
+  integer(MPI_COUNT_KIND), intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rget_accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rget_accumulate_c_f08ts
+#else
 subroutine MPI_Rget_accumulate_c_f08( &
   origin_addr, &
   origin_count, &
@@ -25965,7 +43820,63 @@ subroutine MPI_Rget_accumulate_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rget_accumulate_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Rget_accumulate_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Rget_accumulate => PMPIF_Rget_accumulate_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  type(*), dimension(..), asynchronous :: result_addr
+  integer, intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rget_accumulate( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rget_accumulate_f08ts
+#else
 subroutine PMPI_Rget_accumulate_f08( &
   origin_addr, &
   origin_count, &
@@ -26019,7 +43930,63 @@ subroutine PMPI_Rget_accumulate_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rget_accumulate_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Rget_accumulate_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  result_addr, &
+  result_count, &
+  result_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  op, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Rget_accumulate_c => PMPIF_Rget_accumulate_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  type(*), dimension(..), asynchronous :: result_addr
+  integer(MPI_COUNT_KIND), intent(in) :: result_count
+  type(MPI_Datatype), intent(in) :: result_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rget_accumulate_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    result_addr, &
+    result_count, &
+    result_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rget_accumulate_c_f08ts
+#else
 subroutine PMPI_Rget_accumulate_c_f08( &
   origin_addr, &
   origin_count, &
@@ -26073,7 +44040,51 @@ subroutine PMPI_Rget_accumulate_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rget_accumulate_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Rput_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Rput => MPIF_Rput_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rput( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rput_f08ts
+#else
 subroutine MPI_Rput_f08( &
   origin_addr, &
   origin_count, &
@@ -26115,7 +44126,51 @@ subroutine MPI_Rput_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rput_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Rput_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Rput_c => MPIF_Rput_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rput_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rput_c_f08ts
+#else
 subroutine MPI_Rput_c_f08( &
   origin_addr, &
   origin_count, &
@@ -26157,7 +44212,51 @@ subroutine MPI_Rput_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rput_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Rput_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Rput => PMPIF_Rput_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer, intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer, intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rput( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rput_f08ts
+#else
 subroutine PMPI_Rput_f08( &
   origin_addr, &
   origin_count, &
@@ -26199,7 +44298,51 @@ subroutine PMPI_Rput_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rput_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Rput_c_f08ts( &
+  origin_addr, &
+  origin_count, &
+  origin_datatype, &
+  target_rank, &
+  target_disp, &
+  target_count, &
+  target_datatype, &
+  win, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Rput_c => PMPIF_Rput_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: origin_addr
+  integer(MPI_COUNT_KIND), intent(in) :: origin_count
+  type(MPI_Datatype), intent(in) :: origin_datatype
+  integer, intent(in) :: target_rank
+  integer(MPI_ADDRESS_KIND), intent(in) :: target_disp
+  integer(MPI_COUNT_KIND), intent(in) :: target_count
+  type(MPI_Datatype), intent(in) :: target_datatype
+  type(MPI_Win), intent(in) :: win
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rput_c( &
+    origin_addr, &
+    origin_count, &
+    origin_datatype%MPI_VAL, &
+    target_rank, &
+    target_disp, &
+    target_count, &
+    target_datatype%MPI_VAL, &
+    win%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rput_c_f08ts
+#else
 subroutine PMPI_Rput_c_f08( &
   origin_addr, &
   origin_count, &
@@ -26241,7 +44384,42 @@ subroutine PMPI_Rput_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rput_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Rsend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Rsend => MPIF_Rsend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rsend_f08ts
+#else
 subroutine MPI_Rsend_f08( &
   buf, &
   count, &
@@ -26274,7 +44452,42 @@ subroutine MPI_Rsend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rsend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Rsend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Rsend_c => MPIF_Rsend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rsend_c_f08ts
+#else
 subroutine MPI_Rsend_c_f08( &
   buf, &
   count, &
@@ -26307,7 +44520,42 @@ subroutine MPI_Rsend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rsend_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Rsend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Rsend => PMPIF_Rsend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rsend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rsend_f08ts
+#else
 subroutine PMPI_Rsend_f08( &
   buf, &
   count, &
@@ -26340,7 +44588,42 @@ subroutine PMPI_Rsend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rsend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Rsend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Rsend_c => PMPIF_Rsend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rsend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rsend_c_f08ts
+#else
 subroutine PMPI_Rsend_c_f08( &
   buf, &
   count, &
@@ -26373,7 +44656,45 @@ subroutine PMPI_Rsend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rsend_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Rsend_init_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Rsend_init => MPIF_Rsend_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rsend_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rsend_init_f08ts
+#else
 subroutine MPI_Rsend_init_f08( &
   buf, &
   count, &
@@ -26409,7 +44730,45 @@ subroutine MPI_Rsend_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rsend_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Rsend_init_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Rsend_init_c => MPIF_Rsend_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Rsend_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Rsend_init_c_f08ts
+#else
 subroutine MPI_Rsend_init_c_f08( &
   buf, &
   count, &
@@ -26445,7 +44804,45 @@ subroutine MPI_Rsend_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rsend_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Rsend_init_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Rsend_init => PMPIF_Rsend_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rsend_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rsend_init_f08ts
+#else
 subroutine PMPI_Rsend_init_f08( &
   buf, &
   count, &
@@ -26481,7 +44878,45 @@ subroutine PMPI_Rsend_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rsend_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Rsend_init_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Rsend_init_c => PMPIF_Rsend_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Rsend_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Rsend_init_c_f08ts
+#else
 subroutine PMPI_Rsend_init_c_f08( &
   buf, &
   count, &
@@ -26517,7 +44952,42 @@ subroutine PMPI_Rsend_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rsend_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Scan_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Scan => MPIF_Scan_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scan_f08ts
+#else
 subroutine MPI_Scan_f08( &
   sendbuf, &
   recvbuf, &
@@ -26550,7 +45020,42 @@ subroutine MPI_Scan_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scan_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Scan_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Scan_c => MPIF_Scan_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scan_c_f08ts
+#else
 subroutine MPI_Scan_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -26583,7 +45088,42 @@ subroutine MPI_Scan_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scan_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Scan_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Scan => PMPIF_Scan_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scan( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scan_f08ts
+#else
 subroutine PMPI_Scan_f08( &
   sendbuf, &
   recvbuf, &
@@ -26616,7 +45156,42 @@ subroutine PMPI_Scan_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scan_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Scan_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Scan_c => PMPIF_Scan_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scan_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scan_c_f08ts
+#else
 subroutine PMPI_Scan_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -26649,7 +45224,48 @@ subroutine PMPI_Scan_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scan_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Scan_init_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Scan_init => MPIF_Scan_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scan_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scan_init_f08ts
+#else
 subroutine MPI_Scan_init_f08( &
   sendbuf, &
   recvbuf, &
@@ -26688,7 +45304,48 @@ subroutine MPI_Scan_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scan_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Scan_init_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Scan_init_c => MPIF_Scan_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scan_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scan_init_c_f08ts
+#else
 subroutine MPI_Scan_init_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -26727,7 +45384,48 @@ subroutine MPI_Scan_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scan_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Scan_init_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Scan_init => PMPIF_Scan_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scan_init( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scan_init_f08ts
+#else
 subroutine PMPI_Scan_init_f08( &
   sendbuf, &
   recvbuf, &
@@ -26766,7 +45464,48 @@ subroutine PMPI_Scan_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scan_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Scan_init_c_f08ts( &
+  sendbuf, &
+  recvbuf, &
+  count, &
+  datatype, &
+  op, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Scan_init_c => PMPIF_Scan_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Op), intent(in) :: op
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scan_init_c( &
+    sendbuf, &
+    recvbuf, &
+    count, &
+    datatype%MPI_VAL, &
+    op%MPI_VAL, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scan_init_c_f08ts
+#else
 subroutine PMPI_Scan_init_c_f08( &
   sendbuf, &
   recvbuf, &
@@ -26805,7 +45544,48 @@ subroutine PMPI_Scan_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scan_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Scatter_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Scatter => MPIF_Scatter_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatter( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatter_f08ts
+#else
 subroutine MPI_Scatter_f08( &
   sendbuf, &
   sendcount, &
@@ -26844,7 +45624,48 @@ subroutine MPI_Scatter_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatter_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Scatter_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Scatter_c => MPIF_Scatter_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatter_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatter_c_f08ts
+#else
 subroutine MPI_Scatter_c_f08( &
   sendbuf, &
   sendcount, &
@@ -26883,7 +45704,48 @@ subroutine MPI_Scatter_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatter_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Scatter_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Scatter => PMPIF_Scatter_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatter( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatter_f08ts
+#else
 subroutine PMPI_Scatter_f08( &
   sendbuf, &
   sendcount, &
@@ -26922,7 +45784,48 @@ subroutine PMPI_Scatter_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatter_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Scatter_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Scatter_c => PMPIF_Scatter_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatter_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatter_c_f08ts
+#else
 subroutine PMPI_Scatter_c_f08( &
   sendbuf, &
   sendcount, &
@@ -26961,7 +45864,54 @@ subroutine PMPI_Scatter_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatter_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Scatter_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Scatter_init => MPIF_Scatter_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatter_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatter_init_f08ts
+#else
 subroutine MPI_Scatter_init_f08( &
   sendbuf, &
   sendcount, &
@@ -27006,7 +45956,54 @@ subroutine MPI_Scatter_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatter_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Scatter_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Scatter_init_c => MPIF_Scatter_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatter_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatter_init_c_f08ts
+#else
 subroutine MPI_Scatter_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -27051,7 +46048,54 @@ subroutine MPI_Scatter_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatter_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Scatter_init_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Scatter_init => PMPIF_Scatter_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatter_init( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatter_init_f08ts
+#else
 subroutine PMPI_Scatter_init_f08( &
   sendbuf, &
   sendcount, &
@@ -27096,7 +46140,54 @@ subroutine PMPI_Scatter_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatter_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Scatter_init_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Scatter_init_c => PMPIF_Scatter_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatter_init_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatter_init_c_f08ts
+#else
 subroutine PMPI_Scatter_init_c_f08( &
   sendbuf, &
   sendcount, &
@@ -27141,7 +46232,51 @@ subroutine PMPI_Scatter_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatter_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Scatterv_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Scatterv => MPIF_Scatterv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatterv( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatterv_f08ts
+#else
 subroutine MPI_Scatterv_f08( &
   sendbuf, &
   sendcounts, &
@@ -27183,7 +46318,51 @@ subroutine MPI_Scatterv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatterv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Scatterv_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Scatterv_c => MPIF_Scatterv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatterv_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatterv_c_f08ts
+#else
 subroutine MPI_Scatterv_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -27225,7 +46404,51 @@ subroutine MPI_Scatterv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatterv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Scatterv_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Scatterv => PMPIF_Scatterv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcounts(*)
+  integer, intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatterv( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatterv_f08ts
+#else
 subroutine PMPI_Scatterv_f08( &
   sendbuf, &
   sendcounts, &
@@ -27267,7 +46490,51 @@ subroutine PMPI_Scatterv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatterv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Scatterv_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Scatterv_c => PMPIF_Scatterv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in) :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatterv_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatterv_c_f08ts
+#else
 subroutine PMPI_Scatterv_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -27309,7 +46576,57 @@ subroutine PMPI_Scatterv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatterv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Scatterv_init_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Scatterv_init => MPIF_Scatterv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatterv_init( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatterv_init_f08ts
+#else
 subroutine MPI_Scatterv_init_f08( &
   sendbuf, &
   sendcounts, &
@@ -27357,7 +46674,57 @@ subroutine MPI_Scatterv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatterv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Scatterv_init_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Scatterv_init_c => MPIF_Scatterv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Scatterv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Scatterv_init_c_f08ts
+#else
 subroutine MPI_Scatterv_init_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -27405,7 +46772,57 @@ subroutine MPI_Scatterv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatterv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Scatterv_init_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Scatterv_init => PMPIF_Scatterv_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer, intent(in), asynchronous :: sendcounts(*)
+  integer, intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatterv_init( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatterv_init_f08ts
+#else
 subroutine PMPI_Scatterv_init_f08( &
   sendbuf, &
   sendcounts, &
@@ -27453,7 +46870,57 @@ subroutine PMPI_Scatterv_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatterv_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Scatterv_init_c_f08ts( &
+  sendbuf, &
+  sendcounts, &
+  displs, &
+  sendtype, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  root, &
+  comm, &
+  info, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Scatterv_init_c => PMPIF_Scatterv_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in), asynchronous :: sendcounts(*)
+  integer(MPI_ADDRESS_KIND), intent(in), asynchronous :: displs(*)
+  type(MPI_Datatype), intent(in) :: sendtype
+  type(*), dimension(..), asynchronous :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: root
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Scatterv_init_c( &
+    sendbuf, &
+    sendcounts, &
+    displs, &
+    sendtype%MPI_VAL, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    root, &
+    comm%MPI_VAL, &
+    info%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Scatterv_init_c_f08ts
+#else
 subroutine PMPI_Scatterv_init_c_f08( &
   sendbuf, &
   sendcounts, &
@@ -27501,7 +46968,42 @@ subroutine PMPI_Scatterv_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatterv_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Send_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Send => MPIF_Send_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Send( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Send_f08ts
+#else
 subroutine MPI_Send_f08( &
   buf, &
   count, &
@@ -27534,7 +47036,42 @@ subroutine MPI_Send_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Send_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Send_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Send_c => MPIF_Send_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Send_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Send_c_f08ts
+#else
 subroutine MPI_Send_c_f08( &
   buf, &
   count, &
@@ -27567,7 +47104,42 @@ subroutine MPI_Send_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Send_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Send_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Send => PMPIF_Send_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Send( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Send_f08ts
+#else
 subroutine PMPI_Send_f08( &
   buf, &
   count, &
@@ -27600,7 +47172,42 @@ subroutine PMPI_Send_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Send_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Send_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Send_c => PMPIF_Send_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Send_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Send_c_f08ts
+#else
 subroutine PMPI_Send_c_f08( &
   buf, &
   count, &
@@ -27633,7 +47240,45 @@ subroutine PMPI_Send_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Send_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Send_init_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Send_init => MPIF_Send_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Send_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Send_init_f08ts
+#else
 subroutine MPI_Send_init_f08( &
   buf, &
   count, &
@@ -27669,7 +47314,45 @@ subroutine MPI_Send_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Send_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Send_init_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Send_init_c => MPIF_Send_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Send_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Send_init_c_f08ts
+#else
 subroutine MPI_Send_init_c_f08( &
   buf, &
   count, &
@@ -27705,7 +47388,45 @@ subroutine MPI_Send_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Send_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Send_init_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Send_init => PMPIF_Send_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Send_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Send_init_f08ts
+#else
 subroutine PMPI_Send_init_f08( &
   buf, &
   count, &
@@ -27741,7 +47462,45 @@ subroutine PMPI_Send_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Send_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Send_init_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Send_init_c => PMPIF_Send_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Send_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Send_init_c_f08ts
+#else
 subroutine PMPI_Send_init_c_f08( &
   buf, &
   count, &
@@ -27777,7 +47536,60 @@ subroutine PMPI_Send_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Send_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Sendrecv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Sendrecv => MPIF_Sendrecv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Sendrecv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Sendrecv_f08ts
+#else
 subroutine MPI_Sendrecv_f08( &
   sendbuf, &
   sendcount, &
@@ -27828,7 +47640,60 @@ subroutine MPI_Sendrecv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Sendrecv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Sendrecv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Sendrecv_c => MPIF_Sendrecv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Sendrecv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Sendrecv_c_f08ts
+#else
 subroutine MPI_Sendrecv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -27879,7 +47744,60 @@ subroutine MPI_Sendrecv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Sendrecv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Sendrecv_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Sendrecv => PMPIF_Sendrecv_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer, intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  type(*), dimension(..) :: recvbuf
+  integer, intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Sendrecv( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Sendrecv_f08ts
+#else
 subroutine PMPI_Sendrecv_f08( &
   sendbuf, &
   sendcount, &
@@ -27930,7 +47848,60 @@ subroutine PMPI_Sendrecv_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Sendrecv_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Sendrecv_c_f08ts( &
+  sendbuf, &
+  sendcount, &
+  sendtype, &
+  dest, &
+  sendtag, &
+  recvbuf, &
+  recvcount, &
+  recvtype, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Sendrecv_c => PMPIF_Sendrecv_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: sendbuf
+  integer(MPI_COUNT_KIND), intent(in) :: sendcount
+  type(MPI_Datatype), intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  type(*), dimension(..) :: recvbuf
+  integer(MPI_COUNT_KIND), intent(in) :: recvcount
+  type(MPI_Datatype), intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Sendrecv_c( &
+    sendbuf, &
+    sendcount, &
+    sendtype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    recvbuf, &
+    recvcount, &
+    recvtype%MPI_VAL, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Sendrecv_c_f08ts
+#else
 subroutine PMPI_Sendrecv_c_f08( &
   sendbuf, &
   sendcount, &
@@ -27981,7 +47952,51 @@ subroutine PMPI_Sendrecv_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Sendrecv_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Sendrecv_replace_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Sendrecv_replace => MPIF_Sendrecv_replace_cdesc
+  implicit none
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Sendrecv_replace( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Sendrecv_replace_f08ts
+#else
 subroutine MPI_Sendrecv_replace_f08( &
   buf, &
   count, &
@@ -28023,7 +48038,51 @@ subroutine MPI_Sendrecv_replace_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Sendrecv_replace_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Sendrecv_replace_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Sendrecv_replace_c => MPIF_Sendrecv_replace_c_cdesc
+  implicit none
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Sendrecv_replace_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Sendrecv_replace_c_f08ts
+#else
 subroutine MPI_Sendrecv_replace_c_f08( &
   buf, &
   count, &
@@ -28065,7 +48124,51 @@ subroutine MPI_Sendrecv_replace_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Sendrecv_replace_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Sendrecv_replace_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Sendrecv_replace => PMPIF_Sendrecv_replace_cdesc
+  implicit none
+  type(*), dimension(..) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Sendrecv_replace( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Sendrecv_replace_f08ts
+#else
 subroutine PMPI_Sendrecv_replace_f08( &
   buf, &
   count, &
@@ -28107,7 +48210,51 @@ subroutine PMPI_Sendrecv_replace_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Sendrecv_replace_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Sendrecv_replace_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  sendtag, &
+  source, &
+  recvtag, &
+  comm, &
+  status, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Sendrecv_replace_c => PMPIF_Sendrecv_replace_c_cdesc
+  implicit none
+  type(*), dimension(..) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Status) :: status
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Sendrecv_replace_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    sendtag, &
+    source, &
+    recvtag, &
+    comm%MPI_VAL, &
+    status, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Sendrecv_replace_c_f08ts
+#else
 subroutine PMPI_Sendrecv_replace_c_f08( &
   buf, &
   count, &
@@ -28149,7 +48296,33 @@ subroutine PMPI_Sendrecv_replace_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Sendrecv_replace_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Session_attach_buffer_f08ts( &
+  session, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Session_attach_buffer => MPIF_Session_attach_buffer_cdesc
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(*), dimension(..), asynchronous :: buffer
+  integer, intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_attach_buffer( &
+    session%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_attach_buffer_f08ts
+#else
 subroutine MPI_Session_attach_buffer_f08( &
   session, &
   buffer, &
@@ -28173,7 +48346,33 @@ subroutine MPI_Session_attach_buffer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_attach_buffer_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Session_attach_buffer_c_f08ts( &
+  session, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Session_attach_buffer_c => MPIF_Session_attach_buffer_c_cdesc
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(*), dimension(..), asynchronous :: buffer
+  integer(MPI_COUNT_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Session_attach_buffer_c( &
+    session%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Session_attach_buffer_c_f08ts
+#else
 subroutine MPI_Session_attach_buffer_c_f08( &
   session, &
   buffer, &
@@ -28197,7 +48396,33 @@ subroutine MPI_Session_attach_buffer_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_attach_buffer_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Session_attach_buffer_f08ts( &
+  session, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Session_attach_buffer => PMPIF_Session_attach_buffer_cdesc
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(*), dimension(..), asynchronous :: buffer
+  integer, intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_attach_buffer( &
+    session%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_attach_buffer_f08ts
+#else
 subroutine PMPI_Session_attach_buffer_f08( &
   session, &
   buffer, &
@@ -28221,7 +48446,33 @@ subroutine PMPI_Session_attach_buffer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_attach_buffer_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Session_attach_buffer_c_f08ts( &
+  session, &
+  buffer, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Session_attach_buffer_c => PMPIF_Session_attach_buffer_c_cdesc
+  implicit none
+  type(MPI_Session), intent(in) :: session
+  type(*), dimension(..), asynchronous :: buffer
+  integer(MPI_COUNT_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Session_attach_buffer_c( &
+    session%MPI_VAL, &
+    buffer, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Session_attach_buffer_c_f08ts
+#else
 subroutine PMPI_Session_attach_buffer_c_f08( &
   session, &
   buffer, &
@@ -28245,6 +48496,7 @@ subroutine PMPI_Session_attach_buffer_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_attach_buffer_c_f08
+#endif
 
 subroutine MPI_Session_call_errhandler_f08( &
   session, &
@@ -28882,6 +49134,40 @@ subroutine PMPI_Session_set_errhandler_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_set_errhandler_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ssend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ssend => MPIF_Ssend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ssend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ssend_f08ts
+#else
 subroutine MPI_Ssend_f08( &
   buf, &
   count, &
@@ -28914,7 +49200,42 @@ subroutine MPI_Ssend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ssend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ssend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ssend_c => MPIF_Ssend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ssend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ssend_c_f08ts
+#else
 subroutine MPI_Ssend_c_f08( &
   buf, &
   count, &
@@ -28947,7 +49268,42 @@ subroutine MPI_Ssend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ssend_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ssend_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ssend => PMPIF_Ssend_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ssend( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ssend_f08ts
+#else
 subroutine PMPI_Ssend_f08( &
   buf, &
   count, &
@@ -28980,7 +49336,42 @@ subroutine PMPI_Ssend_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ssend_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ssend_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ssend_c => PMPIF_Ssend_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ssend_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ssend_c_f08ts
+#else
 subroutine PMPI_Ssend_c_f08( &
   buf, &
   count, &
@@ -29013,7 +49404,45 @@ subroutine PMPI_Ssend_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ssend_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ssend_init_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ssend_init => MPIF_Ssend_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ssend_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ssend_init_f08ts
+#else
 subroutine MPI_Ssend_init_f08( &
   buf, &
   count, &
@@ -29049,7 +49478,45 @@ subroutine MPI_Ssend_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ssend_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Ssend_init_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Ssend_init_c => MPIF_Ssend_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Ssend_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Ssend_init_c_f08ts
+#else
 subroutine MPI_Ssend_init_c_f08( &
   buf, &
   count, &
@@ -29085,7 +49552,45 @@ subroutine MPI_Ssend_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ssend_init_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ssend_init_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ssend_init => PMPIF_Ssend_init_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer, intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ssend_init( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ssend_init_f08ts
+#else
 subroutine PMPI_Ssend_init_f08( &
   buf, &
   count, &
@@ -29121,7 +49626,45 @@ subroutine PMPI_Ssend_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ssend_init_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Ssend_init_c_f08ts( &
+  buf, &
+  count, &
+  datatype, &
+  dest, &
+  tag, &
+  comm, &
+  request, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Ssend_init_c => PMPIF_Ssend_init_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in), asynchronous :: buf
+  integer(MPI_COUNT_KIND), intent(in) :: count
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Request), intent(out) :: request
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Ssend_init_c( &
+    buf, &
+    count, &
+    datatype%MPI_VAL, &
+    dest, &
+    tag, &
+    comm%MPI_VAL, &
+    request%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Ssend_init_c_f08ts
+#else
 subroutine PMPI_Ssend_init_c_f08( &
   buf, &
   count, &
@@ -29157,6 +49700,7 @@ subroutine PMPI_Ssend_init_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ssend_init_c_f08
+#endif
 
 subroutine MPI_Start_f08( &
   request, &
@@ -32728,6 +53272,43 @@ subroutine PMPI_Type_vector_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_vector_c_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Unpack_f08ts( &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Unpack => MPIF_Unpack_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: inbuf
+  integer, intent(in) :: insize
+  integer, intent(inout) :: position
+  type(*), dimension(..) :: outbuf
+  integer, intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Unpack( &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Unpack_f08ts
+#else
 subroutine MPI_Unpack_f08( &
   inbuf, &
   insize, &
@@ -32763,7 +53344,45 @@ subroutine MPI_Unpack_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Unpack_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Unpack_c_f08ts( &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Unpack_c => MPIF_Unpack_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: inbuf
+  integer(MPI_COUNT_KIND), intent(in) :: insize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  type(*), dimension(..) :: outbuf
+  integer(MPI_COUNT_KIND), intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Unpack_c( &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Unpack_c_f08ts
+#else
 subroutine MPI_Unpack_c_f08( &
   inbuf, &
   insize, &
@@ -32799,7 +53418,45 @@ subroutine MPI_Unpack_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Unpack_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Unpack_f08ts( &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Unpack => PMPIF_Unpack_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: inbuf
+  integer, intent(in) :: insize
+  integer, intent(inout) :: position
+  type(*), dimension(..) :: outbuf
+  integer, intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Unpack( &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Unpack_f08ts
+#else
 subroutine PMPI_Unpack_f08( &
   inbuf, &
   insize, &
@@ -32835,7 +53492,45 @@ subroutine PMPI_Unpack_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Unpack_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Unpack_c_f08ts( &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  comm, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Unpack_c => PMPIF_Unpack_c_cdesc
+  implicit none
+  type(*), dimension(..), intent(in) :: inbuf
+  integer(MPI_COUNT_KIND), intent(in) :: insize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  type(*), dimension(..) :: outbuf
+  integer(MPI_COUNT_KIND), intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  type(MPI_Comm), intent(in) :: comm
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Unpack_c( &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    comm%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Unpack_c_f08ts
+#else
 subroutine PMPI_Unpack_c_f08( &
   inbuf, &
   insize, &
@@ -32871,7 +53566,47 @@ subroutine PMPI_Unpack_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Unpack_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Unpack_external_f08ts( &
+  datarep, &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Unpack_external => MPIF_Unpack_external_cdesc
+  use, intrinsic :: iso_c_binding, only: c_size_t
+  implicit none
+  character*(*), intent(in) :: datarep
+  type(*), dimension(..), intent(in) :: inbuf
+  integer(MPI_ADDRESS_KIND), intent(in) :: insize
+  integer(MPI_ADDRESS_KIND), intent(inout) :: position
+  type(*), dimension(..) :: outbuf
+  integer, intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Unpack_external( &
+    datarep, &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    tmp_ierror, &
+    int(len(datarep), c_size_t) &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Unpack_external_f08ts
+#else
 subroutine MPI_Unpack_external_f08( &
   datarep, &
   inbuf, &
@@ -32907,7 +53642,47 @@ subroutine MPI_Unpack_external_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Unpack_external_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Unpack_external_c_f08ts( &
+  datarep, &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Unpack_external_c => MPIF_Unpack_external_c_cdesc
+  use, intrinsic :: iso_c_binding, only: c_size_t
+  implicit none
+  character*(*), intent(in) :: datarep
+  type(*), dimension(..), intent(in) :: inbuf
+  integer(MPI_COUNT_KIND), intent(in) :: insize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  type(*), dimension(..) :: outbuf
+  integer(MPI_COUNT_KIND), intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Unpack_external_c( &
+    datarep, &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    tmp_ierror, &
+    int(len(datarep), c_size_t) &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Unpack_external_c_f08ts
+#else
 subroutine MPI_Unpack_external_c_f08( &
   datarep, &
   inbuf, &
@@ -32943,7 +53718,47 @@ subroutine MPI_Unpack_external_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Unpack_external_c_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Unpack_external_f08ts( &
+  datarep, &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Unpack_external => PMPIF_Unpack_external_cdesc
+  use, intrinsic :: iso_c_binding, only: c_size_t
+  implicit none
+  character*(*), intent(in) :: datarep
+  type(*), dimension(..), intent(in) :: inbuf
+  integer(MPI_ADDRESS_KIND), intent(in) :: insize
+  integer(MPI_ADDRESS_KIND), intent(inout) :: position
+  type(*), dimension(..) :: outbuf
+  integer, intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Unpack_external( &
+    datarep, &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    tmp_ierror, &
+    int(len(datarep), c_size_t) &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Unpack_external_f08ts
+#else
 subroutine PMPI_Unpack_external_f08( &
   datarep, &
   inbuf, &
@@ -32979,7 +53794,47 @@ subroutine PMPI_Unpack_external_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Unpack_external_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Unpack_external_c_f08ts( &
+  datarep, &
+  inbuf, &
+  insize, &
+  position, &
+  outbuf, &
+  outcount, &
+  datatype, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Unpack_external_c => PMPIF_Unpack_external_c_cdesc
+  use, intrinsic :: iso_c_binding, only: c_size_t
+  implicit none
+  character*(*), intent(in) :: datarep
+  type(*), dimension(..), intent(in) :: inbuf
+  integer(MPI_COUNT_KIND), intent(in) :: insize
+  integer(MPI_COUNT_KIND), intent(inout) :: position
+  type(*), dimension(..) :: outbuf
+  integer(MPI_COUNT_KIND), intent(in) :: outcount
+  type(MPI_Datatype), intent(in) :: datatype
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Unpack_external_c( &
+    datarep, &
+    inbuf, &
+    insize, &
+    position, &
+    outbuf, &
+    outcount, &
+    datatype%MPI_VAL, &
+    tmp_ierror, &
+    int(len(datarep), c_size_t) &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Unpack_external_c_f08ts
+#else
 subroutine PMPI_Unpack_external_c_f08( &
   datarep, &
   inbuf, &
@@ -33015,6 +53870,7 @@ subroutine PMPI_Unpack_external_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Unpack_external_c_f08
+#endif
 
 subroutine MPI_Unpublish_name_f08( &
   service_name, &
@@ -33564,6 +54420,31 @@ subroutine PMPI_Win_allocate_shared_c_f08( &
 end subroutine PMPI_Win_allocate_shared_c_f08
 #endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Win_attach_f08ts( &
+  win, &
+  base, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Win_attach => MPIF_Win_attach_cdesc
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(*), dimension(..), asynchronous :: base
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_attach( &
+    win%MPI_VAL, &
+    base, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_attach_f08ts
+#else
 subroutine MPI_Win_attach_f08( &
   win, &
   base, &
@@ -33587,7 +54468,33 @@ subroutine MPI_Win_attach_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_attach_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Win_attach_f08ts( &
+  win, &
+  base, &
+  size, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Win_attach => PMPIF_Win_attach_cdesc
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(*), dimension(..), asynchronous :: base
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_attach( &
+    win%MPI_VAL, &
+    base, &
+    size, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_attach_f08ts
+#else
 subroutine PMPI_Win_attach_f08( &
   win, &
   base, &
@@ -33611,6 +54518,7 @@ subroutine PMPI_Win_attach_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_attach_f08
+#endif
 
 subroutine MPI_Win_call_errhandler_f08( &
   win, &
@@ -33690,6 +54598,40 @@ subroutine PMPI_Win_complete_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_complete_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Win_create_f08ts( &
+  base, &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Win_create => MPIF_Win_create_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: base
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer, intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_create( &
+    base, &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_create_f08ts
+#else
 subroutine MPI_Win_create_f08( &
   base, &
   size, &
@@ -33722,8 +54664,43 @@ subroutine MPI_Win_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_create_f08
+#endif
 
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Win_create_c_f08ts( &
+  base, &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Win_create_c => MPIF_Win_create_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: base
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer(MPI_ADDRESS_KIND), intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_create_c( &
+    base, &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_create_c_f08ts
+#else
 subroutine MPI_Win_create_c_f08( &
   base, &
   size, &
@@ -33757,7 +54734,42 @@ subroutine MPI_Win_create_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_create_c_f08
 #endif
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Win_create_f08ts( &
+  base, &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Win_create => PMPIF_Win_create_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: base
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer, intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_create( &
+    base, &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_create_f08ts
+#else
 subroutine PMPI_Win_create_f08( &
   base, &
   size, &
@@ -33790,8 +54802,43 @@ subroutine PMPI_Win_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_create_f08
+#endif
 
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Win_create_c_f08ts( &
+  base, &
+  size, &
+  disp_unit, &
+  info, &
+  comm, &
+  win, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Win_create_c => PMPIF_Win_create_c_cdesc
+  implicit none
+  type(*), dimension(..), asynchronous :: base
+  integer(MPI_ADDRESS_KIND), intent(in) :: size
+  integer(MPI_ADDRESS_KIND), intent(in) :: disp_unit
+  type(MPI_Info), intent(in) :: info
+  type(MPI_Comm), intent(in) :: comm
+  type(MPI_Win), intent(out) :: win
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_create_c( &
+    base, &
+    size, &
+    disp_unit, &
+    info%MPI_VAL, &
+    comm%MPI_VAL, &
+    win%MPI_VAL, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_create_c_f08ts
+#else
 subroutine PMPI_Win_create_c_f08( &
   base, &
   size, &
@@ -33824,6 +54871,7 @@ subroutine PMPI_Win_create_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_create_c_f08
+#endif
 #endif
 
 subroutine MPI_Win_create_dynamic_f08( &
@@ -34012,6 +55060,28 @@ subroutine PMPI_Win_delete_attr_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_delete_attr_f08
 
+#ifdef MPIF_HAVE_CFI
+subroutine MPI_Win_detach_f08ts( &
+  win, &
+  base, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: MPIF_Win_detach => MPIF_Win_detach_cdesc
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(*), dimension(..), asynchronous :: base
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call MPIF_Win_detach( &
+    win%MPI_VAL, &
+    base, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine MPI_Win_detach_f08ts
+#else
 subroutine MPI_Win_detach_f08( &
   win, &
   base, &
@@ -34032,7 +55102,30 @@ subroutine MPI_Win_detach_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_detach_f08
+#endif
 
+#ifdef MPIF_HAVE_CFI
+subroutine PMPI_Win_detach_f08ts( &
+  win, &
+  base, &
+  ierror &
+)
+  use mpif_f08_constants
+  use mpif_f08_types
+  use mpif_f08_cdesc, only: PMPIF_Win_detach => PMPIF_Win_detach_cdesc
+  implicit none
+  type(MPI_Win), intent(in) :: win
+  type(*), dimension(..), asynchronous :: base
+  integer, intent(out), optional :: ierror
+  integer :: tmp_ierror
+  call PMPIF_Win_detach( &
+    win%MPI_VAL, &
+    base, &
+    tmp_ierror &
+  )
+  if (present(ierror)) ierror = tmp_ierror
+end subroutine PMPI_Win_detach_f08ts
+#else
 subroutine PMPI_Win_detach_f08( &
   win, &
   base, &
@@ -34053,6 +55146,7 @@ subroutine PMPI_Win_detach_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_detach_f08
+#endif
 
 subroutine MPI_Win_fence_f08( &
   assert, &

@@ -11,6 +11,10 @@
 #                  own, leaving the ordinary build alone. See
 #                  scripts/macos-common.sh.
 #   MPIF_REBUILD   rebuild even though the prefix is already marked complete.
+#   MPIF_ENABLE_CFI=0  force the ignore_tkr fallback on a toolchain whose
+#                  TS 29113 probe would pass, which is how that branch stays
+#                  testable. The prefix is the ordinary one, so rebuild with
+#                  MPIF_REBUILD=1 (and without this) afterwards.
 #
 # The MPI has to be installed already; this refuses to start otherwise rather
 # than configuring against a prefix that is missing or half-written.
@@ -53,7 +57,8 @@ cmake \
     -DCMAKE_Fortran_COMPILER="${FC}" \
     -DCMAKE_INSTALL_PREFIX="${mpif_prefix}" \
     -DMPI_HOME="${mpi_prefix}" \
-    -DMPIF_SANITIZE="${sanitize}"
+    -DMPIF_SANITIZE="${sanitize}" \
+    -DMPIF_ENABLE_CFI="${MPIF_ENABLE_CFI:-ON}"
 cmake --build "${build}" --parallel
 cmake --install "${build}"
 
