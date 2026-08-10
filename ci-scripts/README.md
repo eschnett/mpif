@@ -125,9 +125,12 @@ against one expected-failure list; see MISSING.md "MPICH is built from `main`".
   against the runtime MPI's rows of the expected-failures list. Six `compile`
   rows compile mpif under other compilers and run nothing, reported and not
   gating until each has been green.
-- `docker/*.dockerfile` -- seven Linux variants: MPICH and Open MPI, gcc and
-  flang, on amd64, arm64v8, the i386 that CI runs in a container, and the arm32v7
-  that CI has no runner for and that qemu makes too slow to run per push. The two
-  32-bit ones are MPICH-only, Open MPI having dropped 32-bit environments.
+- `docker/*.dockerfile` -- seven Linux variants, not a cross product. arm64v8
+  carries the full four (MPICH and Open MPI, gcc and flang); amd64 carries
+  Open MPI with gcc alone; nothing records why the other three are missing
+  there, so do not read the gap as a decision. The other two are the 32-bit
+  ABIs: the i386 that CI runs in a container, and the arm32v7 that CI has no
+  runner for and that qemu makes too slow to run per push. Both 32-bit ones are
+  MPICH-only, Open MPI having dropped 32-bit environments.
 - `scripts/macos-*.sh` -- the same recipes locally; see "Working on this" in
   MISSING.md.

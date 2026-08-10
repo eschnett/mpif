@@ -124,6 +124,7 @@ COPY test/CMakeLists.txt test/*.c test/*.f test/*.f90 test/*.F90 .
 # Configure tests
 RUN <<EOF
     test_flags=(
+        -DCMAKE_BUILD_TYPE=Debug
         -DMPI_C_COMPILER=${mpi_prefix}/bin/mpicc
         -DMPI_Fortran_COMPILER=${mpif_prefix}/bin/mpifort
         -DMPI_C_HEADER_DIR=${mpi_prefix}/include
@@ -132,6 +133,7 @@ RUN <<EOF
         # The alltoallw tests need more than one rank. Pinned rather than
         # detected: test/CMakeLists.txt fails the configure without it.
         -DMPIEXEC_EXECUTABLE=${mpi_prefix}/bin/mpiexec
+        -DMPIF_TEST_MPI_LIBRARY=MPICH
     )
     cmake -Bbuild-mpich-gcc-tests "${test_flags[@]}"
 EOF
@@ -156,12 +158,14 @@ RUN ctest --test-dir build-mpich-gcc-tests --output-on-failure
 #
 # The failures that are expected are listed in ci-scripts/suite/mpich-suite-xfail.txt
 # with a reason apiece, and this fails on a difference from that list rather
-# than on a failure. A variant with no `triaged` line there is reported and
-# cannot fail the build, which is what this variant is until someone measures it:
-# the key is mpich/gcc/linux/13/i686 -- Debian's VERSION_ID being 13, and the arch
-# from the MPIF_SUITE_ARCH set at the top of this file, since `uname -m` here
-# answers for the kernel. The first run of this image reported linux/13/x86_64 for
-# want of that, and was compared against the 64-bit rows.
+# than on a failure. This variant's key is mpich/gcc/linux/13/i686 -- Debian's
+# VERSION_ID being 13, and the arch from the MPIF_SUITE_ARCH set at the top of
+# this file, since `uname -m` here answers for the kernel. The first run of this
+# image reported linux/13/x86_64 for want of that, and was compared against the
+# 64-bit rows.
+#
+# That key carries a `triaged` line, so a difference from the list fails this
+# build.
 
 WORKDIR /cactus/mpif
 COPY --parents ci-scripts/suite .

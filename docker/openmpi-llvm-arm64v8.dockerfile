@@ -110,6 +110,7 @@ COPY test/CMakeLists.txt test/*.c test/*.f test/*.f90 test/*.F90 .
 # Configure tests
 RUN <<EOF
     test_flags=(
+        -DCMAKE_BUILD_TYPE=Debug
         -DMPI_C_COMPILER=${mpi_prefix}/bin/mpicc
         -DMPI_Fortran_COMPILER=${mpif_prefix}/bin/mpifort
         -DMPI_C_HEADER_DIR=${mpi_prefix}/include
@@ -122,6 +123,7 @@ RUN <<EOF
         # than it has slots.
         -DMPIEXEC_EXECUTABLE=${mpi_prefix}/bin/mpiexec
         '-DMPIEXEC_PREFLAGS=--oversubscribe;--allow-run-as-root;--mca;btl_tcp_if_include;lo'
+        '-DMPIF_TEST_MPI_LIBRARY=Open MPI'
     )
     cmake -Bbuild-openmpi-llvm-tests "${test_flags[@]}"
 EOF

@@ -597,8 +597,10 @@ unavailable`. Four separable defects in the posix fbtl (Open MPI 6.1.0a1):
 - Related but distinct: `i_fcoll_test` under flang fails on both
   implementations because flang's `STOP` prints an IEEE-exceptions line after
   "No Errors", which `runtests` counts as unexpected output — not an MPI
-  defect. Still untriaged: `*/*/linux/24.04/*`, where the aio message is
-  absent and this patch changes nothing (see "Worth doing next").
+  defect. Expected on `*/llvm/darwin/*/*` and, measured on both
+  implementations, on `*/llvm/linux/26.04/*`. Still untriaged:
+  `*/*/linux/24.04/*`, where gcc fails it too, the aio message is absent and
+  this patch changes nothing (see "Worth doing next").
 
 ### OpenMPI: left to itself it picks an interface it cannot use
 
@@ -978,9 +980,14 @@ it were an oversight.
    then the `triaged` line. Expect `attrmpi1f08` (the `amd64` spelling);
    treat anything else as a real question about a platform nothing here had
    run on.
-4. **Triage `mpich/gcc/linux/26.04/armv7l`**, the one 32-bit variant without
-   a `triaged` line (emulated, local-only; CI does not run it). Do not carry
-   the i686 list over: different 32-bit ABIs, different alignment.
+4. **Triage the two remaining Docker images**, both emulated on this machine
+   and neither run by CI. `mpich/gcc/linux/26.04/armv7l` is the one 32-bit
+   variant without a `triaged` line — do not carry the i686 list over:
+   different 32-bit ABIs, different alignment.
+   `openmpi/gcc/linux/26.04/x86_64` should read like its `aarch64` twin plus
+   the eleven spawn tests, but that is a prediction and not a measurement.
+   Measure each from an image the dockerfile has just built, not from
+   whatever the daemon still holds under that tag.
 
 Upstream reporting status — the sections above are the authority; this is a
 summary:
@@ -1030,21 +1037,32 @@ rather than re-measured, and CI is what confirms them.
   after the assumed-rank change, `mpich/gcc/darwin/26/arm64` reports no
   differences at 3/5/8, `mpich/llvm` at 3/5/9, `openmpi/gcc` at 7/9/13 and
   `openmpi/llvm` at 7/9/14.
+- Nor are the four arm64v8 Docker images (`linux/26.04/aarch64`), measured
+  2026-08-10: they report the same 3/5/8, 3/5/9, 7/9/13 and 7/9/14 as the
+  `darwin/26` rows above, which is the same machine and the same compilers
+  differing only in the OS the key names. Their `dgraph` six and the flang
+  `i_fcoll_test` are what the extra rows in the expected-failures list cover.
 - The two Open MPI x86_64 rows are higher by exactly the eleven spawn tests
   ("a spawned child is not reachable over TCP" above).
 - Thirteen of CI's fourteen variants are `triaged` (the twelve above plus
   `mpich/gcc/linux/13/i686`, which gates on three consecutive agreeing
-  runs), so any difference there fails the run. Not gating:
-  `mpich/gcc/freebsd/14/amd64` (unmeasured) and
-  `mpich/gcc/linux/26.04/armv7l` (emulated, local-only). The other
-  `triaged` lines are environments outside CI.
+  runs), so any difference there fails the run; `mpich/gcc/freebsd/14/amd64`
+  is unmeasured and does not gate. The other `triaged` lines are
+  environments outside CI: this machine's four `darwin/26` rows, and the
+  four `linux/26.04/aarch64` Docker images. Two Docker images remain
+  unmeasured and so still do not gate — `openmpi/gcc/linux/26.04/x86_64`
+  and `mpich/gcc/linux/26.04/armv7l`, both of which need qemu here and
+  neither of which CI runs.
 - Most rows rest on a single measurement, so expect some churn: a flaky
   entry surfaces as an unexpected pass, which is the mechanism working.
-- `test/`, mpif's own suite, is 75 of 75 (`ctest`'s count; `add_mpi_test`
-  registers 67 — the runtime-check and `mpif_info` groups use bare
-  `add_test` for cases that are about the launch environment rather than a
-  binding). Green on all four local variants, each against both runtime
-  MPIs, and the AddressSanitizer variants likewise.
+- `test/`, mpif's own suite, is entirely green: all four local variants,
+  each against both runtime MPIs, the AddressSanitizer variants, and the
+  four arm64v8 Docker images. `ctest` registers more than `add_mpi_test`
+  does — the runtime-check and `mpif_info` groups use bare `add_test` for
+  cases that are about the launch environment rather than a binding. Count
+  rather than trust a number; a written one rotted here once:
+
+      ctest --test-dir build/test/<variant>-run-<runtime> -N | tail -1
 
 Two ways a *local* suite run goes wrong for reasons that are not the code:
 

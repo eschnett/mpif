@@ -1,0 +1,32 @@
+# What `docker build .` must not send to the daemon.
+#
+# The build context is the repository root, and this is a denylist of the large
+# git-ignored trees rather than an allowlist of what the images COPY. An
+# allowlist would have to be revised every time a `COPY` in docker/*.dockerfile
+# does; this list only has to name things that are big and that nothing copies.
+#
+# CI builds from a fresh checkout, where none of these exist -- which is why
+# their absence went unnoticed. Locally `build/` alone is gigabytes, and every
+# `docker build` was sending it.
+#
+# Keep in step with .gitignore: anything added there that is large belongs here
+# too. The reverse does not hold -- .gitignore also hides small files that cost
+# nothing to send.
+
+# The staged build trees; see "Working on mpif" in CLAUDE.md
+build*/
+
+# doc/mpi50-report.pdf and friends: tens of megabytes, read by dev/ tooling only
+doc/
+
+# The generator's input. gen/ is generated *and committed*, so the images build
+# from gen/ and never run dev/mpiapi.jl
+data/
+
+# Nothing here reads the repository's history: no CMakeLists.txt or ci-scripts
+# script runs git against the context, and install-mpich.sh clones over the
+# network
+.git/
+
+*~
+.DS_Store

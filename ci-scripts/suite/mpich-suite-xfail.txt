@@ -108,11 +108,9 @@ triaged mpich/gcc/linux/13/i686
 
 # Measured outside CI, which the OS version in the key now tells apart from it:
 # this machine runs macOS 26 where the runners run 15, and the Docker images run
-# Ubuntu 26.04 where the runners run 24.04. The other five images have never been
-# measured, so they are reported and cannot fail a build.
+# Ubuntu 26.04 where the runners run 24.04.
 triaged mpich/gcc/darwin/26/arm64
 triaged mpich/llvm/darwin/26/arm64
-triaged openmpi/gcc/linux/26.04/aarch64
 triaged openmpi/gcc/darwin/26/arm64
 triaged openmpi/llvm/darwin/26/arm64
 
@@ -128,6 +126,23 @@ triaged openmpi/llvm/darwin/26/arm64
 # reported four f90-datatype tests failing, and the variant had not regressed.
 # Reusing an installed prefix skips the stamp that would have caught it, since
 # the stamp is checked by the install script and nothing else.
+
+# The four arm64v8 Docker images, measured 2026-08-10, one run each, and then
+# confirmed by rebuilding each image with these lines in place -- so the suite
+# step that gates the build is the same run that measured it. They fail 3/5/8,
+# 3/5/9, 7/9/13 and 7/9/14 tests across f77/f90/f08, the same counts as the
+# `darwin/26` rows above: the same machine and the same compilers, differing in
+# the OS the key names. What the OS costs is the flang `i_fcoll_test` row, which
+# had to be widened to reach them.
+#
+# The other two images are unmeasured and so cannot fail a build --
+# `openmpi/gcc/linux/26.04/x86_64` (docker/openmpi-gcc-amd64.dockerfile) and
+# `mpich/gcc/linux/26.04/armv7l` (docker/mpich-gcc-arm32v7.dockerfile), both of
+# which need qemu here. See "Worth doing next" in MISSING.md.
+triaged mpich/gcc/linux/26.04/aarch64
+triaged mpich/llvm/linux/26.04/aarch64
+triaged openmpi/gcc/linux/26.04/aarch64
+triaged openmpi/llvm/linux/26.04/aarch64
 
 # --- Accounted for -------------------------------------------------------------
 #
@@ -152,15 +167,16 @@ xfail mpich/*/*/*/*            f90  bsendf90           # attaches 400 bytes, und
 # would therefore turn the macos-15 job red for "unexpectedly passes", which is the
 # comparison working, not a bug in it. Widen it only when a run says to.
 #
-# The toolchain *is* wildcarded, and that one a run did say: gcc and llvm on macOS
-# 26 fail the same six with the same message. treematch is C, so the Fortran
-# compiler has nothing to do with whether it permutes.
-xfail openmpi/gcc/linux/26.04/aarch64 f77  dgraph_unwgtf      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/gcc/linux/26.04/aarch64 f08  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/gcc/linux/26.04/aarch64 f90  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/gcc/linux/26.04/aarch64 f77  dgraph_wgtf        # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/gcc/linux/26.04/aarch64 f08  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/gcc/linux/26.04/aarch64 f90  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+# The toolchain *is* wildcarded, and that one two runs did say: gcc and llvm fail
+# the same six with the same message, on macOS 26 and on the Ubuntu 26.04 images
+# alike. treematch is C, so the Fortran compiler has nothing to do with whether it
+# permutes.
+xfail openmpi/*/linux/26.04/aarch64   f77  dgraph_unwgtf      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/linux/26.04/aarch64   f08  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/linux/26.04/aarch64   f90  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/linux/26.04/aarch64   f77  dgraph_wgtf        # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/linux/26.04/aarch64   f08  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/linux/26.04/aarch64   f90  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/*/darwin/26/arm64       f77  dgraph_unwgtf      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/*/darwin/26/arm64       f08  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/*/darwin/26/arm64       f90  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
@@ -173,6 +189,7 @@ xfail */*/*/*/*                f77  greqf              # extra_state is copied, 
 xfail */*/*/*/*                f08  greqf08            # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
 xfail */*/*/*/*                f90  greqf90            # extra_state is copied, not aliased; MISSING.md "the generalized request tests"
 xfail */llvm/darwin/*/*        f08  i_fcoll_test       # not a failure: flang's STOP prints "IEEE arithmetic exceptions signaled: INEXACT" past the test's "No Errors"; MISSING.md "aio queue"
+xfail */llvm/linux/26.04/*     f08  i_fcoll_test       # the same flang STOP output, on both implementations, with "No Errors" present and no aio message. Kept apart from the row above rather than merged into `*/llvm/*/*/*`, which would also claim linux/24.04 -- where gcc fails this test too, so the cause there is not flang's STOP; MISSING.md "aio queue"
 xfail openmpi/*/*/*/*          f77  infocrenvf         # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
 xfail openmpi/*/*/*/*          f08  infocrenvf90       # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
 xfail openmpi/*/*/*/*          f90  infocrenvf90       # MISSING.md "OpenMPI: MPI_Info_create_env changes across MPI_Init"
