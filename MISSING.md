@@ -116,6 +116,40 @@ GitHub has no FreeBSD runner; the `freebsd` job boots a FreeBSD 14.3 VM via
 - Status: no run has reached the suite yet; the `/etc/hosts` fix is untested
   by an actual MPI run. There is still no FreeBSD row to triage.
 
+### Other compilers are compiled and not run, and three cannot be tested at all
+
+The `compile` job builds mpif under compilers the twelve variants do not cover
+— gfortran 8, 9 and 12, Intel `ifx`, NVIDIA `nvfortran`, AMD `amdflang` — with
+the Forum's ABI stub library standing in for an MPI, and runs nothing.
+`ci-scripts/README.md` says how; the decisions are here.
+
+- **Compile-only, deliberately.** What varies between Fortran frontends and is
+  cheap to ask is whether the configure stage detects the right features and
+  whether the code compiles. Running would mean an MPI built by each compiler
+  and a suite triage per variant, which is the cost the twelve variants already
+  pay for the two frontends that matter most.
+- **Both CFI branches per row.** `MPIF_HAVE_CFI` selects between the scheme-1B
+  wrappers with `gen/mpif_f08_cdesc.c` and the `ignore_tkr` fallback, so one
+  build compiles one of them; `-DMPIF_ENABLE_CFI=OFF` gets the other.
+- **Reported, not gating**, until a row has been green — the rule stated for an
+  untriaged suite variant, applied to a compiler.
+- **gfortran 7 is not a row.** It compiles mpif cleanly, both branches, measured
+  in a `gcc:7` container. That is exactly why: the floor is the ABI one in
+  "`bind(C)`" below (hidden character lengths were `int` before 8), and a stage
+  that compiles without running cannot see it. A green row there would mean
+  nothing. 10 and 11 also compile and are left out only for cost.
+- **Cray CCE cannot be tested.** It is licensed and distributed only with HPE
+  Cray systems; there is no public download and no runner that has it. Nothing
+  to work around — a scope limit, like Open MPI's 32-bit one below.
+- **PGI is `nvfortran`.** PGI stopped being a separate product in 2020, when it
+  became the NVIDIA HPC SDK; the last standalone release is long off NVIDIA's
+  download pages. The `nvfortran` row *is* the PGI test, and a separate one
+  would be a second name for the same compiler.
+- **AOCC is not tested; ROCm's `amdflang` is.** AOCC's tarball is behind a
+  licence form on AMD's site, so it cannot be fetched unattended, and both are
+  AMD's build of LLVM flang. Should AMD ever publish a direct URL, AOCC is a
+  row's worth of work and no more.
+
 ## External blockers
 
 ### The ABI header gets the partitioned-communication count wrong, twice — carried as a local patch

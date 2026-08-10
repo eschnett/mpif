@@ -43,6 +43,18 @@ set(MPIF_TEST_MPI_LIBRARY "mpi" CACHE STRING
 
 enable_testing()
 
+# Build every test, register none of them. This is for the compile-only CI
+# stage (ci-scripts/compile-only.sh), whose MPI is the ABI stub library: it has
+# no mpiexec, and nothing linked against it can run anyway. Compiling these
+# programs is still most of what that stage is for -- they are where a
+# compiler meets `use mpi`, `use mpi_f08` and `include 'mpif.h'` as an
+# application does, rather than as the library that defines them.
+#
+# It guards registration, not target creation, so a build-only configuration
+# builds exactly the same binaries from exactly the same sources.
+option(MPIF_TEST_BUILD_ONLY
+  "Build the tests but register none with CTest; for an MPI that cannot run" OFF)
+
 # Most of these tests are single-rank and run the executable directly. NPROCS
 # asks for more, which needs mpiexec.
 #
@@ -59,6 +71,9 @@ function(add_mpi_test name)
   cmake_parse_arguments(T "" "NPROCS" "SOURCES;LIBS" ${ARGN})
   add_executable(${name} ${T_SOURCES})
   target_link_libraries(${name} PRIVATE ${T_LIBS})
+  if(MPIF_TEST_BUILD_ONLY)
+    return()
+  endif()
   if(T_NPROCS)
     if(NOT MPIEXEC_EXECUTABLE OR NOT EXISTS "${MPIEXEC_EXECUTABLE}")
       message(FATAL_ERROR
@@ -170,6 +185,9 @@ add_mpi_test(check_c                SOURCES check_c.c                           
 # pre-initialization failure path raises SIGABRT, which WILL_FAIL would report
 # as an exception, and under mpiexec the launcher absorbs the signal anyway.
 function(add_check_env_test name nprocs env)
+  if(MPIF_TEST_BUILD_ONLY)
+    return()
+  endif()
   add_test(
     NAME ${name}
     COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} ${nprocs}
@@ -196,10 +214,12 @@ add_check_env_test(check_env_library_fail 1 "MPIF_MPI_LIBRARY=not-a-real-mpi"
 # rather than PMI_SIZE or OMPI_COMM_WORLD_SIZE because neither implementation's
 # singleton initialization should react to it without the rest of the SLURM
 # environment.
-add_test(NAME check_env_mpiexec_fail COMMAND $<TARGET_FILE:check_f90>)
-set_tests_properties(check_env_mpiexec_fail PROPERTIES
-  ENVIRONMENT "SLURM_NTASKS=4"
-  PASS_REGULAR_EXPRESSION "mpif: mpif_check_environment: ")
+if(NOT MPIF_TEST_BUILD_ONLY)
+  add_test(NAME check_env_mpiexec_fail COMMAND $<TARGET_FILE:check_f90>)
+  set_tests_properties(check_env_mpiexec_fail PROPERTIES
+    ENVIRONMENT "SLURM_NTASKS=4"
+    PASS_REGULAR_EXPRESSION "mpif: mpif_check_environment: ")
+endif()
 
 # mpif_info is installed by the main project; running it here is what
 # verifies its INSTALL_RPATH -- every other executable in this file gets its
@@ -211,25 +231,29 @@ set_tests_properties(check_env_mpiexec_fail PROPERTIES
 # library strings, and the counts hold on the one local node. Passing on the
 # final line of output rather than the exit status alone, so a binary that
 # silently printed nothing would fail.
-get_filename_component(mpif_bindir "${MPI_Fortran_COMPILER}" DIRECTORY)
-add_test(
-  NAME mpif_info
-  COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} 3
-          ${MPIEXEC_PREFLAGS} ${mpif_bindir}/mpif_info ${MPIEXEC_POSTFLAGS}
-  )
-set_tests_properties(mpif_info PROPERTIES
-  ENVIRONMENT "MPIF_SIZE=3;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=3;MPIF_MPI_LIBRARY=${MPIF_TEST_MPI_LIBRARY}"
-  PASS_REGULAR_EXPRESSION "mpif_check_environment: passed")
-add_test(NAME mpif_info_singleton COMMAND ${mpif_bindir}/mpif_info)
-set_tests_properties(mpif_info_singleton PROPERTIES
-  ENVIRONMENT "MPIF_SIZE=1;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=1;MPIF_MPI_LIBRARY=${MPIF_TEST_MPI_LIBRARY}"
-  PASS_REGULAR_EXPRESSION "mpif_check_environment: passed")
+if(NOT MPIF_TEST_BUILD_ONLY)
+  get_filename_component(mpif_bindir "${MPI_Fortran_COMPILER}" DIRECTORY)
+  add_test(
+    NAME mpif_info
+    COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_NUMPROC_FLAG} 3
+            ${MPIEXEC_PREFLAGS} ${mpif_bindir}/mpif_info ${MPIEXEC_POSTFLAGS}
+    )
+  set_tests_properties(mpif_info PROPERTIES
+    ENVIRONMENT "MPIF_SIZE=3;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=3;MPIF_MPI_LIBRARY=${MPIF_TEST_MPI_LIBRARY}"
+    PASS_REGULAR_EXPRESSION "mpif_check_environment: passed")
+  add_test(NAME mpif_info_singleton COMMAND ${mpif_bindir}/mpif_info)
+  set_tests_properties(mpif_info_singleton PROPERTIES
+    ENVIRONMENT "MPIF_SIZE=1;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=1;MPIF_MPI_LIBRARY=${MPIF_TEST_MPI_LIBRARY}"
+    PASS_REGULAR_EXPRESSION "mpif_check_environment: passed")
+endif()
 
 # The version handshake's failure path: a major version the loaded library
 # cannot be.
 add_mpi_test(check_version_fail_f90 SOURCES check_version_fail_f90.f90 NPROCS 1     LIBS MPI::MPI_Fortran)
-set_tests_properties(check_version_fail_f90 PROPERTIES
-  PASS_REGULAR_EXPRESSION "mpif: mpif_check_version: ")
+if(NOT MPIF_TEST_BUILD_ONLY)
+  set_tests_properties(check_version_fail_f90 PROPERTIES
+    PASS_REGULAR_EXPRESSION "mpif: mpif_check_version: ")
+endif()
 
 # Root-only arguments, which mpif converts only where they are significant and
 # used to convert on rank 0 instead of at the root. Both need more than one rank

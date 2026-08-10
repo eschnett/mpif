@@ -131,6 +131,40 @@ if(Fortran_flag_cray_pointer)
 endif()
 list(JOIN MPIF_Fortran_FLAGS_LIST " " MPIF_Fortran_FLAGS_STR)
 
+# The flag is not the feature. Cray pointers are how mpif.h declares its
+# sentinels -- `pointer (MPIF_BOTTOM_PTR, MPI_BOTTOM)` and nine more in
+# include/mpif_constants.h, each paired with the common block of its own name --
+# so every consumer of mpif.h needs them, and mpif does not build without them.
+# Only gfortran spells the permission `-fcray-pointer`; flang answers "no" to
+# the check above and supports the declaration anyway, and ifx and nvfortran do
+# the same. So ask for the feature, with whatever flags that check did produce.
+# Without this a compiler having neither fails a hundred lines into mpif.h with
+# an error naming a sentinel, which reads as mpif being wrong rather than as the
+# extension being absent.
+set(saved_CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS}")
+set(CMAKE_REQUIRED_FLAGS "${MPIF_Fortran_FLAGS_STR}")
+check_fortran_source_compiles(
+  "
+  program test
+    integer :: sentinel(1)
+    pointer (sentinel_ptr, sentinel)
+    common /sentinel_ptr/ sentinel_ptr
+    sentinel(1) = 0
+  end
+  "
+  HAVE_Fortran_cray_pointer
+  SRC_EXT f90
+)
+set(CMAKE_REQUIRED_FLAGS "${saved_CMAKE_REQUIRED_FLAGS}")
+if(NOT HAVE_Fortran_cray_pointer)
+  message(FATAL_ERROR
+    "${CMAKE_Fortran_COMPILER_ID} does not accept a Cray pointer declaration"
+    " (`pointer (p, x)`) with \"${MPIF_Fortran_FLAGS_STR}\". mpif.h declares"
+    " MPI_BOTTOM, MPI_IN_PLACE and eight other sentinels that way; see"
+    " include/mpif_constants.h. If this compiler has the extension under some"
+    " other flag, that flag belongs in MPIF_Fortran_FLAGS_LIST above.")
+endif()
+
 # In the MPI standard ABI, MPI_Aint is intptr_t while MPI_Count and MPI_Offset
 # are int64_t, so MPI_ADDRESS_KIND is 4 where MPI_COUNT_KIND is 8 on a 32-bit
 # platform and both are 8 on a 64-bit one. mpi_f08 overloads a small-count

@@ -73,6 +73,23 @@ The one thing that cannot be mixed is Fortran compilers: mpif's modules and
 library serve applications built with the same Fortran compiler family that
 built mpif (gcc and llvm Fortran are not ABI-compatible).
 
+## Compilers
+
+gfortran and LLVM flang are the two mpif is built and tested with, on Linux,
+macOS and FreeBSD; those are what the CI matrix runs end to end.
+
+**gfortran 8 is the floor.** Nothing here is declared `bind(C)`: the generated
+entry points rely on the compiler lowercasing names, appending one underscore,
+and passing hidden character lengths as `size_t`, which gfortran did as `int`
+before 8. Earlier versions compile mpif without complaint and are wrong at run
+time, so the floor cannot be checked by compiling.
+
+Other compilers -- Intel `ifx`, NVIDIA `nvfortran` (which is also what became
+of PGI), AMD `amdflang` -- are compiled and not run, by CI's `compile` job. It
+says whether mpif's configure stage reads a compiler correctly and whether the
+code builds; it says nothing about behaviour. Cray CCE is not tested at all,
+being unobtainable outside HPE Cray systems. `MISSING.md` has the reasoning.
+
 ## Documentation
 
 Four working notes:

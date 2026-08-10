@@ -11,6 +11,12 @@ and on a laptop.
     ci-scripts/            building and installing an MPI
     ci-scripts/suite/      running MPICH's Fortran test suite against it
 
+(Three of the files here belong to neither: `install-mpi-stubs.sh`,
+`compile-only.sh` and `check-configure-probes.sh` build no MPI and run no
+suite. They are in the cache key, which costs an MPI rebuild when one of them
+changes and is the safe direction; see "Compiling under another compiler"
+below.)
+
 The division is not tidiness. Both are expensive -- building an MPI from source
 takes minutes per variant, and building MPICH's suite takes minutes more -- and
 both are cached, in CI by a key and in Docker by layers. Everything the MPI build
@@ -76,6 +82,20 @@ Both install scripts take the prefix to install into, and both understand
 `MPI_PREPARE_ONLY=1`, which stops after preparing the source tree -- that is what
 lets CI cache the downloaded and `autogen`'ed tree separately from the build.
 
+Compiling under another compiler, with no MPI at all:
+
+| file | what it does |
+|------|--------------|
+| `install-mpi-stubs.sh` | build the MPI Forum's ABI stub library into a prefix, with `fortran/f2c_abi_stubs.c` added. Every entry point aborts; what it provides is the official ABI `mpi.h` and a library named `libmpi_abi`, which is all mpif's configure stage insists on |
+| `compile-only.sh` | configure, build and install mpif against that prefix, and build `test/` without running it -- once with the CFI probe deciding and once with `-DMPIF_ENABLE_CFI=OFF`, since the two are different generated code |
+| `check-configure-probes.sh` | print every configure probe, and fail on the address-kind pair when it disagrees with the pointer width |
+
+This is what the `compile` job runs, one row per compiler. It costs a runner and
+no MPI build, which is the whole point: adding a compiler is cheap, and nothing
+about the answer depends on a libc, so the old-gfortran rows are plain
+containers. It answers only "does configure detect this compiler correctly and
+does the code compile" -- `build` is what answers anything about behaviour.
+
 Running the suite, in `suite/`:
 
 | file | what it does |
@@ -102,7 +122,9 @@ against one expected-failure list; see MISSING.md "MPICH is built from `main`".
   and why, and it is the reason the scripts here say `#!/usr/bin/env bash` rather
   than `#!/bin/bash`. Six `cross` jobs then pair the two implementations per (os,
   toolchain) -- mpif built against one, tests run against the other -- gated
-  against the runtime MPI's rows of the expected-failures list.
+  against the runtime MPI's rows of the expected-failures list. Six `compile`
+  rows compile mpif under other compilers and run nothing, reported and not
+  gating until each has been green.
 - `docker/*.dockerfile` -- seven Linux variants: MPICH and Open MPI, gcc and
   flang, on amd64, arm64v8, the i386 that CI runs in a container, and the arm32v7
   that CI has no runner for and that qemu makes too slow to run per push. The two

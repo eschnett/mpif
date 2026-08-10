@@ -221,6 +221,30 @@ To run one directory of the suite rather than all of it:
   `-DMPIF_TEST_EXPECT_SUBARRAYS=OFF` if you run the test stage against such
   a build by hand.
 
+### Compiling under another compiler
+
+`bash ci-scripts/compile-only.sh <work-dir>` with `CC` and `FC` set builds
+mpif and `test/` against the Forum's ABI stub library, both CFI branches, and
+runs nothing. No MPI, no cache, no libc to match — which is what makes CI's
+`compile` job one runner per compiler, and what makes a container the easy way
+to reach a compiler this machine does not have:
+
+    docker run --rm -v "$PWD:/src:ro" gcc:9 bash -c '
+        v=3.31.6; a=$(uname -m)
+        curl -fsSL https://github.com/Kitware/CMake/releases/download/v$v/cmake-$v-linux-$a.tar.gz | tar xz -C /opt
+        PATH=/opt/cmake-$v-linux-$a/bin:$PATH CC=gcc FC=gfortran \
+            bash /src/ci-scripts/compile-only.sh /tmp/work'
+
+Read the tree in place rather than copying it: `build/` is gigabytes. The
+vendor compilers (`ifx`, `nvfortran`, `amdflang`) are x86-64 only, so on this
+machine they run under qemu and take hours; iterate on those in CI.
+
+`ci-scripts/check-configure-probes.sh <build-dir>` on its own prints what the
+configure stage decided about a compiler — the four optional kinds, the two
+flags, the Cray-pointer feature, the two address-kind guards and
+`MPIF_HAVE_CFI` — and fails when the address-kind pair disagrees with the
+pointer width.
+
 ### Suite gating
 
 - What fails a suite run is a *difference* from

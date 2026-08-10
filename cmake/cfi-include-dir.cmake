@@ -26,14 +26,20 @@ check_include_file(ISO_Fortran_binding.h MPIF_CFI_HEADER_IN_C_PATH)
 if(MPIF_CFI_HEADER_IN_C_PATH)
   set(MPIF_CFI_INCLUDE_DIR "")
 else()
-  # Two hints, each read off the compiler itself rather than its path --
-  # MacPorts' flang-mp-* is a wrapper script, so following symlinks is not
-  # enough:
+  # Three hints. The first two are read off the compiler itself rather than
+  # its path -- MacPorts' flang-mp-* is a wrapper script, so following symlinks
+  # is not enough:
   # - flang prints "InstalledDir: <bindir>" in --version, and LLVM installs
   #   the header at <bindir>/../include/flang (Homebrew's keg, apt's
   #   /usr/lib/llvm-*, MacPorts' libexec/llvm-*).
   # - gfortran's -print-file-name=include is gcc's internal include
   #   directory, which holds its copy.
+  # - the third is the compiler's own bin directory's sibling `include`, which
+  #   is where oneAPI (<compiler>/latest/bin/ifx, .../latest/include) and NVHPC
+  #   (<ver>/compilers/bin/nvfortran, .../compilers/include) keep theirs. Those
+  #   two answer to neither question above: ifx prints no InstalledDir line, and
+  #   neither has gcc's -print-file-name. Last, so it cannot displace an answer
+  #   the compiler gave itself.
   execute_process(
     COMMAND "${CMAKE_Fortran_COMPILER}" --version
     RESULT_VARIABLE _mpif_cfi_version_result
@@ -52,6 +58,10 @@ else()
     ERROR_QUIET)
   if(_mpif_cfi_print_result EQUAL 0 AND IS_ABSOLUTE "${_mpif_cfi_print_include}")
     list(APPEND _mpif_cfi_hints "${_mpif_cfi_print_include}")
+  endif()
+  get_filename_component(_mpif_cfi_bindir "${CMAKE_Fortran_COMPILER}" DIRECTORY)
+  if(_mpif_cfi_bindir)
+    list(APPEND _mpif_cfi_hints "${_mpif_cfi_bindir}/../include")
   endif()
   find_file(MPIF_CFI_HEADER ISO_Fortran_binding.h
     HINTS ${_mpif_cfi_hints}

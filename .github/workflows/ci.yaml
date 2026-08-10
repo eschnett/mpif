@@ -6,7 +6,9 @@ concurrency:
 
 on:
   push:
-    branches: [main]
+    # TEMPORARY (ci-compilers branch): so that pushes to the branch run at all.
+    # Revert to `[main]` before merging.
+    branches: [main, ci-compilers]
   pull_request:
 
 permissions:
@@ -39,8 +41,167 @@ jobs:
       - name: Check the Cray pointers against their common blocks
         run: bash ci-scripts/check-headers.sh
 
+  # Compilers beyond the two the rest of this file exercises: does mpif's
+  # configure stage detect their features correctly, and does the code compile.
+  # Nothing here runs anything, which is deliberate -- behaviour is what the
+  # twelve `build` variants are for, and asking for it would put an MPI build
+  # and a suite triage behind every compiler added.
+  #
+  # It needs no MPI. ci-scripts/install-mpi-stubs.sh builds the Forum's ABI stub
+  # library, whose every entry point aborts, and that is enough: it satisfies
+  # find_package(MPI) and the libmpi_abi assertion, and mpif's library links no
+  # MPI at all. So a row costs a runner and about five minutes, with no cache,
+  # no artifact and no dependency on the jobs below -- and the old-gfortran rows
+  # can be plain containers, because nothing has to match the runner's libc.
+  #
+  # Every row builds both halves of the CFI decision; ci-scripts/compile-only.sh
+  # says why. And every row is `continue-on-error`, so a compiler that cannot
+  # build mpif is reported rather than blocking the branch: the same rule
+  # CLAUDE.md states for an untriaged suite variant. Promote a row once it has
+  # been green, and record what stopped one in MISSING.md.
+  #
+  # The gfortran rows are the official `gcc:<n>` images rather than a Debian
+  # release, so the image name is the compiler version with nothing to look up;
+  # they carry git and curl but no CMake, which the step below fetches. 8 is the
+  # floor MISSING.md's "bind(C)" gives (before it, hidden character lengths were
+  # `int`), and 13 and 15 are already covered by `build`. gfortran 7 and 10 and
+  # 11 were measured once locally and compile too -- 7 included, which is why it
+  # is not a row here: it would report a green that says nothing, the hidden
+  # length convention being invisible to a stage that compiles and does not run.
+  #
+  # The three vendor rows are x86-64 only, and use each vendor's own C compiler
+  # beside its Fortran one, which is both what their users do and the case where
+  # the C compiler can find ISO_Fortran_binding.h unaided.
+  compile:
+    name: compile / ${{ matrix.name }}
+    runs-on: ubuntu-24.04
+    container: ${{ matrix.container }}
+    continue-on-error: true
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: gfortran-8
+            container: gcc:8
+          - name: gfortran-9
+            container: gcc:9
+          - name: gfortran-12
+            container: gcc:12
+          - name: ifx
+            container: ""
+          - name: nvfortran
+            container: ""
+          - name: amdflang
+            container: ""
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # The gcc images ship no CMake, and the older ones are built on Debian
+      # releases whose apt archives have moved. An official binary avoids both.
+      - name: Install CMake (containers)
+        if: matrix.container != ''
+        run: |
+          version=3.31.6
+          curl -fsSL "https://github.com/Kitware/CMake/releases/download/v${version}/cmake-${version}-linux-$(uname -m).tar.gz" \
+              | tar xz -C /opt
+          echo "/opt/cmake-${version}-linux-$(uname -m)/bin" >>"${GITHUB_PATH}"
+
+      - name: Select the compilers (containers)
+        if: matrix.container != ''
+        run: |
+          {
+              echo "CC=gcc"
+              echo "FC=gfortran"
+          } >>"${GITHUB_ENV}"
+
+      # Intel's oneAPI compilers come from Intel's own apt repository. The
+      # Fortran package brings ifx; the dpcpp-cpp one brings icx, and the
+      # environment they need comes from setvars.sh rather than from PATH alone.
+      - name: Install the Intel oneAPI compilers
+        if: matrix.name == 'ifx'
+        run: |
+          curl -fsSL https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB \
+              | sudo gpg --dearmor -o /usr/share/keyrings/oneapi-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" \
+              | sudo tee /etc/apt/sources.list.d/oneAPI.list
+          sudo apt-get update
+          sudo apt-get install -y cmake \
+              intel-oneapi-compiler-fortran intel-oneapi-compiler-dpcpp-cpp
+          set +u
+          source /opt/intel/oneapi/setvars.sh
+          set -u
+          {
+              echo "CC=icx"
+              echo "FC=ifx"
+              echo "PATH=${PATH}"
+              echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH:-}"
+          } >>"${GITHUB_ENV}"
+
+      # NVHPC is several GB, so the runner's preinstalled toolchains go first.
+      # The package name carries the release, which would rot if written down --
+      # so the newest one the repository offers is what gets installed, and the
+      # step prints it.
+      - name: Install the NVIDIA HPC SDK
+        if: matrix.name == 'nvfortran'
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          curl -fsSL https://developer.download.nvidia.com/hpc-sdk/ubuntu/DEB-GPG-KEY-NVIDIA-HPC-SDK \
+              | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg
+          echo 'deb [signed-by=/usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg] https://developer.download.nvidia.com/hpc-sdk/ubuntu/amd64 /' \
+              | sudo tee /etc/apt/sources.list.d/nvhpc.list
+          sudo apt-get update
+          package=$(apt-cache search --names-only '^nvhpc-[0-9]+-[0-9]+$' \
+              | cut -d' ' -f1 | sort -V | tail -1)
+          echo "installing ${package}"
+          sudo apt-get install -y cmake "${package}"
+          bindir=$(dirname "$(find /opt/nvidia/hpc_sdk -name nvfortran -type f \
+              -path '*/compilers/bin/*' | sort -V | tail -1)")
+          {
+              echo "CC=${bindir}/nvc"
+              echo "FC=${bindir}/nvfortran"
+          } >>"${GITHUB_ENV}"
+
+      # AMD's Fortran compiler as ROCm ships it. AOCC is the other AMD compiler
+      # and is not here: its download is behind a licence form, so it cannot be
+      # installed unattended -- see MISSING.md.
+      - name: Install the AMD ROCm compilers
+        if: matrix.name == 'amdflang'
+        run: |
+          sudo mkdir -p /etc/apt/keyrings
+          curl -fsSL https://repo.radeon.com/rocm/rocm.gpg.key \
+              | sudo gpg --dearmor -o /etc/apt/keyrings/rocm.gpg
+          echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/rocm.gpg] https://repo.radeon.com/rocm/apt/latest noble main" \
+              | sudo tee /etc/apt/sources.list.d/rocm.list
+          sudo apt-get update
+          sudo apt-get install -y cmake rocm-llvm
+          {
+              echo "CC=/opt/rocm/llvm/bin/amdclang"
+              echo "FC=/opt/rocm/llvm/bin/amdflang"
+          } >>"${GITHUB_ENV}"
+
+      - name: Configure, build and install mpif, both CFI branches
+        run: bash ci-scripts/compile-only.sh "${RUNNER_TEMP}/compile-only"
+
+      # The probes are printed by the step above; this is what a failure needs.
+      - name: Dump the CMake logs
+        if: failure()
+        run: |
+          for branch in default no-cfi; do
+              dir=${RUNNER_TEMP}/compile-only/build-${branch}/CMakeFiles
+              cat "${dir}/CMakeConfigureLog.yaml" 2>/dev/null || true
+              cat "${dir}/CMakeError.log" 2>/dev/null || true
+          done
+
   build:
     name: ${{ matrix.mpi }} / ${{ matrix.toolchain }} / ${{ matrix.os }}
+    # TEMPORARY (ci-compilers branch): the expensive jobs are off on the branch,
+    # so an iteration is `checks` plus `compile` and takes minutes. Remove this
+    # line before merging.
+    if: github.ref == 'refs/heads/main'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
 
@@ -474,6 +635,10 @@ jobs:
   # -asan prefix this job installs.
   sanitize:
     name: sanitize / ${{ matrix.toolchain }}
+    # TEMPORARY (ci-compilers branch): the expensive jobs are off on the branch,
+    # so an iteration is `checks` plus `compile` and takes minutes. Remove this
+    # line before merging.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     needs: build
     timeout-minutes: 60
@@ -622,6 +787,10 @@ jobs:
   #   rows as that MPI's native run, which is the "results depend only on the
   #   runtime MPI" assertion, enforced by the existing list without new keys.
   cross:
+    # TEMPORARY (ci-compilers branch): the expensive jobs are off on the branch,
+    # so an iteration is `checks` plus `compile` and takes minutes. Remove this
+    # line before merging.
+    if: github.ref == 'refs/heads/main'
     name: cross / ${{ matrix.toolchain }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     needs: build
@@ -878,6 +1047,10 @@ jobs:
   # every instruction is emulated, and MPICH from source plus ~300 suite tests
   # does not fit this timeout. Worth adding on a schedule.
   container:
+    # TEMPORARY (ci-compilers branch): the expensive jobs are off on the branch,
+    # so an iteration is `checks` plus `compile` and takes minutes. Remove this
+    # line before merging.
+    if: github.ref == 'refs/heads/main'
     name: ${{ matrix.variant }} (container)
     runs-on: ubuntu-24.04
     timeout-minutes: 120
@@ -961,6 +1134,10 @@ jobs:
   # the action's `run` block is root (measured: `$HOME` is /root), so covering it
   # would mean passing that flag everywhere on one platform alone.
   freebsd:
+    # TEMPORARY (ci-compilers branch): the expensive jobs are off on the branch,
+    # so an iteration is `checks` plus `compile` and takes minutes. Remove this
+    # line before merging.
+    if: github.ref == 'refs/heads/main'
     name: mpich / clang+gfortran / freebsd (VM)
     runs-on: ubuntu-24.04
     # Generous, this one having no MPI cache (see below) and running everything
