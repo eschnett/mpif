@@ -2164,7 +2164,7 @@ subroutine MPI_Alloc_mem_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Alloc_mem => MPI_Alloc_mem
+  use mpif_functions, only: MPIF_Alloc_mem => MPI_Alloc_mem
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -2191,7 +2191,7 @@ subroutine PMPI_Alloc_mem_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Alloc_mem => PMPI_Alloc_mem
+  use mpif_functions, only: PMPIF_Alloc_mem => PMPI_Alloc_mem
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -54135,7 +54135,7 @@ subroutine MPI_Win_allocate_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Win_allocate => MPI_Win_allocate
+  use mpif_functions, only: MPIF_Win_allocate => MPI_Win_allocate
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -54172,7 +54172,7 @@ subroutine MPI_Win_allocate_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Win_allocate_c => MPI_Win_allocate_c
+  use mpif_functions, only: MPIF_Win_allocate_c => MPI_Win_allocate_c
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -54209,7 +54209,7 @@ subroutine PMPI_Win_allocate_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Win_allocate => PMPI_Win_allocate
+  use mpif_functions, only: PMPIF_Win_allocate => PMPI_Win_allocate
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -54246,7 +54246,7 @@ subroutine PMPI_Win_allocate_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Win_allocate_c => PMPI_Win_allocate_c
+  use mpif_functions, only: PMPIF_Win_allocate_c => PMPI_Win_allocate_c
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -54283,7 +54283,7 @@ subroutine MPI_Win_allocate_shared_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Win_allocate_shared => MPI_Win_allocate_shared
+  use mpif_functions, only: MPIF_Win_allocate_shared => MPI_Win_allocate_shared
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -54320,7 +54320,7 @@ subroutine MPI_Win_allocate_shared_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Win_allocate_shared_c => MPI_Win_allocate_shared_c
+  use mpif_functions, only: MPIF_Win_allocate_shared_c => MPI_Win_allocate_shared_c
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -54357,7 +54357,7 @@ subroutine PMPI_Win_allocate_shared_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Win_allocate_shared => PMPI_Win_allocate_shared
+  use mpif_functions, only: PMPIF_Win_allocate_shared => PMPI_Win_allocate_shared
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -54394,7 +54394,7 @@ subroutine PMPI_Win_allocate_shared_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Win_allocate_shared_c => PMPI_Win_allocate_shared_c
+  use mpif_functions, only: PMPIF_Win_allocate_shared_c => PMPI_Win_allocate_shared_c
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -55974,7 +55974,7 @@ subroutine MPI_Win_shared_query_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Win_shared_query => MPI_Win_shared_query
+  use mpif_functions, only: MPIF_Win_shared_query => MPI_Win_shared_query
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   type(MPI_Win), intent(in) :: win
@@ -56008,7 +56008,7 @@ subroutine MPI_Win_shared_query_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: MPIF_Win_shared_query_c => MPI_Win_shared_query_c
+  use mpif_functions, only: MPIF_Win_shared_query_c => MPI_Win_shared_query_c
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   type(MPI_Win), intent(in) :: win
@@ -56042,7 +56042,7 @@ subroutine PMPI_Win_shared_query_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Win_shared_query => PMPI_Win_shared_query
+  use mpif_functions, only: PMPIF_Win_shared_query => PMPI_Win_shared_query
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   type(MPI_Win), intent(in) :: win
@@ -56076,7 +56076,7 @@ subroutine PMPI_Win_shared_query_c_f08( &
 )
   use mpif_f08_constants
   use mpif_f08_types
-  use mpi, only: PMPIF_Win_shared_query_c => PMPI_Win_shared_query_c
+  use mpif_functions, only: PMPIF_Win_shared_query_c => PMPI_Win_shared_query_c
   use, intrinsic :: iso_c_binding, only: C_PTR, C_NULL_PTR
   implicit none
   type(MPI_Win), intent(in) :: win

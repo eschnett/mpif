@@ -2129,11 +2129,36 @@ for key in sort(collect(keys(apis)))
             push!(f08_raw_interfaces, "     end $f_unit $f_name")
         end
 
-        # The one alias this wrapper's body imports, from whichever of the two
+        # The one alias this wrapper's body imports, from whichever of the three
         # views of the C symbol it needs.
-        f08_use_line = needs_raw ?
-            "  use mpif_f08_raw, only: $f08_name_f => $f_name" :
+        #
+        # `mpi` for almost every routine, because that is where the mpi module's
+        # interfaces are re-exported from. But the seven `C_BUFFER` routines --
+        # MPI_Alloc_mem, the three MPI_Win_allocate* and MPI_Win_shared_query,
+        # with their `_c` forms -- are the only names for which `mpi` holds a
+        # *generic*: src/mpif_cptr.F90 adds a TYPE(C_PTR) overload beside the
+        # INTEGER(MPI_ADDRESS_KIND) one, and src/mpi.F90 puts both in an
+        # interface block that carries the same name as the integer specific.
+        # This wrapper wants that specific and nothing else -- it passes an
+        # address-sized temporary and does the `transfer` itself -- so it takes
+        # it from `mpif_functions`, where the name is a plain specific and no
+        # resolution is involved.
+        #
+        # Which also gets it past nvfortran 26.5, which cannot resolve a call to
+        # such a generic reached through a rename on `use`:
+        # "NVFORTRAN-S-0155-Could not resolve generic procedure
+        # 'pmpi_alloc_mem'", 14 of them, one per name. The same rename against
+        # the plain specific compiles there -- src/mpif_cptr.F90 has been doing
+        # it all along -- which is what says the generic is the part it cannot
+        # do. See MISSING.md.
+        has_c_buffer = any(p -> p["kind"] == "C_BUFFER", parameters)
+        f08_use_line = if needs_raw
+            "  use mpif_f08_raw, only: $f08_name_f => $f_name"
+        elseif has_c_buffer
+            "  use mpif_functions, only: $f08_name_f => $f_name"
+        else
             "  use mpi, only: $f08_name_f => $f_name"
+        end
 
         # ------------------------------------------------------------------
         # The TS 29113 branch of this routine: the `_f08ts` declarations, the

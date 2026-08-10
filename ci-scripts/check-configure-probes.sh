@@ -70,6 +70,8 @@ report HAVE_LOGICAL16
 report HAVE_INTEGER16
 report HAVE_REAL2
 report HAVE_REAL16
+report HAVE_COMPLEX4
+report HAVE_COMPLEX32
 
 # Extensions mpif needs. The first two ask gfortran's spelling of the flag, so
 # a compiler that has the feature without the flag reports "no" and is fine --

@@ -249,8 +249,53 @@ though all three of `merge`'s arguments are constants. So both guards came out
 subtraction alone, written so the difference is never negative; the optional-kind
 probes were changed the same way, having had the same `merge` in them.
 
-Not gating until a run is green — the guards being right only gets `nvfortran`
-past configure, and what it does with the rest of the library is unmeasured.
+With the guards right, `nvfortran` reaches the library and stops on two further
+things, both below.
+
+### `nvfortran` cannot resolve a renamed generic that shares a specific's name — worked around
+
+`nvfortran` 26.5 fails `gen/mpif_f08_wrappers.F90` with fourteen of
+
+    NVFORTRAN-S-0155-Could not resolve generic procedure 'pmpi_alloc_mem'
+
+one per name: `MPI_Alloc_mem`, the three `MPI_Win_allocate*`,
+`MPI_Win_shared_query`, the `_c` forms of the latter four, and every `PMPI_`
+twin. Those seven names are the only ones an f08 wrapper imports that are a
+*generic* in the `mpi` module rather than a plain specific — `src/mpif_cptr.F90`
+adds a `TYPE(C_PTR)` overload beside the `INTEGER(MPI_ADDRESS_KIND)` one, and
+`src/mpi.F90` puts both in an interface block carrying the same name as the
+integer specific. The other 1009 wrappers import specifics and compile.
+
+What says the generic is the part it cannot do: `src/mpif_cptr.F90` performs the
+same rename-on-`use` and call against the *plain specific* in `mpif_functions`,
+and nvfortran compiles it. gfortran, flang and ifx all accept the generic form.
+
+Worked around by taking those seven from `mpif_functions` instead, where the
+name is a specific: the wrapper wants the integer form and nothing else, passing
+an address-sized temporary and doing the `transfer` itself, so the generic was
+indirection it never needed. `dev/mpiapi.jl` keys this on the `C_BUFFER`
+parameter kind; the change is fourteen `use` lines in `gen/`.
+
+### `nvfortran` has `real*2` but not `complex*4` — the guard was wrong
+
+`complex*4` was inside `#ifdef MPIF_HAVE_REAL2`, on the assumption that the real
+kind implies the complex one. `nvfortran` 26.5 has `real*2` and means it, and
+warns on `complex*4`:
+
+    NVFORTRAN-W-0031-Illegal data type length specifier for complex
+      (mpif_types.F90: 376, 384)
+
+falling back to `complex*8`. Only a warning, so `mpif_sizeof_complex4` was
+compiled and would have answered 4 for an eight-byte value — the silent kind of
+wrong, and mpif's own fault rather than the compiler's. `complex*4` and
+`complex*32` now have probes and guards of their own,
+`MPIF_HAVE_COMPLEX4`/`MPIF_HAVE_COMPLEX32`; `complex*32` under
+`MPIF_HAVE_REAL16` had the same latent flaw. A complex's kind is its real part's,
+so the probes read `complex(4 - kind(x))` and `complex(32 - kind(x))`. gfortran
+15 and flang 22 answer for the complex kind exactly as they do for the real one,
+so nothing changes there.
+
+Not gating until a run is green.
 
 ### `nvfortran` accepts kind specifiers it does not implement — probes tightened
 

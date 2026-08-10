@@ -52,7 +52,7 @@ module mpif_types
      module procedure mpif_sizeof_real16
      module procedure mpif_sizeof_real16_v
 #endif
-#ifdef MPIF_HAVE_REAL2
+#ifdef MPIF_HAVE_COMPLEX4
      module procedure mpif_sizeof_complex4
      module procedure mpif_sizeof_complex4_v
 #endif
@@ -60,7 +60,7 @@ module mpif_types
      module procedure mpif_sizeof_complex8_v
      module procedure mpif_sizeof_complex16
      module procedure mpif_sizeof_complex16_v
-#ifdef MPIF_HAVE_REAL16
+#ifdef MPIF_HAVE_COMPLEX32
      module procedure mpif_sizeof_complex32
      module procedure mpif_sizeof_complex32_v
 #endif
@@ -116,7 +116,7 @@ module mpif_types
      module procedure mpif_sizeof_real16
      module procedure mpif_sizeof_real16_v
 #endif
-#ifdef MPIF_HAVE_REAL2
+#ifdef MPIF_HAVE_COMPLEX4
      module procedure mpif_sizeof_complex4
      module procedure mpif_sizeof_complex4_v
 #endif
@@ -124,7 +124,7 @@ module mpif_types
      module procedure mpif_sizeof_complex8_v
      module procedure mpif_sizeof_complex16
      module procedure mpif_sizeof_complex16_v
-#ifdef MPIF_HAVE_REAL16
+#ifdef MPIF_HAVE_COMPLEX32
      module procedure mpif_sizeof_complex32
      module procedure mpif_sizeof_complex32_v
 #endif
@@ -370,7 +370,7 @@ contains
   end subroutine mpif_sizeof_real16_v
 #endif
 
-#ifdef MPIF_HAVE_REAL2
+#ifdef MPIF_HAVE_COMPLEX4
 
   subroutine mpif_sizeof_complex4(x, size, ierror)
     complex*4 :: x
@@ -421,7 +421,7 @@ contains
     if (present(ierror)) ierror = MPI_SUCCESS
   end subroutine mpif_sizeof_complex16_v
 
-#ifdef MPIF_HAVE_REAL16
+#ifdef MPIF_HAVE_COMPLEX32
 
   subroutine mpif_sizeof_complex32(x, size, ierror)
     complex*32 :: x

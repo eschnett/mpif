@@ -140,6 +140,35 @@ check_fortran_source_compiles(
   SRC_EXT f90
 )
 
+# `complex*4` and `complex*32` are asked for separately rather than taken to
+# follow from `real*2` and `real*16`. A compiler can have the real kind without
+# the complex one: nvfortran 26.5 accepts `real*2` and means it, and warns
+# `NVFORTRAN-W-0031-Illegal data type length specifier for complex` on
+# `complex*4` and falls back to `complex*8`. That used to be inside the
+# MPIF_HAVE_REAL2 guard, so mpif_sizeof_complex4 was compiled there and would
+# have answered 4 for an eight-byte value. A complex's kind is its real part's,
+# hence 4 - kind(x) and 32 - kind(x) rather than 8 - and 64 -.
+check_fortran_source_compiles(
+  "
+  program test
+    complex*4 :: x
+    complex(4 - kind(x)) :: y
+  end
+  "
+  HAVE_COMPLEX4
+  SRC_EXT f90
+)
+check_fortran_source_compiles(
+  "
+  program test
+    complex*32 :: x
+    complex(32 - kind(x)) :: y
+  end
+  "
+  HAVE_COMPLEX32
+  SRC_EXT f90
+)
+
 set(MPIF_Fortran_FLAGS_LIST "")
 check_fortran_compiler_flag(-fallow-argument-mismatch Fortran_flag_allow_argument_mismatch)
 if(Fortran_flag_allow_argument_mismatch)
@@ -625,6 +654,8 @@ target_compile_definitions(mpifort_abi PRIVATE
   $<$<BOOL:${HAVE_INTEGER16}>:MPIF_HAVE_INTEGER16>
   $<$<BOOL:${HAVE_REAL2}>:MPIF_HAVE_REAL2>
   $<$<BOOL:${HAVE_REAL16}>:MPIF_HAVE_REAL16>
+  $<$<BOOL:${HAVE_COMPLEX4}>:MPIF_HAVE_COMPLEX4>
+  $<$<BOOL:${HAVE_COMPLEX32}>:MPIF_HAVE_COMPLEX32>
   $<$<BOOL:${MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND}>:MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND>
   $<$<BOOL:${MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND}>:MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND>
   $<$<BOOL:${MPIF_HAVE_CFI}>:MPIF_HAVE_CFI>
