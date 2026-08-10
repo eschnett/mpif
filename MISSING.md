@@ -53,13 +53,44 @@ and `docker/*.dockerfile` deliberately do not.
   artifact directories) does not exist there: CI's trees live in
   `$RUNNER_TEMP`, the images' in `/cactus`, both thrown away.
 - CI's prefixes are keyed by implementation alone (`opt/mpi-mpich`) because
-  the toolchain is the job, and the cross job restores two implementations
-  onto one runner whose paths must not collide (`ci.yaml:71-76`).
+  the toolchain is the job, and a cross job restores two implementations onto
+  one runner whose paths must not collide (the `Set up paths` steps say so).
+  One implementation per `mpi` job does not make `opt/mpi` sufficient for the
+  same reason.
 - The images put `mpif-<variant>` beside `/cactus/mpif` because the source
   directory is what the staged `COPY`s populate.
 - Renaming a CI path has already cost a cache-key bump once (`mpi-` →
-  `mpi2-`, `ci.yaml:214-218`); paying that to make unrelated trees rhyme is a
-  bad trade. If convergence is ever wanted, the images are the safe half.
+  `mpi2-`, the `Cache MPI installation` step); paying that to make unrelated
+  trees rhyme is a bad trade. If convergence is ever wanted, the images are the
+  safe half.
+- Line numbers into `ci.yaml` are not cited here any more. The two that were
+  had both rotted by some 165 lines before anyone noticed, and the stage split
+  moved everything again; a step name is findable and stays true.
+
+### CI's stages are barriers, and gcc waits for llvm
+
+`.github/workflows/ci.yaml` is four stages of one matrix each — `mpi`, `mpif`,
+then `suite`/`cross`/`compare` — and GitHub has no per-matrix-leg `needs:`, so
+each stage waits for all twelve legs of the one before it. A gcc variant
+therefore waits on llvm's MPI installation.
+
+**Not fixed, because it measures as nothing.** The alternative is a
+`workflow_call` reusable workflow invoked once per pairing, which makes every
+pairing independent. Measured against runs `31398050450` (MPI cache hit) and
+`31413906946` (miss): it saves ~0 on a warm run, because all twelve `mpi` legs
+land within ~20 s of each other, and ~50 s of ~1900 s on a cold one, because
+macOS/Open MPI is the slowest leg of *every* stage — the pairing that dominates
+the barrier is the one that dominates its own chain. What it would buy is
+earlier *feedback* for the fast pairings on a cold run, some ten minutes, and
+cold runs happen only when `ci-scripts/**` or `fortran/**` changes.
+
+Against that: a second workflow file, every matrix value plumbed as an input,
+`env:` and `defaults:` redeclared because a called workflow inherits neither,
+`sanitize` unable to depend on one leg of a matrix of callers, and every check
+name changing shape. If cold-run feedback latency ever becomes the complaint,
+the cheap half is to split the `mpi` stage's matrix by toolchain — that is where
+the whole penalty lives — as literal duplication, workflow files supporting no
+YAML anchors.
 
 ### An unpruned Open MPI prefix, and the six handle-conversion I/O tests it fails
 
@@ -201,8 +232,8 @@ link, so only nvfortran showed it.
 Seen once, on `sanitize / gcc`: the test passes 2 ranks and
 `MPIF_NODE_SIZE=1` and expects `mpif_check_environment` to refuse, and no
 diagnostic came. Rerunning the same job on the same commit passed, and the
-other 74 tests passed both times, as did `sanitize / llvm` and all twelve build
-variants.
+other 74 tests passed both times, as did `sanitize / llvm` and all twelve
+variants' own `test/` runs.
 
 Measured: one failure, one pass, same commit. **Inferred**, not established:
 `src/mpif_check.c` derives the node size by gathering `MPI_Get_processor_name`
@@ -737,7 +768,7 @@ decision recorded on filing it.
   program against the generic ABI library, runs nothing, and bakes nothing
   in; removing it would mean replacing FindMPI for no gain.
 - **Byte identity of the two libraries is reported, not required.** CI's
-  cross job requires identical `include/` and identical exported/undefined
+  `compare` job requires identical `include/` and identical exported/undefined
   symbol lists; the bytes differ on every platform for meaningless reasons
   (debug-info build paths, linker ids, timestamps).
 

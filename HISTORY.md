@@ -194,6 +194,17 @@ Once the biggest time sink in the project; the rules in `CLAUDE.md`
 - **Renaming a CI cache path** made stale caches restore to the old location
   and look like a broken installation; the fix was bumping the key prefix
   (`mpi-` → `mpi2-`).
+- **One CI job installed the MPI and then ran the tests**, which meant two
+  things nobody intended. `actions/cache`'s save step is declared
+  `post-if: success()`, so a failing test or a triaged suite difference on a
+  cache miss discarded the MPI that had just been built and the next push
+  rebuilt it; and the artifact the cross jobs consume was uploaded after the
+  suite ran, so twelve suite runs stood in front of every cross leg. Measured
+  before the split: the prefix a cross leg needed existed at t=130 s and the
+  leg started at t=805 s. The lesson is that a job boundary is a caching and
+  scheduling decision, not only a tidiness one — put the expensive,
+  independent thing in a job whose success predicate is exactly "that thing
+  worked".
 - **FreeBSD's second run** is what caught gfortran's Fortran-only flags
   reaching the C compiler: it was the first environment compiling C with
   clang and Fortran with gfortran, where gcc's C frontend had only warned

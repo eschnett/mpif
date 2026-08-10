@@ -57,6 +57,15 @@ fixed nothing for the reason above, while the Docker half really was fixed -- th
 same intention expressed twice, right in one place and wrong in the other, and only
 a CI run told them apart.
 
+One input is deliberately *not* in the key: which compiler version CI installs.
+That lives in `.github/actions/setup-toolchain/action.yml`, outside this
+directory, so bumping `llvm.sh 21` serves a cached MPI built with the old one.
+Closing the hole would mean hashing the action too, and paying twelve MPI
+rebuilds for a comment edit there; bump the key prefix by hand when a compiler
+moves. The action being outside this directory is otherwise exactly what is
+wanted -- editing it must not throw the caches away, which is the `suite/`
+argument from the other side.
+
 So: a new file that the MPI build reads belongs here, and a new file that only the
 suite needs belongs in `suite/`. Putting a suite file here costs a rebuild;
 putting an install file in `suite/` is the one that is dangerous, since CI would
@@ -94,7 +103,8 @@ This is what the `compile` job runs, one row per compiler. It costs a runner and
 no MPI build, which is the whole point: adding a compiler is cheap, and nothing
 about the answer depends on a libc, so the old-gfortran rows are plain
 containers. It answers only "does configure detect this compiler correctly and
-does the code compile" -- `build` is what answers anything about behaviour.
+does the code compile" -- the `mpif`, `suite` and `cross` stages are what
+answer anything about behaviour.
 
 Running the suite, in `suite/`:
 
@@ -120,11 +130,25 @@ against one expected-failure list; see MISSING.md "MPICH is built from `main`".
   `freebsd` job boots a VM on an Ubuntu one and runs these same scripts inside
   it; MISSING.md "FreeBSD is tested in a VM" says what that job does differently
   and why, and it is the reason the scripts here say `#!/usr/bin/env bash` rather
-  than `#!/bin/bash`. Six `cross` jobs then pair the two implementations per (os,
-  toolchain) -- mpif built against one, tests run against the other -- gated
-  against the runtime MPI's rows of the expected-failures list. Six `compile`
-  rows compile mpif under other compilers and run nothing, reported and not
-  gating until each has been green.
+  than `#!/bin/bash`. The `compile` rows compile mpif under other compilers and
+  run nothing, reported and not gating until each has been green.
+
+  Those twelve variants are four stages deep, one job per variant per stage:
+  `mpi` installs an MPI, `mpif` builds mpif and runs `test/`, and `suite` and
+  `cross` then run concurrently -- so nothing waits on a suite run it has no use
+  for. `cross` is one leg per *direction*, mpif built against one implementation
+  and run against the other, gated against the runtime MPI's rows of the
+  expected-failures list. `compare` asserts that the two mpif installations of a
+  pairing are the same installation; `sanitize` needs stage one alone. The
+  variant lists are written out once per stage, and the `checks` job asserts they
+  agree -- they decide which rows of the expected-failures list gate.
+
+  What crosses a job boundary is the installed prefix, as an artifact, through
+  `.github/actions/upload-prefix` and `restore-prefix`. Those two also hold the
+  assertions the split makes necessary: that `$RUNNER_TEMP` is the same directory
+  in the consumer, since every path baked into a prefix names it, and that an
+  mpif prefix's Fortran compiler is the consumer's, since module files are
+  compiler-version-specific and producer and consumer are no longer one job.
 - `docker/*.dockerfile` -- seven Linux variants, not a cross product. arm64v8
   carries the full four (MPICH and Open MPI, gcc and flang); amd64 carries
   Open MPI with gcc alone; nothing records why the other three are missing

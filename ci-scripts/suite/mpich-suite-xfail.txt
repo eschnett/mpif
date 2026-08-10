@@ -22,7 +22,9 @@
 #       its variant an unmeasured one, and the suite stops gating there until it is
 #       measured and a line added. The run says so in as many words, and the
 #       `os:` list in .github/workflows/ci.yaml pins the images, so this happens
-#       when someone edits that list and not behind their back.
+#       when someone edits that list and not behind their back. There is one such
+#       list per stage there, and the `checks` job asserts that they agree -- so
+#       that "someone edits that list" cannot mean editing four of the five.
 #
 #   xfail <mpi>/<toolchain>/<os>/<os-version>/<arch> <language> <test>   # why
 #       One expected failure. `*` matches any one component of the variant.

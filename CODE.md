@@ -158,7 +158,7 @@ arrangements make that true:
   more than mpi_abi or its versioned variant as the sole direct dependency of
   the application binary". Only the MPI header's include directory is taken,
   as a plain path rather than through `MPI::MPI_C`. Consequence, asserted by
-  CI's cross job: the installed `include/` and the library's entire symbol
+  CI's `compare` job: the installed `include/` and the library's entire symbol
   table are identical whichever MPI the build was configured against.
 - **Applications link `-lmpi_abi`, and the loader picks the implementation.**
   `bin/mpifort.in` links `-lmpifort_abi` plus a generic `-lmpi_abi` from
@@ -180,14 +180,15 @@ arrangements make that true:
   `ci-scripts/check-mpi-install.sh` asserts the versioned name — and, on
   Darwin, the compatibility version and the weak export — on every installed
   prefix.
-- **CI tests the claim from both ends.** The twelve build jobs test each mpif
-  against its remembered default. Six cross jobs run the two cross pairings
-  two ways: `test/` swaps the runtime under unchanged binaries via the
-  loader's search path (with `MPIF_TEST_MPI_LIBRARY` asserting which
-  implementation `MPI_Get_library_version` reports), while the MPICH suite
-  relinks via `MPIF_MPI_PREFIX` — its harness runs through the system perl
-  and shells, from which macOS SIP strips `DYLD_*`, and it recompiles every
-  test anyway. A suite cross-run is gated against the *runtime* MPI's rows of
+- **CI tests the claim from both ends.** The twelve `mpif` and `suite` jobs
+  test each mpif against its remembered default. Twelve `cross` jobs, one per
+  direction, then run each pairing two ways: `test/` swaps the runtime under
+  unchanged binaries via the loader's search path (with
+  `MPIF_TEST_MPI_LIBRARY` asserting which implementation
+  `MPI_Get_library_version` reports), while the MPICH suite relinks via
+  `MPIF_MPI_PREFIX` — its harness runs through the system perl and shells,
+  from which macOS SIP strips `DYLD_*`, and it recompiles every test anyway. A
+  suite cross-run is gated against the *runtime* MPI's rows of
   `mpich-suite-xfail.txt`.
 
 ## Sanitizer builds
@@ -243,7 +244,8 @@ arrangements make that true:
   only, both toolchains — the two toolchains are the two link shapes, a real
   difference, while the implementations and OSes are not: mpif's C is the
   same object code whichever MPI is loaded next to it. It takes its MPI from
-  the build job's uploaded prefix.
+  the `mpi` job's uploaded prefix, and needs nothing else, so it waits on
+  stage one alone.
 - The MPICH suite is not run under a sanitizer: the expected-failure baseline
   is keyed per variant, and a sanitizer variant would need its own triage
   before it could gate anything.

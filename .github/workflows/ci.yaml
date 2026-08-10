@@ -89,7 +89,7 @@ jobs:
   # Compilers beyond the two the rest of this file exercises: does mpif's
   # configure stage detect their features correctly, and does the code compile.
   # Nothing here runs anything, which is deliberate -- behaviour is what the
-  # twelve `build` variants are for, and asking for it would put an MPI build
+  # twelve variants below are for, and asking for it would put an MPI build
   # and a suite triage behind every compiler added.
   #
   # It needs no MPI. ci-scripts/install-mpi-stubs.sh builds the Forum's ABI stub
@@ -110,7 +110,7 @@ jobs:
   # release, so the image name is the compiler version with nothing to look up;
   # it carries git and curl but no CMake, which the step below fetches. One
   # version standing for the old ones: 7 through 12 were each measured locally
-  # and all compile mpif, both branches, and 13 and 15 are covered by `build`.
+  # and all compile mpif, both branches, and 13 and 15 are covered by `mpif`.
   # 7 compiling is why the floor is not a row -- it is the ABI floor in
   # MISSING.md's "bind(C)" (hidden character lengths were `int` before 8), which
   # a stage that compiles and does not run cannot see, so a green there would
@@ -768,7 +768,7 @@ jobs:
 
       # FindMPI suppresses the compile and link output of its own probes -- a
       # bare "missing: MPI_Fortran_WORKS" is all the console gets -- and the
-      # detail goes here. The build job carries the same step for the same
+      # detail goes here. The `mpif` job carries the same step for the same
       # reason.
       - name: Show CMake's check logs
         if: failure()
@@ -1075,7 +1075,7 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.variant }}
           cache-to: type=gha,mode=max,scope=${{ matrix.variant }}
 
-  # A third operating system, which the `build` matrix cannot express because
+  # A third operating system, which the stages above cannot express because
   # GitHub has no FreeBSD runner: an Ubuntu runner boots a FreeBSD VM under qemu
   # and runs the same recipe inside it -- install MPICH, build and install mpif,
   # run test/, run MPICH's Fortran suite.
@@ -1133,7 +1133,7 @@ jobs:
       # anything, exactly as the `os:` list above is pinned so that a runner
       # image bump is somebody's decision.
       #
-      # No MPI cache, deliberately. The three caches the `build` jobs keep live
+      # No MPI cache, deliberately. The three caches the `mpi` jobs keep live
       # on the host, and what is expensive here happens in the VM, whose
       # filesystem the host sees only through the synchronised workspace -- so
       # caching would mean building MPICH into the workspace and trusting a
@@ -1267,7 +1267,7 @@ jobs:
             cmake --build build --parallel
             cmake --install build
 
-            # As in the `build` job: what the tests build and run against is the
+            # As in the `mpif` job: what the tests build and run against is the
             # default the mpif installation remembers, read back from the
             # installed wrapper rather than respecified.
             mpi_prefix=$("${MPIF_PREFIX}/bin/mpifort" -showme:mpiprefix)
