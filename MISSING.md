@@ -227,25 +227,59 @@ compiler nobody runs locally, which is how `alltoallw_inplace_guard` came to be
 missed the first time — under ifx it aborts in the compiler before reaching the
 link, so only nvfortran showed it.
 
-### `test/check_env_nodesize_fail` has flaked once, under the gcc sanitizer
+### The two node-layout tests flake, on CI runners and not here
 
-Seen once, on `sanitize / gcc`: the test passes 2 ranks and
-`MPIF_NODE_SIZE=1` and expects `mpif_check_environment` to refuse, and no
-diagnostic came. Rerunning the same job on the same commit passed, and the
-other 74 tests passed both times, as did `sanitize / llvm` and all twelve
-variants' own `test/` runs.
+`check_env_nodes_fail` and `check_env_nodesize_fail` each run 2 ranks, state a
+node layout the run does not have, and expect `mpif_check_environment` to
+refuse. Sometimes no diagnostic comes and the test fails on the missing regular
+expression. Three observations, all on GitHub runners:
 
-Measured: one failure, one pass, same commit. **Inferred**, not established:
-`src/mpif_check.c` derives the node size by gathering `MPI_Get_processor_name`
-to rank 0 and grouping equal names, so the check only refuses when both ranks
-report the *same* name — two differing names give two nodes of one process
-each, which is what `MPIF_NODE_SIZE=1` claims. What would make the two ranks
-disagree about the name for one run in many is not known, and one observation
-is not enough to name it.
+| when | job | test |
+|---|---|---|
+| first | `sanitize / gcc` | `check_env_nodesize_fail` (`MPIF_NODE_SIZE=1`) |
+| run `31429326321` | `mpif / mpich / gcc / macos-15` | `check_env_nodesize_fail` |
+| run `31429326321` | `static` | `check_env_nodes_fail` (`MPIF_NUM_NODES=2`) |
+
+The first was rerun on the same commit and passed. Every other test passed in all
+three, and the sibling test passed in each.
+
+**Inferred**, still not established, but now supported from two directions:
+`src/mpif_check.c` derives the layout by gathering `MPI_Get_processor_name` to
+rank 0 and grouping equal names, so both tests refuse only when the two ranks
+report the *same* name. Two differing names give two nodes of one process each —
+which is exactly what `MPIF_NODE_SIZE=1` claims *and* what `MPIF_NUM_NODES=2`
+claims. So the two tests are satisfied by the same wrong layout, and having seen
+each of them accept it once is two independent sightings of one cause rather than
+two puzzles. What makes the ranks disagree about the name for one run in many is
+still unknown.
+
+Two things that look like evidence and are not:
+
+- **`check_env` passing in the same job says nothing.** It asserts the true layout
+  (`MPIF_NUM_NODES=1;MPIF_NODE_SIZE=2`) and would fail if the names disagreed —
+  but every test is its own `mpiexec` invocation, so it reports on a different
+  run.
+- **Not reproducible here.** 400 two-rank MPICH runs on this machine gathered
+  identical names every time (`MPI_Get_processor_name`, gathered and compared).
+  That places it on the runners, not in the code path being exercised.
 
 `test/` has no expected-failure list and should be entirely green, so this is
-recorded rather than accommodated. If it recurs, print the gathered names on
-mismatch — the diagnostic names the node it rejected but not the set it saw.
+recorded rather than accommodated. It is **not** specific to any variant or to
+the static build: `static` was simply a thirteenth place for it to appear, and it
+turned that job red on its first run.
+
+The remedy this entry used to name — print the gathered names on mismatch — would
+not have caught any of the three, because the failure is the *absence* of a
+mismatch. The instrument that would is printing the gathered names whenever an
+expectation was stated at all, which is what the next occurrence needs and what
+nobody has written.
+
+One consequence worth knowing: a failure here in the `mpif` stage takes three
+more jobs with it, because `test/` runs before the artifact upload, so
+`compare`, `suite` and `cross` for that variant then have no mpif to restore
+(`Artifact not found for name: mpif-mpich-gcc-macos-15`). That is the intended
+order — a build whose tests failed should not be handed on — but it means one
+flake reports as four red jobs.
 
 ### `nvfortran` does not diagnose an ambiguous generic interface — worked around
 
