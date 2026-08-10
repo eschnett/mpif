@@ -261,3 +261,60 @@ the fix was deliberately *not* scripted, and once recommending the interface
 CVAR that `scripts/macos-test-mpich-suite.sh` had by then started exporting.
 The second superseded the first; they were merged 2026-08-09. A decision
 reversed in a later entry has to retire the earlier one.
+
+## The sentinels were Cray pointees, and the diagnosis that kept them so
+
+Until 2026-08-10 the ten sentinels were Cray-pointer pointees placed *at* the C
+ABI constants' addresses: `pointer (MPIF_BOTTOM_PTR, MPI_BOTTOM)` over a common
+block that `src/mpif_constants.c` initialised. It bought a real invariant —
+forwarding a sentinel *was* translating it, so no wrapper could get it wrong —
+and cost `-fcray-pointer` in every consumer's compile line, a `FATAL_ERROR` for
+any compiler without the extension, and `ifx`, which internal-compiler-errored
+on all six test programs that passed a pointee to a choice buffer.
+
+What kept it: a withdrawn argument, recorded in `MISSING.md` as "the sentinel
+must be a Cray pointee: in C, `MPI_IN_PLACE` is a distinguished address rather
+than an object, so no Fortran entity can be declared *at* it, and a `bind(C)`
+variable would have storage of its own at the wrong address." Both halves are
+true. The conclusion does not follow: storage at a different address is fine if
+the wrappers translate, which is what MPI-5.0 §2.5.4's advice to implementors
+had described all along and §3.2.6 explicitly permits for the statuses. The
+premise smuggled in a requirement — that the Fortran object be *at* the C
+address — that nothing in the standard asks for.
+
+Three things the replacement measured that had been assumptions:
+
+- The COMMON-merges-onto-a-`const`-C-definition arrangement survived unchanged,
+  with the executable's blocks resolving to the library's read-only cells on
+  both toolchains. It was the highest-risk part of the change and was checked
+  first, before any generator work.
+- The gfortran 15 defect that had forced `mpi_f08`'s two status sentinels into
+  common blocks of their own went with the Cray pointer: its preconditions
+  included one. The blocks stayed separate anyway, the objects having different
+  types.
+- The class of failure the plan called *silent* — a status sentinel treated as a
+  real status — turned out to be loud, because the cells are `const`: eight
+  tests died of a bus error rather than passing. That retired a planned
+  C-companion snapshot test before it was written.
+
+One decision was made wrong on purpose-sounding grounds and caught by a
+container. The twelve C cells were first given one uniform size, 64 bytes, "at
+least as large as the largest Fortran COMMON" -- which is sound as far as
+correctness goes and produces **1516** `ld: warning: size of symbol
+'mpif_unweighted_' changed from 4 ... to 64` across a compile-only run on ELF,
+a dozen in every consumer's link. macOS's linker says nothing about symbol
+sizes, so nothing on this machine could have found it; `ci-scripts/compile-only.sh`
+in a `gcc:9` container did, on the first try. The cure is three sizes matching
+the three Fortran shapes exactly, and a run-time check that requires equality
+rather than a fit -- too large warns on every link, too small lets MPI write off
+the end. It is the same failure mode as issue #2 one axis over: get the
+*alignment* smaller than the caller's and ld complains, get the *size* different
+either way and it complains too.
+
+The staging is worth repeating. The storage change landed first with no
+translation at all, deliberately red: 15 of 75 tests failed, in exactly two
+groups — the value-observable sentinels wrong, the status sentinels faulting —
+and nothing failed to link. That red *is* the put-the-bug-back evidence for the
+whole change, obtained before the fix rather than reconstructed after it. The
+generator's restructuring was then proved inert on its own by a temporary
+`translate_sentinels = false` switch, under which `git diff gen/` was empty.

@@ -99,7 +99,7 @@ pinned to `lo0`, and mpif's own `test/` never spawns.
 - Two checks need no build:
 
       julia dev/check-f08-bindings.jl   # every mpi_f08 declaration against MPI-5.0
-      bash ci-scripts/check-headers.sh  # Cray pointers against their common blocks
+      bash ci-scripts/check-headers.sh  # sentinel common blocks against their C cells
 
   The first reads `doc/mpi50-report.pdf` and compares intents, declared types,
   `VALUE`, `ASYNCHRONOUS`, argument names and argument order against the
@@ -117,10 +117,14 @@ pinned to `lo0`, and mpif's own `test/` never spawns.
   any f08 argument is declared, generated or not. It needs the git-ignored
   PDF, so it cannot run in CI.
 
-  The second is CI's `checks` job and is the only thing that catches a
-  `pointer (P, X)` whose name does not match its `common /P/ P`: both
-  spellings are valid Fortran, and the mismatch silently leaves `X` at an
-  arbitrary address that MPI then writes through.
+  The second is CI's `checks` job. Each sentinel is a COMMON block whose
+  storage `src/mpif_constants.c` defines, and a wrapper recognises one by
+  comparing the address it was handed against that storage; rename either side
+  alone and the compare silently never matches, so the sentinel reaches MPI as
+  an ordinary buffer. This checks every block against its cell, in both
+  declaration sites, and checks that the set is MPI-5.0 §2.5.4's ten.
+  `mpif_check_environment` checks the same thing at run time, where it can also
+  see the addresses actually agree.
 - **Never edit `gen/` by hand.** It is generated and committed. Edit
   `dev/mpiapi.jl` and run `julia dev/mpiapi.jl` from the repo root.
 - **A generator change that should not alter existing output has to be shown
@@ -240,10 +244,9 @@ vendor compilers (`ifx`, `nvfortran`, `amdflang`) are x86-64 only, so on this
 machine they run under qemu and take hours; iterate on those in CI.
 
 `ci-scripts/check-configure-probes.sh <build-dir>` on its own prints what the
-configure stage decided about a compiler — the four optional kinds, the two
-flags, the Cray-pointer feature, the two address-kind guards and
-`MPIF_HAVE_CFI` — and fails when the address-kind pair disagrees with the
-pointer width.
+configure stage decided about a compiler — the four optional kinds, the
+argument-mismatch flag, the two address-kind guards and `MPIF_HAVE_CFI` — and
+fails when the address-kind pair disagrees with the pointer width.
 
 ### Suite gating
 

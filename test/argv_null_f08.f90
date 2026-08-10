@@ -7,9 +7,12 @@
 ! This is a compile-time check, so the assertion is the build itself -- if the
 ! constants get the wrong type again, this file stops compiling and the test
 ! fails. It deliberately does not spawn: that needs a process launcher, and mpif's
-! tests run the executable directly. Nor does it read the arrays, because mpif.h
-! places them at the address of the C constants, which are null pointers; the
-! generated wrappers recognise them by address instead.
+! tests run the executable directly. Nor does it read the arrays: these two are
+! the sentinels the wrappers cannot translate by mapping an address, an argument
+! vector being converted element by element, so a spawn wrapper recognises them
+! with mpif_is_argv_null and substitutes the C constant rather than converting.
+! Their contents are poison. The runtime path is covered by MPICH's suite --
+! spawn/spawnf and spawn/spawnmult2f, in all three interfaces -- and not here.
 
 program argv_null_f08
   use mpi_f08

@@ -75,7 +75,7 @@ Building and installing an MPI:
 | `mpich-prune.txt`, `openmpi-prune.txt` | those lists |
 | `openmpi-*.patch` | fixes carried against the pinned upstream trees; each says in its preamble what it is and why, and MISSING.md has the stories. `git apply` refuses fuzz, so one stops applying the day upstream moves the code under it -- which is how the MPICH ones were retired |
 | `check-mpi-install.sh` | assert that what was installed is the standard ABI and nothing else |
-| `check-headers.sh` | check that every Cray pointer in `mpif_constants.h` is the variable C initialises; run by the `checks` job in CI, and needs no MPI or compiler |
+| `check-headers.sh` | check that every sentinel COMMON block in `mpif_constants.h` and `mpif_f08_types.F90` has its storage in `mpif_constants.c`, and that the set is MPI-5.0 §2.5.4's ten; run by the `checks` job in CI, and needs no MPI or compiler |
 | `flang-darwin-shim.sh` | works around flang's `-Wl,` handling on macOS, for MPICH's libtool |
 
 Both install scripts take the prefix to install into, and both understand

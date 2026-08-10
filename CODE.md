@@ -63,13 +63,17 @@ name.
 
 - Only what the MPI standard defines may be spelled `MPI_` or `mpi_`;
   everything mpif invents is `mpif_` or `MPIF_`.
-- Two modules are the standard's: `mpi` and `mpi_f08`. The twelve beneath
-  them are `mpif_constants`, `mpif_handle_types`, `mpif_types`,
+- Two modules are the standard's: `mpi` and `mpi_f08`. The twelve installed
+  beneath them are `mpif_constants`, `mpif_handle_types`, `mpif_types`,
   `mpif_functions`, `mpif_cptr`, `mpif_attr_fns`, `mpif_check_fns`,
   `mpif_f08_constants`, `mpif_f08_types`, `mpif_f08_functions`,
   `mpif_f08_attr_fns` and `mpif_f08_raw`. Their `.mod` files follow, which
   avoids real collisions: MPICH installs an `mpi_constants.mod`, Open MPI an
-  `mpi_types.mod` and `mpi_f08_types.mod`.
+  `mpi_types.mod` and `mpi_f08_types.mod`. `mpif_check_sentinel_fn` is a
+  thirteenth and is deliberately *not* installed — it holds one `bind(C)`
+  interface that two internal subprograms share, nothing outside mpif calls it,
+  and the `.mod` install list in `CMakeLists.txt` is explicit rather than a
+  glob for exactly this reason.
 - The Fortran entry points C provides — `mpi_send_`, ... — are named after
   the MPI routines they implement; everything else on the C side is `mpif_`.
 - `MPI_Alloc_mem_cptr` and the three window `_cptr` overloads keep `MPI_`
@@ -291,11 +295,15 @@ in these entries the buffer's own name is a descriptor pointer; the vw
 collectives' `sendbuf != MPI_IN_PLACE` guard is the reference that made
 that necessary. Statuses cross as `MPI_Status*` directly, and an in-string's
 hidden length becomes an explicit `integer(c_size_t), value` argument,
-`bind(C)` passing no hidden ones. Sentinels need recognising but never
-translating: the Fortran sentinels live *at* the C constants' addresses, so
-a sentinel descriptor's base address is the C sentinel already
-(`mpif_cdesc_is_sentinel` is three pointer compares — and belt-and-braces,
-a one-element sentinel actual being contiguous anyway).
+`bind(C)` passing no hidden ones. Sentinels are translated in exactly one
+place per buffer, the hoist that takes the base address:
+`void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);`. Everything
+downstream reads `q_<name>`, so `mpif_cdesc_is_sentinel` still compares against
+the three *C* constants and is exactly right — no call site of it changed when
+translation arrived, which is what made a change touching 828 hoists a
+one-line-per-buffer change. It remains three pointer compares, and remains
+belt-and-braces for the *walk*, a one-element sentinel actual being contiguous
+anyway.
 
 What the tests pin, and what they cannot: `test/subarray_nonblocking_f08.f90`
 (compiled `-O2`, like every test whose assertion is about the caller's
@@ -384,20 +392,61 @@ were found and verified.
   `gen/mpif_f08_functions.F90` contains exactly those. The 102 skipped as
   `not f90_expressible` are the C-only handle converters and the whole
   `MPI_T` interface, which the standard defines for C only.
-- **Buffer sentinels reach C intact.** `MPI_BOTTOM`, `MPI_IN_PLACE`,
-  `MPI_ARGV_NULL`, `MPI_ARGVS_NULL`, `MPI_ERRCODES_IGNORE`,
-  `MPI_STATUS_IGNORE` and `MPI_STATUSES_IGNORE` are Cray-pointer arrays whose
-  pointers live in common blocks initialised from the C addresses in
-  `src/mpif_constants.c`. Any wrapper that does not simply forward a sentinel
-  recognises it rather than dereferencing it. `mpi_f08`'s two status
-  sentinels have common blocks of their own (a gfortran workaround, described
-  where they are declared in `src/mpif_f08_types.F90`) but are initialised
-  from the same C constants, so the addresses agree across all three
-  interfaces. This holds on the cdesc path by construction: the descriptor a
-  compiler builds for a sentinel actual has the sentinel's address as its
-  base address, and that address *is* the C constant, so the entry point
-  passes it through like any other buffer — re-verified there by
-  `test/bottom_cfi_f08.f90` and `test/inplace_cfi_f08.f90`.
+- **Sentinels are translated, and every crossing is checked.** The ten —
+  `MPI_BOTTOM`, `MPI_IN_PLACE`, `MPI_BUFFER_AUTOMATIC`, `MPI_ARGV_NULL`,
+  `MPI_ARGVS_NULL`, `MPI_ERRCODES_IGNORE`, `MPI_STATUS_IGNORE`,
+  `MPI_STATUSES_IGNORE`, `MPI_UNWEIGHTED`, `MPI_WEIGHTS_EMPTY` — are ordinary
+  COMMON blocks, one per sentinel, whose storage `src/mpif_constants.c` defines
+  and whose *addresses* identify them. `include/mpif_sentinels.h` declares the
+  twelve cells (the ten, plus `mpi_f08`'s own pair of `TYPE(MPI_Status)`
+  sentinels) and holds the translators. This is what MPI-5.0 §2.5.4's advice to
+  implementors describes: "predefined static variables (e.g., a variable in an
+  MPI-declared COMMON block)" whose address is "extracted by some mechanism
+  outside the Fortran standard (e.g., ... by implementing the function in C)".
+  The ABI values are not addresses of anything — `(void*)0`, `(void*)1`,
+  `(void*)2`, `(int*)10`, `(int*)11` and five nulls — so no Fortran entity can
+  sit at one and translation is the only route.
+  Consequences, none of them optional:
+  - **Every argument that can carry a sentinel is wrapped**, and
+    `dev/mpiapi.jl` asserts it per parameter over `sentinel_kinds`, with
+    `sentinel_expected_sites` freezing the tally the way
+    `cfi_expected_class_counts` freezes the CFI classes. This replaces an
+    invariant that used to hold for free: while the Fortran sentinels sat *at*
+    the C constants' addresses, forwarding one was translating it.
+  - **Each cell is exactly the size of the COMMON block merged onto it** —
+    three sizes, not one that fits all. GNU ld warns "size of symbol changed"
+    once per sentinel in every consumer's link when the two differ, which a
+    uniform size produced 1516 times in a compile-only run; macOS's linker is
+    silent about it, so this is only visible in a Linux build.
+    `mpif_check_environment` requires equality rather than a fit.
+  - **The cells are `const`, and poisoned.** A missed translation that writes —
+    a status, spawn's `array_of_errcodes`, `MPI_Dist_graph_neighbors`' weights —
+    faults in read-only memory instead of corrupting the cell; that is
+    measured, not hoped for, and was what the eight status tests did when the
+    translation was absent. A missed *read* gets the poison instead, which is
+    `0xBAADC0DE` for the buffer cells and a large positive `0x0EADC0DE` for the
+    four status cells, chosen so an absurd count kills the caller rather than
+    passing for a plausible negative one.
+  - **`mpif_check_environment` checks the arrangement itself** — that each
+    Fortran sentinel's address is its cell, and that each fits — because
+    nothing at compile time can see both halves. It is also the only test that
+    §3.6's "the implementation of MPI_BUFFER_AUTOMATIC must allow the intrinsic
+    `c_loc` to be applied to it" holds.
+  - **The four status cells are all recognised by one translator.** `mpi_f08`'s
+    two are separate objects — `TYPE(MPI_Status)`, not INTEGER arrays — and
+    reach the same C entry points through `mpif_f08_raw`. §3.2.6 permits the
+    values to differ from C's, and having four distinct addresses is an
+    improvement: a C layer can tell an `mpi_f08` sentinel from an `mpif.h` one,
+    which it could not while all four were null.
+  - **One crossing runs C to Fortran**: `MPI_Buffer_detach` and its two
+    siblings must return `c_loc(MPI_BUFFER_AUTOMATIC)` (§3.6), so the ABI value
+    MPI wrote is mapped back after the call — in C, so that all three
+    interfaces agree, though the standard requires it only of `mpi_f08`.
+  - Tests: `test/bottom.f90`, `test/statuses_ignore.f90`,
+    `test/dist_graph_weights.f90` and `test/buffer_detach.f90` cover the
+    families and interfaces; `test/sentinel_addresses_c.c` pins the cells'
+    distinctness, size and alignment; `ci-scripts/check-headers.sh` checks
+    every COMMON block against its C definition without a build.
 - `MPI_Wtime`, `MPI_Wtick`, `MPI_Aint_add` and `MPI_Aint_diff` are
   hand-written rather than generated. `MPI_Sizeof` is a hand-written generic
   in `src/mpif_types.F90`. `MPI_Status_f2f08`/`MPI_Status_f082f` live in
@@ -582,13 +631,14 @@ were found and verified.
 - **`MPI_Comm_spawn_multiple` frees the per-command `char*` vector**
   (`free(argv_$parname[i])` after the inner loop; the row is NULL where the
   conversion did not run, and `free(NULL)` is defined).
-- **`mpifort -showme:compile` reports gfortran's Fortran-only flags
-  (`-fallow-argument-mismatch -fcray-pointer`), rightly** — `mpif.h`'s
-  sentinels are Cray pointers, and the argument-mismatch flag is the whole
-  idiom of the include-file interface. But `find_package(MPI)` puts them
-  into `MPI::MPI_Fortran`'s `INTERFACE_COMPILE_OPTIONS` unguarded, and CMake
-  applies interface options to every language in a consuming target — so a
-  mixed C/Fortran target hands them to the C compiler, which clang rejects.
+- **`mpifort -showme:compile` reports gfortran's Fortran-only flag
+  (`-fallow-argument-mismatch`), rightly** — relaxed argument matching is the
+  whole idiom of the include-file interface. (It used to report
+  `-fcray-pointer` beside it, for sentinels that were Cray pointees; that one
+  is gone.) But `find_package(MPI)` puts what it finds into
+  `MPI::MPI_Fortran`'s `INTERFACE_COMPILE_OPTIONS` unguarded, and CMake applies
+  interface options to every language in a consuming target — so a mixed
+  C/Fortran target hands it to the C compiler, which clang rejects.
   `test/CMakeLists.txt` rewrites the property as
   `$<$<COMPILE_LANGUAGE:Fortran>:...>` right after `find_package`, and any
   project mixing the two languages in one target wants the same three lines.

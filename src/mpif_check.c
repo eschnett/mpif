@@ -29,8 +29,10 @@
 // time, and of what is needed here that covers MPI_Initialized, MPI_Finalized,
 // MPI_Get_version, MPI_Get_library_version and MPI_Abi_get_version -- but not
 // MPI_Get_processor_name or MPI_Abi_get_fortran_booleans, and certainly no
-// communication. So before MPI_Init or after MPI_Finalize only the version and
-// library-name checks run, and the rest is skipped silently.
+// communication. So before MPI_Init or after MPI_Finalize only the version,
+// library-name and sentinel checks run, and the rest is skipped silently. (The
+// sentinel check is pure address arithmetic and needs no MPI at all; see
+// mpif_check_sentinel below for what it catches and why nothing else can.)
 //
 // When MPI is initialized and not finalized, the function is COLLECTIVE over
 // MPI_COMM_WORLD: every process must call it, or the smoke test's collectives
@@ -65,6 +67,7 @@
 #include <mpi.h>
 
 #include <mpif_logical.h>
+#include <mpif_sentinels.h>
 
 #include <ctype.h>
 #include <stdarg.h>
@@ -83,6 +86,15 @@
 void mpif_check_header_version_(MPI_Fint *major, MPI_Fint *minor,
                                 MPI_Fint *patch);
 
+// The Fortran side of the sentinel check below: each hands every sentinel it can
+// see to mpif_check_sentinel. Two subprograms because the two sets cannot share a
+// scoping unit -- mpif.h's MPI_STATUS_IGNORE is an INTEGER array and mpi_f08's a
+// TYPE(MPI_Status), under one name -- and in two files because
+// src/mpif_check_fns.F90 cannot use mpif_f08_types without a circular file
+// dependency (mpif_f08_types uses mpi, which uses mpif_check_fns).
+void mpif_check_report_sentinels_(void);
+void mpif_check_report_f08_sentinels_(void);
+
 // Print "mpif: <routine>: <message>" and abort -- through MPI_Abort when that
 // can work, so the whole job dies rather than one rank, and through abort()
 // otherwise (and as the backstop should MPI_Abort return).
@@ -100,6 +112,104 @@ static void mpif_check_fail(const char *restrict const routine,
   if (initialized && !finalized)
     MPI_Abort(MPI_COMM_WORLD, 1);
   abort();
+}
+
+// The sentinel arrangement, checked at run time because nothing else can see
+// both halves of it.
+//
+// A sentinel is identified by its address: Fortran declares a COMMON block, C
+// defines the storage in src/mpif_constants.c, the linker merges the two, and
+// every wrapper compares the address it was handed against the cell. If those
+// two ever stop being the same object the comparisons quietly stop matching, and
+// a real caller's buffer goes to MPI as a sentinel or the reverse. Three ways
+// that can happen, none of them visible to a compile-time check:
+//
+// - a `common /X/ Y` renamed without renaming the cell in src/mpif_constants.c,
+//   or the reverse. ci-scripts/check-headers.sh catches this statically for
+//   include/mpif_constants.h; this catches it for both declaration sites.
+// - a consumer linked without `-Wl,-commons,use_dylibs` on macOS, which gives
+//   the executable its own copy of each block instead of resolving to the
+//   library's definition. The installed mpifort wrapper passes it; a hand-rolled
+//   link may not.
+// - a Fortran sentinel whose size stops matching its cell. Too large and MPI can
+//   write past the end of it; too small and GNU ld warns "size of symbol changed"
+//   once per sentinel in every consumer's link. The _Static_asserts in
+//   include/mpif_sentinels.h cannot see the Fortran side's size at all, so the
+//   comparison has to happen here.
+//
+// The check exercises the very mechanism it is checking: the Fortran side takes
+// c_loc of each sentinel and passes it down, which is also the only test that
+// MPI-5.0 section 3.6's "the implementation of MPI_BUFFER_AUTOMATIC must allow
+// the intrinsic c_loc to be applied to it" holds.
+//
+// This order is shared with src/mpif_check_fns.F90 and src/mpif_check_f08.F90,
+// which pass the indices. Keep the three in step; a sentinel dropped from a
+// reporter is caught by the count, and a misordering by the address comparison.
+enum { MPIF_SENTINEL_COUNT = 12 };
+
+#define MPIF_SENTINEL_INT_BYTES (int)(MPIF_SENTINEL_INT_WORDS * sizeof(MPI_Fint))
+#define MPIF_SENTINEL_STATUS_BYTES \
+  (int)(MPIF_SENTINEL_STATUS_WORDS * sizeof(MPI_Fint))
+
+static const struct {
+  const char *name;
+  const void *cell;
+  int bytes;
+} mpif_sentinel_cells[MPIF_SENTINEL_COUNT] = {
+    {"MPI_BOTTOM", mpif_bottom_, MPIF_SENTINEL_INT_BYTES},
+    {"MPI_IN_PLACE", mpif_in_place_, MPIF_SENTINEL_INT_BYTES},
+    {"MPI_BUFFER_AUTOMATIC", mpif_buffer_automatic_, MPIF_SENTINEL_INT_BYTES},
+    {"MPI_ARGV_NULL", mpif_argv_null_, MPIF_SENTINEL_CHAR_BYTES},
+    {"MPI_ARGVS_NULL", mpif_argvs_null_, MPIF_SENTINEL_CHAR_BYTES},
+    {"MPI_ERRCODES_IGNORE", mpif_errcodes_ignore_, MPIF_SENTINEL_INT_BYTES},
+    {"MPI_STATUS_IGNORE", mpif_status_ignore_, MPIF_SENTINEL_STATUS_BYTES},
+    {"MPI_STATUSES_IGNORE", mpif_statuses_ignore_, MPIF_SENTINEL_STATUS_BYTES},
+    {"MPI_UNWEIGHTED", mpif_unweighted_, MPIF_SENTINEL_INT_BYTES},
+    {"MPI_WEIGHTS_EMPTY", mpif_weights_empty_, MPIF_SENTINEL_INT_BYTES},
+    {"MPI_STATUS_IGNORE (mpi_f08)", mpif_f08_status_ignore_,
+     MPIF_SENTINEL_STATUS_BYTES},
+    {"MPI_STATUSES_IGNORE (mpi_f08)", mpif_f08_statuses_ignore_,
+     MPIF_SENTINEL_STATUS_BYTES},
+};
+
+static int mpif_sentinel_reported;
+
+// Called once per sentinel by the two Fortran reporters. Aborts on the first
+// disagreement rather than counting: any one of them means every wrapper's
+// sentinel comparison is unreliable, so there is nothing to be gained by going
+// on.
+void mpif_check_sentinel(int index, const void *address, int bytes) {
+  static const char routine[] = "mpif_check_environment";
+  if (index < 1 || index > MPIF_SENTINEL_COUNT)
+    mpif_check_fail(routine, "sentinel index %d is out of range 1..%d", index,
+                    MPIF_SENTINEL_COUNT);
+  const char *const name = mpif_sentinel_cells[index - 1].name;
+  const void *const cell = mpif_sentinel_cells[index - 1].cell;
+  if (address != cell)
+    mpif_check_fail(routine,
+                    "Fortran's %s is at %p but mpif's cell for it is at %p. "
+                    "Every wrapper recognises a sentinel by comparing against "
+                    "the cell, so none of them will recognise this one. On "
+                    "macOS the usual cause is linking without "
+                    "-Wl,-commons,use_dylibs, which the installed mpifort "
+                    "wrapper passes; otherwise a COMMON block name and its "
+                    "definition in src/mpif_constants.c have diverged",
+                    name, address, cell);
+  // Equality, not a fit. A cell bigger than its COMMON works, but GNU ld then
+  // warns "size of symbol changed" once per sentinel in every consumer's link;
+  // a cell smaller means MPI can write past the end of it. Both are avoided by
+  // the two sides agreeing exactly, which is what the three sizes in
+  // include/mpif_sentinels.h exist to keep true.
+  const int expected = mpif_sentinel_cells[index - 1].bytes;
+  if (bytes != expected)
+    mpif_check_fail(routine,
+                    "Fortran's %s occupies %d bytes but mpif's cell for it is "
+                    "%d. The two must agree exactly: a larger cell makes GNU ld "
+                    "warn once per sentinel on every link, a smaller one lets "
+                    "MPI write past its end. Adjust the matching size in "
+                    "include/mpif_sentinels.h",
+                    name, bytes, expected);
+  ++mpif_sentinel_reported;
 }
 
 // Read a numeric environment variable. Returns 0 when unset or empty; aborts
@@ -186,6 +296,19 @@ void mpif_check_environment(void) {
                     (int)hdr_major, (int)hdr_minor, (int)hdr_patch,
                     MPIF_VERSION_MAJOR, MPIF_VERSION_MINOR,
                     MPIF_VERSION_PATCH);
+
+  // The sentinel arrangement; see mpif_check_sentinel above. Pure address
+  // arithmetic, so it can run here among the checks that need no MPI.
+  mpif_sentinel_reported = 0;
+  mpif_check_report_sentinels_();
+  mpif_check_report_f08_sentinels_();
+  if (mpif_sentinel_reported != MPIF_SENTINEL_COUNT)
+    mpif_check_fail(routine,
+                    "%d of %d sentinels were reported for checking; a "
+                    "reporter in src/mpif_check_fns.F90 or "
+                    "src/mpif_check_f08.F90 has fallen out of step with the "
+                    "table in src/mpif_check.c",
+                    mpif_sentinel_reported, MPIF_SENTINEL_COUNT);
 
   // The ABI version. MPI-5.0 chapter 20: MPI_Abi_get_version reports -1/-1
   // when the library does not implement the standard ABI at all; minor bumps

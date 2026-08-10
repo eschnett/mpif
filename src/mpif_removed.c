@@ -34,6 +34,8 @@
 // So each body is written once as a macro over the Fortran symbol name and the C
 // entry point, and instantiated twice.
 
+#include <mpif_sentinels.h>
+
 #include <mpi.h>
 
 #include <stddef.h>
@@ -104,12 +106,20 @@ MPIF_DEFINE_TYPE_STRUCT(pmpi_type_struct_, PMPI_Type_create_struct)
 
 // MPI_ADDRESS -> MPI_GET_ADDRESS
 //
-// `location` is a choice buffer, so it arrives as a bare address.
+// `location` is a choice buffer, so it arrives as a bare address -- and so it may
+// be MPI_BOTTOM, which has to be translated exactly as the generated
+// MPI_Get_address translates it, or the removed routine and its replacement
+// disagree about what MPI_ADDRESS(MPI_BOTTOM, ...) returns. MPI-5.0 2.5.6 wants
+// zero there, absolute addresses being "displacements relative to address zero",
+// which is what handing MPI the ABI's (void*)0 produces.
+//
+// This is the only hand-written entry point that takes a choice buffer; see
+// include/mpif_sentinels.h for the rest.
 
 #define MPIF_DEFINE_ADDRESS(fname, get_address)                                \
   void fname(const void *location, MPI_Fint *address, MPI_Fint *ierror) {      \
     MPI_Aint c_address;                                                        \
-    *ierror = get_address(location, &c_address);                               \
+    *ierror = get_address(mpif_c_cbuffer(location), &c_address);               \
     *address = (MPI_Fint)c_address;                                            \
   }
 

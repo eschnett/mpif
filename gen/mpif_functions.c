@@ -4,6 +4,7 @@
 #include <mpif_attrs.h>
 #include <mpif_callbacks.h>
 #include <mpif_logical.h>
+#include <mpif_sentinels.h>
 #include <mpif_strings.h>
 #include <mpi.h>
 #include <assert.h>
@@ -234,8 +235,9 @@ void mpi_accumulate_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   *ierror = MPI_Accumulate(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -260,8 +262,9 @@ void mpi_accumulate_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   *ierror = MPI_Accumulate_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -286,8 +289,9 @@ void pmpi_accumulate_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   *ierror = PMPI_Accumulate(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -312,8 +316,9 @@ void pmpi_accumulate_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   *ierror = PMPI_Accumulate_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -458,11 +463,13 @@ void mpi_allgather_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Allgather(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -480,11 +487,13 @@ void mpi_allgather_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Allgather_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -502,11 +511,13 @@ void pmpi_allgather_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Allgather(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -524,11 +535,13 @@ void pmpi_allgather_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Allgather_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -548,12 +561,14 @@ void mpi_allgather_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Allgather_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -576,12 +591,14 @@ void mpi_allgather_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Allgather_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -604,12 +621,14 @@ void pmpi_allgather_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Allgather_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -632,12 +651,14 @@ void pmpi_allgather_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Allgather_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -659,11 +680,13 @@ void mpi_allgatherv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Allgatherv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -683,11 +706,13 @@ void mpi_allgatherv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Allgatherv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -707,11 +732,13 @@ void pmpi_allgatherv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Allgatherv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -731,11 +758,13 @@ void pmpi_allgatherv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Allgatherv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -757,12 +786,14 @@ void mpi_allgatherv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Allgatherv_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -787,12 +818,14 @@ void mpi_allgatherv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Allgatherv_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -817,12 +850,14 @@ void pmpi_allgatherv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Allgatherv_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -847,12 +882,14 @@ void pmpi_allgatherv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Allgatherv_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -901,9 +938,11 @@ void mpi_allreduce_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Allreduce(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -921,9 +960,11 @@ void mpi_allreduce_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Allreduce_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -941,9 +982,11 @@ void pmpi_allreduce_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Allreduce(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -961,9 +1004,11 @@ void pmpi_allreduce_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Allreduce_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -983,10 +1028,12 @@ void mpi_allreduce_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Allreduce_init(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -1009,10 +1056,12 @@ void mpi_allreduce_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Allreduce_init_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -1035,10 +1084,12 @@ void pmpi_allreduce_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Allreduce_init(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -1061,10 +1112,12 @@ void pmpi_allreduce_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Allreduce_init_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -1086,11 +1139,13 @@ void mpi_alltoall_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Alltoall(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -1108,11 +1163,13 @@ void mpi_alltoall_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Alltoall_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -1130,11 +1187,13 @@ void pmpi_alltoall_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Alltoall(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -1152,11 +1211,13 @@ void pmpi_alltoall_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Alltoall_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -1176,12 +1237,14 @@ void mpi_alltoall_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Alltoall_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -1204,12 +1267,14 @@ void mpi_alltoall_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Alltoall_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -1232,12 +1297,14 @@ void pmpi_alltoall_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Alltoall_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -1260,12 +1327,14 @@ void pmpi_alltoall_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Alltoall_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -1288,12 +1357,14 @@ void mpi_alltoallv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Alltoallv(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -1314,12 +1385,14 @@ void mpi_alltoallv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Alltoallv_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -1340,12 +1413,14 @@ void pmpi_alltoallv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Alltoallv(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -1366,12 +1441,14 @@ void pmpi_alltoallv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Alltoallv_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -1394,13 +1471,15 @@ void mpi_alltoallv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Alltoallv_init(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -1426,13 +1505,15 @@ void mpi_alltoallv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Alltoallv_init_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -1458,13 +1539,15 @@ void pmpi_alltoallv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Alltoallv_init(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -1490,13 +1573,15 @@ void pmpi_alltoallv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Alltoallv_init_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -1520,6 +1605,8 @@ void mpi_alltoallw_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -1534,7 +1621,7 @@ void mpi_alltoallw_(
     }
   }
   MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -1545,11 +1632,11 @@ void mpi_alltoallw_(
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = MPI_Alltoallw(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -1570,6 +1657,8 @@ void mpi_alltoallw_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -1584,7 +1673,7 @@ void mpi_alltoallw_c_(
     }
   }
   MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -1595,11 +1684,11 @@ void mpi_alltoallw_c_(
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = MPI_Alltoallw_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -1620,6 +1709,8 @@ void pmpi_alltoallw_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -1634,7 +1725,7 @@ void pmpi_alltoallw_(
     }
   }
   MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -1645,11 +1736,11 @@ void pmpi_alltoallw_(
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = PMPI_Alltoallw(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -1670,6 +1761,8 @@ void pmpi_alltoallw_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -1684,7 +1777,7 @@ void pmpi_alltoallw_c_(
     }
   }
   MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -1695,11 +1788,11 @@ void pmpi_alltoallw_c_(
   for (int rank=0; rank<q_group_size; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = PMPI_Alltoallw_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -1722,6 +1815,8 @@ void mpi_alltoallw_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -1736,7 +1831,7 @@ void mpi_alltoallw_init_(
     }
   }
   MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -1748,11 +1843,11 @@ void mpi_alltoallw_init_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Alltoallw_init(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -1778,6 +1873,8 @@ void mpi_alltoallw_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -1792,7 +1889,7 @@ void mpi_alltoallw_init_c_(
     }
   }
   MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -1804,11 +1901,11 @@ void mpi_alltoallw_init_c_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Alltoallw_init_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -1834,6 +1931,8 @@ void pmpi_alltoallw_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -1848,7 +1947,7 @@ void pmpi_alltoallw_init_(
     }
   }
   MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -1860,11 +1959,11 @@ void pmpi_alltoallw_init_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Alltoallw_init(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -1890,6 +1989,8 @@ void pmpi_alltoallw_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -1904,7 +2005,7 @@ void pmpi_alltoallw_init_c_(
     }
   }
   MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -1916,11 +2017,11 @@ void pmpi_alltoallw_init_c_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Alltoallw_init_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -2090,8 +2191,9 @@ void mpi_bcast_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = MPI_Bcast(
-    buffer,
+    q_buffer,
     *count,
     MPI_Type_fromint(*datatype),
     *root,
@@ -2108,8 +2210,9 @@ void mpi_bcast_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = MPI_Bcast_c(
-    buffer,
+    q_buffer,
     *count,
     MPI_Type_fromint(*datatype),
     *root,
@@ -2126,8 +2229,9 @@ void pmpi_bcast_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = PMPI_Bcast(
-    buffer,
+    q_buffer,
     *count,
     MPI_Type_fromint(*datatype),
     *root,
@@ -2144,8 +2248,9 @@ void pmpi_bcast_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = PMPI_Bcast_c(
-    buffer,
+    q_buffer,
     *count,
     MPI_Type_fromint(*datatype),
     *root,
@@ -2164,9 +2269,10 @@ void mpi_bcast_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Bcast_init(
-    buffer,
+    q_buffer,
     *count,
     MPI_Type_fromint(*datatype),
     *root,
@@ -2188,9 +2294,10 @@ void mpi_bcast_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Bcast_init_c(
-    buffer,
+    q_buffer,
     *count,
     MPI_Type_fromint(*datatype),
     *root,
@@ -2212,9 +2319,10 @@ void pmpi_bcast_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Bcast_init(
-    buffer,
+    q_buffer,
     *count,
     MPI_Type_fromint(*datatype),
     *root,
@@ -2236,9 +2344,10 @@ void pmpi_bcast_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Bcast_init_c(
-    buffer,
+    q_buffer,
     *count,
     MPI_Type_fromint(*datatype),
     *root,
@@ -2259,8 +2368,9 @@ void mpi_bsend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_Bsend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -2279,8 +2389,9 @@ void mpi_bsend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_Bsend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -2299,8 +2410,9 @@ void pmpi_bsend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_Bsend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -2319,8 +2431,9 @@ void pmpi_bsend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_Bsend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -2340,9 +2453,10 @@ void mpi_bsend_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Bsend_init(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -2364,9 +2478,10 @@ void mpi_bsend_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Bsend_init_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -2388,9 +2503,10 @@ void pmpi_bsend_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Bsend_init(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -2412,9 +2528,10 @@ void pmpi_bsend_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Bsend_init_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -2431,8 +2548,9 @@ void mpi_buffer_attach_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = MPI_Buffer_attach(
-    buffer,
+    q_buffer,
     *size
   );
 }
@@ -2443,8 +2561,9 @@ void mpi_buffer_attach_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = MPI_Buffer_attach_c(
-    buffer,
+    q_buffer,
     *size
   );
 }
@@ -2455,8 +2574,9 @@ void pmpi_buffer_attach_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = PMPI_Buffer_attach(
-    buffer,
+    q_buffer,
     *size
   );
 }
@@ -2467,8 +2587,9 @@ void pmpi_buffer_attach_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = PMPI_Buffer_attach_c(
-    buffer,
+    q_buffer,
     *size
   );
 }
@@ -2483,6 +2604,12 @@ void mpi_buffer_detach_(
     buffer_addr,
     size
   );
+  if (*ierror == MPI_SUCCESS) {
+    const void* q_buffer_addr;
+    memcpy(&q_buffer_addr, buffer_addr, sizeof q_buffer_addr);
+    q_buffer_addr = mpif_f_buffer_addr(q_buffer_addr);
+    memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
+  }
 }
 
 void mpi_buffer_detach_c_(
@@ -2495,6 +2622,12 @@ void mpi_buffer_detach_c_(
     buffer_addr,
     size
   );
+  if (*ierror == MPI_SUCCESS) {
+    const void* q_buffer_addr;
+    memcpy(&q_buffer_addr, buffer_addr, sizeof q_buffer_addr);
+    q_buffer_addr = mpif_f_buffer_addr(q_buffer_addr);
+    memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
+  }
 }
 
 void pmpi_buffer_detach_(
@@ -2507,6 +2640,12 @@ void pmpi_buffer_detach_(
     buffer_addr,
     size
   );
+  if (*ierror == MPI_SUCCESS) {
+    const void* q_buffer_addr;
+    memcpy(&q_buffer_addr, buffer_addr, sizeof q_buffer_addr);
+    q_buffer_addr = mpif_f_buffer_addr(q_buffer_addr);
+    memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
+  }
 }
 
 void pmpi_buffer_detach_c_(
@@ -2519,6 +2658,12 @@ void pmpi_buffer_detach_c_(
     buffer_addr,
     size
   );
+  if (*ierror == MPI_SUCCESS) {
+    const void* q_buffer_addr;
+    memcpy(&q_buffer_addr, buffer_addr, sizeof q_buffer_addr);
+    q_buffer_addr = mpif_f_buffer_addr(q_buffer_addr);
+    memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
+  }
 }
 
 void mpi_buffer_flush_(
@@ -3022,9 +3167,10 @@ void mpi_comm_attach_buffer_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = MPI_Comm_attach_buffer(
     MPI_Comm_fromint(*comm),
-    buffer,
+    q_buffer,
     *size
   );
 }
@@ -3036,9 +3182,10 @@ void mpi_comm_attach_buffer_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = MPI_Comm_attach_buffer_c(
     MPI_Comm_fromint(*comm),
-    buffer,
+    q_buffer,
     *size
   );
 }
@@ -3050,9 +3197,10 @@ void pmpi_comm_attach_buffer_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = PMPI_Comm_attach_buffer(
     MPI_Comm_fromint(*comm),
-    buffer,
+    q_buffer,
     *size
   );
 }
@@ -3064,9 +3212,10 @@ void pmpi_comm_attach_buffer_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = PMPI_Comm_attach_buffer_c(
     MPI_Comm_fromint(*comm),
-    buffer,
+    q_buffer,
     *size
   );
 }
@@ -3463,6 +3612,12 @@ void mpi_comm_detach_buffer_(
     buffer_addr,
     size
   );
+  if (*ierror == MPI_SUCCESS) {
+    const void* q_buffer_addr;
+    memcpy(&q_buffer_addr, buffer_addr, sizeof q_buffer_addr);
+    q_buffer_addr = mpif_f_buffer_addr(q_buffer_addr);
+    memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
+  }
 }
 
 void mpi_comm_detach_buffer_c_(
@@ -3477,6 +3632,12 @@ void mpi_comm_detach_buffer_c_(
     buffer_addr,
     size
   );
+  if (*ierror == MPI_SUCCESS) {
+    const void* q_buffer_addr;
+    memcpy(&q_buffer_addr, buffer_addr, sizeof q_buffer_addr);
+    q_buffer_addr = mpif_f_buffer_addr(q_buffer_addr);
+    memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
+  }
 }
 
 void pmpi_comm_detach_buffer_(
@@ -3491,6 +3652,12 @@ void pmpi_comm_detach_buffer_(
     buffer_addr,
     size
   );
+  if (*ierror == MPI_SUCCESS) {
+    const void* q_buffer_addr;
+    memcpy(&q_buffer_addr, buffer_addr, sizeof q_buffer_addr);
+    q_buffer_addr = mpif_f_buffer_addr(q_buffer_addr);
+    memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
+  }
 }
 
 void pmpi_comm_detach_buffer_c_(
@@ -3505,6 +3672,12 @@ void pmpi_comm_detach_buffer_c_(
     buffer_addr,
     size
   );
+  if (*ierror == MPI_SUCCESS) {
+    const void* q_buffer_addr;
+    memcpy(&q_buffer_addr, buffer_addr, sizeof q_buffer_addr);
+    q_buffer_addr = mpif_f_buffer_addr(q_buffer_addr);
+    memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
+  }
 }
 
 void mpi_comm_disconnect_(
@@ -4221,7 +4394,7 @@ void mpi_comm_spawn_(
   char* c_command = NULL;
   if (q_at_root)
     c_command = mpif_strdup_f2c_trim(command, length_command);
-  const int null_argv = (const void*)argv == (const void*)MPI_ARGV_NULL;
+  const int null_argv = mpif_is_argv_null(argv);
   size_t count_argv = 0;
   if (q_at_root && !null_argv)
     count_argv = mpif_fcount(argv, length_argv);
@@ -4238,7 +4411,7 @@ void mpi_comm_spawn_(
     *root,
     MPI_Comm_fromint(*comm),
     &c_intercomm,
-    array_of_errcodes
+    mpif_c_errcodes(array_of_errcodes)
   );
   if (q_at_root)
     free(c_command);
@@ -4285,7 +4458,7 @@ void pmpi_comm_spawn_(
   char* c_command = NULL;
   if (q_at_root)
     c_command = mpif_strdup_f2c_trim(command, length_command);
-  const int null_argv = (const void*)argv == (const void*)MPI_ARGV_NULL;
+  const int null_argv = mpif_is_argv_null(argv);
   size_t count_argv = 0;
   if (q_at_root && !null_argv)
     count_argv = mpif_fcount(argv, length_argv);
@@ -4302,7 +4475,7 @@ void pmpi_comm_spawn_(
     *root,
     MPI_Comm_fromint(*comm),
     &c_intercomm,
-    array_of_errcodes
+    mpif_c_errcodes(array_of_errcodes)
   );
   if (q_at_root)
     free(c_command);
@@ -4352,7 +4525,7 @@ void mpi_comm_spawn_multiple_(
   for (size_t n=0; n<count_array_of_commands; ++n)
     argv_array_of_commands[n] = mpif_strdup_f2c_trim(array_of_commands + n * length_array_of_commands, length_array_of_commands);
   argv_array_of_commands[count_array_of_commands] = NULL;
-  const int null_array_of_argv = (const void*)array_of_argv == (const void*)MPI_ARGVS_NULL;
+  const int null_array_of_argv = mpif_is_argvs_null(array_of_argv);
   const int q_count = q_at_root ? (int)*count : 0;
   size_t count_array_of_argv[q_count > 0 ? q_count : 1];
   char **argv_array_of_argv[q_count > 0 ? q_count : 1];
@@ -4388,7 +4561,7 @@ void mpi_comm_spawn_multiple_(
     *root,
     MPI_Comm_fromint(*comm),
     &c_intercomm,
-    array_of_errcodes
+    mpif_c_errcodes(array_of_errcodes)
   );
   for (size_t n=0; n<count_array_of_commands; ++n)
     free(argv_array_of_commands[n]);
@@ -4441,7 +4614,7 @@ void pmpi_comm_spawn_multiple_(
   for (size_t n=0; n<count_array_of_commands; ++n)
     argv_array_of_commands[n] = mpif_strdup_f2c_trim(array_of_commands + n * length_array_of_commands, length_array_of_commands);
   argv_array_of_commands[count_array_of_commands] = NULL;
-  const int null_array_of_argv = (const void*)array_of_argv == (const void*)MPI_ARGVS_NULL;
+  const int null_array_of_argv = mpif_is_argvs_null(array_of_argv);
   const int q_count = q_at_root ? (int)*count : 0;
   size_t count_array_of_argv[q_count > 0 ? q_count : 1];
   char **argv_array_of_argv[q_count > 0 ? q_count : 1];
@@ -4477,7 +4650,7 @@ void pmpi_comm_spawn_multiple_(
     *root,
     MPI_Comm_fromint(*comm),
     &c_intercomm,
-    array_of_errcodes
+    mpif_c_errcodes(array_of_errcodes)
   );
   for (size_t n=0; n<count_array_of_commands; ++n)
     free(argv_array_of_commands[n]);
@@ -4604,10 +4777,13 @@ void mpi_compare_and_swap_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
+  const void* const q_compare_addr = mpif_c_cbuffer(compare_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr);
   *ierror = MPI_Compare_and_swap(
-    origin_addr,
-    compare_addr,
-    result_addr,
+    q_origin_addr,
+    q_compare_addr,
+    q_result_addr,
     MPI_Type_fromint(*datatype),
     *target_rank,
     *target_disp,
@@ -4626,10 +4802,13 @@ void pmpi_compare_and_swap_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
+  const void* const q_compare_addr = mpif_c_cbuffer(compare_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr);
   *ierror = PMPI_Compare_and_swap(
-    origin_addr,
-    compare_addr,
-    result_addr,
+    q_origin_addr,
+    q_compare_addr,
+    q_result_addr,
     MPI_Type_fromint(*datatype),
     *target_rank,
     *target_disp,
@@ -4685,7 +4864,7 @@ void mpi_dist_graph_create_(
     sources,
     degrees,
     destinations,
-    weights,
+    mpif_c_cweights(weights),
     MPI_Info_fromint(*info),
     mpif_logical2bool(*reorder),
     &c_comm_dist_graph
@@ -4713,7 +4892,7 @@ void pmpi_dist_graph_create_(
     sources,
     degrees,
     destinations,
-    weights,
+    mpif_c_cweights(weights),
     MPI_Info_fromint(*info),
     mpif_logical2bool(*reorder),
     &c_comm_dist_graph
@@ -4740,10 +4919,10 @@ void mpi_dist_graph_create_adjacent_(
     MPI_Comm_fromint(*comm_old),
     *indegree,
     sources,
-    sourceweights,
+    mpif_c_cweights(sourceweights),
     *outdegree,
     destinations,
-    destweights,
+    mpif_c_cweights(destweights),
     MPI_Info_fromint(*info),
     mpif_logical2bool(*reorder),
     &c_comm_dist_graph
@@ -4770,10 +4949,10 @@ void pmpi_dist_graph_create_adjacent_(
     MPI_Comm_fromint(*comm_old),
     *indegree,
     sources,
-    sourceweights,
+    mpif_c_cweights(sourceweights),
     *outdegree,
     destinations,
-    destweights,
+    mpif_c_cweights(destweights),
     MPI_Info_fromint(*info),
     mpif_logical2bool(*reorder),
     &c_comm_dist_graph
@@ -4796,10 +4975,10 @@ void mpi_dist_graph_neighbors_(
     MPI_Comm_fromint(*comm),
     *maxindegree,
     sources,
-    sourceweights,
+    mpif_c_weights(sourceweights),
     *maxoutdegree,
     destinations,
-    destweights
+    mpif_c_weights(destweights)
   );
 }
 
@@ -4818,10 +4997,10 @@ void pmpi_dist_graph_neighbors_(
     MPI_Comm_fromint(*comm),
     *maxindegree,
     sources,
-    sourceweights,
+    mpif_c_weights(sourceweights),
     *maxoutdegree,
     destinations,
-    destweights
+    mpif_c_weights(destweights)
   );
 }
 
@@ -4955,9 +5134,11 @@ void mpi_exscan_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Exscan(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -4975,9 +5156,11 @@ void mpi_exscan_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Exscan_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -4995,9 +5178,11 @@ void pmpi_exscan_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Exscan(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -5015,9 +5200,11 @@ void pmpi_exscan_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Exscan_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -5037,10 +5224,12 @@ void mpi_exscan_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Exscan_init(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -5063,10 +5252,12 @@ void mpi_exscan_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Exscan_init_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -5089,10 +5280,12 @@ void pmpi_exscan_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Exscan_init(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -5115,10 +5308,12 @@ void pmpi_exscan_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Exscan_init_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -5152,9 +5347,11 @@ void mpi_fetch_and_op_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr);
   *ierror = MPI_Fetch_and_op(
-    origin_addr,
-    result_addr,
+    q_origin_addr,
+    q_result_addr,
     MPI_Type_fromint(*datatype),
     *target_rank,
     *target_disp,
@@ -5174,9 +5371,11 @@ void pmpi_fetch_and_op_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr);
   *ierror = PMPI_Fetch_and_op(
-    origin_addr,
-    result_addr,
+    q_origin_addr,
+    q_result_addr,
     MPI_Type_fromint(*datatype),
     *target_rank,
     *target_disp,
@@ -5660,10 +5859,11 @@ void mpi_file_iread_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iread(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5680,10 +5880,11 @@ void mpi_file_iread_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iread_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5700,10 +5901,11 @@ void pmpi_file_iread_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iread(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5720,10 +5922,11 @@ void pmpi_file_iread_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iread_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5740,10 +5943,11 @@ void mpi_file_iread_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iread_all(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5760,10 +5964,11 @@ void mpi_file_iread_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iread_all_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5780,10 +5985,11 @@ void pmpi_file_iread_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iread_all(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5800,10 +6006,11 @@ void pmpi_file_iread_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iread_all_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5821,11 +6028,12 @@ void mpi_file_iread_at_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iread_at(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5843,11 +6051,12 @@ void mpi_file_iread_at_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iread_at_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5865,11 +6074,12 @@ void pmpi_file_iread_at_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iread_at(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5887,11 +6097,12 @@ void pmpi_file_iread_at_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iread_at_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5909,11 +6120,12 @@ void mpi_file_iread_at_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iread_at_all(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5931,11 +6143,12 @@ void mpi_file_iread_at_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iread_at_all_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5953,11 +6166,12 @@ void pmpi_file_iread_at_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iread_at_all(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5975,11 +6189,12 @@ void pmpi_file_iread_at_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iread_at_all_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -5996,10 +6211,11 @@ void mpi_file_iread_shared_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iread_shared(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6016,10 +6232,11 @@ void mpi_file_iread_shared_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iread_shared_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6036,10 +6253,11 @@ void pmpi_file_iread_shared_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iread_shared(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6056,10 +6274,11 @@ void pmpi_file_iread_shared_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iread_shared_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6076,10 +6295,11 @@ void mpi_file_iwrite_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iwrite(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6096,10 +6316,11 @@ void mpi_file_iwrite_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iwrite_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6116,10 +6337,11 @@ void pmpi_file_iwrite_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iwrite(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6136,10 +6358,11 @@ void pmpi_file_iwrite_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iwrite_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6156,10 +6379,11 @@ void mpi_file_iwrite_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iwrite_all(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6176,10 +6400,11 @@ void mpi_file_iwrite_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iwrite_all_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6196,10 +6421,11 @@ void pmpi_file_iwrite_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iwrite_all(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6216,10 +6442,11 @@ void pmpi_file_iwrite_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iwrite_all_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6237,11 +6464,12 @@ void mpi_file_iwrite_at_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iwrite_at(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6259,11 +6487,12 @@ void mpi_file_iwrite_at_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iwrite_at_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6281,11 +6510,12 @@ void pmpi_file_iwrite_at_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iwrite_at(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6303,11 +6533,12 @@ void pmpi_file_iwrite_at_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iwrite_at_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6325,11 +6556,12 @@ void mpi_file_iwrite_at_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iwrite_at_all(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6347,11 +6579,12 @@ void mpi_file_iwrite_at_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iwrite_at_all_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6369,11 +6602,12 @@ void pmpi_file_iwrite_at_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iwrite_at_all(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6391,11 +6625,12 @@ void pmpi_file_iwrite_at_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iwrite_at_all_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6412,10 +6647,11 @@ void mpi_file_iwrite_shared_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iwrite_shared(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6432,10 +6668,11 @@ void mpi_file_iwrite_shared_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_File_iwrite_shared_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6452,10 +6689,11 @@ void pmpi_file_iwrite_shared_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iwrite_shared(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6472,10 +6710,11 @@ void pmpi_file_iwrite_shared_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_File_iwrite_shared_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_request
@@ -6562,12 +6801,13 @@ void mpi_file_read_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6580,12 +6820,13 @@ void mpi_file_read_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6598,12 +6839,13 @@ void pmpi_file_read_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6616,12 +6858,13 @@ void pmpi_file_read_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6634,12 +6877,13 @@ void mpi_file_read_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_all(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6652,12 +6896,13 @@ void mpi_file_read_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_all_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6670,12 +6915,13 @@ void pmpi_file_read_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_all(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6688,12 +6934,13 @@ void pmpi_file_read_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_all_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6705,9 +6952,10 @@ void mpi_file_read_all_begin_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_all_begin(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -6721,9 +6969,10 @@ void mpi_file_read_all_begin_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_all_begin_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -6737,9 +6986,10 @@ void pmpi_file_read_all_begin_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_all_begin(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -6753,9 +7003,10 @@ void pmpi_file_read_all_begin_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_all_begin_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -6768,10 +7019,11 @@ void mpi_file_read_all_end_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_all_end(
     MPI_File_fromint(*fh),
-    buf,
-    (MPI_Status*)status
+    q_buf,
+    mpif_c_status(status)
   );
 }
 
@@ -6782,10 +7034,11 @@ void pmpi_file_read_all_end_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_all_end(
     MPI_File_fromint(*fh),
-    buf,
-    (MPI_Status*)status
+    q_buf,
+    mpif_c_status(status)
   );
 }
 
@@ -6799,13 +7052,14 @@ void mpi_file_read_at_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_at(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6819,13 +7073,14 @@ void mpi_file_read_at_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_at_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6839,13 +7094,14 @@ void pmpi_file_read_at_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_at(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6859,13 +7115,14 @@ void pmpi_file_read_at_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_at_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6879,13 +7136,14 @@ void mpi_file_read_at_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_at_all(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6899,13 +7157,14 @@ void mpi_file_read_at_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_at_all_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6919,13 +7178,14 @@ void pmpi_file_read_at_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_at_all(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6939,13 +7199,14 @@ void pmpi_file_read_at_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_at_all_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -6958,10 +7219,11 @@ void mpi_file_read_at_all_begin_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_at_all_begin(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -6976,10 +7238,11 @@ void mpi_file_read_at_all_begin_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_at_all_begin_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -6994,10 +7257,11 @@ void pmpi_file_read_at_all_begin_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_at_all_begin(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7012,10 +7276,11 @@ void pmpi_file_read_at_all_begin_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_at_all_begin_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7028,10 +7293,11 @@ void mpi_file_read_at_all_end_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_at_all_end(
     MPI_File_fromint(*fh),
-    buf,
-    (MPI_Status*)status
+    q_buf,
+    mpif_c_status(status)
   );
 }
 
@@ -7042,10 +7308,11 @@ void pmpi_file_read_at_all_end_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_at_all_end(
     MPI_File_fromint(*fh),
-    buf,
-    (MPI_Status*)status
+    q_buf,
+    mpif_c_status(status)
   );
 }
 
@@ -7058,12 +7325,13 @@ void mpi_file_read_ordered_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_ordered(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7076,12 +7344,13 @@ void mpi_file_read_ordered_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_ordered_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7094,12 +7363,13 @@ void pmpi_file_read_ordered_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_ordered(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7112,12 +7382,13 @@ void pmpi_file_read_ordered_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_ordered_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7129,9 +7400,10 @@ void mpi_file_read_ordered_begin_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_ordered_begin(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7145,9 +7417,10 @@ void mpi_file_read_ordered_begin_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_ordered_begin_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7161,9 +7434,10 @@ void pmpi_file_read_ordered_begin_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_ordered_begin(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7177,9 +7451,10 @@ void pmpi_file_read_ordered_begin_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_ordered_begin_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7192,10 +7467,11 @@ void mpi_file_read_ordered_end_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_ordered_end(
     MPI_File_fromint(*fh),
-    buf,
-    (MPI_Status*)status
+    q_buf,
+    mpif_c_status(status)
   );
 }
 
@@ -7206,10 +7482,11 @@ void pmpi_file_read_ordered_end_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_ordered_end(
     MPI_File_fromint(*fh),
-    buf,
-    (MPI_Status*)status
+    q_buf,
+    mpif_c_status(status)
   );
 }
 
@@ -7222,12 +7499,13 @@ void mpi_file_read_shared_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_shared(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7240,12 +7518,13 @@ void mpi_file_read_shared_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_File_read_shared_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7258,12 +7537,13 @@ void pmpi_file_read_shared_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_shared(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7276,12 +7556,13 @@ void pmpi_file_read_shared_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_File_read_shared_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7512,12 +7793,13 @@ void mpi_file_write_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7530,12 +7812,13 @@ void mpi_file_write_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7548,12 +7831,13 @@ void pmpi_file_write_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7566,12 +7850,13 @@ void pmpi_file_write_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7584,12 +7869,13 @@ void mpi_file_write_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_all(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7602,12 +7888,13 @@ void mpi_file_write_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_all_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7620,12 +7907,13 @@ void pmpi_file_write_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_all(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7638,12 +7926,13 @@ void pmpi_file_write_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_all_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7655,9 +7944,10 @@ void mpi_file_write_all_begin_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_all_begin(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7671,9 +7961,10 @@ void mpi_file_write_all_begin_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_all_begin_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7687,9 +7978,10 @@ void pmpi_file_write_all_begin_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_all_begin(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7703,9 +7995,10 @@ void pmpi_file_write_all_begin_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_all_begin_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7718,10 +8011,11 @@ void mpi_file_write_all_end_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_all_end(
     MPI_File_fromint(*fh),
-    buf,
-    (MPI_Status*)status
+    q_buf,
+    mpif_c_status(status)
   );
 }
 
@@ -7732,10 +8026,11 @@ void pmpi_file_write_all_end_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_all_end(
     MPI_File_fromint(*fh),
-    buf,
-    (MPI_Status*)status
+    q_buf,
+    mpif_c_status(status)
   );
 }
 
@@ -7749,13 +8044,14 @@ void mpi_file_write_at_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_at(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7769,13 +8065,14 @@ void mpi_file_write_at_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_at_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7789,13 +8086,14 @@ void pmpi_file_write_at_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_at(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7809,13 +8107,14 @@ void pmpi_file_write_at_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_at_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7829,13 +8128,14 @@ void mpi_file_write_at_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_at_all(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7849,13 +8149,14 @@ void mpi_file_write_at_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_at_all_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7869,13 +8170,14 @@ void pmpi_file_write_at_all_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_at_all(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7889,13 +8191,14 @@ void pmpi_file_write_at_all_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_at_all_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -7908,10 +8211,11 @@ void mpi_file_write_at_all_begin_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_at_all_begin(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7926,10 +8230,11 @@ void mpi_file_write_at_all_begin_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_at_all_begin_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7944,10 +8249,11 @@ void pmpi_file_write_at_all_begin_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_at_all_begin(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7962,10 +8268,11 @@ void pmpi_file_write_at_all_begin_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_at_all_begin_c(
     MPI_File_fromint(*fh),
     *offset,
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -7978,10 +8285,11 @@ void mpi_file_write_at_all_end_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_at_all_end(
     MPI_File_fromint(*fh),
-    buf,
-    (MPI_Status*)status
+    q_buf,
+    mpif_c_status(status)
   );
 }
 
@@ -7992,10 +8300,11 @@ void pmpi_file_write_at_all_end_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_at_all_end(
     MPI_File_fromint(*fh),
-    buf,
-    (MPI_Status*)status
+    q_buf,
+    mpif_c_status(status)
   );
 }
 
@@ -8008,12 +8317,13 @@ void mpi_file_write_ordered_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_ordered(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -8026,12 +8336,13 @@ void mpi_file_write_ordered_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_ordered_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -8044,12 +8355,13 @@ void pmpi_file_write_ordered_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_ordered(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -8062,12 +8374,13 @@ void pmpi_file_write_ordered_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_ordered_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -8079,9 +8392,10 @@ void mpi_file_write_ordered_begin_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_ordered_begin(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -8095,9 +8409,10 @@ void mpi_file_write_ordered_begin_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_ordered_begin_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -8111,9 +8426,10 @@ void pmpi_file_write_ordered_begin_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_ordered_begin(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -8127,9 +8443,10 @@ void pmpi_file_write_ordered_begin_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_ordered_begin_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype)
   );
@@ -8142,10 +8459,11 @@ void mpi_file_write_ordered_end_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_ordered_end(
     MPI_File_fromint(*fh),
-    buf,
-    (MPI_Status*)status
+    q_buf,
+    mpif_c_status(status)
   );
 }
 
@@ -8156,10 +8474,11 @@ void pmpi_file_write_ordered_end_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_ordered_end(
     MPI_File_fromint(*fh),
-    buf,
-    (MPI_Status*)status
+    q_buf,
+    mpif_c_status(status)
   );
 }
 
@@ -8172,12 +8491,13 @@ void mpi_file_write_shared_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_shared(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -8190,12 +8510,13 @@ void mpi_file_write_shared_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_File_write_shared_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -8208,12 +8529,13 @@ void pmpi_file_write_shared_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_shared(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -8226,12 +8548,13 @@ void pmpi_file_write_shared_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_File_write_shared_c(
     MPI_File_fromint(*fh),
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -8280,8 +8603,9 @@ void mpi_free_mem_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_base = mpif_c_buffer(base);
   *ierror = MPI_Free_mem(
-    base
+    q_base
   );
 }
 
@@ -8290,8 +8614,9 @@ void pmpi_free_mem_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_base = mpif_c_buffer(base);
   *ierror = PMPI_Free_mem(
-    base
+    q_base
   );
 }
 
@@ -8307,6 +8632,8 @@ void mpi_gather_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8329,10 +8656,10 @@ void mpi_gather_(
     }
   }
   *ierror = MPI_Gather(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
@@ -8352,6 +8679,8 @@ void mpi_gather_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8374,10 +8703,10 @@ void mpi_gather_c_(
     }
   }
   *ierror = MPI_Gather_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
@@ -8397,6 +8726,8 @@ void pmpi_gather_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8419,10 +8750,10 @@ void pmpi_gather_(
     }
   }
   *ierror = PMPI_Gather(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
@@ -8442,6 +8773,8 @@ void pmpi_gather_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8464,10 +8797,10 @@ void pmpi_gather_c_(
     }
   }
   *ierror = PMPI_Gather_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
@@ -8489,6 +8822,8 @@ void mpi_gather_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8512,10 +8847,10 @@ void mpi_gather_init_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Gather_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
@@ -8540,6 +8875,8 @@ void mpi_gather_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8563,10 +8900,10 @@ void mpi_gather_init_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Gather_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
@@ -8591,6 +8928,8 @@ void pmpi_gather_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8614,10 +8953,10 @@ void pmpi_gather_init_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Gather_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
@@ -8642,6 +8981,8 @@ void pmpi_gather_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8665,10 +9006,10 @@ void pmpi_gather_init_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Gather_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
@@ -8692,6 +9033,8 @@ void mpi_gatherv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8714,10 +9057,10 @@ void mpi_gatherv_(
     }
   }
   *ierror = MPI_Gatherv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
@@ -8739,6 +9082,8 @@ void mpi_gatherv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8761,10 +9106,10 @@ void mpi_gatherv_c_(
     }
   }
   *ierror = MPI_Gatherv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
@@ -8786,6 +9131,8 @@ void pmpi_gatherv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8808,10 +9155,10 @@ void pmpi_gatherv_(
     }
   }
   *ierror = PMPI_Gatherv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
@@ -8833,6 +9180,8 @@ void pmpi_gatherv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8855,10 +9204,10 @@ void pmpi_gatherv_c_(
     }
   }
   *ierror = PMPI_Gatherv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
@@ -8882,6 +9231,8 @@ void mpi_gatherv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8905,10 +9256,10 @@ void mpi_gatherv_init_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Gatherv_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
@@ -8935,6 +9286,8 @@ void mpi_gatherv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8958,10 +9311,10 @@ void mpi_gatherv_init_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Gatherv_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
@@ -8988,6 +9341,8 @@ void pmpi_gatherv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -9011,10 +9366,10 @@ void pmpi_gatherv_init_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Gatherv_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
@@ -9041,6 +9396,8 @@ void pmpi_gatherv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -9064,10 +9421,10 @@ void pmpi_gatherv_init_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Gatherv_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
@@ -9091,8 +9448,9 @@ void mpi_get_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_origin_addr = mpif_c_buffer(origin_addr);
   *ierror = MPI_Get(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -9115,8 +9473,9 @@ void mpi_get_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_origin_addr = mpif_c_buffer(origin_addr);
   *ierror = MPI_Get_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -9139,8 +9498,9 @@ void pmpi_get_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_origin_addr = mpif_c_buffer(origin_addr);
   *ierror = PMPI_Get(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -9163,8 +9523,9 @@ void pmpi_get_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_origin_addr = mpif_c_buffer(origin_addr);
   *ierror = PMPI_Get_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -9191,11 +9552,13 @@ void mpi_get_accumulate_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr);
   *ierror = MPI_Get_accumulate(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
-    result_addr,
+    q_result_addr,
     *result_count,
     MPI_Type_fromint(*result_datatype),
     *target_rank,
@@ -9223,11 +9586,13 @@ void mpi_get_accumulate_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr);
   *ierror = MPI_Get_accumulate_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
-    result_addr,
+    q_result_addr,
     *result_count,
     MPI_Type_fromint(*result_datatype),
     *target_rank,
@@ -9255,11 +9620,13 @@ void pmpi_get_accumulate_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr);
   *ierror = PMPI_Get_accumulate(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
-    result_addr,
+    q_result_addr,
     *result_count,
     MPI_Type_fromint(*result_datatype),
     *target_rank,
@@ -9287,11 +9654,13 @@ void pmpi_get_accumulate_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr);
   *ierror = PMPI_Get_accumulate_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
-    result_addr,
+    q_result_addr,
     *result_count,
     MPI_Type_fromint(*result_datatype),
     *target_rank,
@@ -9309,8 +9678,9 @@ void mpi_get_address_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_location = mpif_c_cbuffer(location);
   *ierror = MPI_Get_address(
-    location,
+    q_location,
     address
   );
 }
@@ -9321,8 +9691,9 @@ void pmpi_get_address_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_location = mpif_c_cbuffer(location);
   *ierror = PMPI_Get_address(
-    location,
+    q_location,
     address
   );
 }
@@ -9335,7 +9706,7 @@ void mpi_get_count_(
 )
 {
   *ierror = MPI_Get_count(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     MPI_Type_fromint(*datatype),
     count
   );
@@ -9349,7 +9720,7 @@ void mpi_get_count_c_(
 )
 {
   *ierror = MPI_Get_count_c(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     MPI_Type_fromint(*datatype),
     count
   );
@@ -9363,7 +9734,7 @@ void pmpi_get_count_(
 )
 {
   *ierror = PMPI_Get_count(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     MPI_Type_fromint(*datatype),
     count
   );
@@ -9377,7 +9748,7 @@ void pmpi_get_count_c_(
 )
 {
   *ierror = PMPI_Get_count_c(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     MPI_Type_fromint(*datatype),
     count
   );
@@ -9391,7 +9762,7 @@ void mpi_get_elements_(
 )
 {
   *ierror = MPI_Get_elements(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     MPI_Type_fromint(*datatype),
     count
   );
@@ -9405,7 +9776,7 @@ void mpi_get_elements_c_(
 )
 {
   *ierror = MPI_Get_elements_c(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     MPI_Type_fromint(*datatype),
     count
   );
@@ -9419,7 +9790,7 @@ void pmpi_get_elements_(
 )
 {
   *ierror = PMPI_Get_elements(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     MPI_Type_fromint(*datatype),
     count
   );
@@ -9433,7 +9804,7 @@ void pmpi_get_elements_c_(
 )
 {
   *ierror = PMPI_Get_elements_c(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     MPI_Type_fromint(*datatype),
     count
   );
@@ -9447,7 +9818,7 @@ void mpi_get_elements_x_(
 )
 {
   *ierror = MPI_Get_elements_x(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     MPI_Type_fromint(*datatype),
     count
   );
@@ -9461,7 +9832,7 @@ void pmpi_get_elements_x_(
 )
 {
   *ierror = PMPI_Get_elements_x(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     MPI_Type_fromint(*datatype),
     count
   );
@@ -10283,12 +10654,14 @@ void mpi_iallgather_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iallgather(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -10309,12 +10682,14 @@ void mpi_iallgather_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iallgather_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -10335,12 +10710,14 @@ void pmpi_iallgather_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iallgather(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -10361,12 +10738,14 @@ void pmpi_iallgather_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iallgather_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -10388,12 +10767,14 @@ void mpi_iallgatherv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iallgatherv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -10416,12 +10797,14 @@ void mpi_iallgatherv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iallgatherv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -10444,12 +10827,14 @@ void pmpi_iallgatherv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iallgatherv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -10472,12 +10857,14 @@ void pmpi_iallgatherv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iallgatherv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -10498,10 +10885,12 @@ void mpi_iallreduce_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iallreduce(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -10522,10 +10911,12 @@ void mpi_iallreduce_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iallreduce_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -10546,10 +10937,12 @@ void pmpi_iallreduce_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iallreduce(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -10570,10 +10963,12 @@ void pmpi_iallreduce_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iallreduce_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -10595,12 +10990,14 @@ void mpi_ialltoall_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ialltoall(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -10621,12 +11018,14 @@ void mpi_ialltoall_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ialltoall_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -10647,12 +11046,14 @@ void pmpi_ialltoall_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ialltoall(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -10673,12 +11074,14 @@ void pmpi_ialltoall_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ialltoall_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -10701,13 +11104,15 @@ void mpi_ialltoallv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ialltoallv(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -10731,13 +11136,15 @@ void mpi_ialltoallv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ialltoallv_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -10761,13 +11168,15 @@ void pmpi_ialltoallv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ialltoallv(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -10791,13 +11200,15 @@ void pmpi_ialltoallv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ialltoallv_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -10821,6 +11232,8 @@ void mpi_ialltoallw_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -10835,7 +11248,7 @@ void mpi_ialltoallw_(
     }
   }
   MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -10847,11 +11260,11 @@ void mpi_ialltoallw_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ialltoallw(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -10875,6 +11288,8 @@ void mpi_ialltoallw_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -10889,7 +11304,7 @@ void mpi_ialltoallw_c_(
     }
   }
   MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -10901,11 +11316,11 @@ void mpi_ialltoallw_c_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ialltoallw_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -10929,6 +11344,8 @@ void pmpi_ialltoallw_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -10943,7 +11360,7 @@ void pmpi_ialltoallw_(
     }
   }
   MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -10955,11 +11372,11 @@ void pmpi_ialltoallw_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ialltoallw(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -10983,6 +11400,8 @@ void pmpi_ialltoallw_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -10997,7 +11416,7 @@ void pmpi_ialltoallw_c_(
     }
   }
   MPI_Datatype c_sendtypes[q_group_size > 0 ? q_group_size : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_group_size; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -11009,11 +11428,11 @@ void pmpi_ialltoallw_c_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ialltoallw_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -11061,9 +11480,10 @@ void mpi_ibcast_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ibcast(
-    buffer,
+    q_buffer,
     *count,
     MPI_Type_fromint(*datatype),
     *root,
@@ -11083,9 +11503,10 @@ void mpi_ibcast_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ibcast_c(
-    buffer,
+    q_buffer,
     *count,
     MPI_Type_fromint(*datatype),
     *root,
@@ -11105,9 +11526,10 @@ void pmpi_ibcast_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ibcast(
-    buffer,
+    q_buffer,
     *count,
     MPI_Type_fromint(*datatype),
     *root,
@@ -11127,9 +11549,10 @@ void pmpi_ibcast_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ibcast_c(
-    buffer,
+    q_buffer,
     *count,
     MPI_Type_fromint(*datatype),
     *root,
@@ -11150,9 +11573,10 @@ void mpi_ibsend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ibsend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -11174,9 +11598,10 @@ void mpi_ibsend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ibsend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -11198,9 +11623,10 @@ void pmpi_ibsend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ibsend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -11222,9 +11648,10 @@ void pmpi_ibsend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ibsend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -11246,10 +11673,12 @@ void mpi_iexscan_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iexscan(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -11270,10 +11699,12 @@ void mpi_iexscan_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iexscan_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -11294,10 +11725,12 @@ void pmpi_iexscan_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iexscan(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -11318,10 +11751,12 @@ void pmpi_iexscan_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iexscan_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -11344,6 +11779,8 @@ void mpi_igather_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -11367,10 +11804,10 @@ void mpi_igather_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Igather(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
@@ -11393,6 +11830,8 @@ void mpi_igather_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -11416,10 +11855,10 @@ void mpi_igather_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Igather_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
@@ -11442,6 +11881,8 @@ void pmpi_igather_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -11465,10 +11906,10 @@ void pmpi_igather_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Igather(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
@@ -11491,6 +11932,8 @@ void pmpi_igather_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -11514,10 +11957,10 @@ void pmpi_igather_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Igather_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
     *root,
@@ -11541,6 +11984,8 @@ void mpi_igatherv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -11564,10 +12009,10 @@ void mpi_igatherv_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Igatherv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
@@ -11592,6 +12037,8 @@ void mpi_igatherv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -11615,10 +12062,10 @@ void mpi_igatherv_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Igatherv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
@@ -11643,6 +12090,8 @@ void pmpi_igatherv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -11666,10 +12115,10 @@ void pmpi_igatherv_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Igatherv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
@@ -11694,6 +12143,8 @@ void pmpi_igatherv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -11717,10 +12168,10 @@ void pmpi_igatherv_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Igatherv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*recvtype) : MPI_DATATYPE_NULL,
@@ -11749,7 +12200,7 @@ void mpi_improbe_(
     MPI_Comm_fromint(*comm),
     &c_flag,
     &c_message,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *flag = mpif_bool2logical(c_flag);
   *message = MPI_Message_toint(c_message);
@@ -11773,7 +12224,7 @@ void pmpi_improbe_(
     MPI_Comm_fromint(*comm),
     &c_flag,
     &c_message,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *flag = mpif_bool2logical(c_flag);
   *message = MPI_Message_toint(c_message);
@@ -11788,10 +12239,11 @@ void mpi_imrecv_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Message c_message = MPI_Message_fromint(*message);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Imrecv(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_message,
@@ -11810,10 +12262,11 @@ void mpi_imrecv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Message c_message = MPI_Message_fromint(*message);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Imrecv_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_message,
@@ -11832,10 +12285,11 @@ void pmpi_imrecv_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Message c_message = MPI_Message_fromint(*message);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Imrecv(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_message,
@@ -11854,10 +12308,11 @@ void pmpi_imrecv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Message c_message = MPI_Message_fromint(*message);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Imrecv_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_message,
@@ -11879,12 +12334,14 @@ void mpi_ineighbor_allgather_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ineighbor_allgather(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -11905,12 +12362,14 @@ void mpi_ineighbor_allgather_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ineighbor_allgather_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -11931,12 +12390,14 @@ void pmpi_ineighbor_allgather_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ineighbor_allgather(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -11957,12 +12418,14 @@ void pmpi_ineighbor_allgather_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ineighbor_allgather_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -11984,12 +12447,14 @@ void mpi_ineighbor_allgatherv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ineighbor_allgatherv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -12012,12 +12477,14 @@ void mpi_ineighbor_allgatherv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ineighbor_allgatherv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -12040,12 +12507,14 @@ void pmpi_ineighbor_allgatherv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ineighbor_allgatherv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -12068,12 +12537,14 @@ void pmpi_ineighbor_allgatherv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ineighbor_allgatherv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -12095,12 +12566,14 @@ void mpi_ineighbor_alltoall_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ineighbor_alltoall(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -12121,12 +12594,14 @@ void mpi_ineighbor_alltoall_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ineighbor_alltoall_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -12147,12 +12622,14 @@ void pmpi_ineighbor_alltoall_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ineighbor_alltoall(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -12173,12 +12650,14 @@ void pmpi_ineighbor_alltoall_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ineighbor_alltoall_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -12201,13 +12680,15 @@ void mpi_ineighbor_alltoallv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ineighbor_alltoallv(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -12231,13 +12712,15 @@ void mpi_ineighbor_alltoallv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ineighbor_alltoallv_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -12261,13 +12744,15 @@ void pmpi_ineighbor_alltoallv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ineighbor_alltoallv(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -12291,13 +12776,15 @@ void pmpi_ineighbor_alltoallv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ineighbor_alltoallv_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -12321,6 +12808,8 @@ void mpi_ineighbor_alltoallw_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -12351,7 +12840,7 @@ void mpi_ineighbor_alltoallw_(
     }
   }
   MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_outdegree; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -12363,11 +12852,11 @@ void mpi_ineighbor_alltoallw_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ineighbor_alltoallw(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -12391,6 +12880,8 @@ void mpi_ineighbor_alltoallw_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -12421,7 +12912,7 @@ void mpi_ineighbor_alltoallw_c_(
     }
   }
   MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_outdegree; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -12433,11 +12924,11 @@ void mpi_ineighbor_alltoallw_c_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ineighbor_alltoallw_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -12461,6 +12952,8 @@ void pmpi_ineighbor_alltoallw_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -12491,7 +12984,7 @@ void pmpi_ineighbor_alltoallw_(
     }
   }
   MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_outdegree; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -12503,11 +12996,11 @@ void pmpi_ineighbor_alltoallw_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ineighbor_alltoallw(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -12531,6 +13024,8 @@ void pmpi_ineighbor_alltoallw_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -12561,7 +13056,7 @@ void pmpi_ineighbor_alltoallw_c_(
     }
   }
   MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_outdegree; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -12573,11 +13068,11 @@ void pmpi_ineighbor_alltoallw_c_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ineighbor_alltoallw_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -13212,7 +13707,7 @@ void mpi_iprobe_(
     *tag,
     MPI_Comm_fromint(*comm),
     &c_flag,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *flag = mpif_bool2logical(c_flag);
 }
@@ -13232,7 +13727,7 @@ void pmpi_iprobe_(
     *tag,
     MPI_Comm_fromint(*comm),
     &c_flag,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *flag = mpif_bool2logical(c_flag);
 }
@@ -13248,9 +13743,10 @@ void mpi_irecv_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Irecv(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *source,
@@ -13272,9 +13768,10 @@ void mpi_irecv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Irecv_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *source,
@@ -13296,9 +13793,10 @@ void pmpi_irecv_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Irecv(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *source,
@@ -13320,9 +13818,10 @@ void pmpi_irecv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Irecv_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *source,
@@ -13345,10 +13844,12 @@ void mpi_ireduce_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ireduce(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13371,10 +13872,12 @@ void mpi_ireduce_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ireduce_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13397,10 +13900,12 @@ void pmpi_ireduce_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ireduce(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13423,10 +13928,12 @@ void pmpi_ireduce_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ireduce_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13448,10 +13955,12 @@ void mpi_ireduce_scatter_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ireduce_scatter(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     recvcounts,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13472,10 +13981,12 @@ void mpi_ireduce_scatter_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ireduce_scatter_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     recvcounts,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13496,10 +14007,12 @@ void pmpi_ireduce_scatter_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ireduce_scatter(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     recvcounts,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13520,10 +14033,12 @@ void pmpi_ireduce_scatter_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ireduce_scatter_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     recvcounts,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13544,10 +14059,12 @@ void mpi_ireduce_scatter_block_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ireduce_scatter_block(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13568,10 +14085,12 @@ void mpi_ireduce_scatter_block_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ireduce_scatter_block_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13592,10 +14111,12 @@ void pmpi_ireduce_scatter_block_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ireduce_scatter_block(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13616,10 +14137,12 @@ void pmpi_ireduce_scatter_block_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ireduce_scatter_block_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13640,9 +14163,10 @@ void mpi_irsend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Irsend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -13664,9 +14188,10 @@ void mpi_irsend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Irsend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -13688,9 +14213,10 @@ void pmpi_irsend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Irsend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -13712,9 +14238,10 @@ void pmpi_irsend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Irsend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -13760,10 +14287,12 @@ void mpi_iscan_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iscan(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13784,10 +14313,12 @@ void mpi_iscan_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iscan_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13808,10 +14339,12 @@ void pmpi_iscan_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iscan(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13832,10 +14365,12 @@ void pmpi_iscan_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iscan_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -13858,6 +14393,8 @@ void mpi_iscatter_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -13881,10 +14418,10 @@ void mpi_iscatter_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iscatter(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -13907,6 +14444,8 @@ void mpi_iscatter_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -13930,10 +14469,10 @@ void mpi_iscatter_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iscatter_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -13956,6 +14495,8 @@ void pmpi_iscatter_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -13979,10 +14520,10 @@ void pmpi_iscatter_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iscatter(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -14005,6 +14546,8 @@ void pmpi_iscatter_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -14028,10 +14571,10 @@ void pmpi_iscatter_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iscatter_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -14055,6 +14598,8 @@ void mpi_iscatterv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -14078,11 +14623,11 @@ void mpi_iscatterv_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iscatterv(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -14106,6 +14651,8 @@ void mpi_iscatterv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -14129,11 +14676,11 @@ void mpi_iscatterv_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Iscatterv_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -14157,6 +14704,8 @@ void pmpi_iscatterv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -14180,11 +14729,11 @@ void pmpi_iscatterv_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iscatterv(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -14208,6 +14757,8 @@ void pmpi_iscatterv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -14231,11 +14782,11 @@ void pmpi_iscatterv_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Iscatterv_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -14256,9 +14807,10 @@ void mpi_isend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Isend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -14280,9 +14832,10 @@ void mpi_isend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Isend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -14304,9 +14857,10 @@ void pmpi_isend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Isend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -14328,9 +14882,10 @@ void pmpi_isend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Isend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -14357,14 +14912,16 @@ void mpi_isendrecv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Isendrecv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
     *dest,
     *sendtag,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *source,
@@ -14391,14 +14948,16 @@ void mpi_isendrecv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Isendrecv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
     *dest,
     *sendtag,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *source,
@@ -14425,14 +14984,16 @@ void pmpi_isendrecv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Isendrecv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
     *dest,
     *sendtag,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *source,
@@ -14459,14 +15020,16 @@ void pmpi_isendrecv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Isendrecv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
     *dest,
     *sendtag,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *source,
@@ -14490,9 +15053,10 @@ void mpi_isendrecv_replace_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Isendrecv_replace(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -14518,9 +15082,10 @@ void mpi_isendrecv_replace_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Isendrecv_replace_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -14546,9 +15111,10 @@ void pmpi_isendrecv_replace_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Isendrecv_replace(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -14574,9 +15140,10 @@ void pmpi_isendrecv_replace_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Isendrecv_replace_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -14600,9 +15167,10 @@ void mpi_issend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Issend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -14624,9 +15192,10 @@ void mpi_issend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Issend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -14648,9 +15217,10 @@ void pmpi_issend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Issend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -14672,9 +15242,10 @@ void pmpi_issend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Issend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -14814,7 +15385,7 @@ void mpi_mprobe_(
     *tag,
     MPI_Comm_fromint(*comm),
     &c_message,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *message = MPI_Message_toint(c_message);
 }
@@ -14834,7 +15405,7 @@ void pmpi_mprobe_(
     *tag,
     MPI_Comm_fromint(*comm),
     &c_message,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *message = MPI_Message_toint(c_message);
 }
@@ -14848,13 +15419,14 @@ void mpi_mrecv_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Message c_message = MPI_Message_fromint(*message);
   *ierror = MPI_Mrecv(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_message,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *message = MPI_Message_toint(c_message);
 }
@@ -14868,13 +15440,14 @@ void mpi_mrecv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Message c_message = MPI_Message_fromint(*message);
   *ierror = MPI_Mrecv_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_message,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *message = MPI_Message_toint(c_message);
 }
@@ -14888,13 +15461,14 @@ void pmpi_mrecv_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Message c_message = MPI_Message_fromint(*message);
   *ierror = PMPI_Mrecv(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_message,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *message = MPI_Message_toint(c_message);
 }
@@ -14908,13 +15482,14 @@ void pmpi_mrecv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Message c_message = MPI_Message_fromint(*message);
   *ierror = PMPI_Mrecv_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     &c_message,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *message = MPI_Message_toint(c_message);
 }
@@ -14930,11 +15505,13 @@ void mpi_neighbor_allgather_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Neighbor_allgather(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -14952,11 +15529,13 @@ void mpi_neighbor_allgather_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Neighbor_allgather_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -14974,11 +15553,13 @@ void pmpi_neighbor_allgather_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Neighbor_allgather(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -14996,11 +15577,13 @@ void pmpi_neighbor_allgather_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Neighbor_allgather_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -15020,12 +15603,14 @@ void mpi_neighbor_allgather_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Neighbor_allgather_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -15048,12 +15633,14 @@ void mpi_neighbor_allgather_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Neighbor_allgather_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -15076,12 +15663,14 @@ void pmpi_neighbor_allgather_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Neighbor_allgather_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -15104,12 +15693,14 @@ void pmpi_neighbor_allgather_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Neighbor_allgather_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -15131,11 +15722,13 @@ void mpi_neighbor_allgatherv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Neighbor_allgatherv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -15155,11 +15748,13 @@ void mpi_neighbor_allgatherv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Neighbor_allgatherv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -15179,11 +15774,13 @@ void pmpi_neighbor_allgatherv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Neighbor_allgatherv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -15203,11 +15800,13 @@ void pmpi_neighbor_allgatherv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Neighbor_allgatherv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -15229,12 +15828,14 @@ void mpi_neighbor_allgatherv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Neighbor_allgatherv_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -15259,12 +15860,14 @@ void mpi_neighbor_allgatherv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Neighbor_allgatherv_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -15289,12 +15892,14 @@ void pmpi_neighbor_allgatherv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Neighbor_allgatherv_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -15319,12 +15924,14 @@ void pmpi_neighbor_allgatherv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Neighbor_allgatherv_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     displs,
     MPI_Type_fromint(*recvtype),
@@ -15346,11 +15953,13 @@ void mpi_neighbor_alltoall_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Neighbor_alltoall(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -15368,11 +15977,13 @@ void mpi_neighbor_alltoall_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Neighbor_alltoall_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -15390,11 +16001,13 @@ void pmpi_neighbor_alltoall_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Neighbor_alltoall(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -15412,11 +16025,13 @@ void pmpi_neighbor_alltoall_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Neighbor_alltoall_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm)
@@ -15436,12 +16051,14 @@ void mpi_neighbor_alltoall_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Neighbor_alltoall_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -15464,12 +16081,14 @@ void mpi_neighbor_alltoall_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Neighbor_alltoall_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -15492,12 +16111,14 @@ void pmpi_neighbor_alltoall_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Neighbor_alltoall_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -15520,12 +16141,14 @@ void pmpi_neighbor_alltoall_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Neighbor_alltoall_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     MPI_Comm_fromint(*comm),
@@ -15548,12 +16171,14 @@ void mpi_neighbor_alltoallv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Neighbor_alltoallv(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -15574,12 +16199,14 @@ void mpi_neighbor_alltoallv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Neighbor_alltoallv_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -15600,12 +16227,14 @@ void pmpi_neighbor_alltoallv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Neighbor_alltoallv(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -15626,12 +16255,14 @@ void pmpi_neighbor_alltoallv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Neighbor_alltoallv_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -15654,13 +16285,15 @@ void mpi_neighbor_alltoallv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Neighbor_alltoallv_init(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -15686,13 +16319,15 @@ void mpi_neighbor_alltoallv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Neighbor_alltoallv_init_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -15718,13 +16353,15 @@ void pmpi_neighbor_alltoallv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Neighbor_alltoallv_init(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -15750,13 +16387,15 @@ void pmpi_neighbor_alltoallv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Neighbor_alltoallv_init_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     MPI_Type_fromint(*sendtype),
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     MPI_Type_fromint(*recvtype),
@@ -15780,6 +16419,8 @@ void mpi_neighbor_alltoallw_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -15810,7 +16451,7 @@ void mpi_neighbor_alltoallw_(
     }
   }
   MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_outdegree; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -15821,11 +16462,11 @@ void mpi_neighbor_alltoallw_(
   for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = MPI_Neighbor_alltoallw(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -15846,6 +16487,8 @@ void mpi_neighbor_alltoallw_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -15876,7 +16519,7 @@ void mpi_neighbor_alltoallw_c_(
     }
   }
   MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_outdegree; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -15887,11 +16530,11 @@ void mpi_neighbor_alltoallw_c_(
   for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = MPI_Neighbor_alltoallw_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -15912,6 +16555,8 @@ void pmpi_neighbor_alltoallw_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -15942,7 +16587,7 @@ void pmpi_neighbor_alltoallw_(
     }
   }
   MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_outdegree; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -15953,11 +16598,11 @@ void pmpi_neighbor_alltoallw_(
   for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = PMPI_Neighbor_alltoallw(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -15978,6 +16623,8 @@ void pmpi_neighbor_alltoallw_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -16008,7 +16655,7 @@ void pmpi_neighbor_alltoallw_c_(
     }
   }
   MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_outdegree; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -16019,11 +16666,11 @@ void pmpi_neighbor_alltoallw_c_(
   for (int rank=0; rank<q_indegree; ++rank)
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   *ierror = PMPI_Neighbor_alltoallw_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -16046,6 +16693,8 @@ void mpi_neighbor_alltoallw_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -16076,7 +16725,7 @@ void mpi_neighbor_alltoallw_init_(
     }
   }
   MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_outdegree; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -16088,11 +16737,11 @@ void mpi_neighbor_alltoallw_init_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Neighbor_alltoallw_init(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -16118,6 +16767,8 @@ void mpi_neighbor_alltoallw_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -16148,7 +16799,7 @@ void mpi_neighbor_alltoallw_init_c_(
     }
   }
   MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_outdegree; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -16160,11 +16811,11 @@ void mpi_neighbor_alltoallw_init_c_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Neighbor_alltoallw_init_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -16190,6 +16841,8 @@ void pmpi_neighbor_alltoallw_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -16220,7 +16873,7 @@ void pmpi_neighbor_alltoallw_init_(
     }
   }
   MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_outdegree; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -16232,11 +16885,11 @@ void pmpi_neighbor_alltoallw_init_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Neighbor_alltoallw_init(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -16262,6 +16915,8 @@ void pmpi_neighbor_alltoallw_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -16292,7 +16947,7 @@ void pmpi_neighbor_alltoallw_init_c_(
     }
   }
   MPI_Datatype c_sendtypes[q_outdegree > 0 ? q_outdegree : 1];
-  if (sendbuf != MPI_IN_PLACE) {
+  if (q_sendbuf != MPI_IN_PLACE) {
     for (int rank=0; rank<q_outdegree; ++rank)
       c_sendtypes[rank] = MPI_Type_fromint(sendtypes[rank]);
   } else {
@@ -16304,11 +16959,11 @@ void pmpi_neighbor_alltoallw_init_c_(
     c_recvtypes[rank] = MPI_Type_fromint(recvtypes[rank]);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Neighbor_alltoallw_init_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     sdispls,
     c_sendtypes,
-    recvbuf,
+    q_recvbuf,
     recvcounts,
     rdispls,
     c_recvtypes,
@@ -16514,11 +17169,13 @@ void mpi_pack_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   *ierror = MPI_Pack(
-    inbuf,
+    q_inbuf,
     *incount,
     MPI_Type_fromint(*datatype),
-    outbuf,
+    q_outbuf,
     *outsize,
     position,
     MPI_Comm_fromint(*comm)
@@ -16536,11 +17193,13 @@ void mpi_pack_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   *ierror = MPI_Pack_c(
-    inbuf,
+    q_inbuf,
     *incount,
     MPI_Type_fromint(*datatype),
-    outbuf,
+    q_outbuf,
     *outsize,
     position,
     MPI_Comm_fromint(*comm)
@@ -16558,11 +17217,13 @@ void pmpi_pack_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   *ierror = PMPI_Pack(
-    inbuf,
+    q_inbuf,
     *incount,
     MPI_Type_fromint(*datatype),
-    outbuf,
+    q_outbuf,
     *outsize,
     position,
     MPI_Comm_fromint(*comm)
@@ -16580,11 +17241,13 @@ void pmpi_pack_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   *ierror = PMPI_Pack_c(
-    inbuf,
+    q_inbuf,
     *incount,
     MPI_Type_fromint(*datatype),
-    outbuf,
+    q_outbuf,
     *outsize,
     position,
     MPI_Comm_fromint(*comm)
@@ -16603,13 +17266,15 @@ void mpi_pack_external_(
   const size_t length_datarep
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   *ierror = MPI_Pack_external(
     c_datarep,
-    inbuf,
+    q_inbuf,
     *incount,
     MPI_Type_fromint(*datatype),
-    outbuf,
+    q_outbuf,
     *outsize,
     position
   );
@@ -16628,13 +17293,15 @@ void mpi_pack_external_c_(
   const size_t length_datarep
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   *ierror = MPI_Pack_external_c(
     c_datarep,
-    inbuf,
+    q_inbuf,
     *incount,
     MPI_Type_fromint(*datatype),
-    outbuf,
+    q_outbuf,
     *outsize,
     position
   );
@@ -16653,13 +17320,15 @@ void pmpi_pack_external_(
   const size_t length_datarep
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   *ierror = PMPI_Pack_external(
     c_datarep,
-    inbuf,
+    q_inbuf,
     *incount,
     MPI_Type_fromint(*datatype),
-    outbuf,
+    q_outbuf,
     *outsize,
     position
   );
@@ -16678,13 +17347,15 @@ void pmpi_pack_external_c_(
   const size_t length_datarep
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   *ierror = PMPI_Pack_external_c(
     c_datarep,
-    inbuf,
+    q_inbuf,
     *incount,
     MPI_Type_fromint(*datatype),
-    outbuf,
+    q_outbuf,
     *outsize,
     position
   );
@@ -16974,9 +17645,10 @@ void mpi_precv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Precv_init(
-    buf,
+    q_buf,
     *partitions,
     *count,
     MPI_Type_fromint(*datatype),
@@ -17002,9 +17674,10 @@ void pmpi_precv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Precv_init(
-    buf,
+    q_buf,
     *partitions,
     *count,
     MPI_Type_fromint(*datatype),
@@ -17029,7 +17702,7 @@ void mpi_probe_(
     *source,
     *tag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -17045,7 +17718,7 @@ void pmpi_probe_(
     *source,
     *tag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -17062,9 +17735,10 @@ void mpi_psend_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Psend_init(
-    buf,
+    q_buf,
     *partitions,
     *count,
     MPI_Type_fromint(*datatype),
@@ -17090,9 +17764,10 @@ void pmpi_psend_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Psend_init(
-    buf,
+    q_buf,
     *partitions,
     *count,
     MPI_Type_fromint(*datatype),
@@ -17157,8 +17832,9 @@ void mpi_put_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   *ierror = MPI_Put(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -17181,8 +17857,9 @@ void mpi_put_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   *ierror = MPI_Put_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -17205,8 +17882,9 @@ void pmpi_put_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   *ierror = PMPI_Put(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -17229,8 +17907,9 @@ void pmpi_put_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   *ierror = PMPI_Put_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -17275,9 +17954,10 @@ void mpi_raccumulate_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Raccumulate(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -17305,9 +17985,10 @@ void mpi_raccumulate_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Raccumulate_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -17335,9 +18016,10 @@ void pmpi_raccumulate_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Raccumulate(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -17365,9 +18047,10 @@ void pmpi_raccumulate_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Raccumulate_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -17392,14 +18075,15 @@ void mpi_recv_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_Recv(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *source,
     *tag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -17414,14 +18098,15 @@ void mpi_recv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_Recv_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *source,
     *tag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -17436,14 +18121,15 @@ void pmpi_recv_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_Recv(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *source,
     *tag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -17458,14 +18144,15 @@ void pmpi_recv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_Recv_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *source,
     *tag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -17480,9 +18167,10 @@ void mpi_recv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Recv_init(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *source,
@@ -17504,9 +18192,10 @@ void mpi_recv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Recv_init_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *source,
@@ -17528,9 +18217,10 @@ void pmpi_recv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Recv_init(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *source,
@@ -17552,9 +18242,10 @@ void pmpi_recv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Recv_init_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *source,
@@ -17576,9 +18267,11 @@ void mpi_reduce_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Reduce(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17598,9 +18291,11 @@ void mpi_reduce_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Reduce_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17620,9 +18315,11 @@ void pmpi_reduce_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Reduce(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17642,9 +18339,11 @@ void pmpi_reduce_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Reduce_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17666,10 +18365,12 @@ void mpi_reduce_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Reduce_init(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17694,10 +18395,12 @@ void mpi_reduce_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Reduce_init_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17722,10 +18425,12 @@ void pmpi_reduce_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Reduce_init(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17750,10 +18455,12 @@ void pmpi_reduce_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Reduce_init_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17774,9 +18481,11 @@ void mpi_reduce_local_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_inoutbuf = mpif_c_buffer(inoutbuf);
   *ierror = MPI_Reduce_local(
-    inbuf,
-    inoutbuf,
+    q_inbuf,
+    q_inoutbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op)
@@ -17792,9 +18501,11 @@ void mpi_reduce_local_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_inoutbuf = mpif_c_buffer(inoutbuf);
   *ierror = MPI_Reduce_local_c(
-    inbuf,
-    inoutbuf,
+    q_inbuf,
+    q_inoutbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op)
@@ -17810,9 +18521,11 @@ void pmpi_reduce_local_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_inoutbuf = mpif_c_buffer(inoutbuf);
   *ierror = PMPI_Reduce_local(
-    inbuf,
-    inoutbuf,
+    q_inbuf,
+    q_inoutbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op)
@@ -17828,9 +18541,11 @@ void pmpi_reduce_local_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_inoutbuf = mpif_c_buffer(inoutbuf);
   *ierror = PMPI_Reduce_local_c(
-    inbuf,
-    inoutbuf,
+    q_inbuf,
+    q_inoutbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op)
@@ -17847,9 +18562,11 @@ void mpi_reduce_scatter_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Reduce_scatter(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     recvcounts,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17867,9 +18584,11 @@ void mpi_reduce_scatter_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Reduce_scatter_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     recvcounts,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17887,9 +18606,11 @@ void pmpi_reduce_scatter_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Reduce_scatter(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     recvcounts,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17907,9 +18628,11 @@ void pmpi_reduce_scatter_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Reduce_scatter_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     recvcounts,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17927,9 +18650,11 @@ void mpi_reduce_scatter_block_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Reduce_scatter_block(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17947,9 +18672,11 @@ void mpi_reduce_scatter_block_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Reduce_scatter_block_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17967,9 +18694,11 @@ void pmpi_reduce_scatter_block_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Reduce_scatter_block(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -17987,9 +18716,11 @@ void pmpi_reduce_scatter_block_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Reduce_scatter_block_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -18009,10 +18740,12 @@ void mpi_reduce_scatter_block_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Reduce_scatter_block_init(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -18035,10 +18768,12 @@ void mpi_reduce_scatter_block_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Reduce_scatter_block_init_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -18061,10 +18796,12 @@ void pmpi_reduce_scatter_block_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Reduce_scatter_block_init(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -18087,10 +18824,12 @@ void pmpi_reduce_scatter_block_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Reduce_scatter_block_init_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -18113,10 +18852,12 @@ void mpi_reduce_scatter_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Reduce_scatter_init(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     recvcounts,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -18139,10 +18880,12 @@ void mpi_reduce_scatter_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Reduce_scatter_init_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     recvcounts,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -18165,10 +18908,12 @@ void pmpi_reduce_scatter_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Reduce_scatter_init(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     recvcounts,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -18191,10 +18936,12 @@ void pmpi_reduce_scatter_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Reduce_scatter_init_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     recvcounts,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -18448,7 +19195,7 @@ void mpi_request_get_status_(
   *ierror = MPI_Request_get_status(
     MPI_Request_fromint(*request),
     &c_flag,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *flag = mpif_bool2logical(c_flag);
 }
@@ -18464,7 +19211,7 @@ void pmpi_request_get_status_(
   *ierror = PMPI_Request_get_status(
     MPI_Request_fromint(*request),
     &c_flag,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *flag = mpif_bool2logical(c_flag);
 }
@@ -18485,7 +19232,7 @@ void mpi_request_get_status_all_(
     *count,
     c_array_of_requests,
     &c_flag,
-    (MPI_Status*)array_of_statuses
+    mpif_c_status(array_of_statuses)
   );
   *flag = mpif_bool2logical(c_flag);
 }
@@ -18506,7 +19253,7 @@ void pmpi_request_get_status_all_(
     *count,
     c_array_of_requests,
     &c_flag,
-    (MPI_Status*)array_of_statuses
+    mpif_c_status(array_of_statuses)
   );
   *flag = mpif_bool2logical(c_flag);
 }
@@ -18529,7 +19276,7 @@ void mpi_request_get_status_any_(
     c_array_of_requests,
     index,
     &c_flag,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   if (*index >= 0)
     ++*index;
@@ -18554,7 +19301,7 @@ void pmpi_request_get_status_any_(
     c_array_of_requests,
     index,
     &c_flag,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   if (*index >= 0)
     ++*index;
@@ -18578,7 +19325,7 @@ void mpi_request_get_status_some_(
     c_array_of_requests,
     outcount,
     array_of_indices,
-    (MPI_Status*)array_of_statuses
+    mpif_c_status(array_of_statuses)
   );
   const int q_count = *outcount < *incount
                           ? *outcount
@@ -18604,7 +19351,7 @@ void pmpi_request_get_status_some_(
     c_array_of_requests,
     outcount,
     array_of_indices,
-    (MPI_Status*)array_of_statuses
+    mpif_c_status(array_of_statuses)
   );
   const int q_count = *outcount < *incount
                           ? *outcount
@@ -18626,9 +19373,10 @@ void mpi_rget_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_origin_addr = mpif_c_buffer(origin_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Rget(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -18654,9 +19402,10 @@ void mpi_rget_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_origin_addr = mpif_c_buffer(origin_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Rget_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -18682,9 +19431,10 @@ void pmpi_rget_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_origin_addr = mpif_c_buffer(origin_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Rget(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -18710,9 +19460,10 @@ void pmpi_rget_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_origin_addr = mpif_c_buffer(origin_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Rget_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -18742,12 +19493,14 @@ void mpi_rget_accumulate_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Rget_accumulate(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
-    result_addr,
+    q_result_addr,
     *result_count,
     MPI_Type_fromint(*result_datatype),
     *target_rank,
@@ -18778,12 +19531,14 @@ void mpi_rget_accumulate_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Rget_accumulate_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
-    result_addr,
+    q_result_addr,
     *result_count,
     MPI_Type_fromint(*result_datatype),
     *target_rank,
@@ -18814,12 +19569,14 @@ void pmpi_rget_accumulate_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Rget_accumulate(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
-    result_addr,
+    q_result_addr,
     *result_count,
     MPI_Type_fromint(*result_datatype),
     *target_rank,
@@ -18850,12 +19607,14 @@ void pmpi_rget_accumulate_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Rget_accumulate_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
-    result_addr,
+    q_result_addr,
     *result_count,
     MPI_Type_fromint(*result_datatype),
     *target_rank,
@@ -18882,9 +19641,10 @@ void mpi_rput_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Rput(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -18910,9 +19670,10 @@ void mpi_rput_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Rput_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -18938,9 +19699,10 @@ void pmpi_rput_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Rput(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -18966,9 +19728,10 @@ void pmpi_rput_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_origin_addr = mpif_c_cbuffer(origin_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Rput_c(
-    origin_addr,
+    q_origin_addr,
     *origin_count,
     MPI_Type_fromint(*origin_datatype),
     *target_rank,
@@ -18991,8 +19754,9 @@ void mpi_rsend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_Rsend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -19011,8 +19775,9 @@ void mpi_rsend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_Rsend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -19031,8 +19796,9 @@ void pmpi_rsend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_Rsend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -19051,8 +19817,9 @@ void pmpi_rsend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_Rsend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -19072,9 +19839,10 @@ void mpi_rsend_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Rsend_init(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -19096,9 +19864,10 @@ void mpi_rsend_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Rsend_init_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -19120,9 +19889,10 @@ void pmpi_rsend_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Rsend_init(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -19144,9 +19914,10 @@ void pmpi_rsend_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Rsend_init_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -19167,9 +19938,11 @@ void mpi_scan_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Scan(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -19187,9 +19960,11 @@ void mpi_scan_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Scan_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -19207,9 +19982,11 @@ void pmpi_scan_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Scan(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -19227,9 +20004,11 @@ void pmpi_scan_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Scan_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -19249,10 +20028,12 @@ void mpi_scan_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Scan_init(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -19275,10 +20056,12 @@ void mpi_scan_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Scan_init_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -19301,10 +20084,12 @@ void pmpi_scan_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Scan_init(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -19327,10 +20112,12 @@ void pmpi_scan_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Scan_init_c(
-    sendbuf,
-    recvbuf,
+    q_sendbuf,
+    q_recvbuf,
     *count,
     MPI_Type_fromint(*datatype),
     MPI_Op_fromint(*op),
@@ -19353,6 +20140,8 @@ void mpi_scatter_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19375,10 +20164,10 @@ void mpi_scatter_(
     }
   }
   *ierror = MPI_Scatter(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19398,6 +20187,8 @@ void mpi_scatter_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19420,10 +20211,10 @@ void mpi_scatter_c_(
     }
   }
   *ierror = MPI_Scatter_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19443,6 +20234,8 @@ void pmpi_scatter_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19465,10 +20258,10 @@ void pmpi_scatter_(
     }
   }
   *ierror = PMPI_Scatter(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19488,6 +20281,8 @@ void pmpi_scatter_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19510,10 +20305,10 @@ void pmpi_scatter_c_(
     }
   }
   *ierror = PMPI_Scatter_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19535,6 +20330,8 @@ void mpi_scatter_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19558,10 +20355,10 @@ void mpi_scatter_init_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Scatter_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19586,6 +20383,8 @@ void mpi_scatter_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19609,10 +20408,10 @@ void mpi_scatter_init_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Scatter_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19637,6 +20436,8 @@ void pmpi_scatter_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19660,10 +20461,10 @@ void pmpi_scatter_init_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Scatter_init(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19688,6 +20489,8 @@ void pmpi_scatter_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19711,10 +20514,10 @@ void pmpi_scatter_init_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Scatter_init_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19738,6 +20541,8 @@ void mpi_scatterv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19760,11 +20565,11 @@ void mpi_scatterv_(
     }
   }
   *ierror = MPI_Scatterv(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19785,6 +20590,8 @@ void mpi_scatterv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19807,11 +20614,11 @@ void mpi_scatterv_c_(
     }
   }
   *ierror = MPI_Scatterv_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19832,6 +20639,8 @@ void pmpi_scatterv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19854,11 +20663,11 @@ void pmpi_scatterv_(
     }
   }
   *ierror = PMPI_Scatterv(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19879,6 +20688,8 @@ void pmpi_scatterv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19901,11 +20712,11 @@ void pmpi_scatterv_c_(
     }
   }
   *ierror = PMPI_Scatterv_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19928,6 +20739,8 @@ void mpi_scatterv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -19951,11 +20764,11 @@ void mpi_scatterv_init_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Scatterv_init(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -19981,6 +20794,8 @@ void mpi_scatterv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -20004,11 +20819,11 @@ void mpi_scatterv_init_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Scatterv_init_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -20034,6 +20849,8 @@ void pmpi_scatterv_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -20057,11 +20874,11 @@ void pmpi_scatterv_init_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Scatterv_init(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -20087,6 +20904,8 @@ void pmpi_scatterv_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -20110,11 +20929,11 @@ void pmpi_scatterv_init_c_(
   }
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Scatterv_init_c(
-    sendbuf,
+    q_sendbuf,
     sendcounts,
     displs,
     q_at_root ? MPI_Type_fromint(*sendtype) : MPI_DATATYPE_NULL,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *root,
@@ -20135,8 +20954,9 @@ void mpi_send_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_Send(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -20155,8 +20975,9 @@ void mpi_send_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_Send_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -20175,8 +20996,9 @@ void pmpi_send_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_Send(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -20195,8 +21017,9 @@ void pmpi_send_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_Send_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -20216,9 +21039,10 @@ void mpi_send_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Send_init(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -20240,9 +21064,10 @@ void mpi_send_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Send_init_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -20264,9 +21089,10 @@ void pmpi_send_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Send_init(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -20288,9 +21114,10 @@ void pmpi_send_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Send_init_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -20317,19 +21144,21 @@ void mpi_sendrecv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Sendrecv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
     *dest,
     *sendtag,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -20349,19 +21178,21 @@ void mpi_sendrecv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = MPI_Sendrecv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
     *dest,
     *sendtag,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -20381,19 +21212,21 @@ void pmpi_sendrecv_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Sendrecv(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
     *dest,
     *sendtag,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -20413,19 +21246,21 @@ void pmpi_sendrecv_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_sendbuf = mpif_c_cbuffer(sendbuf);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf);
   *ierror = PMPI_Sendrecv_c(
-    sendbuf,
+    q_sendbuf,
     *sendcount,
     MPI_Type_fromint(*sendtype),
     *dest,
     *sendtag,
-    recvbuf,
+    q_recvbuf,
     *recvcount,
     MPI_Type_fromint(*recvtype),
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -20442,8 +21277,9 @@ void mpi_sendrecv_replace_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_Sendrecv_replace(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -20451,7 +21287,7 @@ void mpi_sendrecv_replace_(
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -20468,8 +21304,9 @@ void mpi_sendrecv_replace_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = MPI_Sendrecv_replace_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -20477,7 +21314,7 @@ void mpi_sendrecv_replace_c_(
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -20494,8 +21331,9 @@ void pmpi_sendrecv_replace_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_Sendrecv_replace(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -20503,7 +21341,7 @@ void pmpi_sendrecv_replace_(
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -20520,8 +21358,9 @@ void pmpi_sendrecv_replace_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buf = mpif_c_buffer(buf);
   *ierror = PMPI_Sendrecv_replace_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -20529,7 +21368,7 @@ void pmpi_sendrecv_replace_c_(
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
 }
 
@@ -20540,9 +21379,10 @@ void mpi_session_attach_buffer_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = MPI_Session_attach_buffer(
     MPI_Session_fromint(*session),
-    buffer,
+    q_buffer,
     *size
   );
 }
@@ -20554,9 +21394,10 @@ void mpi_session_attach_buffer_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = MPI_Session_attach_buffer_c(
     MPI_Session_fromint(*session),
-    buffer,
+    q_buffer,
     *size
   );
 }
@@ -20568,9 +21409,10 @@ void pmpi_session_attach_buffer_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = PMPI_Session_attach_buffer(
     MPI_Session_fromint(*session),
-    buffer,
+    q_buffer,
     *size
   );
 }
@@ -20582,9 +21424,10 @@ void pmpi_session_attach_buffer_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_buffer = mpif_c_buffer(buffer);
   *ierror = PMPI_Session_attach_buffer_c(
     MPI_Session_fromint(*session),
-    buffer,
+    q_buffer,
     *size
   );
 }
@@ -20669,6 +21512,12 @@ void mpi_session_detach_buffer_(
     buffer_addr,
     size
   );
+  if (*ierror == MPI_SUCCESS) {
+    const void* q_buffer_addr;
+    memcpy(&q_buffer_addr, buffer_addr, sizeof q_buffer_addr);
+    q_buffer_addr = mpif_f_buffer_addr(q_buffer_addr);
+    memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
+  }
 }
 
 void mpi_session_detach_buffer_c_(
@@ -20683,6 +21532,12 @@ void mpi_session_detach_buffer_c_(
     buffer_addr,
     size
   );
+  if (*ierror == MPI_SUCCESS) {
+    const void* q_buffer_addr;
+    memcpy(&q_buffer_addr, buffer_addr, sizeof q_buffer_addr);
+    q_buffer_addr = mpif_f_buffer_addr(q_buffer_addr);
+    memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
+  }
 }
 
 void pmpi_session_detach_buffer_(
@@ -20697,6 +21552,12 @@ void pmpi_session_detach_buffer_(
     buffer_addr,
     size
   );
+  if (*ierror == MPI_SUCCESS) {
+    const void* q_buffer_addr;
+    memcpy(&q_buffer_addr, buffer_addr, sizeof q_buffer_addr);
+    q_buffer_addr = mpif_f_buffer_addr(q_buffer_addr);
+    memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
+  }
 }
 
 void pmpi_session_detach_buffer_c_(
@@ -20711,6 +21572,12 @@ void pmpi_session_detach_buffer_c_(
     buffer_addr,
     size
   );
+  if (*ierror == MPI_SUCCESS) {
+    const void* q_buffer_addr;
+    memcpy(&q_buffer_addr, buffer_addr, sizeof q_buffer_addr);
+    q_buffer_addr = mpif_f_buffer_addr(q_buffer_addr);
+    memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
+  }
 }
 
 void mpi_session_finalize_(
@@ -21017,8 +21884,9 @@ void mpi_ssend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_Ssend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -21037,8 +21905,9 @@ void mpi_ssend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = MPI_Ssend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -21057,8 +21926,9 @@ void pmpi_ssend_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_Ssend(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -21077,8 +21947,9 @@ void pmpi_ssend_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   *ierror = PMPI_Ssend_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -21098,9 +21969,10 @@ void mpi_ssend_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ssend_init(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -21122,9 +21994,10 @@ void mpi_ssend_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = MPI_Ssend_init_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -21146,9 +22019,10 @@ void pmpi_ssend_init_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ssend_init(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -21170,9 +22044,10 @@ void pmpi_ssend_init_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_buf = mpif_c_cbuffer(buf);
   MPI_Request c_request = MPI_REQUEST_NULL;
   *ierror = PMPI_Ssend_init_c(
-    buf,
+    q_buf,
     *count,
     MPI_Type_fromint(*datatype),
     *dest,
@@ -21248,7 +22123,7 @@ void mpi_status_get_error_(
 )
 {
   *ierror = MPI_Status_get_error(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     err
   );
 }
@@ -21260,7 +22135,7 @@ void pmpi_status_get_error_(
 )
 {
   *ierror = PMPI_Status_get_error(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     err
   );
 }
@@ -21272,7 +22147,7 @@ void mpi_status_get_source_(
 )
 {
   *ierror = MPI_Status_get_source(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     source
   );
 }
@@ -21284,7 +22159,7 @@ void pmpi_status_get_source_(
 )
 {
   *ierror = PMPI_Status_get_source(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     source
   );
 }
@@ -21296,7 +22171,7 @@ void mpi_status_get_tag_(
 )
 {
   *ierror = MPI_Status_get_tag(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     tag
   );
 }
@@ -21308,7 +22183,7 @@ void pmpi_status_get_tag_(
 )
 {
   *ierror = PMPI_Status_get_tag(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     tag
   );
 }
@@ -21320,7 +22195,7 @@ void mpi_status_set_cancelled_(
 )
 {
   *ierror = MPI_Status_set_cancelled(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     mpif_logical2bool(*flag)
   );
 }
@@ -21332,7 +22207,7 @@ void pmpi_status_set_cancelled_(
 )
 {
   *ierror = PMPI_Status_set_cancelled(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     mpif_logical2bool(*flag)
   );
 }
@@ -21345,7 +22220,7 @@ void mpi_status_set_elements_(
 )
 {
   *ierror = MPI_Status_set_elements(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     MPI_Type_fromint(*datatype),
     *count
   );
@@ -21359,7 +22234,7 @@ void mpi_status_set_elements_c_(
 )
 {
   *ierror = MPI_Status_set_elements_c(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     MPI_Type_fromint(*datatype),
     *count
   );
@@ -21373,7 +22248,7 @@ void pmpi_status_set_elements_(
 )
 {
   *ierror = PMPI_Status_set_elements(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     MPI_Type_fromint(*datatype),
     *count
   );
@@ -21387,7 +22262,7 @@ void pmpi_status_set_elements_c_(
 )
 {
   *ierror = PMPI_Status_set_elements_c(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     MPI_Type_fromint(*datatype),
     *count
   );
@@ -21401,7 +22276,7 @@ void mpi_status_set_elements_x_(
 )
 {
   *ierror = MPI_Status_set_elements_x(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     MPI_Type_fromint(*datatype),
     *count
   );
@@ -21415,7 +22290,7 @@ void pmpi_status_set_elements_x_(
 )
 {
   *ierror = PMPI_Status_set_elements_x(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     MPI_Type_fromint(*datatype),
     *count
   );
@@ -21428,7 +22303,7 @@ void mpi_status_set_error_(
 )
 {
   *ierror = MPI_Status_set_error(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     *err
   );
 }
@@ -21440,7 +22315,7 @@ void pmpi_status_set_error_(
 )
 {
   *ierror = PMPI_Status_set_error(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     *err
   );
 }
@@ -21452,7 +22327,7 @@ void mpi_status_set_source_(
 )
 {
   *ierror = MPI_Status_set_source(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     *source
   );
 }
@@ -21464,7 +22339,7 @@ void pmpi_status_set_source_(
 )
 {
   *ierror = PMPI_Status_set_source(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     *source
   );
 }
@@ -21476,7 +22351,7 @@ void mpi_status_set_tag_(
 )
 {
   *ierror = MPI_Status_set_tag(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     *tag
   );
 }
@@ -21488,7 +22363,7 @@ void pmpi_status_set_tag_(
 )
 {
   *ierror = PMPI_Status_set_tag(
-    (MPI_Status*)status,
+    mpif_c_status(status),
     *tag
   );
 }
@@ -21505,7 +22380,7 @@ void mpi_test_(
   *ierror = MPI_Test(
     &c_request,
     &c_flag,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *request = MPI_Request_toint(c_request);
   *flag = mpif_bool2logical(c_flag);
@@ -21523,7 +22398,7 @@ void pmpi_test_(
   *ierror = PMPI_Test(
     &c_request,
     &c_flag,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *request = MPI_Request_toint(c_request);
   *flag = mpif_bool2logical(c_flag);
@@ -21537,7 +22412,7 @@ void mpi_test_cancelled_(
 {
   MPI_Fint c_flag = 0;
   *ierror = MPI_Test_cancelled(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     &c_flag
   );
   *flag = mpif_bool2logical(c_flag);
@@ -21551,7 +22426,7 @@ void pmpi_test_cancelled_(
 {
   MPI_Fint c_flag = 0;
   *ierror = PMPI_Test_cancelled(
-    (const MPI_Status*)status,
+    mpif_c_cstatus(status),
     &c_flag
   );
   *flag = mpif_bool2logical(c_flag);
@@ -21573,7 +22448,7 @@ void mpi_testall_(
     *count,
     c_array_of_requests,
     &c_flag,
-    (MPI_Status*)array_of_statuses
+    mpif_c_status(array_of_statuses)
   );
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
@@ -21596,7 +22471,7 @@ void pmpi_testall_(
     *count,
     c_array_of_requests,
     &c_flag,
-    (MPI_Status*)array_of_statuses
+    mpif_c_status(array_of_statuses)
   );
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
@@ -21621,7 +22496,7 @@ void mpi_testany_(
     c_array_of_requests,
     index,
     &c_flag,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
@@ -21648,7 +22523,7 @@ void pmpi_testany_(
     c_array_of_requests,
     index,
     &c_flag,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
@@ -21674,7 +22549,7 @@ void mpi_testsome_(
     c_array_of_requests,
     outcount,
     array_of_indices,
-    (MPI_Status*)array_of_statuses
+    mpif_c_status(array_of_statuses)
   );
   for (int i=0; i<*incount; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
@@ -21702,7 +22577,7 @@ void pmpi_testsome_(
     c_array_of_requests,
     outcount,
     array_of_indices,
-    (MPI_Status*)array_of_statuses
+    mpif_c_status(array_of_statuses)
   );
   for (int i=0; i<*incount; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
@@ -23572,11 +24447,13 @@ void mpi_unpack_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   *ierror = MPI_Unpack(
-    inbuf,
+    q_inbuf,
     *insize,
     position,
-    outbuf,
+    q_outbuf,
     *outcount,
     MPI_Type_fromint(*datatype),
     MPI_Comm_fromint(*comm)
@@ -23594,11 +24471,13 @@ void mpi_unpack_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   *ierror = MPI_Unpack_c(
-    inbuf,
+    q_inbuf,
     *insize,
     position,
-    outbuf,
+    q_outbuf,
     *outcount,
     MPI_Type_fromint(*datatype),
     MPI_Comm_fromint(*comm)
@@ -23616,11 +24495,13 @@ void pmpi_unpack_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   *ierror = PMPI_Unpack(
-    inbuf,
+    q_inbuf,
     *insize,
     position,
-    outbuf,
+    q_outbuf,
     *outcount,
     MPI_Type_fromint(*datatype),
     MPI_Comm_fromint(*comm)
@@ -23638,11 +24519,13 @@ void pmpi_unpack_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   *ierror = PMPI_Unpack_c(
-    inbuf,
+    q_inbuf,
     *insize,
     position,
-    outbuf,
+    q_outbuf,
     *outcount,
     MPI_Type_fromint(*datatype),
     MPI_Comm_fromint(*comm)
@@ -23661,13 +24544,15 @@ void mpi_unpack_external_(
   const size_t length_datarep
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   *ierror = MPI_Unpack_external(
     c_datarep,
-    inbuf,
+    q_inbuf,
     *insize,
     position,
-    outbuf,
+    q_outbuf,
     *outcount,
     MPI_Type_fromint(*datatype)
   );
@@ -23686,13 +24571,15 @@ void mpi_unpack_external_c_(
   const size_t length_datarep
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   *ierror = MPI_Unpack_external_c(
     c_datarep,
-    inbuf,
+    q_inbuf,
     *insize,
     position,
-    outbuf,
+    q_outbuf,
     *outcount,
     MPI_Type_fromint(*datatype)
   );
@@ -23711,13 +24598,15 @@ void pmpi_unpack_external_(
   const size_t length_datarep
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   *ierror = PMPI_Unpack_external(
     c_datarep,
-    inbuf,
+    q_inbuf,
     *insize,
     position,
-    outbuf,
+    q_outbuf,
     *outcount,
     MPI_Type_fromint(*datatype)
   );
@@ -23736,13 +24625,15 @@ void pmpi_unpack_external_c_(
   const size_t length_datarep
 )
 {
+  const void* const q_inbuf = mpif_c_cbuffer(inbuf);
+  void* const q_outbuf = mpif_c_buffer(outbuf);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   *ierror = PMPI_Unpack_external_c(
     c_datarep,
-    inbuf,
+    q_inbuf,
     *insize,
     position,
-    outbuf,
+    q_outbuf,
     *outcount,
     MPI_Type_fromint(*datatype)
   );
@@ -23798,7 +24689,7 @@ void mpi_wait_(
   MPI_Request c_request = MPI_Request_fromint(*request);
   *ierror = MPI_Wait(
     &c_request,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *request = MPI_Request_toint(c_request);
 }
@@ -23812,7 +24703,7 @@ void pmpi_wait_(
   MPI_Request c_request = MPI_Request_fromint(*request);
   *ierror = PMPI_Wait(
     &c_request,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   *request = MPI_Request_toint(c_request);
 }
@@ -23830,7 +24721,7 @@ void mpi_waitall_(
   *ierror = MPI_Waitall(
     *count,
     c_array_of_requests,
-    (MPI_Status*)array_of_statuses
+    mpif_c_status(array_of_statuses)
   );
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
@@ -23849,7 +24740,7 @@ void pmpi_waitall_(
   *ierror = PMPI_Waitall(
     *count,
     c_array_of_requests,
-    (MPI_Status*)array_of_statuses
+    mpif_c_status(array_of_statuses)
   );
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
@@ -23870,7 +24761,7 @@ void mpi_waitany_(
     *count,
     c_array_of_requests,
     index,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
@@ -23893,7 +24784,7 @@ void pmpi_waitany_(
     *count,
     c_array_of_requests,
     index,
-    (MPI_Status*)status
+    mpif_c_status(status)
   );
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
@@ -23918,7 +24809,7 @@ void mpi_waitsome_(
     c_array_of_requests,
     outcount,
     array_of_indices,
-    (MPI_Status*)array_of_statuses
+    mpif_c_status(array_of_statuses)
   );
   for (int i=0; i<*incount; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
@@ -23946,7 +24837,7 @@ void pmpi_waitsome_(
     c_array_of_requests,
     outcount,
     array_of_indices,
-    (MPI_Status*)array_of_statuses
+    mpif_c_status(array_of_statuses)
   );
   for (int i=0; i<*incount; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
@@ -24140,9 +25031,10 @@ void mpi_win_attach_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_base = mpif_c_buffer(base);
   *ierror = MPI_Win_attach(
     MPI_Win_fromint(*win),
-    base,
+    q_base,
     *size
   );
 }
@@ -24154,9 +25046,10 @@ void pmpi_win_attach_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_base = mpif_c_buffer(base);
   *ierror = PMPI_Win_attach(
     MPI_Win_fromint(*win),
-    base,
+    q_base,
     *size
   );
 }
@@ -24215,9 +25108,10 @@ void mpi_win_create_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_base = mpif_c_buffer(base);
   MPI_Win c_win = MPI_WIN_NULL;
   *ierror = MPI_Win_create(
-    base,
+    q_base,
     *size,
     *disp_unit,
     MPI_Info_fromint(*info),
@@ -24237,9 +25131,10 @@ void mpi_win_create_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_base = mpif_c_buffer(base);
   MPI_Win c_win = MPI_WIN_NULL;
   *ierror = MPI_Win_create_c(
-    base,
+    q_base,
     *size,
     *disp_unit,
     MPI_Info_fromint(*info),
@@ -24259,9 +25154,10 @@ void pmpi_win_create_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_base = mpif_c_buffer(base);
   MPI_Win c_win = MPI_WIN_NULL;
   *ierror = PMPI_Win_create(
-    base,
+    q_base,
     *size,
     *disp_unit,
     MPI_Info_fromint(*info),
@@ -24281,9 +25177,10 @@ void pmpi_win_create_c_(
   MPI_Fint* restrict const ierror
 )
 {
+  void* const q_base = mpif_c_buffer(base);
   MPI_Win c_win = MPI_WIN_NULL;
   *ierror = PMPI_Win_create_c(
-    base,
+    q_base,
     *size,
     *disp_unit,
     MPI_Info_fromint(*info),
@@ -24451,9 +25348,10 @@ void mpi_win_detach_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_base = mpif_c_cbuffer(base);
   *ierror = MPI_Win_detach(
     MPI_Win_fromint(*win),
-    base
+    q_base
   );
 }
 
@@ -24463,9 +25361,10 @@ void pmpi_win_detach_(
   MPI_Fint* restrict const ierror
 )
 {
+  const void* const q_base = mpif_c_cbuffer(base);
   *ierror = PMPI_Win_detach(
     MPI_Win_fromint(*win),
-    base
+    q_base
   );
 }
 

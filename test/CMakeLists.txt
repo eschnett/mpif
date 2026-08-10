@@ -12,10 +12,11 @@ find_package(MPI REQUIRED COMPONENTS C Fortran)
 # `mpifort -showme:compile` and puts what it prints into MPI::MPI_Fortran's
 # INTERFACE_COMPILE_OPTIONS *unguarded*, and CMake applies a target's interface
 # compile options to every language in the target that consumes it. mpif's
-# wrapper reports gfortran's `-fallow-argument-mismatch` and `-fcray-pointer` --
-# which mpif.h genuinely needs, the sentinels being Cray pointers -- so the three
-# targets below that mix C and Fortran (`interlanguage`, `c2f`, `datarep_c`) hand
-# both flags to the C compiler as well.
+# wrapper reports gfortran's `-fallow-argument-mismatch`, which mpif.h genuinely
+# needs, so the three targets below that mix C and Fortran (`interlanguage`,
+# `c2f`, `datarep_c`) hand it to the C compiler as well. It used to report
+# `-fcray-pointer` too, for sentinels that were Cray pointees; one flag or two,
+# the problem and the fix are the same.
 #
 # That went unnoticed on every variant until FreeBSD, because it depends on the
 # two compilers coming from different projects: gcc's C frontend only warns
@@ -171,11 +172,16 @@ add_mpi_test(status_error_f08       SOURCES status_error_f08.f90                
 # MPICH's mprobef08 caught it only because its suite compiles with -O2.
 target_compile_options(status_error_f08 PRIVATE $<$<COMPILE_LANGUAGE:Fortran>:-O2>)
 add_mpi_test(handle_types_f90       SOURCES handle_types_f90.f90                    LIBS MPI::MPI_Fortran)
-add_mpi_test(sentinel_alignment_c   SOURCES sentinel_alignment_c.c                  LIBS MPI::MPI_Fortran MPI::MPI_C)
+add_mpi_test(sentinel_addresses_c   SOURCES sentinel_addresses_c.c                  LIBS MPI::MPI_Fortran MPI::MPI_C)
 add_mpi_test(buffer_detach          SOURCES buffer_detach.f90                       LIBS MPI::MPI_Fortran)
 add_mpi_test(op_create              SOURCES op_create.f90                           LIBS MPI::MPI_Fortran)
 add_mpi_test(waitall_f90            SOURCES waitall_f90.f90                         LIBS MPI::MPI_Fortran)
 add_mpi_test(waitall_f08            SOURCES waitall_f08.f90                         LIBS MPI::MPI_Fortran)
+# The sentinels that reach C as an address mpif has to translate. One file per
+# sentinel family, each covering the interfaces that had no test of it.
+add_mpi_test(bottom                 SOURCES bottom.f90                              LIBS MPI::MPI_Fortran)
+add_mpi_test(statuses_ignore        SOURCES statuses_ignore.f90                     LIBS MPI::MPI_Fortran)
+add_mpi_test(dist_graph_weights     SOURCES dist_graph_weights.f90                  LIBS MPI::MPI_Fortran)
 add_mpi_test(pmpi_f                 SOURCES pmpi_f.f                                LIBS MPI::MPI_Fortran)
 add_mpi_test(pmpi_f90               SOURCES pmpi_f90.f90                            LIBS MPI::MPI_Fortran)
 add_mpi_test(pmpi_f08               SOURCES pmpi_f08.f90                            LIBS MPI::MPI_Fortran)

@@ -61,6 +61,14 @@ typedef MPI_Status MPI_F08_Status;
 ////////////////////////////////////////////////////////////////////////////////
 // Constants
 
+// Null, and deliberately not what fortran/mpi.h.patch defines these as. That
+// patch points them at the COMMON blocks mpif's Fortran sentinels live in, which
+// is what MPI-5.0 19.3.5 wants of them -- but this file becomes part of MPICH's
+// ABI library, which is built before mpif and does not link it, so it cannot
+// name mpif's symbols. The consequence is that the guards below do not recognise
+// an mpif Fortran status sentinel; passing one here is erroneous anyway (19.3.5:
+// "then the call is erroneous"), so it goes undiagnosed rather than wrong. See
+// MISSING.md.
 #define MPI_F_STATUS_IGNORE ((MPI_Fint *)MPI_STATUS_IGNORE)
 #define MPI_F_STATUSES_IGNORE ((MPI_Fint *)MPI_STATUSES_IGNORE)
 #define MPI_F08_STATUS_IGNORE ((MPI_F08_Status *)MPI_STATUS_IGNORE)

@@ -174,45 +174,15 @@ check_fortran_compiler_flag(-fallow-argument-mismatch Fortran_flag_allow_argumen
 if(Fortran_flag_allow_argument_mismatch)
   list(APPEND MPIF_Fortran_FLAGS_LIST -fallow-argument-mismatch)
 endif()
-check_fortran_compiler_flag(-fcray-pointer Fortran_flag_cray_pointer)
-if(Fortran_flag_cray_pointer)
-  list(APPEND MPIF_Fortran_FLAGS_LIST -fcray-pointer)
-endif()
 list(JOIN MPIF_Fortran_FLAGS_LIST " " MPIF_Fortran_FLAGS_STR)
 
-# The flag is not the feature. Cray pointers are how mpif.h declares its
-# sentinels -- `pointer (MPIF_BOTTOM_PTR, MPI_BOTTOM)` and nine more in
-# include/mpif_constants.h, each paired with the common block of its own name --
-# so every consumer of mpif.h needs them, and mpif does not build without them.
-# Only gfortran spells the permission `-fcray-pointer`; flang answers "no" to
-# the check above and supports the declaration anyway, and ifx and nvfortran do
-# the same. So ask for the feature, with whatever flags that check did produce.
-# Without this a compiler having neither fails a hundred lines into mpif.h with
-# an error naming a sentinel, which reads as mpif being wrong rather than as the
-# extension being absent.
-set(saved_CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS}")
-set(CMAKE_REQUIRED_FLAGS "${MPIF_Fortran_FLAGS_STR}")
-check_fortran_source_compiles(
-  "
-  program test
-    integer :: sentinel(1)
-    pointer (sentinel_ptr, sentinel)
-    common /sentinel_ptr/ sentinel_ptr
-    sentinel(1) = 0
-  end
-  "
-  HAVE_Fortran_cray_pointer
-  SRC_EXT f90
-)
-set(CMAKE_REQUIRED_FLAGS "${saved_CMAKE_REQUIRED_FLAGS}")
-if(NOT HAVE_Fortran_cray_pointer)
-  message(FATAL_ERROR
-    "${CMAKE_Fortran_COMPILER_ID} does not accept a Cray pointer declaration"
-    " (`pointer (p, x)`) with \"${MPIF_Fortran_FLAGS_STR}\". mpif.h declares"
-    " MPI_BOTTOM, MPI_IN_PLACE and eight other sentinels that way; see"
-    " include/mpif_constants.h. If this compiler has the extension under some"
-    " other flag, that flag belongs in MPIF_Fortran_FLAGS_LIST above.")
-endif()
+# No Cray-pointer flag or feature probe. mpif.h used to declare its sentinels as
+# Cray pointees, which needed `-fcray-pointer` in every consumer's compile line
+# -- bin/mpifort.in passes MPIF_Fortran_FLAGS_STR on -- and made a compiler
+# without the extension a hard failure. They are plain COMMON blocks now, so
+# mpif asks for no language extension at all; see include/mpif_sentinels.h and
+# "Sentinels are translated" in CODE.md. `-fallow-argument-mismatch` above stays:
+# it is about choice buffers, not sentinels.
 
 # In the MPI standard ABI, MPI_Aint is intptr_t while MPI_Count and MPI_Offset
 # are int64_t, so MPI_ADDRESS_KIND is 4 where MPI_COUNT_KIND is 8 on a 32-bit
@@ -611,12 +581,14 @@ add_library(mpifort_abi SHARED
   include/mpif_callbacks.h
   include/mpif_cdesc.h
   include/mpif_logical.h
+  include/mpif_sentinels.h
   include/mpif_strings.h
   src/mpif_attr_fns.F90
   src/mpif_attrs.c
   src/mpif_callbacks.c
   src/mpif_cdesc.c
   src/mpif_check.c
+  src/mpif_check_f08.F90
   src/mpif_check_fns.F90
   src/mpif_constants.c
   src/mpif_logical.F90

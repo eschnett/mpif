@@ -152,18 +152,22 @@ strip_leading_blanks = Set([("MPI_Comm_spawn", "argv"),
                             ("MPI_Info_set", "key"),
                             ("MPI_Info_set", "value")])
 
-# The argument-vector sentinels, and the C constant each one stands for.
+# The argument-vector sentinels: how C recognises each one, and the C constant it
+# stands for.
 #
-# Most sentinels need no special handling: MPI_ERRCODES_IGNORE and friends are
-# forwarded to C untouched, and mpif.h puts the Fortran symbol at the address of
-# the C constant (see include/mpif_constants.h), so passing the Fortran array
-# hands C exactly the value it expects. An argument vector is different, because
-# it has to be converted element by element, and these two constants are null
-# pointers in C -- MPI_ARGV_NULL "is the same as NULL" -- so the conversion would
-# read address zero. Compare against the C constant rather than against NULL:
-# MPI-5.0 only says MPI_ARGVS_NULL is "likely to be (char ***)0".
-argv_null_sentinels = Dict([("MPI_Comm_spawn", "argv") => "MPI_ARGV_NULL",
-                            ("MPI_Comm_spawn_multiple", "array_of_argv") => "MPI_ARGVS_NULL"])
+# Every sentinel needs translating -- mpif's Fortran sentinels are COMMON blocks
+# of their own, not objects at the ABI constants' addresses; see
+# include/mpif_sentinels.h. These two are the pair that cannot be translated by
+# mapping an address, because an argument vector is converted element by element:
+# the wrapper has to skip the conversion entirely and substitute the C constant.
+# Hence two entries rather than one -- the predicate that recognises the Fortran
+# object, and the value C is given in its place. Comparing against the C constant
+# would be doubly wrong now: the addresses no longer coincide, and MPI-5.0 only
+# says MPI_ARGVS_NULL is "likely to be (char ***)0" in the first place.
+argv_null_sentinels = Dict([("MPI_Comm_spawn", "argv") =>
+                                ("mpif_is_argv_null", "MPI_ARGV_NULL"),
+                            ("MPI_Comm_spawn_multiple", "array_of_argv") =>
+                                ("mpif_is_argvs_null", "MPI_ARGVS_NULL")])
 
 # String arrays whose element count is given by another argument rather than by a
 # terminator. MPI_COMM_SPAWN's `argv` is "terminated by ... an empty string in
@@ -510,6 +514,35 @@ f08_explicit_large_count = ["MPI_Op_create", "MPI_Register_datarep"]
 # CLAUDE.md.
 emit_cfi = true
 
+# The sentinel-translation axis. mpif's Fortran sentinels are COMMON blocks with
+# addresses of their own, not objects at the ABI constants' addresses, so every
+# argument that can carry one has to be translated on the way to C; see
+# include/mpif_sentinels.h. This switch exists only to prove the refactor that
+# introduced it: with `translate_sentinels = false` neither the hoists nor the
+# wraps are emitted, and `git diff gen/` against the commit before the axis must
+# be empty, which is what shows the restructuring of `buffer_hoists`,
+# `rewrite_buffers` and `argv_null_sentinels` changed nothing on its own. Unlike
+# `emit_cfi` this is not a permanent axis -- there is no build in which mpif does
+# not translate -- so it goes away once it has done its job.
+translate_sentinels = true
+
+# The argument kinds that can carry a Fortran sentinel, and the translator each
+# gets. This is the replacement for the invariant mpif used to have for free:
+# while the Fortran sentinels sat *at* the C constants' addresses, forwarding one
+# was translating it, and nothing could be missed. Now a missed argument is a
+# silent wrong pointer, so the emission below asserts per parameter that no
+# member of this set reaches `call_arguments` bare -- see
+# `assert_sentinel_translated`.
+#
+# `LOGICAL_VOID` shares the buffer branch and is deliberately absent: it is
+# `void*` in C but a plain LOGICAL in both Fortran bindings, so no sentinel can
+# appear there. `C_BUFFER3`/`C_BUFFER4` are callback buffers that arrive from
+# MPI; nothing generated reaches them. `ERROR_CODE` is in the set only for the
+# two `array_of_errcodes` parameters, which is what having a `length` picks out --
+# `ierror` has none.
+sentinel_kinds = ["BUFFER", "C_BUFFER2", "STATUS", "WEIGHT",
+                  "STRING_ARRAY", "STRING_2DARRAY", "ERROR_CODE"]
+
 # How each choice buffer crosses the descriptor boundary. Four answers, and
 # the dangerous ones are written down rather than inferred:
 #
@@ -646,6 +679,24 @@ end
 cfi_expected_class_counts = Dict(:walk => 116, :contig => 80, :addr => 20)
 cfi_class_counts = Dict{Symbol,Int}()
 
+# Sentinel crossings, counted the same way and for the same reason. The
+# per-parameter assertion near `sentinel_kinds` proves each crossing is
+# translated; this proves the *set* of crossings has not changed. An apis.json
+# that adds a routine with a choice buffer, or reclassifies an argument, moves one
+# of these and has to be looked at rather than absorbed.
+#
+# Counted once per parameter per ordinary entry point, so each figure already
+# includes the `_c` and PMPI multiples, and the cdesc entry of the same iteration
+# is covered by the same count. Cross-checks against the generated file, where
+# each figure is the number of translator calls: 826 buffers is its 840 `void*`
+# parameters less `buffer_addr`'s 12 and MPI_F_sync_reg's 2; STATUS is the 122
+# `(MPI_Status*)` casts plus 18 const ones; WEIGHT is 5 parameters x {MPI_, PMPI_}
+# with no `_c` forms; C_BUFFER2 is 3 routines x {plain, _c} x {MPI_, PMPI_}.
+sentinel_expected_sites = Dict("BUFFER" => 826, "STATUS" => 140, "WEIGHT" => 10,
+                               "STRING_ARRAY" => 2, "STRING_2DARRAY" => 2,
+                               "ERROR_CODE" => 4, "C_BUFFER2" => 12)
+sentinel_sites = Dict{String,Int}()
+
 # The two routines with ASYNCHRONOUS arguments and no choice buffer --
 # MPI_Comm_idup and MPI_Comm_idup_with_info, whose `newcomm` A.4 marks. They
 # keep their `_f08` names, and only that one declaration is branched.
@@ -655,13 +706,17 @@ f08_cdesc_interfaces = []
 f08_cdesc_types = Set{String}()
 c_cdesc_implementations = []
 
+# `filter(!isnothing, ...)`: the sentinel include is switched, and the switch is
+# temporary; see `translate_sentinels`.
 append!(c_implementations,
+        filter(!isnothing,
         ["// Fortran-callable entry points, MPI_ and PMPI_ alike. See",
          "// dev/mpiapi.jl; do not edit.",
          "",
          "#include <mpif_attrs.h>",
          "#include <mpif_callbacks.h>",
          "#include <mpif_logical.h>",
+         translate_sentinels ? "#include <mpif_sentinels.h>" : nothing,
          "#include <mpif_strings.h>",
          "#include <mpi.h>",
          "#include <assert.h>",
@@ -698,7 +753,7 @@ append!(c_implementations,
          "#define PMPI_Attr_put PMPI_Comm_set_attr",
          "#define PMPI_Keyval_create PMPI_Comm_create_keyval",
          "#define PMPI_Keyval_free PMPI_Comm_free_keyval",
-])
+]))
 
 # The PMPI interfaces sit in this module beside the MPI ones, so `use mpi` sees
 # both and mpif.h's `external :: PMPI_Wtime` finally has something to link to.
@@ -897,6 +952,13 @@ for key in sort(collect(keys(apis)))
         state = State(P)
         input_arguments = []
         final_input_arguments = []
+        # Each choice buffer's translated address, `q_<name>`. A list of its own
+        # rather than the head of `input_conversions`, because the cdesc entry
+        # rewrites every buffer reference in that list to `q_<name>` and would
+        # turn the hoist into `q_buf = mpif_c_buffer(q_buf)`. The cdesc entry
+        # builds its own hoists from the descriptors' base addresses and drops
+        # these; see `cdesc_addresses`.
+        buffer_hoists = []
         input_conversions = []
         call_arguments = []
         output_conversions = []
@@ -1015,23 +1077,39 @@ for key in sort(collect(keys(apis)))
                 @assert length == nothing
                 @assert !optional
                 @assert kind != "C_BUFFER2" || param_direction == "out"
+                # A buffer arrives as the address of whatever the caller passed,
+                # which may be one of mpif's three buffer sentinels. Hoist the
+                # translated address into `q_<name>` rather than wrapping the
+                # call argument in place: the vw collectives guard the conversion
+                # of `sendtypes` on `sendbuf != MPI_IN_PLACE`, and that
+                # comparison has to see the translated value too.
+                nonconst_buffer = name ∈ ["MPI_Buffer_attach", "MPI_Comm_attach_buffer", "MPI_Free_mem",
+                                          "MPI_Precv_init", "MPI_Session_attach_buffer", "MPI_Win_attach",
+                                          "MPI_Win_create"]
+                translate_buffer = translate_sentinels && kind == "BUFFER"
+                buffer_arg = translate_buffer ? "q_$parname" : "$parname"
                 if param_direction == "in"
-                    if name ∈ ["MPI_Buffer_attach", "MPI_Comm_attach_buffer", "MPI_Free_mem", "MPI_Precv_init",
-                               "MPI_Session_attach_buffer", "MPI_Win_attach", "MPI_Win_create"]
+                    if nonconst_buffer
                         # The buffer is declared as `in` argument, but this refers to the pointer (not the buffer data)
                         push!(input_arguments, "void* restrict const $parname")
+                        translate_buffer &&
+                            push!(buffer_hoists, "void* const q_$parname = mpif_c_buffer($parname);")
                     else
                         push!(input_arguments, "const void* restrict const $parname")
+                        translate_buffer &&
+                            push!(buffer_hoists, "const void* const q_$parname = mpif_c_cbuffer($parname);")
                     end
                     if name == "MPI_Abi_set_fortran_booleans"
                         # `mpi.h` header file lacks const qualifiers
-                        push!(call_arguments, "(void*)$parname")
+                        push!(call_arguments, "(void*)$buffer_arg")
                     else
-                        push!(call_arguments, "$parname")
+                        push!(call_arguments, "$buffer_arg")
                     end
                 elseif param_direction ∈ ["inout", "out"]
                     push!(input_arguments, "void* restrict const $parname")
-                    push!(call_arguments, "$parname")
+                    translate_buffer &&
+                        push!(buffer_hoists, "void* const q_$parname = mpif_c_buffer($parname);")
+                    push!(call_arguments, "$buffer_arg")
                 else
                     @assert false
                 end
@@ -1047,6 +1125,33 @@ for key in sort(collect(keys(apis)))
                     push!(f_declarations, "logical :: $parname")
                     push!(f08_declarations, "logical, intent($f08_param_direction) :: $parname")
                 elseif kind ∈ cptr_buffer_kinds
+                    if translate_sentinels && kind == "C_BUFFER2"
+                        # The one place a sentinel travels C to Fortran. MPI-5.0
+                        # 3.6 on MPI_Buffer_detach and its two siblings: "If
+                        # MPI_BUFFER_AUTOMATIC was used in the corresponding
+                        # attach procedure, then MPI_BUFFER_AUTOMATIC is also
+                        # returned in the detach procedure ... When using Fortran
+                        # mpi_f08, the returned value is identical to
+                        # c_loc(MPI_BUFFER_AUTOMATIC)." So the ABI value MPI wrote
+                        # has to become the address of mpif's own object before the
+                        # caller sees it. Done here rather than in the f08 wrapper,
+                        # which would leave mpif.h and the mpi module disagreeing
+                        # with mpi_f08 about the same routine.
+                        #
+                        # memcpy in both directions: A.5's binding is a choice
+                        # buffer, and test/buffer_detach.f90 passes a CHARACTER
+                        # array, so the storage is not necessarily aligned for a
+                        # pointer. Only on success -- a failed call leaves the
+                        # caller's variable alone, which it could not do if this
+                        # wrote unconditionally.
+                        append!(output_conversions,
+                                ["if (*ierror == MPI_SUCCESS) {",
+                                 "  const void* q_$parname;",
+                                 "  memcpy(&q_$parname, $parname, sizeof q_$parname);",
+                                 "  q_$parname = mpif_f_buffer_addr(q_$parname);",
+                                 "  memcpy($parname, &q_$parname, sizeof q_$parname);",
+                                 "}"])
+                    end
                     # A choice buffer in the mpi module and mpif.h, a TYPE(C_PTR)
                     # in mpi_f08. `C_BUFFER2` is `buffer_addr`, where the two
                     # bindings disagree and neither is an integer: A.5 gives
@@ -1142,7 +1247,12 @@ for key in sort(collect(keys(apis)))
                         guards = String[]
                         root_only && (ensure_at_root!(state, input_conversions, name, parameters);
                                       push!(guards, "q_at_root"))
-                        in_place && push!(guards, "sendbuf != MPI_IN_PLACE")
+                        # Against the *translated* address: `sendbuf` is whatever
+                        # Fortran handed over, `q_sendbuf` is the ABI value, and
+                        # only the latter can equal MPI_IN_PLACE.
+                        in_place && push!(guards,
+                                          translate_sentinels ? "q_sendbuf != MPI_IN_PLACE"
+                                                              : "sendbuf != MPI_IN_PLACE")
                         if isempty(guards)
                             append!(input_conversions,
                                     ["for (int rank=0; rank<$count; ++rank)",
@@ -1268,14 +1378,25 @@ for key in sort(collect(keys(apis)))
                 @assert !large_only
                 @assert !optional
                 @assert !root_only
+                # A cast where the Fortran and C sentinels coincided, a
+                # translation now: `status` may be MPI_STATUS_IGNORE or
+                # MPI_STATUSES_IGNORE, from mpif.h or from mpi_f08 -- four
+                # objects reaching this one parameter, since the f08 wrappers
+                # come through `mpif_f08_raw` to the same entry point. All four
+                # are null in the ABI, so one translator covers them; see
+                # include/mpif_sentinels.h.
                 if param_direction == "in"
                     @assert length == nothing
                     push!(input_arguments, "const MPI_Fint* restrict const $parname")
-                    push!(call_arguments, "(const MPI_Status*)$parname")
+                    push!(call_arguments,
+                          translate_sentinels ? "mpif_c_cstatus($parname)"
+                                              : "(const MPI_Status*)$parname")
                 elseif param_direction ∈ ["inout", "out"]
                     @assert length == nothing || length == "*"
                     push!(input_arguments, "MPI_Fint* restrict const $parname")
-                    push!(call_arguments, "(MPI_Status*)$parname")
+                    push!(call_arguments,
+                          translate_sentinels ? "mpif_c_status($parname)"
+                                              : "(MPI_Status*)$parname")
                 else
                     @show name parname param_direction
                     @assert false
@@ -1734,7 +1855,9 @@ for key in sort(collect(keys(apis)))
                     guard = sentinel == nothing ? "q_at_root" : "q_at_root && !null_$parname"
                     if sentinel != nothing
                         push!(input_conversions,
-                              "const int null_$parname = (const void*)$parname == (const void*)$sentinel;")
+                              translate_sentinels ?
+                              "const int null_$parname = $(sentinel[1])($parname);" :
+                              "const int null_$parname = (const void*)$parname == (const void*)$(sentinel[2]);")
                     end
                     counted = get(string_array_counts, (name, parname), nothing)
                     if counted == nothing
@@ -1754,7 +1877,7 @@ for key in sort(collect(keys(apis)))
                              "  argv_$parname[n] = $strdup_f2c($parname + n * length_$parname, length_$parname);",
                              "argv_$parname[count_$parname] = NULL;"])
                     push!(call_arguments,
-                          sentinel == nothing ? "argv_$parname" : "null_$parname ? $sentinel : argv_$parname")
+                          sentinel == nothing ? "argv_$parname" : "null_$parname ? $(sentinel[2]) : argv_$parname")
                     append!(output_conversions, ["for (size_t n=0; n<count_$parname; ++n)",
                                                  "  free(argv_$parname[n]);"])
                 else
@@ -1780,7 +1903,9 @@ for key in sort(collect(keys(apis)))
                 sentinel = get(argv_null_sentinels, (name, parname), nothing)
                 if sentinel != nothing
                     push!(input_conversions,
-                          "const int null_$parname = (const void*)$parname == (const void*)$sentinel;")
+                          translate_sentinels ?
+                              "const int null_$parname = $(sentinel[1])($parname);" :
+                              "const int null_$parname = (const void*)$parname == (const void*)$(sentinel[2]);")
                 end
                 # The root's own count, zero elsewhere, which is what makes the
                 # two VLAs and all three loops safe away from the root; the
@@ -1825,7 +1950,7 @@ for key in sort(collect(keys(apis)))
                              "}"])
                 end
                 push!(call_arguments,
-                      sentinel == nothing ? "argv_$parname" : "null_$parname ? $sentinel : argv_$parname")
+                      sentinel == nothing ? "argv_$parname" : "null_$parname ? $(sentinel[2]) : argv_$parname")
                 append!(output_conversions,
                         ["for (int i=0; i<$count; ++i) {",
                          "  for (size_t n=0; n<count_$parname[i]; ++n)",
@@ -2020,6 +2145,77 @@ for key in sort(collect(keys(apis)))
         end
 
         input_arguments = [input_arguments; final_input_arguments]
+
+        # Sentinel translation, in one place, for the two kinds whose emission
+        # above is spread over the integer-array paths -- and the assertion, for
+        # every kind in `sentinel_kinds`, that nothing reaches MPI bare.
+        #
+        # This is what replaces the invariant that used to hold by construction.
+        # While the Fortran sentinels sat at the C constants' addresses,
+        # forwarding one *was* translating it; now a parameter that slips through
+        # untranslated hands MPI the address of a COMMON block full of poison, and
+        # no test of the routine itself would necessarily notice. So the rule is
+        # checked here rather than hoped for: a new kind in apis.json, a new
+        # special case, or a refactor that drops a wrap fails the generator run.
+        if translate_sentinels
+            for parameter in parameters
+                kind = parameter["kind"]
+                parname = parameter["name"]
+                kind ∈ sentinel_kinds || continue
+                # `ierror` and `errorcode` are ERROR_CODE too; the array of
+                # error codes MPI_Comm_spawn writes is the one with a length.
+                kind == "ERROR_CODE" && parameter["length"] === nothing && continue
+                # A parameter the C entry point does not take at all -- the
+                # generator pushes a literal 0 or NULL for these -- has no
+                # crossing to translate.
+                "f90_parameter" ∈ split(parameter["suppress"]) && continue
+                # Nor has a routine with no C body: MPI_F_sync_reg is a memory
+                # barrier whose entry point is deliberately empty, so its buffer
+                # never reaches MPI and there is nothing to translate or count.
+                attributes["c_expressible"] || continue
+                # A string array carries a sentinel only where one exists.
+                # MPI_Comm_spawn_multiple's `array_of_commands` is a STRING_ARRAY
+                # like `argv` and has none: 11.8 gives no MPI_COMMANDS_NULL.
+                kind ∈ ["STRING_ARRAY", "STRING_2DARRAY"] &&
+                    !haskey(argv_null_sentinels, (name, parname)) && continue
+
+                # The two kinds whose emission is spread across the
+                # integer-array paths get their wrap here.
+                wrapper = kind == "WEIGHT" ? (parameter["param_direction"] == "in" ?
+                                              "mpif_c_cweights" : "mpif_c_weights") :
+                          kind == "ERROR_CODE" ? "mpif_c_errcodes" : nothing
+                if wrapper !== nothing
+                    idxs = findall(==(parname), call_arguments)
+                    @assert Base.length(idxs) == 1 (name, parname, kind, call_arguments)
+                    call_arguments[idxs[1]] = "$wrapper($parname)"
+                end
+
+                # And every crossing is checked, positively: the argument MPI
+                # receives has to be the *translated* form for this kind, not the
+                # bare name. Each kind travels its own way -- a buffer as the
+                # hoisted `q_<name>`, a status and the two int-array kinds inside
+                # a translator, an argument vector as the
+                # `null_<name> ? <C constant> : ...` conditional that skips the
+                # element-by-element conversion -- and `buffer_addr` alone crosses
+                # bare, being translated after the call instead.
+                expected = kind == "BUFFER" ? Regex("\\bq_$parname\\b") :
+                           kind == "STATUS" ? Regex("\\bmpif_c_c?status\\($parname\\)") :
+                           kind == "WEIGHT" ? Regex("\\bmpif_c_c?weights\\($parname\\)") :
+                           kind == "ERROR_CODE" ? Regex("\\bmpif_c_errcodes\\($parname\\)") :
+                           kind ∈ ["STRING_ARRAY", "STRING_2DARRAY"] ? Regex("\\bnull_$parname \\?") :
+                           nothing
+                if expected === nothing
+                    @assert kind == "C_BUFFER2" (name, parname, kind)
+                    @assert parname ∈ call_arguments (name, parname, call_arguments)
+                    @assert any(l -> occursin("mpif_f_buffer_addr(q_$parname)", l),
+                                output_conversions) (name, parname)
+                else
+                    @assert count(a -> occursin(expected, a), call_arguments) == 1 (name, parname, kind, call_arguments)
+                    @assert parname ∉ call_arguments (name, parname, kind)
+                end
+                sentinel_sites[kind] = get(sentinel_sites, kind, 0) + 1
+            end
+        end
 
         # A status is eight default INTEGERs either way -- the ABI fixes
         # MPI_Status as three named ints followed by five more, and mpif fixes
@@ -2342,12 +2538,27 @@ for key in sort(collect(keys(apis)))
 
                 # Every buffer's address, and the descriptor in its place in
                 # the argument list.
+                # One line per buffer, and the only place this entry translates a
+                # sentinel: every use downstream -- the walk and contig guards
+                # below, the vw collectives' `q_sendbuf != MPI_IN_PLACE`, the
+                # call argument -- reads `q_<name>`, so `mpif_cdesc_is_sentinel`
+                # keeps comparing against the C constants and is once again
+                # exactly right. The walker still gets the descriptor itself.
                 for p in parameters
                     p["kind"] == "BUFFER" || continue
                     b = p["name"]
-                    push!(cdesc_addresses, "void* const q_$b = $b->base_addr;")
-                    replace_call_arg!(cdesc_call_arguments, b, "q_$b")
+                    base = translate_sentinels ? "mpif_c_buffer($b->base_addr)" : "$b->base_addr"
+                    push!(cdesc_addresses, "void* const q_$b = $base;")
+                    # With translation on the ordinary entry already passes
+                    # `q_<name>`, so there is nothing left to replace.
+                    translate_sentinels || replace_call_arg!(cdesc_call_arguments, b, "q_$b")
                 end
+                # A status crosses this boundary as an MPI_Status* already, so
+                # the ordinary entry's cast is redundant here. Its *translation*
+                # is not: an f08 caller can pass either status sentinel through a
+                # cdesc entry as readily as through mpif_f08_raw, so
+                # mpif_c_status stays and only a bare cast is stripped -- which
+                # is why this loop matches nothing once translation is on.
                 for st in status_names
                     for (i, a) in enumerate(cdesc_call_arguments)
                         a == "(MPI_Status*)$st" && (cdesc_call_arguments[i] = st)
@@ -2746,6 +2957,12 @@ for key in sort(collect(keys(apis)))
             end
         end
         if c_expressible
+            # The buffer hoists come first: an input conversion may compare
+            # against a translated buffer, as the vw collectives' `sendtypes`
+            # guard does.
+            foreach(buffer_hoists) do bh
+                return push!(c_implementations, "  $bh")
+            end
             foreach(input_conversions) do ic
                 return push!(c_implementations, "  $ic")
             end
@@ -2789,6 +3006,11 @@ if emit_cfi
     # cfi_expected_class_counts above.
     @assert cfi_class_counts == cfi_expected_class_counts cfi_class_counts
     @assert cfi_async_only_routines == Set(["MPI_Comm_idup", "MPI_Comm_idup_with_info"]) cfi_async_only_routines
+end
+
+if translate_sentinels
+    # Likewise for the sentinel crossings; see sentinel_expected_sites above.
+    @assert sentinel_sites == sentinel_expected_sites sentinel_sites
 end
 
 append!(f_interfaces,
@@ -2963,18 +3185,27 @@ end
 if emit_cfi
     println("Writing \"gen/mpif_f08_cdesc.c\"...")
     open("gen/mpif_f08_cdesc.c", "w") do f
-        for line in ["// The cdesc entry points: Fortran-callable through the bind(C)",
+        for line in filter(!isnothing,
+                    ["// The cdesc entry points: Fortran-callable through the bind(C)",
                      "// interfaces of module mpif_f08_cdesc, taking each choice buffer as a",
-                     "// CFI descriptor. Contiguous descriptors and the sentinels pass their",
-                     "// base address through; anything else goes to src/mpif_cdesc.c's",
-                     "// walker or is refused. See dev/mpiapi.jl; do not edit.",
+                     translate_sentinels ?
+                         "// CFI descriptor. Each descriptor's base address is translated once, into" :
+                         "// CFI descriptor. Contiguous descriptors and the sentinels pass their",
+                     translate_sentinels ?
+                         "// q_<name>; a sentinel and a contiguous descriptor then pass through, and" :
+                         "// base address through; anything else goes to src/mpif_cdesc.c's",
+                     translate_sentinels ?
+                         "// anything else goes to src/mpif_cdesc.c's walker or is refused. See" :
+                         "// walker or is refused. See dev/mpiapi.jl; do not edit.",
+                     translate_sentinels ? "// dev/mpiapi.jl; do not edit." : nothing,
                      "",
                      "#ifdef MPIF_HAVE_CFI",
                      "",
                      "#include <mpif_cdesc.h>",
+                     translate_sentinels ? "#include <mpif_sentinels.h>" : nothing,
                      "#include <mpif_strings.h>",
                      "#include <stdlib.h>",
-                     "#include <string.h>"]
+                     "#include <string.h>"])
             println(f, line)
         end
         for impl in c_cdesc_implementations

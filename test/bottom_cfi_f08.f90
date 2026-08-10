@@ -1,8 +1,10 @@
-! MPI_BOTTOM through an assumed-rank dummy. The Fortran sentinel lives at the
-! C constant's address -- address zero in the standard ABI -- and the
-! descriptor a compiler builds for an actual argument at that address must
-! carry it intact to the cdesc layer, which recognises it and skips the walk.
-! MPI_Get_address exercises the address-semantics buffer crossing on the way.
+! MPI_BOTTOM through an assumed-rank dummy. The Fortran sentinel is a COMMON
+! block of mpif's own, so the descriptor a compiler builds for it carries that
+! block's address, and the cdesc entry has to translate it into the ABI's
+! (void*)0 -- one hoist, `q_buf = mpif_c_buffer(buf->base_addr)` -- before the
+! walk guard can recognise it and skip the walk. MPI_Get_address exercises the
+! address-semantics buffer crossing on the way. test/bottom.f90 does the same
+! from mpif.h and the mpi module, which reach different entry points.
 
 program bottom_cfi_f08
   use mpi_f08

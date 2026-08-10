@@ -39,6 +39,9 @@ typedef MPI_Status MPI_F08_Status;
 ////////////////////////////////////////////////////////////////////////////////
 // Constants
 
+// Null, and deliberately not what fortran/mpi.h.patch defines these as; see the
+// same block in fortran/f2c_abi_mpich.c for why this file cannot name mpif's
+// sentinel symbols and what that costs.
 #define MPI_F_STATUS_IGNORE ((MPI_Fint *)MPI_STATUS_IGNORE)
 #define MPI_F_STATUSES_IGNORE ((MPI_Fint *)MPI_STATUSES_IGNORE)
 #define MPI_F08_STATUS_IGNORE ((MPI_F08_Status *)MPI_STATUS_IGNORE)

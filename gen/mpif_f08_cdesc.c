@@ -1,12 +1,14 @@
 // The cdesc entry points: Fortran-callable through the bind(C)
 // interfaces of module mpif_f08_cdesc, taking each choice buffer as a
-// CFI descriptor. Contiguous descriptors and the sentinels pass their
-// base address through; anything else goes to src/mpif_cdesc.c's
-// walker or is refused. See dev/mpiapi.jl; do not edit.
+// CFI descriptor. Each descriptor's base address is translated once, into
+// q_<name>; a sentinel and a contiguous descriptor then pass through, and
+// anything else goes to src/mpif_cdesc.c's walker or is refused. See
+// dev/mpiapi.jl; do not edit.
 
 #ifdef MPIF_HAVE_CFI
 
 #include <mpif_cdesc.h>
+#include <mpif_sentinels.h>
 #include <mpif_strings.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,7 +27,7 @@ void mpi_accumulate_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -71,7 +73,7 @@ void mpi_accumulate_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -117,7 +119,7 @@ void pmpi_accumulate_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -163,7 +165,7 @@ void pmpi_accumulate_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -207,8 +209,8 @@ void mpi_allgather_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -264,8 +266,8 @@ void mpi_allgather_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -321,8 +323,8 @@ void pmpi_allgather_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -378,8 +380,8 @@ void pmpi_allgather_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -437,8 +439,8 @@ void mpi_allgather_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -500,8 +502,8 @@ void mpi_allgather_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -563,8 +565,8 @@ void pmpi_allgather_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -626,8 +628,8 @@ void pmpi_allgather_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -688,8 +690,8 @@ void mpi_allgatherv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -735,8 +737,8 @@ void mpi_allgatherv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -782,8 +784,8 @@ void pmpi_allgatherv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -829,8 +831,8 @@ void pmpi_allgatherv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -878,8 +880,8 @@ void mpi_allgatherv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -931,8 +933,8 @@ void mpi_allgatherv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -984,8 +986,8 @@ void pmpi_allgatherv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -1037,8 +1039,8 @@ void pmpi_allgatherv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -1086,8 +1088,8 @@ void mpi_allreduce_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -1117,8 +1119,8 @@ void mpi_allreduce_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -1148,8 +1150,8 @@ void pmpi_allreduce_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -1179,8 +1181,8 @@ void pmpi_allreduce_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -1212,8 +1214,8 @@ void mpi_allreduce_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -1249,8 +1251,8 @@ void mpi_allreduce_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -1286,8 +1288,8 @@ void pmpi_allreduce_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -1323,8 +1325,8 @@ void pmpi_allreduce_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -1359,8 +1361,8 @@ void mpi_alltoall_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -1416,8 +1418,8 @@ void mpi_alltoall_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -1473,8 +1475,8 @@ void pmpi_alltoall_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -1530,8 +1532,8 @@ void pmpi_alltoall_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -1589,8 +1591,8 @@ void mpi_alltoall_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -1652,8 +1654,8 @@ void mpi_alltoall_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -1715,8 +1717,8 @@ void pmpi_alltoall_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -1778,8 +1780,8 @@ void pmpi_alltoall_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -1841,8 +1843,8 @@ void mpi_alltoallv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -1878,8 +1880,8 @@ void mpi_alltoallv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -1915,8 +1917,8 @@ void pmpi_alltoallv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -1952,8 +1954,8 @@ void pmpi_alltoallv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -1991,8 +1993,8 @@ void mpi_alltoallv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -2034,8 +2036,8 @@ void mpi_alltoallv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -2077,8 +2079,8 @@ void pmpi_alltoallv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -2120,8 +2122,8 @@ void pmpi_alltoallv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -2161,8 +2163,8 @@ void mpi_alltoallw_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -2222,8 +2224,8 @@ void mpi_alltoallw_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -2283,8 +2285,8 @@ void pmpi_alltoallw_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -2344,8 +2346,8 @@ void pmpi_alltoallw_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -2407,8 +2409,8 @@ void mpi_alltoallw_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -2474,8 +2476,8 @@ void mpi_alltoallw_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -2541,8 +2543,8 @@ void pmpi_alltoallw_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -2608,8 +2610,8 @@ void pmpi_alltoallw_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -2669,7 +2671,7 @@ void mpi_bcast_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   MPI_Datatype q_buffer_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buffer_count = *count;
   int q_buffer_owned = 0;
@@ -2707,7 +2709,7 @@ void mpi_bcast_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   MPI_Datatype q_buffer_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buffer_count = *count;
   int q_buffer_owned = 0;
@@ -2745,7 +2747,7 @@ void pmpi_bcast_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   MPI_Datatype q_buffer_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buffer_count = *count;
   int q_buffer_owned = 0;
@@ -2783,7 +2785,7 @@ void pmpi_bcast_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   MPI_Datatype q_buffer_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buffer_count = *count;
   int q_buffer_owned = 0;
@@ -2823,7 +2825,7 @@ void mpi_bcast_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buffer_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buffer_count = *count;
@@ -2867,7 +2869,7 @@ void mpi_bcast_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buffer_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buffer_count = *count;
@@ -2911,7 +2913,7 @@ void pmpi_bcast_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buffer_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buffer_count = *count;
@@ -2955,7 +2957,7 @@ void pmpi_bcast_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buffer_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buffer_count = *count;
@@ -2998,7 +3000,7 @@ void mpi_bsend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -3038,7 +3040,7 @@ void mpi_bsend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -3078,7 +3080,7 @@ void pmpi_bsend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -3118,7 +3120,7 @@ void pmpi_bsend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -3159,7 +3161,7 @@ void mpi_bsend_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -3203,7 +3205,7 @@ void mpi_bsend_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -3247,7 +3249,7 @@ void pmpi_bsend_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -3291,7 +3293,7 @@ void pmpi_bsend_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -3329,7 +3331,7 @@ void mpi_buffer_attach_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   *ierror = MPI_Buffer_attach(
     q_buffer,
     *size
@@ -3342,7 +3344,7 @@ void mpi_buffer_attach_c_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   *ierror = MPI_Buffer_attach_c(
     q_buffer,
     *size
@@ -3355,7 +3357,7 @@ void pmpi_buffer_attach_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   *ierror = PMPI_Buffer_attach(
     q_buffer,
     *size
@@ -3368,7 +3370,7 @@ void pmpi_buffer_attach_c_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   *ierror = PMPI_Buffer_attach_c(
     q_buffer,
     *size
@@ -3382,7 +3384,7 @@ void mpi_comm_attach_buffer_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   *ierror = MPI_Comm_attach_buffer(
     MPI_Comm_fromint(*comm),
     q_buffer,
@@ -3397,7 +3399,7 @@ void mpi_comm_attach_buffer_c_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   *ierror = MPI_Comm_attach_buffer_c(
     MPI_Comm_fromint(*comm),
     q_buffer,
@@ -3412,7 +3414,7 @@ void pmpi_comm_attach_buffer_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   *ierror = PMPI_Comm_attach_buffer(
     MPI_Comm_fromint(*comm),
     q_buffer,
@@ -3427,7 +3429,7 @@ void pmpi_comm_attach_buffer_c_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   *ierror = PMPI_Comm_attach_buffer_c(
     MPI_Comm_fromint(*comm),
     q_buffer,
@@ -3446,9 +3448,9 @@ void mpi_compare_and_swap_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_origin_addr = origin_addr->base_addr;
-  void* const q_compare_addr = compare_addr->base_addr;
-  void* const q_result_addr = result_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
+  void* const q_compare_addr = mpif_c_buffer(compare_addr->base_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr->base_addr);
   *ierror = MPI_Compare_and_swap(
     q_origin_addr,
     q_compare_addr,
@@ -3471,9 +3473,9 @@ void pmpi_compare_and_swap_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_origin_addr = origin_addr->base_addr;
-  void* const q_compare_addr = compare_addr->base_addr;
-  void* const q_result_addr = result_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
+  void* const q_compare_addr = mpif_c_buffer(compare_addr->base_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr->base_addr);
   *ierror = PMPI_Compare_and_swap(
     q_origin_addr,
     q_compare_addr,
@@ -3496,8 +3498,8 @@ void mpi_exscan_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -3527,8 +3529,8 @@ void mpi_exscan_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -3558,8 +3560,8 @@ void pmpi_exscan_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -3589,8 +3591,8 @@ void pmpi_exscan_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -3622,8 +3624,8 @@ void mpi_exscan_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -3659,8 +3661,8 @@ void mpi_exscan_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -3696,8 +3698,8 @@ void pmpi_exscan_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -3733,8 +3735,8 @@ void pmpi_exscan_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -3780,8 +3782,8 @@ void mpi_fetch_and_op_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_origin_addr = origin_addr->base_addr;
-  void* const q_result_addr = result_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr->base_addr);
   *ierror = MPI_Fetch_and_op(
     q_origin_addr,
     q_result_addr,
@@ -3804,8 +3806,8 @@ void pmpi_fetch_and_op_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_origin_addr = origin_addr->base_addr;
-  void* const q_result_addr = result_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr->base_addr);
   *ierror = PMPI_Fetch_and_op(
     q_origin_addr,
     q_result_addr,
@@ -3827,7 +3829,7 @@ void mpi_file_iread_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -3867,7 +3869,7 @@ void mpi_file_iread_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -3907,7 +3909,7 @@ void pmpi_file_iread_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -3947,7 +3949,7 @@ void pmpi_file_iread_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -3987,7 +3989,7 @@ void mpi_file_iread_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4027,7 +4029,7 @@ void mpi_file_iread_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4067,7 +4069,7 @@ void pmpi_file_iread_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4107,7 +4109,7 @@ void pmpi_file_iread_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4148,7 +4150,7 @@ void mpi_file_iread_at_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4190,7 +4192,7 @@ void mpi_file_iread_at_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4232,7 +4234,7 @@ void pmpi_file_iread_at_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4274,7 +4276,7 @@ void pmpi_file_iread_at_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4316,7 +4318,7 @@ void mpi_file_iread_at_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4358,7 +4360,7 @@ void mpi_file_iread_at_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4400,7 +4402,7 @@ void pmpi_file_iread_at_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4442,7 +4444,7 @@ void pmpi_file_iread_at_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4483,7 +4485,7 @@ void mpi_file_iread_shared_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4523,7 +4525,7 @@ void mpi_file_iread_shared_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4563,7 +4565,7 @@ void pmpi_file_iread_shared_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4603,7 +4605,7 @@ void pmpi_file_iread_shared_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4643,7 +4645,7 @@ void mpi_file_iwrite_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4683,7 +4685,7 @@ void mpi_file_iwrite_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4723,7 +4725,7 @@ void pmpi_file_iwrite_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4763,7 +4765,7 @@ void pmpi_file_iwrite_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4803,7 +4805,7 @@ void mpi_file_iwrite_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4843,7 +4845,7 @@ void mpi_file_iwrite_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4883,7 +4885,7 @@ void pmpi_file_iwrite_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4923,7 +4925,7 @@ void pmpi_file_iwrite_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -4964,7 +4966,7 @@ void mpi_file_iwrite_at_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -5006,7 +5008,7 @@ void mpi_file_iwrite_at_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -5048,7 +5050,7 @@ void pmpi_file_iwrite_at_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -5090,7 +5092,7 @@ void pmpi_file_iwrite_at_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -5132,7 +5134,7 @@ void mpi_file_iwrite_at_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -5174,7 +5176,7 @@ void mpi_file_iwrite_at_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -5216,7 +5218,7 @@ void pmpi_file_iwrite_at_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -5258,7 +5260,7 @@ void pmpi_file_iwrite_at_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -5299,7 +5301,7 @@ void mpi_file_iwrite_shared_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -5339,7 +5341,7 @@ void mpi_file_iwrite_shared_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -5379,7 +5381,7 @@ void pmpi_file_iwrite_shared_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -5419,7 +5421,7 @@ void pmpi_file_iwrite_shared_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -5459,7 +5461,7 @@ void mpi_file_read_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5481,7 +5483,7 @@ void mpi_file_read_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -5497,7 +5499,7 @@ void mpi_file_read_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5519,7 +5521,7 @@ void mpi_file_read_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -5535,7 +5537,7 @@ void pmpi_file_read_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5557,7 +5559,7 @@ void pmpi_file_read_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -5573,7 +5575,7 @@ void pmpi_file_read_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5595,7 +5597,7 @@ void pmpi_file_read_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -5611,7 +5613,7 @@ void mpi_file_read_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5633,7 +5635,7 @@ void mpi_file_read_all_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -5649,7 +5651,7 @@ void mpi_file_read_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5671,7 +5673,7 @@ void mpi_file_read_all_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -5687,7 +5689,7 @@ void pmpi_file_read_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5709,7 +5711,7 @@ void pmpi_file_read_all_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -5725,7 +5727,7 @@ void pmpi_file_read_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5747,7 +5749,7 @@ void pmpi_file_read_all_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -5762,7 +5764,7 @@ void mpi_file_read_all_begin_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5798,7 +5800,7 @@ void mpi_file_read_all_begin_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5834,7 +5836,7 @@ void pmpi_file_read_all_begin_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5870,7 +5872,7 @@ void pmpi_file_read_all_begin_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5904,11 +5906,11 @@ void mpi_file_read_all_end_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   *ierror = MPI_File_read_all_end(
     MPI_File_fromint(*fh),
     q_buf,
-    status
+    mpif_c_status(status)
   );
 }
 
@@ -5919,11 +5921,11 @@ void pmpi_file_read_all_end_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   *ierror = PMPI_File_read_all_end(
     MPI_File_fromint(*fh),
     q_buf,
-    status
+    mpif_c_status(status)
   );
 }
 
@@ -5938,7 +5940,7 @@ void mpi_file_read_at_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -5961,7 +5963,7 @@ void mpi_file_read_at_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -5978,7 +5980,7 @@ void mpi_file_read_at_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6001,7 +6003,7 @@ void mpi_file_read_at_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6018,7 +6020,7 @@ void pmpi_file_read_at_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6041,7 +6043,7 @@ void pmpi_file_read_at_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6058,7 +6060,7 @@ void pmpi_file_read_at_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6081,7 +6083,7 @@ void pmpi_file_read_at_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6098,7 +6100,7 @@ void mpi_file_read_at_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6121,7 +6123,7 @@ void mpi_file_read_at_all_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6138,7 +6140,7 @@ void mpi_file_read_at_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6161,7 +6163,7 @@ void mpi_file_read_at_all_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6178,7 +6180,7 @@ void pmpi_file_read_at_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6201,7 +6203,7 @@ void pmpi_file_read_at_all_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6218,7 +6220,7 @@ void pmpi_file_read_at_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6241,7 +6243,7 @@ void pmpi_file_read_at_all_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6257,7 +6259,7 @@ void mpi_file_read_at_all_begin_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6295,7 +6297,7 @@ void mpi_file_read_at_all_begin_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6333,7 +6335,7 @@ void pmpi_file_read_at_all_begin_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6371,7 +6373,7 @@ void pmpi_file_read_at_all_begin_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6406,11 +6408,11 @@ void mpi_file_read_at_all_end_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   *ierror = MPI_File_read_at_all_end(
     MPI_File_fromint(*fh),
     q_buf,
-    status
+    mpif_c_status(status)
   );
 }
 
@@ -6421,11 +6423,11 @@ void pmpi_file_read_at_all_end_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   *ierror = PMPI_File_read_at_all_end(
     MPI_File_fromint(*fh),
     q_buf,
-    status
+    mpif_c_status(status)
   );
 }
 
@@ -6439,7 +6441,7 @@ void mpi_file_read_ordered_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6461,7 +6463,7 @@ void mpi_file_read_ordered_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6477,7 +6479,7 @@ void mpi_file_read_ordered_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6499,7 +6501,7 @@ void mpi_file_read_ordered_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6515,7 +6517,7 @@ void pmpi_file_read_ordered_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6537,7 +6539,7 @@ void pmpi_file_read_ordered_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6553,7 +6555,7 @@ void pmpi_file_read_ordered_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6575,7 +6577,7 @@ void pmpi_file_read_ordered_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6590,7 +6592,7 @@ void mpi_file_read_ordered_begin_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6626,7 +6628,7 @@ void mpi_file_read_ordered_begin_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6662,7 +6664,7 @@ void pmpi_file_read_ordered_begin_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6698,7 +6700,7 @@ void pmpi_file_read_ordered_begin_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6732,11 +6734,11 @@ void mpi_file_read_ordered_end_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   *ierror = MPI_File_read_ordered_end(
     MPI_File_fromint(*fh),
     q_buf,
-    status
+    mpif_c_status(status)
   );
 }
 
@@ -6747,11 +6749,11 @@ void pmpi_file_read_ordered_end_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   *ierror = PMPI_File_read_ordered_end(
     MPI_File_fromint(*fh),
     q_buf,
-    status
+    mpif_c_status(status)
   );
 }
 
@@ -6765,7 +6767,7 @@ void mpi_file_read_shared_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6787,7 +6789,7 @@ void mpi_file_read_shared_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6803,7 +6805,7 @@ void mpi_file_read_shared_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6825,7 +6827,7 @@ void mpi_file_read_shared_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6841,7 +6843,7 @@ void pmpi_file_read_shared_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6863,7 +6865,7 @@ void pmpi_file_read_shared_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6879,7 +6881,7 @@ void pmpi_file_read_shared_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6901,7 +6903,7 @@ void pmpi_file_read_shared_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6917,7 +6919,7 @@ void mpi_file_write_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6939,7 +6941,7 @@ void mpi_file_write_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6955,7 +6957,7 @@ void mpi_file_write_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -6977,7 +6979,7 @@ void mpi_file_write_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -6993,7 +6995,7 @@ void pmpi_file_write_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7015,7 +7017,7 @@ void pmpi_file_write_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7031,7 +7033,7 @@ void pmpi_file_write_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7053,7 +7055,7 @@ void pmpi_file_write_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7069,7 +7071,7 @@ void mpi_file_write_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7091,7 +7093,7 @@ void mpi_file_write_all_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7107,7 +7109,7 @@ void mpi_file_write_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7129,7 +7131,7 @@ void mpi_file_write_all_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7145,7 +7147,7 @@ void pmpi_file_write_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7167,7 +7169,7 @@ void pmpi_file_write_all_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7183,7 +7185,7 @@ void pmpi_file_write_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7205,7 +7207,7 @@ void pmpi_file_write_all_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7220,7 +7222,7 @@ void mpi_file_write_all_begin_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7256,7 +7258,7 @@ void mpi_file_write_all_begin_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7292,7 +7294,7 @@ void pmpi_file_write_all_begin_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7328,7 +7330,7 @@ void pmpi_file_write_all_begin_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7362,11 +7364,11 @@ void mpi_file_write_all_end_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   *ierror = MPI_File_write_all_end(
     MPI_File_fromint(*fh),
     q_buf,
-    status
+    mpif_c_status(status)
   );
 }
 
@@ -7377,11 +7379,11 @@ void pmpi_file_write_all_end_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   *ierror = PMPI_File_write_all_end(
     MPI_File_fromint(*fh),
     q_buf,
-    status
+    mpif_c_status(status)
   );
 }
 
@@ -7396,7 +7398,7 @@ void mpi_file_write_at_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7419,7 +7421,7 @@ void mpi_file_write_at_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7436,7 +7438,7 @@ void mpi_file_write_at_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7459,7 +7461,7 @@ void mpi_file_write_at_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7476,7 +7478,7 @@ void pmpi_file_write_at_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7499,7 +7501,7 @@ void pmpi_file_write_at_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7516,7 +7518,7 @@ void pmpi_file_write_at_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7539,7 +7541,7 @@ void pmpi_file_write_at_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7556,7 +7558,7 @@ void mpi_file_write_at_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7579,7 +7581,7 @@ void mpi_file_write_at_all_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7596,7 +7598,7 @@ void mpi_file_write_at_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7619,7 +7621,7 @@ void mpi_file_write_at_all_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7636,7 +7638,7 @@ void pmpi_file_write_at_all_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7659,7 +7661,7 @@ void pmpi_file_write_at_all_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7676,7 +7678,7 @@ void pmpi_file_write_at_all_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7699,7 +7701,7 @@ void pmpi_file_write_at_all_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7715,7 +7717,7 @@ void mpi_file_write_at_all_begin_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7753,7 +7755,7 @@ void mpi_file_write_at_all_begin_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7791,7 +7793,7 @@ void pmpi_file_write_at_all_begin_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7829,7 +7831,7 @@ void pmpi_file_write_at_all_begin_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7864,11 +7866,11 @@ void mpi_file_write_at_all_end_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   *ierror = MPI_File_write_at_all_end(
     MPI_File_fromint(*fh),
     q_buf,
-    status
+    mpif_c_status(status)
   );
 }
 
@@ -7879,11 +7881,11 @@ void pmpi_file_write_at_all_end_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   *ierror = PMPI_File_write_at_all_end(
     MPI_File_fromint(*fh),
     q_buf,
-    status
+    mpif_c_status(status)
   );
 }
 
@@ -7897,7 +7899,7 @@ void mpi_file_write_ordered_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7919,7 +7921,7 @@ void mpi_file_write_ordered_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7935,7 +7937,7 @@ void mpi_file_write_ordered_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7957,7 +7959,7 @@ void mpi_file_write_ordered_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -7973,7 +7975,7 @@ void pmpi_file_write_ordered_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -7995,7 +7997,7 @@ void pmpi_file_write_ordered_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -8011,7 +8013,7 @@ void pmpi_file_write_ordered_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -8033,7 +8035,7 @@ void pmpi_file_write_ordered_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -8048,7 +8050,7 @@ void mpi_file_write_ordered_begin_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -8084,7 +8086,7 @@ void mpi_file_write_ordered_begin_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -8120,7 +8122,7 @@ void pmpi_file_write_ordered_begin_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -8156,7 +8158,7 @@ void pmpi_file_write_ordered_begin_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -8190,11 +8192,11 @@ void mpi_file_write_ordered_end_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   *ierror = MPI_File_write_ordered_end(
     MPI_File_fromint(*fh),
     q_buf,
-    status
+    mpif_c_status(status)
   );
 }
 
@@ -8205,11 +8207,11 @@ void pmpi_file_write_ordered_end_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   *ierror = PMPI_File_write_ordered_end(
     MPI_File_fromint(*fh),
     q_buf,
-    status
+    mpif_c_status(status)
   );
 }
 
@@ -8223,7 +8225,7 @@ void mpi_file_write_shared_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -8245,7 +8247,7 @@ void mpi_file_write_shared_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -8261,7 +8263,7 @@ void mpi_file_write_shared_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -8283,7 +8285,7 @@ void mpi_file_write_shared_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -8299,7 +8301,7 @@ void pmpi_file_write_shared_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -8321,7 +8323,7 @@ void pmpi_file_write_shared_cdesc(
     q_buf,
     (int)q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -8337,7 +8339,7 @@ void pmpi_file_write_shared_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -8359,7 +8361,7 @@ void pmpi_file_write_shared_c_cdesc(
     q_buf,
     q_buf_count,
     q_buf_type,
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -8370,7 +8372,7 @@ void mpi_free_mem_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_base = base->base_addr;
+  void* const q_base = mpif_c_buffer(base->base_addr);
   *ierror = MPI_Free_mem(
     q_base
   );
@@ -8381,7 +8383,7 @@ void pmpi_free_mem_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_base = base->base_addr;
+  void* const q_base = mpif_c_buffer(base->base_addr);
   *ierror = PMPI_Free_mem(
     q_base
   );
@@ -8400,8 +8402,8 @@ void mpi_gather_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8480,8 +8482,8 @@ void mpi_gather_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8560,8 +8562,8 @@ void pmpi_gather_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8640,8 +8642,8 @@ void pmpi_gather_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8722,8 +8724,8 @@ void mpi_gather_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8808,8 +8810,8 @@ void mpi_gather_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8894,8 +8896,8 @@ void pmpi_gather_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -8980,8 +8982,8 @@ void pmpi_gather_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -9065,8 +9067,8 @@ void mpi_gatherv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -9135,8 +9137,8 @@ void mpi_gatherv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -9205,8 +9207,8 @@ void pmpi_gatherv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -9275,8 +9277,8 @@ void pmpi_gatherv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -9347,8 +9349,8 @@ void mpi_gatherv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -9423,8 +9425,8 @@ void mpi_gatherv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -9499,8 +9501,8 @@ void pmpi_gatherv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -9575,8 +9577,8 @@ void pmpi_gatherv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -9648,7 +9650,7 @@ void mpi_get_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -9692,7 +9694,7 @@ void mpi_get_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -9736,7 +9738,7 @@ void pmpi_get_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -9780,7 +9782,7 @@ void pmpi_get_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -9828,8 +9830,8 @@ void mpi_get_accumulate_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
-  void* const q_result_addr = result_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -9895,8 +9897,8 @@ void mpi_get_accumulate_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
-  void* const q_result_addr = result_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -9962,8 +9964,8 @@ void pmpi_get_accumulate_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
-  void* const q_result_addr = result_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -10029,8 +10031,8 @@ void pmpi_get_accumulate_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
-  void* const q_result_addr = result_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -10085,7 +10087,7 @@ void mpi_get_address_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_location = location->base_addr;
+  void* const q_location = mpif_c_buffer(location->base_addr);
   *ierror = MPI_Get_address(
     q_location,
     address
@@ -10098,7 +10100,7 @@ void pmpi_get_address_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_location = location->base_addr;
+  void* const q_location = mpif_c_buffer(location->base_addr);
   *ierror = PMPI_Get_address(
     q_location,
     address
@@ -10118,8 +10120,8 @@ void mpi_iallgather_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -10179,8 +10181,8 @@ void mpi_iallgather_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -10240,8 +10242,8 @@ void pmpi_iallgather_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -10301,8 +10303,8 @@ void pmpi_iallgather_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -10363,8 +10365,8 @@ void mpi_iallgatherv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -10414,8 +10416,8 @@ void mpi_iallgatherv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -10465,8 +10467,8 @@ void pmpi_iallgatherv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -10516,8 +10518,8 @@ void pmpi_iallgatherv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -10565,8 +10567,8 @@ void mpi_iallreduce_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -10600,8 +10602,8 @@ void mpi_iallreduce_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -10635,8 +10637,8 @@ void pmpi_iallreduce_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -10670,8 +10672,8 @@ void pmpi_iallreduce_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -10706,8 +10708,8 @@ void mpi_ialltoall_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -10767,8 +10769,8 @@ void mpi_ialltoall_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -10828,8 +10830,8 @@ void pmpi_ialltoall_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -10889,8 +10891,8 @@ void pmpi_ialltoall_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -10952,8 +10954,8 @@ void mpi_ialltoallv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -10993,8 +10995,8 @@ void mpi_ialltoallv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -11034,8 +11036,8 @@ void pmpi_ialltoallv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -11075,8 +11077,8 @@ void pmpi_ialltoallv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -11116,8 +11118,8 @@ void mpi_ialltoallw_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -11181,8 +11183,8 @@ void mpi_ialltoallw_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -11246,8 +11248,8 @@ void pmpi_ialltoallw_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -11311,8 +11313,8 @@ void pmpi_ialltoallw_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_group_size = 0;
   {
@@ -11372,7 +11374,7 @@ void mpi_ibcast_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buffer_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buffer_count = *count;
@@ -11414,7 +11416,7 @@ void mpi_ibcast_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buffer_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buffer_count = *count;
@@ -11456,7 +11458,7 @@ void pmpi_ibcast_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buffer_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buffer_count = *count;
@@ -11498,7 +11500,7 @@ void pmpi_ibcast_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buffer_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buffer_count = *count;
@@ -11541,7 +11543,7 @@ void mpi_ibsend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -11585,7 +11587,7 @@ void mpi_ibsend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -11629,7 +11631,7 @@ void pmpi_ibsend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -11673,7 +11675,7 @@ void pmpi_ibsend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -11717,8 +11719,8 @@ void mpi_iexscan_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -11752,8 +11754,8 @@ void mpi_iexscan_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -11787,8 +11789,8 @@ void pmpi_iexscan_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -11822,8 +11824,8 @@ void pmpi_iexscan_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -11859,8 +11861,8 @@ void mpi_igather_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -11943,8 +11945,8 @@ void mpi_igather_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -12027,8 +12029,8 @@ void pmpi_igather_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -12111,8 +12113,8 @@ void pmpi_igather_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -12196,8 +12198,8 @@ void mpi_igatherv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -12270,8 +12272,8 @@ void mpi_igatherv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -12344,8 +12346,8 @@ void pmpi_igatherv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -12418,8 +12420,8 @@ void pmpi_igatherv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -12487,7 +12489,7 @@ void mpi_imrecv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Message c_message = MPI_Message_fromint(*message);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
@@ -12529,7 +12531,7 @@ void mpi_imrecv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Message c_message = MPI_Message_fromint(*message);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
@@ -12571,7 +12573,7 @@ void pmpi_imrecv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Message c_message = MPI_Message_fromint(*message);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
@@ -12613,7 +12615,7 @@ void pmpi_imrecv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Message c_message = MPI_Message_fromint(*message);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
@@ -12658,8 +12660,8 @@ void mpi_ineighbor_allgather_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -12719,8 +12721,8 @@ void mpi_ineighbor_allgather_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -12780,8 +12782,8 @@ void pmpi_ineighbor_allgather_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -12841,8 +12843,8 @@ void pmpi_ineighbor_allgather_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -12903,8 +12905,8 @@ void mpi_ineighbor_allgatherv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -12954,8 +12956,8 @@ void mpi_ineighbor_allgatherv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -13005,8 +13007,8 @@ void pmpi_ineighbor_allgatherv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -13056,8 +13058,8 @@ void pmpi_ineighbor_allgatherv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -13106,8 +13108,8 @@ void mpi_ineighbor_alltoall_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -13167,8 +13169,8 @@ void mpi_ineighbor_alltoall_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -13228,8 +13230,8 @@ void pmpi_ineighbor_alltoall_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -13289,8 +13291,8 @@ void pmpi_ineighbor_alltoall_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -13352,8 +13354,8 @@ void mpi_ineighbor_alltoallv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -13393,8 +13395,8 @@ void mpi_ineighbor_alltoallv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -13434,8 +13436,8 @@ void pmpi_ineighbor_alltoallv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -13475,8 +13477,8 @@ void pmpi_ineighbor_alltoallv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -13516,8 +13518,8 @@ void mpi_ineighbor_alltoallw_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -13597,8 +13599,8 @@ void mpi_ineighbor_alltoallw_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -13678,8 +13680,8 @@ void pmpi_ineighbor_alltoallw_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -13759,8 +13761,8 @@ void pmpi_ineighbor_alltoallw_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -13837,7 +13839,7 @@ void mpi_irecv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -13881,7 +13883,7 @@ void mpi_irecv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -13925,7 +13927,7 @@ void pmpi_irecv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -13969,7 +13971,7 @@ void pmpi_irecv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -14014,8 +14016,8 @@ void mpi_ireduce_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
@@ -14072,8 +14074,8 @@ void mpi_ireduce_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
@@ -14130,8 +14132,8 @@ void pmpi_ireduce_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
@@ -14188,8 +14190,8 @@ void pmpi_ireduce_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
@@ -14245,8 +14247,8 @@ void mpi_ireduce_scatter_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -14280,8 +14282,8 @@ void mpi_ireduce_scatter_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -14315,8 +14317,8 @@ void pmpi_ireduce_scatter_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -14350,8 +14352,8 @@ void pmpi_ireduce_scatter_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -14385,8 +14387,8 @@ void mpi_ireduce_scatter_block_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -14420,8 +14422,8 @@ void mpi_ireduce_scatter_block_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -14455,8 +14457,8 @@ void pmpi_ireduce_scatter_block_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -14490,8 +14492,8 @@ void pmpi_ireduce_scatter_block_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -14525,7 +14527,7 @@ void mpi_irsend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -14569,7 +14571,7 @@ void mpi_irsend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -14613,7 +14615,7 @@ void pmpi_irsend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -14657,7 +14659,7 @@ void pmpi_irsend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -14701,8 +14703,8 @@ void mpi_iscan_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -14736,8 +14738,8 @@ void mpi_iscan_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -14771,8 +14773,8 @@ void pmpi_iscan_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -14806,8 +14808,8 @@ void pmpi_iscan_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -14843,8 +14845,8 @@ void mpi_iscatter_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -14927,8 +14929,8 @@ void mpi_iscatter_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -15011,8 +15013,8 @@ void pmpi_iscatter_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -15095,8 +15097,8 @@ void pmpi_iscatter_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -15180,8 +15182,8 @@ void mpi_iscatterv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -15254,8 +15256,8 @@ void mpi_iscatterv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -15328,8 +15330,8 @@ void pmpi_iscatterv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -15402,8 +15404,8 @@ void pmpi_iscatterv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -15473,7 +15475,7 @@ void mpi_isend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -15517,7 +15519,7 @@ void mpi_isend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -15561,7 +15563,7 @@ void pmpi_isend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -15605,7 +15607,7 @@ void pmpi_isend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -15654,8 +15656,8 @@ void mpi_isendrecv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -15723,8 +15725,8 @@ void mpi_isendrecv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -15792,8 +15794,8 @@ void pmpi_isendrecv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -15861,8 +15863,8 @@ void pmpi_isendrecv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -15927,7 +15929,7 @@ void mpi_isendrecv_replace_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -15975,7 +15977,7 @@ void mpi_isendrecv_replace_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -16023,7 +16025,7 @@ void pmpi_isendrecv_replace_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -16071,7 +16073,7 @@ void pmpi_isendrecv_replace_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -16117,7 +16119,7 @@ void mpi_issend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -16161,7 +16163,7 @@ void mpi_issend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -16205,7 +16207,7 @@ void pmpi_issend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -16249,7 +16251,7 @@ void pmpi_issend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -16291,7 +16293,7 @@ void mpi_mrecv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Message c_message = MPI_Message_fromint(*message);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -16314,7 +16316,7 @@ void mpi_mrecv_cdesc(
     (int)q_buf_count,
     q_buf_type,
     &c_message,
-    status
+    mpif_c_status(status)
   );
   *message = MPI_Message_toint(c_message);
   if (q_buf_owned)
@@ -16331,7 +16333,7 @@ void mpi_mrecv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Message c_message = MPI_Message_fromint(*message);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -16354,7 +16356,7 @@ void mpi_mrecv_c_cdesc(
     q_buf_count,
     q_buf_type,
     &c_message,
-    status
+    mpif_c_status(status)
   );
   *message = MPI_Message_toint(c_message);
   if (q_buf_owned)
@@ -16371,7 +16373,7 @@ void pmpi_mrecv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Message c_message = MPI_Message_fromint(*message);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -16394,7 +16396,7 @@ void pmpi_mrecv_cdesc(
     (int)q_buf_count,
     q_buf_type,
     &c_message,
-    status
+    mpif_c_status(status)
   );
   *message = MPI_Message_toint(c_message);
   if (q_buf_owned)
@@ -16411,7 +16413,7 @@ void pmpi_mrecv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Message c_message = MPI_Message_fromint(*message);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -16434,7 +16436,7 @@ void pmpi_mrecv_c_cdesc(
     q_buf_count,
     q_buf_type,
     &c_message,
-    status
+    mpif_c_status(status)
   );
   *message = MPI_Message_toint(c_message);
   if (q_buf_owned)
@@ -16453,8 +16455,8 @@ void mpi_neighbor_allgather_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -16510,8 +16512,8 @@ void mpi_neighbor_allgather_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -16567,8 +16569,8 @@ void pmpi_neighbor_allgather_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -16624,8 +16626,8 @@ void pmpi_neighbor_allgather_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -16683,8 +16685,8 @@ void mpi_neighbor_allgather_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -16746,8 +16748,8 @@ void mpi_neighbor_allgather_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -16809,8 +16811,8 @@ void pmpi_neighbor_allgather_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -16872,8 +16874,8 @@ void pmpi_neighbor_allgather_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -16934,8 +16936,8 @@ void mpi_neighbor_allgatherv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -16981,8 +16983,8 @@ void mpi_neighbor_allgatherv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -17028,8 +17030,8 @@ void pmpi_neighbor_allgatherv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -17075,8 +17077,8 @@ void pmpi_neighbor_allgatherv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -17124,8 +17126,8 @@ void mpi_neighbor_allgatherv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -17177,8 +17179,8 @@ void mpi_neighbor_allgatherv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -17230,8 +17232,8 @@ void pmpi_neighbor_allgatherv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -17283,8 +17285,8 @@ void pmpi_neighbor_allgatherv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -17333,8 +17335,8 @@ void mpi_neighbor_alltoall_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -17390,8 +17392,8 @@ void mpi_neighbor_alltoall_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -17447,8 +17449,8 @@ void pmpi_neighbor_alltoall_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -17504,8 +17506,8 @@ void pmpi_neighbor_alltoall_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -17563,8 +17565,8 @@ void mpi_neighbor_alltoall_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -17626,8 +17628,8 @@ void mpi_neighbor_alltoall_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -17689,8 +17691,8 @@ void pmpi_neighbor_alltoall_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -17752,8 +17754,8 @@ void pmpi_neighbor_alltoall_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
@@ -17815,8 +17817,8 @@ void mpi_neighbor_alltoallv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -17852,8 +17854,8 @@ void mpi_neighbor_alltoallv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -17889,8 +17891,8 @@ void pmpi_neighbor_alltoallv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -17926,8 +17928,8 @@ void pmpi_neighbor_alltoallv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -17965,8 +17967,8 @@ void mpi_neighbor_alltoallv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -18008,8 +18010,8 @@ void mpi_neighbor_alltoallv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -18051,8 +18053,8 @@ void pmpi_neighbor_alltoallv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -18094,8 +18096,8 @@ void pmpi_neighbor_alltoallv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -18135,8 +18137,8 @@ void mpi_neighbor_alltoallw_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -18212,8 +18214,8 @@ void mpi_neighbor_alltoallw_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -18289,8 +18291,8 @@ void pmpi_neighbor_alltoallw_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -18366,8 +18368,8 @@ void pmpi_neighbor_alltoallw_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -18445,8 +18447,8 @@ void mpi_neighbor_alltoallw_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -18528,8 +18530,8 @@ void mpi_neighbor_alltoallw_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -18611,8 +18613,8 @@ void pmpi_neighbor_alltoallw_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -18694,8 +18696,8 @@ void pmpi_neighbor_alltoallw_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_indegree = 0, q_outdegree = 0;
   {
@@ -18773,8 +18775,8 @@ void mpi_pack_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   MPI_Datatype q_inbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_inbuf_count = *incount;
   int q_inbuf_owned = 0;
@@ -18818,8 +18820,8 @@ void mpi_pack_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   MPI_Datatype q_inbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_inbuf_count = *incount;
   int q_inbuf_owned = 0;
@@ -18863,8 +18865,8 @@ void pmpi_pack_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   MPI_Datatype q_inbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_inbuf_count = *incount;
   int q_inbuf_owned = 0;
@@ -18908,8 +18910,8 @@ void pmpi_pack_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   MPI_Datatype q_inbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_inbuf_count = *incount;
   int q_inbuf_owned = 0;
@@ -18954,8 +18956,8 @@ void mpi_pack_external_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   MPI_Datatype q_inbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_inbuf_count = *incount;
@@ -19003,8 +19005,8 @@ void mpi_pack_external_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   MPI_Datatype q_inbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_inbuf_count = *incount;
@@ -19052,8 +19054,8 @@ void pmpi_pack_external_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   MPI_Datatype q_inbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_inbuf_count = *incount;
@@ -19101,8 +19103,8 @@ void pmpi_pack_external_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   MPI_Datatype q_inbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_inbuf_count = *incount;
@@ -19151,7 +19153,7 @@ void mpi_precv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_buf) && buf->rank != 0 && !CFI_is_contiguous(buf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -19187,7 +19189,7 @@ void pmpi_precv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_buf) && buf->rank != 0 && !CFI_is_contiguous(buf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -19223,7 +19225,7 @@ void mpi_psend_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_buf) && buf->rank != 0 && !CFI_is_contiguous(buf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -19259,7 +19261,7 @@ void pmpi_psend_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_buf) && buf->rank != 0 && !CFI_is_contiguous(buf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -19294,7 +19296,7 @@ void mpi_put_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -19338,7 +19340,7 @@ void mpi_put_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -19382,7 +19384,7 @@ void pmpi_put_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -19426,7 +19428,7 @@ void pmpi_put_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
   int q_origin_addr_owned = 0;
@@ -19472,7 +19474,7 @@ void mpi_raccumulate_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -19522,7 +19524,7 @@ void mpi_raccumulate_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -19572,7 +19574,7 @@ void pmpi_raccumulate_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -19622,7 +19624,7 @@ void pmpi_raccumulate_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -19669,7 +19671,7 @@ void mpi_recv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -19693,7 +19695,7 @@ void mpi_recv_cdesc(
     *source,
     *tag,
     MPI_Comm_fromint(*comm),
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -19711,7 +19713,7 @@ void mpi_recv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -19735,7 +19737,7 @@ void mpi_recv_c_cdesc(
     *source,
     *tag,
     MPI_Comm_fromint(*comm),
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -19753,7 +19755,7 @@ void pmpi_recv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -19777,7 +19779,7 @@ void pmpi_recv_cdesc(
     *source,
     *tag,
     MPI_Comm_fromint(*comm),
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -19795,7 +19797,7 @@ void pmpi_recv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -19819,7 +19821,7 @@ void pmpi_recv_c_cdesc(
     *source,
     *tag,
     MPI_Comm_fromint(*comm),
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -19837,7 +19839,7 @@ void mpi_recv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -19881,7 +19883,7 @@ void mpi_recv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -19925,7 +19927,7 @@ void pmpi_recv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -19969,7 +19971,7 @@ void pmpi_recv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -20013,8 +20015,8 @@ void mpi_reduce_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -20067,8 +20069,8 @@ void mpi_reduce_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -20121,8 +20123,8 @@ void pmpi_reduce_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -20175,8 +20177,8 @@ void pmpi_reduce_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -20231,8 +20233,8 @@ void mpi_reduce_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
@@ -20291,8 +20293,8 @@ void mpi_reduce_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
@@ -20351,8 +20353,8 @@ void pmpi_reduce_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
@@ -20411,8 +20413,8 @@ void pmpi_reduce_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
@@ -20467,8 +20469,8 @@ void mpi_reduce_local_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_inoutbuf = inoutbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_inoutbuf = mpif_c_buffer(inoutbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_inbuf) && inbuf->rank != 0 && !CFI_is_contiguous(inbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_inoutbuf) && inoutbuf->rank != 0 && !CFI_is_contiguous(inoutbuf))
@@ -20496,8 +20498,8 @@ void mpi_reduce_local_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_inoutbuf = inoutbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_inoutbuf = mpif_c_buffer(inoutbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_inbuf) && inbuf->rank != 0 && !CFI_is_contiguous(inbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_inoutbuf) && inoutbuf->rank != 0 && !CFI_is_contiguous(inoutbuf))
@@ -20525,8 +20527,8 @@ void pmpi_reduce_local_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_inoutbuf = inoutbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_inoutbuf = mpif_c_buffer(inoutbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_inbuf) && inbuf->rank != 0 && !CFI_is_contiguous(inbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_inoutbuf) && inoutbuf->rank != 0 && !CFI_is_contiguous(inoutbuf))
@@ -20554,8 +20556,8 @@ void pmpi_reduce_local_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_inoutbuf = inoutbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_inoutbuf = mpif_c_buffer(inoutbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_inbuf) && inbuf->rank != 0 && !CFI_is_contiguous(inbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_inoutbuf) && inoutbuf->rank != 0 && !CFI_is_contiguous(inoutbuf))
@@ -20584,8 +20586,8 @@ void mpi_reduce_scatter_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -20615,8 +20617,8 @@ void mpi_reduce_scatter_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -20646,8 +20648,8 @@ void pmpi_reduce_scatter_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -20677,8 +20679,8 @@ void pmpi_reduce_scatter_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -20708,8 +20710,8 @@ void mpi_reduce_scatter_block_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -20739,8 +20741,8 @@ void mpi_reduce_scatter_block_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -20770,8 +20772,8 @@ void pmpi_reduce_scatter_block_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -20801,8 +20803,8 @@ void pmpi_reduce_scatter_block_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -20834,8 +20836,8 @@ void mpi_reduce_scatter_block_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -20871,8 +20873,8 @@ void mpi_reduce_scatter_block_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -20908,8 +20910,8 @@ void pmpi_reduce_scatter_block_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -20945,8 +20947,8 @@ void pmpi_reduce_scatter_block_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -20982,8 +20984,8 @@ void mpi_reduce_scatter_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -21019,8 +21021,8 @@ void mpi_reduce_scatter_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -21056,8 +21058,8 @@ void pmpi_reduce_scatter_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -21093,8 +21095,8 @@ void pmpi_reduce_scatter_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -21131,7 +21133,7 @@ void mpi_rget_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -21179,7 +21181,7 @@ void mpi_rget_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -21227,7 +21229,7 @@ void pmpi_rget_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -21275,7 +21277,7 @@ void pmpi_rget_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -21327,8 +21329,8 @@ void mpi_rget_accumulate_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
-  void* const q_result_addr = result_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -21398,8 +21400,8 @@ void mpi_rget_accumulate_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
-  void* const q_result_addr = result_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -21469,8 +21471,8 @@ void pmpi_rget_accumulate_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
-  void* const q_result_addr = result_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -21540,8 +21542,8 @@ void pmpi_rget_accumulate_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
-  void* const q_result_addr = result_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
+  void* const q_result_addr = mpif_c_buffer(result_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -21607,7 +21609,7 @@ void mpi_rput_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -21655,7 +21657,7 @@ void mpi_rput_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -21703,7 +21705,7 @@ void pmpi_rput_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -21751,7 +21753,7 @@ void pmpi_rput_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_origin_addr = origin_addr->base_addr;
+  void* const q_origin_addr = mpif_c_buffer(origin_addr->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_origin_addr_type = MPI_Type_fromint(*origin_datatype);
   MPI_Count q_origin_addr_count = *origin_count;
@@ -21796,7 +21798,7 @@ void mpi_rsend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -21836,7 +21838,7 @@ void mpi_rsend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -21876,7 +21878,7 @@ void pmpi_rsend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -21916,7 +21918,7 @@ void pmpi_rsend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -21957,7 +21959,7 @@ void mpi_rsend_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -22001,7 +22003,7 @@ void mpi_rsend_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -22045,7 +22047,7 @@ void pmpi_rsend_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -22089,7 +22091,7 @@ void pmpi_rsend_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -22132,8 +22134,8 @@ void mpi_scan_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -22163,8 +22165,8 @@ void mpi_scan_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -22194,8 +22196,8 @@ void pmpi_scan_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -22225,8 +22227,8 @@ void pmpi_scan_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
   if (!mpif_cdesc_is_sentinel(q_recvbuf) && recvbuf->rank != 0 && !CFI_is_contiguous(recvbuf))
@@ -22258,8 +22260,8 @@ void mpi_scan_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -22295,8 +22297,8 @@ void mpi_scan_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -22332,8 +22334,8 @@ void pmpi_scan_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -22369,8 +22371,8 @@ void pmpi_scan_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   if (!mpif_cdesc_is_sentinel(q_sendbuf) && sendbuf->rank != 0 && !CFI_is_contiguous(sendbuf))
     q_cdesc_err = MPI_ERR_BUFFER;
@@ -22406,8 +22408,8 @@ void mpi_scatter_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -22486,8 +22488,8 @@ void mpi_scatter_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -22566,8 +22568,8 @@ void pmpi_scatter_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -22646,8 +22648,8 @@ void pmpi_scatter_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -22728,8 +22730,8 @@ void mpi_scatter_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -22814,8 +22816,8 @@ void mpi_scatter_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -22900,8 +22902,8 @@ void pmpi_scatter_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -22986,8 +22988,8 @@ void pmpi_scatter_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -23071,8 +23073,8 @@ void mpi_scatterv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -23141,8 +23143,8 @@ void mpi_scatterv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -23211,8 +23213,8 @@ void pmpi_scatterv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -23281,8 +23283,8 @@ void pmpi_scatterv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -23353,8 +23355,8 @@ void mpi_scatterv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -23429,8 +23431,8 @@ void mpi_scatterv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -23505,8 +23507,8 @@ void pmpi_scatterv_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -23581,8 +23583,8 @@ void pmpi_scatterv_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int q_at_root;
   {
@@ -23652,7 +23654,7 @@ void mpi_send_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -23692,7 +23694,7 @@ void mpi_send_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -23732,7 +23734,7 @@ void pmpi_send_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -23772,7 +23774,7 @@ void pmpi_send_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -23813,7 +23815,7 @@ void mpi_send_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -23857,7 +23859,7 @@ void mpi_send_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -23901,7 +23903,7 @@ void pmpi_send_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -23945,7 +23947,7 @@ void pmpi_send_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -23994,8 +23996,8 @@ void mpi_sendrecv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -24036,7 +24038,7 @@ void mpi_sendrecv_cdesc(
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    status
+    mpif_c_status(status)
   );
   if (q_sendbuf_owned)
     PMPI_Type_free(&q_sendbuf_type);
@@ -24061,8 +24063,8 @@ void mpi_sendrecv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -24103,7 +24105,7 @@ void mpi_sendrecv_c_cdesc(
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    status
+    mpif_c_status(status)
   );
   if (q_sendbuf_owned)
     PMPI_Type_free(&q_sendbuf_type);
@@ -24128,8 +24130,8 @@ void pmpi_sendrecv_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -24170,7 +24172,7 @@ void pmpi_sendrecv_cdesc(
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    status
+    mpif_c_status(status)
   );
   if (q_sendbuf_owned)
     PMPI_Type_free(&q_sendbuf_type);
@@ -24195,8 +24197,8 @@ void pmpi_sendrecv_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_sendbuf = sendbuf->base_addr;
-  void* const q_recvbuf = recvbuf->base_addr;
+  void* const q_sendbuf = mpif_c_buffer(sendbuf->base_addr);
+  void* const q_recvbuf = mpif_c_buffer(recvbuf->base_addr);
   MPI_Datatype q_sendbuf_type = MPI_Type_fromint(*sendtype);
   MPI_Count q_sendbuf_count = *sendcount;
   int q_sendbuf_owned = 0;
@@ -24237,7 +24239,7 @@ void pmpi_sendrecv_c_cdesc(
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    status
+    mpif_c_status(status)
   );
   if (q_sendbuf_owned)
     PMPI_Type_free(&q_sendbuf_type);
@@ -24259,7 +24261,7 @@ void mpi_sendrecv_replace_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -24285,7 +24287,7 @@ void mpi_sendrecv_replace_cdesc(
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -24305,7 +24307,7 @@ void mpi_sendrecv_replace_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -24331,7 +24333,7 @@ void mpi_sendrecv_replace_c_cdesc(
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -24351,7 +24353,7 @@ void pmpi_sendrecv_replace_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -24377,7 +24379,7 @@ void pmpi_sendrecv_replace_cdesc(
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -24397,7 +24399,7 @@ void pmpi_sendrecv_replace_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -24423,7 +24425,7 @@ void pmpi_sendrecv_replace_c_cdesc(
     *source,
     *recvtag,
     MPI_Comm_fromint(*comm),
-    status
+    mpif_c_status(status)
   );
   if (q_buf_owned)
     PMPI_Type_free(&q_buf_type);
@@ -24436,7 +24438,7 @@ void mpi_session_attach_buffer_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   *ierror = MPI_Session_attach_buffer(
     MPI_Session_fromint(*session),
     q_buffer,
@@ -24451,7 +24453,7 @@ void mpi_session_attach_buffer_c_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   *ierror = MPI_Session_attach_buffer_c(
     MPI_Session_fromint(*session),
     q_buffer,
@@ -24466,7 +24468,7 @@ void pmpi_session_attach_buffer_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   *ierror = PMPI_Session_attach_buffer(
     MPI_Session_fromint(*session),
     q_buffer,
@@ -24481,7 +24483,7 @@ void pmpi_session_attach_buffer_c_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_buffer = buffer->base_addr;
+  void* const q_buffer = mpif_c_buffer(buffer->base_addr);
   *ierror = PMPI_Session_attach_buffer_c(
     MPI_Session_fromint(*session),
     q_buffer,
@@ -24500,7 +24502,7 @@ void mpi_ssend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -24540,7 +24542,7 @@ void mpi_ssend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -24580,7 +24582,7 @@ void pmpi_ssend_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -24620,7 +24622,7 @@ void pmpi_ssend_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
   int q_buf_owned = 0;
@@ -24661,7 +24663,7 @@ void mpi_ssend_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -24705,7 +24707,7 @@ void mpi_ssend_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -24749,7 +24751,7 @@ void pmpi_ssend_init_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -24793,7 +24795,7 @@ void pmpi_ssend_init_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_buf = buf->base_addr;
+  void* const q_buf = mpif_c_buffer(buf->base_addr);
   MPI_Request c_request = MPI_REQUEST_NULL;
   MPI_Datatype q_buf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_buf_count = *count;
@@ -24837,8 +24839,8 @@ void mpi_unpack_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   MPI_Datatype q_outbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_outbuf_count = *outcount;
   int q_outbuf_owned = 0;
@@ -24882,8 +24884,8 @@ void mpi_unpack_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   MPI_Datatype q_outbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_outbuf_count = *outcount;
   int q_outbuf_owned = 0;
@@ -24927,8 +24929,8 @@ void pmpi_unpack_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   MPI_Datatype q_outbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_outbuf_count = *outcount;
   int q_outbuf_owned = 0;
@@ -24972,8 +24974,8 @@ void pmpi_unpack_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   MPI_Datatype q_outbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_outbuf_count = *outcount;
   int q_outbuf_owned = 0;
@@ -25018,8 +25020,8 @@ void mpi_unpack_external_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   MPI_Datatype q_outbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_outbuf_count = *outcount;
@@ -25067,8 +25069,8 @@ void mpi_unpack_external_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   MPI_Datatype q_outbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_outbuf_count = *outcount;
@@ -25116,8 +25118,8 @@ void pmpi_unpack_external_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   MPI_Datatype q_outbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_outbuf_count = *outcount;
@@ -25165,8 +25167,8 @@ void pmpi_unpack_external_c_cdesc(
 )
 {
   int q_cdesc_err = MPI_SUCCESS;
-  void* const q_inbuf = inbuf->base_addr;
-  void* const q_outbuf = outbuf->base_addr;
+  void* const q_inbuf = mpif_c_buffer(inbuf->base_addr);
+  void* const q_outbuf = mpif_c_buffer(outbuf->base_addr);
   char* const c_datarep = mpif_strdup_f2c(datarep, length_datarep);
   MPI_Datatype q_outbuf_type = MPI_Type_fromint(*datatype);
   MPI_Count q_outbuf_count = *outcount;
@@ -25208,7 +25210,7 @@ void mpi_win_attach_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_base = base->base_addr;
+  void* const q_base = mpif_c_buffer(base->base_addr);
   *ierror = MPI_Win_attach(
     MPI_Win_fromint(*win),
     q_base,
@@ -25223,7 +25225,7 @@ void pmpi_win_attach_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_base = base->base_addr;
+  void* const q_base = mpif_c_buffer(base->base_addr);
   *ierror = PMPI_Win_attach(
     MPI_Win_fromint(*win),
     q_base,
@@ -25241,7 +25243,7 @@ void mpi_win_create_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_base = base->base_addr;
+  void* const q_base = mpif_c_buffer(base->base_addr);
   MPI_Win c_win = MPI_WIN_NULL;
   *ierror = MPI_Win_create(
     q_base,
@@ -25264,7 +25266,7 @@ void mpi_win_create_c_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_base = base->base_addr;
+  void* const q_base = mpif_c_buffer(base->base_addr);
   MPI_Win c_win = MPI_WIN_NULL;
   *ierror = MPI_Win_create_c(
     q_base,
@@ -25287,7 +25289,7 @@ void pmpi_win_create_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_base = base->base_addr;
+  void* const q_base = mpif_c_buffer(base->base_addr);
   MPI_Win c_win = MPI_WIN_NULL;
   *ierror = PMPI_Win_create(
     q_base,
@@ -25310,7 +25312,7 @@ void pmpi_win_create_c_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_base = base->base_addr;
+  void* const q_base = mpif_c_buffer(base->base_addr);
   MPI_Win c_win = MPI_WIN_NULL;
   *ierror = PMPI_Win_create_c(
     q_base,
@@ -25329,7 +25331,7 @@ void mpi_win_detach_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_base = base->base_addr;
+  void* const q_base = mpif_c_buffer(base->base_addr);
   *ierror = MPI_Win_detach(
     MPI_Win_fromint(*win),
     q_base
@@ -25342,7 +25344,7 @@ void pmpi_win_detach_cdesc(
   MPI_Fint* restrict const ierror
 )
 {
-  void* const q_base = base->base_addr;
+  void* const q_base = mpif_c_buffer(base->base_addr);
   *ierror = PMPI_Win_detach(
     MPI_Win_fromint(*win),
     q_base

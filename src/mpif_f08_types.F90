@@ -163,48 +163,40 @@ module mpif_f08_types
   ! INTEGER one cannot be passed to a TYPE(MPI_Status) dummy argument at all,
   ! which is what stopped MPICH's f08 spawn tests from compiling.
   !
-  ! Cray pointers into common blocks of their own, /MPIF_F08_STATUS_IGNORE_PTR/
-  ! and /MPIF_F08_STATUSES_IGNORE_PTR/, which src/mpif_constants.c initialises
-  ! from the same two C constants that mpif.h's sentinels get their addresses
-  ! from. All three interfaces still put these names at one address; only the
-  ! cell holding it is private to mpi_f08. The generated wrappers compare
-  ! loc(status) against these and never read the contents.
+  ! COMMON blocks of their own, /MPIF_F08_STATUS_IGNORE/ and
+  ! /MPIF_F08_STATUSES_IGNORE/, merged onto the storage src/mpif_constants.c
+  ! defines. Two things follow from their being separate objects rather than
+  ! separate views of one:
   !
-  ! Sharing mpif_constants' blocks -- the obvious arrangement, and what this used
-  ! to do -- makes gfortran 15 emit a reference that no object defines, so every
-  ! *user* of the sentinel fails to link:
+  ! - mpi_f08's two sentinels have addresses of their own, distinct from the mpi
+  !   module's. MPI-5.0 section 3.2.6 permits it -- "MPI_STATUS_IGNORE and
+  !   MPI_STATUSES_IGNORE are not required to have the same values in C and
+  !   Fortran" -- and it is an improvement over the four sharing one value: a C
+  !   layer can now tell an mpi_f08 sentinel from an mpif.h one.
+  ! - the C side has four addresses to recognise, not two. The f08 wrappers reach
+  !   the same C entry points as mpif.h does, through mpif_f08_raw, so
+  !   mpi_recv_'s `status` may be either object; see include/mpif_sentinels.h.
   !
-  !     Undefined symbols:
-  !       "___mpif_f08_types_MOD_mpif_f08_statuses_ignore_ptr", referenced from:
-  !           _MAIN__ in ...
+  ! TYPE(MPI_Status) is legal in a COMMON block: F2023 C8124 asks a derived-type
+  ! common-block object's type to have BIND or SEQUENCE and no default
+  ! initialization, and MPI_Status is `type, bind(C)` with four uninitialized
+  ! INTEGER components. TARGET, as in include/mpif_constants.h, for uniformity.
   !
-  ! Naming a sentinel is enough to trigger it -- `print *,
-  ! loc(MPI_STATUSES_IGNORE)` after `use mpi_f08` does -- so it is not specific
-  ! to passing one to MPI_Waitall. Three things have to come together, which is
-  ! why it went unnoticed until a test passed one: the pointer sits in a common
-  ! block that another module (mpif_constants, through mpif_f08_constants) also
-  ! contributes a variable to; the reference is made through a module that
-  ! re-exports this one, as mpi_f08 does, `use mpif_f08_types` directly being
-  ! fine; and the pointee is an array. That last one is why MPI_STATUS_IGNORE
-  ! seemed healthy -- but only ever one of the two resolved, and giving just the
-  ! array its own block moved the failure onto the scalar rather than fixing it.
-  ! Hence both.
-  !
-  ! The .mod file is not what is wrong: it records both pointers as IN_COMMON
-  ! CRAY_POINTER and lists both blocks. This is a code-generation bug, not
-  ! something to fix by declaring them differently.
+  ! Two blocks rather than one because the objects have different types, so they
+  ! could not share a block in any case. There was also a gfortran 15 defect
+  ! behind the split when these were Cray pointers -- sharing mpif_constants'
+  ! block made gfortran emit `___mpif_f08_types_MOD_mpif_f08_statuses_ignore_ptr`
+  ! as a reference no object defined, so every *user* of the sentinel failed to
+  ! link. Its preconditions included the Cray pointer, which is gone, so it is
+  ! probably gone with it; nothing here depends on the answer.
 
   public :: MPI_STATUS_IGNORE
-  type(MPI_Status) :: MPI_STATUS_IGNORE
-  integer(MPI_ADDRESS_KIND) :: MPIF_F08_STATUS_IGNORE_PTR
-  pointer (MPIF_F08_STATUS_IGNORE_PTR, MPI_STATUS_IGNORE)
-  common /MPIF_F08_STATUS_IGNORE_PTR/ MPIF_F08_STATUS_IGNORE_PTR
+  type(MPI_Status), target :: MPI_STATUS_IGNORE
+  common /MPIF_F08_STATUS_IGNORE/ MPI_STATUS_IGNORE
 
   public :: MPI_STATUSES_IGNORE
-  type(MPI_Status) :: MPI_STATUSES_IGNORE(1)
-  integer(MPI_ADDRESS_KIND) :: MPIF_F08_STATUSES_IGNORE_PTR
-  pointer (MPIF_F08_STATUSES_IGNORE_PTR, MPI_STATUSES_IGNORE)
-  common /MPIF_F08_STATUSES_IGNORE_PTR/ MPIF_F08_STATUSES_IGNORE_PTR
+  type(MPI_Status), target :: MPI_STATUSES_IGNORE(1)
+  common /MPIF_F08_STATUSES_IGNORE/ MPI_STATUSES_IGNORE
 
   ! Constants
 

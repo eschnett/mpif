@@ -73,13 +73,11 @@ report HAVE_REAL16
 report HAVE_COMPLEX4
 report HAVE_COMPLEX32
 
-# Extensions mpif needs. The first two ask gfortran's spelling of the flag, so
-# a compiler that has the feature without the flag reports "no" and is fine --
-# flang does, measured. HAVE_Fortran_cray_pointer is the feature itself, and a
-# "no" there has already stopped the configure with a message of its own.
+# The one flag mpif asks for, and it asks in gfortran's spelling, so a compiler
+# that relaxes argument matching by default reports "no" here and is fine --
+# flang does, measured. There is no longer a Cray-pointer flag or feature to
+# report: the sentinels are COMMON blocks, so mpif needs no language extension.
 report Fortran_flag_allow_argument_mismatch
-report Fortran_flag_cray_pointer
-report HAVE_Fortran_cray_pointer
 
 # The large-count generics that are legal on only one width, and whether the
 # compiler agrees with the rule that decided them.

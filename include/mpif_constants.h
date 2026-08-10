@@ -248,24 +248,30 @@
       integer, parameter :: MPI_ERR_LASTCODE            = int(z'3fff') ! half of the minimum required value of INT_MAX
 
 !     Buffer Address Constants
-!     We use Cray pointers to handle sentinel values. Unfortunately
-!     these might not be supported everywhere, and if they are, they
-!     require special compiler options.
+!
+!     Each sentinel is an ordinary COMMON block, one block per sentinel so that
+!     each gets an address of its own. It is that address, and not the contents,
+!     that identifies the sentinel: the ABI values are not addresses of anything
+!     -- MPI_BOTTOM is (void*)0, MPI_IN_PLACE (void*)1, and five of the ten are
+!     null pointers -- so no Fortran entity can be declared at one, and the
+!     wrappers translate instead. src/mpif_constants.c holds the storage the
+!     blocks are merged onto and include/mpif_sentinels.h the argument for the
+!     arrangement; MPI-5.0 section 2.5.4's advice to implementors asks for
+!     exactly this. Their contents must never be read.
+!
+!     TARGET because MPI-5.0 section 3.6 requires it: "In Fortran, the
+!     implementation of MPI_BUFFER_AUTOMATIC must allow the intrinsic c_loc to
+!     be applied to it", and c_loc needs POINTER or TARGET. All ten carry it
+!     rather than only the one, so the declarations stay uniform.
 
-      integer MPI_BOTTOM(1)
-      integer(MPI_ADDRESS_KIND) MPIF_BOTTOM_PTR
-      pointer (MPIF_BOTTOM_PTR, MPI_BOTTOM)
-      common /MPIF_BOTTOM_PTR/ MPIF_BOTTOM_PTR
+      integer, target :: MPI_BOTTOM(1)
+      common /MPIF_BOTTOM/ MPI_BOTTOM
 
-      integer MPI_IN_PLACE(1)
-      integer(MPI_ADDRESS_KIND) MPIF_IN_PLACE_PTR
-      pointer (MPIF_IN_PLACE_PTR, MPI_IN_PLACE)
-      common /MPIF_IN_PLACE_PTR/ MPIF_IN_PLACE_PTR
+      integer, target :: MPI_IN_PLACE(1)
+      common /MPIF_IN_PLACE/ MPI_IN_PLACE
 
-      integer MPI_BUFFER_AUTOMATIC(1)
-      integer(MPI_ADDRESS_KIND) MPIF_BUFFER_AUTOMATIC_PTR
-      pointer (MPIF_BUFFER_AUTOMATIC_PTR, MPI_BUFFER_AUTOMATIC)
-      common /MPIF_BUFFER_AUTOMATIC_PTR/ MPIF_BUFFER_AUTOMATIC_PTR
+      integer, target :: MPI_BUFFER_AUTOMATIC(1)
+      common /MPIF_BUFFER_AUTOMATIC/ MPI_BUFFER_AUTOMATIC
 
 !     Empty/Ignored Constants
 
@@ -276,47 +282,33 @@
 !     to pick ("with fixed dimensions, e.g., (1,1)"); Fortran sequence
 !     association takes care of the assumed-size dummy arguments.
 !
-!     Note that the Cray pointer puts these at the address of the C constants,
-!     which are null pointers, so their contents must never be read. The wrappers
-!     recognise them by address instead; see dev/mpiapi.jl.
+!     They get blocks of their own, as all ten do: a COMMON block may not mix
+!     CHARACTER with non-CHARACTER, and one block per sentinel is what gives
+!     each a distinct address anyway.
 
-      character*1 MPI_ARGVS_NULL(1,1)
-      integer(MPI_ADDRESS_KIND) MPIF_ARGVS_NULL_PTR
-      pointer (MPIF_ARGVS_NULL_PTR, MPI_ARGVS_NULL)
-      common /MPIF_ARGVS_NULL_PTR/ MPIF_ARGVS_NULL_PTR
+      character(len=1), target :: MPI_ARGVS_NULL(1,1)
+      common /MPIF_ARGVS_NULL/ MPI_ARGVS_NULL
 
-      character*1 MPI_ARGV_NULL(1)
-      integer(MPI_ADDRESS_KIND) MPIF_ARGV_NULL_PTR
-      pointer (MPIF_ARGV_NULL_PTR, MPI_ARGV_NULL)
-      common /MPIF_ARGV_NULL_PTR/ MPIF_ARGV_NULL_PTR
+      character(len=1), target :: MPI_ARGV_NULL(1)
+      common /MPIF_ARGV_NULL/ MPI_ARGV_NULL
 
-      integer MPI_ERRCODES_IGNORE(1)
-      integer(MPI_ADDRESS_KIND) MPIF_ERRCODES_IGNORE_PTR
-      pointer (MPIF_ERRCODES_IGNORE_PTR, MPI_ERRCODES_IGNORE)
-      common /MPIF_ERRCODES_IGNORE_PTR/ MPIF_ERRCODES_IGNORE_PTR
+      integer, target :: MPI_ERRCODES_IGNORE(1)
+      common /MPIF_ERRCODES_IGNORE/ MPI_ERRCODES_IGNORE
 
-      integer MPI_STATUS_IGNORE(MPI_STATUS_SIZE)
-      integer(MPI_ADDRESS_KIND) MPIF_STATUS_IGNORE_PTR
-      pointer (MPIF_STATUS_IGNORE_PTR, MPI_STATUS_IGNORE)
-      common /MPIF_STATUS_IGNORE_PTR/ MPIF_STATUS_IGNORE_PTR
+      integer, target :: MPI_STATUS_IGNORE(MPI_STATUS_SIZE)
+      common /MPIF_STATUS_IGNORE/ MPI_STATUS_IGNORE
 
 !     Rank two, matching the `array_of_statuses(MPI_STATUS_SIZE,*)` of the six
 !     routines that take an array of statuses. Sequence association would let a
 !     rank-one array through as well, but the shape is what the name stands for.
-      integer MPI_STATUSES_IGNORE(MPI_STATUS_SIZE, 1)
-      integer(MPI_ADDRESS_KIND) MPIF_STATUSES_IGNORE_PTR
-      pointer (MPIF_STATUSES_IGNORE_PTR, MPI_STATUSES_IGNORE)
-      common /MPIF_STATUSES_IGNORE_PTR/ MPIF_STATUSES_IGNORE_PTR
+      integer, target :: MPI_STATUSES_IGNORE(MPI_STATUS_SIZE, 1)
+      common /MPIF_STATUSES_IGNORE/ MPI_STATUSES_IGNORE
 
-      integer MPI_UNWEIGHTED(1)
-      integer(MPI_ADDRESS_KIND) MPIF_UNWEIGHTED_PTR
-      pointer (MPIF_UNWEIGHTED_PTR, MPI_UNWEIGHTED)
-      common /MPIF_UNWEIGHTED_PTR/ MPIF_UNWEIGHTED_PTR
+      integer, target :: MPI_UNWEIGHTED(1)
+      common /MPIF_UNWEIGHTED/ MPI_UNWEIGHTED
 
-      integer MPI_WEIGHTS_EMPTY(1)
-      integer(MPI_ADDRESS_KIND) MPIF_WEIGHTS_EMPTY_PTR
-      pointer (MPIF_WEIGHTS_EMPTY_PTR, MPI_WEIGHTS_EMPTY)
-      common /MPIF_WEIGHTS_EMPTY_PTR/ MPIF_WEIGHTS_EMPTY_PTR
+      integer, target :: MPI_WEIGHTS_EMPTY(1)
+      common /MPIF_WEIGHTS_EMPTY/ MPI_WEIGHTS_EMPTY
 
 !     Maximum Sizes for Strings
 !     (Their lengths in Fortran are one less than their lengths in C)

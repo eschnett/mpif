@@ -79,6 +79,39 @@ contains
     if (bsize /= nbytes) stop 16
     call MPI_Session_finalize(session)
     print '("mpi_f08 MPI_Session_detach_buffer with TYPE(C_PTR): ok")'
+
+    ! MPI_BUFFER_AUTOMATIC, which is the reverse-direction sentinel and the only
+    ! one in the interface. MPI-5.0 3.6 on the detach procedures: "If
+    ! MPI_BUFFER_AUTOMATIC was used in the corresponding attach procedure, then
+    ! MPI_BUFFER_AUTOMATIC is also returned in the detach procedure and the value
+    ! returned in argument size is undefined ... When using Fortran mpi_f08, the
+    ! returned value is identical to c_loc(MPI_BUFFER_AUTOMATIC)."
+    !
+    ! Two obligations in one assertion. C_LOC applying to MPI_BUFFER_AUTOMATIC at
+    ! all is the advice to implementors immediately after -- "the implementation of
+    ! MPI_BUFFER_AUTOMATIC must allow the intrinsic c_loc to be applied to it" --
+    ! which needs the TARGET attribute on its declaration and which nothing else
+    ! in the tree checks. And the value coming back has to have been translated
+    ! from the ABI's (void*)2 into the address of mpif's own object, which is the
+    ! one C-to-Fortran crossing anywhere in mpif.
+    !
+    ! `size` is undefined here by that same sentence, so it is deliberately not
+    ! asserted.
+    call MPI_Buffer_attach(MPI_BUFFER_AUTOMATIC, nbytes)
+    sendbuf = 44
+    call MPI_Bsend(sendbuf, 1, MPI_INTEGER, 0, 2, MPI_COMM_SELF)
+    recvbuf = 0
+    call MPI_Recv(recvbuf, 1, MPI_INTEGER, 0, 2, MPI_COMM_SELF, MPI_STATUS_IGNORE)
+    if (recvbuf /= 44) stop 17
+    call MPI_Buffer_detach(addr, bsize)
+    if (.not. C_ASSOCIATED(addr, C_LOC(MPI_BUFFER_AUTOMATIC))) stop 18
+    print '("mpi_f08 MPI_BUFFER_AUTOMATIC round-trip: ok")'
+
+    ! The same for a communicator-level buffer, which is a different entry point
+    call MPI_Comm_attach_buffer(MPI_COMM_SELF, MPI_BUFFER_AUTOMATIC, nbytes)
+    call MPI_Comm_detach_buffer(MPI_COMM_SELF, addr, bsize)
+    if (.not. C_ASSOCIATED(addr, C_LOC(MPI_BUFFER_AUTOMATIC))) stop 19
+    print '("mpi_f08 MPI_BUFFER_AUTOMATIC through MPI_Comm_detach_buffer: ok")'
   end subroutine check_f08
 
 end module buffer_detach_f08_part

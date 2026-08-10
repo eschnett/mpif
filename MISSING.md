@@ -156,36 +156,22 @@ CFI branches, and `nvfortran` 26.5 with the caveat below. `ifx` 2026.1 builds
 the whole library and aborts on six test programs; it reports and does not gate.
 Both vendors' entries follow.
 
-### `ifx` aborts on a sentinel passed to a choice buffer
+### `ifx`'s abort on a sentinel: the trigger is gone, the measurement is not
 
-`ifx` 2026.1 compiles and installs the whole library, on both CFI branches, and
-then dies building the tests that pass a sentinel:
+`ifx` 2026.1 used to build the whole library and then die on the six test
+programs that passed a sentinel to an `mpi_f08` choice buffer — an internal
+compiler error, `#5623`, on both CFI branches. `HISTORY.md` has the record. The
+diagnosis was the *Cray pointee*: `-DMPIF_ENABLE_CFI=OFF` aborted identically,
+so `TYPE(*), DIMENSION(..)` and `integer :: buf(*)` under `ignore_tkr` failed
+alike, and the one thing the six had in common was passing a pointee.
 
-    inplace_f08.f90(14): error #5623: **Internal compiler error: internal
-    abort** Please report this error along with the circumstances in which it
-    occurred in a Software Problem Report.
-
-Line 14 is `MPI_Allreduce(MPI_IN_PLACE, sum, ...)`. Six targets abort, and once the C-`main`
-linking below was fixed they are the *only* six that fail — exactly the ones
-passing a sentinel (a Cray pointee, from `include/mpif_constants.h`) to an
-`mpi_f08` choice buffer: `inplace_f08`, `inplace_cfi_f08`,
-`alltoallw_inplace_f08`, `alltoallw_inplace_guard`, `bottom_cfi_f08`
-(`MPI_BOTTOM`) and `argv_null_f08` (`MPI_ARGV_NULL`). So it is sentinels in
-general, not `MPI_IN_PLACE` in particular, and everything else — the whole
-library and the other ~74 test programs — builds.
-
-Two sites for a report, not one: `inplace_f08.f90:14` and
-`alltoallw_inplace_guard_subf90.f90:79`.
-
-`-DMPIF_ENABLE_CFI=OFF` aborts identically, so the trigger is the Cray pointee
-and not the assumed-rank mechanism: `TYPE(*), DIMENSION(..)` and
-`integer :: buf(*)` under `ignore_tkr` fail alike.
-
-A compiler defect with nothing for mpif to spell differently. The sentinel must
-be a Cray pointee: in C, `MPI_IN_PLACE` is a distinguished address rather than
-an object, so no Fortran entity can be declared *at* it, and a `bind(C)`
-variable would have storage of its own at the wrong address. Any of the six
-targets is a reproducer for an Intel report. Not gating.
+The sentinels are no longer Cray pointees — they are plain COMMON blocks, and
+mpif accepts no `-fcray-pointer` anywhere — so the trigger should be gone with
+them. **That has not been measured**: `ifx` is x86-64 only and runs under qemu
+here, so it belongs to CI. What to look for is whether `inplace_f08`,
+`inplace_cfi_f08`, `alltoallw_inplace_f08`, `alltoallw_inplace_guard`,
+`bottom_cfi_f08` and `argv_null_f08` now build, on both branches. Until a run
+says so this entry stands, and `ifx` reports rather than gates.
 
 ### `ifx` and `nvfortran` link a C `main` against their own — fixed in `test/`
 
@@ -826,11 +812,57 @@ What remains are decisions, not oversights:
   communicator's error handler** — MPICH's layer does the same. Under
   `MPI_ERRORS_ARE_FATAL` a program sees a return code here where the
   standard would have it abort.
-- `mpif_cdesc_is_sentinel` is belt and braces: a sentinel actual is a
-  one-element array, always contiguous, so it cannot reach the walker
-  anyway. A drill removing it fails no test, and it stays because it
-  documents intent and guards a compiler that reports a one-element
-  section noncontiguous.
+- `mpif_cdesc_is_sentinel` is still belt and braces *as a walk guard*: a
+  sentinel actual is a one-element array, always contiguous, so it cannot
+  reach the walker anyway. A drill removing it fails no test, and it stays
+  because it documents intent and guards a compiler that reports a
+  one-element section noncontiguous. What is not belt and braces is the
+  translation beside it — `q_<name> = mpif_c_buffer(<name>->base_addr)` — which
+  is load-bearing on every cdesc entry, and which is also what keeps the
+  predicate's three compares against the C constants correct.
+
+### What the sentinel translation does not diagnose
+
+The ten sentinels are COMMON blocks with addresses of their own, and the
+wrappers translate them into ABI values; `CODE.md` "Sentinels are translated"
+has the mechanism. Four things that arrangement deliberately leaves undone:
+
+- **The read-only cells catch writes, not reads.** A missed translation that
+  makes MPI *write* through a sentinel faults, because the cells are `const`
+  and in read-only memory — measured, and the reason eight status tests died of
+  a bus error rather than passing when the translation was briefly absent. A
+  missed *read* gets the poison instead, which is a value chosen to be
+  conspicuous rather than a guarantee. The generator's per-parameter assertion
+  is what actually covers reads; the cells are the backstop.
+- **A sentinel passed to `MPI_Status_f2f08` or `MPI_Status_f082f` is not
+  diagnosed.** MPI-5.0 §19.3.5 makes the analogous C call erroneous ("then the
+  call is erroneous"), and `src/mpif_handle_types.F90` copies eight integers
+  either way. `f082f` therefore faults, the cell being read-only; `f2f08`
+  returns the poison as a status. A guard would cost a compare on every
+  conversion to diagnose a call the standard already forbids.
+- **A real implementation's `MPI_Status_f2c` will not recognise mpif's Fortran
+  sentinels.** `fortran/mpi.h.patch` points `MPI_F_STATUS_IGNORE` and its three
+  siblings at mpif's cells, which is what §19.3.5 asks of them, and mpif's own
+  `fortran/f2c_abi_mpich.c` and `f2c_abi_openmpi.c` cannot follow: they are
+  compiled into the MPI's ABI library, which is built before mpif and does not
+  link it, so they keep comparing against null. Passing an mpif Fortran status
+  sentinel to those converters is erroneous anyway, so it is undiagnosed rather
+  than wrong.
+- **`MPI_ERRCODES_IGNORE` has no runtime test, in `test/` or in the suite.** It
+  reaches MPI only through `MPI_Comm_spawn` and `MPI_Comm_spawn_multiple`, and
+  mpif's own tests never spawn (a launcher, and on this machine a hostname that
+  does not resolve to it). What covers it is the generator's per-parameter
+  assertion, the frozen tally, and the read-only cell — MPI writes `maxprocs`
+  error codes through that argument, so an untranslated one faults rather than
+  overrunning a one-element COMMON block. `MPI_ARGV_NULL` and `MPI_ARGVS_NULL`
+  are in the same position but do at least have the suite's `spawn/spawnf` and
+  `spawn/spawnmult2f` families in all three interfaces.
+- **`MPI_Buffer_detach`'s reverse translation is done in all three interfaces**,
+  though §3.6 requires it only of `mpi_f08` ("the returned value is identical to
+  `c_loc(MPI_BUFFER_AUTOMATIC)`") and says nothing about `<type> BUFFER_ADDR(*)`.
+  Doing it in C rather than in the f08 wrapper is what makes that uniform; a
+  caller of the older bindings has no `c_loc` to compare against, but the three
+  interfaces agreeing about the same routine is worth more than the saving.
 
 ### The mpi module's `_c` names
 

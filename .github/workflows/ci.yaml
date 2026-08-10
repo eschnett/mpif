@@ -30,13 +30,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # The sentinels are Cray pointers whose pointer variable lives in a common
-      # block that src/mpif_constants.c defines. A `pointer (P, X)` whose name
-      # does not match its `common /P/ P` is a fresh implicitly declared local
-      # that nothing ever assigns, so X sits at an arbitrary address and MPI
-      # writes through it -- and nothing warns, both spellings being valid
-      # Fortran. This is the only thing that would catch it.
-      - name: Check the Cray pointers against their common blocks
+      # Each sentinel is a COMMON block whose storage src/mpif_constants.c
+      # defines, and a wrapper recognises one by comparing the address it was
+      # handed against that storage. Rename either side alone and the two stop
+      # being the same object: the compare never matches, the sentinel goes to
+      # MPI as an ordinary buffer, and nothing warns. This catches it without a
+      # build; mpif_check_environment catches it at run time.
+      - name: Check the sentinel common blocks against their C definitions
         run: bash ci-scripts/check-headers.sh
 
   # Compilers beyond the two the rest of this file exercises: does mpif's

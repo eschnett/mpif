@@ -1,3 +1,5 @@
+#include <mpif_sentinels.h>
+
 #include <mpi.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -29,52 +31,35 @@ _Static_assert(offsetof(MPI_Status, MPI_TAG) == (2 - 1) * sizeof(MPI_Fint),
 _Static_assert(offsetof(MPI_Status, MPI_ERROR) == (3 - 1) * sizeof(MPI_Fint),
                "MPI_ERROR is 3 in include/mpif_constants.h");
 
-// Each cell below is the pointee of a Cray pointer declared in a COMMON block
-// of the same name -- see include/mpif_constants.h and src/mpif_f08_types.F90 --
-// and defining the symbol here is what puts the ABI constant's address there
-// before the program starts, with no initialisation step to run.
+// The storage each Fortran sentinel's COMMON block is merged onto. The address
+// of a cell is what identifies the sentinel; nothing reads the contents, which
+// is why they are poison. include/mpif_sentinels.h holds the declarations, the
+// size and alignment rules, the two poison patterns and the argument for the
+// whole arrangement; the COMMON blocks themselves are in
+// include/mpif_constants.h and src/mpif_f08_types.F90.
 //
-// The Fortran side's COMMON is a tentative definition that the linker merges
-// with this one, and it asks for the target's BIGGEST_ALIGNMENT rather than the
-// natural alignment of the pointer it holds. That is 16 bytes on aarch64, and on
-// x86 whatever the enabled vector ISA implies: 16 by default, 32 with AVX, 64
-// with AVX-512. Ask for less than the caller's COMMON does and GNU ld warns,
-// once per sentinel and on every link:
-//
-//     ld: warning: alignment 16 of normal symbol `mpif_statuses_ignore_ptr_'
-//     in libmpifort_abi.so is smaller than 32 used by the common definition
-//
-// Nothing is ever genuinely misaligned -- the cell holds an address, the pointee
-// lives elsewhere, and no vector instruction touches it -- but the warning is
-// alarming and it fired for everyone building for a machine wider than the one
-// mpif was built for. See https://github.com/eschnett/mpif/issues/2.
-//
-// So ask for more than any caller will. 64 bytes covers AVX-512, and
-// __BIGGEST_ALIGNMENT__ takes over should a target ever exceed that; it is the
-// same quantity the Fortran side is using. Over-aligning twelve pointers costs
-// padding in .rodata and nothing else.
-#ifdef __BIGGEST_ALIGNMENT__
-#define MPIF_SENTINEL_ALIGNMENT \
-  (__BIGGEST_ALIGNMENT__ > 64 ? __BIGGEST_ALIGNMENT__ : 64)
-#else
-#define MPIF_SENTINEL_ALIGNMENT 64
-#endif
-#define MPIF_SENTINEL __attribute__((__aligned__(MPIF_SENTINEL_ALIGNMENT)))
+// Defining the symbols here is what makes the addresses available to C before
+// the program starts, with no initialisation step to run.
 
-const intptr_t mpif_bottom_ptr_ MPIF_SENTINEL = (intptr_t)MPI_BOTTOM;
-const intptr_t mpif_in_place_ptr_ MPIF_SENTINEL = (intptr_t)MPI_IN_PLACE;
-const intptr_t mpif_buffer_automatic_ptr_ MPIF_SENTINEL = (intptr_t)MPI_BUFFER_AUTOMATIC;
+const MPI_Fint mpif_bottom_[MPIF_SENTINEL_INT_WORDS] MPIF_SENTINEL = MPIF_POISON_INT;
+const MPI_Fint mpif_in_place_[MPIF_SENTINEL_INT_WORDS] MPIF_SENTINEL = MPIF_POISON_INT;
+const MPI_Fint mpif_buffer_automatic_[MPIF_SENTINEL_INT_WORDS] MPIF_SENTINEL = MPIF_POISON_INT;
 
-const intptr_t mpif_argv_null_ptr_ MPIF_SENTINEL = (intptr_t)MPI_ARGV_NULL;
-const intptr_t mpif_argvs_null_ptr_ MPIF_SENTINEL = (intptr_t)MPI_ARGVS_NULL;
-const intptr_t mpif_errcodes_ignore_ptr_ MPIF_SENTINEL = (intptr_t)MPI_ERRCODES_IGNORE;
-const intptr_t mpif_status_ignore_ptr_ MPIF_SENTINEL = (intptr_t)MPI_STATUS_IGNORE;
-const intptr_t mpif_statuses_ignore_ptr_ MPIF_SENTINEL = (intptr_t)MPI_STATUSES_IGNORE;
-// mpi_f08's two status sentinels take their addresses from here rather than
-// from the two cells above; see the comment on their declarations in
-// src/mpif_f08_types.F90 for the gfortran bug that separates them. The same
-// values, so all three interfaces still name one address.
-const intptr_t mpif_f08_status_ignore_ptr_ MPIF_SENTINEL = (intptr_t)MPI_STATUS_IGNORE;
-const intptr_t mpif_f08_statuses_ignore_ptr_ MPIF_SENTINEL = (intptr_t)MPI_STATUSES_IGNORE;
-const intptr_t mpif_unweighted_ptr_ MPIF_SENTINEL = (intptr_t)MPI_UNWEIGHTED;
-const intptr_t mpif_weights_empty_ptr_ MPIF_SENTINEL = (intptr_t)MPI_WEIGHTS_EMPTY;
+// CHARACTER in Fortran, so one byte rather than one INTEGER; see the shape
+// rationale in include/mpif_constants.h.
+const char mpif_argv_null_[MPIF_SENTINEL_CHAR_BYTES] MPIF_SENTINEL = MPIF_POISON_CHAR;
+const char mpif_argvs_null_[MPIF_SENTINEL_CHAR_BYTES] MPIF_SENTINEL = MPIF_POISON_CHAR;
+
+const MPI_Fint mpif_errcodes_ignore_[MPIF_SENTINEL_INT_WORDS] MPIF_SENTINEL = MPIF_POISON_INT;
+const MPI_Fint mpif_unweighted_[MPIF_SENTINEL_INT_WORDS] MPIF_SENTINEL = MPIF_POISON_INT;
+const MPI_Fint mpif_weights_empty_[MPIF_SENTINEL_INT_WORDS] MPIF_SENTINEL = MPIF_POISON_INT;
+
+// The four status cells get the poison that crashes rather than the poison that
+// is merely recognisable; see MPIF_POISON_STATUS. mpi_f08's two are separate
+// objects from mpif.h's, being TYPE(MPI_Status) rather than INTEGER arrays, so
+// the four addresses are distinct and a C layer can tell them apart -- which
+// section 3.2.6 permits and which was impossible while all four were null.
+const MPI_Fint mpif_status_ignore_[MPIF_SENTINEL_STATUS_WORDS] MPIF_SENTINEL = MPIF_POISON_STATUS;
+const MPI_Fint mpif_statuses_ignore_[MPIF_SENTINEL_STATUS_WORDS] MPIF_SENTINEL = MPIF_POISON_STATUS;
+const MPI_Fint mpif_f08_status_ignore_[MPIF_SENTINEL_STATUS_WORDS] MPIF_SENTINEL = MPIF_POISON_STATUS;
+const MPI_Fint mpif_f08_statuses_ignore_[MPIF_SENTINEL_STATUS_WORDS] MPIF_SENTINEL = MPIF_POISON_STATUS;
