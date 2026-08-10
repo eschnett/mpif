@@ -6,9 +6,7 @@ concurrency:
 
 on:
   push:
-    # TEMPORARY (ci-compilers branch): so that pushes to the branch run at all.
-    # Revert to `[main]` before merging.
-    branches: [main, ci-compilers]
+    branches: [main]
   pull_request:
 
 permissions:
@@ -211,10 +209,6 @@ jobs:
 
   build:
     name: ${{ matrix.mpi }} / ${{ matrix.toolchain }} / ${{ matrix.os }}
-    # TEMPORARY (ci-compilers branch): the expensive jobs are off on the branch,
-    # so an iteration is `checks` plus `compile` and takes minutes. Remove this
-    # line before merging.
-    if: github.ref == 'refs/heads/main'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
 
@@ -648,10 +642,6 @@ jobs:
   # -asan prefix this job installs.
   sanitize:
     name: sanitize / ${{ matrix.toolchain }}
-    # TEMPORARY (ci-compilers branch): the expensive jobs are off on the branch,
-    # so an iteration is `checks` plus `compile` and takes minutes. Remove this
-    # line before merging.
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     needs: build
     timeout-minutes: 60
@@ -800,10 +790,6 @@ jobs:
   #   rows as that MPI's native run, which is the "results depend only on the
   #   runtime MPI" assertion, enforced by the existing list without new keys.
   cross:
-    # TEMPORARY (ci-compilers branch): the expensive jobs are off on the branch,
-    # so an iteration is `checks` plus `compile` and takes minutes. Remove this
-    # line before merging.
-    if: github.ref == 'refs/heads/main'
     name: cross / ${{ matrix.toolchain }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     needs: build
@@ -1060,10 +1046,6 @@ jobs:
   # every instruction is emulated, and MPICH from source plus ~300 suite tests
   # does not fit this timeout. Worth adding on a schedule.
   container:
-    # TEMPORARY (ci-compilers branch): the expensive jobs are off on the branch,
-    # so an iteration is `checks` plus `compile` and takes minutes. Remove this
-    # line before merging.
-    if: github.ref == 'refs/heads/main'
     name: ${{ matrix.variant }} (container)
     runs-on: ubuntu-24.04
     timeout-minutes: 120
@@ -1147,10 +1129,6 @@ jobs:
   # the action's `run` block is root (measured: `$HOME` is /root), so covering it
   # would mean passing that flag everywhere on one platform alone.
   freebsd:
-    # TEMPORARY (ci-compilers branch): the expensive jobs are off on the branch,
-    # so an iteration is `checks` plus `compile` and takes minutes. Remove this
-    # line before merging.
-    if: github.ref == 'refs/heads/main'
     name: mpich / clang+gfortran / freebsd (VM)
     runs-on: ubuntu-24.04
     # Generous, this one having no MPI cache (see below) and running everything
