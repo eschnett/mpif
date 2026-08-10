@@ -39,6 +39,53 @@ jobs:
       - name: Check the sentinel common blocks against their C definitions
         run: bash ci-scripts/check-headers.sh
 
+      # The variant matrix is written out once per stage below, and the stages
+      # only line up if the lists agree. They are not decoration: the suite's
+      # expected-failure list is keyed on <mpi>/<toolchain>/<os>/<os-version>/
+      # <arch>, so a stage whose `os:` list has drifted gates against a different
+      # row -- or, worse, uploads artifacts nothing consumes and loses coverage
+      # with nothing failing. mpich-suite-xfail.txt says these lists "pin the
+      # images, so this happens when someone edits that list and not behind their
+      # back", and with five copies that is only true if something checks.
+      #
+      # Inline rather than a script under ci-scripts/, which is hashed into the
+      # MPI installation cache key: a check that costs twelve MPI rebuilds to edit
+      # is a check nobody edits.
+      - name: Check that the stages agree on the variant matrix
+        run: |
+          axis() {
+              yq -o=json -I0 ".jobs.${1}.strategy.matrix.${2}" .github/workflows/ci.yaml
+          }
+          same() {
+              local axis=$1 reference=$2 job value
+              shift 2
+              for job in "$@"; do
+                  value=$(axis "${job}" "${axis}")
+                  echo "  ${job}.${axis} = ${value}"
+                  if [[ ${value} != "$(axis "${reference}" "${axis}")" ]]; then
+                      echo "::error::the ${job} stage's ${axis} axis differs from" \
+                           "the ${reference} stage's"
+                      return 1
+                  fi
+              done
+          }
+          # Every stage runs on every (os, toolchain) -- except sanitize, which
+          # is deliberately one os and one implementation and so has neither axis
+          same os        mpi mpif suite cross compare
+          same toolchain mpi mpif suite cross compare sanitize
+          # ... and the three per-implementation stages on every implementation
+          same mpi mpi mpif suite
+          # `cross` has no `mpi:` axis. It has `built:`, one leg per direction,
+          # which has to cover the same implementations
+          echo "  cross.built = $(axis cross built)"
+          test "$(axis cross built)" = "$(axis mpi mpi)"
+          # and each direction's runtime must be the *other* implementation
+          directions=$(yq -o=json -I0 \
+              '[.jobs.cross.strategy.matrix.include[] | .built + " run " + .run]' \
+              .github/workflows/ci.yaml)
+          echo "  cross directions = ${directions}"
+          test "${directions}" = '["mpich run openmpi","openmpi run mpich"]'
+
   # Compilers beyond the two the rest of this file exercises: does mpif's
   # configure stage detect their features correctly, and does the code compile.
   # Nothing here runs anything, which is deliberate -- behaviour is what the

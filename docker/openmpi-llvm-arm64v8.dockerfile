@@ -163,7 +163,8 @@ RUN <<EOF
     # happens to give it. `btl_tcp_if_include lo` keeps it on the loopback
     # interface, which is all a single host needs: given a choice it picks another
     # one, and on GitHub's x86_64 runners that was a docker0 bridge. See the same
-    # flag in .github/workflows/ci.yaml.
+    # flag in .github/actions/mpiexec-flags/action.yml, which is where CI's copy
+    # lives.
     export MPIEXEC_ARGS="--oversubscribe --allow-run-as-root --mca btl_tcp_if_include lo"
     ci-scripts/suite/test-mpich-suite.sh ${mpi_prefix} ${mpif_prefix}
 EOF
