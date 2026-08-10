@@ -67,6 +67,29 @@ option(MPIF_TEST_BUILD_ONLY
 # launcher's own requirements get in, `--allow-run-as-root` in the containers and
 # `--oversubscribe --mca btl_tcp_if_include lo` for Open MPI; the suite passes the
 # same things through MPIEXEC_ARGS.
+# A target whose `main` is in C but whose sources include Fortran, so CMake
+# links it with the Fortran driver. Intel's driver then contributes its own
+# `main` from for_main.o, which calls the Fortran main program under the name
+# MAIN__, and the link fails on that being undefined -- measured as
+# `interlanguage`, `c2f` and `datarep_c`, the only three targets here that mix
+# the two languages, failing with "undefined reference to `MAIN__'" under ifx
+# while the other 71 built. `-nofor-main` tells the driver the program's `main`
+# is somebody else's, which is what it is for.
+#
+# Guarded on the compiler, since no other driver does this; the linker language
+# stays Fortran, because these programs call Fortran and need its runtime. The
+# same three targets are the ones the INTERFACE_COMPILE_OPTIONS rewrite above
+# exists for -- mixing the languages in one target is what finds this class of
+# defect.
+function(mpif_test_c_main name)
+  if(NOT TARGET ${name})
+    return()
+  endif()
+  if(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
+    target_link_options(${name} PRIVATE -nofor-main)
+  endif()
+endfunction()
+
 function(add_mpi_test name)
   cmake_parse_arguments(T "" "NPROCS" "SOURCES;LIBS" ${ARGN})
   add_executable(${name} ${T_SOURCES})
@@ -107,6 +130,8 @@ add_mpi_test(version_c              SOURCES version_c.c                         
 add_mpi_test(version_f08            SOURCES version_f08.f90                         LIBS MPI::MPI_Fortran)
 add_mpi_test(interlanguage          SOURCES interlanguage.c interlanguage_subf90.f90 LIBS MPI::MPI_Fortran MPI::MPI_C)
 add_mpi_test(c2f                    SOURCES c2f.c c2f_subf90.f90                    LIBS MPI::MPI_Fortran MPI::MPI_C)
+mpif_test_c_main(interlanguage)
+mpif_test_c_main(c2f)
 add_mpi_test(type_create_struct_c   SOURCES type_create_struct_c.c                  LIBS MPI::MPI_C)
 add_mpi_test(predefined_types_c     SOURCES predefined_types_c.c                    LIBS MPI::MPI_C)
 add_mpi_test(type_create_struct_f08 SOURCES type_create_struct_f08.f90              LIBS MPI::MPI_Fortran)
@@ -126,6 +151,7 @@ add_mpi_test(attr_fns_f08           SOURCES attr_fns_f08.f90                    
 add_mpi_test(partitioned_f08        SOURCES partitioned_f08.f90                     LIBS MPI::MPI_Fortran)
 add_mpi_test(datarep_f08            SOURCES datarep_f08.f90                         LIBS MPI::MPI_Fortran)
 add_mpi_test(datarep_c              SOURCES datarep_c.c datarep_subf90.f90          LIBS MPI::MPI_Fortran MPI::MPI_C)
+mpif_test_c_main(datarep_c)
 add_mpi_test(callback_intents_f08   SOURCES callback_intents_f08.f90                LIBS MPI::MPI_Fortran)
 add_mpi_test(cancel_intent_f08      SOURCES cancel_intent_f08.f90                   LIBS MPI::MPI_Fortran)
 add_mpi_test(status_error_f08       SOURCES status_error_f08.f90                    LIBS MPI::MPI_Fortran)

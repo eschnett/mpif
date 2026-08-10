@@ -154,31 +154,69 @@ Green as of the first run: gfortran 8, 9 and 12, and `amdflang` (ROCm's LLVM
 flang), each on both CFI branches. `ifx` 2026.1 compiles the whole library and
 `nvfortran` 26.5 does not get past configure; both are below.
 
-### `ifx` aborts on a sentinel passed as an assumed-rank actual
+### `ifx` aborts on a sentinel passed to a choice buffer
 
-`ifx` 2026.1 compiles and installs the whole library on the TS 29113 branch,
-then dies building `test/inplace_f08.f90`:
+`ifx` 2026.1 compiles and installs the whole library, on both CFI branches, and
+then dies building the tests that pass a sentinel:
 
     inplace_f08.f90(14): error #5623: **Internal compiler error: internal
     abort** Please report this error along with the circumstances in which it
     occurred in a Software Problem Report.
 
-Line 14 is `MPI_Allreduce(MPI_IN_PLACE, sum, ...)`, the first place a sentinel —
-a Cray pointee, `include/mpif_constants.h` — is passed to an `mpi_f08` choice
-buffer.
+Line 14 is `MPI_Allreduce(MPI_IN_PLACE, sum, ...)`. Six targets abort, and they
+are exactly the ones passing a sentinel — a Cray pointee, from
+`include/mpif_constants.h` — to an `mpi_f08` choice buffer: `inplace_f08`,
+`inplace_cfi_f08`, `alltoallw_inplace_f08`, `alltoallw_inplace_guard`,
+`bottom_cfi_f08` (`MPI_BOTTOM`) and `argv_null_f08` (`MPI_ARGV_NULL`). So it is
+sentinels in general, not `MPI_IN_PLACE` in particular. **71 of the ~80 test
+programs build.**
 
-**Both branches, same line, same abort.** `-DMPIF_ENABLE_CFI=OFF` fails
-identically, so the trigger is the Cray pointee reaching a choice buffer and
-not the assumed-rank mechanism: `TYPE(*), DIMENSION(..)` and `integer :: buf(*)`
-under `ignore_tkr` abort alike. The library itself compiles and installs both
-ways; only a caller passing a sentinel fails.
+`-DMPIF_ENABLE_CFI=OFF` aborts identically, so the trigger is the Cray pointee
+and not the assumed-rank mechanism: `TYPE(*), DIMENSION(..)` and
+`integer :: buf(*)` under `ignore_tkr` fail alike.
 
-A compiler defect with nothing for mpif to spell differently — the sentinel and
-the choice-buffer dummy are each what the standard asks for. Whether it is
-`MPI_IN_PLACE` in particular or any sentinel is not known: the build stops at
-the first failing target, and `MPI_BOTTOM`'s test never got its turn. Not
-gating. A minimal reproducer is what an Intel report needs and is not written
-yet.
+A compiler defect with nothing for mpif to spell differently. The sentinel must
+be a Cray pointee: in C, `MPI_IN_PLACE` is a distinguished address rather than
+an object, so no Fortran entity can be declared *at* it, and a `bind(C)`
+variable would have storage of its own at the wrong address. Any of the six
+targets is a reproducer for an Intel report. Not gating.
+
+### `ifx` links a C `main` against its own — fixed in `test/`
+
+Three more targets failed, for an unrelated and non-defect reason:
+`interlanguage`, `c2f` and `datarep_c`, the only three that mix C and Fortran.
+Their `main` is in C, CMake links them with the Fortran driver, and Intel's
+driver contributes a `main` of its own out of `for_main.o` that calls the
+Fortran main program:
+
+    ld: /opt/intel/oneapi/compiler/2026.1/lib/for_main.o: in function `main':
+    for_main.c:(.text+0x49): undefined reference to `MAIN__'
+
+`-nofor-main` is the flag for exactly this, and `mpif_test_c_main` in
+`test/CMakeLists.txt` applies it to those three under an Intel Fortran
+compiler. The linker language stays Fortran: these programs call Fortran and
+need its runtime. Anything else mixing a C `main` with mpif's Fortran under ifx
+wants the same flag.
+
+### `test/check_env_nodesize_fail` has flaked once, under the gcc sanitizer
+
+Seen once, on `sanitize / gcc`: the test passes 2 ranks and
+`MPIF_NODE_SIZE=1` and expects `mpif_check_environment` to refuse, and no
+diagnostic came. Rerunning the same job on the same commit passed, and the
+other 74 tests passed both times, as did `sanitize / llvm` and all twelve build
+variants.
+
+Measured: one failure, one pass, same commit. **Inferred**, not established:
+`src/mpif_check.c` derives the node size by gathering `MPI_Get_processor_name`
+to rank 0 and grouping equal names, so the check only refuses when both ranks
+report the *same* name — two differing names give two nodes of one process
+each, which is what `MPIF_NODE_SIZE=1` claims. What would make the two ranks
+disagree about the name for one run in many is not known, and one observation
+is not enough to name it.
+
+`test/` has no expected-failure list and should be entirely green, so this is
+recorded rather than accommodated. If it recurs, print the gathered names on
+mismatch — the diagnostic names the node it rejected but not the set it saw.
 
 ### `nvfortran` does not diagnose an ambiguous generic interface — worked around
 
@@ -201,6 +239,15 @@ question is still asked, under
 than enforced: mpif emits what the standard permits, so the generated code is
 right either way, and following the compiler instead would mean emitting an
 ambiguous generic on purpose.
+
+The first attempt at that comparison used `merge`, and `nvfortran` rejects an
+intrinsic in a kind specification expression —
+`NVFORTRAN-S-0087-Non-constant expression where constant expression required`,
+though all three of `merge`'s arguments are constants. So both guards came out
+"no", which on a 64-bit platform is wrong the other way, and
+`check-configure-probes.sh` stopped the build again. The probes now use
+subtraction alone, written so the difference is never negative; the optional-kind
+probes were changed the same way, having had the same `merge` in them.
 
 Not gating until a run is green — the guards being right only gets `nvfortran`
 past configure, and what it does with the rest of the library is unmeasured.

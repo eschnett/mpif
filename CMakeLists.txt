@@ -81,20 +81,27 @@ endif()
 include(CheckFortranCompilerFlag)
 include(CheckFortranSourceCompiles)
 
-# The optional kinds. Each probe declares the kind *and* asserts that it got
-# it, by using the answer as a kind value: where `kind(x)` is not what was
-# asked for, the second declaration names kind -1, which no compiler accepts.
-# Accepting the declaration is not enough on its own -- nvfortran takes
+# The optional kinds. Each probe declares the kind *and* asserts that it got it,
+# by naming a second entity whose kind is only valid when the first got what it
+# asked for: `32 - kind(x)` is 16 exactly when `kind(x)` is 16, and 24 or 28 --
+# no compiler's kind -- when the declaration quietly fell back to 8 or 4.
+# `4 - kind(x)` does the same for `real*2`.
+#
+# Accepting the declaration is not enough on its own: nvfortran 26.5 takes
 # `logical*16`, `integer*16` and `real*2` with a warning (NVFORTRAN-W-0031,
-# "Illegal data type length specifier") and falls back to the default kind, so
-# a probe that only compiled reported three kinds it does not have, and the
-# library would then have been built with specifics for them. Measured on
-# gfortran 15 and flang 22 to answer exactly as the plain declaration did.
+# "Illegal data type length specifier") and the default kind, so a probe that
+# only compiled reported three kinds it does not have, and the library would
+# have been built with specifics for them.
+#
+# Arithmetic on `kind` and nothing else, for the reason the address-kind probes
+# below give: nvfortran rejects `merge` in a kind specification expression.
+# Measured on gfortran 15 and flang 22 to answer exactly as the plain
+# declaration did.
 check_fortran_source_compiles(
   "
   program test
     logical*16 :: x
-    logical(merge(16, -1, kind(x) == 16)) :: y
+    logical(32 - kind(x)) :: y
   end
   "
   HAVE_LOGICAL16
@@ -105,7 +112,7 @@ check_fortran_source_compiles(
   "
   program test
     integer*16 :: x
-    integer(merge(16, -1, kind(x) == 16)) :: y
+    integer(32 - kind(x)) :: y
   end
   "
   HAVE_INTEGER16
@@ -116,7 +123,7 @@ check_fortran_source_compiles(
   "
   program test
     real*2 :: x
-    real(merge(2, -1, kind(x) == 2)) :: y
+    real(4 - kind(x)) :: y
   end program
   "
   HAVE_REAL2
@@ -126,7 +133,7 @@ check_fortran_source_compiles(
   "
   program test
     real*16 :: x
-    real(merge(16, -1, kind(x) == 16)) :: y
+    real(32 - kind(x)) :: y
   end
   "
   HAVE_REAL16
@@ -204,8 +211,24 @@ endif()
 # standard states, it is the compiler that is wrong, and mpif has nothing to
 # gain by following it into emitting an ambiguous generic.
 #
-# `loc` needs the same flags the library is built with. Each probe forces its
-# own failure by naming kind -1, which no compiler accepts.
+# `loc` needs the same flags the library is built with. Each probe forces its own
+# failure by naming the *difference* of the two kinds as a kind: 4 where they
+# differ, which every compiler has, and 0 where they do not, which none does.
+#
+# The subtraction is written larger-minus-smaller rather than wrapped in `abs`,
+# and no `merge` appears, because both are intrinsics in a kind specification
+# expression and nvfortran 26.5 rejects `merge` there --
+# "NVFORTRAN-S-0087-Non-constant expression where constant expression required",
+# although all three arguments are constants. `kind(loc(dummy))` on the line
+# above it, which nvfortran does accept, is the whole vocabulary these need.
+#
+# Which way round is fixed by the ABI: MPI_Aint is intptr_t, so MPI_ADDRESS_KIND
+# is 4 or 8; MPI_Count is int64_t, so MPI_COUNT_KIND is 8; and the default
+# integer kind is 4. Hence 4 <= address <= 8 = count, and neither difference is
+# ever negative. If that ever stopped holding, the probe would name a negative
+# kind and answer "no", and ci-scripts/check-configure-probes.sh -- which
+# derives the same pair from the C pointer width, independently -- is what
+# would catch the disagreement.
 set(saved_CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS}")
 set(CMAKE_REQUIRED_FLAGS "${MPIF_Fortran_FLAGS_STR}")
 check_fortran_source_compiles(
@@ -213,7 +236,7 @@ check_fortran_source_compiles(
   program test
     integer :: dummy
     integer, parameter :: address_kind = kind(loc(dummy))
-    integer(merge(1, -1, address_kind /= kind(1))) :: differs
+    integer(address_kind - kind(1)) :: differs
   end
   "
   MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
@@ -225,7 +248,7 @@ check_fortran_source_compiles(
     integer :: dummy
     integer, parameter :: address_kind = kind(loc(dummy))
     integer, parameter :: count_kind = selected_int_kind(18)
-    integer(merge(1, -1, address_kind /= count_kind)) :: differs
+    integer(count_kind - address_kind) :: differs
   end
   "
   MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
