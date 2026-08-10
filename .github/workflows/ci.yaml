@@ -244,115 +244,16 @@ jobs:
               echo "MPI_PREFIX=${RUNNER_TEMP}/opt/mpi-${{ matrix.mpi }}"
               echo "MPIF_PREFIX=${RUNNER_TEMP}/opt/mpif-${{ matrix.mpi }}"
               echo "MPI_SRC_DIR=${RUNNER_TEMP}/mpi-src"
-              echo "CCACHE_DIR=${RUNNER_TEMP}/ccache"
-              echo "CCACHE_MAXSIZE=500M"
           } >>"${GITHUB_ENV}"
 
-      - name: Install dependencies (Linux, GCC)
-        if: runner.os == 'Linux' && matrix.toolchain == 'gcc'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-              autoconf \
-              automake \
-              ccache \
-              cmake \
-              gfortran \
-              libhwloc-dev \
-              libtool \
-              pkg-config
-
-      - name: Install dependencies (Linux, LLVM)
-        if: runner.os == 'Linux' && matrix.toolchain == 'llvm'
-        run: |
-          curl -fsSLO https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 21
-          sudo apt-get update
-          sudo apt-get install -y \
-              autoconf \
-              automake \
-              ccache \
-              clang-21 \
-              cmake \
-              flang-21 \
-              libc++-21-dev \
-              libc++abi-21-dev \
-              libhwloc-dev \
-              libomp-21-dev \
-              libtool \
-              lld-21 \
-              llvm-21 \
-              pkg-config
-
-      - name: Install dependencies (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          brew install autoconf automake ccache hwloc libtool
-          # hwloc, like everything else Homebrew installs, lives under `brew --prefix`
-          echo "HWLOC_PREFIX=$(brew --prefix)" >>"${GITHUB_ENV}"
-
-      - name: Install dependencies (macOS, LLVM)
-        if: runner.os == 'macOS' && matrix.toolchain == 'llvm'
-        run: brew install flang llvm
-
-      # Chosen here rather than in the matrix so that there is a single place
-      # where a compiler name has to be adjusted, and so that macOS can look up
-      # Homebrew's paths at run time.
-      - name: Select toolchain
-        run: |
-          case "${RUNNER_OS}-${{ matrix.toolchain }}" in
-              Linux-gcc)
-                  cc=gcc cxx=g++ fc=gfortran
-                  ;;
-              Linux-llvm)
-                  cc=clang-21 cxx=clang++-21 fc=flang-21
-                  ;;
-              macOS-gcc)
-                  # Homebrew GCC, preinstalled on the runner image
-                  cc=gcc-15 cxx=g++-15 fc=gfortran-15
-                  ;;
-              macOS-llvm)
-                  # Homebrew's clang and flang are not on PATH by default, and
-                  # `flang-new` was renamed to `flang` in LLVM 20
-                  cc=clang cxx=clang++ fc=flang
-                  bindirs=$(brew --prefix llvm)/bin:$(brew --prefix flang)/bin
-                  if [[ ! -x $(brew --prefix flang)/bin/flang ]]; then
-                      fc=flang-new
-                  fi
-                  ;;
-          esac
-          # Compiler names are kept bare so that ccache can be put in front of
-          # them below, and so that the `mpicc`/`mpifort` wrappers that MPI and
-          # mpif install do not record paths specific to this runner.
-          echo "PATH=${bindirs:+${bindirs}:}${PATH}" >>"${GITHUB_ENV}"
-          {
-              echo "CC=${cc}"
-              echo "CXX=${cxx}"
-              echo "FC=${fc}"
-          } >>"${GITHUB_ENV}"
-          export PATH=${bindirs:+${bindirs}:}${PATH}
-          for var in cc cxx fc; do
-              command -v "${!var}"
-              "${!var}" --version | head -1
-          done
-
-      # ccache in masquerade mode: symlinks named after the compilers, ahead of
-      # them on PATH. Nothing has to know about ccache, and in particular the
-      # installed compiler wrappers still refer to the real compilers. Fortran
-      # is left alone, as ccache does not support it.
-      - name: Set up ccache
-        run: |
-          shims=${RUNNER_TEMP}/ccache-shims
-          mkdir -p "${shims}"
-          ln -sf "$(command -v ccache)" "${shims}/${CC}"
-          ln -sf "$(command -v ccache)" "${shims}/${CXX}"
-          echo "PATH=${shims}:${PATH}" >>"${GITHUB_ENV}"
-          # Verify that the masquerade works: ccache has to be found first, and
-          # has to resolve to the intended compiler and not, say, Apple clang.
-          export PATH=${shims}:${PATH}
-          test "$(command -v "${CC}")" = "${shims}/${CC}"
-          "${CC}" --version | head -1
+      # This is the only job that builds an MPI from source, so it is the only
+      # one that asks for autotools and for ccache.
+      - name: Set up the toolchain
+        uses: ./.github/actions/setup-toolchain
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          autotools: "true"
+          ccache: "true"
 
       # Three caches, from coarsest to finest. The MPI installation is all that
       # is needed for a run that changes neither the bindings nor the build
@@ -662,44 +563,10 @@ jobs:
       # Only what compiles mpif and test/: nothing here builds an MPI, so no
       # autotools and no ccache. Same versions as the build and cross jobs, the
       # restored prefix's wrappers naming these compilers bare.
-      - name: Install dependencies (GCC)
-        if: matrix.toolchain == 'gcc'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake gfortran libhwloc-dev
-      - name: Install dependencies (LLVM)
-        if: matrix.toolchain == 'llvm'
-        run: |
-          curl -fsSLO https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 21
-          sudo apt-get update
-          sudo apt-get install -y \
-              clang-21 \
-              cmake \
-              flang-21 \
-              libc++-21-dev \
-              libc++abi-21-dev \
-              libhwloc-dev \
-              libomp-21-dev \
-              lld-21 \
-              llvm-21
-
-      - name: Select toolchain
-        run: |
-          case "${{ matrix.toolchain }}" in
-              gcc)  cc=gcc      cxx=g++       fc=gfortran ;;
-              llvm) cc=clang-21 cxx=clang++-21 fc=flang-21 ;;
-          esac
-          {
-              echo "CC=${cc}"
-              echo "CXX=${cxx}"
-              echo "FC=${fc}"
-          } >>"${GITHUB_ENV}"
-          for var in cc cxx fc; do
-              command -v "${!var}"
-              "${!var}" --version | head -1
-          done
+      - name: Set up the toolchain
+        uses: ./.github/actions/setup-toolchain
+        with:
+          toolchain: ${{ matrix.toolchain }}
 
       # The MPI prefix at the exact absolute path the build job used, so its
       # wrappers, RPATHs and baked defaults are valid again.
@@ -807,68 +674,10 @@ jobs:
       # The same compilers as the build jobs, because this job compiles test/
       # (four configurations) and the suite's Fortran side. No autotools and no
       # ccache: nothing here builds an MPI.
-      - name: Install dependencies (Linux, GCC)
-        if: runner.os == 'Linux' && matrix.toolchain == 'gcc'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake gfortran libhwloc-dev
-      - name: Install dependencies (Linux, LLVM)
-        if: runner.os == 'Linux' && matrix.toolchain == 'llvm'
-        run: |
-          curl -fsSLO https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 21
-          sudo apt-get update
-          sudo apt-get install -y \
-              clang-21 \
-              cmake \
-              flang-21 \
-              libc++-21-dev \
-              libc++abi-21-dev \
-              libhwloc-dev \
-              libomp-21-dev \
-              lld-21 \
-              llvm-21
-      - name: Install dependencies (macOS)
-        if: runner.os == 'macOS'
-        run: brew install hwloc
-      - name: Install dependencies (macOS, LLVM)
-        if: runner.os == 'macOS' && matrix.toolchain == 'llvm'
-        run: brew install flang llvm
-
-      # Identical to the build job's step: the prefixes' wrappers name these
-      # compilers bare, so they have to resolve here too.
-      - name: Select toolchain
-        run: |
-          case "${RUNNER_OS}-${{ matrix.toolchain }}" in
-              Linux-gcc)
-                  cc=gcc cxx=g++ fc=gfortran
-                  ;;
-              Linux-llvm)
-                  cc=clang-21 cxx=clang++-21 fc=flang-21
-                  ;;
-              macOS-gcc)
-                  cc=gcc-15 cxx=g++-15 fc=gfortran-15
-                  ;;
-              macOS-llvm)
-                  cc=clang cxx=clang++ fc=flang
-                  bindirs=$(brew --prefix llvm)/bin:$(brew --prefix flang)/bin
-                  if [[ ! -x $(brew --prefix flang)/bin/flang ]]; then
-                      fc=flang-new
-                  fi
-                  ;;
-          esac
-          echo "PATH=${bindirs:+${bindirs}:}${PATH}" >>"${GITHUB_ENV}"
-          {
-              echo "CC=${cc}"
-              echo "CXX=${cxx}"
-              echo "FC=${fc}"
-          } >>"${GITHUB_ENV}"
-          export PATH=${bindirs:+${bindirs}:}${PATH}
-          for var in cc cxx fc; do
-              command -v "${!var}"
-              "${!var}" --version | head -1
-          done
+      - name: Set up the toolchain
+        uses: ./.github/actions/setup-toolchain
+        with:
+          toolchain: ${{ matrix.toolchain }}
 
       # Restore both implementations' prefixes at the exact absolute paths the
       # build jobs used, so every baked path -- wrapper defaults, RPATHs, macOS

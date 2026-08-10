@@ -1,0 +1,174 @@
+name: Set up a toolchain
+description: >
+  Install the compilers and build tools a job needs, choose the compiler names,
+  and export CC/CXX/FC. One place per compiler name, for the five jobs that all
+  need the same two toolchains.
+
+# This lives under .github/ and not under ci-scripts/ on purpose. The MPI
+# installation cache key hashes ci-scripts/**, so a compiler-installation script
+# there would put `apt-get install` into that key and every edit to it would
+# rebuild MPI on twelve variants -- the failure ci-scripts/README.md describes,
+# reintroduced from the other side.
+#
+# Three mechanics of composite actions that the callers do not have to think
+# about, and this file does:
+# - the `matrix` context is not available here, so the toolchain arrives as an
+#   input, and inputs are always strings -- hence the `== 'true'` guards;
+# - every `run` step needs its own `shell:`; the calling workflow's
+#   `defaults: run: shell: bash` does not reach in;
+# - PATH is written as a whole through GITHUB_ENV rather than a directory at a
+#   time through GITHUB_PATH. GITHUB_PATH would be the tidier mechanism, but the
+#   runner applies the entries of one file in reverse, so the llvm-before-flang
+#   order below would silently invert. Writes to either do reach the calling
+#   job's later steps.
+
+inputs:
+  toolchain:
+    description: gcc or llvm
+    required: true
+  autotools:
+    description: >
+      Install what building an MPI from source needs beyond a compiler --
+      autoconf, automake, libtool, pkg-config and ccache -- and point
+      HWLOC_PREFIX at Homebrew, which is where the install scripts look.
+      Only the MPI build stage wants this.
+    required: false
+    default: "false"
+  ccache:
+    description: >
+      Put ccache in front of the C and C++ compilers in masquerade mode.
+      Requires `autotools`, which is what installs ccache.
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Install dependencies (Linux, GCC)
+      if: runner.os == 'Linux' && inputs.toolchain == 'gcc'
+      shell: bash
+      env:
+        AUTOTOOLS: ${{ inputs.autotools }}
+      run: |
+        packages=(cmake gfortran libhwloc-dev)
+        if [[ ${AUTOTOOLS} == true ]]; then
+            packages+=(autoconf automake ccache libtool pkg-config)
+        fi
+        sudo apt-get update
+        sudo apt-get install -y "${packages[@]}"
+
+    - name: Install dependencies (Linux, LLVM)
+      if: runner.os == 'Linux' && inputs.toolchain == 'llvm'
+      shell: bash
+      env:
+        AUTOTOOLS: ${{ inputs.autotools }}
+      run: |
+        packages=(
+            clang-21
+            cmake
+            flang-21
+            libc++-21-dev
+            libc++abi-21-dev
+            libhwloc-dev
+            libomp-21-dev
+            lld-21
+            llvm-21
+        )
+        if [[ ${AUTOTOOLS} == true ]]; then
+            packages+=(autoconf automake ccache libtool pkg-config)
+        fi
+        curl -fsSLO https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        sudo ./llvm.sh 21
+        sudo apt-get update
+        sudo apt-get install -y "${packages[@]}"
+
+    # hwloc is wanted wherever a restored MPI prefix runs, not only where one is
+    # built: the installation links it.
+    - name: Install dependencies (macOS)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: brew install hwloc
+
+    - name: Install dependencies (macOS, autotools)
+      if: runner.os == 'macOS' && inputs.autotools == 'true'
+      shell: bash
+      run: |
+        brew install autoconf automake ccache libtool
+        # hwloc, like everything else Homebrew installs, lives under `brew --prefix`
+        echo "HWLOC_PREFIX=$(brew --prefix)" >>"${GITHUB_ENV}"
+
+    - name: Install dependencies (macOS, LLVM)
+      if: runner.os == 'macOS' && inputs.toolchain == 'llvm'
+      shell: bash
+      run: brew install flang llvm
+
+    # Chosen here rather than in a matrix so that there is a single place where a
+    # compiler name has to be adjusted, and so that macOS can look up Homebrew's
+    # paths at run time. Every job needs this, not only the ones that compile:
+    # the MPI and mpif prefixes' wrappers name these compilers bare, so they have
+    # to resolve wherever a wrapper runs.
+    - name: Select toolchain
+      shell: bash
+      env:
+        TOOLCHAIN: ${{ inputs.toolchain }}
+      run: |
+        case "${RUNNER_OS}-${TOOLCHAIN}" in
+            Linux-gcc)
+                cc=gcc cxx=g++ fc=gfortran
+                ;;
+            Linux-llvm)
+                cc=clang-21 cxx=clang++-21 fc=flang-21
+                ;;
+            macOS-gcc)
+                # Homebrew GCC, preinstalled on the runner image
+                cc=gcc-15 cxx=g++-15 fc=gfortran-15
+                ;;
+            macOS-llvm)
+                # Homebrew's clang and flang are not on PATH by default, and
+                # `flang-new` was renamed to `flang` in LLVM 20
+                cc=clang cxx=clang++ fc=flang
+                bindirs=$(brew --prefix llvm)/bin:$(brew --prefix flang)/bin
+                if [[ ! -x $(brew --prefix flang)/bin/flang ]]; then
+                    fc=flang-new
+                fi
+                ;;
+        esac
+        # Compiler names are kept bare so that ccache can be put in front of them
+        # below, and so that the `mpicc`/`mpifort` wrappers that MPI and mpif
+        # install do not record paths specific to this runner.
+        echo "PATH=${bindirs:+${bindirs}:}${PATH}" >>"${GITHUB_ENV}"
+        {
+            echo "CC=${cc}"
+            echo "CXX=${cxx}"
+            echo "FC=${fc}"
+        } >>"${GITHUB_ENV}"
+        export PATH=${bindirs:+${bindirs}:}${PATH}
+        for var in cc cxx fc; do
+            command -v "${!var}"
+            "${!var}" --version | head -1
+        done
+
+    # ccache in masquerade mode: symlinks named after the compilers, ahead of
+    # them on PATH. Nothing has to know about ccache, and in particular the
+    # installed compiler wrappers still refer to the real compilers. Fortran is
+    # left alone, as ccache does not support it.
+    - name: Set up ccache
+      if: inputs.ccache == 'true'
+      shell: bash
+      run: |
+        shims=${RUNNER_TEMP}/ccache-shims
+        mkdir -p "${shims}"
+        # CC and CXX come from the step above, through GITHUB_ENV
+        ln -sf "$(command -v ccache)" "${shims}/${CC}"
+        ln -sf "$(command -v ccache)" "${shims}/${CXX}"
+        {
+            echo "PATH=${shims}:${PATH}"
+            echo "CCACHE_DIR=${RUNNER_TEMP}/ccache"
+            echo "CCACHE_MAXSIZE=500M"
+        } >>"${GITHUB_ENV}"
+        # Verify that the masquerade works: ccache has to be found first, and has
+        # to resolve to the intended compiler and not, say, Apple clang.
+        export PATH=${shims}:${PATH}
+        test "$(command -v "${CC}")" = "${shims}/${CC}"
+        "${CC}" --version | head -1
