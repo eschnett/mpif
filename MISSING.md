@@ -150,6 +150,39 @@ the Forum's ABI stub library standing in for an MPI, and runs nothing.
   AMD's build of LLVM flang. Should AMD ever publish a direct URL, AOCC is a
   row's worth of work and no more.
 
+Green as of the first run: gfortran 8, 9 and 12, and `amdflang` (ROCm's LLVM
+flang), each on both CFI branches. `ifx` 2026.1 compiles the whole library and
+`nvfortran` 26.5 does not get past configure; both are below.
+
+### `nvfortran` does not diagnose an ambiguous generic interface
+
+`nvfortran` 26.5 compiles a generic over two specifics that differ only in one
+argument's kind, where the two kinds are the same. Which is exactly the shape
+of the `MPIF_ADDRESS_KIND_DIFFERS_FROM_*` probes, so on a 64-bit platform it
+answers *yes* to both — impossible, `MPI_ADDRESS_KIND` being 8 there, equal to
+`MPI_COUNT_KIND` and unequal to the default integer kind. ifx diagnoses the
+same source correctly ("error #5286: Ambiguous generic interface").
+
+Left as it stands. The probe is deliberately the ambiguity itself, so that it
+is the very rule the compiler will apply to the generated code
+(`CMakeLists.txt`, "Each probe is the ambiguity itself"), and a compiler that
+gets the rule wrong would build an `mpi_f08` whose four extent routines have
+generics that duplicate specifics already there — resolved by something other
+than the standard's rule, or not at all. `ci-scripts/check-configure-probes.sh`
+refuses to go on, which is the answer wanted: the `nvfortran` row is red and
+not gating, rather than green and wrong.
+
+### `nvfortran` accepts kind specifiers it does not implement — probes tightened
+
+`logical*16`, `integer*16` and `real*2` are taken by `nvfortran` 26.5 with a
+warning (`NVFORTRAN-W-0031-Illegal data type length specifier`) and the default
+kind, so a probe that only asked whether the declaration compiles reported
+three kinds it does not have — and the library would then have been built with
+`MPIF_HAVE_LOGICAL16` and friends defined, adding specifics for kinds that are
+not there. This is on mpif's side, and is fixed: each of the four probes now
+uses the answer as a kind value, so a fallback names kind -1, which no compiler
+accepts. gfortran 15 and flang 22 answer exactly as they did before.
+
 ## External blockers
 
 ### The ABI header gets the partitioned-communication count wrong, twice — carried as a local patch

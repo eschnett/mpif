@@ -81,10 +81,20 @@ endif()
 include(CheckFortranCompilerFlag)
 include(CheckFortranSourceCompiles)
 
+# The optional kinds. Each probe declares the kind *and* asserts that it got
+# it, by using the answer as a kind value: where `kind(x)` is not what was
+# asked for, the second declaration names kind -1, which no compiler accepts.
+# Accepting the declaration is not enough on its own -- nvfortran takes
+# `logical*16`, `integer*16` and `real*2` with a warning (NVFORTRAN-W-0031,
+# "Illegal data type length specifier") and falls back to the default kind, so
+# a probe that only compiled reported three kinds it does not have, and the
+# library would then have been built with specifics for them. Measured on
+# gfortran 15 and flang 22 to answer exactly as the plain declaration did.
 check_fortran_source_compiles(
   "
   program test
     logical*16 :: x
+    logical(merge(16, -1, kind(x) == 16)) :: y
   end
   "
   HAVE_LOGICAL16
@@ -95,6 +105,7 @@ check_fortran_source_compiles(
   "
   program test
     integer*16 :: x
+    integer(merge(16, -1, kind(x) == 16)) :: y
   end
   "
   HAVE_INTEGER16
@@ -105,6 +116,7 @@ check_fortran_source_compiles(
   "
   program test
     real*2 :: x
+    real(merge(2, -1, kind(x) == 2)) :: y
   end program
   "
   HAVE_REAL2
@@ -114,6 +126,7 @@ check_fortran_source_compiles(
   "
   program test
     real*16 :: x
+    real(merge(16, -1, kind(x) == 16)) :: y
   end
   "
   HAVE_REAL16

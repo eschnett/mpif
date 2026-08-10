@@ -134,8 +134,12 @@ program mpif_info
 
      print '("MPI ABI Fortran booleans:")'
      call MPI_Abi_get_fortran_booleans(4, logical_true, logical_false, is_set)
+     ! L1 and not L0. A zero field width is standard for I, F, E and G but
+     ! not for L, where gfortran itself calls it an extension under
+     ! -std=f2018 and ifx rejects it outright ("error #6185: This constant is
+     ! out-of-range in a format list"). L1 prints the same single character.
      if (is_set) then
-        print '("   logical: true=",l0,", false=",l0)', &
+        print '("   logical: true=",l1,", false=",l1)', &
              logical_true, logical_false
      else
         print '("   logical: (not set)")'

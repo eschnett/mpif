@@ -46,8 +46,9 @@ program version_f08
   print '("MPI ABI Fortran booleans:")'
   call MPI_Abi_get_fortran_booleans(4, logical_true, logical_false, is_set)
   if (.not.is_set) stop 1
+  ! L1 and not L0, for the reason src/mpif_info.f90 gives at the same print.
   if (is_set) then
-     print '("   logical: true=",l0,", false=",l0)', logical_true, logical_false
+     print '("   logical: true=",l1,", false=",l1)', logical_true, logical_false
   else
      print '("   logical: (not set)")'
   end if
