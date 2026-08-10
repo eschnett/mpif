@@ -33,6 +33,12 @@
 // be worse than useless, landing in whatever a profiling layer had put there.
 // So each body is written once as a macro over the Fortran symbol name and the C
 // entry point, and instantiated twice.
+//
+// The MPIF-SPLIT markers around each instantiation are what
+// ci-scripts/split-wrappers.sh cuts on, exactly as in gen/mpif_functions.c: a
+// static build compiles each MPI_ entry point as a translation unit of its own.
+// The macros and the two #includes fall outside every marked region, which is
+// how they become the prologue every part gets a copy of.
 
 #include <mpif_sentinels.h>
 
@@ -64,8 +70,12 @@
     MPIF_NEWTYPE_ON_SUCCESS;                                                   \
   }
 
+// MPIF-SPLIT-BEGIN mpi_type_hvector_
 MPIF_DEFINE_TYPE_HVECTOR(mpi_type_hvector_, MPI_Type_create_hvector)
+// MPIF-SPLIT-END
+// MPIF-SPLIT-BEGIN pmpi_type_hvector_
 MPIF_DEFINE_TYPE_HVECTOR(pmpi_type_hvector_, PMPI_Type_create_hvector)
+// MPIF-SPLIT-END
 
 #define MPIF_DEFINE_TYPE_HINDEXED(fname, type_create_hindexed)                 \
   void fname(const MPI_Fint *count, const MPI_Fint *array_of_blocklengths,     \
@@ -81,8 +91,12 @@ MPIF_DEFINE_TYPE_HVECTOR(pmpi_type_hvector_, PMPI_Type_create_hvector)
     MPIF_NEWTYPE_ON_SUCCESS;                                                   \
   }
 
+// MPIF-SPLIT-BEGIN mpi_type_hindexed_
 MPIF_DEFINE_TYPE_HINDEXED(mpi_type_hindexed_, MPI_Type_create_hindexed)
+// MPIF-SPLIT-END
+// MPIF-SPLIT-BEGIN pmpi_type_hindexed_
 MPIF_DEFINE_TYPE_HINDEXED(pmpi_type_hindexed_, PMPI_Type_create_hindexed)
+// MPIF-SPLIT-END
 
 #define MPIF_DEFINE_TYPE_STRUCT(fname, type_create_struct)                     \
   void fname(const MPI_Fint *count, const MPI_Fint *array_of_blocklengths,     \
@@ -101,8 +115,12 @@ MPIF_DEFINE_TYPE_HINDEXED(pmpi_type_hindexed_, PMPI_Type_create_hindexed)
     MPIF_NEWTYPE_ON_SUCCESS;                                                   \
   }
 
+// MPIF-SPLIT-BEGIN mpi_type_struct_
 MPIF_DEFINE_TYPE_STRUCT(mpi_type_struct_, MPI_Type_create_struct)
+// MPIF-SPLIT-END
+// MPIF-SPLIT-BEGIN pmpi_type_struct_
 MPIF_DEFINE_TYPE_STRUCT(pmpi_type_struct_, PMPI_Type_create_struct)
+// MPIF-SPLIT-END
 
 // MPI_ADDRESS -> MPI_GET_ADDRESS
 //
@@ -123,8 +141,12 @@ MPIF_DEFINE_TYPE_STRUCT(pmpi_type_struct_, PMPI_Type_create_struct)
     *address = (MPI_Fint)c_address;                                            \
   }
 
+// MPIF-SPLIT-BEGIN mpi_address_
 MPIF_DEFINE_ADDRESS(mpi_address_, MPI_Get_address)
+// MPIF-SPLIT-END
+// MPIF-SPLIT-BEGIN pmpi_address_
 MPIF_DEFINE_ADDRESS(pmpi_address_, PMPI_Get_address)
+// MPIF-SPLIT-END
 
 // MPI_TYPE_EXTENT, MPI_TYPE_LB and MPI_TYPE_UB -> MPI_TYPE_GET_EXTENT
 //
@@ -139,8 +161,12 @@ MPIF_DEFINE_ADDRESS(pmpi_address_, PMPI_Get_address)
     *extent = (MPI_Fint)c_extent;                                              \
   }
 
+// MPIF-SPLIT-BEGIN mpi_type_extent_
 MPIF_DEFINE_TYPE_EXTENT(mpi_type_extent_, MPI_Type_get_extent)
+// MPIF-SPLIT-END
+// MPIF-SPLIT-BEGIN pmpi_type_extent_
 MPIF_DEFINE_TYPE_EXTENT(pmpi_type_extent_, PMPI_Type_get_extent)
+// MPIF-SPLIT-END
 
 #define MPIF_DEFINE_TYPE_LB(fname, type_get_extent)                            \
   void fname(const MPI_Fint *datatype, MPI_Fint *displacement,                 \
@@ -150,8 +176,12 @@ MPIF_DEFINE_TYPE_EXTENT(pmpi_type_extent_, PMPI_Type_get_extent)
     *displacement = (MPI_Fint)lb;                                              \
   }
 
+// MPIF-SPLIT-BEGIN mpi_type_lb_
 MPIF_DEFINE_TYPE_LB(mpi_type_lb_, MPI_Type_get_extent)
+// MPIF-SPLIT-END
+// MPIF-SPLIT-BEGIN pmpi_type_lb_
 MPIF_DEFINE_TYPE_LB(pmpi_type_lb_, PMPI_Type_get_extent)
+// MPIF-SPLIT-END
 
 #define MPIF_DEFINE_TYPE_UB(fname, type_get_extent)                            \
   void fname(const MPI_Fint *datatype, MPI_Fint *displacement,                 \
@@ -161,8 +191,12 @@ MPIF_DEFINE_TYPE_LB(pmpi_type_lb_, PMPI_Type_get_extent)
     *displacement = (MPI_Fint)(lb + extent);                                   \
   }
 
+// MPIF-SPLIT-BEGIN mpi_type_ub_
 MPIF_DEFINE_TYPE_UB(mpi_type_ub_, MPI_Type_get_extent)
+// MPIF-SPLIT-END
+// MPIF-SPLIT-BEGIN pmpi_type_ub_
 MPIF_DEFINE_TYPE_UB(pmpi_type_ub_, PMPI_Type_get_extent)
+// MPIF-SPLIT-END
 
 // MPI_ERRHANDLER_CREATE -> MPI_COMM_CREATE_ERRHANDLER
 // MPI_ERRHANDLER_SET -> MPI_COMM_SET_ERRHANDLER
@@ -194,10 +228,14 @@ MPIF_DEFINE_TYPE_UB(pmpi_type_ub_, PMPI_Type_get_extent)
       mpif_errhandler_cancel(slot);                                            \
   }
 
+// MPIF-SPLIT-BEGIN mpi_errhandler_create_
 MPIF_DEFINE_ERRHANDLER_CREATE(mpi_errhandler_create_,
                               MPI_Comm_create_errhandler)
+// MPIF-SPLIT-END
+// MPIF-SPLIT-BEGIN pmpi_errhandler_create_
 MPIF_DEFINE_ERRHANDLER_CREATE(pmpi_errhandler_create_,
                               PMPI_Comm_create_errhandler)
+// MPIF-SPLIT-END
 
 #define MPIF_DEFINE_ERRHANDLER_SET(fname, comm_set_errhandler)                 \
   void fname(const MPI_Fint *comm, const MPI_Fint *errhandler,                 \
@@ -206,8 +244,12 @@ MPIF_DEFINE_ERRHANDLER_CREATE(pmpi_errhandler_create_,
                                   MPI_Errhandler_fromint(*errhandler));        \
   }
 
+// MPIF-SPLIT-BEGIN mpi_errhandler_set_
 MPIF_DEFINE_ERRHANDLER_SET(mpi_errhandler_set_, MPI_Comm_set_errhandler)
+// MPIF-SPLIT-END
+// MPIF-SPLIT-BEGIN pmpi_errhandler_set_
 MPIF_DEFINE_ERRHANDLER_SET(pmpi_errhandler_set_, PMPI_Comm_set_errhandler)
+// MPIF-SPLIT-END
 
 #define MPIF_DEFINE_ERRHANDLER_GET(fname, comm_get_errhandler)                 \
   void fname(const MPI_Fint *comm, MPI_Fint *errhandler, MPI_Fint *ierror) {   \
@@ -220,5 +262,9 @@ MPIF_DEFINE_ERRHANDLER_SET(pmpi_errhandler_set_, PMPI_Comm_set_errhandler)
     *errhandler = MPI_Errhandler_toint(c_errhandler);                          \
   }
 
+// MPIF-SPLIT-BEGIN mpi_errhandler_get_
 MPIF_DEFINE_ERRHANDLER_GET(mpi_errhandler_get_, MPI_Comm_get_errhandler)
+// MPIF-SPLIT-END
+// MPIF-SPLIT-BEGIN pmpi_errhandler_get_
 MPIF_DEFINE_ERRHANDLER_GET(pmpi_errhandler_get_, PMPI_Comm_get_errhandler)
+// MPIF-SPLIT-END

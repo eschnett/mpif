@@ -563,6 +563,91 @@ foreach(_mpif_san_rt_dir IN LISTS MPIF_SANITIZE_RPATH)
   string(APPEND MPIF_SANITIZE_LINK_STR " -Wl,-rpath,${_mpif_san_rt_dir}")
 endforeach()
 
+# The wrapper sources, either whole or cut into one translation unit per MPI_
+# entry point.
+#
+# MPI-5.0 section 15.2.1 requires (2) that MPI functions a profiler has not
+# replaced still link "without causing name clashes" and (4) that the wrappers of
+# a layered Fortran binding be "separable from the rest of the library"; section
+# 15.2.5 makes that a statement about archive members, wanting them extractable
+# "using a tool such as ar" and "without bringing along any other unnecessary
+# code". A shared library satisfies both by construction and an archive does not,
+# so the split is on exactly when there is an archive to fix. It stays an option
+# rather than a plain `if(NOT BUILD_SHARED_LIBS)` so that the other combination
+# can be built on purpose: OFF under a static build is what puts the defect back
+# (test/profile_f08 then fails to link), and ON under a shared build proves the
+# parts still compile where nothing forces them to.
+if(BUILD_SHARED_LIBS)
+  set(_mpif_split_wrappers_default OFF)
+else()
+  set(_mpif_split_wrappers_default ON)
+endif()
+option(MPIF_SPLIT_WRAPPERS
+  "Compile each MPI_ entry point as its own translation unit, so a profiling wrapper can replace one without a duplicate symbol"
+  ${_mpif_split_wrappers_default})
+
+set(mpif_wrapper_sources
+  gen/mpif_functions.c
+  gen/mpif_f08_wrappers.F90
+  src/mpif_removed.c
+)
+if(MPIF_SPLIT_WRAPPERS)
+  # ci-scripts/split-wrappers.sh is bash and awk, the pair ci-scripts already
+  # relies on. Looked for here rather than left to fail inside the script, so an
+  # environment without them says which option to turn off. Only bash's path is
+  # used; the script resolves awk from PATH itself, so this is a presence check.
+  find_program(MPIF_BASH_EXECUTABLE NAMES bash)
+  find_program(MPIF_AWK_EXECUTABLE NAMES awk gawk)
+  if(NOT MPIF_BASH_EXECUTABLE OR NOT MPIF_AWK_EXECUTABLE)
+    message(FATAL_ERROR
+      "MPIF_SPLIT_WRAPPERS needs bash and awk; set -DMPIF_SPLIT_WRAPPERS=OFF to "
+      "build the wrappers as three translation units instead. Note that a static "
+      "mpif built that way cannot be profiled by interposition.")
+  endif()
+
+  # Configure time rather than build time: CMake needs the file list before it
+  # can create the target. The script stamps its output directory and returns
+  # immediately when the input has not changed, so re-configuring neither
+  # rewrites the parts nor forces a rebuild.
+  set(mpif_split_sources "")
+  set(mpif_splitter "${CMAKE_CURRENT_SOURCE_DIR}/ci-scripts/split-wrappers.sh")
+  foreach(_mpif_split_spec IN LISTS mpif_wrapper_sources)
+    if(_mpif_split_spec STREQUAL "gen/mpif_functions.c")
+      set(_mpif_split_prefix f)
+    elseif(_mpif_split_spec STREQUAL "gen/mpif_f08_wrappers.F90")
+      set(_mpif_split_prefix f08)
+    else()
+      set(_mpif_split_prefix removed)
+    endif()
+    set(_mpif_split_dir "${CMAKE_CURRENT_BINARY_DIR}/split/${_mpif_split_prefix}")
+    execute_process(
+      COMMAND "${MPIF_BASH_EXECUTABLE}" "${mpif_splitter}"
+              "${CMAKE_CURRENT_SOURCE_DIR}/${_mpif_split_spec}"
+              "${_mpif_split_dir}" "${_mpif_split_prefix}"
+      RESULT_VARIABLE _mpif_split_result
+      ERROR_VARIABLE _mpif_split_error
+    )
+    if(NOT _mpif_split_result EQUAL 0)
+      message(FATAL_ERROR
+        "split-wrappers.sh failed on ${_mpif_split_spec}: ${_mpif_split_error}")
+    endif()
+    file(STRINGS "${_mpif_split_dir}/${_mpif_split_prefix}.manifest"
+         _mpif_split_parts)
+    list(APPEND mpif_split_sources ${_mpif_split_parts})
+    # Re-run configure when the marked source or the splitter changes; the parts
+    # are outputs of a configure-time step, so nothing else would notice.
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+      "${CMAKE_CURRENT_SOURCE_DIR}/${_mpif_split_spec}")
+  endforeach()
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+    "${mpif_splitter}")
+  list(LENGTH mpif_split_sources _mpif_split_count)
+  message(STATUS
+    "Separable wrappers: ${_mpif_split_count} translation units "
+    "(MPI-5.0 section 15.2.1)")
+  set(mpif_wrapper_sources ${mpif_split_sources})
+endif()
+
 # No SHARED/STATIC here: `BUILD_SHARED_LIBS` decides, and both configurations
 # are supported. A shared library is what the design is written around -- see
 # "Choosing the MPI at run time" in CODE.md -- but an archive works too, and the
@@ -571,8 +656,8 @@ endforeach()
 # static link puts at risk, because an archive yields a member only when
 # something references a symbol in it: the sentinel cells of
 # src/mpif_constants.c and the BLOCK DATA of src/mpif_logical.F90. Both are
-# reached, transitively, from gen/mpif_functions.c -- see "Static linking" in
-# CODE.md for the chain and what checks it.
+# reached, transitively, from the wrappers of gen/mpif_functions.c -- see
+# "Static linking" in CODE.md for the chain and what checks it.
 #
 # Install a static build into a prefix of its own. `bin/mpifort` links a bare
 # `-lmpifort_abi`, which would be ambiguous with an archive and a shared library
@@ -607,14 +692,14 @@ add_library(mpifort_abi
   src/mpif_constants.c
   src/mpif_logical.F90
   src/mpif_logical.c
-  src/mpif_removed.c
   src/mpif_sizeof.c
   src/mpif_strings.c
-  gen/mpif_functions.c
   gen/mpif_functions.F90
   gen/mpif_f08_cdesc.c
   gen/mpif_f08_functions.F90
-  gen/mpif_f08_wrappers.F90
+  # gen/mpif_functions.c, gen/mpif_f08_wrappers.F90 and src/mpif_removed.c,
+  # whole or split; see MPIF_SPLIT_WRAPPERS above.
+  ${mpif_wrapper_sources}
 )
 target_include_directories(mpifort_abi
   PUBLIC

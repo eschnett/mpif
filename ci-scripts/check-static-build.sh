@@ -220,9 +220,81 @@ for symbol in mpif_logical_true_ mpif_logical_false_; do
   fi
 done
 
+# --- the wrappers are separable -------------------------------------------
+#
+# MPI-5.0 section 15.2.1 requires (2) that MPI functions a profiler has not
+# replaced still link "without causing name clashes" and (4) that the wrappers of
+# a layered Fortran binding be "separable from the rest of the library". Section
+# 15.2.5 says what that means, and it is a statement about archive members: they
+# have to be extractable "using a tool such as ar" and "without bringing along
+# any other unnecessary code". A member holding two MPI entry points fails both
+# at once -- a consumer replacing one of them collides with the member the link
+# needs for the other. So: no member may define more than one.
+#
+# Two families of MPI-named symbols are deliberately not entry points and are
+# excluded by name:
+#
+# - *_cdesc, gen/mpif_f08_cdesc.c's bind(C) targets. mpif invented those names;
+#   they are not in the standard, so nothing replaces them and nothing else
+#   defines them.
+# - the predefined callbacks, MPI_COMM_DUP_FN and the rest. MPI-5.0 A.1.1 lists
+#   all twelve among the *defined constants*, so in the ABI they are constants
+#   rather than entry points; src/mpif_attr_fns.F90 keeps them together and
+#   CODE.md records why they have no PMPI form either.
+#
+# The PMPI_ forms are not separated and do not need to be: a profiling library
+# holds the MPI_ wrappers and calls PMPI_ into the base library.
+
+members="$(mktemp -d)"
+trap 'rm -rf "$members"' EXIT
+# `ar x` extracts into the working directory and has no option to say where, so
+# the archive has to be named absolutely across the `cd`.
+archive_abs="$(cd "$(dirname "$archive")" && pwd)/$(basename "$archive")"
+if ! (cd "$members" && ar x "$archive_abs"); then
+  echo "$me: could not unpack $archive with ar" >&2
+  exit 1
+fi
+# One nm over every member at once: `-A` then prints the file name on each line,
+# which is what makes the grouping below unambiguous. `nm -A` on the *archive*
+# is not, its member field being spelled differently by ELF and Mach-O nm.
+report="$(nm -g -A "$members"/*.o 2>/dev/null | awk '
+  $(NF-1) != "U" && $(NF-1) != "C" && $NF ~ /^_?mpi_/ {
+    sym = $NF; sub(/^_/, "", sym)
+    if (sym ~ /_cdesc$/) next
+    if (sym ~ /_fn(_null)?(_c)?_$/) next
+    total++
+    member = $1; sub(/:$/, "", member); sub(/^.*\//, "", member)
+    n[member]++
+    if (n[member] <= 4) e[member] = e[member] " " sym
+  }
+  END {
+    printf "%d\n", total + 0
+    for (m in n) if (n[m] > 1) printf "%s %d%s\n", m, n[m], e[m]
+  }
+')"
+found="$(printf '%s\n' "$report" | head -1)"
+crowded="$(printf '%s\n' "$report" | tail -n +2)"
+if [ "$found" -eq 0 ]; then
+  echo "$me: found no MPI entry points in $archive at all," \
+       "so this check cannot say anything about them" >&2
+  exit 1
+fi
+if [ -n "$crowded" ]; then
+  echo "$me: these archive members define more than one MPI entry point:" >&2
+  printf '%s\n' "$crowded" | sed 's/^/         /' >&2
+  echo "       A consumer replacing one of them -- which is what a profiling" >&2
+  echo "       layer does, and what test/profile_f90.f90 and" >&2
+  echo "       test/profile_f08.f90 do -- gets a duplicate symbol, because the" >&2
+  echo "       link needs that member for the others. MPI-5.0 section 15.2.1(2)" >&2
+  echo "       and (4) forbid it. Was the library configured with" >&2
+  echo "       -DMPIF_SPLIT_WRAPPERS=OFF?" >&2
+  status=1
+fi
+
 if [ "$status" -eq 0 ]; then
   count=$(printf '%s\n' "$cells" | wc -l | tr -d ' ')
   echo "$me: $exe links $archive statically," \
-       "with $count read-only sentinel cells and libmpi_abi still dynamic"
+       "with $count read-only sentinel cells and libmpi_abi still dynamic;" \
+       "$found separable MPI entry points"
 fi
 exit "$status"

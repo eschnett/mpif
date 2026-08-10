@@ -18,6 +18,12 @@
 #                  TS 29113 probe would pass, which is how that branch stays
 #                  testable. The prefix is the ordinary one, so rebuild with
 #                  MPIF_REBUILD=1 (and without this) afterwards.
+#   MPIF_SPLIT_WRAPPERS  ON or OFF, overriding the default (ON for a static
+#                  build, OFF for a shared one). OFF under MPIF_STATIC=1 is how
+#                  the defect goes back: ci-scripts/check-static-build.sh then
+#                  fails, and test/profile_f90 and test/profile_f08 stop
+#                  linking. The prefix is the ordinary one, so rebuild with
+#                  MPIF_REBUILD=1 (and without this) afterwards.
 #
 # The MPI has to be installed already; this refuses to start otherwise rather
 # than configuring against a prefix that is missing or half-written.
@@ -56,9 +62,17 @@ if [[ -n ${static} ]]; then
 else
     shared_libs=ON
 fi
+# Passed only when set: with no value CMake would see an empty string, and the
+# default is BUILD_SHARED_LIBS's business rather than this script's.
+split_args=()
+if [[ -n ${MPIF_SPLIT_WRAPPERS:-} ]]; then
+    split_args+=("-DMPIF_SPLIT_WRAPPERS=${MPIF_SPLIT_WRAPPERS}")
+fi
+
 cmake \
     -S "${repodir}" \
     -B "${build}" \
+    "${split_args[@]+"${split_args[@]}"}" \
     -DBUILD_SHARED_LIBS="${shared_libs}" \
     -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_C_COMPILER="${CC}" \

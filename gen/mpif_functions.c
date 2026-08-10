@@ -42,6 +42,7 @@
 #define PMPI_Keyval_create PMPI_Comm_create_keyval
 #define PMPI_Keyval_free PMPI_Comm_free_keyval
 
+// MPIF-SPLIT-BEGIN mpi_abi_get_fortran_booleans_
 void mpi_abi_get_fortran_booleans_(
   const MPI_Fint* restrict const logical_size,
   void* restrict const logical_true,
@@ -59,7 +60,9 @@ void mpi_abi_get_fortran_booleans_(
   );
   *is_set = mpif_bool2logical(c_is_set);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_abi_get_fortran_booleans_
 void pmpi_abi_get_fortran_booleans_(
   const MPI_Fint* restrict const logical_size,
   void* restrict const logical_true,
@@ -77,7 +80,9 @@ void pmpi_abi_get_fortran_booleans_(
   );
   *is_set = mpif_bool2logical(c_is_set);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_abi_get_fortran_info_
 void mpi_abi_get_fortran_info_(
   MPI_Fint* restrict const info,
   MPI_Fint* restrict const ierror
@@ -89,7 +94,9 @@ void mpi_abi_get_fortran_info_(
   );
   *info = MPI_Info_toint(c_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_abi_get_fortran_info_
 void pmpi_abi_get_fortran_info_(
   MPI_Fint* restrict const info,
   MPI_Fint* restrict const ierror
@@ -101,7 +108,9 @@ void pmpi_abi_get_fortran_info_(
   );
   *info = MPI_Info_toint(c_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_abi_get_info_
 void mpi_abi_get_info_(
   MPI_Fint* restrict const info,
   MPI_Fint* restrict const ierror
@@ -113,7 +122,9 @@ void mpi_abi_get_info_(
   );
   *info = MPI_Info_toint(c_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_abi_get_info_
 void pmpi_abi_get_info_(
   MPI_Fint* restrict const info,
   MPI_Fint* restrict const ierror
@@ -125,7 +136,9 @@ void pmpi_abi_get_info_(
   );
   *info = MPI_Info_toint(c_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_abi_get_version_
 void mpi_abi_get_version_(
   MPI_Fint* restrict const abi_major,
   MPI_Fint* restrict const abi_minor,
@@ -137,7 +150,9 @@ void mpi_abi_get_version_(
     abi_minor
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_abi_get_version_
 void pmpi_abi_get_version_(
   MPI_Fint* restrict const abi_major,
   MPI_Fint* restrict const abi_minor,
@@ -149,7 +164,9 @@ void pmpi_abi_get_version_(
     abi_minor
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_abi_set_fortran_booleans_
 void mpi_abi_set_fortran_booleans_(
   const MPI_Fint* restrict const logical_size,
   const void* restrict const logical_true,
@@ -163,7 +180,9 @@ void mpi_abi_set_fortran_booleans_(
     (void*)logical_false
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_abi_set_fortran_booleans_
 void pmpi_abi_set_fortran_booleans_(
   const MPI_Fint* restrict const logical_size,
   const void* restrict const logical_true,
@@ -177,7 +196,9 @@ void pmpi_abi_set_fortran_booleans_(
     (void*)logical_false
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_abi_set_fortran_info_
 void mpi_abi_set_fortran_info_(
   const MPI_Fint* restrict const info,
   MPI_Fint* restrict const ierror
@@ -187,7 +208,9 @@ void mpi_abi_set_fortran_info_(
     MPI_Info_fromint(*info)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_abi_set_fortran_info_
 void pmpi_abi_set_fortran_info_(
   const MPI_Fint* restrict const info,
   MPI_Fint* restrict const ierror
@@ -197,7 +220,9 @@ void pmpi_abi_set_fortran_info_(
     MPI_Info_fromint(*info)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_abort_
 void mpi_abort_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const errorcode,
@@ -209,7 +234,9 @@ void mpi_abort_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_abort_
 void pmpi_abort_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const errorcode,
@@ -221,7 +248,9 @@ void pmpi_abort_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_accumulate_
 void mpi_accumulate_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -248,7 +277,9 @@ void mpi_accumulate_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_accumulate_c_
 void mpi_accumulate_c_(
   const void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -275,7 +306,9 @@ void mpi_accumulate_c_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_accumulate_
 void pmpi_accumulate_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -302,7 +335,9 @@ void pmpi_accumulate_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_accumulate_c_
 void pmpi_accumulate_c_(
   const void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -329,7 +364,9 @@ void pmpi_accumulate_c_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_add_error_class_
 void mpi_add_error_class_(
   MPI_Fint* restrict const errorclass,
   MPI_Fint* restrict const ierror
@@ -339,7 +376,9 @@ void mpi_add_error_class_(
     errorclass
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_add_error_class_
 void pmpi_add_error_class_(
   MPI_Fint* restrict const errorclass,
   MPI_Fint* restrict const ierror
@@ -349,7 +388,9 @@ void pmpi_add_error_class_(
     errorclass
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_add_error_code_
 void mpi_add_error_code_(
   const MPI_Fint* restrict const errorclass,
   MPI_Fint* restrict const errorcode,
@@ -361,7 +402,9 @@ void mpi_add_error_code_(
     errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_add_error_code_
 void pmpi_add_error_code_(
   const MPI_Fint* restrict const errorclass,
   MPI_Fint* restrict const errorcode,
@@ -373,7 +416,9 @@ void pmpi_add_error_code_(
     errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_add_error_string_
 void mpi_add_error_string_(
   const MPI_Fint* restrict const errorcode,
   const char* restrict const string,
@@ -388,7 +433,9 @@ void mpi_add_error_string_(
   );
   free(c_string);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_add_error_string_
 void pmpi_add_error_string_(
   const MPI_Fint* restrict const errorcode,
   const char* restrict const string,
@@ -403,7 +450,9 @@ void pmpi_add_error_string_(
   );
   free(c_string);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_aint_add_
 MPI_Aint mpi_aint_add_(
   const MPI_Aint* restrict const base,
   const MPI_Aint* restrict const disp
@@ -415,7 +464,9 @@ MPI_Aint mpi_aint_add_(
   );
   return result;
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_aint_add_
 MPI_Aint pmpi_aint_add_(
   const MPI_Aint* restrict const base,
   const MPI_Aint* restrict const disp
@@ -427,7 +478,9 @@ MPI_Aint pmpi_aint_add_(
   );
   return result;
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_aint_diff_
 MPI_Aint mpi_aint_diff_(
   const MPI_Aint* restrict const addr1,
   const MPI_Aint* restrict const addr2
@@ -439,7 +492,9 @@ MPI_Aint mpi_aint_diff_(
   );
   return result;
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_aint_diff_
 MPI_Aint pmpi_aint_diff_(
   const MPI_Aint* restrict const addr1,
   const MPI_Aint* restrict const addr2
@@ -451,7 +506,9 @@ MPI_Aint pmpi_aint_diff_(
   );
   return result;
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_allgather_
 void mpi_allgather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -475,7 +532,9 @@ void mpi_allgather_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_allgather_c_
 void mpi_allgather_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -499,7 +558,9 @@ void mpi_allgather_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_allgather_
 void pmpi_allgather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -523,7 +584,9 @@ void pmpi_allgather_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_allgather_c_
 void pmpi_allgather_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -547,7 +610,9 @@ void pmpi_allgather_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_allgather_init_
 void mpi_allgather_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -577,7 +642,9 @@ void mpi_allgather_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_allgather_init_c_
 void mpi_allgather_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -607,7 +674,9 @@ void mpi_allgather_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_allgather_init_
 void pmpi_allgather_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -637,7 +706,9 @@ void pmpi_allgather_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_allgather_init_c_
 void pmpi_allgather_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -667,7 +738,9 @@ void pmpi_allgather_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_allgatherv_
 void mpi_allgatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -693,7 +766,9 @@ void mpi_allgatherv_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_allgatherv_c_
 void mpi_allgatherv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -719,7 +794,9 @@ void mpi_allgatherv_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_allgatherv_
 void pmpi_allgatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -745,7 +822,9 @@ void pmpi_allgatherv_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_allgatherv_c_
 void pmpi_allgatherv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -771,7 +850,9 @@ void pmpi_allgatherv_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_allgatherv_init_
 void mpi_allgatherv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -803,7 +884,9 @@ void mpi_allgatherv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_allgatherv_init_c_
 void mpi_allgatherv_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -835,7 +918,9 @@ void mpi_allgatherv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_allgatherv_init_
 void pmpi_allgatherv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -867,7 +952,9 @@ void pmpi_allgatherv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_allgatherv_init_c_
 void pmpi_allgatherv_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -899,7 +986,9 @@ void pmpi_allgatherv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alloc_mem_
 void mpi_alloc_mem_(
   const MPI_Aint* restrict const size,
   const MPI_Fint* restrict const info,
@@ -913,7 +1002,9 @@ void mpi_alloc_mem_(
     baseptr
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alloc_mem_
 void pmpi_alloc_mem_(
   const MPI_Aint* restrict const size,
   const MPI_Fint* restrict const info,
@@ -927,7 +1018,9 @@ void pmpi_alloc_mem_(
     baseptr
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_allreduce_
 void mpi_allreduce_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -949,7 +1042,9 @@ void mpi_allreduce_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_allreduce_c_
 void mpi_allreduce_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -971,7 +1066,9 @@ void mpi_allreduce_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_allreduce_
 void pmpi_allreduce_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -993,7 +1090,9 @@ void pmpi_allreduce_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_allreduce_c_
 void pmpi_allreduce_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -1015,7 +1114,9 @@ void pmpi_allreduce_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_allreduce_init_
 void mpi_allreduce_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -1043,7 +1144,9 @@ void mpi_allreduce_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_allreduce_init_c_
 void mpi_allreduce_init_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -1071,7 +1174,9 @@ void mpi_allreduce_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_allreduce_init_
 void pmpi_allreduce_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -1099,7 +1204,9 @@ void pmpi_allreduce_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_allreduce_init_c_
 void pmpi_allreduce_init_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -1127,7 +1234,9 @@ void pmpi_allreduce_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alltoall_
 void mpi_alltoall_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -1151,7 +1260,9 @@ void mpi_alltoall_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alltoall_c_
 void mpi_alltoall_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -1175,7 +1286,9 @@ void mpi_alltoall_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alltoall_
 void pmpi_alltoall_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -1199,7 +1312,9 @@ void pmpi_alltoall_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alltoall_c_
 void pmpi_alltoall_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -1223,7 +1338,9 @@ void pmpi_alltoall_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alltoall_init_
 void mpi_alltoall_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -1253,7 +1370,9 @@ void mpi_alltoall_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alltoall_init_c_
 void mpi_alltoall_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -1283,7 +1402,9 @@ void mpi_alltoall_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alltoall_init_
 void pmpi_alltoall_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -1313,7 +1434,9 @@ void pmpi_alltoall_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alltoall_init_c_
 void pmpi_alltoall_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -1343,7 +1466,9 @@ void pmpi_alltoall_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alltoallv_
 void mpi_alltoallv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -1371,7 +1496,9 @@ void mpi_alltoallv_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alltoallv_c_
 void mpi_alltoallv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -1399,7 +1526,9 @@ void mpi_alltoallv_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alltoallv_
 void pmpi_alltoallv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -1427,7 +1556,9 @@ void pmpi_alltoallv_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alltoallv_c_
 void pmpi_alltoallv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -1455,7 +1586,9 @@ void pmpi_alltoallv_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alltoallv_init_
 void mpi_alltoallv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -1489,7 +1622,9 @@ void mpi_alltoallv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alltoallv_init_c_
 void mpi_alltoallv_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -1523,7 +1658,9 @@ void mpi_alltoallv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alltoallv_init_
 void pmpi_alltoallv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -1557,7 +1694,9 @@ void pmpi_alltoallv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alltoallv_init_c_
 void pmpi_alltoallv_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -1591,7 +1730,9 @@ void pmpi_alltoallv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alltoallw_
 void mpi_alltoallw_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -1643,7 +1784,9 @@ void mpi_alltoallw_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alltoallw_c_
 void mpi_alltoallw_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -1695,7 +1838,9 @@ void mpi_alltoallw_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alltoallw_
 void pmpi_alltoallw_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -1747,7 +1892,9 @@ void pmpi_alltoallw_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alltoallw_c_
 void pmpi_alltoallw_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -1799,7 +1946,9 @@ void pmpi_alltoallw_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alltoallw_init_
 void mpi_alltoallw_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -1857,7 +2006,9 @@ void mpi_alltoallw_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_alltoallw_init_c_
 void mpi_alltoallw_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -1915,7 +2066,9 @@ void mpi_alltoallw_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alltoallw_init_
 void pmpi_alltoallw_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -1973,7 +2126,9 @@ void pmpi_alltoallw_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_alltoallw_init_c_
 void pmpi_alltoallw_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -2031,7 +2186,9 @@ void pmpi_alltoallw_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_attr_delete_
 void mpi_attr_delete_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const keyval,
@@ -2043,7 +2200,9 @@ void mpi_attr_delete_(
     *keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_attr_delete_
 void pmpi_attr_delete_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const keyval,
@@ -2055,7 +2214,9 @@ void pmpi_attr_delete_(
     *keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_attr_get_
 void mpi_attr_get_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const keyval,
@@ -2078,7 +2239,9 @@ void mpi_attr_get_(
     *attribute_val = (MPI_Fint)mpif_attr_value(*keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_attr_get_
 void pmpi_attr_get_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const keyval,
@@ -2101,7 +2264,9 @@ void pmpi_attr_get_(
     *attribute_val = (MPI_Fint)mpif_attr_value(*keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_attr_put_
 void mpi_attr_put_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const keyval,
@@ -2115,7 +2280,9 @@ void mpi_attr_put_(
     (void*)(intptr_t)*attribute_val
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_attr_put_
 void pmpi_attr_put_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const keyval,
@@ -2129,7 +2296,9 @@ void pmpi_attr_put_(
     (void*)(intptr_t)*attribute_val
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_barrier_
 void mpi_barrier_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const ierror
@@ -2139,7 +2308,9 @@ void mpi_barrier_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_barrier_
 void pmpi_barrier_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const ierror
@@ -2149,7 +2320,9 @@ void pmpi_barrier_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_barrier_init_
 void mpi_barrier_init_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const info,
@@ -2165,7 +2338,9 @@ void mpi_barrier_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_barrier_init_
 void pmpi_barrier_init_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const info,
@@ -2181,7 +2356,9 @@ void pmpi_barrier_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_bcast_
 void mpi_bcast_(
   void* restrict const buffer,
   const MPI_Fint* restrict const count,
@@ -2200,7 +2377,9 @@ void mpi_bcast_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_bcast_c_
 void mpi_bcast_c_(
   void* restrict const buffer,
   const MPI_Count* restrict const count,
@@ -2219,7 +2398,9 @@ void mpi_bcast_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_bcast_
 void pmpi_bcast_(
   void* restrict const buffer,
   const MPI_Fint* restrict const count,
@@ -2238,7 +2419,9 @@ void pmpi_bcast_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_bcast_c_
 void pmpi_bcast_c_(
   void* restrict const buffer,
   const MPI_Count* restrict const count,
@@ -2257,7 +2440,9 @@ void pmpi_bcast_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_bcast_init_
 void mpi_bcast_init_(
   void* restrict const buffer,
   const MPI_Fint* restrict const count,
@@ -2282,7 +2467,9 @@ void mpi_bcast_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_bcast_init_c_
 void mpi_bcast_init_c_(
   void* restrict const buffer,
   const MPI_Count* restrict const count,
@@ -2307,7 +2494,9 @@ void mpi_bcast_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_bcast_init_
 void pmpi_bcast_init_(
   void* restrict const buffer,
   const MPI_Fint* restrict const count,
@@ -2332,7 +2521,9 @@ void pmpi_bcast_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_bcast_init_c_
 void pmpi_bcast_init_c_(
   void* restrict const buffer,
   const MPI_Count* restrict const count,
@@ -2357,7 +2548,9 @@ void pmpi_bcast_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_bsend_
 void mpi_bsend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -2378,7 +2571,9 @@ void mpi_bsend_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_bsend_c_
 void mpi_bsend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -2399,7 +2594,9 @@ void mpi_bsend_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_bsend_
 void pmpi_bsend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -2420,7 +2617,9 @@ void pmpi_bsend_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_bsend_c_
 void pmpi_bsend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -2441,7 +2640,9 @@ void pmpi_bsend_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_bsend_init_
 void mpi_bsend_init_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -2466,7 +2667,9 @@ void mpi_bsend_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_bsend_init_c_
 void mpi_bsend_init_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -2491,7 +2694,9 @@ void mpi_bsend_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_bsend_init_
 void pmpi_bsend_init_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -2516,7 +2721,9 @@ void pmpi_bsend_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_bsend_init_c_
 void pmpi_bsend_init_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -2541,7 +2748,9 @@ void pmpi_bsend_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_buffer_attach_
 void mpi_buffer_attach_(
   void* restrict const buffer,
   const MPI_Fint* restrict const size,
@@ -2554,7 +2763,9 @@ void mpi_buffer_attach_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_buffer_attach_c_
 void mpi_buffer_attach_c_(
   void* restrict const buffer,
   const MPI_Count* restrict const size,
@@ -2567,7 +2778,9 @@ void mpi_buffer_attach_c_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_buffer_attach_
 void pmpi_buffer_attach_(
   void* restrict const buffer,
   const MPI_Fint* restrict const size,
@@ -2580,7 +2793,9 @@ void pmpi_buffer_attach_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_buffer_attach_c_
 void pmpi_buffer_attach_c_(
   void* restrict const buffer,
   const MPI_Count* restrict const size,
@@ -2593,7 +2808,9 @@ void pmpi_buffer_attach_c_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_buffer_detach_
 void mpi_buffer_detach_(
   void* restrict const buffer_addr,
   MPI_Fint* restrict const size,
@@ -2611,7 +2828,9 @@ void mpi_buffer_detach_(
     memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
   }
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_buffer_detach_c_
 void mpi_buffer_detach_c_(
   void* restrict const buffer_addr,
   MPI_Count* restrict const size,
@@ -2629,7 +2848,9 @@ void mpi_buffer_detach_c_(
     memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
   }
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_buffer_detach_
 void pmpi_buffer_detach_(
   void* restrict const buffer_addr,
   MPI_Fint* restrict const size,
@@ -2647,7 +2868,9 @@ void pmpi_buffer_detach_(
     memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
   }
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_buffer_detach_c_
 void pmpi_buffer_detach_c_(
   void* restrict const buffer_addr,
   MPI_Count* restrict const size,
@@ -2665,7 +2888,9 @@ void pmpi_buffer_detach_c_(
     memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
   }
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_buffer_flush_
 void mpi_buffer_flush_(
   MPI_Fint* restrict const ierror
 )
@@ -2673,7 +2898,9 @@ void mpi_buffer_flush_(
   *ierror = MPI_Buffer_flush(
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_buffer_flush_
 void pmpi_buffer_flush_(
   MPI_Fint* restrict const ierror
 )
@@ -2681,7 +2908,9 @@ void pmpi_buffer_flush_(
   *ierror = PMPI_Buffer_flush(
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_buffer_iflush_
 void mpi_buffer_iflush_(
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const ierror
@@ -2693,7 +2922,9 @@ void mpi_buffer_iflush_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_buffer_iflush_
 void pmpi_buffer_iflush_(
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const ierror
@@ -2705,7 +2936,9 @@ void pmpi_buffer_iflush_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_cancel_
 void mpi_cancel_(
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const ierror
@@ -2717,7 +2950,9 @@ void mpi_cancel_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_cancel_
 void pmpi_cancel_(
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const ierror
@@ -2729,7 +2964,9 @@ void pmpi_cancel_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_cart_coords_
 void mpi_cart_coords_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const rank,
@@ -2745,7 +2982,9 @@ void mpi_cart_coords_(
     coords
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_cart_coords_
 void pmpi_cart_coords_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const rank,
@@ -2761,7 +3000,9 @@ void pmpi_cart_coords_(
     coords
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_cart_create_
 void mpi_cart_create_(
   const MPI_Fint* restrict const comm_old,
   const MPI_Fint* restrict const ndims,
@@ -2786,7 +3027,9 @@ void mpi_cart_create_(
   );
   *comm_cart = MPI_Comm_toint(c_comm_cart);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_cart_create_
 void pmpi_cart_create_(
   const MPI_Fint* restrict const comm_old,
   const MPI_Fint* restrict const ndims,
@@ -2811,7 +3054,9 @@ void pmpi_cart_create_(
   );
   *comm_cart = MPI_Comm_toint(c_comm_cart);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_cart_get_
 void mpi_cart_get_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const maxdims,
@@ -2832,7 +3077,9 @@ void mpi_cart_get_(
   for (int dim=0; dim<*maxdims; ++dim)
     periods[dim] = mpif_bool2logical(c_periods[dim]);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_cart_get_
 void pmpi_cart_get_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const maxdims,
@@ -2853,7 +3100,9 @@ void pmpi_cart_get_(
   for (int dim=0; dim<*maxdims; ++dim)
     periods[dim] = mpif_bool2logical(c_periods[dim]);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_cart_map_
 void mpi_cart_map_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const ndims,
@@ -2874,7 +3123,9 @@ void mpi_cart_map_(
     newrank
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_cart_map_
 void pmpi_cart_map_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const ndims,
@@ -2895,7 +3146,9 @@ void pmpi_cart_map_(
     newrank
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_cart_rank_
 void mpi_cart_rank_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const coords,
@@ -2909,7 +3162,9 @@ void mpi_cart_rank_(
     rank
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_cart_rank_
 void pmpi_cart_rank_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const coords,
@@ -2923,7 +3178,9 @@ void pmpi_cart_rank_(
     rank
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_cart_shift_
 void mpi_cart_shift_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const direction,
@@ -2941,7 +3198,9 @@ void mpi_cart_shift_(
     rank_dest
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_cart_shift_
 void pmpi_cart_shift_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const direction,
@@ -2959,7 +3218,9 @@ void pmpi_cart_shift_(
     rank_dest
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_cart_sub_
 void mpi_cart_sub_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const remain_dims,
@@ -2987,7 +3248,9 @@ void mpi_cart_sub_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_cart_sub_
 void pmpi_cart_sub_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const remain_dims,
@@ -3015,7 +3278,9 @@ void pmpi_cart_sub_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_cartdim_get_
 void mpi_cartdim_get_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const ndims,
@@ -3027,7 +3292,9 @@ void mpi_cartdim_get_(
     ndims
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_cartdim_get_
 void pmpi_cartdim_get_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const ndims,
@@ -3039,7 +3306,9 @@ void pmpi_cartdim_get_(
     ndims
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_close_port_
 void mpi_close_port_(
   const char* restrict const port_name,
   MPI_Fint* restrict const ierror,
@@ -3052,7 +3321,9 @@ void mpi_close_port_(
   );
   free(c_port_name);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_close_port_
 void pmpi_close_port_(
   const char* restrict const port_name,
   MPI_Fint* restrict const ierror,
@@ -3065,7 +3336,9 @@ void pmpi_close_port_(
   );
   free(c_port_name);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_accept_
 void mpi_comm_accept_(
   const char* restrict const port_name,
   const MPI_Fint* restrict const info,
@@ -3112,7 +3385,9 @@ void mpi_comm_accept_(
     free(c_port_name);
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_accept_
 void pmpi_comm_accept_(
   const char* restrict const port_name,
   const MPI_Fint* restrict const info,
@@ -3159,7 +3434,9 @@ void pmpi_comm_accept_(
     free(c_port_name);
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_attach_buffer_
 void mpi_comm_attach_buffer_(
   const MPI_Fint* restrict const comm,
   void* restrict const buffer,
@@ -3174,7 +3451,9 @@ void mpi_comm_attach_buffer_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_attach_buffer_c_
 void mpi_comm_attach_buffer_c_(
   const MPI_Fint* restrict const comm,
   void* restrict const buffer,
@@ -3189,7 +3468,9 @@ void mpi_comm_attach_buffer_c_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_attach_buffer_
 void pmpi_comm_attach_buffer_(
   const MPI_Fint* restrict const comm,
   void* restrict const buffer,
@@ -3204,7 +3485,9 @@ void pmpi_comm_attach_buffer_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_attach_buffer_c_
 void pmpi_comm_attach_buffer_c_(
   const MPI_Fint* restrict const comm,
   void* restrict const buffer,
@@ -3219,7 +3502,9 @@ void pmpi_comm_attach_buffer_c_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_call_errhandler_
 void mpi_comm_call_errhandler_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const errorcode,
@@ -3231,7 +3516,9 @@ void mpi_comm_call_errhandler_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_call_errhandler_
 void pmpi_comm_call_errhandler_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const errorcode,
@@ -3243,7 +3530,9 @@ void pmpi_comm_call_errhandler_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_compare_
 void mpi_comm_compare_(
   const MPI_Fint* restrict const comm1,
   const MPI_Fint* restrict const comm2,
@@ -3257,7 +3546,9 @@ void mpi_comm_compare_(
     result
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_compare_
 void pmpi_comm_compare_(
   const MPI_Fint* restrict const comm1,
   const MPI_Fint* restrict const comm2,
@@ -3271,7 +3562,9 @@ void pmpi_comm_compare_(
     result
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_connect_
 void mpi_comm_connect_(
   const char* restrict const port_name,
   const MPI_Fint* restrict const info,
@@ -3318,7 +3611,9 @@ void mpi_comm_connect_(
     free(c_port_name);
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_connect_
 void pmpi_comm_connect_(
   const char* restrict const port_name,
   const MPI_Fint* restrict const info,
@@ -3365,7 +3660,9 @@ void pmpi_comm_connect_(
     free(c_port_name);
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_create_
 void mpi_comm_create_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const group,
@@ -3381,7 +3678,9 @@ void mpi_comm_create_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_create_
 void pmpi_comm_create_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const group,
@@ -3397,7 +3696,9 @@ void pmpi_comm_create_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_create_errhandler_
 void mpi_comm_create_errhandler_(
   MPI_Comm_errhandler_function* const comm_errhandler_fn,
   MPI_Fint* restrict const errhandler,
@@ -3419,7 +3720,9 @@ void mpi_comm_create_errhandler_(
     mpif_errhandler_cancel(slot_comm_errhandler_fn);
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_create_errhandler_
 void pmpi_comm_create_errhandler_(
   MPI_Comm_errhandler_function* const comm_errhandler_fn,
   MPI_Fint* restrict const errhandler,
@@ -3441,7 +3744,9 @@ void pmpi_comm_create_errhandler_(
     mpif_errhandler_cancel(slot_comm_errhandler_fn);
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_create_from_group_
 void mpi_comm_create_from_group_(
   const MPI_Fint* restrict const group,
   const char* restrict const stringtag,
@@ -3464,7 +3769,9 @@ void mpi_comm_create_from_group_(
   free(c_stringtag);
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_create_from_group_
 void pmpi_comm_create_from_group_(
   const MPI_Fint* restrict const group,
   const char* restrict const stringtag,
@@ -3487,7 +3794,9 @@ void pmpi_comm_create_from_group_(
   free(c_stringtag);
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_create_group_
 void mpi_comm_create_group_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const group,
@@ -3505,7 +3814,9 @@ void mpi_comm_create_group_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_create_group_
 void pmpi_comm_create_group_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const group,
@@ -3523,7 +3834,9 @@ void pmpi_comm_create_group_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_create_keyval_
 void mpi_comm_create_keyval_(
   MPI_Comm_copy_attr_function* const comm_copy_attr_fn,
   MPI_Comm_delete_attr_function* const comm_delete_attr_fn,
@@ -3549,7 +3862,9 @@ void mpi_comm_create_keyval_(
   if (*ierror == MPI_SUCCESS)
     *ierror = mpif_register_attr_callback(*comm_keyval, MPIF_ATTR_COMM_DELETE, (mpif_fortran_procedure)comm_delete_attr_fn);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_create_keyval_
 void pmpi_comm_create_keyval_(
   MPI_Comm_copy_attr_function* const comm_copy_attr_fn,
   MPI_Comm_delete_attr_function* const comm_delete_attr_fn,
@@ -3575,7 +3890,9 @@ void pmpi_comm_create_keyval_(
   if (*ierror == MPI_SUCCESS)
     *ierror = mpif_register_attr_callback(*comm_keyval, MPIF_ATTR_COMM_DELETE, (mpif_fortran_procedure)comm_delete_attr_fn);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_delete_attr_
 void mpi_comm_delete_attr_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const comm_keyval,
@@ -3587,7 +3904,9 @@ void mpi_comm_delete_attr_(
     *comm_keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_delete_attr_
 void pmpi_comm_delete_attr_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const comm_keyval,
@@ -3599,7 +3918,9 @@ void pmpi_comm_delete_attr_(
     *comm_keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_detach_buffer_
 void mpi_comm_detach_buffer_(
   const MPI_Fint* restrict const comm,
   void* restrict const buffer_addr,
@@ -3619,7 +3940,9 @@ void mpi_comm_detach_buffer_(
     memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
   }
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_detach_buffer_c_
 void mpi_comm_detach_buffer_c_(
   const MPI_Fint* restrict const comm,
   void* restrict const buffer_addr,
@@ -3639,7 +3962,9 @@ void mpi_comm_detach_buffer_c_(
     memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
   }
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_detach_buffer_
 void pmpi_comm_detach_buffer_(
   const MPI_Fint* restrict const comm,
   void* restrict const buffer_addr,
@@ -3659,7 +3984,9 @@ void pmpi_comm_detach_buffer_(
     memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
   }
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_detach_buffer_c_
 void pmpi_comm_detach_buffer_c_(
   const MPI_Fint* restrict const comm,
   void* restrict const buffer_addr,
@@ -3679,7 +4006,9 @@ void pmpi_comm_detach_buffer_c_(
     memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
   }
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_disconnect_
 void mpi_comm_disconnect_(
   MPI_Fint* restrict const comm,
   MPI_Fint* restrict const ierror
@@ -3691,7 +4020,9 @@ void mpi_comm_disconnect_(
   );
   *comm = MPI_Comm_toint(c_comm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_disconnect_
 void pmpi_comm_disconnect_(
   MPI_Fint* restrict const comm,
   MPI_Fint* restrict const ierror
@@ -3703,7 +4034,9 @@ void pmpi_comm_disconnect_(
   );
   *comm = MPI_Comm_toint(c_comm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_dup_
 void mpi_comm_dup_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const newcomm,
@@ -3717,7 +4050,9 @@ void mpi_comm_dup_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_dup_
 void pmpi_comm_dup_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const newcomm,
@@ -3731,7 +4066,9 @@ void pmpi_comm_dup_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_dup_with_info_
 void mpi_comm_dup_with_info_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const info,
@@ -3747,7 +4084,9 @@ void mpi_comm_dup_with_info_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_dup_with_info_
 void pmpi_comm_dup_with_info_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const info,
@@ -3763,7 +4102,9 @@ void pmpi_comm_dup_with_info_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_flush_buffer_
 void mpi_comm_flush_buffer_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const ierror
@@ -3773,7 +4114,9 @@ void mpi_comm_flush_buffer_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_flush_buffer_
 void pmpi_comm_flush_buffer_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const ierror
@@ -3783,7 +4126,9 @@ void pmpi_comm_flush_buffer_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_free_
 void mpi_comm_free_(
   MPI_Fint* restrict const comm,
   MPI_Fint* restrict const ierror
@@ -3795,7 +4140,9 @@ void mpi_comm_free_(
   );
   *comm = MPI_Comm_toint(c_comm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_free_
 void pmpi_comm_free_(
   MPI_Fint* restrict const comm,
   MPI_Fint* restrict const ierror
@@ -3807,7 +4154,9 @@ void pmpi_comm_free_(
   );
   *comm = MPI_Comm_toint(c_comm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_free_keyval_
 void mpi_comm_free_keyval_(
   MPI_Fint* restrict const comm_keyval,
   MPI_Fint* restrict const ierror
@@ -3817,7 +4166,9 @@ void mpi_comm_free_keyval_(
     comm_keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_free_keyval_
 void pmpi_comm_free_keyval_(
   MPI_Fint* restrict const comm_keyval,
   MPI_Fint* restrict const ierror
@@ -3827,7 +4178,9 @@ void pmpi_comm_free_keyval_(
     comm_keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_get_attr_
 void mpi_comm_get_attr_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const comm_keyval,
@@ -3850,7 +4203,9 @@ void mpi_comm_get_attr_(
     *attribute_val = mpif_attr_value(*comm_keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_get_attr_
 void pmpi_comm_get_attr_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const comm_keyval,
@@ -3873,7 +4228,9 @@ void pmpi_comm_get_attr_(
     *attribute_val = mpif_attr_value(*comm_keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_get_errhandler_
 void mpi_comm_get_errhandler_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const errhandler,
@@ -3887,7 +4244,9 @@ void mpi_comm_get_errhandler_(
   );
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_get_errhandler_
 void pmpi_comm_get_errhandler_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const errhandler,
@@ -3901,7 +4260,9 @@ void pmpi_comm_get_errhandler_(
   );
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_get_info_
 void mpi_comm_get_info_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const info_used,
@@ -3915,7 +4276,9 @@ void mpi_comm_get_info_(
   );
   *info_used = MPI_Info_toint(c_info_used);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_get_info_
 void pmpi_comm_get_info_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const info_used,
@@ -3929,7 +4292,9 @@ void pmpi_comm_get_info_(
   );
   *info_used = MPI_Info_toint(c_info_used);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_get_name_
 void mpi_comm_get_name_(
   const MPI_Fint* restrict const comm,
   char* restrict const comm_name,
@@ -3947,7 +4312,9 @@ void mpi_comm_get_name_(
   );
   mpif_strcpy_c2f(comm_name, c_comm_name, length_comm_name, strlen(c_comm_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_get_name_
 void pmpi_comm_get_name_(
   const MPI_Fint* restrict const comm,
   char* restrict const comm_name,
@@ -3965,7 +4332,9 @@ void pmpi_comm_get_name_(
   );
   mpif_strcpy_c2f(comm_name, c_comm_name, length_comm_name, strlen(c_comm_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_get_parent_
 void mpi_comm_get_parent_(
   MPI_Fint* restrict const parent,
   MPI_Fint* restrict const ierror
@@ -3977,7 +4346,9 @@ void mpi_comm_get_parent_(
   );
   *parent = MPI_Comm_toint(c_parent);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_get_parent_
 void pmpi_comm_get_parent_(
   MPI_Fint* restrict const parent,
   MPI_Fint* restrict const ierror
@@ -3989,7 +4360,9 @@ void pmpi_comm_get_parent_(
   );
   *parent = MPI_Comm_toint(c_parent);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_group_
 void mpi_comm_group_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const group,
@@ -4003,7 +4376,9 @@ void mpi_comm_group_(
   );
   *group = MPI_Group_toint(c_group);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_group_
 void pmpi_comm_group_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const group,
@@ -4017,7 +4392,9 @@ void pmpi_comm_group_(
   );
   *group = MPI_Group_toint(c_group);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_idup_
 void mpi_comm_idup_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const newcomm,
@@ -4035,7 +4412,9 @@ void mpi_comm_idup_(
   *newcomm = MPI_Comm_toint(c_newcomm);
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_idup_
 void pmpi_comm_idup_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const newcomm,
@@ -4053,7 +4432,9 @@ void pmpi_comm_idup_(
   *newcomm = MPI_Comm_toint(c_newcomm);
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_idup_with_info_
 void mpi_comm_idup_with_info_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const info,
@@ -4073,7 +4454,9 @@ void mpi_comm_idup_with_info_(
   *newcomm = MPI_Comm_toint(c_newcomm);
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_idup_with_info_
 void pmpi_comm_idup_with_info_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const info,
@@ -4093,7 +4476,9 @@ void pmpi_comm_idup_with_info_(
   *newcomm = MPI_Comm_toint(c_newcomm);
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_iflush_buffer_
 void mpi_comm_iflush_buffer_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const request,
@@ -4107,7 +4492,9 @@ void mpi_comm_iflush_buffer_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_iflush_buffer_
 void pmpi_comm_iflush_buffer_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const request,
@@ -4121,7 +4508,9 @@ void pmpi_comm_iflush_buffer_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_join_
 void mpi_comm_join_(
   const MPI_Fint* restrict const fd,
   MPI_Fint* restrict const intercomm,
@@ -4135,7 +4524,9 @@ void mpi_comm_join_(
   );
   *intercomm = MPI_Comm_toint(c_intercomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_join_
 void pmpi_comm_join_(
   const MPI_Fint* restrict const fd,
   MPI_Fint* restrict const intercomm,
@@ -4149,7 +4540,9 @@ void pmpi_comm_join_(
   );
   *intercomm = MPI_Comm_toint(c_intercomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_rank_
 void mpi_comm_rank_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const rank,
@@ -4161,7 +4554,9 @@ void mpi_comm_rank_(
     rank
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_rank_
 void pmpi_comm_rank_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const rank,
@@ -4173,7 +4568,9 @@ void pmpi_comm_rank_(
     rank
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_remote_group_
 void mpi_comm_remote_group_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const group,
@@ -4187,7 +4584,9 @@ void mpi_comm_remote_group_(
   );
   *group = MPI_Group_toint(c_group);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_remote_group_
 void pmpi_comm_remote_group_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const group,
@@ -4201,7 +4600,9 @@ void pmpi_comm_remote_group_(
   );
   *group = MPI_Group_toint(c_group);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_remote_size_
 void mpi_comm_remote_size_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const size,
@@ -4213,7 +4614,9 @@ void mpi_comm_remote_size_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_remote_size_
 void pmpi_comm_remote_size_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const size,
@@ -4225,7 +4628,9 @@ void pmpi_comm_remote_size_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_set_attr_
 void mpi_comm_set_attr_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const comm_keyval,
@@ -4239,7 +4644,9 @@ void mpi_comm_set_attr_(
     (void*)*attribute_val
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_set_attr_
 void pmpi_comm_set_attr_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const comm_keyval,
@@ -4253,7 +4660,9 @@ void pmpi_comm_set_attr_(
     (void*)*attribute_val
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_set_errhandler_
 void mpi_comm_set_errhandler_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const errhandler,
@@ -4265,7 +4674,9 @@ void mpi_comm_set_errhandler_(
     MPI_Errhandler_fromint(*errhandler)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_set_errhandler_
 void pmpi_comm_set_errhandler_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const errhandler,
@@ -4277,7 +4688,9 @@ void pmpi_comm_set_errhandler_(
     MPI_Errhandler_fromint(*errhandler)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_set_info_
 void mpi_comm_set_info_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const info,
@@ -4289,7 +4702,9 @@ void mpi_comm_set_info_(
     MPI_Info_fromint(*info)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_set_info_
 void pmpi_comm_set_info_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const info,
@@ -4301,7 +4716,9 @@ void pmpi_comm_set_info_(
     MPI_Info_fromint(*info)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_set_name_
 void mpi_comm_set_name_(
   const MPI_Fint* restrict const comm,
   const char* restrict const comm_name,
@@ -4316,7 +4733,9 @@ void mpi_comm_set_name_(
   );
   free(c_comm_name);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_set_name_
 void pmpi_comm_set_name_(
   const MPI_Fint* restrict const comm,
   const char* restrict const comm_name,
@@ -4331,7 +4750,9 @@ void pmpi_comm_set_name_(
   );
   free(c_comm_name);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_size_
 void mpi_comm_size_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const size,
@@ -4343,7 +4764,9 @@ void mpi_comm_size_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_size_
 void pmpi_comm_size_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const size,
@@ -4355,7 +4778,9 @@ void pmpi_comm_size_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_spawn_
 void mpi_comm_spawn_(
   const char* restrict const command,
   const char* restrict const argv,
@@ -4419,7 +4844,9 @@ void mpi_comm_spawn_(
     free(argv_argv[n]);
   *intercomm = MPI_Comm_toint(c_intercomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_spawn_
 void pmpi_comm_spawn_(
   const char* restrict const command,
   const char* restrict const argv,
@@ -4483,7 +4910,9 @@ void pmpi_comm_spawn_(
     free(argv_argv[n]);
   *intercomm = MPI_Comm_toint(c_intercomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_spawn_multiple_
 void mpi_comm_spawn_multiple_(
   const MPI_Fint* restrict const count,
   const char* restrict const array_of_commands,
@@ -4572,7 +5001,9 @@ void mpi_comm_spawn_multiple_(
   }
   *intercomm = MPI_Comm_toint(c_intercomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_spawn_multiple_
 void pmpi_comm_spawn_multiple_(
   const MPI_Fint* restrict const count,
   const char* restrict const array_of_commands,
@@ -4661,7 +5092,9 @@ void pmpi_comm_spawn_multiple_(
   }
   *intercomm = MPI_Comm_toint(c_intercomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_split_
 void mpi_comm_split_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const color,
@@ -4679,7 +5112,9 @@ void mpi_comm_split_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_split_
 void pmpi_comm_split_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const color,
@@ -4697,7 +5132,9 @@ void pmpi_comm_split_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_split_type_
 void mpi_comm_split_type_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const split_type,
@@ -4717,7 +5154,9 @@ void mpi_comm_split_type_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_split_type_
 void pmpi_comm_split_type_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const split_type,
@@ -4737,7 +5176,9 @@ void pmpi_comm_split_type_(
   );
   *newcomm = MPI_Comm_toint(c_newcomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_comm_test_inter_
 void mpi_comm_test_inter_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const flag,
@@ -4751,7 +5192,9 @@ void mpi_comm_test_inter_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_comm_test_inter_
 void pmpi_comm_test_inter_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const flag,
@@ -4765,7 +5208,9 @@ void pmpi_comm_test_inter_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_compare_and_swap_
 void mpi_compare_and_swap_(
   const void* restrict const origin_addr,
   const void* restrict const compare_addr,
@@ -4790,7 +5235,9 @@ void mpi_compare_and_swap_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_compare_and_swap_
 void pmpi_compare_and_swap_(
   const void* restrict const origin_addr,
   const void* restrict const compare_addr,
@@ -4815,7 +5262,9 @@ void pmpi_compare_and_swap_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_dims_create_
 void mpi_dims_create_(
   const MPI_Fint* restrict const nnodes,
   const MPI_Fint* restrict const ndims,
@@ -4829,7 +5278,9 @@ void mpi_dims_create_(
     dims
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_dims_create_
 void pmpi_dims_create_(
   const MPI_Fint* restrict const nnodes,
   const MPI_Fint* restrict const ndims,
@@ -4843,7 +5294,9 @@ void pmpi_dims_create_(
     dims
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_dist_graph_create_
 void mpi_dist_graph_create_(
   const MPI_Fint* restrict const comm_old,
   const MPI_Fint* restrict const n,
@@ -4871,7 +5324,9 @@ void mpi_dist_graph_create_(
   );
   *comm_dist_graph = MPI_Comm_toint(c_comm_dist_graph);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_dist_graph_create_
 void pmpi_dist_graph_create_(
   const MPI_Fint* restrict const comm_old,
   const MPI_Fint* restrict const n,
@@ -4899,7 +5354,9 @@ void pmpi_dist_graph_create_(
   );
   *comm_dist_graph = MPI_Comm_toint(c_comm_dist_graph);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_dist_graph_create_adjacent_
 void mpi_dist_graph_create_adjacent_(
   const MPI_Fint* restrict const comm_old,
   const MPI_Fint* restrict const indegree,
@@ -4929,7 +5386,9 @@ void mpi_dist_graph_create_adjacent_(
   );
   *comm_dist_graph = MPI_Comm_toint(c_comm_dist_graph);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_dist_graph_create_adjacent_
 void pmpi_dist_graph_create_adjacent_(
   const MPI_Fint* restrict const comm_old,
   const MPI_Fint* restrict const indegree,
@@ -4959,7 +5418,9 @@ void pmpi_dist_graph_create_adjacent_(
   );
   *comm_dist_graph = MPI_Comm_toint(c_comm_dist_graph);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_dist_graph_neighbors_
 void mpi_dist_graph_neighbors_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const maxindegree,
@@ -4981,7 +5442,9 @@ void mpi_dist_graph_neighbors_(
     mpif_c_weights(destweights)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_dist_graph_neighbors_
 void pmpi_dist_graph_neighbors_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const maxindegree,
@@ -5003,7 +5466,9 @@ void pmpi_dist_graph_neighbors_(
     mpif_c_weights(destweights)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_dist_graph_neighbors_count_
 void mpi_dist_graph_neighbors_count_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const indegree,
@@ -5021,7 +5486,9 @@ void mpi_dist_graph_neighbors_count_(
   );
   *weighted = mpif_bool2logical(c_weighted);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_dist_graph_neighbors_count_
 void pmpi_dist_graph_neighbors_count_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const indegree,
@@ -5039,7 +5506,9 @@ void pmpi_dist_graph_neighbors_count_(
   );
   *weighted = mpif_bool2logical(c_weighted);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_errhandler_free_
 void mpi_errhandler_free_(
   MPI_Fint* restrict const errhandler,
   MPI_Fint* restrict const ierror
@@ -5051,7 +5520,9 @@ void mpi_errhandler_free_(
   );
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_errhandler_free_
 void pmpi_errhandler_free_(
   MPI_Fint* restrict const errhandler,
   MPI_Fint* restrict const ierror
@@ -5063,7 +5534,9 @@ void pmpi_errhandler_free_(
   );
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_error_class_
 void mpi_error_class_(
   const MPI_Fint* restrict const errorcode,
   MPI_Fint* restrict const errorclass,
@@ -5075,7 +5548,9 @@ void mpi_error_class_(
     errorclass
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_error_class_
 void pmpi_error_class_(
   const MPI_Fint* restrict const errorcode,
   MPI_Fint* restrict const errorclass,
@@ -5087,7 +5562,9 @@ void pmpi_error_class_(
     errorclass
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_error_string_
 void mpi_error_string_(
   const MPI_Fint* restrict const errorcode,
   char* restrict const string,
@@ -5105,7 +5582,9 @@ void mpi_error_string_(
   );
   mpif_strcpy_c2f(string, c_string, length_string, strlen(c_string));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_error_string_
 void pmpi_error_string_(
   const MPI_Fint* restrict const errorcode,
   char* restrict const string,
@@ -5123,7 +5602,9 @@ void pmpi_error_string_(
   );
   mpif_strcpy_c2f(string, c_string, length_string, strlen(c_string));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_exscan_
 void mpi_exscan_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -5145,7 +5626,9 @@ void mpi_exscan_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_exscan_c_
 void mpi_exscan_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -5167,7 +5650,9 @@ void mpi_exscan_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_exscan_
 void pmpi_exscan_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -5189,7 +5674,9 @@ void pmpi_exscan_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_exscan_c_
 void pmpi_exscan_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -5211,7 +5698,9 @@ void pmpi_exscan_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_exscan_init_
 void mpi_exscan_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -5239,7 +5728,9 @@ void mpi_exscan_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_exscan_init_c_
 void mpi_exscan_init_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -5267,7 +5758,9 @@ void mpi_exscan_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_exscan_init_
 void pmpi_exscan_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -5295,7 +5788,9 @@ void pmpi_exscan_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_exscan_init_c_
 void pmpi_exscan_init_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -5323,19 +5818,25 @@ void pmpi_exscan_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_f_sync_reg_
 void mpi_f_sync_reg_(
   void* restrict const buf
 )
 {
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_f_sync_reg_
 void pmpi_f_sync_reg_(
   void* restrict const buf
 )
 {
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_fetch_and_op_
 void mpi_fetch_and_op_(
   const void* restrict const origin_addr,
   void* restrict const result_addr,
@@ -5359,7 +5860,9 @@ void mpi_fetch_and_op_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_fetch_and_op_
 void pmpi_fetch_and_op_(
   const void* restrict const origin_addr,
   void* restrict const result_addr,
@@ -5383,7 +5886,9 @@ void pmpi_fetch_and_op_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_call_errhandler_
 void mpi_file_call_errhandler_(
   const MPI_Fint* restrict const fh,
   const MPI_Fint* restrict const errorcode,
@@ -5395,7 +5900,9 @@ void mpi_file_call_errhandler_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_call_errhandler_
 void pmpi_file_call_errhandler_(
   const MPI_Fint* restrict const fh,
   const MPI_Fint* restrict const errorcode,
@@ -5407,7 +5914,9 @@ void pmpi_file_call_errhandler_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_close_
 void mpi_file_close_(
   MPI_Fint* restrict const fh,
   MPI_Fint* restrict const ierror
@@ -5419,7 +5928,9 @@ void mpi_file_close_(
   );
   *fh = MPI_File_toint(c_fh);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_close_
 void pmpi_file_close_(
   MPI_Fint* restrict const fh,
   MPI_Fint* restrict const ierror
@@ -5431,7 +5942,9 @@ void pmpi_file_close_(
   );
   *fh = MPI_File_toint(c_fh);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_create_errhandler_
 void mpi_file_create_errhandler_(
   MPI_File_errhandler_function* const file_errhandler_fn,
   MPI_Fint* restrict const errhandler,
@@ -5453,7 +5966,9 @@ void mpi_file_create_errhandler_(
     mpif_errhandler_cancel(slot_file_errhandler_fn);
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_create_errhandler_
 void pmpi_file_create_errhandler_(
   MPI_File_errhandler_function* const file_errhandler_fn,
   MPI_Fint* restrict const errhandler,
@@ -5475,7 +5990,9 @@ void pmpi_file_create_errhandler_(
     mpif_errhandler_cancel(slot_file_errhandler_fn);
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_delete_
 void mpi_file_delete_(
   const char* restrict const filename,
   const MPI_Fint* restrict const info,
@@ -5490,7 +6007,9 @@ void mpi_file_delete_(
   );
   free(c_filename);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_delete_
 void pmpi_file_delete_(
   const char* restrict const filename,
   const MPI_Fint* restrict const info,
@@ -5505,7 +6024,9 @@ void pmpi_file_delete_(
   );
   free(c_filename);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_get_amode_
 void mpi_file_get_amode_(
   const MPI_Fint* restrict const fh,
   MPI_Fint* restrict const amode,
@@ -5517,7 +6038,9 @@ void mpi_file_get_amode_(
     amode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_get_amode_
 void pmpi_file_get_amode_(
   const MPI_Fint* restrict const fh,
   MPI_Fint* restrict const amode,
@@ -5529,7 +6052,9 @@ void pmpi_file_get_amode_(
     amode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_get_atomicity_
 void mpi_file_get_atomicity_(
   const MPI_Fint* restrict const fh,
   MPI_Fint* restrict const flag,
@@ -5543,7 +6068,9 @@ void mpi_file_get_atomicity_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_get_atomicity_
 void pmpi_file_get_atomicity_(
   const MPI_Fint* restrict const fh,
   MPI_Fint* restrict const flag,
@@ -5557,7 +6084,9 @@ void pmpi_file_get_atomicity_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_get_byte_offset_
 void mpi_file_get_byte_offset_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -5571,7 +6100,9 @@ void mpi_file_get_byte_offset_(
     disp
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_get_byte_offset_
 void pmpi_file_get_byte_offset_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -5585,7 +6116,9 @@ void pmpi_file_get_byte_offset_(
     disp
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_get_errhandler_
 void mpi_file_get_errhandler_(
   const MPI_Fint* restrict const file,
   MPI_Fint* restrict const errhandler,
@@ -5599,7 +6132,9 @@ void mpi_file_get_errhandler_(
   );
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_get_errhandler_
 void pmpi_file_get_errhandler_(
   const MPI_Fint* restrict const file,
   MPI_Fint* restrict const errhandler,
@@ -5613,7 +6148,9 @@ void pmpi_file_get_errhandler_(
   );
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_get_group_
 void mpi_file_get_group_(
   const MPI_Fint* restrict const fh,
   MPI_Fint* restrict const group,
@@ -5627,7 +6164,9 @@ void mpi_file_get_group_(
   );
   *group = MPI_Group_toint(c_group);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_get_group_
 void pmpi_file_get_group_(
   const MPI_Fint* restrict const fh,
   MPI_Fint* restrict const group,
@@ -5641,7 +6180,9 @@ void pmpi_file_get_group_(
   );
   *group = MPI_Group_toint(c_group);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_get_info_
 void mpi_file_get_info_(
   const MPI_Fint* restrict const fh,
   MPI_Fint* restrict const info_used,
@@ -5655,7 +6196,9 @@ void mpi_file_get_info_(
   );
   *info_used = MPI_Info_toint(c_info_used);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_get_info_
 void pmpi_file_get_info_(
   const MPI_Fint* restrict const fh,
   MPI_Fint* restrict const info_used,
@@ -5669,7 +6212,9 @@ void pmpi_file_get_info_(
   );
   *info_used = MPI_Info_toint(c_info_used);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_get_position_
 void mpi_file_get_position_(
   const MPI_Fint* restrict const fh,
   MPI_Offset* restrict const offset,
@@ -5681,7 +6226,9 @@ void mpi_file_get_position_(
     offset
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_get_position_
 void pmpi_file_get_position_(
   const MPI_Fint* restrict const fh,
   MPI_Offset* restrict const offset,
@@ -5693,7 +6240,9 @@ void pmpi_file_get_position_(
     offset
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_get_position_shared_
 void mpi_file_get_position_shared_(
   const MPI_Fint* restrict const fh,
   MPI_Offset* restrict const offset,
@@ -5705,7 +6254,9 @@ void mpi_file_get_position_shared_(
     offset
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_get_position_shared_
 void pmpi_file_get_position_shared_(
   const MPI_Fint* restrict const fh,
   MPI_Offset* restrict const offset,
@@ -5717,7 +6268,9 @@ void pmpi_file_get_position_shared_(
     offset
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_get_size_
 void mpi_file_get_size_(
   const MPI_Fint* restrict const fh,
   MPI_Offset* restrict const size,
@@ -5729,7 +6282,9 @@ void mpi_file_get_size_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_get_size_
 void pmpi_file_get_size_(
   const MPI_Fint* restrict const fh,
   MPI_Offset* restrict const size,
@@ -5741,7 +6296,9 @@ void pmpi_file_get_size_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_get_type_extent_
 void mpi_file_get_type_extent_(
   const MPI_Fint* restrict const fh,
   const MPI_Fint* restrict const datatype,
@@ -5755,7 +6312,9 @@ void mpi_file_get_type_extent_(
     extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_get_type_extent_c_
 void mpi_file_get_type_extent_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Fint* restrict const datatype,
@@ -5769,7 +6328,9 @@ void mpi_file_get_type_extent_c_(
     extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_get_type_extent_
 void pmpi_file_get_type_extent_(
   const MPI_Fint* restrict const fh,
   const MPI_Fint* restrict const datatype,
@@ -5783,7 +6344,9 @@ void pmpi_file_get_type_extent_(
     extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_get_type_extent_c_
 void pmpi_file_get_type_extent_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Fint* restrict const datatype,
@@ -5797,7 +6360,9 @@ void pmpi_file_get_type_extent_c_(
     extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_get_view_
 void mpi_file_get_view_(
   const MPI_Fint* restrict const fh,
   MPI_Offset* restrict const disp,
@@ -5823,7 +6388,9 @@ void mpi_file_get_view_(
   *filetype = MPI_Type_toint(c_filetype);
   mpif_strcpy_c2f(datarep, c_datarep, length_datarep, strlen(c_datarep));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_get_view_
 void pmpi_file_get_view_(
   const MPI_Fint* restrict const fh,
   MPI_Offset* restrict const disp,
@@ -5849,7 +6416,9 @@ void pmpi_file_get_view_(
   *filetype = MPI_Type_toint(c_filetype);
   mpif_strcpy_c2f(datarep, c_datarep, length_datarep, strlen(c_datarep));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iread_
 void mpi_file_iread_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -5870,7 +6439,9 @@ void mpi_file_iread_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iread_c_
 void mpi_file_iread_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -5891,7 +6462,9 @@ void mpi_file_iread_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iread_
 void pmpi_file_iread_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -5912,7 +6485,9 @@ void pmpi_file_iread_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iread_c_
 void pmpi_file_iread_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -5933,7 +6508,9 @@ void pmpi_file_iread_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iread_all_
 void mpi_file_iread_all_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -5954,7 +6531,9 @@ void mpi_file_iread_all_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iread_all_c_
 void mpi_file_iread_all_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -5975,7 +6554,9 @@ void mpi_file_iread_all_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iread_all_
 void pmpi_file_iread_all_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -5996,7 +6577,9 @@ void pmpi_file_iread_all_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iread_all_c_
 void pmpi_file_iread_all_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6017,7 +6600,9 @@ void pmpi_file_iread_all_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iread_at_
 void mpi_file_iread_at_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6040,7 +6625,9 @@ void mpi_file_iread_at_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iread_at_c_
 void mpi_file_iread_at_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6063,7 +6650,9 @@ void mpi_file_iread_at_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iread_at_
 void pmpi_file_iread_at_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6086,7 +6675,9 @@ void pmpi_file_iread_at_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iread_at_c_
 void pmpi_file_iread_at_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6109,7 +6700,9 @@ void pmpi_file_iread_at_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iread_at_all_
 void mpi_file_iread_at_all_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6132,7 +6725,9 @@ void mpi_file_iread_at_all_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iread_at_all_c_
 void mpi_file_iread_at_all_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6155,7 +6750,9 @@ void mpi_file_iread_at_all_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iread_at_all_
 void pmpi_file_iread_at_all_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6178,7 +6775,9 @@ void pmpi_file_iread_at_all_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iread_at_all_c_
 void pmpi_file_iread_at_all_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6201,7 +6800,9 @@ void pmpi_file_iread_at_all_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iread_shared_
 void mpi_file_iread_shared_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6222,7 +6823,9 @@ void mpi_file_iread_shared_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iread_shared_c_
 void mpi_file_iread_shared_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6243,7 +6846,9 @@ void mpi_file_iread_shared_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iread_shared_
 void pmpi_file_iread_shared_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6264,7 +6869,9 @@ void pmpi_file_iread_shared_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iread_shared_c_
 void pmpi_file_iread_shared_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6285,7 +6892,9 @@ void pmpi_file_iread_shared_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iwrite_
 void mpi_file_iwrite_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -6306,7 +6915,9 @@ void mpi_file_iwrite_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iwrite_c_
 void mpi_file_iwrite_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -6327,7 +6938,9 @@ void mpi_file_iwrite_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iwrite_
 void pmpi_file_iwrite_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -6348,7 +6961,9 @@ void pmpi_file_iwrite_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iwrite_c_
 void pmpi_file_iwrite_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -6369,7 +6984,9 @@ void pmpi_file_iwrite_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iwrite_all_
 void mpi_file_iwrite_all_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -6390,7 +7007,9 @@ void mpi_file_iwrite_all_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iwrite_all_c_
 void mpi_file_iwrite_all_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -6411,7 +7030,9 @@ void mpi_file_iwrite_all_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iwrite_all_
 void pmpi_file_iwrite_all_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -6432,7 +7053,9 @@ void pmpi_file_iwrite_all_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iwrite_all_c_
 void pmpi_file_iwrite_all_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -6453,7 +7076,9 @@ void pmpi_file_iwrite_all_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iwrite_at_
 void mpi_file_iwrite_at_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6476,7 +7101,9 @@ void mpi_file_iwrite_at_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iwrite_at_c_
 void mpi_file_iwrite_at_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6499,7 +7126,9 @@ void mpi_file_iwrite_at_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iwrite_at_
 void pmpi_file_iwrite_at_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6522,7 +7151,9 @@ void pmpi_file_iwrite_at_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iwrite_at_c_
 void pmpi_file_iwrite_at_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6545,7 +7176,9 @@ void pmpi_file_iwrite_at_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iwrite_at_all_
 void mpi_file_iwrite_at_all_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6568,7 +7201,9 @@ void mpi_file_iwrite_at_all_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iwrite_at_all_c_
 void mpi_file_iwrite_at_all_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6591,7 +7226,9 @@ void mpi_file_iwrite_at_all_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iwrite_at_all_
 void pmpi_file_iwrite_at_all_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6614,7 +7251,9 @@ void pmpi_file_iwrite_at_all_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iwrite_at_all_c_
 void pmpi_file_iwrite_at_all_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -6637,7 +7276,9 @@ void pmpi_file_iwrite_at_all_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iwrite_shared_
 void mpi_file_iwrite_shared_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -6658,7 +7299,9 @@ void mpi_file_iwrite_shared_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_iwrite_shared_c_
 void mpi_file_iwrite_shared_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -6679,7 +7322,9 @@ void mpi_file_iwrite_shared_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iwrite_shared_
 void pmpi_file_iwrite_shared_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -6700,7 +7345,9 @@ void pmpi_file_iwrite_shared_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_iwrite_shared_c_
 void pmpi_file_iwrite_shared_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -6721,7 +7368,9 @@ void pmpi_file_iwrite_shared_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_open_
 void mpi_file_open_(
   const MPI_Fint* restrict const comm,
   const char* restrict const filename,
@@ -6744,7 +7393,9 @@ void mpi_file_open_(
   free(c_filename);
   *fh = MPI_File_toint(c_fh);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_open_
 void pmpi_file_open_(
   const MPI_Fint* restrict const comm,
   const char* restrict const filename,
@@ -6767,7 +7418,9 @@ void pmpi_file_open_(
   free(c_filename);
   *fh = MPI_File_toint(c_fh);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_preallocate_
 void mpi_file_preallocate_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const size,
@@ -6779,7 +7432,9 @@ void mpi_file_preallocate_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_preallocate_
 void pmpi_file_preallocate_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const size,
@@ -6791,7 +7446,9 @@ void pmpi_file_preallocate_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_
 void mpi_file_read_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6810,7 +7467,9 @@ void mpi_file_read_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_c_
 void mpi_file_read_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6829,7 +7488,9 @@ void mpi_file_read_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_
 void pmpi_file_read_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6848,7 +7509,9 @@ void pmpi_file_read_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_c_
 void pmpi_file_read_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6867,7 +7530,9 @@ void pmpi_file_read_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_all_
 void mpi_file_read_all_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6886,7 +7551,9 @@ void mpi_file_read_all_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_all_c_
 void mpi_file_read_all_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6905,7 +7572,9 @@ void mpi_file_read_all_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_all_
 void pmpi_file_read_all_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6924,7 +7593,9 @@ void pmpi_file_read_all_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_all_c_
 void pmpi_file_read_all_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6943,7 +7614,9 @@ void pmpi_file_read_all_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_all_begin_
 void mpi_file_read_all_begin_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6960,7 +7633,9 @@ void mpi_file_read_all_begin_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_all_begin_c_
 void mpi_file_read_all_begin_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6977,7 +7652,9 @@ void mpi_file_read_all_begin_c_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_all_begin_
 void pmpi_file_read_all_begin_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -6994,7 +7671,9 @@ void pmpi_file_read_all_begin_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_all_begin_c_
 void pmpi_file_read_all_begin_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7011,7 +7690,9 @@ void pmpi_file_read_all_begin_c_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_all_end_
 void mpi_file_read_all_end_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7026,7 +7707,9 @@ void mpi_file_read_all_end_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_all_end_
 void pmpi_file_read_all_end_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7041,7 +7724,9 @@ void pmpi_file_read_all_end_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_at_
 void mpi_file_read_at_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7062,7 +7747,9 @@ void mpi_file_read_at_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_at_c_
 void mpi_file_read_at_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7083,7 +7770,9 @@ void mpi_file_read_at_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_at_
 void pmpi_file_read_at_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7104,7 +7793,9 @@ void pmpi_file_read_at_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_at_c_
 void pmpi_file_read_at_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7125,7 +7816,9 @@ void pmpi_file_read_at_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_at_all_
 void mpi_file_read_at_all_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7146,7 +7839,9 @@ void mpi_file_read_at_all_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_at_all_c_
 void mpi_file_read_at_all_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7167,7 +7862,9 @@ void mpi_file_read_at_all_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_at_all_
 void pmpi_file_read_at_all_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7188,7 +7885,9 @@ void pmpi_file_read_at_all_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_at_all_c_
 void pmpi_file_read_at_all_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7209,7 +7908,9 @@ void pmpi_file_read_at_all_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_at_all_begin_
 void mpi_file_read_at_all_begin_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7228,7 +7929,9 @@ void mpi_file_read_at_all_begin_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_at_all_begin_c_
 void mpi_file_read_at_all_begin_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7247,7 +7950,9 @@ void mpi_file_read_at_all_begin_c_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_at_all_begin_
 void pmpi_file_read_at_all_begin_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7266,7 +7971,9 @@ void pmpi_file_read_at_all_begin_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_at_all_begin_c_
 void pmpi_file_read_at_all_begin_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7285,7 +7992,9 @@ void pmpi_file_read_at_all_begin_c_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_at_all_end_
 void mpi_file_read_at_all_end_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7300,7 +8009,9 @@ void mpi_file_read_at_all_end_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_at_all_end_
 void pmpi_file_read_at_all_end_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7315,7 +8026,9 @@ void pmpi_file_read_at_all_end_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_ordered_
 void mpi_file_read_ordered_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7334,7 +8047,9 @@ void mpi_file_read_ordered_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_ordered_c_
 void mpi_file_read_ordered_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7353,7 +8068,9 @@ void mpi_file_read_ordered_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_ordered_
 void pmpi_file_read_ordered_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7372,7 +8089,9 @@ void pmpi_file_read_ordered_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_ordered_c_
 void pmpi_file_read_ordered_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7391,7 +8110,9 @@ void pmpi_file_read_ordered_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_ordered_begin_
 void mpi_file_read_ordered_begin_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7408,7 +8129,9 @@ void mpi_file_read_ordered_begin_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_ordered_begin_c_
 void mpi_file_read_ordered_begin_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7425,7 +8148,9 @@ void mpi_file_read_ordered_begin_c_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_ordered_begin_
 void pmpi_file_read_ordered_begin_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7442,7 +8167,9 @@ void pmpi_file_read_ordered_begin_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_ordered_begin_c_
 void pmpi_file_read_ordered_begin_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7459,7 +8186,9 @@ void pmpi_file_read_ordered_begin_c_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_ordered_end_
 void mpi_file_read_ordered_end_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7474,7 +8203,9 @@ void mpi_file_read_ordered_end_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_ordered_end_
 void pmpi_file_read_ordered_end_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7489,7 +8220,9 @@ void pmpi_file_read_ordered_end_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_shared_
 void mpi_file_read_shared_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7508,7 +8241,9 @@ void mpi_file_read_shared_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_read_shared_c_
 void mpi_file_read_shared_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7527,7 +8262,9 @@ void mpi_file_read_shared_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_shared_
 void pmpi_file_read_shared_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7546,7 +8283,9 @@ void pmpi_file_read_shared_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_read_shared_c_
 void pmpi_file_read_shared_c_(
   const MPI_Fint* restrict const fh,
   void* restrict const buf,
@@ -7565,7 +8304,9 @@ void pmpi_file_read_shared_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_seek_
 void mpi_file_seek_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7579,7 +8320,9 @@ void mpi_file_seek_(
     *whence
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_seek_
 void pmpi_file_seek_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7593,7 +8336,9 @@ void pmpi_file_seek_(
     *whence
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_seek_shared_
 void mpi_file_seek_shared_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7607,7 +8352,9 @@ void mpi_file_seek_shared_(
     *whence
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_seek_shared_
 void pmpi_file_seek_shared_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -7621,7 +8368,9 @@ void pmpi_file_seek_shared_(
     *whence
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_set_atomicity_
 void mpi_file_set_atomicity_(
   const MPI_Fint* restrict const fh,
   const MPI_Fint* restrict const flag,
@@ -7633,7 +8382,9 @@ void mpi_file_set_atomicity_(
     mpif_logical2bool(*flag)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_set_atomicity_
 void pmpi_file_set_atomicity_(
   const MPI_Fint* restrict const fh,
   const MPI_Fint* restrict const flag,
@@ -7645,7 +8396,9 @@ void pmpi_file_set_atomicity_(
     mpif_logical2bool(*flag)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_set_errhandler_
 void mpi_file_set_errhandler_(
   const MPI_Fint* restrict const file,
   const MPI_Fint* restrict const errhandler,
@@ -7657,7 +8410,9 @@ void mpi_file_set_errhandler_(
     MPI_Errhandler_fromint(*errhandler)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_set_errhandler_
 void pmpi_file_set_errhandler_(
   const MPI_Fint* restrict const file,
   const MPI_Fint* restrict const errhandler,
@@ -7669,7 +8424,9 @@ void pmpi_file_set_errhandler_(
     MPI_Errhandler_fromint(*errhandler)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_set_info_
 void mpi_file_set_info_(
   const MPI_Fint* restrict const fh,
   const MPI_Fint* restrict const info,
@@ -7681,7 +8438,9 @@ void mpi_file_set_info_(
     MPI_Info_fromint(*info)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_set_info_
 void pmpi_file_set_info_(
   const MPI_Fint* restrict const fh,
   const MPI_Fint* restrict const info,
@@ -7693,7 +8452,9 @@ void pmpi_file_set_info_(
     MPI_Info_fromint(*info)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_set_size_
 void mpi_file_set_size_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const size,
@@ -7705,7 +8466,9 @@ void mpi_file_set_size_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_set_size_
 void pmpi_file_set_size_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const size,
@@ -7717,7 +8480,9 @@ void pmpi_file_set_size_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_set_view_
 void mpi_file_set_view_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const disp,
@@ -7740,7 +8505,9 @@ void mpi_file_set_view_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_set_view_
 void pmpi_file_set_view_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const disp,
@@ -7763,7 +8530,9 @@ void pmpi_file_set_view_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_sync_
 void mpi_file_sync_(
   const MPI_Fint* restrict const fh,
   MPI_Fint* restrict const ierror
@@ -7773,7 +8542,9 @@ void mpi_file_sync_(
     MPI_File_fromint(*fh)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_sync_
 void pmpi_file_sync_(
   const MPI_Fint* restrict const fh,
   MPI_Fint* restrict const ierror
@@ -7783,7 +8554,9 @@ void pmpi_file_sync_(
     MPI_File_fromint(*fh)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_
 void mpi_file_write_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -7802,7 +8575,9 @@ void mpi_file_write_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_c_
 void mpi_file_write_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -7821,7 +8596,9 @@ void mpi_file_write_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_
 void pmpi_file_write_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -7840,7 +8617,9 @@ void pmpi_file_write_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_c_
 void pmpi_file_write_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -7859,7 +8638,9 @@ void pmpi_file_write_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_all_
 void mpi_file_write_all_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -7878,7 +8659,9 @@ void mpi_file_write_all_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_all_c_
 void mpi_file_write_all_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -7897,7 +8680,9 @@ void mpi_file_write_all_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_all_
 void pmpi_file_write_all_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -7916,7 +8701,9 @@ void pmpi_file_write_all_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_all_c_
 void pmpi_file_write_all_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -7935,7 +8722,9 @@ void pmpi_file_write_all_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_all_begin_
 void mpi_file_write_all_begin_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -7952,7 +8741,9 @@ void mpi_file_write_all_begin_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_all_begin_c_
 void mpi_file_write_all_begin_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -7969,7 +8760,9 @@ void mpi_file_write_all_begin_c_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_all_begin_
 void pmpi_file_write_all_begin_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -7986,7 +8779,9 @@ void pmpi_file_write_all_begin_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_all_begin_c_
 void pmpi_file_write_all_begin_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8003,7 +8798,9 @@ void pmpi_file_write_all_begin_c_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_all_end_
 void mpi_file_write_all_end_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8018,7 +8815,9 @@ void mpi_file_write_all_end_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_all_end_
 void pmpi_file_write_all_end_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8033,7 +8832,9 @@ void pmpi_file_write_all_end_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_at_
 void mpi_file_write_at_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -8054,7 +8855,9 @@ void mpi_file_write_at_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_at_c_
 void mpi_file_write_at_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -8075,7 +8878,9 @@ void mpi_file_write_at_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_at_
 void pmpi_file_write_at_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -8096,7 +8901,9 @@ void pmpi_file_write_at_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_at_c_
 void pmpi_file_write_at_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -8117,7 +8924,9 @@ void pmpi_file_write_at_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_at_all_
 void mpi_file_write_at_all_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -8138,7 +8947,9 @@ void mpi_file_write_at_all_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_at_all_c_
 void mpi_file_write_at_all_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -8159,7 +8970,9 @@ void mpi_file_write_at_all_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_at_all_
 void pmpi_file_write_at_all_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -8180,7 +8993,9 @@ void pmpi_file_write_at_all_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_at_all_c_
 void pmpi_file_write_at_all_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -8201,7 +9016,9 @@ void pmpi_file_write_at_all_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_at_all_begin_
 void mpi_file_write_at_all_begin_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -8220,7 +9037,9 @@ void mpi_file_write_at_all_begin_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_at_all_begin_c_
 void mpi_file_write_at_all_begin_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -8239,7 +9058,9 @@ void mpi_file_write_at_all_begin_c_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_at_all_begin_
 void pmpi_file_write_at_all_begin_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -8258,7 +9079,9 @@ void pmpi_file_write_at_all_begin_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_at_all_begin_c_
 void pmpi_file_write_at_all_begin_c_(
   const MPI_Fint* restrict const fh,
   const MPI_Offset* restrict const offset,
@@ -8277,7 +9100,9 @@ void pmpi_file_write_at_all_begin_c_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_at_all_end_
 void mpi_file_write_at_all_end_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8292,7 +9117,9 @@ void mpi_file_write_at_all_end_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_at_all_end_
 void pmpi_file_write_at_all_end_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8307,7 +9134,9 @@ void pmpi_file_write_at_all_end_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_ordered_
 void mpi_file_write_ordered_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8326,7 +9155,9 @@ void mpi_file_write_ordered_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_ordered_c_
 void mpi_file_write_ordered_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8345,7 +9176,9 @@ void mpi_file_write_ordered_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_ordered_
 void pmpi_file_write_ordered_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8364,7 +9197,9 @@ void pmpi_file_write_ordered_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_ordered_c_
 void pmpi_file_write_ordered_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8383,7 +9218,9 @@ void pmpi_file_write_ordered_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_ordered_begin_
 void mpi_file_write_ordered_begin_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8400,7 +9237,9 @@ void mpi_file_write_ordered_begin_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_ordered_begin_c_
 void mpi_file_write_ordered_begin_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8417,7 +9256,9 @@ void mpi_file_write_ordered_begin_c_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_ordered_begin_
 void pmpi_file_write_ordered_begin_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8434,7 +9275,9 @@ void pmpi_file_write_ordered_begin_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_ordered_begin_c_
 void pmpi_file_write_ordered_begin_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8451,7 +9294,9 @@ void pmpi_file_write_ordered_begin_c_(
     MPI_Type_fromint(*datatype)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_ordered_end_
 void mpi_file_write_ordered_end_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8466,7 +9311,9 @@ void mpi_file_write_ordered_end_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_ordered_end_
 void pmpi_file_write_ordered_end_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8481,7 +9328,9 @@ void pmpi_file_write_ordered_end_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_shared_
 void mpi_file_write_shared_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8500,7 +9349,9 @@ void mpi_file_write_shared_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_file_write_shared_c_
 void mpi_file_write_shared_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8519,7 +9370,9 @@ void mpi_file_write_shared_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_shared_
 void pmpi_file_write_shared_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8538,7 +9391,9 @@ void pmpi_file_write_shared_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_file_write_shared_c_
 void pmpi_file_write_shared_c_(
   const MPI_Fint* restrict const fh,
   const void* restrict const buf,
@@ -8557,7 +9412,9 @@ void pmpi_file_write_shared_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_finalize_
 void mpi_finalize_(
   MPI_Fint* restrict const ierror
 )
@@ -8565,7 +9422,9 @@ void mpi_finalize_(
   *ierror = MPI_Finalize(
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_finalize_
 void pmpi_finalize_(
   MPI_Fint* restrict const ierror
 )
@@ -8573,7 +9432,9 @@ void pmpi_finalize_(
   *ierror = PMPI_Finalize(
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_finalized_
 void mpi_finalized_(
   MPI_Fint* restrict const flag,
   MPI_Fint* restrict const ierror
@@ -8585,7 +9446,9 @@ void mpi_finalized_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_finalized_
 void pmpi_finalized_(
   MPI_Fint* restrict const flag,
   MPI_Fint* restrict const ierror
@@ -8597,7 +9460,9 @@ void pmpi_finalized_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_free_mem_
 void mpi_free_mem_(
   void* restrict const base,
   MPI_Fint* restrict const ierror
@@ -8608,7 +9473,9 @@ void mpi_free_mem_(
     q_base
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_free_mem_
 void pmpi_free_mem_(
   void* restrict const base,
   MPI_Fint* restrict const ierror
@@ -8619,7 +9486,9 @@ void pmpi_free_mem_(
     q_base
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_gather_
 void mpi_gather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -8666,7 +9535,9 @@ void mpi_gather_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_gather_c_
 void mpi_gather_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -8713,7 +9584,9 @@ void mpi_gather_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_gather_
 void pmpi_gather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -8760,7 +9633,9 @@ void pmpi_gather_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_gather_c_
 void pmpi_gather_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -8807,7 +9682,9 @@ void pmpi_gather_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_gather_init_
 void mpi_gather_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -8860,7 +9737,9 @@ void mpi_gather_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_gather_init_c_
 void mpi_gather_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -8913,7 +9792,9 @@ void mpi_gather_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_gather_init_
 void pmpi_gather_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -8966,7 +9847,9 @@ void pmpi_gather_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_gather_init_c_
 void pmpi_gather_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -9019,7 +9902,9 @@ void pmpi_gather_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_gatherv_
 void mpi_gatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -9068,7 +9953,9 @@ void mpi_gatherv_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_gatherv_c_
 void mpi_gatherv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -9117,7 +10004,9 @@ void mpi_gatherv_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_gatherv_
 void pmpi_gatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -9166,7 +10055,9 @@ void pmpi_gatherv_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_gatherv_c_
 void pmpi_gatherv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -9215,7 +10106,9 @@ void pmpi_gatherv_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_gatherv_init_
 void mpi_gatherv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -9270,7 +10163,9 @@ void mpi_gatherv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_gatherv_init_c_
 void mpi_gatherv_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -9325,7 +10220,9 @@ void mpi_gatherv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_gatherv_init_
 void pmpi_gatherv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -9380,7 +10277,9 @@ void pmpi_gatherv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_gatherv_init_c_
 void pmpi_gatherv_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -9435,7 +10334,9 @@ void pmpi_gatherv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_
 void mpi_get_(
   void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -9460,7 +10361,9 @@ void mpi_get_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_c_
 void mpi_get_c_(
   void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -9485,7 +10388,9 @@ void mpi_get_c_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_
 void pmpi_get_(
   void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -9510,7 +10415,9 @@ void pmpi_get_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_c_
 void pmpi_get_c_(
   void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -9535,7 +10442,9 @@ void pmpi_get_c_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_accumulate_
 void mpi_get_accumulate_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -9569,7 +10478,9 @@ void mpi_get_accumulate_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_accumulate_c_
 void mpi_get_accumulate_c_(
   const void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -9603,7 +10514,9 @@ void mpi_get_accumulate_c_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_accumulate_
 void pmpi_get_accumulate_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -9637,7 +10550,9 @@ void pmpi_get_accumulate_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_accumulate_c_
 void pmpi_get_accumulate_c_(
   const void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -9671,7 +10586,9 @@ void pmpi_get_accumulate_c_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_address_
 void mpi_get_address_(
   const void* restrict const location,
   MPI_Aint* restrict const address,
@@ -9684,7 +10601,9 @@ void mpi_get_address_(
     address
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_address_
 void pmpi_get_address_(
   const void* restrict const location,
   MPI_Aint* restrict const address,
@@ -9697,7 +10616,9 @@ void pmpi_get_address_(
     address
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_count_
 void mpi_get_count_(
   const MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -9711,7 +10632,9 @@ void mpi_get_count_(
     count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_count_c_
 void mpi_get_count_c_(
   const MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -9725,7 +10648,9 @@ void mpi_get_count_c_(
     count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_count_
 void pmpi_get_count_(
   const MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -9739,7 +10664,9 @@ void pmpi_get_count_(
     count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_count_c_
 void pmpi_get_count_c_(
   const MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -9753,7 +10680,9 @@ void pmpi_get_count_c_(
     count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_elements_
 void mpi_get_elements_(
   const MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -9767,7 +10696,9 @@ void mpi_get_elements_(
     count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_elements_c_
 void mpi_get_elements_c_(
   const MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -9781,7 +10712,9 @@ void mpi_get_elements_c_(
     count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_elements_
 void pmpi_get_elements_(
   const MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -9795,7 +10728,9 @@ void pmpi_get_elements_(
     count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_elements_c_
 void pmpi_get_elements_c_(
   const MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -9809,7 +10744,9 @@ void pmpi_get_elements_c_(
     count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_elements_x_
 void mpi_get_elements_x_(
   const MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -9823,7 +10760,9 @@ void mpi_get_elements_x_(
     count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_elements_x_
 void pmpi_get_elements_x_(
   const MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -9837,7 +10776,9 @@ void pmpi_get_elements_x_(
     count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_hw_resource_info_
 void mpi_get_hw_resource_info_(
   MPI_Fint* restrict const hw_info,
   MPI_Fint* restrict const ierror
@@ -9849,7 +10790,9 @@ void mpi_get_hw_resource_info_(
   );
   *hw_info = MPI_Info_toint(c_hw_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_hw_resource_info_
 void pmpi_get_hw_resource_info_(
   MPI_Fint* restrict const hw_info,
   MPI_Fint* restrict const ierror
@@ -9861,7 +10804,9 @@ void pmpi_get_hw_resource_info_(
   );
   *hw_info = MPI_Info_toint(c_hw_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_library_version_
 void mpi_get_library_version_(
   char* restrict const version,
   MPI_Fint* restrict const resultlen,
@@ -9877,7 +10822,9 @@ void mpi_get_library_version_(
   );
   mpif_strcpy_c2f(version, c_version, length_version, strlen(c_version));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_library_version_
 void pmpi_get_library_version_(
   char* restrict const version,
   MPI_Fint* restrict const resultlen,
@@ -9893,7 +10840,9 @@ void pmpi_get_library_version_(
   );
   mpif_strcpy_c2f(version, c_version, length_version, strlen(c_version));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_processor_name_
 void mpi_get_processor_name_(
   char* restrict const name,
   MPI_Fint* restrict const resultlen,
@@ -9909,7 +10858,9 @@ void mpi_get_processor_name_(
   );
   mpif_strcpy_c2f(name, c_name, length_name, strlen(c_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_processor_name_
 void pmpi_get_processor_name_(
   char* restrict const name,
   MPI_Fint* restrict const resultlen,
@@ -9925,7 +10876,9 @@ void pmpi_get_processor_name_(
   );
   mpif_strcpy_c2f(name, c_name, length_name, strlen(c_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_get_version_
 void mpi_get_version_(
   MPI_Fint* restrict const version,
   MPI_Fint* restrict const subversion,
@@ -9937,7 +10890,9 @@ void mpi_get_version_(
     subversion
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_get_version_
 void pmpi_get_version_(
   MPI_Fint* restrict const version,
   MPI_Fint* restrict const subversion,
@@ -9949,7 +10904,9 @@ void pmpi_get_version_(
     subversion
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_graph_create_
 void mpi_graph_create_(
   const MPI_Fint* restrict const comm_old,
   const MPI_Fint* restrict const nnodes,
@@ -9971,7 +10928,9 @@ void mpi_graph_create_(
   );
   *comm_graph = MPI_Comm_toint(c_comm_graph);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_graph_create_
 void pmpi_graph_create_(
   const MPI_Fint* restrict const comm_old,
   const MPI_Fint* restrict const nnodes,
@@ -9993,7 +10952,9 @@ void pmpi_graph_create_(
   );
   *comm_graph = MPI_Comm_toint(c_comm_graph);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_graph_get_
 void mpi_graph_get_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const maxindex,
@@ -10011,7 +10972,9 @@ void mpi_graph_get_(
     edges
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_graph_get_
 void pmpi_graph_get_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const maxindex,
@@ -10029,7 +10992,9 @@ void pmpi_graph_get_(
     edges
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_graph_map_
 void mpi_graph_map_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const nnodes,
@@ -10047,7 +11012,9 @@ void mpi_graph_map_(
     newrank
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_graph_map_
 void pmpi_graph_map_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const nnodes,
@@ -10065,7 +11032,9 @@ void pmpi_graph_map_(
     newrank
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_graph_neighbors_
 void mpi_graph_neighbors_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const rank,
@@ -10081,7 +11050,9 @@ void mpi_graph_neighbors_(
     neighbors
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_graph_neighbors_
 void pmpi_graph_neighbors_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const rank,
@@ -10097,7 +11068,9 @@ void pmpi_graph_neighbors_(
     neighbors
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_graph_neighbors_count_
 void mpi_graph_neighbors_count_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const rank,
@@ -10111,7 +11084,9 @@ void mpi_graph_neighbors_count_(
     nneighbors
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_graph_neighbors_count_
 void pmpi_graph_neighbors_count_(
   const MPI_Fint* restrict const comm,
   const MPI_Fint* restrict const rank,
@@ -10125,7 +11100,9 @@ void pmpi_graph_neighbors_count_(
     nneighbors
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_graphdims_get_
 void mpi_graphdims_get_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const nnodes,
@@ -10139,7 +11116,9 @@ void mpi_graphdims_get_(
     nedges
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_graphdims_get_
 void pmpi_graphdims_get_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const nnodes,
@@ -10153,7 +11132,9 @@ void pmpi_graphdims_get_(
     nedges
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_grequest_complete_
 void mpi_grequest_complete_(
   const MPI_Fint* restrict const request,
   MPI_Fint* restrict const ierror
@@ -10163,7 +11144,9 @@ void mpi_grequest_complete_(
     MPI_Request_fromint(*request)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_grequest_complete_
 void pmpi_grequest_complete_(
   const MPI_Fint* restrict const request,
   MPI_Fint* restrict const ierror
@@ -10173,7 +11156,9 @@ void pmpi_grequest_complete_(
     MPI_Request_fromint(*request)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_grequest_start_
 void mpi_grequest_start_(
   MPI_Grequest_query_function* const query_fn,
   MPI_Grequest_free_function* const free_fn,
@@ -10200,7 +11185,9 @@ void mpi_grequest_start_(
     mpif_grequest_cancel(box);
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_grequest_start_
 void pmpi_grequest_start_(
   MPI_Grequest_query_function* const query_fn,
   MPI_Grequest_free_function* const free_fn,
@@ -10227,7 +11214,9 @@ void pmpi_grequest_start_(
     mpif_grequest_cancel(box);
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_compare_
 void mpi_group_compare_(
   const MPI_Fint* restrict const group1,
   const MPI_Fint* restrict const group2,
@@ -10241,7 +11230,9 @@ void mpi_group_compare_(
     result
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_compare_
 void pmpi_group_compare_(
   const MPI_Fint* restrict const group1,
   const MPI_Fint* restrict const group2,
@@ -10255,7 +11246,9 @@ void pmpi_group_compare_(
     result
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_difference_
 void mpi_group_difference_(
   const MPI_Fint* restrict const group1,
   const MPI_Fint* restrict const group2,
@@ -10271,7 +11264,9 @@ void mpi_group_difference_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_difference_
 void pmpi_group_difference_(
   const MPI_Fint* restrict const group1,
   const MPI_Fint* restrict const group2,
@@ -10287,7 +11282,9 @@ void pmpi_group_difference_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_excl_
 void mpi_group_excl_(
   const MPI_Fint* restrict const group,
   const MPI_Fint* restrict const n,
@@ -10305,7 +11302,9 @@ void mpi_group_excl_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_excl_
 void pmpi_group_excl_(
   const MPI_Fint* restrict const group,
   const MPI_Fint* restrict const n,
@@ -10323,7 +11322,9 @@ void pmpi_group_excl_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_free_
 void mpi_group_free_(
   MPI_Fint* restrict const group,
   MPI_Fint* restrict const ierror
@@ -10335,7 +11336,9 @@ void mpi_group_free_(
   );
   *group = MPI_Group_toint(c_group);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_free_
 void pmpi_group_free_(
   MPI_Fint* restrict const group,
   MPI_Fint* restrict const ierror
@@ -10347,7 +11350,9 @@ void pmpi_group_free_(
   );
   *group = MPI_Group_toint(c_group);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_from_session_pset_
 void mpi_group_from_session_pset_(
   const MPI_Fint* restrict const session,
   const char* restrict const pset_name,
@@ -10366,7 +11371,9 @@ void mpi_group_from_session_pset_(
   free(c_pset_name);
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_from_session_pset_
 void pmpi_group_from_session_pset_(
   const MPI_Fint* restrict const session,
   const char* restrict const pset_name,
@@ -10385,7 +11392,9 @@ void pmpi_group_from_session_pset_(
   free(c_pset_name);
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_incl_
 void mpi_group_incl_(
   const MPI_Fint* restrict const group,
   const MPI_Fint* restrict const n,
@@ -10403,7 +11412,9 @@ void mpi_group_incl_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_incl_
 void pmpi_group_incl_(
   const MPI_Fint* restrict const group,
   const MPI_Fint* restrict const n,
@@ -10421,7 +11432,9 @@ void pmpi_group_incl_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_intersection_
 void mpi_group_intersection_(
   const MPI_Fint* restrict const group1,
   const MPI_Fint* restrict const group2,
@@ -10437,7 +11450,9 @@ void mpi_group_intersection_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_intersection_
 void pmpi_group_intersection_(
   const MPI_Fint* restrict const group1,
   const MPI_Fint* restrict const group2,
@@ -10453,7 +11468,9 @@ void pmpi_group_intersection_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_range_excl_
 void mpi_group_range_excl_(
   const MPI_Fint* restrict const group,
   const MPI_Fint* restrict const n,
@@ -10471,7 +11488,9 @@ void mpi_group_range_excl_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_range_excl_
 void pmpi_group_range_excl_(
   const MPI_Fint* restrict const group,
   const MPI_Fint* restrict const n,
@@ -10489,7 +11508,9 @@ void pmpi_group_range_excl_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_range_incl_
 void mpi_group_range_incl_(
   const MPI_Fint* restrict const group,
   const MPI_Fint* restrict const n,
@@ -10507,7 +11528,9 @@ void mpi_group_range_incl_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_range_incl_
 void pmpi_group_range_incl_(
   const MPI_Fint* restrict const group,
   const MPI_Fint* restrict const n,
@@ -10525,7 +11548,9 @@ void pmpi_group_range_incl_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_rank_
 void mpi_group_rank_(
   const MPI_Fint* restrict const group,
   MPI_Fint* restrict const rank,
@@ -10537,7 +11562,9 @@ void mpi_group_rank_(
     rank
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_rank_
 void pmpi_group_rank_(
   const MPI_Fint* restrict const group,
   MPI_Fint* restrict const rank,
@@ -10549,7 +11576,9 @@ void pmpi_group_rank_(
     rank
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_size_
 void mpi_group_size_(
   const MPI_Fint* restrict const group,
   MPI_Fint* restrict const size,
@@ -10561,7 +11590,9 @@ void mpi_group_size_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_size_
 void pmpi_group_size_(
   const MPI_Fint* restrict const group,
   MPI_Fint* restrict const size,
@@ -10573,7 +11604,9 @@ void pmpi_group_size_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_translate_ranks_
 void mpi_group_translate_ranks_(
   const MPI_Fint* restrict const group1,
   const MPI_Fint* restrict const n,
@@ -10591,7 +11624,9 @@ void mpi_group_translate_ranks_(
     ranks2
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_translate_ranks_
 void pmpi_group_translate_ranks_(
   const MPI_Fint* restrict const group1,
   const MPI_Fint* restrict const n,
@@ -10609,7 +11644,9 @@ void pmpi_group_translate_ranks_(
     ranks2
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_group_union_
 void mpi_group_union_(
   const MPI_Fint* restrict const group1,
   const MPI_Fint* restrict const group2,
@@ -10625,7 +11662,9 @@ void mpi_group_union_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_group_union_
 void pmpi_group_union_(
   const MPI_Fint* restrict const group1,
   const MPI_Fint* restrict const group2,
@@ -10641,7 +11680,9 @@ void pmpi_group_union_(
   );
   *newgroup = MPI_Group_toint(c_newgroup);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iallgather_
 void mpi_iallgather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -10669,7 +11710,9 @@ void mpi_iallgather_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iallgather_c_
 void mpi_iallgather_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -10697,7 +11740,9 @@ void mpi_iallgather_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iallgather_
 void pmpi_iallgather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -10725,7 +11770,9 @@ void pmpi_iallgather_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iallgather_c_
 void pmpi_iallgather_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -10753,7 +11800,9 @@ void pmpi_iallgather_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iallgatherv_
 void mpi_iallgatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -10783,7 +11832,9 @@ void mpi_iallgatherv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iallgatherv_c_
 void mpi_iallgatherv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -10813,7 +11864,9 @@ void mpi_iallgatherv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iallgatherv_
 void pmpi_iallgatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -10843,7 +11896,9 @@ void pmpi_iallgatherv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iallgatherv_c_
 void pmpi_iallgatherv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -10873,7 +11928,9 @@ void pmpi_iallgatherv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iallreduce_
 void mpi_iallreduce_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -10899,7 +11956,9 @@ void mpi_iallreduce_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iallreduce_c_
 void mpi_iallreduce_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -10925,7 +11984,9 @@ void mpi_iallreduce_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iallreduce_
 void pmpi_iallreduce_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -10951,7 +12012,9 @@ void pmpi_iallreduce_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iallreduce_c_
 void pmpi_iallreduce_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -10977,7 +12040,9 @@ void pmpi_iallreduce_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ialltoall_
 void mpi_ialltoall_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -11005,7 +12070,9 @@ void mpi_ialltoall_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ialltoall_c_
 void mpi_ialltoall_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -11033,7 +12100,9 @@ void mpi_ialltoall_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ialltoall_
 void pmpi_ialltoall_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -11061,7 +12130,9 @@ void pmpi_ialltoall_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ialltoall_c_
 void pmpi_ialltoall_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -11089,7 +12160,9 @@ void pmpi_ialltoall_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ialltoallv_
 void mpi_ialltoallv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -11121,7 +12194,9 @@ void mpi_ialltoallv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ialltoallv_c_
 void mpi_ialltoallv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -11153,7 +12228,9 @@ void mpi_ialltoallv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ialltoallv_
 void pmpi_ialltoallv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -11185,7 +12262,9 @@ void pmpi_ialltoallv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ialltoallv_c_
 void pmpi_ialltoallv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -11217,7 +12296,9 @@ void pmpi_ialltoallv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ialltoallw_
 void mpi_ialltoallw_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -11273,7 +12354,9 @@ void mpi_ialltoallw_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ialltoallw_c_
 void mpi_ialltoallw_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -11329,7 +12412,9 @@ void mpi_ialltoallw_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ialltoallw_
 void pmpi_ialltoallw_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -11385,7 +12470,9 @@ void pmpi_ialltoallw_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ialltoallw_c_
 void pmpi_ialltoallw_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -11441,7 +12528,9 @@ void pmpi_ialltoallw_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ibarrier_
 void mpi_ibarrier_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const request,
@@ -11455,7 +12544,9 @@ void mpi_ibarrier_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ibarrier_
 void pmpi_ibarrier_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const request,
@@ -11469,7 +12560,9 @@ void pmpi_ibarrier_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ibcast_
 void mpi_ibcast_(
   void* restrict const buffer,
   const MPI_Fint* restrict const count,
@@ -11492,7 +12585,9 @@ void mpi_ibcast_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ibcast_c_
 void mpi_ibcast_c_(
   void* restrict const buffer,
   const MPI_Count* restrict const count,
@@ -11515,7 +12610,9 @@ void mpi_ibcast_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ibcast_
 void pmpi_ibcast_(
   void* restrict const buffer,
   const MPI_Fint* restrict const count,
@@ -11538,7 +12635,9 @@ void pmpi_ibcast_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ibcast_c_
 void pmpi_ibcast_c_(
   void* restrict const buffer,
   const MPI_Count* restrict const count,
@@ -11561,7 +12660,9 @@ void pmpi_ibcast_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ibsend_
 void mpi_ibsend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -11586,7 +12687,9 @@ void mpi_ibsend_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ibsend_c_
 void mpi_ibsend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -11611,7 +12714,9 @@ void mpi_ibsend_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ibsend_
 void pmpi_ibsend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -11636,7 +12741,9 @@ void pmpi_ibsend_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ibsend_c_
 void pmpi_ibsend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -11661,7 +12768,9 @@ void pmpi_ibsend_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iexscan_
 void mpi_iexscan_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -11687,7 +12796,9 @@ void mpi_iexscan_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iexscan_c_
 void mpi_iexscan_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -11713,7 +12824,9 @@ void mpi_iexscan_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iexscan_
 void pmpi_iexscan_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -11739,7 +12852,9 @@ void pmpi_iexscan_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iexscan_c_
 void pmpi_iexscan_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -11765,7 +12880,9 @@ void pmpi_iexscan_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_igather_
 void mpi_igather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -11816,7 +12933,9 @@ void mpi_igather_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_igather_c_
 void mpi_igather_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -11867,7 +12986,9 @@ void mpi_igather_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_igather_
 void pmpi_igather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -11918,7 +13039,9 @@ void pmpi_igather_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_igather_c_
 void pmpi_igather_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -11969,7 +13092,9 @@ void pmpi_igather_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_igatherv_
 void mpi_igatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -12022,7 +13147,9 @@ void mpi_igatherv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_igatherv_c_
 void mpi_igatherv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -12075,7 +13202,9 @@ void mpi_igatherv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_igatherv_
 void pmpi_igatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -12128,7 +13257,9 @@ void pmpi_igatherv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_igatherv_c_
 void pmpi_igatherv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -12181,7 +13312,9 @@ void pmpi_igatherv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_improbe_
 void mpi_improbe_(
   const MPI_Fint* restrict const source,
   const MPI_Fint* restrict const tag,
@@ -12205,7 +13338,9 @@ void mpi_improbe_(
   *flag = mpif_bool2logical(c_flag);
   *message = MPI_Message_toint(c_message);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_improbe_
 void pmpi_improbe_(
   const MPI_Fint* restrict const source,
   const MPI_Fint* restrict const tag,
@@ -12229,7 +13364,9 @@ void pmpi_improbe_(
   *flag = mpif_bool2logical(c_flag);
   *message = MPI_Message_toint(c_message);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_imrecv_
 void mpi_imrecv_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -12252,7 +13389,9 @@ void mpi_imrecv_(
   *message = MPI_Message_toint(c_message);
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_imrecv_c_
 void mpi_imrecv_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -12275,7 +13414,9 @@ void mpi_imrecv_c_(
   *message = MPI_Message_toint(c_message);
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_imrecv_
 void pmpi_imrecv_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -12298,7 +13439,9 @@ void pmpi_imrecv_(
   *message = MPI_Message_toint(c_message);
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_imrecv_c_
 void pmpi_imrecv_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -12321,7 +13464,9 @@ void pmpi_imrecv_c_(
   *message = MPI_Message_toint(c_message);
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ineighbor_allgather_
 void mpi_ineighbor_allgather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -12349,7 +13494,9 @@ void mpi_ineighbor_allgather_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ineighbor_allgather_c_
 void mpi_ineighbor_allgather_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -12377,7 +13524,9 @@ void mpi_ineighbor_allgather_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ineighbor_allgather_
 void pmpi_ineighbor_allgather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -12405,7 +13554,9 @@ void pmpi_ineighbor_allgather_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ineighbor_allgather_c_
 void pmpi_ineighbor_allgather_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -12433,7 +13584,9 @@ void pmpi_ineighbor_allgather_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ineighbor_allgatherv_
 void mpi_ineighbor_allgatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -12463,7 +13616,9 @@ void mpi_ineighbor_allgatherv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ineighbor_allgatherv_c_
 void mpi_ineighbor_allgatherv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -12493,7 +13648,9 @@ void mpi_ineighbor_allgatherv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ineighbor_allgatherv_
 void pmpi_ineighbor_allgatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -12523,7 +13680,9 @@ void pmpi_ineighbor_allgatherv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ineighbor_allgatherv_c_
 void pmpi_ineighbor_allgatherv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -12553,7 +13712,9 @@ void pmpi_ineighbor_allgatherv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ineighbor_alltoall_
 void mpi_ineighbor_alltoall_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -12581,7 +13742,9 @@ void mpi_ineighbor_alltoall_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ineighbor_alltoall_c_
 void mpi_ineighbor_alltoall_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -12609,7 +13772,9 @@ void mpi_ineighbor_alltoall_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ineighbor_alltoall_
 void pmpi_ineighbor_alltoall_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -12637,7 +13802,9 @@ void pmpi_ineighbor_alltoall_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ineighbor_alltoall_c_
 void pmpi_ineighbor_alltoall_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -12665,7 +13832,9 @@ void pmpi_ineighbor_alltoall_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ineighbor_alltoallv_
 void mpi_ineighbor_alltoallv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -12697,7 +13866,9 @@ void mpi_ineighbor_alltoallv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ineighbor_alltoallv_c_
 void mpi_ineighbor_alltoallv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -12729,7 +13900,9 @@ void mpi_ineighbor_alltoallv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ineighbor_alltoallv_
 void pmpi_ineighbor_alltoallv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -12761,7 +13934,9 @@ void pmpi_ineighbor_alltoallv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ineighbor_alltoallv_c_
 void pmpi_ineighbor_alltoallv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -12793,7 +13968,9 @@ void pmpi_ineighbor_alltoallv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ineighbor_alltoallw_
 void mpi_ineighbor_alltoallw_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -12865,7 +14042,9 @@ void mpi_ineighbor_alltoallw_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ineighbor_alltoallw_c_
 void mpi_ineighbor_alltoallw_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -12937,7 +14116,9 @@ void mpi_ineighbor_alltoallw_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ineighbor_alltoallw_
 void pmpi_ineighbor_alltoallw_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -13009,7 +14190,9 @@ void pmpi_ineighbor_alltoallw_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ineighbor_alltoallw_c_
 void pmpi_ineighbor_alltoallw_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -13081,7 +14264,9 @@ void pmpi_ineighbor_alltoallw_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_info_create_
 void mpi_info_create_(
   MPI_Fint* restrict const info,
   MPI_Fint* restrict const ierror
@@ -13093,7 +14278,9 @@ void mpi_info_create_(
   );
   *info = MPI_Info_toint(c_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_info_create_
 void pmpi_info_create_(
   MPI_Fint* restrict const info,
   MPI_Fint* restrict const ierror
@@ -13105,7 +14292,9 @@ void pmpi_info_create_(
   );
   *info = MPI_Info_toint(c_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_info_create_env_
 void mpi_info_create_env_(
   MPI_Fint* restrict const info,
   MPI_Fint* restrict const ierror
@@ -13119,7 +14308,9 @@ void mpi_info_create_env_(
   );
   *info = MPI_Info_toint(c_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_info_create_env_
 void pmpi_info_create_env_(
   MPI_Fint* restrict const info,
   MPI_Fint* restrict const ierror
@@ -13133,7 +14324,9 @@ void pmpi_info_create_env_(
   );
   *info = MPI_Info_toint(c_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_info_delete_
 void mpi_info_delete_(
   const MPI_Fint* restrict const info,
   const char* restrict const key,
@@ -13148,7 +14341,9 @@ void mpi_info_delete_(
   );
   free(c_key);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_info_delete_
 void pmpi_info_delete_(
   const MPI_Fint* restrict const info,
   const char* restrict const key,
@@ -13163,7 +14358,9 @@ void pmpi_info_delete_(
   );
   free(c_key);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_info_dup_
 void mpi_info_dup_(
   const MPI_Fint* restrict const info,
   MPI_Fint* restrict const newinfo,
@@ -13177,7 +14374,9 @@ void mpi_info_dup_(
   );
   *newinfo = MPI_Info_toint(c_newinfo);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_info_dup_
 void pmpi_info_dup_(
   const MPI_Fint* restrict const info,
   MPI_Fint* restrict const newinfo,
@@ -13191,7 +14390,9 @@ void pmpi_info_dup_(
   );
   *newinfo = MPI_Info_toint(c_newinfo);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_info_free_
 void mpi_info_free_(
   MPI_Fint* restrict const info,
   MPI_Fint* restrict const ierror
@@ -13203,7 +14404,9 @@ void mpi_info_free_(
   );
   *info = MPI_Info_toint(c_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_info_free_
 void pmpi_info_free_(
   MPI_Fint* restrict const info,
   MPI_Fint* restrict const ierror
@@ -13215,7 +14418,9 @@ void pmpi_info_free_(
   );
   *info = MPI_Info_toint(c_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_info_get_
 void mpi_info_get_(
   const MPI_Fint* restrict const info,
   const char* restrict const key,
@@ -13243,7 +14448,9 @@ void mpi_info_get_(
     mpif_strcpy_c2f(value, c_value, length_value, strlen(c_value));
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_info_get_
 void pmpi_info_get_(
   const MPI_Fint* restrict const info,
   const char* restrict const key,
@@ -13271,7 +14478,9 @@ void pmpi_info_get_(
     mpif_strcpy_c2f(value, c_value, length_value, strlen(c_value));
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_info_get_nkeys_
 void mpi_info_get_nkeys_(
   const MPI_Fint* restrict const info,
   MPI_Fint* restrict const nkeys,
@@ -13283,7 +14492,9 @@ void mpi_info_get_nkeys_(
     nkeys
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_info_get_nkeys_
 void pmpi_info_get_nkeys_(
   const MPI_Fint* restrict const info,
   MPI_Fint* restrict const nkeys,
@@ -13295,7 +14506,9 @@ void pmpi_info_get_nkeys_(
     nkeys
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_info_get_nthkey_
 void mpi_info_get_nthkey_(
   const MPI_Fint* restrict const info,
   const MPI_Fint* restrict const n,
@@ -13313,7 +14526,9 @@ void mpi_info_get_nthkey_(
   );
   mpif_strcpy_c2f(key, c_key, length_key, strlen(c_key));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_info_get_nthkey_
 void pmpi_info_get_nthkey_(
   const MPI_Fint* restrict const info,
   const MPI_Fint* restrict const n,
@@ -13331,7 +14546,9 @@ void pmpi_info_get_nthkey_(
   );
   mpif_strcpy_c2f(key, c_key, length_key, strlen(c_key));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_info_get_string_
 void mpi_info_get_string_(
   const MPI_Fint* restrict const info,
   const char* restrict const key,
@@ -13367,7 +14584,9 @@ void mpi_info_get_string_(
     mpif_strcpy_c2f(value, c_value, length_value, strlen(c_value));
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_info_get_string_
 void pmpi_info_get_string_(
   const MPI_Fint* restrict const info,
   const char* restrict const key,
@@ -13403,7 +14622,9 @@ void pmpi_info_get_string_(
     mpif_strcpy_c2f(value, c_value, length_value, strlen(c_value));
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_info_get_valuelen_
 void mpi_info_get_valuelen_(
   const MPI_Fint* restrict const info,
   const char* restrict const key,
@@ -13424,7 +14645,9 @@ void mpi_info_get_valuelen_(
   free(c_key);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_info_get_valuelen_
 void pmpi_info_get_valuelen_(
   const MPI_Fint* restrict const info,
   const char* restrict const key,
@@ -13445,7 +14668,9 @@ void pmpi_info_get_valuelen_(
   free(c_key);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_info_set_
 void mpi_info_set_(
   const MPI_Fint* restrict const info,
   const char* restrict const key,
@@ -13465,7 +14690,9 @@ void mpi_info_set_(
   free(c_key);
   free(c_value);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_info_set_
 void pmpi_info_set_(
   const MPI_Fint* restrict const info,
   const char* restrict const key,
@@ -13485,7 +14712,9 @@ void pmpi_info_set_(
   free(c_key);
   free(c_value);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_init_
 void mpi_init_(
   MPI_Fint* restrict const ierror
 )
@@ -13495,7 +14724,9 @@ void mpi_init_(
     NULL
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_init_
 void pmpi_init_(
   MPI_Fint* restrict const ierror
 )
@@ -13505,7 +14736,9 @@ void pmpi_init_(
     NULL
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_init_thread_
 void mpi_init_thread_(
   const MPI_Fint* restrict const required,
   MPI_Fint* restrict const provided,
@@ -13519,7 +14752,9 @@ void mpi_init_thread_(
     provided
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_init_thread_
 void pmpi_init_thread_(
   const MPI_Fint* restrict const required,
   MPI_Fint* restrict const provided,
@@ -13533,7 +14768,9 @@ void pmpi_init_thread_(
     provided
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_initialized_
 void mpi_initialized_(
   MPI_Fint* restrict const flag,
   MPI_Fint* restrict const ierror
@@ -13545,7 +14782,9 @@ void mpi_initialized_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_initialized_
 void pmpi_initialized_(
   MPI_Fint* restrict const flag,
   MPI_Fint* restrict const ierror
@@ -13557,7 +14796,9 @@ void pmpi_initialized_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_intercomm_create_
 void mpi_intercomm_create_(
   const MPI_Fint* restrict const local_comm,
   const MPI_Fint* restrict const local_leader,
@@ -13579,7 +14820,9 @@ void mpi_intercomm_create_(
   );
   *newintercomm = MPI_Comm_toint(c_newintercomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_intercomm_create_
 void pmpi_intercomm_create_(
   const MPI_Fint* restrict const local_comm,
   const MPI_Fint* restrict const local_leader,
@@ -13601,7 +14844,9 @@ void pmpi_intercomm_create_(
   );
   *newintercomm = MPI_Comm_toint(c_newintercomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_intercomm_create_from_groups_
 void mpi_intercomm_create_from_groups_(
   const MPI_Fint* restrict const local_group,
   const MPI_Fint* restrict const local_leader,
@@ -13630,7 +14875,9 @@ void mpi_intercomm_create_from_groups_(
   free(c_stringtag);
   *newintercomm = MPI_Comm_toint(c_newintercomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_intercomm_create_from_groups_
 void pmpi_intercomm_create_from_groups_(
   const MPI_Fint* restrict const local_group,
   const MPI_Fint* restrict const local_leader,
@@ -13659,7 +14906,9 @@ void pmpi_intercomm_create_from_groups_(
   free(c_stringtag);
   *newintercomm = MPI_Comm_toint(c_newintercomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_intercomm_merge_
 void mpi_intercomm_merge_(
   const MPI_Fint* restrict const intercomm,
   const MPI_Fint* restrict const high,
@@ -13675,7 +14924,9 @@ void mpi_intercomm_merge_(
   );
   *newintracomm = MPI_Comm_toint(c_newintracomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_intercomm_merge_
 void pmpi_intercomm_merge_(
   const MPI_Fint* restrict const intercomm,
   const MPI_Fint* restrict const high,
@@ -13691,7 +14942,9 @@ void pmpi_intercomm_merge_(
   );
   *newintracomm = MPI_Comm_toint(c_newintracomm);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iprobe_
 void mpi_iprobe_(
   const MPI_Fint* restrict const source,
   const MPI_Fint* restrict const tag,
@@ -13711,7 +14964,9 @@ void mpi_iprobe_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iprobe_
 void pmpi_iprobe_(
   const MPI_Fint* restrict const source,
   const MPI_Fint* restrict const tag,
@@ -13731,7 +14986,9 @@ void pmpi_iprobe_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_irecv_
 void mpi_irecv_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -13756,7 +15013,9 @@ void mpi_irecv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_irecv_c_
 void mpi_irecv_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -13781,7 +15040,9 @@ void mpi_irecv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_irecv_
 void pmpi_irecv_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -13806,7 +15067,9 @@ void pmpi_irecv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_irecv_c_
 void pmpi_irecv_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -13831,7 +15094,9 @@ void pmpi_irecv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ireduce_
 void mpi_ireduce_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -13859,7 +15124,9 @@ void mpi_ireduce_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ireduce_c_
 void mpi_ireduce_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -13887,7 +15154,9 @@ void mpi_ireduce_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ireduce_
 void pmpi_ireduce_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -13915,7 +15184,9 @@ void pmpi_ireduce_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ireduce_c_
 void pmpi_ireduce_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -13943,7 +15214,9 @@ void pmpi_ireduce_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ireduce_scatter_
 void mpi_ireduce_scatter_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -13969,7 +15242,9 @@ void mpi_ireduce_scatter_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ireduce_scatter_c_
 void mpi_ireduce_scatter_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -13995,7 +15270,9 @@ void mpi_ireduce_scatter_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ireduce_scatter_
 void pmpi_ireduce_scatter_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -14021,7 +15298,9 @@ void pmpi_ireduce_scatter_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ireduce_scatter_c_
 void pmpi_ireduce_scatter_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -14047,7 +15326,9 @@ void pmpi_ireduce_scatter_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ireduce_scatter_block_
 void mpi_ireduce_scatter_block_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -14073,7 +15354,9 @@ void mpi_ireduce_scatter_block_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ireduce_scatter_block_c_
 void mpi_ireduce_scatter_block_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -14099,7 +15382,9 @@ void mpi_ireduce_scatter_block_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ireduce_scatter_block_
 void pmpi_ireduce_scatter_block_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -14125,7 +15410,9 @@ void pmpi_ireduce_scatter_block_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ireduce_scatter_block_c_
 void pmpi_ireduce_scatter_block_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -14151,7 +15438,9 @@ void pmpi_ireduce_scatter_block_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_irsend_
 void mpi_irsend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -14176,7 +15465,9 @@ void mpi_irsend_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_irsend_c_
 void mpi_irsend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -14201,7 +15492,9 @@ void mpi_irsend_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_irsend_
 void pmpi_irsend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -14226,7 +15519,9 @@ void pmpi_irsend_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_irsend_c_
 void pmpi_irsend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -14251,7 +15546,9 @@ void pmpi_irsend_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_is_thread_main_
 void mpi_is_thread_main_(
   MPI_Fint* restrict const flag,
   MPI_Fint* restrict const ierror
@@ -14263,7 +15560,9 @@ void mpi_is_thread_main_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_is_thread_main_
 void pmpi_is_thread_main_(
   MPI_Fint* restrict const flag,
   MPI_Fint* restrict const ierror
@@ -14275,7 +15574,9 @@ void pmpi_is_thread_main_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iscan_
 void mpi_iscan_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -14301,7 +15602,9 @@ void mpi_iscan_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iscan_c_
 void mpi_iscan_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -14327,7 +15630,9 @@ void mpi_iscan_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iscan_
 void pmpi_iscan_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -14353,7 +15658,9 @@ void pmpi_iscan_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iscan_c_
 void pmpi_iscan_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -14379,7 +15686,9 @@ void pmpi_iscan_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iscatter_
 void mpi_iscatter_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -14430,7 +15739,9 @@ void mpi_iscatter_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iscatter_c_
 void mpi_iscatter_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -14481,7 +15792,9 @@ void mpi_iscatter_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iscatter_
 void pmpi_iscatter_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -14532,7 +15845,9 @@ void pmpi_iscatter_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iscatter_c_
 void pmpi_iscatter_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -14583,7 +15898,9 @@ void pmpi_iscatter_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iscatterv_
 void mpi_iscatterv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -14636,7 +15953,9 @@ void mpi_iscatterv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_iscatterv_c_
 void mpi_iscatterv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -14689,7 +16008,9 @@ void mpi_iscatterv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iscatterv_
 void pmpi_iscatterv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -14742,7 +16063,9 @@ void pmpi_iscatterv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_iscatterv_c_
 void pmpi_iscatterv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -14795,7 +16118,9 @@ void pmpi_iscatterv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_isend_
 void mpi_isend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -14820,7 +16145,9 @@ void mpi_isend_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_isend_c_
 void mpi_isend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -14845,7 +16172,9 @@ void mpi_isend_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_isend_
 void pmpi_isend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -14870,7 +16199,9 @@ void pmpi_isend_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_isend_c_
 void pmpi_isend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -14895,7 +16226,9 @@ void pmpi_isend_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_isendrecv_
 void mpi_isendrecv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -14931,7 +16264,9 @@ void mpi_isendrecv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_isendrecv_c_
 void mpi_isendrecv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -14967,7 +16302,9 @@ void mpi_isendrecv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_isendrecv_
 void pmpi_isendrecv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -15003,7 +16340,9 @@ void pmpi_isendrecv_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_isendrecv_c_
 void pmpi_isendrecv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -15039,7 +16378,9 @@ void pmpi_isendrecv_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_isendrecv_replace_
 void mpi_isendrecv_replace_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -15068,7 +16409,9 @@ void mpi_isendrecv_replace_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_isendrecv_replace_c_
 void mpi_isendrecv_replace_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -15097,7 +16440,9 @@ void mpi_isendrecv_replace_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_isendrecv_replace_
 void pmpi_isendrecv_replace_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -15126,7 +16471,9 @@ void pmpi_isendrecv_replace_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_isendrecv_replace_c_
 void pmpi_isendrecv_replace_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -15155,7 +16502,9 @@ void pmpi_isendrecv_replace_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_issend_
 void mpi_issend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -15180,7 +16529,9 @@ void mpi_issend_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_issend_c_
 void mpi_issend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -15205,7 +16556,9 @@ void mpi_issend_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_issend_
 void pmpi_issend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -15230,7 +16583,9 @@ void pmpi_issend_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_issend_c_
 void pmpi_issend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -15255,7 +16610,9 @@ void pmpi_issend_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_keyval_create_
 void mpi_keyval_create_(
   MPI_Copy_function* const copy_fn,
   MPI_Delete_function* const delete_fn,
@@ -15281,7 +16638,9 @@ void mpi_keyval_create_(
   if (*ierror == MPI_SUCCESS)
     *ierror = mpif_register_attr_callback(*keyval, MPIF_ATTR_COMM_DELETE_10, (mpif_fortran_procedure)delete_fn);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_keyval_create_
 void pmpi_keyval_create_(
   MPI_Copy_function* const copy_fn,
   MPI_Delete_function* const delete_fn,
@@ -15307,7 +16666,9 @@ void pmpi_keyval_create_(
   if (*ierror == MPI_SUCCESS)
     *ierror = mpif_register_attr_callback(*keyval, MPIF_ATTR_COMM_DELETE_10, (mpif_fortran_procedure)delete_fn);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_keyval_free_
 void mpi_keyval_free_(
   MPI_Fint* restrict const keyval,
   MPI_Fint* restrict const ierror
@@ -15317,7 +16678,9 @@ void mpi_keyval_free_(
     keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_keyval_free_
 void pmpi_keyval_free_(
   MPI_Fint* restrict const keyval,
   MPI_Fint* restrict const ierror
@@ -15327,7 +16690,9 @@ void pmpi_keyval_free_(
     keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_lookup_name_
 void mpi_lookup_name_(
   const char* restrict const service_name,
   const MPI_Fint* restrict const info,
@@ -15348,7 +16713,9 @@ void mpi_lookup_name_(
   free(c_service_name);
   mpif_strcpy_c2f(port_name, c_port_name, length_port_name, strlen(c_port_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_lookup_name_
 void pmpi_lookup_name_(
   const char* restrict const service_name,
   const MPI_Fint* restrict const info,
@@ -15369,7 +16736,9 @@ void pmpi_lookup_name_(
   free(c_service_name);
   mpif_strcpy_c2f(port_name, c_port_name, length_port_name, strlen(c_port_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_mprobe_
 void mpi_mprobe_(
   const MPI_Fint* restrict const source,
   const MPI_Fint* restrict const tag,
@@ -15389,7 +16758,9 @@ void mpi_mprobe_(
   );
   *message = MPI_Message_toint(c_message);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_mprobe_
 void pmpi_mprobe_(
   const MPI_Fint* restrict const source,
   const MPI_Fint* restrict const tag,
@@ -15409,7 +16780,9 @@ void pmpi_mprobe_(
   );
   *message = MPI_Message_toint(c_message);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_mrecv_
 void mpi_mrecv_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -15430,7 +16803,9 @@ void mpi_mrecv_(
   );
   *message = MPI_Message_toint(c_message);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_mrecv_c_
 void mpi_mrecv_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -15451,7 +16826,9 @@ void mpi_mrecv_c_(
   );
   *message = MPI_Message_toint(c_message);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_mrecv_
 void pmpi_mrecv_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -15472,7 +16849,9 @@ void pmpi_mrecv_(
   );
   *message = MPI_Message_toint(c_message);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_mrecv_c_
 void pmpi_mrecv_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -15493,7 +16872,9 @@ void pmpi_mrecv_c_(
   );
   *message = MPI_Message_toint(c_message);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_allgather_
 void mpi_neighbor_allgather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -15517,7 +16898,9 @@ void mpi_neighbor_allgather_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_allgather_c_
 void mpi_neighbor_allgather_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -15541,7 +16924,9 @@ void mpi_neighbor_allgather_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_allgather_
 void pmpi_neighbor_allgather_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -15565,7 +16950,9 @@ void pmpi_neighbor_allgather_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_allgather_c_
 void pmpi_neighbor_allgather_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -15589,7 +16976,9 @@ void pmpi_neighbor_allgather_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_allgather_init_
 void mpi_neighbor_allgather_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -15619,7 +17008,9 @@ void mpi_neighbor_allgather_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_allgather_init_c_
 void mpi_neighbor_allgather_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -15649,7 +17040,9 @@ void mpi_neighbor_allgather_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_allgather_init_
 void pmpi_neighbor_allgather_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -15679,7 +17072,9 @@ void pmpi_neighbor_allgather_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_allgather_init_c_
 void pmpi_neighbor_allgather_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -15709,7 +17104,9 @@ void pmpi_neighbor_allgather_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_allgatherv_
 void mpi_neighbor_allgatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -15735,7 +17132,9 @@ void mpi_neighbor_allgatherv_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_allgatherv_c_
 void mpi_neighbor_allgatherv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -15761,7 +17160,9 @@ void mpi_neighbor_allgatherv_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_allgatherv_
 void pmpi_neighbor_allgatherv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -15787,7 +17188,9 @@ void pmpi_neighbor_allgatherv_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_allgatherv_c_
 void pmpi_neighbor_allgatherv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -15813,7 +17216,9 @@ void pmpi_neighbor_allgatherv_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_allgatherv_init_
 void mpi_neighbor_allgatherv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -15845,7 +17250,9 @@ void mpi_neighbor_allgatherv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_allgatherv_init_c_
 void mpi_neighbor_allgatherv_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -15877,7 +17284,9 @@ void mpi_neighbor_allgatherv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_allgatherv_init_
 void pmpi_neighbor_allgatherv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -15909,7 +17318,9 @@ void pmpi_neighbor_allgatherv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_allgatherv_init_c_
 void pmpi_neighbor_allgatherv_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -15941,7 +17352,9 @@ void pmpi_neighbor_allgatherv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_alltoall_
 void mpi_neighbor_alltoall_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -15965,7 +17378,9 @@ void mpi_neighbor_alltoall_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_alltoall_c_
 void mpi_neighbor_alltoall_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -15989,7 +17404,9 @@ void mpi_neighbor_alltoall_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_alltoall_
 void pmpi_neighbor_alltoall_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -16013,7 +17430,9 @@ void pmpi_neighbor_alltoall_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_alltoall_c_
 void pmpi_neighbor_alltoall_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -16037,7 +17456,9 @@ void pmpi_neighbor_alltoall_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_alltoall_init_
 void mpi_neighbor_alltoall_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -16067,7 +17488,9 @@ void mpi_neighbor_alltoall_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_alltoall_init_c_
 void mpi_neighbor_alltoall_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -16097,7 +17520,9 @@ void mpi_neighbor_alltoall_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_alltoall_init_
 void pmpi_neighbor_alltoall_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -16127,7 +17552,9 @@ void pmpi_neighbor_alltoall_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_alltoall_init_c_
 void pmpi_neighbor_alltoall_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -16157,7 +17584,9 @@ void pmpi_neighbor_alltoall_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_alltoallv_
 void mpi_neighbor_alltoallv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -16185,7 +17614,9 @@ void mpi_neighbor_alltoallv_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_alltoallv_c_
 void mpi_neighbor_alltoallv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -16213,7 +17644,9 @@ void mpi_neighbor_alltoallv_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_alltoallv_
 void pmpi_neighbor_alltoallv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -16241,7 +17674,9 @@ void pmpi_neighbor_alltoallv_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_alltoallv_c_
 void pmpi_neighbor_alltoallv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -16269,7 +17704,9 @@ void pmpi_neighbor_alltoallv_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_alltoallv_init_
 void mpi_neighbor_alltoallv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -16303,7 +17740,9 @@ void mpi_neighbor_alltoallv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_alltoallv_init_c_
 void mpi_neighbor_alltoallv_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -16337,7 +17776,9 @@ void mpi_neighbor_alltoallv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_alltoallv_init_
 void pmpi_neighbor_alltoallv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -16371,7 +17812,9 @@ void pmpi_neighbor_alltoallv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_alltoallv_init_c_
 void pmpi_neighbor_alltoallv_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -16405,7 +17848,9 @@ void pmpi_neighbor_alltoallv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_alltoallw_
 void mpi_neighbor_alltoallw_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -16473,7 +17918,9 @@ void mpi_neighbor_alltoallw_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_alltoallw_c_
 void mpi_neighbor_alltoallw_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -16541,7 +17988,9 @@ void mpi_neighbor_alltoallw_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_alltoallw_
 void pmpi_neighbor_alltoallw_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -16609,7 +18058,9 @@ void pmpi_neighbor_alltoallw_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_alltoallw_c_
 void pmpi_neighbor_alltoallw_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -16677,7 +18128,9 @@ void pmpi_neighbor_alltoallw_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_alltoallw_init_
 void mpi_neighbor_alltoallw_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -16751,7 +18204,9 @@ void mpi_neighbor_alltoallw_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_neighbor_alltoallw_init_c_
 void mpi_neighbor_alltoallw_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -16825,7 +18280,9 @@ void mpi_neighbor_alltoallw_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_alltoallw_init_
 void pmpi_neighbor_alltoallw_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -16899,7 +18356,9 @@ void pmpi_neighbor_alltoallw_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_neighbor_alltoallw_init_c_
 void pmpi_neighbor_alltoallw_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -16973,7 +18432,9 @@ void pmpi_neighbor_alltoallw_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_op_commutative_
 void mpi_op_commutative_(
   const MPI_Fint* restrict const op,
   MPI_Fint* restrict const commute,
@@ -16987,7 +18448,9 @@ void mpi_op_commutative_(
   );
   *commute = mpif_bool2logical(c_commute);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_op_commutative_
 void pmpi_op_commutative_(
   const MPI_Fint* restrict const op,
   MPI_Fint* restrict const commute,
@@ -17001,7 +18464,9 @@ void pmpi_op_commutative_(
   );
   *commute = mpif_bool2logical(c_commute);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_op_create_
 void mpi_op_create_(
   MPI_User_function* const user_fn,
   const MPI_Fint* restrict const commute,
@@ -17026,7 +18491,9 @@ void mpi_op_create_(
     mpif_op_cancel(slot_user_fn);
   *op = MPI_Op_toint(c_op);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_op_create_c_
 void mpi_op_create_c_(
   MPI_User_function_c* const user_fn,
   const MPI_Fint* restrict const commute,
@@ -17051,7 +18518,9 @@ void mpi_op_create_c_(
     mpif_op_cancel(slot_user_fn);
   *op = MPI_Op_toint(c_op);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_op_create_
 void pmpi_op_create_(
   MPI_User_function* const user_fn,
   const MPI_Fint* restrict const commute,
@@ -17076,7 +18545,9 @@ void pmpi_op_create_(
     mpif_op_cancel(slot_user_fn);
   *op = MPI_Op_toint(c_op);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_op_create_c_
 void pmpi_op_create_c_(
   MPI_User_function_c* const user_fn,
   const MPI_Fint* restrict const commute,
@@ -17101,7 +18572,9 @@ void pmpi_op_create_c_(
     mpif_op_cancel(slot_user_fn);
   *op = MPI_Op_toint(c_op);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_op_free_
 void mpi_op_free_(
   MPI_Fint* restrict const op,
   MPI_Fint* restrict const ierror
@@ -17113,7 +18586,9 @@ void mpi_op_free_(
   );
   *op = MPI_Op_toint(c_op);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_op_free_
 void pmpi_op_free_(
   MPI_Fint* restrict const op,
   MPI_Fint* restrict const ierror
@@ -17125,7 +18600,9 @@ void pmpi_op_free_(
   );
   *op = MPI_Op_toint(c_op);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_open_port_
 void mpi_open_port_(
   const MPI_Fint* restrict const info,
   char* restrict const port_name,
@@ -17141,7 +18618,9 @@ void mpi_open_port_(
   );
   mpif_strcpy_c2f(port_name, c_port_name, length_port_name, strlen(c_port_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_open_port_
 void pmpi_open_port_(
   const MPI_Fint* restrict const info,
   char* restrict const port_name,
@@ -17157,7 +18636,9 @@ void pmpi_open_port_(
   );
   mpif_strcpy_c2f(port_name, c_port_name, length_port_name, strlen(c_port_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_pack_
 void mpi_pack_(
   const void* restrict const inbuf,
   const MPI_Fint* restrict const incount,
@@ -17181,7 +18662,9 @@ void mpi_pack_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_pack_c_
 void mpi_pack_c_(
   const void* restrict const inbuf,
   const MPI_Count* restrict const incount,
@@ -17205,7 +18688,9 @@ void mpi_pack_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_pack_
 void pmpi_pack_(
   const void* restrict const inbuf,
   const MPI_Fint* restrict const incount,
@@ -17229,7 +18714,9 @@ void pmpi_pack_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_pack_c_
 void pmpi_pack_c_(
   const void* restrict const inbuf,
   const MPI_Count* restrict const incount,
@@ -17253,7 +18740,9 @@ void pmpi_pack_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_pack_external_
 void mpi_pack_external_(
   const char* restrict const datarep,
   const void* restrict const inbuf,
@@ -17280,7 +18769,9 @@ void mpi_pack_external_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_pack_external_c_
 void mpi_pack_external_c_(
   const char* restrict const datarep,
   const void* restrict const inbuf,
@@ -17307,7 +18798,9 @@ void mpi_pack_external_c_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_pack_external_
 void pmpi_pack_external_(
   const char* restrict const datarep,
   const void* restrict const inbuf,
@@ -17334,7 +18827,9 @@ void pmpi_pack_external_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_pack_external_c_
 void pmpi_pack_external_c_(
   const char* restrict const datarep,
   const void* restrict const inbuf,
@@ -17361,7 +18856,9 @@ void pmpi_pack_external_c_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_pack_external_size_
 void mpi_pack_external_size_(
   const char* restrict const datarep,
   const MPI_Fint* restrict const incount,
@@ -17380,7 +18877,9 @@ void mpi_pack_external_size_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_pack_external_size_c_
 void mpi_pack_external_size_c_(
   const char* restrict const datarep,
   const MPI_Count* restrict const incount,
@@ -17399,7 +18898,9 @@ void mpi_pack_external_size_c_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_pack_external_size_
 void pmpi_pack_external_size_(
   const char* restrict const datarep,
   const MPI_Fint* restrict const incount,
@@ -17418,7 +18919,9 @@ void pmpi_pack_external_size_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_pack_external_size_c_
 void pmpi_pack_external_size_c_(
   const char* restrict const datarep,
   const MPI_Count* restrict const incount,
@@ -17437,7 +18940,9 @@ void pmpi_pack_external_size_c_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_pack_size_
 void mpi_pack_size_(
   const MPI_Fint* restrict const incount,
   const MPI_Fint* restrict const datatype,
@@ -17453,7 +18958,9 @@ void mpi_pack_size_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_pack_size_c_
 void mpi_pack_size_c_(
   const MPI_Count* restrict const incount,
   const MPI_Fint* restrict const datatype,
@@ -17469,7 +18976,9 @@ void mpi_pack_size_c_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_pack_size_
 void pmpi_pack_size_(
   const MPI_Fint* restrict const incount,
   const MPI_Fint* restrict const datatype,
@@ -17485,7 +18994,9 @@ void pmpi_pack_size_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_pack_size_c_
 void pmpi_pack_size_c_(
   const MPI_Count* restrict const incount,
   const MPI_Fint* restrict const datatype,
@@ -17501,7 +19012,9 @@ void pmpi_pack_size_c_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_parrived_
 void mpi_parrived_(
   const MPI_Fint* restrict const request,
   const MPI_Fint* restrict const partition,
@@ -17517,7 +19030,9 @@ void mpi_parrived_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_parrived_
 void pmpi_parrived_(
   const MPI_Fint* restrict const request,
   const MPI_Fint* restrict const partition,
@@ -17533,7 +19048,9 @@ void pmpi_parrived_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_pcontrol_
 void mpi_pcontrol_(
   const MPI_Fint* restrict const level
 )
@@ -17542,7 +19059,9 @@ void mpi_pcontrol_(
     *level
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_pcontrol_
 void pmpi_pcontrol_(
   const MPI_Fint* restrict const level
 )
@@ -17551,7 +19070,9 @@ void pmpi_pcontrol_(
     *level
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_pready_
 void mpi_pready_(
   const MPI_Fint* restrict const partition,
   const MPI_Fint* restrict const request,
@@ -17563,7 +19084,9 @@ void mpi_pready_(
     MPI_Request_fromint(*request)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_pready_
 void pmpi_pready_(
   const MPI_Fint* restrict const partition,
   const MPI_Fint* restrict const request,
@@ -17575,7 +19098,9 @@ void pmpi_pready_(
     MPI_Request_fromint(*request)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_pready_list_
 void mpi_pready_list_(
   const MPI_Fint* restrict const length,
   const MPI_Fint* restrict const array_of_partitions,
@@ -17589,7 +19114,9 @@ void mpi_pready_list_(
     MPI_Request_fromint(*request)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_pready_list_
 void pmpi_pready_list_(
   const MPI_Fint* restrict const length,
   const MPI_Fint* restrict const array_of_partitions,
@@ -17603,7 +19130,9 @@ void pmpi_pready_list_(
     MPI_Request_fromint(*request)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_pready_range_
 void mpi_pready_range_(
   const MPI_Fint* restrict const partition_low,
   const MPI_Fint* restrict const partition_high,
@@ -17617,7 +19146,9 @@ void mpi_pready_range_(
     MPI_Request_fromint(*request)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_pready_range_
 void pmpi_pready_range_(
   const MPI_Fint* restrict const partition_low,
   const MPI_Fint* restrict const partition_high,
@@ -17631,7 +19162,9 @@ void pmpi_pready_range_(
     MPI_Request_fromint(*request)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_precv_init_
 void mpi_precv_init_(
   void* restrict const buf,
   const MPI_Fint* restrict const partitions,
@@ -17660,7 +19193,9 @@ void mpi_precv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_precv_init_
 void pmpi_precv_init_(
   void* restrict const buf,
   const MPI_Fint* restrict const partitions,
@@ -17689,7 +19224,9 @@ void pmpi_precv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_probe_
 void mpi_probe_(
   const MPI_Fint* restrict const source,
   const MPI_Fint* restrict const tag,
@@ -17705,7 +19242,9 @@ void mpi_probe_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_probe_
 void pmpi_probe_(
   const MPI_Fint* restrict const source,
   const MPI_Fint* restrict const tag,
@@ -17721,7 +19260,9 @@ void pmpi_probe_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_psend_init_
 void mpi_psend_init_(
   const void* restrict const buf,
   const MPI_Fint* restrict const partitions,
@@ -17750,7 +19291,9 @@ void mpi_psend_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_psend_init_
 void pmpi_psend_init_(
   const void* restrict const buf,
   const MPI_Fint* restrict const partitions,
@@ -17779,7 +19322,9 @@ void pmpi_psend_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_publish_name_
 void mpi_publish_name_(
   const char* restrict const service_name,
   const MPI_Fint* restrict const info,
@@ -17799,7 +19344,9 @@ void mpi_publish_name_(
   free(c_service_name);
   free(c_port_name);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_publish_name_
 void pmpi_publish_name_(
   const char* restrict const service_name,
   const MPI_Fint* restrict const info,
@@ -17819,7 +19366,9 @@ void pmpi_publish_name_(
   free(c_service_name);
   free(c_port_name);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_put_
 void mpi_put_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -17844,7 +19393,9 @@ void mpi_put_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_put_c_
 void mpi_put_c_(
   const void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -17869,7 +19420,9 @@ void mpi_put_c_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_put_
 void pmpi_put_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -17894,7 +19447,9 @@ void pmpi_put_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_put_c_
 void pmpi_put_c_(
   const void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -17919,7 +19474,9 @@ void pmpi_put_c_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_query_thread_
 void mpi_query_thread_(
   MPI_Fint* restrict const provided,
   MPI_Fint* restrict const ierror
@@ -17929,7 +19486,9 @@ void mpi_query_thread_(
     provided
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_query_thread_
 void pmpi_query_thread_(
   MPI_Fint* restrict const provided,
   MPI_Fint* restrict const ierror
@@ -17939,7 +19498,9 @@ void pmpi_query_thread_(
     provided
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_raccumulate_
 void mpi_raccumulate_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -17970,7 +19531,9 @@ void mpi_raccumulate_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_raccumulate_c_
 void mpi_raccumulate_c_(
   const void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -18001,7 +19564,9 @@ void mpi_raccumulate_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_raccumulate_
 void pmpi_raccumulate_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -18032,7 +19597,9 @@ void pmpi_raccumulate_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_raccumulate_c_
 void pmpi_raccumulate_c_(
   const void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -18063,7 +19630,9 @@ void pmpi_raccumulate_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_recv_
 void mpi_recv_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -18086,7 +19655,9 @@ void mpi_recv_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_recv_c_
 void mpi_recv_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -18109,7 +19680,9 @@ void mpi_recv_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_recv_
 void pmpi_recv_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -18132,7 +19705,9 @@ void pmpi_recv_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_recv_c_
 void pmpi_recv_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -18155,7 +19730,9 @@ void pmpi_recv_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_recv_init_
 void mpi_recv_init_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -18180,7 +19757,9 @@ void mpi_recv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_recv_init_c_
 void mpi_recv_init_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -18205,7 +19784,9 @@ void mpi_recv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_recv_init_
 void pmpi_recv_init_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -18230,7 +19811,9 @@ void pmpi_recv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_recv_init_c_
 void pmpi_recv_init_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -18255,7 +19838,9 @@ void pmpi_recv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_
 void mpi_reduce_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18279,7 +19864,9 @@ void mpi_reduce_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_c_
 void mpi_reduce_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18303,7 +19890,9 @@ void mpi_reduce_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_
 void pmpi_reduce_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18327,7 +19916,9 @@ void pmpi_reduce_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_c_
 void pmpi_reduce_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18351,7 +19942,9 @@ void pmpi_reduce_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_init_
 void mpi_reduce_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18381,7 +19974,9 @@ void mpi_reduce_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_init_c_
 void mpi_reduce_init_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18411,7 +20006,9 @@ void mpi_reduce_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_init_
 void pmpi_reduce_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18441,7 +20038,9 @@ void pmpi_reduce_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_init_c_
 void pmpi_reduce_init_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18471,7 +20070,9 @@ void pmpi_reduce_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_local_
 void mpi_reduce_local_(
   const void* restrict const inbuf,
   void* restrict const inoutbuf,
@@ -18491,7 +20092,9 @@ void mpi_reduce_local_(
     MPI_Op_fromint(*op)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_local_c_
 void mpi_reduce_local_c_(
   const void* restrict const inbuf,
   void* restrict const inoutbuf,
@@ -18511,7 +20114,9 @@ void mpi_reduce_local_c_(
     MPI_Op_fromint(*op)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_local_
 void pmpi_reduce_local_(
   const void* restrict const inbuf,
   void* restrict const inoutbuf,
@@ -18531,7 +20136,9 @@ void pmpi_reduce_local_(
     MPI_Op_fromint(*op)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_local_c_
 void pmpi_reduce_local_c_(
   const void* restrict const inbuf,
   void* restrict const inoutbuf,
@@ -18551,7 +20158,9 @@ void pmpi_reduce_local_c_(
     MPI_Op_fromint(*op)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_scatter_
 void mpi_reduce_scatter_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18573,7 +20182,9 @@ void mpi_reduce_scatter_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_scatter_c_
 void mpi_reduce_scatter_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18595,7 +20206,9 @@ void mpi_reduce_scatter_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_scatter_
 void pmpi_reduce_scatter_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18617,7 +20230,9 @@ void pmpi_reduce_scatter_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_scatter_c_
 void pmpi_reduce_scatter_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18639,7 +20254,9 @@ void pmpi_reduce_scatter_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_scatter_block_
 void mpi_reduce_scatter_block_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18661,7 +20278,9 @@ void mpi_reduce_scatter_block_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_scatter_block_c_
 void mpi_reduce_scatter_block_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18683,7 +20302,9 @@ void mpi_reduce_scatter_block_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_scatter_block_
 void pmpi_reduce_scatter_block_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18705,7 +20326,9 @@ void pmpi_reduce_scatter_block_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_scatter_block_c_
 void pmpi_reduce_scatter_block_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18727,7 +20350,9 @@ void pmpi_reduce_scatter_block_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_scatter_block_init_
 void mpi_reduce_scatter_block_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18755,7 +20380,9 @@ void mpi_reduce_scatter_block_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_scatter_block_init_c_
 void mpi_reduce_scatter_block_init_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18783,7 +20410,9 @@ void mpi_reduce_scatter_block_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_scatter_block_init_
 void pmpi_reduce_scatter_block_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18811,7 +20440,9 @@ void pmpi_reduce_scatter_block_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_scatter_block_init_c_
 void pmpi_reduce_scatter_block_init_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18839,7 +20470,9 @@ void pmpi_reduce_scatter_block_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_scatter_init_
 void mpi_reduce_scatter_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18867,7 +20500,9 @@ void mpi_reduce_scatter_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_reduce_scatter_init_c_
 void mpi_reduce_scatter_init_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18895,7 +20530,9 @@ void mpi_reduce_scatter_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_scatter_init_
 void pmpi_reduce_scatter_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18923,7 +20560,9 @@ void pmpi_reduce_scatter_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_reduce_scatter_init_c_
 void pmpi_reduce_scatter_init_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -18951,7 +20590,9 @@ void pmpi_reduce_scatter_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_register_datarep_
 void mpi_register_datarep_(
   const char* restrict const datarep,
   MPI_Datarep_conversion_function* const read_conversion_fn,
@@ -18988,7 +20629,9 @@ void mpi_register_datarep_(
   if (*ierror != MPI_SUCCESS)
     mpif_datarep_cancel(box);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_register_datarep_c_
 void mpi_register_datarep_c_(
   const char* restrict const datarep,
   MPI_Datarep_conversion_function_c* const read_conversion_fn,
@@ -19025,7 +20668,9 @@ void mpi_register_datarep_c_(
   if (*ierror != MPI_SUCCESS)
     mpif_datarep_cancel(box);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_register_datarep_
 void pmpi_register_datarep_(
   const char* restrict const datarep,
   MPI_Datarep_conversion_function* const read_conversion_fn,
@@ -19062,7 +20707,9 @@ void pmpi_register_datarep_(
   if (*ierror != MPI_SUCCESS)
     mpif_datarep_cancel(box);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_register_datarep_c_
 void pmpi_register_datarep_c_(
   const char* restrict const datarep,
   MPI_Datarep_conversion_function_c* const read_conversion_fn,
@@ -19099,7 +20746,9 @@ void pmpi_register_datarep_c_(
   if (*ierror != MPI_SUCCESS)
     mpif_datarep_cancel(box);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_remove_error_class_
 void mpi_remove_error_class_(
   const MPI_Fint* restrict const errorclass,
   MPI_Fint* restrict const ierror
@@ -19109,7 +20758,9 @@ void mpi_remove_error_class_(
     *errorclass
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_remove_error_class_
 void pmpi_remove_error_class_(
   const MPI_Fint* restrict const errorclass,
   MPI_Fint* restrict const ierror
@@ -19119,7 +20770,9 @@ void pmpi_remove_error_class_(
     *errorclass
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_remove_error_code_
 void mpi_remove_error_code_(
   const MPI_Fint* restrict const errorcode,
   MPI_Fint* restrict const ierror
@@ -19129,7 +20782,9 @@ void mpi_remove_error_code_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_remove_error_code_
 void pmpi_remove_error_code_(
   const MPI_Fint* restrict const errorcode,
   MPI_Fint* restrict const ierror
@@ -19139,7 +20794,9 @@ void pmpi_remove_error_code_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_remove_error_string_
 void mpi_remove_error_string_(
   const MPI_Fint* restrict const errorcode,
   MPI_Fint* restrict const ierror
@@ -19149,7 +20806,9 @@ void mpi_remove_error_string_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_remove_error_string_
 void pmpi_remove_error_string_(
   const MPI_Fint* restrict const errorcode,
   MPI_Fint* restrict const ierror
@@ -19159,7 +20818,9 @@ void pmpi_remove_error_string_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_request_free_
 void mpi_request_free_(
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const ierror
@@ -19171,7 +20832,9 @@ void mpi_request_free_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_request_free_
 void pmpi_request_free_(
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const ierror
@@ -19183,7 +20846,9 @@ void pmpi_request_free_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_request_get_status_
 void mpi_request_get_status_(
   const MPI_Fint* restrict const request,
   MPI_Fint* restrict const flag,
@@ -19199,7 +20864,9 @@ void mpi_request_get_status_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_request_get_status_
 void pmpi_request_get_status_(
   const MPI_Fint* restrict const request,
   MPI_Fint* restrict const flag,
@@ -19215,7 +20882,9 @@ void pmpi_request_get_status_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_request_get_status_all_
 void mpi_request_get_status_all_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const array_of_requests,
@@ -19236,7 +20905,9 @@ void mpi_request_get_status_all_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_request_get_status_all_
 void pmpi_request_get_status_all_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const array_of_requests,
@@ -19257,7 +20928,9 @@ void pmpi_request_get_status_all_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_request_get_status_any_
 void mpi_request_get_status_any_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const array_of_requests,
@@ -19282,7 +20955,9 @@ void mpi_request_get_status_any_(
     ++*index;
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_request_get_status_any_
 void pmpi_request_get_status_any_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const array_of_requests,
@@ -19307,7 +20982,9 @@ void pmpi_request_get_status_any_(
     ++*index;
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_request_get_status_some_
 void mpi_request_get_status_some_(
   const MPI_Fint* restrict const incount,
   const MPI_Fint* restrict const array_of_requests,
@@ -19333,7 +21010,9 @@ void mpi_request_get_status_some_(
   for (int i=0; i<q_count; ++i)
     ++array_of_indices[i];
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_request_get_status_some_
 void pmpi_request_get_status_some_(
   const MPI_Fint* restrict const incount,
   const MPI_Fint* restrict const array_of_requests,
@@ -19359,7 +21038,9 @@ void pmpi_request_get_status_some_(
   for (int i=0; i<q_count; ++i)
     ++array_of_indices[i];
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_rget_
 void mpi_rget_(
   void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -19388,7 +21069,9 @@ void mpi_rget_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_rget_c_
 void mpi_rget_c_(
   void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -19417,7 +21100,9 @@ void mpi_rget_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_rget_
 void pmpi_rget_(
   void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -19446,7 +21131,9 @@ void pmpi_rget_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_rget_c_
 void pmpi_rget_c_(
   void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -19475,7 +21162,9 @@ void pmpi_rget_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_rget_accumulate_
 void mpi_rget_accumulate_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -19513,7 +21202,9 @@ void mpi_rget_accumulate_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_rget_accumulate_c_
 void mpi_rget_accumulate_c_(
   const void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -19551,7 +21242,9 @@ void mpi_rget_accumulate_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_rget_accumulate_
 void pmpi_rget_accumulate_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -19589,7 +21282,9 @@ void pmpi_rget_accumulate_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_rget_accumulate_c_
 void pmpi_rget_accumulate_c_(
   const void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -19627,7 +21322,9 @@ void pmpi_rget_accumulate_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_rput_
 void mpi_rput_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -19656,7 +21353,9 @@ void mpi_rput_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_rput_c_
 void mpi_rput_c_(
   const void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -19685,7 +21384,9 @@ void mpi_rput_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_rput_
 void pmpi_rput_(
   const void* restrict const origin_addr,
   const MPI_Fint* restrict const origin_count,
@@ -19714,7 +21415,9 @@ void pmpi_rput_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_rput_c_
 void pmpi_rput_c_(
   const void* restrict const origin_addr,
   const MPI_Count* restrict const origin_count,
@@ -19743,7 +21446,9 @@ void pmpi_rput_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_rsend_
 void mpi_rsend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -19764,7 +21469,9 @@ void mpi_rsend_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_rsend_c_
 void mpi_rsend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -19785,7 +21492,9 @@ void mpi_rsend_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_rsend_
 void pmpi_rsend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -19806,7 +21515,9 @@ void pmpi_rsend_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_rsend_c_
 void pmpi_rsend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -19827,7 +21538,9 @@ void pmpi_rsend_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_rsend_init_
 void mpi_rsend_init_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -19852,7 +21565,9 @@ void mpi_rsend_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_rsend_init_c_
 void mpi_rsend_init_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -19877,7 +21592,9 @@ void mpi_rsend_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_rsend_init_
 void pmpi_rsend_init_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -19902,7 +21619,9 @@ void pmpi_rsend_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_rsend_init_c_
 void pmpi_rsend_init_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -19927,7 +21646,9 @@ void pmpi_rsend_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_scan_
 void mpi_scan_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -19949,7 +21670,9 @@ void mpi_scan_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_scan_c_
 void mpi_scan_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -19971,7 +21694,9 @@ void mpi_scan_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_scan_
 void pmpi_scan_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -19993,7 +21718,9 @@ void pmpi_scan_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_scan_c_
 void pmpi_scan_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -20015,7 +21742,9 @@ void pmpi_scan_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_scan_init_
 void mpi_scan_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -20043,7 +21772,9 @@ void mpi_scan_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_scan_init_c_
 void mpi_scan_init_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -20071,7 +21802,9 @@ void mpi_scan_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_scan_init_
 void pmpi_scan_init_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -20099,7 +21832,9 @@ void pmpi_scan_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_scan_init_c_
 void pmpi_scan_init_c_(
   const void* restrict const sendbuf,
   void* restrict const recvbuf,
@@ -20127,7 +21862,9 @@ void pmpi_scan_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_scatter_
 void mpi_scatter_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -20174,7 +21911,9 @@ void mpi_scatter_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_scatter_c_
 void mpi_scatter_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -20221,7 +21960,9 @@ void mpi_scatter_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_scatter_
 void pmpi_scatter_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -20268,7 +22009,9 @@ void pmpi_scatter_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_scatter_c_
 void pmpi_scatter_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -20315,7 +22058,9 @@ void pmpi_scatter_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_scatter_init_
 void mpi_scatter_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -20368,7 +22113,9 @@ void mpi_scatter_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_scatter_init_c_
 void mpi_scatter_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -20421,7 +22168,9 @@ void mpi_scatter_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_scatter_init_
 void pmpi_scatter_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -20474,7 +22223,9 @@ void pmpi_scatter_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_scatter_init_c_
 void pmpi_scatter_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -20527,7 +22278,9 @@ void pmpi_scatter_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_scatterv_
 void mpi_scatterv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -20576,7 +22329,9 @@ void mpi_scatterv_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_scatterv_c_
 void mpi_scatterv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -20625,7 +22380,9 @@ void mpi_scatterv_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_scatterv_
 void pmpi_scatterv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -20674,7 +22431,9 @@ void pmpi_scatterv_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_scatterv_c_
 void pmpi_scatterv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -20723,7 +22482,9 @@ void pmpi_scatterv_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_scatterv_init_
 void mpi_scatterv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -20778,7 +22539,9 @@ void mpi_scatterv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_scatterv_init_c_
 void mpi_scatterv_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -20833,7 +22596,9 @@ void mpi_scatterv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_scatterv_init_
 void pmpi_scatterv_init_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcounts,
@@ -20888,7 +22653,9 @@ void pmpi_scatterv_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_scatterv_init_c_
 void pmpi_scatterv_init_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcounts,
@@ -20943,7 +22710,9 @@ void pmpi_scatterv_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_send_
 void mpi_send_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -20964,7 +22733,9 @@ void mpi_send_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_send_c_
 void mpi_send_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -20985,7 +22756,9 @@ void mpi_send_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_send_
 void pmpi_send_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -21006,7 +22779,9 @@ void pmpi_send_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_send_c_
 void pmpi_send_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -21027,7 +22802,9 @@ void pmpi_send_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_send_init_
 void mpi_send_init_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -21052,7 +22829,9 @@ void mpi_send_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_send_init_c_
 void mpi_send_init_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -21077,7 +22856,9 @@ void mpi_send_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_send_init_
 void pmpi_send_init_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -21102,7 +22883,9 @@ void pmpi_send_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_send_init_c_
 void pmpi_send_init_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -21127,7 +22910,9 @@ void pmpi_send_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_sendrecv_
 void mpi_sendrecv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -21161,7 +22946,9 @@ void mpi_sendrecv_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_sendrecv_c_
 void mpi_sendrecv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -21195,7 +22982,9 @@ void mpi_sendrecv_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_sendrecv_
 void pmpi_sendrecv_(
   const void* restrict const sendbuf,
   const MPI_Fint* restrict const sendcount,
@@ -21229,7 +23018,9 @@ void pmpi_sendrecv_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_sendrecv_c_
 void pmpi_sendrecv_c_(
   const void* restrict const sendbuf,
   const MPI_Count* restrict const sendcount,
@@ -21263,7 +23054,9 @@ void pmpi_sendrecv_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_sendrecv_replace_
 void mpi_sendrecv_replace_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -21290,7 +23083,9 @@ void mpi_sendrecv_replace_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_sendrecv_replace_c_
 void mpi_sendrecv_replace_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -21317,7 +23112,9 @@ void mpi_sendrecv_replace_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_sendrecv_replace_
 void pmpi_sendrecv_replace_(
   void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -21344,7 +23141,9 @@ void pmpi_sendrecv_replace_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_sendrecv_replace_c_
 void pmpi_sendrecv_replace_c_(
   void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -21371,7 +23170,9 @@ void pmpi_sendrecv_replace_c_(
     mpif_c_status(status)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_attach_buffer_
 void mpi_session_attach_buffer_(
   const MPI_Fint* restrict const session,
   void* restrict const buffer,
@@ -21386,7 +23187,9 @@ void mpi_session_attach_buffer_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_attach_buffer_c_
 void mpi_session_attach_buffer_c_(
   const MPI_Fint* restrict const session,
   void* restrict const buffer,
@@ -21401,7 +23204,9 @@ void mpi_session_attach_buffer_c_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_attach_buffer_
 void pmpi_session_attach_buffer_(
   const MPI_Fint* restrict const session,
   void* restrict const buffer,
@@ -21416,7 +23221,9 @@ void pmpi_session_attach_buffer_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_attach_buffer_c_
 void pmpi_session_attach_buffer_c_(
   const MPI_Fint* restrict const session,
   void* restrict const buffer,
@@ -21431,7 +23238,9 @@ void pmpi_session_attach_buffer_c_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_call_errhandler_
 void mpi_session_call_errhandler_(
   const MPI_Fint* restrict const session,
   const MPI_Fint* restrict const errorcode,
@@ -21443,7 +23252,9 @@ void mpi_session_call_errhandler_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_call_errhandler_
 void pmpi_session_call_errhandler_(
   const MPI_Fint* restrict const session,
   const MPI_Fint* restrict const errorcode,
@@ -21455,7 +23266,9 @@ void pmpi_session_call_errhandler_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_create_errhandler_
 void mpi_session_create_errhandler_(
   MPI_Session_errhandler_function* const session_errhandler_fn,
   MPI_Fint* restrict const errhandler,
@@ -21477,7 +23290,9 @@ void mpi_session_create_errhandler_(
     mpif_errhandler_cancel(slot_session_errhandler_fn);
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_create_errhandler_
 void pmpi_session_create_errhandler_(
   MPI_Session_errhandler_function* const session_errhandler_fn,
   MPI_Fint* restrict const errhandler,
@@ -21499,7 +23314,9 @@ void pmpi_session_create_errhandler_(
     mpif_errhandler_cancel(slot_session_errhandler_fn);
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_detach_buffer_
 void mpi_session_detach_buffer_(
   const MPI_Fint* restrict const session,
   void* restrict const buffer_addr,
@@ -21519,7 +23336,9 @@ void mpi_session_detach_buffer_(
     memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
   }
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_detach_buffer_c_
 void mpi_session_detach_buffer_c_(
   const MPI_Fint* restrict const session,
   void* restrict const buffer_addr,
@@ -21539,7 +23358,9 @@ void mpi_session_detach_buffer_c_(
     memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
   }
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_detach_buffer_
 void pmpi_session_detach_buffer_(
   const MPI_Fint* restrict const session,
   void* restrict const buffer_addr,
@@ -21559,7 +23380,9 @@ void pmpi_session_detach_buffer_(
     memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
   }
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_detach_buffer_c_
 void pmpi_session_detach_buffer_c_(
   const MPI_Fint* restrict const session,
   void* restrict const buffer_addr,
@@ -21579,7 +23402,9 @@ void pmpi_session_detach_buffer_c_(
     memcpy(buffer_addr, &q_buffer_addr, sizeof q_buffer_addr);
   }
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_finalize_
 void mpi_session_finalize_(
   MPI_Fint* restrict const session,
   MPI_Fint* restrict const ierror
@@ -21591,7 +23416,9 @@ void mpi_session_finalize_(
   );
   *session = MPI_Session_toint(c_session);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_finalize_
 void pmpi_session_finalize_(
   MPI_Fint* restrict const session,
   MPI_Fint* restrict const ierror
@@ -21603,7 +23430,9 @@ void pmpi_session_finalize_(
   );
   *session = MPI_Session_toint(c_session);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_flush_buffer_
 void mpi_session_flush_buffer_(
   const MPI_Fint* restrict const session,
   MPI_Fint* restrict const ierror
@@ -21613,7 +23442,9 @@ void mpi_session_flush_buffer_(
     MPI_Session_fromint(*session)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_flush_buffer_
 void pmpi_session_flush_buffer_(
   const MPI_Fint* restrict const session,
   MPI_Fint* restrict const ierror
@@ -21623,7 +23454,9 @@ void pmpi_session_flush_buffer_(
     MPI_Session_fromint(*session)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_get_errhandler_
 void mpi_session_get_errhandler_(
   const MPI_Fint* restrict const session,
   MPI_Fint* restrict const errhandler,
@@ -21637,7 +23470,9 @@ void mpi_session_get_errhandler_(
   );
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_get_errhandler_
 void pmpi_session_get_errhandler_(
   const MPI_Fint* restrict const session,
   MPI_Fint* restrict const errhandler,
@@ -21651,7 +23486,9 @@ void pmpi_session_get_errhandler_(
   );
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_get_info_
 void mpi_session_get_info_(
   const MPI_Fint* restrict const session,
   MPI_Fint* restrict const info_used,
@@ -21665,7 +23502,9 @@ void mpi_session_get_info_(
   );
   *info_used = MPI_Info_toint(c_info_used);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_get_info_
 void pmpi_session_get_info_(
   const MPI_Fint* restrict const session,
   MPI_Fint* restrict const info_used,
@@ -21679,7 +23518,9 @@ void pmpi_session_get_info_(
   );
   *info_used = MPI_Info_toint(c_info_used);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_get_nth_pset_
 void mpi_session_get_nth_pset_(
   const MPI_Fint* restrict const session,
   const MPI_Fint* restrict const info,
@@ -21701,7 +23542,9 @@ void mpi_session_get_nth_pset_(
   );
   mpif_strcpy_c2f(pset_name, c_pset_name, length_pset_name, strlen(c_pset_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_get_nth_pset_
 void pmpi_session_get_nth_pset_(
   const MPI_Fint* restrict const session,
   const MPI_Fint* restrict const info,
@@ -21723,7 +23566,9 @@ void pmpi_session_get_nth_pset_(
   );
   mpif_strcpy_c2f(pset_name, c_pset_name, length_pset_name, strlen(c_pset_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_get_num_psets_
 void mpi_session_get_num_psets_(
   const MPI_Fint* restrict const session,
   const MPI_Fint* restrict const info,
@@ -21737,7 +23582,9 @@ void mpi_session_get_num_psets_(
     npset_names
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_get_num_psets_
 void pmpi_session_get_num_psets_(
   const MPI_Fint* restrict const session,
   const MPI_Fint* restrict const info,
@@ -21751,7 +23598,9 @@ void pmpi_session_get_num_psets_(
     npset_names
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_get_pset_info_
 void mpi_session_get_pset_info_(
   const MPI_Fint* restrict const session,
   const char* restrict const pset_name,
@@ -21770,7 +23619,9 @@ void mpi_session_get_pset_info_(
   free(c_pset_name);
   *info = MPI_Info_toint(c_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_get_pset_info_
 void pmpi_session_get_pset_info_(
   const MPI_Fint* restrict const session,
   const char* restrict const pset_name,
@@ -21789,7 +23640,9 @@ void pmpi_session_get_pset_info_(
   free(c_pset_name);
   *info = MPI_Info_toint(c_info);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_iflush_buffer_
 void mpi_session_iflush_buffer_(
   const MPI_Fint* restrict const session,
   MPI_Fint* restrict const request,
@@ -21803,7 +23656,9 @@ void mpi_session_iflush_buffer_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_iflush_buffer_
 void pmpi_session_iflush_buffer_(
   const MPI_Fint* restrict const session,
   MPI_Fint* restrict const request,
@@ -21817,7 +23672,9 @@ void pmpi_session_iflush_buffer_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_init_
 void mpi_session_init_(
   const MPI_Fint* restrict const info,
   const MPI_Fint* restrict const errhandler,
@@ -21833,7 +23690,9 @@ void mpi_session_init_(
   );
   *session = MPI_Session_toint(c_session);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_init_
 void pmpi_session_init_(
   const MPI_Fint* restrict const info,
   const MPI_Fint* restrict const errhandler,
@@ -21849,7 +23708,9 @@ void pmpi_session_init_(
   );
   *session = MPI_Session_toint(c_session);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_session_set_errhandler_
 void mpi_session_set_errhandler_(
   const MPI_Fint* restrict const session,
   const MPI_Fint* restrict const errhandler,
@@ -21861,7 +23722,9 @@ void mpi_session_set_errhandler_(
     MPI_Errhandler_fromint(*errhandler)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_session_set_errhandler_
 void pmpi_session_set_errhandler_(
   const MPI_Fint* restrict const session,
   const MPI_Fint* restrict const errhandler,
@@ -21873,7 +23736,9 @@ void pmpi_session_set_errhandler_(
     MPI_Errhandler_fromint(*errhandler)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ssend_
 void mpi_ssend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -21894,7 +23759,9 @@ void mpi_ssend_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ssend_c_
 void mpi_ssend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -21915,7 +23782,9 @@ void mpi_ssend_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ssend_
 void pmpi_ssend_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -21936,7 +23805,9 @@ void pmpi_ssend_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ssend_c_
 void pmpi_ssend_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -21957,7 +23828,9 @@ void pmpi_ssend_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ssend_init_
 void mpi_ssend_init_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -21982,7 +23855,9 @@ void mpi_ssend_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_ssend_init_c_
 void mpi_ssend_init_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -22007,7 +23882,9 @@ void mpi_ssend_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ssend_init_
 void pmpi_ssend_init_(
   const void* restrict const buf,
   const MPI_Fint* restrict const count,
@@ -22032,7 +23909,9 @@ void pmpi_ssend_init_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_ssend_init_c_
 void pmpi_ssend_init_c_(
   const void* restrict const buf,
   const MPI_Count* restrict const count,
@@ -22057,7 +23936,9 @@ void pmpi_ssend_init_c_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_start_
 void mpi_start_(
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const ierror
@@ -22069,7 +23950,9 @@ void mpi_start_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_start_
 void pmpi_start_(
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const ierror
@@ -22081,7 +23964,9 @@ void pmpi_start_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_startall_
 void mpi_startall_(
   const MPI_Fint* restrict const count,
   MPI_Fint* restrict const array_of_requests,
@@ -22098,7 +23983,9 @@ void mpi_startall_(
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_startall_
 void pmpi_startall_(
   const MPI_Fint* restrict const count,
   MPI_Fint* restrict const array_of_requests,
@@ -22115,7 +24002,9 @@ void pmpi_startall_(
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_status_get_error_
 void mpi_status_get_error_(
   const MPI_Fint* restrict const status,
   MPI_Fint* restrict const err,
@@ -22127,7 +24016,9 @@ void mpi_status_get_error_(
     err
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_status_get_error_
 void pmpi_status_get_error_(
   const MPI_Fint* restrict const status,
   MPI_Fint* restrict const err,
@@ -22139,7 +24030,9 @@ void pmpi_status_get_error_(
     err
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_status_get_source_
 void mpi_status_get_source_(
   const MPI_Fint* restrict const status,
   MPI_Fint* restrict const source,
@@ -22151,7 +24044,9 @@ void mpi_status_get_source_(
     source
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_status_get_source_
 void pmpi_status_get_source_(
   const MPI_Fint* restrict const status,
   MPI_Fint* restrict const source,
@@ -22163,7 +24058,9 @@ void pmpi_status_get_source_(
     source
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_status_get_tag_
 void mpi_status_get_tag_(
   const MPI_Fint* restrict const status,
   MPI_Fint* restrict const tag,
@@ -22175,7 +24072,9 @@ void mpi_status_get_tag_(
     tag
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_status_get_tag_
 void pmpi_status_get_tag_(
   const MPI_Fint* restrict const status,
   MPI_Fint* restrict const tag,
@@ -22187,7 +24086,9 @@ void pmpi_status_get_tag_(
     tag
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_status_set_cancelled_
 void mpi_status_set_cancelled_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const flag,
@@ -22199,7 +24100,9 @@ void mpi_status_set_cancelled_(
     mpif_logical2bool(*flag)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_status_set_cancelled_
 void pmpi_status_set_cancelled_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const flag,
@@ -22211,7 +24114,9 @@ void pmpi_status_set_cancelled_(
     mpif_logical2bool(*flag)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_status_set_elements_
 void mpi_status_set_elements_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -22225,7 +24130,9 @@ void mpi_status_set_elements_(
     *count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_status_set_elements_c_
 void mpi_status_set_elements_c_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -22239,7 +24146,9 @@ void mpi_status_set_elements_c_(
     *count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_status_set_elements_
 void pmpi_status_set_elements_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -22253,7 +24162,9 @@ void pmpi_status_set_elements_(
     *count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_status_set_elements_c_
 void pmpi_status_set_elements_c_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -22267,7 +24178,9 @@ void pmpi_status_set_elements_c_(
     *count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_status_set_elements_x_
 void mpi_status_set_elements_x_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -22281,7 +24194,9 @@ void mpi_status_set_elements_x_(
     *count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_status_set_elements_x_
 void pmpi_status_set_elements_x_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const datatype,
@@ -22295,7 +24210,9 @@ void pmpi_status_set_elements_x_(
     *count
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_status_set_error_
 void mpi_status_set_error_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const err,
@@ -22307,7 +24224,9 @@ void mpi_status_set_error_(
     *err
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_status_set_error_
 void pmpi_status_set_error_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const err,
@@ -22319,7 +24238,9 @@ void pmpi_status_set_error_(
     *err
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_status_set_source_
 void mpi_status_set_source_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const source,
@@ -22331,7 +24252,9 @@ void mpi_status_set_source_(
     *source
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_status_set_source_
 void pmpi_status_set_source_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const source,
@@ -22343,7 +24266,9 @@ void pmpi_status_set_source_(
     *source
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_status_set_tag_
 void mpi_status_set_tag_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const tag,
@@ -22355,7 +24280,9 @@ void mpi_status_set_tag_(
     *tag
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_status_set_tag_
 void pmpi_status_set_tag_(
   MPI_Fint* restrict const status,
   const MPI_Fint* restrict const tag,
@@ -22367,7 +24294,9 @@ void pmpi_status_set_tag_(
     *tag
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_test_
 void mpi_test_(
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const flag,
@@ -22385,7 +24314,9 @@ void mpi_test_(
   *request = MPI_Request_toint(c_request);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_test_
 void pmpi_test_(
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const flag,
@@ -22403,7 +24334,9 @@ void pmpi_test_(
   *request = MPI_Request_toint(c_request);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_test_cancelled_
 void mpi_test_cancelled_(
   const MPI_Fint* restrict const status,
   MPI_Fint* restrict const flag,
@@ -22417,7 +24350,9 @@ void mpi_test_cancelled_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_test_cancelled_
 void pmpi_test_cancelled_(
   const MPI_Fint* restrict const status,
   MPI_Fint* restrict const flag,
@@ -22431,7 +24366,9 @@ void pmpi_test_cancelled_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_testall_
 void mpi_testall_(
   const MPI_Fint* restrict const count,
   MPI_Fint* restrict const array_of_requests,
@@ -22454,7 +24391,9 @@ void mpi_testall_(
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_testall_
 void pmpi_testall_(
   const MPI_Fint* restrict const count,
   MPI_Fint* restrict const array_of_requests,
@@ -22477,7 +24416,9 @@ void pmpi_testall_(
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_testany_
 void mpi_testany_(
   const MPI_Fint* restrict const count,
   MPI_Fint* restrict const array_of_requests,
@@ -22504,7 +24445,9 @@ void mpi_testany_(
     ++*index;
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_testany_
 void pmpi_testany_(
   const MPI_Fint* restrict const count,
   MPI_Fint* restrict const array_of_requests,
@@ -22531,7 +24474,9 @@ void pmpi_testany_(
     ++*index;
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_testsome_
 void mpi_testsome_(
   const MPI_Fint* restrict const incount,
   MPI_Fint* restrict const array_of_requests,
@@ -22559,7 +24504,9 @@ void mpi_testsome_(
   for (int i=0; i<q_count; ++i)
     ++array_of_indices[i];
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_testsome_
 void pmpi_testsome_(
   const MPI_Fint* restrict const incount,
   MPI_Fint* restrict const array_of_requests,
@@ -22587,7 +24534,9 @@ void pmpi_testsome_(
   for (int i=0; i<q_count; ++i)
     ++array_of_indices[i];
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_topo_test_
 void mpi_topo_test_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const status,
@@ -22599,7 +24548,9 @@ void mpi_topo_test_(
     status
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_topo_test_
 void pmpi_topo_test_(
   const MPI_Fint* restrict const comm,
   MPI_Fint* restrict const status,
@@ -22611,7 +24562,9 @@ void pmpi_topo_test_(
     status
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_commit_
 void mpi_type_commit_(
   MPI_Fint* restrict const datatype,
   MPI_Fint* restrict const ierror
@@ -22623,7 +24576,9 @@ void mpi_type_commit_(
   );
   *datatype = MPI_Type_toint(c_datatype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_commit_
 void pmpi_type_commit_(
   MPI_Fint* restrict const datatype,
   MPI_Fint* restrict const ierror
@@ -22635,7 +24590,9 @@ void pmpi_type_commit_(
   );
   *datatype = MPI_Type_toint(c_datatype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_contiguous_
 void mpi_type_contiguous_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const oldtype,
@@ -22651,7 +24608,9 @@ void mpi_type_contiguous_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_contiguous_c_
 void mpi_type_contiguous_c_(
   const MPI_Count* restrict const count,
   const MPI_Fint* restrict const oldtype,
@@ -22667,7 +24626,9 @@ void mpi_type_contiguous_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_contiguous_
 void pmpi_type_contiguous_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const oldtype,
@@ -22683,7 +24644,9 @@ void pmpi_type_contiguous_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_contiguous_c_
 void pmpi_type_contiguous_c_(
   const MPI_Count* restrict const count,
   const MPI_Fint* restrict const oldtype,
@@ -22699,7 +24662,9 @@ void pmpi_type_contiguous_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_darray_
 void mpi_type_create_darray_(
   const MPI_Fint* restrict const size,
   const MPI_Fint* restrict const rank,
@@ -22729,7 +24694,9 @@ void mpi_type_create_darray_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_darray_c_
 void mpi_type_create_darray_c_(
   const MPI_Fint* restrict const size,
   const MPI_Fint* restrict const rank,
@@ -22759,7 +24726,9 @@ void mpi_type_create_darray_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_darray_
 void pmpi_type_create_darray_(
   const MPI_Fint* restrict const size,
   const MPI_Fint* restrict const rank,
@@ -22789,7 +24758,9 @@ void pmpi_type_create_darray_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_darray_c_
 void pmpi_type_create_darray_c_(
   const MPI_Fint* restrict const size,
   const MPI_Fint* restrict const rank,
@@ -22819,7 +24790,9 @@ void pmpi_type_create_darray_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_f90_complex_
 void mpi_type_create_f90_complex_(
   const MPI_Fint* restrict const p,
   const MPI_Fint* restrict const r,
@@ -22835,7 +24808,9 @@ void mpi_type_create_f90_complex_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_f90_complex_
 void pmpi_type_create_f90_complex_(
   const MPI_Fint* restrict const p,
   const MPI_Fint* restrict const r,
@@ -22851,7 +24826,9 @@ void pmpi_type_create_f90_complex_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_f90_integer_
 void mpi_type_create_f90_integer_(
   const MPI_Fint* restrict const r,
   MPI_Fint* restrict const newtype,
@@ -22865,7 +24842,9 @@ void mpi_type_create_f90_integer_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_f90_integer_
 void pmpi_type_create_f90_integer_(
   const MPI_Fint* restrict const r,
   MPI_Fint* restrict const newtype,
@@ -22879,7 +24858,9 @@ void pmpi_type_create_f90_integer_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_f90_real_
 void mpi_type_create_f90_real_(
   const MPI_Fint* restrict const p,
   const MPI_Fint* restrict const r,
@@ -22895,7 +24876,9 @@ void mpi_type_create_f90_real_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_f90_real_
 void pmpi_type_create_f90_real_(
   const MPI_Fint* restrict const p,
   const MPI_Fint* restrict const r,
@@ -22911,7 +24894,9 @@ void pmpi_type_create_f90_real_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_hindexed_
 void mpi_type_create_hindexed_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const array_of_blocklengths,
@@ -22931,7 +24916,9 @@ void mpi_type_create_hindexed_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_hindexed_c_
 void mpi_type_create_hindexed_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const array_of_blocklengths,
@@ -22951,7 +24938,9 @@ void mpi_type_create_hindexed_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_hindexed_
 void pmpi_type_create_hindexed_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const array_of_blocklengths,
@@ -22971,7 +24960,9 @@ void pmpi_type_create_hindexed_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_hindexed_c_
 void pmpi_type_create_hindexed_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const array_of_blocklengths,
@@ -22991,7 +24982,9 @@ void pmpi_type_create_hindexed_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_hindexed_block_
 void mpi_type_create_hindexed_block_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const blocklength,
@@ -23011,7 +25004,9 @@ void mpi_type_create_hindexed_block_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_hindexed_block_c_
 void mpi_type_create_hindexed_block_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const blocklength,
@@ -23031,7 +25026,9 @@ void mpi_type_create_hindexed_block_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_hindexed_block_
 void pmpi_type_create_hindexed_block_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const blocklength,
@@ -23051,7 +25048,9 @@ void pmpi_type_create_hindexed_block_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_hindexed_block_c_
 void pmpi_type_create_hindexed_block_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const blocklength,
@@ -23071,7 +25070,9 @@ void pmpi_type_create_hindexed_block_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_hvector_
 void mpi_type_create_hvector_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const blocklength,
@@ -23091,7 +25092,9 @@ void mpi_type_create_hvector_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_hvector_c_
 void mpi_type_create_hvector_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const blocklength,
@@ -23111,7 +25114,9 @@ void mpi_type_create_hvector_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_hvector_
 void pmpi_type_create_hvector_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const blocklength,
@@ -23131,7 +25136,9 @@ void pmpi_type_create_hvector_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_hvector_c_
 void pmpi_type_create_hvector_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const blocklength,
@@ -23151,7 +25158,9 @@ void pmpi_type_create_hvector_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_indexed_block_
 void mpi_type_create_indexed_block_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const blocklength,
@@ -23171,7 +25180,9 @@ void mpi_type_create_indexed_block_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_indexed_block_c_
 void mpi_type_create_indexed_block_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const blocklength,
@@ -23191,7 +25202,9 @@ void mpi_type_create_indexed_block_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_indexed_block_
 void pmpi_type_create_indexed_block_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const blocklength,
@@ -23211,7 +25224,9 @@ void pmpi_type_create_indexed_block_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_indexed_block_c_
 void pmpi_type_create_indexed_block_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const blocklength,
@@ -23231,7 +25246,9 @@ void pmpi_type_create_indexed_block_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_keyval_
 void mpi_type_create_keyval_(
   MPI_Type_copy_attr_function* const type_copy_attr_fn,
   MPI_Type_delete_attr_function* const type_delete_attr_fn,
@@ -23257,7 +25274,9 @@ void mpi_type_create_keyval_(
   if (*ierror == MPI_SUCCESS)
     *ierror = mpif_register_attr_callback(*type_keyval, MPIF_ATTR_TYPE_DELETE, (mpif_fortran_procedure)type_delete_attr_fn);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_keyval_
 void pmpi_type_create_keyval_(
   MPI_Type_copy_attr_function* const type_copy_attr_fn,
   MPI_Type_delete_attr_function* const type_delete_attr_fn,
@@ -23283,7 +25302,9 @@ void pmpi_type_create_keyval_(
   if (*ierror == MPI_SUCCESS)
     *ierror = mpif_register_attr_callback(*type_keyval, MPIF_ATTR_TYPE_DELETE, (mpif_fortran_procedure)type_delete_attr_fn);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_resized_
 void mpi_type_create_resized_(
   const MPI_Fint* restrict const oldtype,
   const MPI_Aint* restrict const lb,
@@ -23301,7 +25322,9 @@ void mpi_type_create_resized_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_resized_c_
 void mpi_type_create_resized_c_(
   const MPI_Fint* restrict const oldtype,
   const MPI_Count* restrict const lb,
@@ -23319,7 +25342,9 @@ void mpi_type_create_resized_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_resized_
 void pmpi_type_create_resized_(
   const MPI_Fint* restrict const oldtype,
   const MPI_Aint* restrict const lb,
@@ -23337,7 +25362,9 @@ void pmpi_type_create_resized_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_resized_c_
 void pmpi_type_create_resized_c_(
   const MPI_Fint* restrict const oldtype,
   const MPI_Count* restrict const lb,
@@ -23355,7 +25382,9 @@ void pmpi_type_create_resized_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_struct_
 void mpi_type_create_struct_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const array_of_blocklengths,
@@ -23378,7 +25407,9 @@ void mpi_type_create_struct_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_struct_c_
 void mpi_type_create_struct_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const array_of_blocklengths,
@@ -23401,7 +25432,9 @@ void mpi_type_create_struct_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_struct_
 void pmpi_type_create_struct_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const array_of_blocklengths,
@@ -23424,7 +25457,9 @@ void pmpi_type_create_struct_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_struct_c_
 void pmpi_type_create_struct_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const array_of_blocklengths,
@@ -23447,7 +25482,9 @@ void pmpi_type_create_struct_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_subarray_
 void mpi_type_create_subarray_(
   const MPI_Fint* restrict const ndims,
   const MPI_Fint* restrict const array_of_sizes,
@@ -23471,7 +25508,9 @@ void mpi_type_create_subarray_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_create_subarray_c_
 void mpi_type_create_subarray_c_(
   const MPI_Fint* restrict const ndims,
   const MPI_Count* restrict const array_of_sizes,
@@ -23495,7 +25534,9 @@ void mpi_type_create_subarray_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_subarray_
 void pmpi_type_create_subarray_(
   const MPI_Fint* restrict const ndims,
   const MPI_Fint* restrict const array_of_sizes,
@@ -23519,7 +25560,9 @@ void pmpi_type_create_subarray_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_create_subarray_c_
 void pmpi_type_create_subarray_c_(
   const MPI_Fint* restrict const ndims,
   const MPI_Count* restrict const array_of_sizes,
@@ -23543,7 +25586,9 @@ void pmpi_type_create_subarray_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_delete_attr_
 void mpi_type_delete_attr_(
   const MPI_Fint* restrict const datatype,
   const MPI_Fint* restrict const type_keyval,
@@ -23555,7 +25600,9 @@ void mpi_type_delete_attr_(
     *type_keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_delete_attr_
 void pmpi_type_delete_attr_(
   const MPI_Fint* restrict const datatype,
   const MPI_Fint* restrict const type_keyval,
@@ -23567,7 +25614,9 @@ void pmpi_type_delete_attr_(
     *type_keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_dup_
 void mpi_type_dup_(
   const MPI_Fint* restrict const oldtype,
   MPI_Fint* restrict const newtype,
@@ -23581,7 +25630,9 @@ void mpi_type_dup_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_dup_
 void pmpi_type_dup_(
   const MPI_Fint* restrict const oldtype,
   MPI_Fint* restrict const newtype,
@@ -23595,7 +25646,9 @@ void pmpi_type_dup_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_free_
 void mpi_type_free_(
   MPI_Fint* restrict const datatype,
   MPI_Fint* restrict const ierror
@@ -23607,7 +25660,9 @@ void mpi_type_free_(
   );
   *datatype = MPI_Type_toint(c_datatype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_free_
 void pmpi_type_free_(
   MPI_Fint* restrict const datatype,
   MPI_Fint* restrict const ierror
@@ -23619,7 +25674,9 @@ void pmpi_type_free_(
   );
   *datatype = MPI_Type_toint(c_datatype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_free_keyval_
 void mpi_type_free_keyval_(
   MPI_Fint* restrict const type_keyval,
   MPI_Fint* restrict const ierror
@@ -23629,7 +25686,9 @@ void mpi_type_free_keyval_(
     type_keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_free_keyval_
 void pmpi_type_free_keyval_(
   MPI_Fint* restrict const type_keyval,
   MPI_Fint* restrict const ierror
@@ -23639,7 +25698,9 @@ void pmpi_type_free_keyval_(
     type_keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_attr_
 void mpi_type_get_attr_(
   const MPI_Fint* restrict const datatype,
   const MPI_Fint* restrict const type_keyval,
@@ -23662,7 +25723,9 @@ void mpi_type_get_attr_(
     *attribute_val = mpif_attr_value(*type_keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_attr_
 void pmpi_type_get_attr_(
   const MPI_Fint* restrict const datatype,
   const MPI_Fint* restrict const type_keyval,
@@ -23685,7 +25748,9 @@ void pmpi_type_get_attr_(
     *attribute_val = mpif_attr_value(*type_keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_contents_
 void mpi_type_get_contents_(
   const MPI_Fint* restrict const datatype,
   const MPI_Fint* restrict const max_integers,
@@ -23712,7 +25777,9 @@ void mpi_type_get_contents_(
   for (int i=0; i<*max_datatypes; ++i)
     array_of_datatypes[i] = MPI_Type_toint(c_array_of_datatypes[i]);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_contents_c_
 void mpi_type_get_contents_c_(
   const MPI_Fint* restrict const datatype,
   const MPI_Count* restrict const max_integers,
@@ -23743,7 +25810,9 @@ void mpi_type_get_contents_c_(
   for (int i=0; i<*max_datatypes; ++i)
     array_of_datatypes[i] = MPI_Type_toint(c_array_of_datatypes[i]);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_contents_
 void pmpi_type_get_contents_(
   const MPI_Fint* restrict const datatype,
   const MPI_Fint* restrict const max_integers,
@@ -23770,7 +25839,9 @@ void pmpi_type_get_contents_(
   for (int i=0; i<*max_datatypes; ++i)
     array_of_datatypes[i] = MPI_Type_toint(c_array_of_datatypes[i]);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_contents_c_
 void pmpi_type_get_contents_c_(
   const MPI_Fint* restrict const datatype,
   const MPI_Count* restrict const max_integers,
@@ -23801,7 +25872,9 @@ void pmpi_type_get_contents_c_(
   for (int i=0; i<*max_datatypes; ++i)
     array_of_datatypes[i] = MPI_Type_toint(c_array_of_datatypes[i]);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_envelope_
 void mpi_type_get_envelope_(
   const MPI_Fint* restrict const datatype,
   MPI_Fint* restrict const num_integers,
@@ -23819,7 +25892,9 @@ void mpi_type_get_envelope_(
     combiner
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_envelope_c_
 void mpi_type_get_envelope_c_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const num_integers,
@@ -23839,7 +25914,9 @@ void mpi_type_get_envelope_c_(
     combiner
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_envelope_
 void pmpi_type_get_envelope_(
   const MPI_Fint* restrict const datatype,
   MPI_Fint* restrict const num_integers,
@@ -23857,7 +25934,9 @@ void pmpi_type_get_envelope_(
     combiner
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_envelope_c_
 void pmpi_type_get_envelope_c_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const num_integers,
@@ -23877,7 +25956,9 @@ void pmpi_type_get_envelope_c_(
     combiner
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_extent_
 void mpi_type_get_extent_(
   const MPI_Fint* restrict const datatype,
   MPI_Aint* restrict const lb,
@@ -23891,7 +25972,9 @@ void mpi_type_get_extent_(
     extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_extent_c_
 void mpi_type_get_extent_c_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const lb,
@@ -23905,7 +25988,9 @@ void mpi_type_get_extent_c_(
     extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_extent_
 void pmpi_type_get_extent_(
   const MPI_Fint* restrict const datatype,
   MPI_Aint* restrict const lb,
@@ -23919,7 +26004,9 @@ void pmpi_type_get_extent_(
     extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_extent_c_
 void pmpi_type_get_extent_c_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const lb,
@@ -23933,7 +26020,9 @@ void pmpi_type_get_extent_c_(
     extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_extent_x_
 void mpi_type_get_extent_x_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const lb,
@@ -23947,7 +26036,9 @@ void mpi_type_get_extent_x_(
     extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_extent_x_
 void pmpi_type_get_extent_x_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const lb,
@@ -23961,7 +26052,9 @@ void pmpi_type_get_extent_x_(
     extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_name_
 void mpi_type_get_name_(
   const MPI_Fint* restrict const datatype,
   char* restrict const type_name,
@@ -23979,7 +26072,9 @@ void mpi_type_get_name_(
   );
   mpif_strcpy_c2f(type_name, c_type_name, length_type_name, strlen(c_type_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_name_
 void pmpi_type_get_name_(
   const MPI_Fint* restrict const datatype,
   char* restrict const type_name,
@@ -23997,7 +26092,9 @@ void pmpi_type_get_name_(
   );
   mpif_strcpy_c2f(type_name, c_type_name, length_type_name, strlen(c_type_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_true_extent_
 void mpi_type_get_true_extent_(
   const MPI_Fint* restrict const datatype,
   MPI_Aint* restrict const true_lb,
@@ -24011,7 +26108,9 @@ void mpi_type_get_true_extent_(
     true_extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_true_extent_c_
 void mpi_type_get_true_extent_c_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const true_lb,
@@ -24025,7 +26124,9 @@ void mpi_type_get_true_extent_c_(
     true_extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_true_extent_
 void pmpi_type_get_true_extent_(
   const MPI_Fint* restrict const datatype,
   MPI_Aint* restrict const true_lb,
@@ -24039,7 +26140,9 @@ void pmpi_type_get_true_extent_(
     true_extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_true_extent_c_
 void pmpi_type_get_true_extent_c_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const true_lb,
@@ -24053,7 +26156,9 @@ void pmpi_type_get_true_extent_c_(
     true_extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_true_extent_x_
 void mpi_type_get_true_extent_x_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const true_lb,
@@ -24067,7 +26172,9 @@ void mpi_type_get_true_extent_x_(
     true_extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_true_extent_x_
 void pmpi_type_get_true_extent_x_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const true_lb,
@@ -24081,7 +26188,9 @@ void pmpi_type_get_true_extent_x_(
     true_extent
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_get_value_index_
 void mpi_type_get_value_index_(
   const MPI_Fint* restrict const value_type,
   const MPI_Fint* restrict const index_type,
@@ -24097,7 +26206,9 @@ void mpi_type_get_value_index_(
   );
   *pair_type = MPI_Type_toint(c_pair_type);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_get_value_index_
 void pmpi_type_get_value_index_(
   const MPI_Fint* restrict const value_type,
   const MPI_Fint* restrict const index_type,
@@ -24113,7 +26224,9 @@ void pmpi_type_get_value_index_(
   );
   *pair_type = MPI_Type_toint(c_pair_type);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_indexed_
 void mpi_type_indexed_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const array_of_blocklengths,
@@ -24133,7 +26246,9 @@ void mpi_type_indexed_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_indexed_c_
 void mpi_type_indexed_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const array_of_blocklengths,
@@ -24153,7 +26268,9 @@ void mpi_type_indexed_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_indexed_
 void pmpi_type_indexed_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const array_of_blocklengths,
@@ -24173,7 +26290,9 @@ void pmpi_type_indexed_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_indexed_c_
 void pmpi_type_indexed_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const array_of_blocklengths,
@@ -24193,7 +26312,9 @@ void pmpi_type_indexed_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_match_size_
 void mpi_type_match_size_(
   const MPI_Fint* restrict const typeclass,
   const MPI_Fint* restrict const size,
@@ -24209,7 +26330,9 @@ void mpi_type_match_size_(
   );
   *datatype = MPI_Type_toint(c_datatype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_match_size_
 void pmpi_type_match_size_(
   const MPI_Fint* restrict const typeclass,
   const MPI_Fint* restrict const size,
@@ -24225,7 +26348,9 @@ void pmpi_type_match_size_(
   );
   *datatype = MPI_Type_toint(c_datatype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_set_attr_
 void mpi_type_set_attr_(
   const MPI_Fint* restrict const datatype,
   const MPI_Fint* restrict const type_keyval,
@@ -24239,7 +26364,9 @@ void mpi_type_set_attr_(
     (void*)*attribute_val
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_set_attr_
 void pmpi_type_set_attr_(
   const MPI_Fint* restrict const datatype,
   const MPI_Fint* restrict const type_keyval,
@@ -24253,7 +26380,9 @@ void pmpi_type_set_attr_(
     (void*)*attribute_val
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_set_name_
 void mpi_type_set_name_(
   const MPI_Fint* restrict const datatype,
   const char* restrict const type_name,
@@ -24268,7 +26397,9 @@ void mpi_type_set_name_(
   );
   free(c_type_name);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_set_name_
 void pmpi_type_set_name_(
   const MPI_Fint* restrict const datatype,
   const char* restrict const type_name,
@@ -24283,7 +26414,9 @@ void pmpi_type_set_name_(
   );
   free(c_type_name);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_size_
 void mpi_type_size_(
   const MPI_Fint* restrict const datatype,
   MPI_Fint* restrict const size,
@@ -24295,7 +26428,9 @@ void mpi_type_size_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_size_c_
 void mpi_type_size_c_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const size,
@@ -24307,7 +26442,9 @@ void mpi_type_size_c_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_size_
 void pmpi_type_size_(
   const MPI_Fint* restrict const datatype,
   MPI_Fint* restrict const size,
@@ -24319,7 +26456,9 @@ void pmpi_type_size_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_size_c_
 void pmpi_type_size_c_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const size,
@@ -24331,7 +26470,9 @@ void pmpi_type_size_c_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_size_x_
 void mpi_type_size_x_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const size,
@@ -24343,7 +26484,9 @@ void mpi_type_size_x_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_size_x_
 void pmpi_type_size_x_(
   const MPI_Fint* restrict const datatype,
   MPI_Count* restrict const size,
@@ -24355,7 +26498,9 @@ void pmpi_type_size_x_(
     size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_vector_
 void mpi_type_vector_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const blocklength,
@@ -24375,7 +26520,9 @@ void mpi_type_vector_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_type_vector_c_
 void mpi_type_vector_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const blocklength,
@@ -24395,7 +26542,9 @@ void mpi_type_vector_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_vector_
 void pmpi_type_vector_(
   const MPI_Fint* restrict const count,
   const MPI_Fint* restrict const blocklength,
@@ -24415,7 +26564,9 @@ void pmpi_type_vector_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_type_vector_c_
 void pmpi_type_vector_c_(
   const MPI_Count* restrict const count,
   const MPI_Count* restrict const blocklength,
@@ -24435,7 +26586,9 @@ void pmpi_type_vector_c_(
   );
   *newtype = MPI_Type_toint(c_newtype);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_unpack_
 void mpi_unpack_(
   const void* restrict const inbuf,
   const MPI_Fint* restrict const insize,
@@ -24459,7 +26612,9 @@ void mpi_unpack_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_unpack_c_
 void mpi_unpack_c_(
   const void* restrict const inbuf,
   const MPI_Count* restrict const insize,
@@ -24483,7 +26638,9 @@ void mpi_unpack_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_unpack_
 void pmpi_unpack_(
   const void* restrict const inbuf,
   const MPI_Fint* restrict const insize,
@@ -24507,7 +26664,9 @@ void pmpi_unpack_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_unpack_c_
 void pmpi_unpack_c_(
   const void* restrict const inbuf,
   const MPI_Count* restrict const insize,
@@ -24531,7 +26690,9 @@ void pmpi_unpack_c_(
     MPI_Comm_fromint(*comm)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_unpack_external_
 void mpi_unpack_external_(
   const char* restrict const datarep,
   const void* restrict const inbuf,
@@ -24558,7 +26719,9 @@ void mpi_unpack_external_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_unpack_external_c_
 void mpi_unpack_external_c_(
   const char* restrict const datarep,
   const void* restrict const inbuf,
@@ -24585,7 +26748,9 @@ void mpi_unpack_external_c_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_unpack_external_
 void pmpi_unpack_external_(
   const char* restrict const datarep,
   const void* restrict const inbuf,
@@ -24612,7 +26777,9 @@ void pmpi_unpack_external_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_unpack_external_c_
 void pmpi_unpack_external_c_(
   const char* restrict const datarep,
   const void* restrict const inbuf,
@@ -24639,7 +26806,9 @@ void pmpi_unpack_external_c_(
   );
   free(c_datarep);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_unpublish_name_
 void mpi_unpublish_name_(
   const char* restrict const service_name,
   const MPI_Fint* restrict const info,
@@ -24659,7 +26828,9 @@ void mpi_unpublish_name_(
   free(c_service_name);
   free(c_port_name);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_unpublish_name_
 void pmpi_unpublish_name_(
   const char* restrict const service_name,
   const MPI_Fint* restrict const info,
@@ -24679,7 +26850,9 @@ void pmpi_unpublish_name_(
   free(c_service_name);
   free(c_port_name);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_wait_
 void mpi_wait_(
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const status,
@@ -24693,7 +26866,9 @@ void mpi_wait_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_wait_
 void pmpi_wait_(
   MPI_Fint* restrict const request,
   MPI_Fint* restrict const status,
@@ -24707,7 +26882,9 @@ void pmpi_wait_(
   );
   *request = MPI_Request_toint(c_request);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_waitall_
 void mpi_waitall_(
   const MPI_Fint* restrict const count,
   MPI_Fint* restrict const array_of_requests,
@@ -24726,7 +26903,9 @@ void mpi_waitall_(
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_waitall_
 void pmpi_waitall_(
   const MPI_Fint* restrict const count,
   MPI_Fint* restrict const array_of_requests,
@@ -24745,7 +26924,9 @@ void pmpi_waitall_(
   for (int i=0; i<*count; ++i)
     array_of_requests[i] = MPI_Request_toint(c_array_of_requests[i]);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_waitany_
 void mpi_waitany_(
   const MPI_Fint* restrict const count,
   MPI_Fint* restrict const array_of_requests,
@@ -24768,7 +26949,9 @@ void mpi_waitany_(
   if (*index >= 0)
     ++*index;
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_waitany_
 void pmpi_waitany_(
   const MPI_Fint* restrict const count,
   MPI_Fint* restrict const array_of_requests,
@@ -24791,7 +26974,9 @@ void pmpi_waitany_(
   if (*index >= 0)
     ++*index;
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_waitsome_
 void mpi_waitsome_(
   const MPI_Fint* restrict const incount,
   MPI_Fint* restrict const array_of_requests,
@@ -24819,7 +27004,9 @@ void mpi_waitsome_(
   for (int i=0; i<q_count; ++i)
     ++array_of_indices[i];
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_waitsome_
 void pmpi_waitsome_(
   const MPI_Fint* restrict const incount,
   MPI_Fint* restrict const array_of_requests,
@@ -24847,7 +27034,9 @@ void pmpi_waitsome_(
   for (int i=0; i<q_count; ++i)
     ++array_of_indices[i];
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_allocate_
 void mpi_win_allocate_(
   const MPI_Aint* restrict const size,
   const MPI_Fint* restrict const disp_unit,
@@ -24869,7 +27058,9 @@ void mpi_win_allocate_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_allocate_c_
 void mpi_win_allocate_c_(
   const MPI_Aint* restrict const size,
   const MPI_Aint* restrict const disp_unit,
@@ -24891,7 +27082,9 @@ void mpi_win_allocate_c_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_allocate_
 void pmpi_win_allocate_(
   const MPI_Aint* restrict const size,
   const MPI_Fint* restrict const disp_unit,
@@ -24913,7 +27106,9 @@ void pmpi_win_allocate_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_allocate_c_
 void pmpi_win_allocate_c_(
   const MPI_Aint* restrict const size,
   const MPI_Aint* restrict const disp_unit,
@@ -24935,7 +27130,9 @@ void pmpi_win_allocate_c_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_allocate_shared_
 void mpi_win_allocate_shared_(
   const MPI_Aint* restrict const size,
   const MPI_Fint* restrict const disp_unit,
@@ -24957,7 +27154,9 @@ void mpi_win_allocate_shared_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_allocate_shared_c_
 void mpi_win_allocate_shared_c_(
   const MPI_Aint* restrict const size,
   const MPI_Aint* restrict const disp_unit,
@@ -24979,7 +27178,9 @@ void mpi_win_allocate_shared_c_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_allocate_shared_
 void pmpi_win_allocate_shared_(
   const MPI_Aint* restrict const size,
   const MPI_Fint* restrict const disp_unit,
@@ -25001,7 +27202,9 @@ void pmpi_win_allocate_shared_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_allocate_shared_c_
 void pmpi_win_allocate_shared_c_(
   const MPI_Aint* restrict const size,
   const MPI_Aint* restrict const disp_unit,
@@ -25023,7 +27226,9 @@ void pmpi_win_allocate_shared_c_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_attach_
 void mpi_win_attach_(
   const MPI_Fint* restrict const win,
   void* restrict const base,
@@ -25038,7 +27243,9 @@ void mpi_win_attach_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_attach_
 void pmpi_win_attach_(
   const MPI_Fint* restrict const win,
   void* restrict const base,
@@ -25053,7 +27260,9 @@ void pmpi_win_attach_(
     *size
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_call_errhandler_
 void mpi_win_call_errhandler_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const errorcode,
@@ -25065,7 +27274,9 @@ void mpi_win_call_errhandler_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_call_errhandler_
 void pmpi_win_call_errhandler_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const errorcode,
@@ -25077,7 +27288,9 @@ void pmpi_win_call_errhandler_(
     *errorcode
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_complete_
 void mpi_win_complete_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -25087,7 +27300,9 @@ void mpi_win_complete_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_complete_
 void pmpi_win_complete_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -25097,7 +27312,9 @@ void pmpi_win_complete_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_create_
 void mpi_win_create_(
   void* restrict const base,
   const MPI_Aint* restrict const size,
@@ -25120,7 +27337,9 @@ void mpi_win_create_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_create_c_
 void mpi_win_create_c_(
   void* restrict const base,
   const MPI_Aint* restrict const size,
@@ -25143,7 +27362,9 @@ void mpi_win_create_c_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_create_
 void pmpi_win_create_(
   void* restrict const base,
   const MPI_Aint* restrict const size,
@@ -25166,7 +27387,9 @@ void pmpi_win_create_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_create_c_
 void pmpi_win_create_c_(
   void* restrict const base,
   const MPI_Aint* restrict const size,
@@ -25189,7 +27412,9 @@ void pmpi_win_create_c_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_create_dynamic_
 void mpi_win_create_dynamic_(
   const MPI_Fint* restrict const info,
   const MPI_Fint* restrict const comm,
@@ -25205,7 +27430,9 @@ void mpi_win_create_dynamic_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_create_dynamic_
 void pmpi_win_create_dynamic_(
   const MPI_Fint* restrict const info,
   const MPI_Fint* restrict const comm,
@@ -25221,7 +27448,9 @@ void pmpi_win_create_dynamic_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_create_errhandler_
 void mpi_win_create_errhandler_(
   MPI_Win_errhandler_function* const win_errhandler_fn,
   MPI_Fint* restrict const errhandler,
@@ -25243,7 +27472,9 @@ void mpi_win_create_errhandler_(
     mpif_errhandler_cancel(slot_win_errhandler_fn);
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_create_errhandler_
 void pmpi_win_create_errhandler_(
   MPI_Win_errhandler_function* const win_errhandler_fn,
   MPI_Fint* restrict const errhandler,
@@ -25265,7 +27496,9 @@ void pmpi_win_create_errhandler_(
     mpif_errhandler_cancel(slot_win_errhandler_fn);
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_create_keyval_
 void mpi_win_create_keyval_(
   MPI_Win_copy_attr_function* const win_copy_attr_fn,
   MPI_Win_delete_attr_function* const win_delete_attr_fn,
@@ -25291,7 +27524,9 @@ void mpi_win_create_keyval_(
   if (*ierror == MPI_SUCCESS)
     *ierror = mpif_register_attr_callback(*win_keyval, MPIF_ATTR_WIN_DELETE, (mpif_fortran_procedure)win_delete_attr_fn);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_create_keyval_
 void pmpi_win_create_keyval_(
   MPI_Win_copy_attr_function* const win_copy_attr_fn,
   MPI_Win_delete_attr_function* const win_delete_attr_fn,
@@ -25317,7 +27552,9 @@ void pmpi_win_create_keyval_(
   if (*ierror == MPI_SUCCESS)
     *ierror = mpif_register_attr_callback(*win_keyval, MPIF_ATTR_WIN_DELETE, (mpif_fortran_procedure)win_delete_attr_fn);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_delete_attr_
 void mpi_win_delete_attr_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const win_keyval,
@@ -25329,7 +27566,9 @@ void mpi_win_delete_attr_(
     *win_keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_delete_attr_
 void pmpi_win_delete_attr_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const win_keyval,
@@ -25341,7 +27580,9 @@ void pmpi_win_delete_attr_(
     *win_keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_detach_
 void mpi_win_detach_(
   const MPI_Fint* restrict const win,
   const void* restrict const base,
@@ -25354,7 +27595,9 @@ void mpi_win_detach_(
     q_base
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_detach_
 void pmpi_win_detach_(
   const MPI_Fint* restrict const win,
   const void* restrict const base,
@@ -25367,7 +27610,9 @@ void pmpi_win_detach_(
     q_base
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_fence_
 void mpi_win_fence_(
   const MPI_Fint* restrict const assert,
   const MPI_Fint* restrict const win,
@@ -25379,7 +27624,9 @@ void mpi_win_fence_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_fence_
 void pmpi_win_fence_(
   const MPI_Fint* restrict const assert,
   const MPI_Fint* restrict const win,
@@ -25391,7 +27638,9 @@ void pmpi_win_fence_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_flush_
 void mpi_win_flush_(
   const MPI_Fint* restrict const rank,
   const MPI_Fint* restrict const win,
@@ -25403,7 +27652,9 @@ void mpi_win_flush_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_flush_
 void pmpi_win_flush_(
   const MPI_Fint* restrict const rank,
   const MPI_Fint* restrict const win,
@@ -25415,7 +27666,9 @@ void pmpi_win_flush_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_flush_all_
 void mpi_win_flush_all_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -25425,7 +27678,9 @@ void mpi_win_flush_all_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_flush_all_
 void pmpi_win_flush_all_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -25435,7 +27690,9 @@ void pmpi_win_flush_all_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_flush_local_
 void mpi_win_flush_local_(
   const MPI_Fint* restrict const rank,
   const MPI_Fint* restrict const win,
@@ -25447,7 +27704,9 @@ void mpi_win_flush_local_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_flush_local_
 void pmpi_win_flush_local_(
   const MPI_Fint* restrict const rank,
   const MPI_Fint* restrict const win,
@@ -25459,7 +27718,9 @@ void pmpi_win_flush_local_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_flush_local_all_
 void mpi_win_flush_local_all_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -25469,7 +27730,9 @@ void mpi_win_flush_local_all_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_flush_local_all_
 void pmpi_win_flush_local_all_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -25479,7 +27742,9 @@ void pmpi_win_flush_local_all_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_free_
 void mpi_win_free_(
   MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -25491,7 +27756,9 @@ void mpi_win_free_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_free_
 void pmpi_win_free_(
   MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -25503,7 +27770,9 @@ void pmpi_win_free_(
   );
   *win = MPI_Win_toint(c_win);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_free_keyval_
 void mpi_win_free_keyval_(
   MPI_Fint* restrict const win_keyval,
   MPI_Fint* restrict const ierror
@@ -25513,7 +27782,9 @@ void mpi_win_free_keyval_(
     win_keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_free_keyval_
 void pmpi_win_free_keyval_(
   MPI_Fint* restrict const win_keyval,
   MPI_Fint* restrict const ierror
@@ -25523,7 +27794,9 @@ void pmpi_win_free_keyval_(
     win_keyval
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_get_attr_
 void mpi_win_get_attr_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const win_keyval,
@@ -25546,7 +27819,9 @@ void mpi_win_get_attr_(
     *attribute_val = mpif_attr_value(*win_keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_get_attr_
 void pmpi_win_get_attr_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const win_keyval,
@@ -25569,7 +27844,9 @@ void pmpi_win_get_attr_(
     *attribute_val = mpif_attr_value(*win_keyval, c_attribute_val);
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_get_errhandler_
 void mpi_win_get_errhandler_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const errhandler,
@@ -25583,7 +27860,9 @@ void mpi_win_get_errhandler_(
   );
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_get_errhandler_
 void pmpi_win_get_errhandler_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const errhandler,
@@ -25597,7 +27876,9 @@ void pmpi_win_get_errhandler_(
   );
   *errhandler = MPI_Errhandler_toint(c_errhandler);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_get_group_
 void mpi_win_get_group_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const group,
@@ -25611,7 +27892,9 @@ void mpi_win_get_group_(
   );
   *group = MPI_Group_toint(c_group);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_get_group_
 void pmpi_win_get_group_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const group,
@@ -25625,7 +27908,9 @@ void pmpi_win_get_group_(
   );
   *group = MPI_Group_toint(c_group);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_get_info_
 void mpi_win_get_info_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const info_used,
@@ -25639,7 +27924,9 @@ void mpi_win_get_info_(
   );
   *info_used = MPI_Info_toint(c_info_used);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_get_info_
 void pmpi_win_get_info_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const info_used,
@@ -25653,7 +27940,9 @@ void pmpi_win_get_info_(
   );
   *info_used = MPI_Info_toint(c_info_used);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_get_name_
 void mpi_win_get_name_(
   const MPI_Fint* restrict const win,
   char* restrict const win_name,
@@ -25671,7 +27960,9 @@ void mpi_win_get_name_(
   );
   mpif_strcpy_c2f(win_name, c_win_name, length_win_name, strlen(c_win_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_get_name_
 void pmpi_win_get_name_(
   const MPI_Fint* restrict const win,
   char* restrict const win_name,
@@ -25689,7 +27980,9 @@ void pmpi_win_get_name_(
   );
   mpif_strcpy_c2f(win_name, c_win_name, length_win_name, strlen(c_win_name));
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_lock_
 void mpi_win_lock_(
   const MPI_Fint* restrict const lock_type,
   const MPI_Fint* restrict const rank,
@@ -25705,7 +27998,9 @@ void mpi_win_lock_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_lock_
 void pmpi_win_lock_(
   const MPI_Fint* restrict const lock_type,
   const MPI_Fint* restrict const rank,
@@ -25721,7 +28016,9 @@ void pmpi_win_lock_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_lock_all_
 void mpi_win_lock_all_(
   const MPI_Fint* restrict const assert,
   const MPI_Fint* restrict const win,
@@ -25733,7 +28030,9 @@ void mpi_win_lock_all_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_lock_all_
 void pmpi_win_lock_all_(
   const MPI_Fint* restrict const assert,
   const MPI_Fint* restrict const win,
@@ -25745,7 +28044,9 @@ void pmpi_win_lock_all_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_post_
 void mpi_win_post_(
   const MPI_Fint* restrict const group,
   const MPI_Fint* restrict const assert,
@@ -25759,7 +28060,9 @@ void mpi_win_post_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_post_
 void pmpi_win_post_(
   const MPI_Fint* restrict const group,
   const MPI_Fint* restrict const assert,
@@ -25773,7 +28076,9 @@ void pmpi_win_post_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_set_attr_
 void mpi_win_set_attr_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const win_keyval,
@@ -25787,7 +28092,9 @@ void mpi_win_set_attr_(
     (void*)*attribute_val
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_set_attr_
 void pmpi_win_set_attr_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const win_keyval,
@@ -25801,7 +28108,9 @@ void pmpi_win_set_attr_(
     (void*)*attribute_val
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_set_errhandler_
 void mpi_win_set_errhandler_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const errhandler,
@@ -25813,7 +28122,9 @@ void mpi_win_set_errhandler_(
     MPI_Errhandler_fromint(*errhandler)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_set_errhandler_
 void pmpi_win_set_errhandler_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const errhandler,
@@ -25825,7 +28136,9 @@ void pmpi_win_set_errhandler_(
     MPI_Errhandler_fromint(*errhandler)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_set_info_
 void mpi_win_set_info_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const info,
@@ -25837,7 +28150,9 @@ void mpi_win_set_info_(
     MPI_Info_fromint(*info)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_set_info_
 void pmpi_win_set_info_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const info,
@@ -25849,7 +28164,9 @@ void pmpi_win_set_info_(
     MPI_Info_fromint(*info)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_set_name_
 void mpi_win_set_name_(
   const MPI_Fint* restrict const win,
   const char* restrict const win_name,
@@ -25864,7 +28181,9 @@ void mpi_win_set_name_(
   );
   free(c_win_name);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_set_name_
 void pmpi_win_set_name_(
   const MPI_Fint* restrict const win,
   const char* restrict const win_name,
@@ -25879,7 +28198,9 @@ void pmpi_win_set_name_(
   );
   free(c_win_name);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_shared_query_
 void mpi_win_shared_query_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const rank,
@@ -25897,7 +28218,9 @@ void mpi_win_shared_query_(
     baseptr
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_shared_query_c_
 void mpi_win_shared_query_c_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const rank,
@@ -25915,7 +28238,9 @@ void mpi_win_shared_query_c_(
     baseptr
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_shared_query_
 void pmpi_win_shared_query_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const rank,
@@ -25933,7 +28258,9 @@ void pmpi_win_shared_query_(
     baseptr
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_shared_query_c_
 void pmpi_win_shared_query_c_(
   const MPI_Fint* restrict const win,
   const MPI_Fint* restrict const rank,
@@ -25951,7 +28278,9 @@ void pmpi_win_shared_query_c_(
     baseptr
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_start_
 void mpi_win_start_(
   const MPI_Fint* restrict const group,
   const MPI_Fint* restrict const assert,
@@ -25965,7 +28294,9 @@ void mpi_win_start_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_start_
 void pmpi_win_start_(
   const MPI_Fint* restrict const group,
   const MPI_Fint* restrict const assert,
@@ -25979,7 +28310,9 @@ void pmpi_win_start_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_sync_
 void mpi_win_sync_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -25989,7 +28322,9 @@ void mpi_win_sync_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_sync_
 void pmpi_win_sync_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -25999,7 +28334,9 @@ void pmpi_win_sync_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_test_
 void mpi_win_test_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const flag,
@@ -26013,7 +28350,9 @@ void mpi_win_test_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_test_
 void pmpi_win_test_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const flag,
@@ -26027,7 +28366,9 @@ void pmpi_win_test_(
   );
   *flag = mpif_bool2logical(c_flag);
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_unlock_
 void mpi_win_unlock_(
   const MPI_Fint* restrict const rank,
   const MPI_Fint* restrict const win,
@@ -26039,7 +28380,9 @@ void mpi_win_unlock_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_unlock_
 void pmpi_win_unlock_(
   const MPI_Fint* restrict const rank,
   const MPI_Fint* restrict const win,
@@ -26051,7 +28394,9 @@ void pmpi_win_unlock_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_unlock_all_
 void mpi_win_unlock_all_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -26061,7 +28406,9 @@ void mpi_win_unlock_all_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_unlock_all_
 void pmpi_win_unlock_all_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -26071,7 +28418,9 @@ void pmpi_win_unlock_all_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_win_wait_
 void mpi_win_wait_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -26081,7 +28430,9 @@ void mpi_win_wait_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_win_wait_
 void pmpi_win_wait_(
   const MPI_Fint* restrict const win,
   MPI_Fint* restrict const ierror
@@ -26091,7 +28442,9 @@ void pmpi_win_wait_(
     MPI_Win_fromint(*win)
   );
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_wtick_
 double mpi_wtick_(
 )
 {
@@ -26099,7 +28452,9 @@ double mpi_wtick_(
   );
   return result;
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_wtick_
 double pmpi_wtick_(
 )
 {
@@ -26107,7 +28462,9 @@ double pmpi_wtick_(
   );
   return result;
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN mpi_wtime_
 double mpi_wtime_(
 )
 {
@@ -26115,7 +28472,9 @@ double mpi_wtime_(
   );
   return result;
 }
+// MPIF-SPLIT-END
 
+// MPIF-SPLIT-BEGIN pmpi_wtime_
 double pmpi_wtime_(
 )
 {
@@ -26123,3 +28482,4 @@ double pmpi_wtime_(
   );
   return result;
 }
+// MPIF-SPLIT-END

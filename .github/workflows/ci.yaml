@@ -810,7 +810,10 @@ jobs:
     runs-on: ubuntu-24.04
     needs: mpi
     if: ${{ !cancelled() }}
-    timeout-minutes: 30
+    # Longer than the shared jobs' because a static build compiles each MPI_
+    # entry point on its own -- ~1200 translation units rather than 27, measured
+    # locally as 36 s becoming 67 s. See MPIF_SPLIT_WRAPPERS in CMakeLists.txt.
+    timeout-minutes: 45
 
     steps:
       - name: Checkout repository
@@ -859,10 +862,13 @@ jobs:
 
       # The archive exists, nothing shared sits beside it, the installed
       # executable does not name libmpifort_abi among its dynamic dependencies but
-      # does name libmpi_abi, and every sentinel cell in it is read-only. The last
-      # is the one nothing else can see: mpif_check_environment compares the
-      # Fortran sentinel's address against the cell, and those are one symbol
-      # whichever definition won, so it passes either way.
+      # does name libmpi_abi, every sentinel cell in it is read-only, and no
+      # archive member defines more than one MPI entry point. The read-only one is
+      # what nothing else can see: mpif_check_environment compares the Fortran
+      # sentinel's address against the cell, and those are one symbol whichever
+      # definition won, so it passes either way. The one-entry-point-per-member
+      # one is MPI-5.0 section 15.2.1(4), and test/profile_f90 and
+      # test/profile_f08 below are what would fail without it.
       - name: Check that the library is really static
         run: ci-scripts/check-static-build.sh "${MPIF_PREFIX}"
 
@@ -882,8 +888,7 @@ jobs:
               -DMPI_C_LIB_NAMES=mpi_abi \
               -DMPI_mpi_abi_LIBRARY="${MPI_PREFIX}/lib/libmpi_abi.so" \
               -DMPIEXEC_EXECUTABLE="${MPI_PREFIX}/bin/mpiexec" \
-              -DMPIF_TEST_MPI_LIBRARY=MPICH \
-              -DMPIF_TEST_STATIC_MPIF=ON
+              -DMPIF_TEST_MPI_LIBRARY=MPICH
           cmake --build build-static-tests --parallel
           ctest --test-dir build-static-tests --output-on-failure
 

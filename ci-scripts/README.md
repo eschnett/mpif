@@ -112,10 +112,16 @@ Asking whether a build came out as asked, with no MPI and nothing run:
 | file | what it does |
 |------|--------------|
 | `check-sanitizer-build.sh` | read the installed library for undefined `__asan_*`/`__ubsan_*` references. A sanitizer build whose flags never reached the compiler passes every test, which is what a correct one does on clean code, so no test can tell them apart |
-| `check-static-build.sh` | assert that a `-DBUILD_SHARED_LIBS=OFF` prefix holds an archive and no shared library, that `bin/mpif_info` names `libmpi_abi` and not `libmpifort_abi` among its dynamic dependencies, and that every sentinel cell in it is read-only. The last is the one nothing else catches: if `mpif_constants.c`'s member never comes out of the archive the program still works, and silently loses the read-only fault and the poison behind every sentinel translation. See "Static linking" in CODE.md |
+| `check-static-build.sh` | assert that a `-DBUILD_SHARED_LIBS=OFF` prefix holds an archive and no shared library, that `bin/mpif_info` names `libmpi_abi` and not `libmpifort_abi` among its dynamic dependencies, that every sentinel cell in it is read-only, and that no archive member defines more than one MPI entry point. The read-only one is what nothing else catches: if `mpif_constants.c`'s member never comes out of the archive the program still works, and silently loses the read-only fault and the poison behind every sentinel translation. The one-entry-point-per-member one is MPI-5.0 §15.2.1(4). See "Static linking" in CODE.md |
 
 Both are called by `scripts/macos-build-mpif.sh` as well as by CI, so a local
 build of either kind is held to the same thing.
+
+One script is not a check but a build step:
+
+| file | what it does |
+|------|--------------|
+| `split-wrappers.sh` | cut a marked source file into one translation unit per `MPI_` entry point, so that a profiling wrapper can replace one without colliding with the archive member the link needs for the rest. Run by CMake at configure time when `MPIF_SPLIT_WRAPPERS` is on, which is whenever `BUILD_SHARED_LIBS` is off; see "Separable wrappers" in CODE.md |
 
 Running the suite, in `suite/`:
 

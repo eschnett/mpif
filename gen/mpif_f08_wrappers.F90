@@ -2,6 +2,7 @@
 ! procedures under the specific names of Table 19.1. Declared in
 ! mpif_f08_functions, defined here, so that the name a call resolves to is
 ! one a profiling layer can interpose. See dev/mpiapi.jl; do not edit.
+! MPIF-SPLIT-BEGIN MPI_Abi_get_fortran_booleans_f08
 subroutine MPI_Abi_get_fortran_booleans_f08( &
   logical_size, &
   logical_true, &
@@ -28,7 +29,9 @@ subroutine MPI_Abi_get_fortran_booleans_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Abi_get_fortran_booleans_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Abi_get_fortran_booleans_f08
 subroutine PMPI_Abi_get_fortran_booleans_f08( &
   logical_size, &
   logical_true, &
@@ -55,7 +58,9 @@ subroutine PMPI_Abi_get_fortran_booleans_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Abi_get_fortran_booleans_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Abi_get_fortran_info_f08
 subroutine MPI_Abi_get_fortran_info_f08( &
   info, &
   ierror &
@@ -73,7 +78,9 @@ subroutine MPI_Abi_get_fortran_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Abi_get_fortran_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Abi_get_fortran_info_f08
 subroutine PMPI_Abi_get_fortran_info_f08( &
   info, &
   ierror &
@@ -91,7 +98,9 @@ subroutine PMPI_Abi_get_fortran_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Abi_get_fortran_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Abi_get_info_f08
 subroutine MPI_Abi_get_info_f08( &
   info, &
   ierror &
@@ -109,7 +118,9 @@ subroutine MPI_Abi_get_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Abi_get_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Abi_get_info_f08
 subroutine PMPI_Abi_get_info_f08( &
   info, &
   ierror &
@@ -127,7 +138,9 @@ subroutine PMPI_Abi_get_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Abi_get_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Abi_get_version_f08
 subroutine MPI_Abi_get_version_f08( &
   abi_major, &
   abi_minor, &
@@ -148,7 +161,9 @@ subroutine MPI_Abi_get_version_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Abi_get_version_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Abi_get_version_f08
 subroutine PMPI_Abi_get_version_f08( &
   abi_major, &
   abi_minor, &
@@ -169,7 +184,9 @@ subroutine PMPI_Abi_get_version_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Abi_get_version_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Abi_set_fortran_booleans_f08
 subroutine MPI_Abi_set_fortran_booleans_f08( &
   logical_size, &
   logical_true, &
@@ -193,7 +210,9 @@ subroutine MPI_Abi_set_fortran_booleans_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Abi_set_fortran_booleans_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Abi_set_fortran_booleans_f08
 subroutine PMPI_Abi_set_fortran_booleans_f08( &
   logical_size, &
   logical_true, &
@@ -217,7 +236,9 @@ subroutine PMPI_Abi_set_fortran_booleans_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Abi_set_fortran_booleans_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Abi_set_fortran_info_f08
 subroutine MPI_Abi_set_fortran_info_f08( &
   info, &
   ierror &
@@ -235,7 +256,9 @@ subroutine MPI_Abi_set_fortran_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Abi_set_fortran_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Abi_set_fortran_info_f08
 subroutine PMPI_Abi_set_fortran_info_f08( &
   info, &
   ierror &
@@ -253,7 +276,9 @@ subroutine PMPI_Abi_set_fortran_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Abi_set_fortran_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Abort_f08
 subroutine MPI_Abort_f08( &
   comm, &
   errorcode, &
@@ -274,7 +299,9 @@ subroutine MPI_Abort_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Abort_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Abort_f08
 subroutine PMPI_Abort_f08( &
   comm, &
   errorcode, &
@@ -295,7 +322,9 @@ subroutine PMPI_Abort_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Abort_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Accumulate_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Accumulate_f08ts( &
   origin_addr, &
@@ -381,7 +410,9 @@ subroutine MPI_Accumulate_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Accumulate_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Accumulate_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Accumulate_c_f08ts( &
   origin_addr, &
@@ -467,7 +498,9 @@ subroutine MPI_Accumulate_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Accumulate_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Accumulate_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Accumulate_f08ts( &
   origin_addr, &
@@ -553,7 +586,9 @@ subroutine PMPI_Accumulate_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Accumulate_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Accumulate_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Accumulate_c_f08ts( &
   origin_addr, &
@@ -639,7 +674,9 @@ subroutine PMPI_Accumulate_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Accumulate_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Add_error_class_f08
 subroutine MPI_Add_error_class_f08( &
   errorclass, &
   ierror &
@@ -657,7 +694,9 @@ subroutine MPI_Add_error_class_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Add_error_class_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Add_error_class_f08
 subroutine PMPI_Add_error_class_f08( &
   errorclass, &
   ierror &
@@ -675,7 +714,9 @@ subroutine PMPI_Add_error_class_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Add_error_class_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Add_error_code_f08
 subroutine MPI_Add_error_code_f08( &
   errorclass, &
   errorcode, &
@@ -696,7 +737,9 @@ subroutine MPI_Add_error_code_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Add_error_code_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Add_error_code_f08
 subroutine PMPI_Add_error_code_f08( &
   errorclass, &
   errorcode, &
@@ -717,7 +760,9 @@ subroutine PMPI_Add_error_code_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Add_error_code_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Add_error_string_f08
 subroutine MPI_Add_error_string_f08( &
   errorcode, &
   string, &
@@ -738,7 +783,9 @@ subroutine MPI_Add_error_string_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Add_error_string_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Add_error_string_f08
 subroutine PMPI_Add_error_string_f08( &
   errorcode, &
   string, &
@@ -759,7 +806,9 @@ subroutine PMPI_Add_error_string_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Add_error_string_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Aint_add_f08
 function MPI_Aint_add_f08( &
   base, &
   disp &
@@ -776,7 +825,9 @@ function MPI_Aint_add_f08( &
     disp &
   )
 end function MPI_Aint_add_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Aint_add_f08
 function PMPI_Aint_add_f08( &
   base, &
   disp &
@@ -793,7 +844,9 @@ function PMPI_Aint_add_f08( &
     disp &
   )
 end function PMPI_Aint_add_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Aint_diff_f08
 function MPI_Aint_diff_f08( &
   addr1, &
   addr2 &
@@ -810,7 +863,9 @@ function MPI_Aint_diff_f08( &
     addr2 &
   )
 end function MPI_Aint_diff_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Aint_diff_f08
 function PMPI_Aint_diff_f08( &
   addr1, &
   addr2 &
@@ -827,7 +882,9 @@ function PMPI_Aint_diff_f08( &
     addr2 &
   )
 end function PMPI_Aint_diff_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Allgather_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Allgather_f08ts( &
   sendbuf, &
@@ -901,7 +958,9 @@ subroutine MPI_Allgather_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgather_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Allgather_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Allgather_c_f08ts( &
   sendbuf, &
@@ -975,7 +1034,9 @@ subroutine MPI_Allgather_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgather_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Allgather_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Allgather_f08ts( &
   sendbuf, &
@@ -1049,7 +1110,9 @@ subroutine PMPI_Allgather_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgather_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Allgather_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Allgather_c_f08ts( &
   sendbuf, &
@@ -1123,7 +1186,9 @@ subroutine PMPI_Allgather_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgather_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Allgather_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Allgather_init_f08ts( &
   sendbuf, &
@@ -1209,7 +1274,9 @@ subroutine MPI_Allgather_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgather_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Allgather_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Allgather_init_c_f08ts( &
   sendbuf, &
@@ -1295,7 +1362,9 @@ subroutine MPI_Allgather_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgather_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Allgather_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Allgather_init_f08ts( &
   sendbuf, &
@@ -1381,7 +1450,9 @@ subroutine PMPI_Allgather_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgather_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Allgather_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Allgather_init_c_f08ts( &
   sendbuf, &
@@ -1467,7 +1538,9 @@ subroutine PMPI_Allgather_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgather_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Allgatherv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Allgatherv_f08ts( &
   sendbuf, &
@@ -1547,7 +1620,9 @@ subroutine MPI_Allgatherv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgatherv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Allgatherv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Allgatherv_c_f08ts( &
   sendbuf, &
@@ -1627,7 +1702,9 @@ subroutine MPI_Allgatherv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgatherv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Allgatherv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Allgatherv_f08ts( &
   sendbuf, &
@@ -1707,7 +1784,9 @@ subroutine PMPI_Allgatherv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgatherv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Allgatherv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Allgatherv_c_f08ts( &
   sendbuf, &
@@ -1787,7 +1866,9 @@ subroutine PMPI_Allgatherv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgatherv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Allgatherv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Allgatherv_init_f08ts( &
   sendbuf, &
@@ -1879,7 +1960,9 @@ subroutine MPI_Allgatherv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgatherv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Allgatherv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Allgatherv_init_c_f08ts( &
   sendbuf, &
@@ -1971,7 +2054,9 @@ subroutine MPI_Allgatherv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allgatherv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Allgatherv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Allgatherv_init_f08ts( &
   sendbuf, &
@@ -2063,7 +2148,9 @@ subroutine PMPI_Allgatherv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgatherv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Allgatherv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Allgatherv_init_c_f08ts( &
   sendbuf, &
@@ -2155,7 +2242,9 @@ subroutine PMPI_Allgatherv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allgatherv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alloc_mem_f08
 subroutine MPI_Alloc_mem_f08( &
   size, &
   info, &
@@ -2182,7 +2271,9 @@ subroutine MPI_Alloc_mem_f08( &
   baseptr = transfer(tmp_baseptr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alloc_mem_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alloc_mem_f08
 subroutine PMPI_Alloc_mem_f08( &
   size, &
   info, &
@@ -2209,7 +2300,9 @@ subroutine PMPI_Alloc_mem_f08( &
   baseptr = transfer(tmp_baseptr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alloc_mem_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Allreduce_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Allreduce_f08ts( &
   sendbuf, &
@@ -2277,7 +2370,9 @@ subroutine MPI_Allreduce_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allreduce_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Allreduce_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Allreduce_c_f08ts( &
   sendbuf, &
@@ -2345,7 +2440,9 @@ subroutine MPI_Allreduce_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allreduce_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Allreduce_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Allreduce_f08ts( &
   sendbuf, &
@@ -2413,7 +2510,9 @@ subroutine PMPI_Allreduce_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allreduce_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Allreduce_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Allreduce_c_f08ts( &
   sendbuf, &
@@ -2481,7 +2580,9 @@ subroutine PMPI_Allreduce_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allreduce_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Allreduce_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Allreduce_init_f08ts( &
   sendbuf, &
@@ -2561,7 +2662,9 @@ subroutine MPI_Allreduce_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allreduce_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Allreduce_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Allreduce_init_c_f08ts( &
   sendbuf, &
@@ -2641,7 +2744,9 @@ subroutine MPI_Allreduce_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Allreduce_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Allreduce_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Allreduce_init_f08ts( &
   sendbuf, &
@@ -2721,7 +2826,9 @@ subroutine PMPI_Allreduce_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allreduce_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Allreduce_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Allreduce_init_c_f08ts( &
   sendbuf, &
@@ -2801,7 +2908,9 @@ subroutine PMPI_Allreduce_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Allreduce_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alltoall_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Alltoall_f08ts( &
   sendbuf, &
@@ -2875,7 +2984,9 @@ subroutine MPI_Alltoall_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoall_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alltoall_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Alltoall_c_f08ts( &
   sendbuf, &
@@ -2949,7 +3060,9 @@ subroutine MPI_Alltoall_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoall_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alltoall_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Alltoall_f08ts( &
   sendbuf, &
@@ -3023,7 +3136,9 @@ subroutine PMPI_Alltoall_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoall_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alltoall_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Alltoall_c_f08ts( &
   sendbuf, &
@@ -3097,7 +3212,9 @@ subroutine PMPI_Alltoall_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoall_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alltoall_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Alltoall_init_f08ts( &
   sendbuf, &
@@ -3183,7 +3300,9 @@ subroutine MPI_Alltoall_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoall_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alltoall_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Alltoall_init_c_f08ts( &
   sendbuf, &
@@ -3269,7 +3388,9 @@ subroutine MPI_Alltoall_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoall_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alltoall_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Alltoall_init_f08ts( &
   sendbuf, &
@@ -3355,7 +3476,9 @@ subroutine PMPI_Alltoall_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoall_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alltoall_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Alltoall_init_c_f08ts( &
   sendbuf, &
@@ -3441,7 +3564,9 @@ subroutine PMPI_Alltoall_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoall_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alltoallv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Alltoallv_f08ts( &
   sendbuf, &
@@ -3527,7 +3652,9 @@ subroutine MPI_Alltoallv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alltoallv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Alltoallv_c_f08ts( &
   sendbuf, &
@@ -3613,7 +3740,9 @@ subroutine MPI_Alltoallv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alltoallv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Alltoallv_f08ts( &
   sendbuf, &
@@ -3699,7 +3828,9 @@ subroutine PMPI_Alltoallv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alltoallv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Alltoallv_c_f08ts( &
   sendbuf, &
@@ -3785,7 +3916,9 @@ subroutine PMPI_Alltoallv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alltoallv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Alltoallv_init_f08ts( &
   sendbuf, &
@@ -3883,7 +4016,9 @@ subroutine MPI_Alltoallv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alltoallv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Alltoallv_init_c_f08ts( &
   sendbuf, &
@@ -3981,7 +4116,9 @@ subroutine MPI_Alltoallv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alltoallv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Alltoallv_init_f08ts( &
   sendbuf, &
@@ -4079,7 +4216,9 @@ subroutine PMPI_Alltoallv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alltoallv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Alltoallv_init_c_f08ts( &
   sendbuf, &
@@ -4177,7 +4316,9 @@ subroutine PMPI_Alltoallv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alltoallw_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Alltoallw_f08ts( &
   sendbuf, &
@@ -4263,7 +4404,9 @@ subroutine MPI_Alltoallw_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallw_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alltoallw_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Alltoallw_c_f08ts( &
   sendbuf, &
@@ -4349,7 +4492,9 @@ subroutine MPI_Alltoallw_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallw_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alltoallw_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Alltoallw_f08ts( &
   sendbuf, &
@@ -4435,7 +4580,9 @@ subroutine PMPI_Alltoallw_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallw_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alltoallw_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Alltoallw_c_f08ts( &
   sendbuf, &
@@ -4521,7 +4668,9 @@ subroutine PMPI_Alltoallw_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallw_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alltoallw_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Alltoallw_init_f08ts( &
   sendbuf, &
@@ -4619,7 +4768,9 @@ subroutine MPI_Alltoallw_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallw_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Alltoallw_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Alltoallw_init_c_f08ts( &
   sendbuf, &
@@ -4717,7 +4868,9 @@ subroutine MPI_Alltoallw_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Alltoallw_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alltoallw_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Alltoallw_init_f08ts( &
   sendbuf, &
@@ -4815,7 +4968,9 @@ subroutine PMPI_Alltoallw_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallw_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Alltoallw_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Alltoallw_init_c_f08ts( &
   sendbuf, &
@@ -4913,7 +5068,9 @@ subroutine PMPI_Alltoallw_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Alltoallw_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Attr_delete_f08
 subroutine MPI_Attr_delete_f08( &
   comm, &
   keyval, &
@@ -4934,7 +5091,9 @@ subroutine MPI_Attr_delete_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Attr_delete_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Attr_delete_f08
 subroutine PMPI_Attr_delete_f08( &
   comm, &
   keyval, &
@@ -4955,7 +5114,9 @@ subroutine PMPI_Attr_delete_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Attr_delete_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Attr_get_f08
 subroutine MPI_Attr_get_f08( &
   comm, &
   keyval, &
@@ -4982,7 +5143,9 @@ subroutine MPI_Attr_get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Attr_get_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Attr_get_f08
 subroutine PMPI_Attr_get_f08( &
   comm, &
   keyval, &
@@ -5009,7 +5172,9 @@ subroutine PMPI_Attr_get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Attr_get_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Attr_put_f08
 subroutine MPI_Attr_put_f08( &
   comm, &
   keyval, &
@@ -5033,7 +5198,9 @@ subroutine MPI_Attr_put_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Attr_put_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Attr_put_f08
 subroutine PMPI_Attr_put_f08( &
   comm, &
   keyval, &
@@ -5057,7 +5224,9 @@ subroutine PMPI_Attr_put_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Attr_put_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Barrier_f08
 subroutine MPI_Barrier_f08( &
   comm, &
   ierror &
@@ -5075,7 +5244,9 @@ subroutine MPI_Barrier_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Barrier_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Barrier_f08
 subroutine PMPI_Barrier_f08( &
   comm, &
   ierror &
@@ -5093,7 +5264,9 @@ subroutine PMPI_Barrier_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Barrier_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Barrier_init_f08
 subroutine MPI_Barrier_init_f08( &
   comm, &
   info, &
@@ -5117,7 +5290,9 @@ subroutine MPI_Barrier_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Barrier_init_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Barrier_init_f08
 subroutine PMPI_Barrier_init_f08( &
   comm, &
   info, &
@@ -5141,7 +5316,9 @@ subroutine PMPI_Barrier_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Barrier_init_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Bcast_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Bcast_f08ts( &
   buffer, &
@@ -5203,7 +5380,9 @@ subroutine MPI_Bcast_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bcast_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Bcast_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Bcast_c_f08ts( &
   buffer, &
@@ -5265,7 +5444,9 @@ subroutine MPI_Bcast_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bcast_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Bcast_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Bcast_f08ts( &
   buffer, &
@@ -5327,7 +5508,9 @@ subroutine PMPI_Bcast_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bcast_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Bcast_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Bcast_c_f08ts( &
   buffer, &
@@ -5389,7 +5572,9 @@ subroutine PMPI_Bcast_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bcast_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Bcast_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Bcast_init_f08ts( &
   buffer, &
@@ -5463,7 +5648,9 @@ subroutine MPI_Bcast_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bcast_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Bcast_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Bcast_init_c_f08ts( &
   buffer, &
@@ -5537,7 +5724,9 @@ subroutine MPI_Bcast_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bcast_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Bcast_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Bcast_init_f08ts( &
   buffer, &
@@ -5611,7 +5800,9 @@ subroutine PMPI_Bcast_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bcast_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Bcast_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Bcast_init_c_f08ts( &
   buffer, &
@@ -5685,7 +5876,9 @@ subroutine PMPI_Bcast_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bcast_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Bsend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Bsend_f08ts( &
   buf, &
@@ -5753,7 +5946,9 @@ subroutine MPI_Bsend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bsend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Bsend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Bsend_c_f08ts( &
   buf, &
@@ -5821,7 +6016,9 @@ subroutine MPI_Bsend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bsend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Bsend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Bsend_f08ts( &
   buf, &
@@ -5889,7 +6086,9 @@ subroutine PMPI_Bsend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bsend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Bsend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Bsend_c_f08ts( &
   buf, &
@@ -5957,7 +6156,9 @@ subroutine PMPI_Bsend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bsend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Bsend_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Bsend_init_f08ts( &
   buf, &
@@ -6031,7 +6232,9 @@ subroutine MPI_Bsend_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bsend_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Bsend_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Bsend_init_c_f08ts( &
   buf, &
@@ -6105,7 +6308,9 @@ subroutine MPI_Bsend_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Bsend_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Bsend_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Bsend_init_f08ts( &
   buf, &
@@ -6179,7 +6384,9 @@ subroutine PMPI_Bsend_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bsend_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Bsend_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Bsend_init_c_f08ts( &
   buf, &
@@ -6253,7 +6460,9 @@ subroutine PMPI_Bsend_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Bsend_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Buffer_attach_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Buffer_attach_f08ts( &
   buffer, &
@@ -6297,7 +6506,9 @@ subroutine MPI_Buffer_attach_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Buffer_attach_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Buffer_attach_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Buffer_attach_c_f08ts( &
   buffer, &
@@ -6341,7 +6552,9 @@ subroutine MPI_Buffer_attach_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Buffer_attach_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Buffer_attach_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Buffer_attach_f08ts( &
   buffer, &
@@ -6385,7 +6598,9 @@ subroutine PMPI_Buffer_attach_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Buffer_attach_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Buffer_attach_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Buffer_attach_c_f08ts( &
   buffer, &
@@ -6429,7 +6644,9 @@ subroutine PMPI_Buffer_attach_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Buffer_attach_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Buffer_detach_f08
 subroutine MPI_Buffer_detach_f08( &
   buffer_addr, &
   size, &
@@ -6453,7 +6670,9 @@ subroutine MPI_Buffer_detach_f08( &
   buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Buffer_detach_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Buffer_detach_c_f08
 subroutine MPI_Buffer_detach_c_f08( &
   buffer_addr, &
   size, &
@@ -6477,7 +6696,9 @@ subroutine MPI_Buffer_detach_c_f08( &
   buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Buffer_detach_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Buffer_detach_f08
 subroutine PMPI_Buffer_detach_f08( &
   buffer_addr, &
   size, &
@@ -6501,7 +6722,9 @@ subroutine PMPI_Buffer_detach_f08( &
   buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Buffer_detach_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Buffer_detach_c_f08
 subroutine PMPI_Buffer_detach_c_f08( &
   buffer_addr, &
   size, &
@@ -6525,7 +6748,9 @@ subroutine PMPI_Buffer_detach_c_f08( &
   buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Buffer_detach_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Buffer_flush_f08
 subroutine MPI_Buffer_flush_f08( &
   ierror &
 )
@@ -6540,7 +6765,9 @@ subroutine MPI_Buffer_flush_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Buffer_flush_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Buffer_flush_f08
 subroutine PMPI_Buffer_flush_f08( &
   ierror &
 )
@@ -6555,7 +6782,9 @@ subroutine PMPI_Buffer_flush_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Buffer_flush_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Buffer_iflush_f08
 subroutine MPI_Buffer_iflush_f08( &
   request, &
   ierror &
@@ -6573,7 +6802,9 @@ subroutine MPI_Buffer_iflush_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Buffer_iflush_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Buffer_iflush_f08
 subroutine PMPI_Buffer_iflush_f08( &
   request, &
   ierror &
@@ -6591,7 +6822,9 @@ subroutine PMPI_Buffer_iflush_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Buffer_iflush_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Cancel_f08
 subroutine MPI_Cancel_f08( &
   request, &
   ierror &
@@ -6611,7 +6844,9 @@ subroutine MPI_Cancel_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Cancel_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Cancel_f08
 subroutine PMPI_Cancel_f08( &
   request, &
   ierror &
@@ -6631,7 +6866,9 @@ subroutine PMPI_Cancel_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Cancel_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Cart_coords_f08
 subroutine MPI_Cart_coords_f08( &
   comm, &
   rank, &
@@ -6658,7 +6895,9 @@ subroutine MPI_Cart_coords_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Cart_coords_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Cart_coords_f08
 subroutine PMPI_Cart_coords_f08( &
   comm, &
   rank, &
@@ -6685,7 +6924,9 @@ subroutine PMPI_Cart_coords_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Cart_coords_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Cart_create_f08
 subroutine MPI_Cart_create_f08( &
   comm_old, &
   ndims, &
@@ -6718,7 +6959,9 @@ subroutine MPI_Cart_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Cart_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Cart_create_f08
 subroutine PMPI_Cart_create_f08( &
   comm_old, &
   ndims, &
@@ -6751,7 +6994,9 @@ subroutine PMPI_Cart_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Cart_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Cart_get_f08
 subroutine MPI_Cart_get_f08( &
   comm, &
   maxdims, &
@@ -6781,7 +7026,9 @@ subroutine MPI_Cart_get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Cart_get_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Cart_get_f08
 subroutine PMPI_Cart_get_f08( &
   comm, &
   maxdims, &
@@ -6811,7 +7058,9 @@ subroutine PMPI_Cart_get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Cart_get_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Cart_map_f08
 subroutine MPI_Cart_map_f08( &
   comm, &
   ndims, &
@@ -6841,7 +7090,9 @@ subroutine MPI_Cart_map_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Cart_map_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Cart_map_f08
 subroutine PMPI_Cart_map_f08( &
   comm, &
   ndims, &
@@ -6871,7 +7122,9 @@ subroutine PMPI_Cart_map_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Cart_map_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Cart_rank_f08
 subroutine MPI_Cart_rank_f08( &
   comm, &
   coords, &
@@ -6895,7 +7148,9 @@ subroutine MPI_Cart_rank_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Cart_rank_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Cart_rank_f08
 subroutine PMPI_Cart_rank_f08( &
   comm, &
   coords, &
@@ -6919,7 +7174,9 @@ subroutine PMPI_Cart_rank_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Cart_rank_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Cart_shift_f08
 subroutine MPI_Cart_shift_f08( &
   comm, &
   direction, &
@@ -6949,7 +7206,9 @@ subroutine MPI_Cart_shift_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Cart_shift_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Cart_shift_f08
 subroutine PMPI_Cart_shift_f08( &
   comm, &
   direction, &
@@ -6979,7 +7238,9 @@ subroutine PMPI_Cart_shift_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Cart_shift_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Cart_sub_f08
 subroutine MPI_Cart_sub_f08( &
   comm, &
   remain_dims, &
@@ -7003,7 +7264,9 @@ subroutine MPI_Cart_sub_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Cart_sub_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Cart_sub_f08
 subroutine PMPI_Cart_sub_f08( &
   comm, &
   remain_dims, &
@@ -7027,7 +7290,9 @@ subroutine PMPI_Cart_sub_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Cart_sub_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Cartdim_get_f08
 subroutine MPI_Cartdim_get_f08( &
   comm, &
   ndims, &
@@ -7048,7 +7313,9 @@ subroutine MPI_Cartdim_get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Cartdim_get_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Cartdim_get_f08
 subroutine PMPI_Cartdim_get_f08( &
   comm, &
   ndims, &
@@ -7069,7 +7336,9 @@ subroutine PMPI_Cartdim_get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Cartdim_get_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Close_port_f08
 subroutine MPI_Close_port_f08( &
   port_name, &
   ierror &
@@ -7087,7 +7356,9 @@ subroutine MPI_Close_port_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Close_port_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Close_port_f08
 subroutine PMPI_Close_port_f08( &
   port_name, &
   ierror &
@@ -7105,7 +7376,9 @@ subroutine PMPI_Close_port_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Close_port_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_accept_f08
 subroutine MPI_Comm_accept_f08( &
   port_name, &
   info, &
@@ -7135,7 +7408,9 @@ subroutine MPI_Comm_accept_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_accept_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_accept_f08
 subroutine PMPI_Comm_accept_f08( &
   port_name, &
   info, &
@@ -7165,7 +7440,9 @@ subroutine PMPI_Comm_accept_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_accept_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_attach_buffer_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Comm_attach_buffer_f08ts( &
   comm, &
@@ -7215,7 +7492,9 @@ subroutine MPI_Comm_attach_buffer_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_attach_buffer_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_attach_buffer_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Comm_attach_buffer_c_f08ts( &
   comm, &
@@ -7265,7 +7544,9 @@ subroutine MPI_Comm_attach_buffer_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_attach_buffer_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_attach_buffer_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Comm_attach_buffer_f08ts( &
   comm, &
@@ -7315,7 +7596,9 @@ subroutine PMPI_Comm_attach_buffer_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_attach_buffer_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_attach_buffer_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Comm_attach_buffer_c_f08ts( &
   comm, &
@@ -7365,7 +7648,9 @@ subroutine PMPI_Comm_attach_buffer_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_attach_buffer_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_call_errhandler_f08
 subroutine MPI_Comm_call_errhandler_f08( &
   comm, &
   errorcode, &
@@ -7386,7 +7671,9 @@ subroutine MPI_Comm_call_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_call_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_call_errhandler_f08
 subroutine PMPI_Comm_call_errhandler_f08( &
   comm, &
   errorcode, &
@@ -7407,7 +7694,9 @@ subroutine PMPI_Comm_call_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_call_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_compare_f08
 subroutine MPI_Comm_compare_f08( &
   comm1, &
   comm2, &
@@ -7431,7 +7720,9 @@ subroutine MPI_Comm_compare_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_compare_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_compare_f08
 subroutine PMPI_Comm_compare_f08( &
   comm1, &
   comm2, &
@@ -7455,7 +7746,9 @@ subroutine PMPI_Comm_compare_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_compare_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_connect_f08
 subroutine MPI_Comm_connect_f08( &
   port_name, &
   info, &
@@ -7485,7 +7778,9 @@ subroutine MPI_Comm_connect_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_connect_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_connect_f08
 subroutine PMPI_Comm_connect_f08( &
   port_name, &
   info, &
@@ -7515,7 +7810,9 @@ subroutine PMPI_Comm_connect_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_connect_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_create_f08
 subroutine MPI_Comm_create_f08( &
   comm, &
   group, &
@@ -7539,7 +7836,9 @@ subroutine MPI_Comm_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_create_f08
 subroutine PMPI_Comm_create_f08( &
   comm, &
   group, &
@@ -7563,7 +7862,9 @@ subroutine PMPI_Comm_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_create_errhandler_f08
 subroutine MPI_Comm_create_errhandler_f08( &
   comm_errhandler_fn, &
   errhandler, &
@@ -7584,7 +7885,9 @@ subroutine MPI_Comm_create_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_create_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_create_errhandler_f08
 subroutine PMPI_Comm_create_errhandler_f08( &
   comm_errhandler_fn, &
   errhandler, &
@@ -7605,7 +7908,9 @@ subroutine PMPI_Comm_create_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_create_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_create_from_group_f08
 subroutine MPI_Comm_create_from_group_f08( &
   group, &
   stringtag, &
@@ -7635,7 +7940,9 @@ subroutine MPI_Comm_create_from_group_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_create_from_group_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_create_from_group_f08
 subroutine PMPI_Comm_create_from_group_f08( &
   group, &
   stringtag, &
@@ -7665,7 +7972,9 @@ subroutine PMPI_Comm_create_from_group_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_create_from_group_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_create_group_f08
 subroutine MPI_Comm_create_group_f08( &
   comm, &
   group, &
@@ -7692,7 +8001,9 @@ subroutine MPI_Comm_create_group_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_create_group_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_create_group_f08
 subroutine PMPI_Comm_create_group_f08( &
   comm, &
   group, &
@@ -7719,7 +8030,9 @@ subroutine PMPI_Comm_create_group_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_create_group_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_create_keyval_f08
 subroutine MPI_Comm_create_keyval_f08( &
   comm_copy_attr_fn, &
   comm_delete_attr_fn, &
@@ -7746,7 +8059,9 @@ subroutine MPI_Comm_create_keyval_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_create_keyval_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_create_keyval_f08
 subroutine PMPI_Comm_create_keyval_f08( &
   comm_copy_attr_fn, &
   comm_delete_attr_fn, &
@@ -7773,7 +8088,9 @@ subroutine PMPI_Comm_create_keyval_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_create_keyval_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_delete_attr_f08
 subroutine MPI_Comm_delete_attr_f08( &
   comm, &
   comm_keyval, &
@@ -7794,7 +8111,9 @@ subroutine MPI_Comm_delete_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_delete_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_delete_attr_f08
 subroutine PMPI_Comm_delete_attr_f08( &
   comm, &
   comm_keyval, &
@@ -7815,7 +8134,9 @@ subroutine PMPI_Comm_delete_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_delete_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_detach_buffer_f08
 subroutine MPI_Comm_detach_buffer_f08( &
   comm, &
   buffer_addr, &
@@ -7842,7 +8163,9 @@ subroutine MPI_Comm_detach_buffer_f08( &
   buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_detach_buffer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_detach_buffer_c_f08
 subroutine MPI_Comm_detach_buffer_c_f08( &
   comm, &
   buffer_addr, &
@@ -7869,7 +8192,9 @@ subroutine MPI_Comm_detach_buffer_c_f08( &
   buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_detach_buffer_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_detach_buffer_f08
 subroutine PMPI_Comm_detach_buffer_f08( &
   comm, &
   buffer_addr, &
@@ -7896,7 +8221,9 @@ subroutine PMPI_Comm_detach_buffer_f08( &
   buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_detach_buffer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_detach_buffer_c_f08
 subroutine PMPI_Comm_detach_buffer_c_f08( &
   comm, &
   buffer_addr, &
@@ -7923,7 +8250,9 @@ subroutine PMPI_Comm_detach_buffer_c_f08( &
   buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_detach_buffer_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_disconnect_f08
 subroutine MPI_Comm_disconnect_f08( &
   comm, &
   ierror &
@@ -7941,7 +8270,9 @@ subroutine MPI_Comm_disconnect_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_disconnect_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_disconnect_f08
 subroutine PMPI_Comm_disconnect_f08( &
   comm, &
   ierror &
@@ -7959,7 +8290,9 @@ subroutine PMPI_Comm_disconnect_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_disconnect_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_dup_f08
 subroutine MPI_Comm_dup_f08( &
   comm, &
   newcomm, &
@@ -7980,7 +8313,9 @@ subroutine MPI_Comm_dup_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_dup_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_dup_f08
 subroutine PMPI_Comm_dup_f08( &
   comm, &
   newcomm, &
@@ -8001,7 +8336,9 @@ subroutine PMPI_Comm_dup_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_dup_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_dup_with_info_f08
 subroutine MPI_Comm_dup_with_info_f08( &
   comm, &
   info, &
@@ -8025,7 +8362,9 @@ subroutine MPI_Comm_dup_with_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_dup_with_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_dup_with_info_f08
 subroutine PMPI_Comm_dup_with_info_f08( &
   comm, &
   info, &
@@ -8049,7 +8388,9 @@ subroutine PMPI_Comm_dup_with_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_dup_with_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_flush_buffer_f08
 subroutine MPI_Comm_flush_buffer_f08( &
   comm, &
   ierror &
@@ -8067,7 +8408,9 @@ subroutine MPI_Comm_flush_buffer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_flush_buffer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_flush_buffer_f08
 subroutine PMPI_Comm_flush_buffer_f08( &
   comm, &
   ierror &
@@ -8085,7 +8428,9 @@ subroutine PMPI_Comm_flush_buffer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_flush_buffer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_free_f08
 subroutine MPI_Comm_free_f08( &
   comm, &
   ierror &
@@ -8103,7 +8448,9 @@ subroutine MPI_Comm_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_free_f08
 subroutine PMPI_Comm_free_f08( &
   comm, &
   ierror &
@@ -8121,7 +8468,9 @@ subroutine PMPI_Comm_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_free_keyval_f08
 subroutine MPI_Comm_free_keyval_f08( &
   comm_keyval, &
   ierror &
@@ -8139,7 +8488,9 @@ subroutine MPI_Comm_free_keyval_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_free_keyval_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_free_keyval_f08
 subroutine PMPI_Comm_free_keyval_f08( &
   comm_keyval, &
   ierror &
@@ -8157,7 +8508,9 @@ subroutine PMPI_Comm_free_keyval_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_free_keyval_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_get_attr_f08
 subroutine MPI_Comm_get_attr_f08( &
   comm, &
   comm_keyval, &
@@ -8184,7 +8537,9 @@ subroutine MPI_Comm_get_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_get_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_get_attr_f08
 subroutine PMPI_Comm_get_attr_f08( &
   comm, &
   comm_keyval, &
@@ -8211,7 +8566,9 @@ subroutine PMPI_Comm_get_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_get_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_get_errhandler_f08
 subroutine MPI_Comm_get_errhandler_f08( &
   comm, &
   errhandler, &
@@ -8232,7 +8589,9 @@ subroutine MPI_Comm_get_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_get_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_get_errhandler_f08
 subroutine PMPI_Comm_get_errhandler_f08( &
   comm, &
   errhandler, &
@@ -8253,7 +8612,9 @@ subroutine PMPI_Comm_get_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_get_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_get_info_f08
 subroutine MPI_Comm_get_info_f08( &
   comm, &
   info_used, &
@@ -8274,7 +8635,9 @@ subroutine MPI_Comm_get_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_get_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_get_info_f08
 subroutine PMPI_Comm_get_info_f08( &
   comm, &
   info_used, &
@@ -8295,7 +8658,9 @@ subroutine PMPI_Comm_get_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_get_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_get_name_f08
 subroutine MPI_Comm_get_name_f08( &
   comm, &
   comm_name, &
@@ -8319,7 +8684,9 @@ subroutine MPI_Comm_get_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_get_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_get_name_f08
 subroutine PMPI_Comm_get_name_f08( &
   comm, &
   comm_name, &
@@ -8343,7 +8710,9 @@ subroutine PMPI_Comm_get_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_get_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_get_parent_f08
 subroutine MPI_Comm_get_parent_f08( &
   parent, &
   ierror &
@@ -8361,7 +8730,9 @@ subroutine MPI_Comm_get_parent_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_get_parent_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_get_parent_f08
 subroutine PMPI_Comm_get_parent_f08( &
   parent, &
   ierror &
@@ -8379,7 +8750,9 @@ subroutine PMPI_Comm_get_parent_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_get_parent_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_group_f08
 subroutine MPI_Comm_group_f08( &
   comm, &
   group, &
@@ -8400,7 +8773,9 @@ subroutine MPI_Comm_group_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_group_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_group_f08
 subroutine PMPI_Comm_group_f08( &
   comm, &
   group, &
@@ -8421,7 +8796,9 @@ subroutine PMPI_Comm_group_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_group_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_idup_f08
 subroutine MPI_Comm_idup_f08( &
   comm, &
   newcomm, &
@@ -8449,7 +8826,9 @@ subroutine MPI_Comm_idup_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_idup_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_idup_f08
 subroutine PMPI_Comm_idup_f08( &
   comm, &
   newcomm, &
@@ -8477,7 +8856,9 @@ subroutine PMPI_Comm_idup_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_idup_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_idup_with_info_f08
 subroutine MPI_Comm_idup_with_info_f08( &
   comm, &
   info, &
@@ -8508,7 +8889,9 @@ subroutine MPI_Comm_idup_with_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_idup_with_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_idup_with_info_f08
 subroutine PMPI_Comm_idup_with_info_f08( &
   comm, &
   info, &
@@ -8539,7 +8922,9 @@ subroutine PMPI_Comm_idup_with_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_idup_with_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_iflush_buffer_f08
 subroutine MPI_Comm_iflush_buffer_f08( &
   comm, &
   request, &
@@ -8560,7 +8945,9 @@ subroutine MPI_Comm_iflush_buffer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_iflush_buffer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_iflush_buffer_f08
 subroutine PMPI_Comm_iflush_buffer_f08( &
   comm, &
   request, &
@@ -8581,7 +8968,9 @@ subroutine PMPI_Comm_iflush_buffer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_iflush_buffer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_join_f08
 subroutine MPI_Comm_join_f08( &
   fd, &
   intercomm, &
@@ -8602,7 +8991,9 @@ subroutine MPI_Comm_join_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_join_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_join_f08
 subroutine PMPI_Comm_join_f08( &
   fd, &
   intercomm, &
@@ -8623,7 +9014,9 @@ subroutine PMPI_Comm_join_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_join_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_rank_f08
 subroutine MPI_Comm_rank_f08( &
   comm, &
   rank, &
@@ -8644,7 +9037,9 @@ subroutine MPI_Comm_rank_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_rank_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_rank_f08
 subroutine PMPI_Comm_rank_f08( &
   comm, &
   rank, &
@@ -8665,7 +9060,9 @@ subroutine PMPI_Comm_rank_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_rank_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_remote_group_f08
 subroutine MPI_Comm_remote_group_f08( &
   comm, &
   group, &
@@ -8686,7 +9083,9 @@ subroutine MPI_Comm_remote_group_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_remote_group_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_remote_group_f08
 subroutine PMPI_Comm_remote_group_f08( &
   comm, &
   group, &
@@ -8707,7 +9106,9 @@ subroutine PMPI_Comm_remote_group_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_remote_group_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_remote_size_f08
 subroutine MPI_Comm_remote_size_f08( &
   comm, &
   size, &
@@ -8728,7 +9129,9 @@ subroutine MPI_Comm_remote_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_remote_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_remote_size_f08
 subroutine PMPI_Comm_remote_size_f08( &
   comm, &
   size, &
@@ -8749,7 +9152,9 @@ subroutine PMPI_Comm_remote_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_remote_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_set_attr_f08
 subroutine MPI_Comm_set_attr_f08( &
   comm, &
   comm_keyval, &
@@ -8773,7 +9178,9 @@ subroutine MPI_Comm_set_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_set_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_set_attr_f08
 subroutine PMPI_Comm_set_attr_f08( &
   comm, &
   comm_keyval, &
@@ -8797,7 +9204,9 @@ subroutine PMPI_Comm_set_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_set_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_set_errhandler_f08
 subroutine MPI_Comm_set_errhandler_f08( &
   comm, &
   errhandler, &
@@ -8818,7 +9227,9 @@ subroutine MPI_Comm_set_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_set_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_set_errhandler_f08
 subroutine PMPI_Comm_set_errhandler_f08( &
   comm, &
   errhandler, &
@@ -8839,7 +9250,9 @@ subroutine PMPI_Comm_set_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_set_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_set_info_f08
 subroutine MPI_Comm_set_info_f08( &
   comm, &
   info, &
@@ -8860,7 +9273,9 @@ subroutine MPI_Comm_set_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_set_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_set_info_f08
 subroutine PMPI_Comm_set_info_f08( &
   comm, &
   info, &
@@ -8881,7 +9296,9 @@ subroutine PMPI_Comm_set_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_set_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_set_name_f08
 subroutine MPI_Comm_set_name_f08( &
   comm, &
   comm_name, &
@@ -8902,7 +9319,9 @@ subroutine MPI_Comm_set_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_set_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_set_name_f08
 subroutine PMPI_Comm_set_name_f08( &
   comm, &
   comm_name, &
@@ -8923,7 +9342,9 @@ subroutine PMPI_Comm_set_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_set_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_size_f08
 subroutine MPI_Comm_size_f08( &
   comm, &
   size, &
@@ -8944,7 +9365,9 @@ subroutine MPI_Comm_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_size_f08
 subroutine PMPI_Comm_size_f08( &
   comm, &
   size, &
@@ -8965,7 +9388,9 @@ subroutine PMPI_Comm_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_spawn_f08
 subroutine MPI_Comm_spawn_f08( &
   command, &
   argv, &
@@ -9004,7 +9429,9 @@ subroutine MPI_Comm_spawn_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_spawn_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_spawn_f08
 subroutine PMPI_Comm_spawn_f08( &
   command, &
   argv, &
@@ -9043,7 +9470,9 @@ subroutine PMPI_Comm_spawn_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_spawn_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_spawn_multiple_f08
 subroutine MPI_Comm_spawn_multiple_f08( &
   count, &
   array_of_commands, &
@@ -9085,7 +9514,9 @@ subroutine MPI_Comm_spawn_multiple_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_spawn_multiple_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_spawn_multiple_f08
 subroutine PMPI_Comm_spawn_multiple_f08( &
   count, &
   array_of_commands, &
@@ -9127,7 +9558,9 @@ subroutine PMPI_Comm_spawn_multiple_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_spawn_multiple_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_split_f08
 subroutine MPI_Comm_split_f08( &
   comm, &
   color, &
@@ -9154,7 +9587,9 @@ subroutine MPI_Comm_split_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_split_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_split_f08
 subroutine PMPI_Comm_split_f08( &
   comm, &
   color, &
@@ -9181,7 +9616,9 @@ subroutine PMPI_Comm_split_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_split_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_split_type_f08
 subroutine MPI_Comm_split_type_f08( &
   comm, &
   split_type, &
@@ -9211,7 +9648,9 @@ subroutine MPI_Comm_split_type_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_split_type_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_split_type_f08
 subroutine PMPI_Comm_split_type_f08( &
   comm, &
   split_type, &
@@ -9241,7 +9680,9 @@ subroutine PMPI_Comm_split_type_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_split_type_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Comm_test_inter_f08
 subroutine MPI_Comm_test_inter_f08( &
   comm, &
   flag, &
@@ -9262,7 +9703,9 @@ subroutine MPI_Comm_test_inter_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Comm_test_inter_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Comm_test_inter_f08
 subroutine PMPI_Comm_test_inter_f08( &
   comm, &
   flag, &
@@ -9283,7 +9726,9 @@ subroutine PMPI_Comm_test_inter_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Comm_test_inter_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Compare_and_swap_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Compare_and_swap_f08ts( &
   origin_addr, &
@@ -9357,7 +9802,9 @@ subroutine MPI_Compare_and_swap_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Compare_and_swap_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Compare_and_swap_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Compare_and_swap_f08ts( &
   origin_addr, &
@@ -9431,7 +9878,9 @@ subroutine PMPI_Compare_and_swap_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Compare_and_swap_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Dims_create_f08
 subroutine MPI_Dims_create_f08( &
   nnodes, &
   ndims, &
@@ -9455,7 +9904,9 @@ subroutine MPI_Dims_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Dims_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Dims_create_f08
 subroutine PMPI_Dims_create_f08( &
   nnodes, &
   ndims, &
@@ -9479,7 +9930,9 @@ subroutine PMPI_Dims_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Dims_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Dist_graph_create_f08
 subroutine MPI_Dist_graph_create_f08( &
   comm_old, &
   n, &
@@ -9521,7 +9974,9 @@ subroutine MPI_Dist_graph_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Dist_graph_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Dist_graph_create_f08
 subroutine PMPI_Dist_graph_create_f08( &
   comm_old, &
   n, &
@@ -9563,7 +10018,9 @@ subroutine PMPI_Dist_graph_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Dist_graph_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Dist_graph_create_adjacent_f08
 subroutine MPI_Dist_graph_create_adjacent_f08( &
   comm_old, &
   indegree, &
@@ -9608,7 +10065,9 @@ subroutine MPI_Dist_graph_create_adjacent_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Dist_graph_create_adjacent_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Dist_graph_create_adjacent_f08
 subroutine PMPI_Dist_graph_create_adjacent_f08( &
   comm_old, &
   indegree, &
@@ -9653,7 +10112,9 @@ subroutine PMPI_Dist_graph_create_adjacent_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Dist_graph_create_adjacent_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Dist_graph_neighbors_f08
 subroutine MPI_Dist_graph_neighbors_f08( &
   comm, &
   maxindegree, &
@@ -9689,7 +10150,9 @@ subroutine MPI_Dist_graph_neighbors_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Dist_graph_neighbors_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Dist_graph_neighbors_f08
 subroutine PMPI_Dist_graph_neighbors_f08( &
   comm, &
   maxindegree, &
@@ -9725,7 +10188,9 @@ subroutine PMPI_Dist_graph_neighbors_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Dist_graph_neighbors_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Dist_graph_neighbors_count_f08
 subroutine MPI_Dist_graph_neighbors_count_f08( &
   comm, &
   indegree, &
@@ -9752,7 +10217,9 @@ subroutine MPI_Dist_graph_neighbors_count_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Dist_graph_neighbors_count_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Dist_graph_neighbors_count_f08
 subroutine PMPI_Dist_graph_neighbors_count_f08( &
   comm, &
   indegree, &
@@ -9779,7 +10246,9 @@ subroutine PMPI_Dist_graph_neighbors_count_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Dist_graph_neighbors_count_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Errhandler_free_f08
 subroutine MPI_Errhandler_free_f08( &
   errhandler, &
   ierror &
@@ -9797,7 +10266,9 @@ subroutine MPI_Errhandler_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Errhandler_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Errhandler_free_f08
 subroutine PMPI_Errhandler_free_f08( &
   errhandler, &
   ierror &
@@ -9815,7 +10286,9 @@ subroutine PMPI_Errhandler_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Errhandler_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Error_class_f08
 subroutine MPI_Error_class_f08( &
   errorcode, &
   errorclass, &
@@ -9836,7 +10309,9 @@ subroutine MPI_Error_class_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Error_class_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Error_class_f08
 subroutine PMPI_Error_class_f08( &
   errorcode, &
   errorclass, &
@@ -9857,7 +10332,9 @@ subroutine PMPI_Error_class_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Error_class_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Error_string_f08
 subroutine MPI_Error_string_f08( &
   errorcode, &
   string, &
@@ -9881,7 +10358,9 @@ subroutine MPI_Error_string_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Error_string_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Error_string_f08
 subroutine PMPI_Error_string_f08( &
   errorcode, &
   string, &
@@ -9905,7 +10384,9 @@ subroutine PMPI_Error_string_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Error_string_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Exscan_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Exscan_f08ts( &
   sendbuf, &
@@ -9973,7 +10454,9 @@ subroutine MPI_Exscan_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Exscan_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Exscan_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Exscan_c_f08ts( &
   sendbuf, &
@@ -10041,7 +10524,9 @@ subroutine MPI_Exscan_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Exscan_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Exscan_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Exscan_f08ts( &
   sendbuf, &
@@ -10109,7 +10594,9 @@ subroutine PMPI_Exscan_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Exscan_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Exscan_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Exscan_c_f08ts( &
   sendbuf, &
@@ -10177,7 +10664,9 @@ subroutine PMPI_Exscan_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Exscan_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Exscan_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Exscan_init_f08ts( &
   sendbuf, &
@@ -10257,7 +10746,9 @@ subroutine MPI_Exscan_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Exscan_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Exscan_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Exscan_init_c_f08ts( &
   sendbuf, &
@@ -10337,7 +10828,9 @@ subroutine MPI_Exscan_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Exscan_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Exscan_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Exscan_init_f08ts( &
   sendbuf, &
@@ -10417,7 +10910,9 @@ subroutine PMPI_Exscan_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Exscan_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Exscan_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Exscan_init_c_f08ts( &
   sendbuf, &
@@ -10497,7 +10992,9 @@ subroutine PMPI_Exscan_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Exscan_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_F_sync_reg_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_F_sync_reg_f08ts( &
   buf &
@@ -10525,7 +11022,9 @@ subroutine MPI_F_sync_reg_f08( &
   )
 end subroutine MPI_F_sync_reg_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_F_sync_reg_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_F_sync_reg_f08ts( &
   buf &
@@ -10553,7 +11052,9 @@ subroutine PMPI_F_sync_reg_f08( &
   )
 end subroutine PMPI_F_sync_reg_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Fetch_and_op_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Fetch_and_op_f08ts( &
   origin_addr, &
@@ -10627,7 +11128,9 @@ subroutine MPI_Fetch_and_op_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Fetch_and_op_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Fetch_and_op_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Fetch_and_op_f08ts( &
   origin_addr, &
@@ -10701,7 +11204,9 @@ subroutine PMPI_Fetch_and_op_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Fetch_and_op_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_call_errhandler_f08
 subroutine MPI_File_call_errhandler_f08( &
   fh, &
   errorcode, &
@@ -10722,7 +11227,9 @@ subroutine MPI_File_call_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_call_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_call_errhandler_f08
 subroutine PMPI_File_call_errhandler_f08( &
   fh, &
   errorcode, &
@@ -10743,7 +11250,9 @@ subroutine PMPI_File_call_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_call_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_close_f08
 subroutine MPI_File_close_f08( &
   fh, &
   ierror &
@@ -10761,7 +11270,9 @@ subroutine MPI_File_close_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_close_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_close_f08
 subroutine PMPI_File_close_f08( &
   fh, &
   ierror &
@@ -10779,7 +11290,9 @@ subroutine PMPI_File_close_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_close_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_create_errhandler_f08
 subroutine MPI_File_create_errhandler_f08( &
   file_errhandler_fn, &
   errhandler, &
@@ -10800,7 +11313,9 @@ subroutine MPI_File_create_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_create_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_create_errhandler_f08
 subroutine PMPI_File_create_errhandler_f08( &
   file_errhandler_fn, &
   errhandler, &
@@ -10821,7 +11336,9 @@ subroutine PMPI_File_create_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_create_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_delete_f08
 subroutine MPI_File_delete_f08( &
   filename, &
   info, &
@@ -10842,7 +11359,9 @@ subroutine MPI_File_delete_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_delete_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_delete_f08
 subroutine PMPI_File_delete_f08( &
   filename, &
   info, &
@@ -10863,7 +11382,9 @@ subroutine PMPI_File_delete_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_delete_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_get_amode_f08
 subroutine MPI_File_get_amode_f08( &
   fh, &
   amode, &
@@ -10884,7 +11405,9 @@ subroutine MPI_File_get_amode_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_get_amode_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_get_amode_f08
 subroutine PMPI_File_get_amode_f08( &
   fh, &
   amode, &
@@ -10905,7 +11428,9 @@ subroutine PMPI_File_get_amode_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_amode_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_get_atomicity_f08
 subroutine MPI_File_get_atomicity_f08( &
   fh, &
   flag, &
@@ -10926,7 +11451,9 @@ subroutine MPI_File_get_atomicity_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_get_atomicity_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_get_atomicity_f08
 subroutine PMPI_File_get_atomicity_f08( &
   fh, &
   flag, &
@@ -10947,7 +11474,9 @@ subroutine PMPI_File_get_atomicity_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_atomicity_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_get_byte_offset_f08
 subroutine MPI_File_get_byte_offset_f08( &
   fh, &
   offset, &
@@ -10971,7 +11500,9 @@ subroutine MPI_File_get_byte_offset_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_get_byte_offset_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_get_byte_offset_f08
 subroutine PMPI_File_get_byte_offset_f08( &
   fh, &
   offset, &
@@ -10995,7 +11526,9 @@ subroutine PMPI_File_get_byte_offset_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_byte_offset_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_get_errhandler_f08
 subroutine MPI_File_get_errhandler_f08( &
   file, &
   errhandler, &
@@ -11016,7 +11549,9 @@ subroutine MPI_File_get_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_get_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_get_errhandler_f08
 subroutine PMPI_File_get_errhandler_f08( &
   file, &
   errhandler, &
@@ -11037,7 +11572,9 @@ subroutine PMPI_File_get_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_get_group_f08
 subroutine MPI_File_get_group_f08( &
   fh, &
   group, &
@@ -11058,7 +11595,9 @@ subroutine MPI_File_get_group_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_get_group_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_get_group_f08
 subroutine PMPI_File_get_group_f08( &
   fh, &
   group, &
@@ -11079,7 +11618,9 @@ subroutine PMPI_File_get_group_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_group_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_get_info_f08
 subroutine MPI_File_get_info_f08( &
   fh, &
   info_used, &
@@ -11100,7 +11641,9 @@ subroutine MPI_File_get_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_get_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_get_info_f08
 subroutine PMPI_File_get_info_f08( &
   fh, &
   info_used, &
@@ -11121,7 +11664,9 @@ subroutine PMPI_File_get_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_get_position_f08
 subroutine MPI_File_get_position_f08( &
   fh, &
   offset, &
@@ -11142,7 +11687,9 @@ subroutine MPI_File_get_position_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_get_position_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_get_position_f08
 subroutine PMPI_File_get_position_f08( &
   fh, &
   offset, &
@@ -11163,7 +11710,9 @@ subroutine PMPI_File_get_position_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_position_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_get_position_shared_f08
 subroutine MPI_File_get_position_shared_f08( &
   fh, &
   offset, &
@@ -11184,7 +11733,9 @@ subroutine MPI_File_get_position_shared_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_get_position_shared_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_get_position_shared_f08
 subroutine PMPI_File_get_position_shared_f08( &
   fh, &
   offset, &
@@ -11205,7 +11756,9 @@ subroutine PMPI_File_get_position_shared_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_position_shared_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_get_size_f08
 subroutine MPI_File_get_size_f08( &
   fh, &
   size, &
@@ -11226,7 +11779,9 @@ subroutine MPI_File_get_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_get_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_get_size_f08
 subroutine PMPI_File_get_size_f08( &
   fh, &
   size, &
@@ -11247,7 +11802,9 @@ subroutine PMPI_File_get_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_get_type_extent_f08
 subroutine MPI_File_get_type_extent_f08( &
   fh, &
   datatype, &
@@ -11271,7 +11828,9 @@ subroutine MPI_File_get_type_extent_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_get_type_extent_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_get_type_extent_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
 subroutine MPI_File_get_type_extent_c_f08( &
   fh, &
@@ -11297,7 +11856,9 @@ subroutine MPI_File_get_type_extent_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_get_type_extent_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_get_type_extent_f08
 subroutine PMPI_File_get_type_extent_f08( &
   fh, &
   datatype, &
@@ -11321,7 +11882,9 @@ subroutine PMPI_File_get_type_extent_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_type_extent_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_get_type_extent_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
 subroutine PMPI_File_get_type_extent_c_f08( &
   fh, &
@@ -11347,7 +11910,9 @@ subroutine PMPI_File_get_type_extent_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_type_extent_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_get_view_f08
 subroutine MPI_File_get_view_f08( &
   fh, &
   disp, &
@@ -11377,7 +11942,9 @@ subroutine MPI_File_get_view_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_get_view_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_get_view_f08
 subroutine PMPI_File_get_view_f08( &
   fh, &
   disp, &
@@ -11407,7 +11974,9 @@ subroutine PMPI_File_get_view_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_get_view_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iread_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iread_f08ts( &
   fh, &
@@ -11469,7 +12038,9 @@ subroutine MPI_File_iread_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iread_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iread_c_f08ts( &
   fh, &
@@ -11531,7 +12102,9 @@ subroutine MPI_File_iread_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iread_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iread_f08ts( &
   fh, &
@@ -11593,7 +12166,9 @@ subroutine PMPI_File_iread_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iread_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iread_c_f08ts( &
   fh, &
@@ -11655,7 +12230,9 @@ subroutine PMPI_File_iread_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iread_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iread_all_f08ts( &
   fh, &
@@ -11717,7 +12294,9 @@ subroutine MPI_File_iread_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iread_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iread_all_c_f08ts( &
   fh, &
@@ -11779,7 +12358,9 @@ subroutine MPI_File_iread_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iread_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iread_all_f08ts( &
   fh, &
@@ -11841,7 +12422,9 @@ subroutine PMPI_File_iread_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iread_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iread_all_c_f08ts( &
   fh, &
@@ -11903,7 +12486,9 @@ subroutine PMPI_File_iread_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iread_at_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iread_at_f08ts( &
   fh, &
@@ -11971,7 +12556,9 @@ subroutine MPI_File_iread_at_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_at_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iread_at_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iread_at_c_f08ts( &
   fh, &
@@ -12039,7 +12626,9 @@ subroutine MPI_File_iread_at_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_at_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iread_at_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iread_at_f08ts( &
   fh, &
@@ -12107,7 +12696,9 @@ subroutine PMPI_File_iread_at_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_at_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iread_at_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iread_at_c_f08ts( &
   fh, &
@@ -12175,7 +12766,9 @@ subroutine PMPI_File_iread_at_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_at_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iread_at_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iread_at_all_f08ts( &
   fh, &
@@ -12243,7 +12836,9 @@ subroutine MPI_File_iread_at_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_at_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iread_at_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iread_at_all_c_f08ts( &
   fh, &
@@ -12311,7 +12906,9 @@ subroutine MPI_File_iread_at_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_at_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iread_at_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iread_at_all_f08ts( &
   fh, &
@@ -12379,7 +12976,9 @@ subroutine PMPI_File_iread_at_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_at_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iread_at_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iread_at_all_c_f08ts( &
   fh, &
@@ -12447,7 +13046,9 @@ subroutine PMPI_File_iread_at_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_at_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iread_shared_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iread_shared_f08ts( &
   fh, &
@@ -12509,7 +13110,9 @@ subroutine MPI_File_iread_shared_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_shared_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iread_shared_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iread_shared_c_f08ts( &
   fh, &
@@ -12571,7 +13174,9 @@ subroutine MPI_File_iread_shared_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iread_shared_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iread_shared_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iread_shared_f08ts( &
   fh, &
@@ -12633,7 +13238,9 @@ subroutine PMPI_File_iread_shared_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_shared_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iread_shared_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iread_shared_c_f08ts( &
   fh, &
@@ -12695,7 +13302,9 @@ subroutine PMPI_File_iread_shared_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iread_shared_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iwrite_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iwrite_f08ts( &
   fh, &
@@ -12757,7 +13366,9 @@ subroutine MPI_File_iwrite_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iwrite_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iwrite_c_f08ts( &
   fh, &
@@ -12819,7 +13430,9 @@ subroutine MPI_File_iwrite_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iwrite_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iwrite_f08ts( &
   fh, &
@@ -12881,7 +13494,9 @@ subroutine PMPI_File_iwrite_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iwrite_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iwrite_c_f08ts( &
   fh, &
@@ -12943,7 +13558,9 @@ subroutine PMPI_File_iwrite_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iwrite_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iwrite_all_f08ts( &
   fh, &
@@ -13005,7 +13622,9 @@ subroutine MPI_File_iwrite_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iwrite_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iwrite_all_c_f08ts( &
   fh, &
@@ -13067,7 +13686,9 @@ subroutine MPI_File_iwrite_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iwrite_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iwrite_all_f08ts( &
   fh, &
@@ -13129,7 +13750,9 @@ subroutine PMPI_File_iwrite_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iwrite_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iwrite_all_c_f08ts( &
   fh, &
@@ -13191,7 +13814,9 @@ subroutine PMPI_File_iwrite_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iwrite_at_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iwrite_at_f08ts( &
   fh, &
@@ -13259,7 +13884,9 @@ subroutine MPI_File_iwrite_at_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_at_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iwrite_at_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iwrite_at_c_f08ts( &
   fh, &
@@ -13327,7 +13954,9 @@ subroutine MPI_File_iwrite_at_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_at_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iwrite_at_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iwrite_at_f08ts( &
   fh, &
@@ -13395,7 +14024,9 @@ subroutine PMPI_File_iwrite_at_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_at_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iwrite_at_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iwrite_at_c_f08ts( &
   fh, &
@@ -13463,7 +14094,9 @@ subroutine PMPI_File_iwrite_at_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_at_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iwrite_at_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iwrite_at_all_f08ts( &
   fh, &
@@ -13531,7 +14164,9 @@ subroutine MPI_File_iwrite_at_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_at_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iwrite_at_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iwrite_at_all_c_f08ts( &
   fh, &
@@ -13599,7 +14234,9 @@ subroutine MPI_File_iwrite_at_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_at_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iwrite_at_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iwrite_at_all_f08ts( &
   fh, &
@@ -13667,7 +14304,9 @@ subroutine PMPI_File_iwrite_at_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_at_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iwrite_at_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iwrite_at_all_c_f08ts( &
   fh, &
@@ -13735,7 +14374,9 @@ subroutine PMPI_File_iwrite_at_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_at_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iwrite_shared_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iwrite_shared_f08ts( &
   fh, &
@@ -13797,7 +14438,9 @@ subroutine MPI_File_iwrite_shared_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_shared_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_iwrite_shared_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_iwrite_shared_c_f08ts( &
   fh, &
@@ -13859,7 +14502,9 @@ subroutine MPI_File_iwrite_shared_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_iwrite_shared_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iwrite_shared_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iwrite_shared_f08ts( &
   fh, &
@@ -13921,7 +14566,9 @@ subroutine PMPI_File_iwrite_shared_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_shared_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_iwrite_shared_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_iwrite_shared_c_f08ts( &
   fh, &
@@ -13983,7 +14630,9 @@ subroutine PMPI_File_iwrite_shared_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_iwrite_shared_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_open_f08
 subroutine MPI_File_open_f08( &
   comm, &
   filename, &
@@ -14013,7 +14662,9 @@ subroutine MPI_File_open_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_open_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_open_f08
 subroutine PMPI_File_open_f08( &
   comm, &
   filename, &
@@ -14043,7 +14694,9 @@ subroutine PMPI_File_open_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_open_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_preallocate_f08
 subroutine MPI_File_preallocate_f08( &
   fh, &
   size, &
@@ -14064,7 +14717,9 @@ subroutine MPI_File_preallocate_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_preallocate_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_preallocate_f08
 subroutine PMPI_File_preallocate_f08( &
   fh, &
   size, &
@@ -14085,7 +14740,9 @@ subroutine PMPI_File_preallocate_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_preallocate_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_f08ts( &
   fh, &
@@ -14147,7 +14804,9 @@ subroutine MPI_File_read_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_c_f08ts( &
   fh, &
@@ -14209,7 +14868,9 @@ subroutine MPI_File_read_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_f08ts( &
   fh, &
@@ -14271,7 +14932,9 @@ subroutine PMPI_File_read_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_c_f08ts( &
   fh, &
@@ -14333,7 +14996,9 @@ subroutine PMPI_File_read_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_all_f08ts( &
   fh, &
@@ -14395,7 +15060,9 @@ subroutine MPI_File_read_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_all_c_f08ts( &
   fh, &
@@ -14457,7 +15124,9 @@ subroutine MPI_File_read_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_all_f08ts( &
   fh, &
@@ -14519,7 +15188,9 @@ subroutine PMPI_File_read_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_all_c_f08ts( &
   fh, &
@@ -14581,7 +15252,9 @@ subroutine PMPI_File_read_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_all_begin_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_all_begin_f08ts( &
   fh, &
@@ -14637,7 +15310,9 @@ subroutine MPI_File_read_all_begin_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_all_begin_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_all_begin_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_all_begin_c_f08ts( &
   fh, &
@@ -14693,7 +15368,9 @@ subroutine MPI_File_read_all_begin_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_all_begin_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_all_begin_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_all_begin_f08ts( &
   fh, &
@@ -14749,7 +15426,9 @@ subroutine PMPI_File_read_all_begin_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_all_begin_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_all_begin_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_all_begin_c_f08ts( &
   fh, &
@@ -14805,7 +15484,9 @@ subroutine PMPI_File_read_all_begin_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_all_begin_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_all_end_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_all_end_f08ts( &
   fh, &
@@ -14855,7 +15536,9 @@ subroutine MPI_File_read_all_end_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_all_end_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_all_end_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_all_end_f08ts( &
   fh, &
@@ -14905,7 +15588,9 @@ subroutine PMPI_File_read_all_end_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_all_end_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_at_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_at_f08ts( &
   fh, &
@@ -14973,7 +15658,9 @@ subroutine MPI_File_read_at_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_at_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_at_c_f08ts( &
   fh, &
@@ -15041,7 +15728,9 @@ subroutine MPI_File_read_at_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_at_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_at_f08ts( &
   fh, &
@@ -15109,7 +15798,9 @@ subroutine PMPI_File_read_at_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_at_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_at_c_f08ts( &
   fh, &
@@ -15177,7 +15868,9 @@ subroutine PMPI_File_read_at_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_at_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_at_all_f08ts( &
   fh, &
@@ -15245,7 +15938,9 @@ subroutine MPI_File_read_at_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_at_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_at_all_c_f08ts( &
   fh, &
@@ -15313,7 +16008,9 @@ subroutine MPI_File_read_at_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_at_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_at_all_f08ts( &
   fh, &
@@ -15381,7 +16078,9 @@ subroutine PMPI_File_read_at_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_at_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_at_all_c_f08ts( &
   fh, &
@@ -15449,7 +16148,9 @@ subroutine PMPI_File_read_at_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_at_all_begin_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_at_all_begin_f08ts( &
   fh, &
@@ -15511,7 +16212,9 @@ subroutine MPI_File_read_at_all_begin_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_all_begin_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_at_all_begin_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_at_all_begin_c_f08ts( &
   fh, &
@@ -15573,7 +16276,9 @@ subroutine MPI_File_read_at_all_begin_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_all_begin_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_at_all_begin_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_at_all_begin_f08ts( &
   fh, &
@@ -15635,7 +16340,9 @@ subroutine PMPI_File_read_at_all_begin_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_all_begin_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_at_all_begin_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_at_all_begin_c_f08ts( &
   fh, &
@@ -15697,7 +16404,9 @@ subroutine PMPI_File_read_at_all_begin_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_all_begin_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_at_all_end_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_at_all_end_f08ts( &
   fh, &
@@ -15747,7 +16456,9 @@ subroutine MPI_File_read_at_all_end_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_at_all_end_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_at_all_end_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_at_all_end_f08ts( &
   fh, &
@@ -15797,7 +16508,9 @@ subroutine PMPI_File_read_at_all_end_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_at_all_end_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_ordered_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_ordered_f08ts( &
   fh, &
@@ -15859,7 +16572,9 @@ subroutine MPI_File_read_ordered_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_ordered_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_ordered_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_ordered_c_f08ts( &
   fh, &
@@ -15921,7 +16636,9 @@ subroutine MPI_File_read_ordered_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_ordered_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_ordered_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_ordered_f08ts( &
   fh, &
@@ -15983,7 +16700,9 @@ subroutine PMPI_File_read_ordered_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_ordered_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_ordered_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_ordered_c_f08ts( &
   fh, &
@@ -16045,7 +16764,9 @@ subroutine PMPI_File_read_ordered_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_ordered_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_ordered_begin_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_ordered_begin_f08ts( &
   fh, &
@@ -16101,7 +16822,9 @@ subroutine MPI_File_read_ordered_begin_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_ordered_begin_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_ordered_begin_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_ordered_begin_c_f08ts( &
   fh, &
@@ -16157,7 +16880,9 @@ subroutine MPI_File_read_ordered_begin_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_ordered_begin_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_ordered_begin_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_ordered_begin_f08ts( &
   fh, &
@@ -16213,7 +16938,9 @@ subroutine PMPI_File_read_ordered_begin_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_ordered_begin_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_ordered_begin_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_ordered_begin_c_f08ts( &
   fh, &
@@ -16269,7 +16996,9 @@ subroutine PMPI_File_read_ordered_begin_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_ordered_begin_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_ordered_end_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_ordered_end_f08ts( &
   fh, &
@@ -16319,7 +17048,9 @@ subroutine MPI_File_read_ordered_end_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_ordered_end_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_ordered_end_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_ordered_end_f08ts( &
   fh, &
@@ -16369,7 +17100,9 @@ subroutine PMPI_File_read_ordered_end_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_ordered_end_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_shared_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_shared_f08ts( &
   fh, &
@@ -16431,7 +17164,9 @@ subroutine MPI_File_read_shared_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_shared_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_read_shared_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_read_shared_c_f08ts( &
   fh, &
@@ -16493,7 +17228,9 @@ subroutine MPI_File_read_shared_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_read_shared_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_shared_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_shared_f08ts( &
   fh, &
@@ -16555,7 +17292,9 @@ subroutine PMPI_File_read_shared_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_shared_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_read_shared_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_read_shared_c_f08ts( &
   fh, &
@@ -16617,7 +17356,9 @@ subroutine PMPI_File_read_shared_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_read_shared_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_seek_f08
 subroutine MPI_File_seek_f08( &
   fh, &
   offset, &
@@ -16641,7 +17382,9 @@ subroutine MPI_File_seek_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_seek_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_seek_f08
 subroutine PMPI_File_seek_f08( &
   fh, &
   offset, &
@@ -16665,7 +17408,9 @@ subroutine PMPI_File_seek_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_seek_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_seek_shared_f08
 subroutine MPI_File_seek_shared_f08( &
   fh, &
   offset, &
@@ -16689,7 +17434,9 @@ subroutine MPI_File_seek_shared_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_seek_shared_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_seek_shared_f08
 subroutine PMPI_File_seek_shared_f08( &
   fh, &
   offset, &
@@ -16713,7 +17460,9 @@ subroutine PMPI_File_seek_shared_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_seek_shared_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_set_atomicity_f08
 subroutine MPI_File_set_atomicity_f08( &
   fh, &
   flag, &
@@ -16734,7 +17483,9 @@ subroutine MPI_File_set_atomicity_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_set_atomicity_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_set_atomicity_f08
 subroutine PMPI_File_set_atomicity_f08( &
   fh, &
   flag, &
@@ -16755,7 +17506,9 @@ subroutine PMPI_File_set_atomicity_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_set_atomicity_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_set_errhandler_f08
 subroutine MPI_File_set_errhandler_f08( &
   file, &
   errhandler, &
@@ -16776,7 +17529,9 @@ subroutine MPI_File_set_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_set_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_set_errhandler_f08
 subroutine PMPI_File_set_errhandler_f08( &
   file, &
   errhandler, &
@@ -16797,7 +17552,9 @@ subroutine PMPI_File_set_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_set_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_set_info_f08
 subroutine MPI_File_set_info_f08( &
   fh, &
   info, &
@@ -16818,7 +17575,9 @@ subroutine MPI_File_set_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_set_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_set_info_f08
 subroutine PMPI_File_set_info_f08( &
   fh, &
   info, &
@@ -16839,7 +17598,9 @@ subroutine PMPI_File_set_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_set_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_set_size_f08
 subroutine MPI_File_set_size_f08( &
   fh, &
   size, &
@@ -16860,7 +17621,9 @@ subroutine MPI_File_set_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_set_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_set_size_f08
 subroutine PMPI_File_set_size_f08( &
   fh, &
   size, &
@@ -16881,7 +17644,9 @@ subroutine PMPI_File_set_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_set_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_set_view_f08
 subroutine MPI_File_set_view_f08( &
   fh, &
   disp, &
@@ -16914,7 +17679,9 @@ subroutine MPI_File_set_view_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_set_view_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_set_view_f08
 subroutine PMPI_File_set_view_f08( &
   fh, &
   disp, &
@@ -16947,7 +17714,9 @@ subroutine PMPI_File_set_view_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_set_view_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_sync_f08
 subroutine MPI_File_sync_f08( &
   fh, &
   ierror &
@@ -16965,7 +17734,9 @@ subroutine MPI_File_sync_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_sync_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_sync_f08
 subroutine PMPI_File_sync_f08( &
   fh, &
   ierror &
@@ -16983,7 +17754,9 @@ subroutine PMPI_File_sync_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_sync_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_f08ts( &
   fh, &
@@ -17045,7 +17818,9 @@ subroutine MPI_File_write_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_c_f08ts( &
   fh, &
@@ -17107,7 +17882,9 @@ subroutine MPI_File_write_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_f08ts( &
   fh, &
@@ -17169,7 +17946,9 @@ subroutine PMPI_File_write_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_c_f08ts( &
   fh, &
@@ -17231,7 +18010,9 @@ subroutine PMPI_File_write_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_all_f08ts( &
   fh, &
@@ -17293,7 +18074,9 @@ subroutine MPI_File_write_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_all_c_f08ts( &
   fh, &
@@ -17355,7 +18138,9 @@ subroutine MPI_File_write_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_all_f08ts( &
   fh, &
@@ -17417,7 +18202,9 @@ subroutine PMPI_File_write_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_all_c_f08ts( &
   fh, &
@@ -17479,7 +18266,9 @@ subroutine PMPI_File_write_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_all_begin_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_all_begin_f08ts( &
   fh, &
@@ -17535,7 +18324,9 @@ subroutine MPI_File_write_all_begin_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_all_begin_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_all_begin_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_all_begin_c_f08ts( &
   fh, &
@@ -17591,7 +18382,9 @@ subroutine MPI_File_write_all_begin_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_all_begin_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_all_begin_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_all_begin_f08ts( &
   fh, &
@@ -17647,7 +18440,9 @@ subroutine PMPI_File_write_all_begin_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_all_begin_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_all_begin_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_all_begin_c_f08ts( &
   fh, &
@@ -17703,7 +18498,9 @@ subroutine PMPI_File_write_all_begin_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_all_begin_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_all_end_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_all_end_f08ts( &
   fh, &
@@ -17753,7 +18550,9 @@ subroutine MPI_File_write_all_end_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_all_end_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_all_end_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_all_end_f08ts( &
   fh, &
@@ -17803,7 +18602,9 @@ subroutine PMPI_File_write_all_end_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_all_end_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_at_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_at_f08ts( &
   fh, &
@@ -17871,7 +18672,9 @@ subroutine MPI_File_write_at_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_at_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_at_c_f08ts( &
   fh, &
@@ -17939,7 +18742,9 @@ subroutine MPI_File_write_at_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_at_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_at_f08ts( &
   fh, &
@@ -18007,7 +18812,9 @@ subroutine PMPI_File_write_at_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_at_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_at_c_f08ts( &
   fh, &
@@ -18075,7 +18882,9 @@ subroutine PMPI_File_write_at_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_at_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_at_all_f08ts( &
   fh, &
@@ -18143,7 +18952,9 @@ subroutine MPI_File_write_at_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_at_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_at_all_c_f08ts( &
   fh, &
@@ -18211,7 +19022,9 @@ subroutine MPI_File_write_at_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_at_all_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_at_all_f08ts( &
   fh, &
@@ -18279,7 +19092,9 @@ subroutine PMPI_File_write_at_all_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_all_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_at_all_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_at_all_c_f08ts( &
   fh, &
@@ -18347,7 +19162,9 @@ subroutine PMPI_File_write_at_all_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_all_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_at_all_begin_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_at_all_begin_f08ts( &
   fh, &
@@ -18409,7 +19226,9 @@ subroutine MPI_File_write_at_all_begin_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_all_begin_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_at_all_begin_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_at_all_begin_c_f08ts( &
   fh, &
@@ -18471,7 +19290,9 @@ subroutine MPI_File_write_at_all_begin_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_all_begin_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_at_all_begin_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_at_all_begin_f08ts( &
   fh, &
@@ -18533,7 +19354,9 @@ subroutine PMPI_File_write_at_all_begin_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_all_begin_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_at_all_begin_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_at_all_begin_c_f08ts( &
   fh, &
@@ -18595,7 +19418,9 @@ subroutine PMPI_File_write_at_all_begin_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_all_begin_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_at_all_end_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_at_all_end_f08ts( &
   fh, &
@@ -18645,7 +19470,9 @@ subroutine MPI_File_write_at_all_end_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_at_all_end_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_at_all_end_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_at_all_end_f08ts( &
   fh, &
@@ -18695,7 +19522,9 @@ subroutine PMPI_File_write_at_all_end_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_at_all_end_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_ordered_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_ordered_f08ts( &
   fh, &
@@ -18757,7 +19586,9 @@ subroutine MPI_File_write_ordered_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_ordered_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_ordered_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_ordered_c_f08ts( &
   fh, &
@@ -18819,7 +19650,9 @@ subroutine MPI_File_write_ordered_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_ordered_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_ordered_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_ordered_f08ts( &
   fh, &
@@ -18881,7 +19714,9 @@ subroutine PMPI_File_write_ordered_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_ordered_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_ordered_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_ordered_c_f08ts( &
   fh, &
@@ -18943,7 +19778,9 @@ subroutine PMPI_File_write_ordered_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_ordered_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_ordered_begin_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_ordered_begin_f08ts( &
   fh, &
@@ -18999,7 +19836,9 @@ subroutine MPI_File_write_ordered_begin_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_ordered_begin_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_ordered_begin_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_ordered_begin_c_f08ts( &
   fh, &
@@ -19055,7 +19894,9 @@ subroutine MPI_File_write_ordered_begin_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_ordered_begin_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_ordered_begin_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_ordered_begin_f08ts( &
   fh, &
@@ -19111,7 +19952,9 @@ subroutine PMPI_File_write_ordered_begin_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_ordered_begin_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_ordered_begin_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_ordered_begin_c_f08ts( &
   fh, &
@@ -19167,7 +20010,9 @@ subroutine PMPI_File_write_ordered_begin_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_ordered_begin_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_ordered_end_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_ordered_end_f08ts( &
   fh, &
@@ -19217,7 +20062,9 @@ subroutine MPI_File_write_ordered_end_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_ordered_end_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_ordered_end_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_ordered_end_f08ts( &
   fh, &
@@ -19267,7 +20114,9 @@ subroutine PMPI_File_write_ordered_end_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_ordered_end_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_shared_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_shared_f08ts( &
   fh, &
@@ -19329,7 +20178,9 @@ subroutine MPI_File_write_shared_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_shared_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_File_write_shared_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_File_write_shared_c_f08ts( &
   fh, &
@@ -19391,7 +20242,9 @@ subroutine MPI_File_write_shared_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_File_write_shared_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_shared_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_shared_f08ts( &
   fh, &
@@ -19453,7 +20306,9 @@ subroutine PMPI_File_write_shared_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_shared_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_File_write_shared_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_File_write_shared_c_f08ts( &
   fh, &
@@ -19515,7 +20370,9 @@ subroutine PMPI_File_write_shared_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_File_write_shared_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Finalize_f08
 subroutine MPI_Finalize_f08( &
   ierror &
 )
@@ -19530,7 +20387,9 @@ subroutine MPI_Finalize_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Finalize_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Finalize_f08
 subroutine PMPI_Finalize_f08( &
   ierror &
 )
@@ -19545,7 +20404,9 @@ subroutine PMPI_Finalize_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Finalize_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Finalized_f08
 subroutine MPI_Finalized_f08( &
   flag, &
   ierror &
@@ -19563,7 +20424,9 @@ subroutine MPI_Finalized_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Finalized_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Finalized_f08
 subroutine PMPI_Finalized_f08( &
   flag, &
   ierror &
@@ -19581,7 +20444,9 @@ subroutine PMPI_Finalized_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Finalized_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Free_mem_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Free_mem_f08ts( &
   base, &
@@ -19619,7 +20484,9 @@ subroutine MPI_Free_mem_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Free_mem_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Free_mem_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Free_mem_f08ts( &
   base, &
@@ -19657,7 +20524,9 @@ subroutine PMPI_Free_mem_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Free_mem_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Gather_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Gather_f08ts( &
   sendbuf, &
@@ -19737,7 +20606,9 @@ subroutine MPI_Gather_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gather_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Gather_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Gather_c_f08ts( &
   sendbuf, &
@@ -19817,7 +20688,9 @@ subroutine MPI_Gather_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gather_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Gather_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Gather_f08ts( &
   sendbuf, &
@@ -19897,7 +20770,9 @@ subroutine PMPI_Gather_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gather_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Gather_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Gather_c_f08ts( &
   sendbuf, &
@@ -19977,7 +20852,9 @@ subroutine PMPI_Gather_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gather_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Gather_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Gather_init_f08ts( &
   sendbuf, &
@@ -20069,7 +20946,9 @@ subroutine MPI_Gather_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gather_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Gather_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Gather_init_c_f08ts( &
   sendbuf, &
@@ -20161,7 +21040,9 @@ subroutine MPI_Gather_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gather_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Gather_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Gather_init_f08ts( &
   sendbuf, &
@@ -20253,7 +21134,9 @@ subroutine PMPI_Gather_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gather_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Gather_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Gather_init_c_f08ts( &
   sendbuf, &
@@ -20345,7 +21228,9 @@ subroutine PMPI_Gather_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gather_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Gatherv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Gatherv_f08ts( &
   sendbuf, &
@@ -20431,7 +21316,9 @@ subroutine MPI_Gatherv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gatherv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Gatherv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Gatherv_c_f08ts( &
   sendbuf, &
@@ -20517,7 +21404,9 @@ subroutine MPI_Gatherv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gatherv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Gatherv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Gatherv_f08ts( &
   sendbuf, &
@@ -20603,7 +21492,9 @@ subroutine PMPI_Gatherv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gatherv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Gatherv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Gatherv_c_f08ts( &
   sendbuf, &
@@ -20689,7 +21580,9 @@ subroutine PMPI_Gatherv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gatherv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Gatherv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Gatherv_init_f08ts( &
   sendbuf, &
@@ -20787,7 +21680,9 @@ subroutine MPI_Gatherv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gatherv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Gatherv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Gatherv_init_c_f08ts( &
   sendbuf, &
@@ -20885,7 +21780,9 @@ subroutine MPI_Gatherv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Gatherv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Gatherv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Gatherv_init_f08ts( &
   sendbuf, &
@@ -20983,7 +21880,9 @@ subroutine PMPI_Gatherv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gatherv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Gatherv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Gatherv_init_c_f08ts( &
   sendbuf, &
@@ -21081,7 +21980,9 @@ subroutine PMPI_Gatherv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Gatherv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Get_f08ts( &
   origin_addr, &
@@ -21161,7 +22062,9 @@ subroutine MPI_Get_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Get_c_f08ts( &
   origin_addr, &
@@ -21241,7 +22144,9 @@ subroutine MPI_Get_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Get_f08ts( &
   origin_addr, &
@@ -21321,7 +22226,9 @@ subroutine PMPI_Get_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Get_c_f08ts( &
   origin_addr, &
@@ -21401,7 +22308,9 @@ subroutine PMPI_Get_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_accumulate_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Get_accumulate_f08ts( &
   origin_addr, &
@@ -21505,7 +22414,9 @@ subroutine MPI_Get_accumulate_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_accumulate_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_accumulate_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Get_accumulate_c_f08ts( &
   origin_addr, &
@@ -21609,7 +22520,9 @@ subroutine MPI_Get_accumulate_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_accumulate_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_accumulate_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Get_accumulate_f08ts( &
   origin_addr, &
@@ -21713,7 +22626,9 @@ subroutine PMPI_Get_accumulate_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_accumulate_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_accumulate_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Get_accumulate_c_f08ts( &
   origin_addr, &
@@ -21817,7 +22732,9 @@ subroutine PMPI_Get_accumulate_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_accumulate_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_address_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Get_address_f08ts( &
   location, &
@@ -21861,7 +22778,9 @@ subroutine MPI_Get_address_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_address_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_address_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Get_address_f08ts( &
   location, &
@@ -21905,7 +22824,9 @@ subroutine PMPI_Get_address_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_address_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_count_f08
 subroutine MPI_Get_count_f08( &
   status, &
   datatype, &
@@ -21929,7 +22850,9 @@ subroutine MPI_Get_count_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_count_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_count_c_f08
 subroutine MPI_Get_count_c_f08( &
   status, &
   datatype, &
@@ -21953,7 +22876,9 @@ subroutine MPI_Get_count_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_count_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_count_f08
 subroutine PMPI_Get_count_f08( &
   status, &
   datatype, &
@@ -21977,7 +22902,9 @@ subroutine PMPI_Get_count_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_count_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_count_c_f08
 subroutine PMPI_Get_count_c_f08( &
   status, &
   datatype, &
@@ -22001,7 +22928,9 @@ subroutine PMPI_Get_count_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_count_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_elements_f08
 subroutine MPI_Get_elements_f08( &
   status, &
   datatype, &
@@ -22025,7 +22954,9 @@ subroutine MPI_Get_elements_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_elements_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_elements_c_f08
 subroutine MPI_Get_elements_c_f08( &
   status, &
   datatype, &
@@ -22049,7 +22980,9 @@ subroutine MPI_Get_elements_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_elements_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_elements_f08
 subroutine PMPI_Get_elements_f08( &
   status, &
   datatype, &
@@ -22073,7 +23006,9 @@ subroutine PMPI_Get_elements_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_elements_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_elements_c_f08
 subroutine PMPI_Get_elements_c_f08( &
   status, &
   datatype, &
@@ -22097,7 +23032,9 @@ subroutine PMPI_Get_elements_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_elements_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_elements_x_f08
 subroutine MPI_Get_elements_x_f08( &
   status, &
   datatype, &
@@ -22121,7 +23058,9 @@ subroutine MPI_Get_elements_x_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_elements_x_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_elements_x_f08
 subroutine PMPI_Get_elements_x_f08( &
   status, &
   datatype, &
@@ -22145,7 +23084,9 @@ subroutine PMPI_Get_elements_x_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_elements_x_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_hw_resource_info_f08
 subroutine MPI_Get_hw_resource_info_f08( &
   hw_info, &
   ierror &
@@ -22163,7 +23104,9 @@ subroutine MPI_Get_hw_resource_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_hw_resource_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_hw_resource_info_f08
 subroutine PMPI_Get_hw_resource_info_f08( &
   hw_info, &
   ierror &
@@ -22181,7 +23124,9 @@ subroutine PMPI_Get_hw_resource_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_hw_resource_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_library_version_f08
 subroutine MPI_Get_library_version_f08( &
   version, &
   resultlen, &
@@ -22202,7 +23147,9 @@ subroutine MPI_Get_library_version_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_library_version_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_library_version_f08
 subroutine PMPI_Get_library_version_f08( &
   version, &
   resultlen, &
@@ -22223,7 +23170,9 @@ subroutine PMPI_Get_library_version_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_library_version_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_processor_name_f08
 subroutine MPI_Get_processor_name_f08( &
   name, &
   resultlen, &
@@ -22244,7 +23193,9 @@ subroutine MPI_Get_processor_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_processor_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_processor_name_f08
 subroutine PMPI_Get_processor_name_f08( &
   name, &
   resultlen, &
@@ -22265,7 +23216,9 @@ subroutine PMPI_Get_processor_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_processor_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Get_version_f08
 subroutine MPI_Get_version_f08( &
   version, &
   subversion, &
@@ -22286,7 +23239,9 @@ subroutine MPI_Get_version_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Get_version_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Get_version_f08
 subroutine PMPI_Get_version_f08( &
   version, &
   subversion, &
@@ -22307,7 +23262,9 @@ subroutine PMPI_Get_version_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Get_version_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Graph_create_f08
 subroutine MPI_Graph_create_f08( &
   comm_old, &
   nnodes, &
@@ -22340,7 +23297,9 @@ subroutine MPI_Graph_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Graph_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Graph_create_f08
 subroutine PMPI_Graph_create_f08( &
   comm_old, &
   nnodes, &
@@ -22373,7 +23332,9 @@ subroutine PMPI_Graph_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Graph_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Graph_get_f08
 subroutine MPI_Graph_get_f08( &
   comm, &
   maxindex, &
@@ -22403,7 +23364,9 @@ subroutine MPI_Graph_get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Graph_get_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Graph_get_f08
 subroutine PMPI_Graph_get_f08( &
   comm, &
   maxindex, &
@@ -22433,7 +23396,9 @@ subroutine PMPI_Graph_get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Graph_get_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Graph_map_f08
 subroutine MPI_Graph_map_f08( &
   comm, &
   nnodes, &
@@ -22463,7 +23428,9 @@ subroutine MPI_Graph_map_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Graph_map_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Graph_map_f08
 subroutine PMPI_Graph_map_f08( &
   comm, &
   nnodes, &
@@ -22493,7 +23460,9 @@ subroutine PMPI_Graph_map_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Graph_map_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Graph_neighbors_f08
 subroutine MPI_Graph_neighbors_f08( &
   comm, &
   rank, &
@@ -22520,7 +23489,9 @@ subroutine MPI_Graph_neighbors_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Graph_neighbors_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Graph_neighbors_f08
 subroutine PMPI_Graph_neighbors_f08( &
   comm, &
   rank, &
@@ -22547,7 +23518,9 @@ subroutine PMPI_Graph_neighbors_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Graph_neighbors_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Graph_neighbors_count_f08
 subroutine MPI_Graph_neighbors_count_f08( &
   comm, &
   rank, &
@@ -22571,7 +23544,9 @@ subroutine MPI_Graph_neighbors_count_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Graph_neighbors_count_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Graph_neighbors_count_f08
 subroutine PMPI_Graph_neighbors_count_f08( &
   comm, &
   rank, &
@@ -22595,7 +23570,9 @@ subroutine PMPI_Graph_neighbors_count_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Graph_neighbors_count_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Graphdims_get_f08
 subroutine MPI_Graphdims_get_f08( &
   comm, &
   nnodes, &
@@ -22619,7 +23596,9 @@ subroutine MPI_Graphdims_get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Graphdims_get_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Graphdims_get_f08
 subroutine PMPI_Graphdims_get_f08( &
   comm, &
   nnodes, &
@@ -22643,7 +23622,9 @@ subroutine PMPI_Graphdims_get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Graphdims_get_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Grequest_complete_f08
 subroutine MPI_Grequest_complete_f08( &
   request, &
   ierror &
@@ -22661,7 +23642,9 @@ subroutine MPI_Grequest_complete_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Grequest_complete_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Grequest_complete_f08
 subroutine PMPI_Grequest_complete_f08( &
   request, &
   ierror &
@@ -22679,7 +23662,9 @@ subroutine PMPI_Grequest_complete_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Grequest_complete_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Grequest_start_f08
 subroutine MPI_Grequest_start_f08( &
   query_fn, &
   free_fn, &
@@ -22709,7 +23694,9 @@ subroutine MPI_Grequest_start_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Grequest_start_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Grequest_start_f08
 subroutine PMPI_Grequest_start_f08( &
   query_fn, &
   free_fn, &
@@ -22739,7 +23726,9 @@ subroutine PMPI_Grequest_start_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Grequest_start_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_compare_f08
 subroutine MPI_Group_compare_f08( &
   group1, &
   group2, &
@@ -22763,7 +23752,9 @@ subroutine MPI_Group_compare_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_compare_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_compare_f08
 subroutine PMPI_Group_compare_f08( &
   group1, &
   group2, &
@@ -22787,7 +23778,9 @@ subroutine PMPI_Group_compare_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_compare_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_difference_f08
 subroutine MPI_Group_difference_f08( &
   group1, &
   group2, &
@@ -22811,7 +23804,9 @@ subroutine MPI_Group_difference_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_difference_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_difference_f08
 subroutine PMPI_Group_difference_f08( &
   group1, &
   group2, &
@@ -22835,7 +23830,9 @@ subroutine PMPI_Group_difference_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_difference_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_excl_f08
 subroutine MPI_Group_excl_f08( &
   group, &
   n, &
@@ -22862,7 +23859,9 @@ subroutine MPI_Group_excl_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_excl_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_excl_f08
 subroutine PMPI_Group_excl_f08( &
   group, &
   n, &
@@ -22889,7 +23888,9 @@ subroutine PMPI_Group_excl_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_excl_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_free_f08
 subroutine MPI_Group_free_f08( &
   group, &
   ierror &
@@ -22907,7 +23908,9 @@ subroutine MPI_Group_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_free_f08
 subroutine PMPI_Group_free_f08( &
   group, &
   ierror &
@@ -22925,7 +23928,9 @@ subroutine PMPI_Group_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_from_session_pset_f08
 subroutine MPI_Group_from_session_pset_f08( &
   session, &
   pset_name, &
@@ -22949,7 +23954,9 @@ subroutine MPI_Group_from_session_pset_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_from_session_pset_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_from_session_pset_f08
 subroutine PMPI_Group_from_session_pset_f08( &
   session, &
   pset_name, &
@@ -22973,7 +23980,9 @@ subroutine PMPI_Group_from_session_pset_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_from_session_pset_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_incl_f08
 subroutine MPI_Group_incl_f08( &
   group, &
   n, &
@@ -23000,7 +24009,9 @@ subroutine MPI_Group_incl_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_incl_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_incl_f08
 subroutine PMPI_Group_incl_f08( &
   group, &
   n, &
@@ -23027,7 +24038,9 @@ subroutine PMPI_Group_incl_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_incl_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_intersection_f08
 subroutine MPI_Group_intersection_f08( &
   group1, &
   group2, &
@@ -23051,7 +24064,9 @@ subroutine MPI_Group_intersection_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_intersection_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_intersection_f08
 subroutine PMPI_Group_intersection_f08( &
   group1, &
   group2, &
@@ -23075,7 +24090,9 @@ subroutine PMPI_Group_intersection_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_intersection_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_range_excl_f08
 subroutine MPI_Group_range_excl_f08( &
   group, &
   n, &
@@ -23102,7 +24119,9 @@ subroutine MPI_Group_range_excl_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_range_excl_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_range_excl_f08
 subroutine PMPI_Group_range_excl_f08( &
   group, &
   n, &
@@ -23129,7 +24148,9 @@ subroutine PMPI_Group_range_excl_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_range_excl_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_range_incl_f08
 subroutine MPI_Group_range_incl_f08( &
   group, &
   n, &
@@ -23156,7 +24177,9 @@ subroutine MPI_Group_range_incl_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_range_incl_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_range_incl_f08
 subroutine PMPI_Group_range_incl_f08( &
   group, &
   n, &
@@ -23183,7 +24206,9 @@ subroutine PMPI_Group_range_incl_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_range_incl_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_rank_f08
 subroutine MPI_Group_rank_f08( &
   group, &
   rank, &
@@ -23204,7 +24229,9 @@ subroutine MPI_Group_rank_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_rank_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_rank_f08
 subroutine PMPI_Group_rank_f08( &
   group, &
   rank, &
@@ -23225,7 +24252,9 @@ subroutine PMPI_Group_rank_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_rank_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_size_f08
 subroutine MPI_Group_size_f08( &
   group, &
   size, &
@@ -23246,7 +24275,9 @@ subroutine MPI_Group_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_size_f08
 subroutine PMPI_Group_size_f08( &
   group, &
   size, &
@@ -23267,7 +24298,9 @@ subroutine PMPI_Group_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_translate_ranks_f08
 subroutine MPI_Group_translate_ranks_f08( &
   group1, &
   n, &
@@ -23297,7 +24330,9 @@ subroutine MPI_Group_translate_ranks_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_translate_ranks_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_translate_ranks_f08
 subroutine PMPI_Group_translate_ranks_f08( &
   group1, &
   n, &
@@ -23327,7 +24362,9 @@ subroutine PMPI_Group_translate_ranks_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_translate_ranks_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Group_union_f08
 subroutine MPI_Group_union_f08( &
   group1, &
   group2, &
@@ -23351,7 +24388,9 @@ subroutine MPI_Group_union_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Group_union_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Group_union_f08
 subroutine PMPI_Group_union_f08( &
   group1, &
   group2, &
@@ -23375,7 +24414,9 @@ subroutine PMPI_Group_union_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Group_union_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iallgather_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iallgather_f08ts( &
   sendbuf, &
@@ -23455,7 +24496,9 @@ subroutine MPI_Iallgather_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iallgather_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iallgather_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iallgather_c_f08ts( &
   sendbuf, &
@@ -23535,7 +24578,9 @@ subroutine MPI_Iallgather_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iallgather_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iallgather_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iallgather_f08ts( &
   sendbuf, &
@@ -23615,7 +24660,9 @@ subroutine PMPI_Iallgather_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iallgather_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iallgather_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iallgather_c_f08ts( &
   sendbuf, &
@@ -23695,7 +24742,9 @@ subroutine PMPI_Iallgather_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iallgather_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iallgatherv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iallgatherv_f08ts( &
   sendbuf, &
@@ -23781,7 +24830,9 @@ subroutine MPI_Iallgatherv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iallgatherv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iallgatherv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iallgatherv_c_f08ts( &
   sendbuf, &
@@ -23867,7 +24918,9 @@ subroutine MPI_Iallgatherv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iallgatherv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iallgatherv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iallgatherv_f08ts( &
   sendbuf, &
@@ -23953,7 +25006,9 @@ subroutine PMPI_Iallgatherv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iallgatherv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iallgatherv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iallgatherv_c_f08ts( &
   sendbuf, &
@@ -24039,7 +25094,9 @@ subroutine PMPI_Iallgatherv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iallgatherv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iallreduce_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iallreduce_f08ts( &
   sendbuf, &
@@ -24113,7 +25170,9 @@ subroutine MPI_Iallreduce_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iallreduce_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iallreduce_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iallreduce_c_f08ts( &
   sendbuf, &
@@ -24187,7 +25246,9 @@ subroutine MPI_Iallreduce_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iallreduce_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iallreduce_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iallreduce_f08ts( &
   sendbuf, &
@@ -24261,7 +25322,9 @@ subroutine PMPI_Iallreduce_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iallreduce_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iallreduce_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iallreduce_c_f08ts( &
   sendbuf, &
@@ -24335,7 +25398,9 @@ subroutine PMPI_Iallreduce_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iallreduce_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ialltoall_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ialltoall_f08ts( &
   sendbuf, &
@@ -24415,7 +25480,9 @@ subroutine MPI_Ialltoall_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ialltoall_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ialltoall_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ialltoall_c_f08ts( &
   sendbuf, &
@@ -24495,7 +25562,9 @@ subroutine MPI_Ialltoall_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ialltoall_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ialltoall_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ialltoall_f08ts( &
   sendbuf, &
@@ -24575,7 +25644,9 @@ subroutine PMPI_Ialltoall_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ialltoall_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ialltoall_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ialltoall_c_f08ts( &
   sendbuf, &
@@ -24655,7 +25726,9 @@ subroutine PMPI_Ialltoall_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ialltoall_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ialltoallv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ialltoallv_f08ts( &
   sendbuf, &
@@ -24747,7 +25820,9 @@ subroutine MPI_Ialltoallv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ialltoallv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ialltoallv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ialltoallv_c_f08ts( &
   sendbuf, &
@@ -24839,7 +25914,9 @@ subroutine MPI_Ialltoallv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ialltoallv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ialltoallv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ialltoallv_f08ts( &
   sendbuf, &
@@ -24931,7 +26008,9 @@ subroutine PMPI_Ialltoallv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ialltoallv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ialltoallv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ialltoallv_c_f08ts( &
   sendbuf, &
@@ -25023,7 +26102,9 @@ subroutine PMPI_Ialltoallv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ialltoallv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ialltoallw_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ialltoallw_f08ts( &
   sendbuf, &
@@ -25115,7 +26196,9 @@ subroutine MPI_Ialltoallw_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ialltoallw_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ialltoallw_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ialltoallw_c_f08ts( &
   sendbuf, &
@@ -25207,7 +26290,9 @@ subroutine MPI_Ialltoallw_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ialltoallw_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ialltoallw_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ialltoallw_f08ts( &
   sendbuf, &
@@ -25299,7 +26384,9 @@ subroutine PMPI_Ialltoallw_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ialltoallw_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ialltoallw_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ialltoallw_c_f08ts( &
   sendbuf, &
@@ -25391,7 +26478,9 @@ subroutine PMPI_Ialltoallw_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ialltoallw_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ibarrier_f08
 subroutine MPI_Ibarrier_f08( &
   comm, &
   request, &
@@ -25412,7 +26501,9 @@ subroutine MPI_Ibarrier_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ibarrier_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ibarrier_f08
 subroutine PMPI_Ibarrier_f08( &
   comm, &
   request, &
@@ -25433,7 +26524,9 @@ subroutine PMPI_Ibarrier_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ibarrier_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ibcast_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ibcast_f08ts( &
   buffer, &
@@ -25501,7 +26594,9 @@ subroutine MPI_Ibcast_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ibcast_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ibcast_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ibcast_c_f08ts( &
   buffer, &
@@ -25569,7 +26664,9 @@ subroutine MPI_Ibcast_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ibcast_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ibcast_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ibcast_f08ts( &
   buffer, &
@@ -25637,7 +26734,9 @@ subroutine PMPI_Ibcast_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ibcast_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ibcast_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ibcast_c_f08ts( &
   buffer, &
@@ -25705,7 +26804,9 @@ subroutine PMPI_Ibcast_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ibcast_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ibsend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ibsend_f08ts( &
   buf, &
@@ -25779,7 +26880,9 @@ subroutine MPI_Ibsend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ibsend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ibsend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ibsend_c_f08ts( &
   buf, &
@@ -25853,7 +26956,9 @@ subroutine MPI_Ibsend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ibsend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ibsend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ibsend_f08ts( &
   buf, &
@@ -25927,7 +27032,9 @@ subroutine PMPI_Ibsend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ibsend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ibsend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ibsend_c_f08ts( &
   buf, &
@@ -26001,7 +27108,9 @@ subroutine PMPI_Ibsend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ibsend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iexscan_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iexscan_f08ts( &
   sendbuf, &
@@ -26075,7 +27184,9 @@ subroutine MPI_Iexscan_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iexscan_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iexscan_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iexscan_c_f08ts( &
   sendbuf, &
@@ -26149,7 +27260,9 @@ subroutine MPI_Iexscan_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iexscan_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iexscan_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iexscan_f08ts( &
   sendbuf, &
@@ -26223,7 +27336,9 @@ subroutine PMPI_Iexscan_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iexscan_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iexscan_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iexscan_c_f08ts( &
   sendbuf, &
@@ -26297,7 +27412,9 @@ subroutine PMPI_Iexscan_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iexscan_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Igather_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Igather_f08ts( &
   sendbuf, &
@@ -26383,7 +27500,9 @@ subroutine MPI_Igather_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Igather_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Igather_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Igather_c_f08ts( &
   sendbuf, &
@@ -26469,7 +27588,9 @@ subroutine MPI_Igather_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Igather_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Igather_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Igather_f08ts( &
   sendbuf, &
@@ -26555,7 +27676,9 @@ subroutine PMPI_Igather_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Igather_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Igather_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Igather_c_f08ts( &
   sendbuf, &
@@ -26641,7 +27764,9 @@ subroutine PMPI_Igather_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Igather_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Igatherv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Igatherv_f08ts( &
   sendbuf, &
@@ -26733,7 +27858,9 @@ subroutine MPI_Igatherv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Igatherv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Igatherv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Igatherv_c_f08ts( &
   sendbuf, &
@@ -26825,7 +27952,9 @@ subroutine MPI_Igatherv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Igatherv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Igatherv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Igatherv_f08ts( &
   sendbuf, &
@@ -26917,7 +28046,9 @@ subroutine PMPI_Igatherv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Igatherv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Igatherv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Igatherv_c_f08ts( &
   sendbuf, &
@@ -27009,7 +28140,9 @@ subroutine PMPI_Igatherv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Igatherv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Improbe_f08
 subroutine MPI_Improbe_f08( &
   source, &
   tag, &
@@ -27042,7 +28175,9 @@ subroutine MPI_Improbe_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Improbe_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Improbe_f08
 subroutine PMPI_Improbe_f08( &
   source, &
   tag, &
@@ -27075,7 +28210,9 @@ subroutine PMPI_Improbe_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Improbe_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Imrecv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Imrecv_f08ts( &
   buf, &
@@ -27137,7 +28274,9 @@ subroutine MPI_Imrecv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Imrecv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Imrecv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Imrecv_c_f08ts( &
   buf, &
@@ -27199,7 +28338,9 @@ subroutine MPI_Imrecv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Imrecv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Imrecv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Imrecv_f08ts( &
   buf, &
@@ -27261,7 +28402,9 @@ subroutine PMPI_Imrecv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Imrecv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Imrecv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Imrecv_c_f08ts( &
   buf, &
@@ -27323,7 +28466,9 @@ subroutine PMPI_Imrecv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Imrecv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ineighbor_allgather_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ineighbor_allgather_f08ts( &
   sendbuf, &
@@ -27403,7 +28548,9 @@ subroutine MPI_Ineighbor_allgather_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_allgather_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ineighbor_allgather_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ineighbor_allgather_c_f08ts( &
   sendbuf, &
@@ -27483,7 +28630,9 @@ subroutine MPI_Ineighbor_allgather_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_allgather_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ineighbor_allgather_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ineighbor_allgather_f08ts( &
   sendbuf, &
@@ -27563,7 +28712,9 @@ subroutine PMPI_Ineighbor_allgather_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_allgather_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ineighbor_allgather_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ineighbor_allgather_c_f08ts( &
   sendbuf, &
@@ -27643,7 +28794,9 @@ subroutine PMPI_Ineighbor_allgather_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_allgather_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ineighbor_allgatherv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ineighbor_allgatherv_f08ts( &
   sendbuf, &
@@ -27729,7 +28882,9 @@ subroutine MPI_Ineighbor_allgatherv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_allgatherv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ineighbor_allgatherv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ineighbor_allgatherv_c_f08ts( &
   sendbuf, &
@@ -27815,7 +28970,9 @@ subroutine MPI_Ineighbor_allgatherv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_allgatherv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ineighbor_allgatherv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ineighbor_allgatherv_f08ts( &
   sendbuf, &
@@ -27901,7 +29058,9 @@ subroutine PMPI_Ineighbor_allgatherv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_allgatherv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ineighbor_allgatherv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ineighbor_allgatherv_c_f08ts( &
   sendbuf, &
@@ -27987,7 +29146,9 @@ subroutine PMPI_Ineighbor_allgatherv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_allgatherv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ineighbor_alltoall_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ineighbor_alltoall_f08ts( &
   sendbuf, &
@@ -28067,7 +29228,9 @@ subroutine MPI_Ineighbor_alltoall_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_alltoall_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ineighbor_alltoall_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ineighbor_alltoall_c_f08ts( &
   sendbuf, &
@@ -28147,7 +29310,9 @@ subroutine MPI_Ineighbor_alltoall_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_alltoall_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ineighbor_alltoall_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ineighbor_alltoall_f08ts( &
   sendbuf, &
@@ -28227,7 +29392,9 @@ subroutine PMPI_Ineighbor_alltoall_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_alltoall_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ineighbor_alltoall_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ineighbor_alltoall_c_f08ts( &
   sendbuf, &
@@ -28307,7 +29474,9 @@ subroutine PMPI_Ineighbor_alltoall_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_alltoall_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ineighbor_alltoallv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ineighbor_alltoallv_f08ts( &
   sendbuf, &
@@ -28399,7 +29568,9 @@ subroutine MPI_Ineighbor_alltoallv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_alltoallv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ineighbor_alltoallv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ineighbor_alltoallv_c_f08ts( &
   sendbuf, &
@@ -28491,7 +29662,9 @@ subroutine MPI_Ineighbor_alltoallv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_alltoallv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ineighbor_alltoallv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ineighbor_alltoallv_f08ts( &
   sendbuf, &
@@ -28583,7 +29756,9 @@ subroutine PMPI_Ineighbor_alltoallv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_alltoallv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ineighbor_alltoallv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ineighbor_alltoallv_c_f08ts( &
   sendbuf, &
@@ -28675,7 +29850,9 @@ subroutine PMPI_Ineighbor_alltoallv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_alltoallv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ineighbor_alltoallw_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ineighbor_alltoallw_f08ts( &
   sendbuf, &
@@ -28767,7 +29944,9 @@ subroutine MPI_Ineighbor_alltoallw_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_alltoallw_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ineighbor_alltoallw_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ineighbor_alltoallw_c_f08ts( &
   sendbuf, &
@@ -28859,7 +30038,9 @@ subroutine MPI_Ineighbor_alltoallw_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ineighbor_alltoallw_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ineighbor_alltoallw_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ineighbor_alltoallw_f08ts( &
   sendbuf, &
@@ -28951,7 +30132,9 @@ subroutine PMPI_Ineighbor_alltoallw_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_alltoallw_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ineighbor_alltoallw_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ineighbor_alltoallw_c_f08ts( &
   sendbuf, &
@@ -29043,7 +30226,9 @@ subroutine PMPI_Ineighbor_alltoallw_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ineighbor_alltoallw_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Info_create_f08
 subroutine MPI_Info_create_f08( &
   info, &
   ierror &
@@ -29061,7 +30246,9 @@ subroutine MPI_Info_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Info_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Info_create_f08
 subroutine PMPI_Info_create_f08( &
   info, &
   ierror &
@@ -29079,7 +30266,9 @@ subroutine PMPI_Info_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Info_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Info_create_env_f08
 subroutine MPI_Info_create_env_f08( &
   info, &
   ierror &
@@ -29097,7 +30286,9 @@ subroutine MPI_Info_create_env_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Info_create_env_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Info_create_env_f08
 subroutine PMPI_Info_create_env_f08( &
   info, &
   ierror &
@@ -29115,7 +30306,9 @@ subroutine PMPI_Info_create_env_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Info_create_env_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Info_delete_f08
 subroutine MPI_Info_delete_f08( &
   info, &
   key, &
@@ -29136,7 +30329,9 @@ subroutine MPI_Info_delete_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Info_delete_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Info_delete_f08
 subroutine PMPI_Info_delete_f08( &
   info, &
   key, &
@@ -29157,7 +30352,9 @@ subroutine PMPI_Info_delete_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Info_delete_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Info_dup_f08
 subroutine MPI_Info_dup_f08( &
   info, &
   newinfo, &
@@ -29178,7 +30375,9 @@ subroutine MPI_Info_dup_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Info_dup_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Info_dup_f08
 subroutine PMPI_Info_dup_f08( &
   info, &
   newinfo, &
@@ -29199,7 +30398,9 @@ subroutine PMPI_Info_dup_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Info_dup_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Info_free_f08
 subroutine MPI_Info_free_f08( &
   info, &
   ierror &
@@ -29217,7 +30418,9 @@ subroutine MPI_Info_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Info_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Info_free_f08
 subroutine PMPI_Info_free_f08( &
   info, &
   ierror &
@@ -29235,7 +30438,9 @@ subroutine PMPI_Info_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Info_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Info_get_f08
 subroutine MPI_Info_get_f08( &
   info, &
   key, &
@@ -29265,7 +30470,9 @@ subroutine MPI_Info_get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Info_get_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Info_get_f08
 subroutine PMPI_Info_get_f08( &
   info, &
   key, &
@@ -29295,7 +30502,9 @@ subroutine PMPI_Info_get_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Info_get_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Info_get_nkeys_f08
 subroutine MPI_Info_get_nkeys_f08( &
   info, &
   nkeys, &
@@ -29316,7 +30525,9 @@ subroutine MPI_Info_get_nkeys_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Info_get_nkeys_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Info_get_nkeys_f08
 subroutine PMPI_Info_get_nkeys_f08( &
   info, &
   nkeys, &
@@ -29337,7 +30548,9 @@ subroutine PMPI_Info_get_nkeys_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Info_get_nkeys_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Info_get_nthkey_f08
 subroutine MPI_Info_get_nthkey_f08( &
   info, &
   n, &
@@ -29361,7 +30574,9 @@ subroutine MPI_Info_get_nthkey_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Info_get_nthkey_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Info_get_nthkey_f08
 subroutine PMPI_Info_get_nthkey_f08( &
   info, &
   n, &
@@ -29385,7 +30600,9 @@ subroutine PMPI_Info_get_nthkey_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Info_get_nthkey_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Info_get_string_f08
 subroutine MPI_Info_get_string_f08( &
   info, &
   key, &
@@ -29415,7 +30632,9 @@ subroutine MPI_Info_get_string_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Info_get_string_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Info_get_string_f08
 subroutine PMPI_Info_get_string_f08( &
   info, &
   key, &
@@ -29445,7 +30664,9 @@ subroutine PMPI_Info_get_string_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Info_get_string_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Info_get_valuelen_f08
 subroutine MPI_Info_get_valuelen_f08( &
   info, &
   key, &
@@ -29472,7 +30693,9 @@ subroutine MPI_Info_get_valuelen_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Info_get_valuelen_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Info_get_valuelen_f08
 subroutine PMPI_Info_get_valuelen_f08( &
   info, &
   key, &
@@ -29499,7 +30722,9 @@ subroutine PMPI_Info_get_valuelen_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Info_get_valuelen_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Info_set_f08
 subroutine MPI_Info_set_f08( &
   info, &
   key, &
@@ -29523,7 +30748,9 @@ subroutine MPI_Info_set_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Info_set_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Info_set_f08
 subroutine PMPI_Info_set_f08( &
   info, &
   key, &
@@ -29547,7 +30774,9 @@ subroutine PMPI_Info_set_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Info_set_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Init_f08
 subroutine MPI_Init_f08( &
   ierror &
 )
@@ -29562,7 +30791,9 @@ subroutine MPI_Init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Init_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Init_f08
 subroutine PMPI_Init_f08( &
   ierror &
 )
@@ -29577,7 +30808,9 @@ subroutine PMPI_Init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Init_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Init_thread_f08
 subroutine MPI_Init_thread_f08( &
   required, &
   provided, &
@@ -29598,7 +30831,9 @@ subroutine MPI_Init_thread_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Init_thread_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Init_thread_f08
 subroutine PMPI_Init_thread_f08( &
   required, &
   provided, &
@@ -29619,7 +30854,9 @@ subroutine PMPI_Init_thread_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Init_thread_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Initialized_f08
 subroutine MPI_Initialized_f08( &
   flag, &
   ierror &
@@ -29637,7 +30874,9 @@ subroutine MPI_Initialized_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Initialized_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Initialized_f08
 subroutine PMPI_Initialized_f08( &
   flag, &
   ierror &
@@ -29655,7 +30894,9 @@ subroutine PMPI_Initialized_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Initialized_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Intercomm_create_f08
 subroutine MPI_Intercomm_create_f08( &
   local_comm, &
   local_leader, &
@@ -29688,7 +30929,9 @@ subroutine MPI_Intercomm_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Intercomm_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Intercomm_create_f08
 subroutine PMPI_Intercomm_create_f08( &
   local_comm, &
   local_leader, &
@@ -29721,7 +30964,9 @@ subroutine PMPI_Intercomm_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Intercomm_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Intercomm_create_from_groups_f08
 subroutine MPI_Intercomm_create_from_groups_f08( &
   local_group, &
   local_leader, &
@@ -29760,7 +31005,9 @@ subroutine MPI_Intercomm_create_from_groups_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Intercomm_create_from_groups_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Intercomm_create_from_groups_f08
 subroutine PMPI_Intercomm_create_from_groups_f08( &
   local_group, &
   local_leader, &
@@ -29799,7 +31046,9 @@ subroutine PMPI_Intercomm_create_from_groups_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Intercomm_create_from_groups_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Intercomm_merge_f08
 subroutine MPI_Intercomm_merge_f08( &
   intercomm, &
   high, &
@@ -29823,7 +31072,9 @@ subroutine MPI_Intercomm_merge_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Intercomm_merge_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Intercomm_merge_f08
 subroutine PMPI_Intercomm_merge_f08( &
   intercomm, &
   high, &
@@ -29847,7 +31098,9 @@ subroutine PMPI_Intercomm_merge_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Intercomm_merge_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iprobe_f08
 subroutine MPI_Iprobe_f08( &
   source, &
   tag, &
@@ -29877,7 +31130,9 @@ subroutine MPI_Iprobe_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iprobe_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iprobe_f08
 subroutine PMPI_Iprobe_f08( &
   source, &
   tag, &
@@ -29907,7 +31162,9 @@ subroutine PMPI_Iprobe_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iprobe_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Irecv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Irecv_f08ts( &
   buf, &
@@ -29981,7 +31238,9 @@ subroutine MPI_Irecv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Irecv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Irecv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Irecv_c_f08ts( &
   buf, &
@@ -30055,7 +31314,9 @@ subroutine MPI_Irecv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Irecv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Irecv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Irecv_f08ts( &
   buf, &
@@ -30129,7 +31390,9 @@ subroutine PMPI_Irecv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Irecv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Irecv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Irecv_c_f08ts( &
   buf, &
@@ -30203,7 +31466,9 @@ subroutine PMPI_Irecv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Irecv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ireduce_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ireduce_f08ts( &
   sendbuf, &
@@ -30283,7 +31548,9 @@ subroutine MPI_Ireduce_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ireduce_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ireduce_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ireduce_c_f08ts( &
   sendbuf, &
@@ -30363,7 +31630,9 @@ subroutine MPI_Ireduce_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ireduce_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ireduce_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ireduce_f08ts( &
   sendbuf, &
@@ -30443,7 +31712,9 @@ subroutine PMPI_Ireduce_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ireduce_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ireduce_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ireduce_c_f08ts( &
   sendbuf, &
@@ -30523,7 +31794,9 @@ subroutine PMPI_Ireduce_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ireduce_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ireduce_scatter_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ireduce_scatter_f08ts( &
   sendbuf, &
@@ -30597,7 +31870,9 @@ subroutine MPI_Ireduce_scatter_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ireduce_scatter_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ireduce_scatter_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ireduce_scatter_c_f08ts( &
   sendbuf, &
@@ -30671,7 +31946,9 @@ subroutine MPI_Ireduce_scatter_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ireduce_scatter_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ireduce_scatter_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ireduce_scatter_f08ts( &
   sendbuf, &
@@ -30745,7 +32022,9 @@ subroutine PMPI_Ireduce_scatter_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ireduce_scatter_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ireduce_scatter_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ireduce_scatter_c_f08ts( &
   sendbuf, &
@@ -30819,7 +32098,9 @@ subroutine PMPI_Ireduce_scatter_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ireduce_scatter_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ireduce_scatter_block_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ireduce_scatter_block_f08ts( &
   sendbuf, &
@@ -30893,7 +32174,9 @@ subroutine MPI_Ireduce_scatter_block_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ireduce_scatter_block_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ireduce_scatter_block_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ireduce_scatter_block_c_f08ts( &
   sendbuf, &
@@ -30967,7 +32250,9 @@ subroutine MPI_Ireduce_scatter_block_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ireduce_scatter_block_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ireduce_scatter_block_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ireduce_scatter_block_f08ts( &
   sendbuf, &
@@ -31041,7 +32326,9 @@ subroutine PMPI_Ireduce_scatter_block_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ireduce_scatter_block_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ireduce_scatter_block_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ireduce_scatter_block_c_f08ts( &
   sendbuf, &
@@ -31115,7 +32402,9 @@ subroutine PMPI_Ireduce_scatter_block_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ireduce_scatter_block_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Irsend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Irsend_f08ts( &
   buf, &
@@ -31189,7 +32478,9 @@ subroutine MPI_Irsend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Irsend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Irsend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Irsend_c_f08ts( &
   buf, &
@@ -31263,7 +32554,9 @@ subroutine MPI_Irsend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Irsend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Irsend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Irsend_f08ts( &
   buf, &
@@ -31337,7 +32630,9 @@ subroutine PMPI_Irsend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Irsend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Irsend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Irsend_c_f08ts( &
   buf, &
@@ -31411,7 +32706,9 @@ subroutine PMPI_Irsend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Irsend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Is_thread_main_f08
 subroutine MPI_Is_thread_main_f08( &
   flag, &
   ierror &
@@ -31429,7 +32726,9 @@ subroutine MPI_Is_thread_main_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Is_thread_main_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Is_thread_main_f08
 subroutine PMPI_Is_thread_main_f08( &
   flag, &
   ierror &
@@ -31447,7 +32746,9 @@ subroutine PMPI_Is_thread_main_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Is_thread_main_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iscan_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iscan_f08ts( &
   sendbuf, &
@@ -31521,7 +32822,9 @@ subroutine MPI_Iscan_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iscan_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iscan_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iscan_c_f08ts( &
   sendbuf, &
@@ -31595,7 +32898,9 @@ subroutine MPI_Iscan_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iscan_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iscan_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iscan_f08ts( &
   sendbuf, &
@@ -31669,7 +32974,9 @@ subroutine PMPI_Iscan_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iscan_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iscan_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iscan_c_f08ts( &
   sendbuf, &
@@ -31743,7 +33050,9 @@ subroutine PMPI_Iscan_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iscan_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iscatter_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iscatter_f08ts( &
   sendbuf, &
@@ -31829,7 +33138,9 @@ subroutine MPI_Iscatter_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iscatter_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iscatter_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iscatter_c_f08ts( &
   sendbuf, &
@@ -31915,7 +33226,9 @@ subroutine MPI_Iscatter_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iscatter_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iscatter_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iscatter_f08ts( &
   sendbuf, &
@@ -32001,7 +33314,9 @@ subroutine PMPI_Iscatter_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iscatter_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iscatter_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iscatter_c_f08ts( &
   sendbuf, &
@@ -32087,7 +33402,9 @@ subroutine PMPI_Iscatter_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iscatter_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iscatterv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iscatterv_f08ts( &
   sendbuf, &
@@ -32179,7 +33496,9 @@ subroutine MPI_Iscatterv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iscatterv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Iscatterv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Iscatterv_c_f08ts( &
   sendbuf, &
@@ -32271,7 +33590,9 @@ subroutine MPI_Iscatterv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Iscatterv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iscatterv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iscatterv_f08ts( &
   sendbuf, &
@@ -32363,7 +33684,9 @@ subroutine PMPI_Iscatterv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iscatterv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Iscatterv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Iscatterv_c_f08ts( &
   sendbuf, &
@@ -32455,7 +33778,9 @@ subroutine PMPI_Iscatterv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Iscatterv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Isend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Isend_f08ts( &
   buf, &
@@ -32529,7 +33854,9 @@ subroutine MPI_Isend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Isend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Isend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Isend_c_f08ts( &
   buf, &
@@ -32603,7 +33930,9 @@ subroutine MPI_Isend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Isend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Isend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Isend_f08ts( &
   buf, &
@@ -32677,7 +34006,9 @@ subroutine PMPI_Isend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Isend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Isend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Isend_c_f08ts( &
   buf, &
@@ -32751,7 +34082,9 @@ subroutine PMPI_Isend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Isend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Isendrecv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Isendrecv_f08ts( &
   sendbuf, &
@@ -32855,7 +34188,9 @@ subroutine MPI_Isendrecv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Isendrecv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Isendrecv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Isendrecv_c_f08ts( &
   sendbuf, &
@@ -32959,7 +34294,9 @@ subroutine MPI_Isendrecv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Isendrecv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Isendrecv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Isendrecv_f08ts( &
   sendbuf, &
@@ -33063,7 +34400,9 @@ subroutine PMPI_Isendrecv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Isendrecv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Isendrecv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Isendrecv_c_f08ts( &
   sendbuf, &
@@ -33167,7 +34506,9 @@ subroutine PMPI_Isendrecv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Isendrecv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Isendrecv_replace_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Isendrecv_replace_f08ts( &
   buf, &
@@ -33253,7 +34594,9 @@ subroutine MPI_Isendrecv_replace_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Isendrecv_replace_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Isendrecv_replace_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Isendrecv_replace_c_f08ts( &
   buf, &
@@ -33339,7 +34682,9 @@ subroutine MPI_Isendrecv_replace_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Isendrecv_replace_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Isendrecv_replace_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Isendrecv_replace_f08ts( &
   buf, &
@@ -33425,7 +34770,9 @@ subroutine PMPI_Isendrecv_replace_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Isendrecv_replace_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Isendrecv_replace_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Isendrecv_replace_c_f08ts( &
   buf, &
@@ -33511,7 +34858,9 @@ subroutine PMPI_Isendrecv_replace_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Isendrecv_replace_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Issend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Issend_f08ts( &
   buf, &
@@ -33585,7 +34934,9 @@ subroutine MPI_Issend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Issend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Issend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Issend_c_f08ts( &
   buf, &
@@ -33659,7 +35010,9 @@ subroutine MPI_Issend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Issend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Issend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Issend_f08ts( &
   buf, &
@@ -33733,7 +35086,9 @@ subroutine PMPI_Issend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Issend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Issend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Issend_c_f08ts( &
   buf, &
@@ -33807,7 +35162,9 @@ subroutine PMPI_Issend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Issend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Keyval_create_f08
 subroutine MPI_Keyval_create_f08( &
   copy_fn, &
   delete_fn, &
@@ -33834,7 +35191,9 @@ subroutine MPI_Keyval_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Keyval_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Keyval_create_f08
 subroutine PMPI_Keyval_create_f08( &
   copy_fn, &
   delete_fn, &
@@ -33861,7 +35220,9 @@ subroutine PMPI_Keyval_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Keyval_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Keyval_free_f08
 subroutine MPI_Keyval_free_f08( &
   keyval, &
   ierror &
@@ -33879,7 +35240,9 @@ subroutine MPI_Keyval_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Keyval_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Keyval_free_f08
 subroutine PMPI_Keyval_free_f08( &
   keyval, &
   ierror &
@@ -33897,7 +35260,9 @@ subroutine PMPI_Keyval_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Keyval_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Lookup_name_f08
 subroutine MPI_Lookup_name_f08( &
   service_name, &
   info, &
@@ -33921,7 +35286,9 @@ subroutine MPI_Lookup_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Lookup_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Lookup_name_f08
 subroutine PMPI_Lookup_name_f08( &
   service_name, &
   info, &
@@ -33945,7 +35312,9 @@ subroutine PMPI_Lookup_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Lookup_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Mprobe_f08
 subroutine MPI_Mprobe_f08( &
   source, &
   tag, &
@@ -33975,7 +35344,9 @@ subroutine MPI_Mprobe_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Mprobe_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Mprobe_f08
 subroutine PMPI_Mprobe_f08( &
   source, &
   tag, &
@@ -34005,7 +35376,9 @@ subroutine PMPI_Mprobe_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Mprobe_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Mrecv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Mrecv_f08ts( &
   buf, &
@@ -34067,7 +35440,9 @@ subroutine MPI_Mrecv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Mrecv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Mrecv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Mrecv_c_f08ts( &
   buf, &
@@ -34129,7 +35504,9 @@ subroutine MPI_Mrecv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Mrecv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Mrecv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Mrecv_f08ts( &
   buf, &
@@ -34191,7 +35568,9 @@ subroutine PMPI_Mrecv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Mrecv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Mrecv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Mrecv_c_f08ts( &
   buf, &
@@ -34253,7 +35632,9 @@ subroutine PMPI_Mrecv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Mrecv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_allgather_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_allgather_f08ts( &
   sendbuf, &
@@ -34327,7 +35708,9 @@ subroutine MPI_Neighbor_allgather_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgather_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_allgather_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_allgather_c_f08ts( &
   sendbuf, &
@@ -34401,7 +35784,9 @@ subroutine MPI_Neighbor_allgather_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgather_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_allgather_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_allgather_f08ts( &
   sendbuf, &
@@ -34475,7 +35860,9 @@ subroutine PMPI_Neighbor_allgather_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgather_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_allgather_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_allgather_c_f08ts( &
   sendbuf, &
@@ -34549,7 +35936,9 @@ subroutine PMPI_Neighbor_allgather_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgather_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_allgather_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_allgather_init_f08ts( &
   sendbuf, &
@@ -34635,7 +36024,9 @@ subroutine MPI_Neighbor_allgather_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgather_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_allgather_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_allgather_init_c_f08ts( &
   sendbuf, &
@@ -34721,7 +36112,9 @@ subroutine MPI_Neighbor_allgather_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgather_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_allgather_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_allgather_init_f08ts( &
   sendbuf, &
@@ -34807,7 +36200,9 @@ subroutine PMPI_Neighbor_allgather_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgather_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_allgather_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_allgather_init_c_f08ts( &
   sendbuf, &
@@ -34893,7 +36288,9 @@ subroutine PMPI_Neighbor_allgather_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgather_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_allgatherv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_allgatherv_f08ts( &
   sendbuf, &
@@ -34973,7 +36370,9 @@ subroutine MPI_Neighbor_allgatherv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgatherv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_allgatherv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_allgatherv_c_f08ts( &
   sendbuf, &
@@ -35053,7 +36452,9 @@ subroutine MPI_Neighbor_allgatherv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgatherv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_allgatherv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_allgatherv_f08ts( &
   sendbuf, &
@@ -35133,7 +36534,9 @@ subroutine PMPI_Neighbor_allgatherv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgatherv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_allgatherv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_allgatherv_c_f08ts( &
   sendbuf, &
@@ -35213,7 +36616,9 @@ subroutine PMPI_Neighbor_allgatherv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgatherv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_allgatherv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_allgatherv_init_f08ts( &
   sendbuf, &
@@ -35305,7 +36710,9 @@ subroutine MPI_Neighbor_allgatherv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgatherv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_allgatherv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_allgatherv_init_c_f08ts( &
   sendbuf, &
@@ -35397,7 +36804,9 @@ subroutine MPI_Neighbor_allgatherv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_allgatherv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_allgatherv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_allgatherv_init_f08ts( &
   sendbuf, &
@@ -35489,7 +36898,9 @@ subroutine PMPI_Neighbor_allgatherv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgatherv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_allgatherv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_allgatherv_init_c_f08ts( &
   sendbuf, &
@@ -35581,7 +36992,9 @@ subroutine PMPI_Neighbor_allgatherv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_allgatherv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_alltoall_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_alltoall_f08ts( &
   sendbuf, &
@@ -35655,7 +37068,9 @@ subroutine MPI_Neighbor_alltoall_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoall_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_alltoall_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_alltoall_c_f08ts( &
   sendbuf, &
@@ -35729,7 +37144,9 @@ subroutine MPI_Neighbor_alltoall_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoall_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_alltoall_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_alltoall_f08ts( &
   sendbuf, &
@@ -35803,7 +37220,9 @@ subroutine PMPI_Neighbor_alltoall_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoall_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_alltoall_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_alltoall_c_f08ts( &
   sendbuf, &
@@ -35877,7 +37296,9 @@ subroutine PMPI_Neighbor_alltoall_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoall_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_alltoall_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_alltoall_init_f08ts( &
   sendbuf, &
@@ -35963,7 +37384,9 @@ subroutine MPI_Neighbor_alltoall_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoall_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_alltoall_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_alltoall_init_c_f08ts( &
   sendbuf, &
@@ -36049,7 +37472,9 @@ subroutine MPI_Neighbor_alltoall_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoall_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_alltoall_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_alltoall_init_f08ts( &
   sendbuf, &
@@ -36135,7 +37560,9 @@ subroutine PMPI_Neighbor_alltoall_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoall_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_alltoall_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_alltoall_init_c_f08ts( &
   sendbuf, &
@@ -36221,7 +37648,9 @@ subroutine PMPI_Neighbor_alltoall_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoall_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_alltoallv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_alltoallv_f08ts( &
   sendbuf, &
@@ -36307,7 +37736,9 @@ subroutine MPI_Neighbor_alltoallv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_alltoallv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_alltoallv_c_f08ts( &
   sendbuf, &
@@ -36393,7 +37824,9 @@ subroutine MPI_Neighbor_alltoallv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_alltoallv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_alltoallv_f08ts( &
   sendbuf, &
@@ -36479,7 +37912,9 @@ subroutine PMPI_Neighbor_alltoallv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_alltoallv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_alltoallv_c_f08ts( &
   sendbuf, &
@@ -36565,7 +38000,9 @@ subroutine PMPI_Neighbor_alltoallv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_alltoallv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_alltoallv_init_f08ts( &
   sendbuf, &
@@ -36663,7 +38100,9 @@ subroutine MPI_Neighbor_alltoallv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_alltoallv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_alltoallv_init_c_f08ts( &
   sendbuf, &
@@ -36761,7 +38200,9 @@ subroutine MPI_Neighbor_alltoallv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_alltoallv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_alltoallv_init_f08ts( &
   sendbuf, &
@@ -36859,7 +38300,9 @@ subroutine PMPI_Neighbor_alltoallv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_alltoallv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_alltoallv_init_c_f08ts( &
   sendbuf, &
@@ -36957,7 +38400,9 @@ subroutine PMPI_Neighbor_alltoallv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_alltoallw_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_alltoallw_f08ts( &
   sendbuf, &
@@ -37043,7 +38488,9 @@ subroutine MPI_Neighbor_alltoallw_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallw_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_alltoallw_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_alltoallw_c_f08ts( &
   sendbuf, &
@@ -37129,7 +38576,9 @@ subroutine MPI_Neighbor_alltoallw_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallw_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_alltoallw_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_alltoallw_f08ts( &
   sendbuf, &
@@ -37215,7 +38664,9 @@ subroutine PMPI_Neighbor_alltoallw_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallw_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_alltoallw_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_alltoallw_c_f08ts( &
   sendbuf, &
@@ -37301,7 +38752,9 @@ subroutine PMPI_Neighbor_alltoallw_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallw_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_alltoallw_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_alltoallw_init_f08ts( &
   sendbuf, &
@@ -37399,7 +38852,9 @@ subroutine MPI_Neighbor_alltoallw_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallw_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Neighbor_alltoallw_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Neighbor_alltoallw_init_c_f08ts( &
   sendbuf, &
@@ -37497,7 +38952,9 @@ subroutine MPI_Neighbor_alltoallw_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Neighbor_alltoallw_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_alltoallw_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_alltoallw_init_f08ts( &
   sendbuf, &
@@ -37595,7 +39052,9 @@ subroutine PMPI_Neighbor_alltoallw_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallw_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Neighbor_alltoallw_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Neighbor_alltoallw_init_c_f08ts( &
   sendbuf, &
@@ -37693,7 +39152,9 @@ subroutine PMPI_Neighbor_alltoallw_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Neighbor_alltoallw_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Op_commutative_f08
 subroutine MPI_Op_commutative_f08( &
   op, &
   commute, &
@@ -37714,7 +39175,9 @@ subroutine MPI_Op_commutative_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Op_commutative_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Op_commutative_f08
 subroutine PMPI_Op_commutative_f08( &
   op, &
   commute, &
@@ -37735,7 +39198,9 @@ subroutine PMPI_Op_commutative_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Op_commutative_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Op_create_f08
 subroutine MPI_Op_create_f08( &
   user_fn, &
   commute, &
@@ -37759,7 +39224,9 @@ subroutine MPI_Op_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Op_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Op_create_c_f08
 subroutine MPI_Op_create_c_f08( &
   user_fn, &
   commute, &
@@ -37783,7 +39250,9 @@ subroutine MPI_Op_create_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Op_create_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Op_create_f08
 subroutine PMPI_Op_create_f08( &
   user_fn, &
   commute, &
@@ -37807,7 +39276,9 @@ subroutine PMPI_Op_create_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Op_create_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Op_create_c_f08
 subroutine PMPI_Op_create_c_f08( &
   user_fn, &
   commute, &
@@ -37831,7 +39302,9 @@ subroutine PMPI_Op_create_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Op_create_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Op_free_f08
 subroutine MPI_Op_free_f08( &
   op, &
   ierror &
@@ -37849,7 +39322,9 @@ subroutine MPI_Op_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Op_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Op_free_f08
 subroutine PMPI_Op_free_f08( &
   op, &
   ierror &
@@ -37867,7 +39342,9 @@ subroutine PMPI_Op_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Op_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Open_port_f08
 subroutine MPI_Open_port_f08( &
   info, &
   port_name, &
@@ -37888,7 +39365,9 @@ subroutine MPI_Open_port_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Open_port_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Open_port_f08
 subroutine PMPI_Open_port_f08( &
   info, &
   port_name, &
@@ -37909,7 +39388,9 @@ subroutine PMPI_Open_port_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Open_port_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Pack_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Pack_f08ts( &
   inbuf, &
@@ -37983,7 +39464,9 @@ subroutine MPI_Pack_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pack_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Pack_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Pack_c_f08ts( &
   inbuf, &
@@ -38057,7 +39540,9 @@ subroutine MPI_Pack_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pack_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Pack_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Pack_f08ts( &
   inbuf, &
@@ -38131,7 +39616,9 @@ subroutine PMPI_Pack_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pack_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Pack_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Pack_c_f08ts( &
   inbuf, &
@@ -38205,7 +39692,9 @@ subroutine PMPI_Pack_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pack_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Pack_external_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Pack_external_f08ts( &
   datarep, &
@@ -38281,7 +39770,9 @@ subroutine MPI_Pack_external_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pack_external_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Pack_external_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Pack_external_c_f08ts( &
   datarep, &
@@ -38357,7 +39848,9 @@ subroutine MPI_Pack_external_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pack_external_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Pack_external_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Pack_external_f08ts( &
   datarep, &
@@ -38433,7 +39926,9 @@ subroutine PMPI_Pack_external_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pack_external_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Pack_external_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Pack_external_c_f08ts( &
   datarep, &
@@ -38509,7 +40004,9 @@ subroutine PMPI_Pack_external_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pack_external_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Pack_external_size_f08
 subroutine MPI_Pack_external_size_f08( &
   datarep, &
   incount, &
@@ -38536,7 +40033,9 @@ subroutine MPI_Pack_external_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pack_external_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Pack_external_size_c_f08
 subroutine MPI_Pack_external_size_c_f08( &
   datarep, &
   incount, &
@@ -38563,7 +40062,9 @@ subroutine MPI_Pack_external_size_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pack_external_size_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Pack_external_size_f08
 subroutine PMPI_Pack_external_size_f08( &
   datarep, &
   incount, &
@@ -38590,7 +40091,9 @@ subroutine PMPI_Pack_external_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pack_external_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Pack_external_size_c_f08
 subroutine PMPI_Pack_external_size_c_f08( &
   datarep, &
   incount, &
@@ -38617,7 +40120,9 @@ subroutine PMPI_Pack_external_size_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pack_external_size_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Pack_size_f08
 subroutine MPI_Pack_size_f08( &
   incount, &
   datatype, &
@@ -38644,7 +40149,9 @@ subroutine MPI_Pack_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pack_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Pack_size_c_f08
 subroutine MPI_Pack_size_c_f08( &
   incount, &
   datatype, &
@@ -38671,7 +40178,9 @@ subroutine MPI_Pack_size_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pack_size_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Pack_size_f08
 subroutine PMPI_Pack_size_f08( &
   incount, &
   datatype, &
@@ -38698,7 +40207,9 @@ subroutine PMPI_Pack_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pack_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Pack_size_c_f08
 subroutine PMPI_Pack_size_c_f08( &
   incount, &
   datatype, &
@@ -38725,7 +40236,9 @@ subroutine PMPI_Pack_size_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pack_size_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Parrived_f08
 subroutine MPI_Parrived_f08( &
   request, &
   partition, &
@@ -38749,7 +40262,9 @@ subroutine MPI_Parrived_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Parrived_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Parrived_f08
 subroutine PMPI_Parrived_f08( &
   request, &
   partition, &
@@ -38773,7 +40288,9 @@ subroutine PMPI_Parrived_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Parrived_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Pcontrol_f08
 subroutine MPI_Pcontrol_f08( &
   level &
 )
@@ -38786,7 +40303,9 @@ subroutine MPI_Pcontrol_f08( &
     level &
   )
 end subroutine MPI_Pcontrol_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Pcontrol_f08
 subroutine PMPI_Pcontrol_f08( &
   level &
 )
@@ -38799,7 +40318,9 @@ subroutine PMPI_Pcontrol_f08( &
     level &
   )
 end subroutine PMPI_Pcontrol_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Pready_f08
 subroutine MPI_Pready_f08( &
   partition, &
   request, &
@@ -38820,7 +40341,9 @@ subroutine MPI_Pready_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pready_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Pready_f08
 subroutine PMPI_Pready_f08( &
   partition, &
   request, &
@@ -38841,7 +40364,9 @@ subroutine PMPI_Pready_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pready_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Pready_list_f08
 subroutine MPI_Pready_list_f08( &
   length, &
   array_of_partitions, &
@@ -38865,7 +40390,9 @@ subroutine MPI_Pready_list_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pready_list_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Pready_list_f08
 subroutine PMPI_Pready_list_f08( &
   length, &
   array_of_partitions, &
@@ -38889,7 +40416,9 @@ subroutine PMPI_Pready_list_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pready_list_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Pready_range_f08
 subroutine MPI_Pready_range_f08( &
   partition_low, &
   partition_high, &
@@ -38913,7 +40442,9 @@ subroutine MPI_Pready_range_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Pready_range_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Pready_range_f08
 subroutine PMPI_Pready_range_f08( &
   partition_low, &
   partition_high, &
@@ -38937,7 +40468,9 @@ subroutine PMPI_Pready_range_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Pready_range_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Precv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Precv_init_f08ts( &
   buf, &
@@ -39023,7 +40556,9 @@ subroutine MPI_Precv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Precv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Precv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Precv_init_f08ts( &
   buf, &
@@ -39109,7 +40644,9 @@ subroutine PMPI_Precv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Precv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Probe_f08
 subroutine MPI_Probe_f08( &
   source, &
   tag, &
@@ -39136,7 +40673,9 @@ subroutine MPI_Probe_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Probe_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Probe_f08
 subroutine PMPI_Probe_f08( &
   source, &
   tag, &
@@ -39163,7 +40702,9 @@ subroutine PMPI_Probe_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Probe_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Psend_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Psend_init_f08ts( &
   buf, &
@@ -39249,7 +40790,9 @@ subroutine MPI_Psend_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Psend_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Psend_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Psend_init_f08ts( &
   buf, &
@@ -39335,7 +40878,9 @@ subroutine PMPI_Psend_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Psend_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Publish_name_f08
 subroutine MPI_Publish_name_f08( &
   service_name, &
   info, &
@@ -39359,7 +40904,9 @@ subroutine MPI_Publish_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Publish_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Publish_name_f08
 subroutine PMPI_Publish_name_f08( &
   service_name, &
   info, &
@@ -39383,7 +40930,9 @@ subroutine PMPI_Publish_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Publish_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Put_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Put_f08ts( &
   origin_addr, &
@@ -39463,7 +41012,9 @@ subroutine MPI_Put_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Put_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Put_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Put_c_f08ts( &
   origin_addr, &
@@ -39543,7 +41094,9 @@ subroutine MPI_Put_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Put_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Put_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Put_f08ts( &
   origin_addr, &
@@ -39623,7 +41176,9 @@ subroutine PMPI_Put_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Put_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Put_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Put_c_f08ts( &
   origin_addr, &
@@ -39703,7 +41258,9 @@ subroutine PMPI_Put_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Put_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Query_thread_f08
 subroutine MPI_Query_thread_f08( &
   provided, &
   ierror &
@@ -39721,7 +41278,9 @@ subroutine MPI_Query_thread_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Query_thread_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Query_thread_f08
 subroutine PMPI_Query_thread_f08( &
   provided, &
   ierror &
@@ -39739,7 +41298,9 @@ subroutine PMPI_Query_thread_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Query_thread_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Raccumulate_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Raccumulate_f08ts( &
   origin_addr, &
@@ -39831,7 +41392,9 @@ subroutine MPI_Raccumulate_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Raccumulate_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Raccumulate_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Raccumulate_c_f08ts( &
   origin_addr, &
@@ -39923,7 +41486,9 @@ subroutine MPI_Raccumulate_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Raccumulate_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Raccumulate_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Raccumulate_f08ts( &
   origin_addr, &
@@ -40015,7 +41580,9 @@ subroutine PMPI_Raccumulate_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Raccumulate_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Raccumulate_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Raccumulate_c_f08ts( &
   origin_addr, &
@@ -40107,7 +41674,9 @@ subroutine PMPI_Raccumulate_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Raccumulate_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Recv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Recv_f08ts( &
   buf, &
@@ -40181,7 +41750,9 @@ subroutine MPI_Recv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Recv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Recv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Recv_c_f08ts( &
   buf, &
@@ -40255,7 +41826,9 @@ subroutine MPI_Recv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Recv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Recv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Recv_f08ts( &
   buf, &
@@ -40329,7 +41902,9 @@ subroutine PMPI_Recv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Recv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Recv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Recv_c_f08ts( &
   buf, &
@@ -40403,7 +41978,9 @@ subroutine PMPI_Recv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Recv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Recv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Recv_init_f08ts( &
   buf, &
@@ -40477,7 +42054,9 @@ subroutine MPI_Recv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Recv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Recv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Recv_init_c_f08ts( &
   buf, &
@@ -40551,7 +42130,9 @@ subroutine MPI_Recv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Recv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Recv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Recv_init_f08ts( &
   buf, &
@@ -40625,7 +42206,9 @@ subroutine PMPI_Recv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Recv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Recv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Recv_init_c_f08ts( &
   buf, &
@@ -40699,7 +42282,9 @@ subroutine PMPI_Recv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Recv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_f08ts( &
   sendbuf, &
@@ -40773,7 +42358,9 @@ subroutine MPI_Reduce_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_c_f08ts( &
   sendbuf, &
@@ -40847,7 +42434,9 @@ subroutine MPI_Reduce_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_f08ts( &
   sendbuf, &
@@ -40921,7 +42510,9 @@ subroutine PMPI_Reduce_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_c_f08ts( &
   sendbuf, &
@@ -40995,7 +42586,9 @@ subroutine PMPI_Reduce_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_init_f08ts( &
   sendbuf, &
@@ -41081,7 +42674,9 @@ subroutine MPI_Reduce_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_init_c_f08ts( &
   sendbuf, &
@@ -41167,7 +42762,9 @@ subroutine MPI_Reduce_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_init_f08ts( &
   sendbuf, &
@@ -41253,7 +42850,9 @@ subroutine PMPI_Reduce_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_init_c_f08ts( &
   sendbuf, &
@@ -41339,7 +42938,9 @@ subroutine PMPI_Reduce_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_local_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_local_f08ts( &
   inbuf, &
@@ -41401,7 +43002,9 @@ subroutine MPI_Reduce_local_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_local_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_local_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_local_c_f08ts( &
   inbuf, &
@@ -41463,7 +43066,9 @@ subroutine MPI_Reduce_local_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_local_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_local_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_local_f08ts( &
   inbuf, &
@@ -41525,7 +43130,9 @@ subroutine PMPI_Reduce_local_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_local_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_local_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_local_c_f08ts( &
   inbuf, &
@@ -41587,7 +43194,9 @@ subroutine PMPI_Reduce_local_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_local_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_scatter_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_scatter_f08ts( &
   sendbuf, &
@@ -41655,7 +43264,9 @@ subroutine MPI_Reduce_scatter_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_scatter_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_scatter_c_f08ts( &
   sendbuf, &
@@ -41723,7 +43334,9 @@ subroutine MPI_Reduce_scatter_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_scatter_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_scatter_f08ts( &
   sendbuf, &
@@ -41791,7 +43404,9 @@ subroutine PMPI_Reduce_scatter_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_scatter_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_scatter_c_f08ts( &
   sendbuf, &
@@ -41859,7 +43474,9 @@ subroutine PMPI_Reduce_scatter_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_scatter_block_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_scatter_block_f08ts( &
   sendbuf, &
@@ -41927,7 +43544,9 @@ subroutine MPI_Reduce_scatter_block_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_block_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_scatter_block_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_scatter_block_c_f08ts( &
   sendbuf, &
@@ -41995,7 +43614,9 @@ subroutine MPI_Reduce_scatter_block_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_block_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_scatter_block_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_scatter_block_f08ts( &
   sendbuf, &
@@ -42063,7 +43684,9 @@ subroutine PMPI_Reduce_scatter_block_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_block_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_scatter_block_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_scatter_block_c_f08ts( &
   sendbuf, &
@@ -42131,7 +43754,9 @@ subroutine PMPI_Reduce_scatter_block_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_block_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_scatter_block_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_scatter_block_init_f08ts( &
   sendbuf, &
@@ -42211,7 +43836,9 @@ subroutine MPI_Reduce_scatter_block_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_block_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_scatter_block_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_scatter_block_init_c_f08ts( &
   sendbuf, &
@@ -42291,7 +43918,9 @@ subroutine MPI_Reduce_scatter_block_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_block_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_scatter_block_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_scatter_block_init_f08ts( &
   sendbuf, &
@@ -42371,7 +44000,9 @@ subroutine PMPI_Reduce_scatter_block_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_block_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_scatter_block_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_scatter_block_init_c_f08ts( &
   sendbuf, &
@@ -42451,7 +44082,9 @@ subroutine PMPI_Reduce_scatter_block_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_block_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_scatter_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_scatter_init_f08ts( &
   sendbuf, &
@@ -42531,7 +44164,9 @@ subroutine MPI_Reduce_scatter_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Reduce_scatter_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Reduce_scatter_init_c_f08ts( &
   sendbuf, &
@@ -42611,7 +44246,9 @@ subroutine MPI_Reduce_scatter_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Reduce_scatter_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_scatter_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_scatter_init_f08ts( &
   sendbuf, &
@@ -42691,7 +44328,9 @@ subroutine PMPI_Reduce_scatter_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Reduce_scatter_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Reduce_scatter_init_c_f08ts( &
   sendbuf, &
@@ -42771,7 +44410,9 @@ subroutine PMPI_Reduce_scatter_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Reduce_scatter_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Register_datarep_f08
 subroutine MPI_Register_datarep_f08( &
   datarep, &
   read_conversion_fn, &
@@ -42801,7 +44442,9 @@ subroutine MPI_Register_datarep_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Register_datarep_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Register_datarep_c_f08
 subroutine MPI_Register_datarep_c_f08( &
   datarep, &
   read_conversion_fn, &
@@ -42831,7 +44474,9 @@ subroutine MPI_Register_datarep_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Register_datarep_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Register_datarep_f08
 subroutine PMPI_Register_datarep_f08( &
   datarep, &
   read_conversion_fn, &
@@ -42861,7 +44506,9 @@ subroutine PMPI_Register_datarep_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Register_datarep_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Register_datarep_c_f08
 subroutine PMPI_Register_datarep_c_f08( &
   datarep, &
   read_conversion_fn, &
@@ -42891,7 +44538,9 @@ subroutine PMPI_Register_datarep_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Register_datarep_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Remove_error_class_f08
 subroutine MPI_Remove_error_class_f08( &
   errorclass, &
   ierror &
@@ -42909,7 +44558,9 @@ subroutine MPI_Remove_error_class_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Remove_error_class_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Remove_error_class_f08
 subroutine PMPI_Remove_error_class_f08( &
   errorclass, &
   ierror &
@@ -42927,7 +44578,9 @@ subroutine PMPI_Remove_error_class_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Remove_error_class_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Remove_error_code_f08
 subroutine MPI_Remove_error_code_f08( &
   errorcode, &
   ierror &
@@ -42945,7 +44598,9 @@ subroutine MPI_Remove_error_code_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Remove_error_code_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Remove_error_code_f08
 subroutine PMPI_Remove_error_code_f08( &
   errorcode, &
   ierror &
@@ -42963,7 +44618,9 @@ subroutine PMPI_Remove_error_code_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Remove_error_code_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Remove_error_string_f08
 subroutine MPI_Remove_error_string_f08( &
   errorcode, &
   ierror &
@@ -42981,7 +44638,9 @@ subroutine MPI_Remove_error_string_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Remove_error_string_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Remove_error_string_f08
 subroutine PMPI_Remove_error_string_f08( &
   errorcode, &
   ierror &
@@ -42999,7 +44658,9 @@ subroutine PMPI_Remove_error_string_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Remove_error_string_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Request_free_f08
 subroutine MPI_Request_free_f08( &
   request, &
   ierror &
@@ -43017,7 +44678,9 @@ subroutine MPI_Request_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Request_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Request_free_f08
 subroutine PMPI_Request_free_f08( &
   request, &
   ierror &
@@ -43035,7 +44698,9 @@ subroutine PMPI_Request_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Request_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Request_get_status_f08
 subroutine MPI_Request_get_status_f08( &
   request, &
   flag, &
@@ -43059,7 +44724,9 @@ subroutine MPI_Request_get_status_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Request_get_status_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Request_get_status_f08
 subroutine PMPI_Request_get_status_f08( &
   request, &
   flag, &
@@ -43083,7 +44750,9 @@ subroutine PMPI_Request_get_status_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Request_get_status_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Request_get_status_all_f08
 subroutine MPI_Request_get_status_all_f08( &
   count, &
   array_of_requests, &
@@ -43110,7 +44779,9 @@ subroutine MPI_Request_get_status_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Request_get_status_all_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Request_get_status_all_f08
 subroutine PMPI_Request_get_status_all_f08( &
   count, &
   array_of_requests, &
@@ -43137,7 +44808,9 @@ subroutine PMPI_Request_get_status_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Request_get_status_all_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Request_get_status_any_f08
 subroutine MPI_Request_get_status_any_f08( &
   count, &
   array_of_requests, &
@@ -43167,7 +44840,9 @@ subroutine MPI_Request_get_status_any_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Request_get_status_any_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Request_get_status_any_f08
 subroutine PMPI_Request_get_status_any_f08( &
   count, &
   array_of_requests, &
@@ -43197,7 +44872,9 @@ subroutine PMPI_Request_get_status_any_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Request_get_status_any_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Request_get_status_some_f08
 subroutine MPI_Request_get_status_some_f08( &
   incount, &
   array_of_requests, &
@@ -43227,7 +44904,9 @@ subroutine MPI_Request_get_status_some_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Request_get_status_some_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Request_get_status_some_f08
 subroutine PMPI_Request_get_status_some_f08( &
   incount, &
   array_of_requests, &
@@ -43257,7 +44936,9 @@ subroutine PMPI_Request_get_status_some_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Request_get_status_some_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Rget_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Rget_f08ts( &
   origin_addr, &
@@ -43343,7 +45024,9 @@ subroutine MPI_Rget_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rget_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Rget_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Rget_c_f08ts( &
   origin_addr, &
@@ -43429,7 +45112,9 @@ subroutine MPI_Rget_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rget_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Rget_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Rget_f08ts( &
   origin_addr, &
@@ -43515,7 +45200,9 @@ subroutine PMPI_Rget_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rget_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Rget_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Rget_c_f08ts( &
   origin_addr, &
@@ -43601,7 +45288,9 @@ subroutine PMPI_Rget_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rget_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Rget_accumulate_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Rget_accumulate_f08ts( &
   origin_addr, &
@@ -43711,7 +45400,9 @@ subroutine MPI_Rget_accumulate_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rget_accumulate_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Rget_accumulate_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Rget_accumulate_c_f08ts( &
   origin_addr, &
@@ -43821,7 +45512,9 @@ subroutine MPI_Rget_accumulate_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rget_accumulate_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Rget_accumulate_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Rget_accumulate_f08ts( &
   origin_addr, &
@@ -43931,7 +45624,9 @@ subroutine PMPI_Rget_accumulate_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rget_accumulate_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Rget_accumulate_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Rget_accumulate_c_f08ts( &
   origin_addr, &
@@ -44041,7 +45736,9 @@ subroutine PMPI_Rget_accumulate_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rget_accumulate_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Rput_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Rput_f08ts( &
   origin_addr, &
@@ -44127,7 +45824,9 @@ subroutine MPI_Rput_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rput_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Rput_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Rput_c_f08ts( &
   origin_addr, &
@@ -44213,7 +45912,9 @@ subroutine MPI_Rput_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rput_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Rput_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Rput_f08ts( &
   origin_addr, &
@@ -44299,7 +46000,9 @@ subroutine PMPI_Rput_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rput_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Rput_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Rput_c_f08ts( &
   origin_addr, &
@@ -44385,7 +46088,9 @@ subroutine PMPI_Rput_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rput_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Rsend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Rsend_f08ts( &
   buf, &
@@ -44453,7 +46158,9 @@ subroutine MPI_Rsend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rsend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Rsend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Rsend_c_f08ts( &
   buf, &
@@ -44521,7 +46228,9 @@ subroutine MPI_Rsend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rsend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Rsend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Rsend_f08ts( &
   buf, &
@@ -44589,7 +46298,9 @@ subroutine PMPI_Rsend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rsend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Rsend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Rsend_c_f08ts( &
   buf, &
@@ -44657,7 +46368,9 @@ subroutine PMPI_Rsend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rsend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Rsend_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Rsend_init_f08ts( &
   buf, &
@@ -44731,7 +46444,9 @@ subroutine MPI_Rsend_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rsend_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Rsend_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Rsend_init_c_f08ts( &
   buf, &
@@ -44805,7 +46520,9 @@ subroutine MPI_Rsend_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Rsend_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Rsend_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Rsend_init_f08ts( &
   buf, &
@@ -44879,7 +46596,9 @@ subroutine PMPI_Rsend_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rsend_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Rsend_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Rsend_init_c_f08ts( &
   buf, &
@@ -44953,7 +46672,9 @@ subroutine PMPI_Rsend_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Rsend_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Scan_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Scan_f08ts( &
   sendbuf, &
@@ -45021,7 +46742,9 @@ subroutine MPI_Scan_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scan_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Scan_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Scan_c_f08ts( &
   sendbuf, &
@@ -45089,7 +46812,9 @@ subroutine MPI_Scan_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scan_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Scan_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Scan_f08ts( &
   sendbuf, &
@@ -45157,7 +46882,9 @@ subroutine PMPI_Scan_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scan_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Scan_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Scan_c_f08ts( &
   sendbuf, &
@@ -45225,7 +46952,9 @@ subroutine PMPI_Scan_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scan_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Scan_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Scan_init_f08ts( &
   sendbuf, &
@@ -45305,7 +47034,9 @@ subroutine MPI_Scan_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scan_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Scan_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Scan_init_c_f08ts( &
   sendbuf, &
@@ -45385,7 +47116,9 @@ subroutine MPI_Scan_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scan_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Scan_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Scan_init_f08ts( &
   sendbuf, &
@@ -45465,7 +47198,9 @@ subroutine PMPI_Scan_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scan_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Scan_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Scan_init_c_f08ts( &
   sendbuf, &
@@ -45545,7 +47280,9 @@ subroutine PMPI_Scan_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scan_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Scatter_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Scatter_f08ts( &
   sendbuf, &
@@ -45625,7 +47362,9 @@ subroutine MPI_Scatter_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatter_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Scatter_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Scatter_c_f08ts( &
   sendbuf, &
@@ -45705,7 +47444,9 @@ subroutine MPI_Scatter_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatter_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Scatter_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Scatter_f08ts( &
   sendbuf, &
@@ -45785,7 +47526,9 @@ subroutine PMPI_Scatter_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatter_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Scatter_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Scatter_c_f08ts( &
   sendbuf, &
@@ -45865,7 +47608,9 @@ subroutine PMPI_Scatter_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatter_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Scatter_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Scatter_init_f08ts( &
   sendbuf, &
@@ -45957,7 +47702,9 @@ subroutine MPI_Scatter_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatter_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Scatter_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Scatter_init_c_f08ts( &
   sendbuf, &
@@ -46049,7 +47796,9 @@ subroutine MPI_Scatter_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatter_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Scatter_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Scatter_init_f08ts( &
   sendbuf, &
@@ -46141,7 +47890,9 @@ subroutine PMPI_Scatter_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatter_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Scatter_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Scatter_init_c_f08ts( &
   sendbuf, &
@@ -46233,7 +47984,9 @@ subroutine PMPI_Scatter_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatter_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Scatterv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Scatterv_f08ts( &
   sendbuf, &
@@ -46319,7 +48072,9 @@ subroutine MPI_Scatterv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatterv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Scatterv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Scatterv_c_f08ts( &
   sendbuf, &
@@ -46405,7 +48160,9 @@ subroutine MPI_Scatterv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatterv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Scatterv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Scatterv_f08ts( &
   sendbuf, &
@@ -46491,7 +48248,9 @@ subroutine PMPI_Scatterv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatterv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Scatterv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Scatterv_c_f08ts( &
   sendbuf, &
@@ -46577,7 +48336,9 @@ subroutine PMPI_Scatterv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatterv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Scatterv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Scatterv_init_f08ts( &
   sendbuf, &
@@ -46675,7 +48436,9 @@ subroutine MPI_Scatterv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatterv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Scatterv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Scatterv_init_c_f08ts( &
   sendbuf, &
@@ -46773,7 +48536,9 @@ subroutine MPI_Scatterv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Scatterv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Scatterv_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Scatterv_init_f08ts( &
   sendbuf, &
@@ -46871,7 +48636,9 @@ subroutine PMPI_Scatterv_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatterv_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Scatterv_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Scatterv_init_c_f08ts( &
   sendbuf, &
@@ -46969,7 +48736,9 @@ subroutine PMPI_Scatterv_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Scatterv_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Send_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Send_f08ts( &
   buf, &
@@ -47037,7 +48806,9 @@ subroutine MPI_Send_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Send_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Send_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Send_c_f08ts( &
   buf, &
@@ -47105,7 +48876,9 @@ subroutine MPI_Send_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Send_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Send_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Send_f08ts( &
   buf, &
@@ -47173,7 +48946,9 @@ subroutine PMPI_Send_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Send_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Send_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Send_c_f08ts( &
   buf, &
@@ -47241,7 +49016,9 @@ subroutine PMPI_Send_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Send_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Send_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Send_init_f08ts( &
   buf, &
@@ -47315,7 +49092,9 @@ subroutine MPI_Send_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Send_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Send_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Send_init_c_f08ts( &
   buf, &
@@ -47389,7 +49168,9 @@ subroutine MPI_Send_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Send_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Send_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Send_init_f08ts( &
   buf, &
@@ -47463,7 +49244,9 @@ subroutine PMPI_Send_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Send_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Send_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Send_init_c_f08ts( &
   buf, &
@@ -47537,7 +49320,9 @@ subroutine PMPI_Send_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Send_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Sendrecv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Sendrecv_f08ts( &
   sendbuf, &
@@ -47641,7 +49426,9 @@ subroutine MPI_Sendrecv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Sendrecv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Sendrecv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Sendrecv_c_f08ts( &
   sendbuf, &
@@ -47745,7 +49532,9 @@ subroutine MPI_Sendrecv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Sendrecv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Sendrecv_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Sendrecv_f08ts( &
   sendbuf, &
@@ -47849,7 +49638,9 @@ subroutine PMPI_Sendrecv_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Sendrecv_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Sendrecv_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Sendrecv_c_f08ts( &
   sendbuf, &
@@ -47953,7 +49744,9 @@ subroutine PMPI_Sendrecv_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Sendrecv_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Sendrecv_replace_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Sendrecv_replace_f08ts( &
   buf, &
@@ -48039,7 +49832,9 @@ subroutine MPI_Sendrecv_replace_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Sendrecv_replace_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Sendrecv_replace_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Sendrecv_replace_c_f08ts( &
   buf, &
@@ -48125,7 +49920,9 @@ subroutine MPI_Sendrecv_replace_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Sendrecv_replace_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Sendrecv_replace_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Sendrecv_replace_f08ts( &
   buf, &
@@ -48211,7 +50008,9 @@ subroutine PMPI_Sendrecv_replace_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Sendrecv_replace_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Sendrecv_replace_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Sendrecv_replace_c_f08ts( &
   buf, &
@@ -48297,7 +50096,9 @@ subroutine PMPI_Sendrecv_replace_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Sendrecv_replace_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_attach_buffer_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Session_attach_buffer_f08ts( &
   session, &
@@ -48347,7 +50148,9 @@ subroutine MPI_Session_attach_buffer_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_attach_buffer_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_attach_buffer_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Session_attach_buffer_c_f08ts( &
   session, &
@@ -48397,7 +50200,9 @@ subroutine MPI_Session_attach_buffer_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_attach_buffer_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_attach_buffer_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Session_attach_buffer_f08ts( &
   session, &
@@ -48447,7 +50252,9 @@ subroutine PMPI_Session_attach_buffer_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_attach_buffer_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_attach_buffer_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Session_attach_buffer_c_f08ts( &
   session, &
@@ -48497,7 +50304,9 @@ subroutine PMPI_Session_attach_buffer_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_attach_buffer_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_call_errhandler_f08
 subroutine MPI_Session_call_errhandler_f08( &
   session, &
   errorcode, &
@@ -48518,7 +50327,9 @@ subroutine MPI_Session_call_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_call_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_call_errhandler_f08
 subroutine PMPI_Session_call_errhandler_f08( &
   session, &
   errorcode, &
@@ -48539,7 +50350,9 @@ subroutine PMPI_Session_call_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_call_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_create_errhandler_f08
 subroutine MPI_Session_create_errhandler_f08( &
   session_errhandler_fn, &
   errhandler, &
@@ -48560,7 +50373,9 @@ subroutine MPI_Session_create_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_create_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_create_errhandler_f08
 subroutine PMPI_Session_create_errhandler_f08( &
   session_errhandler_fn, &
   errhandler, &
@@ -48581,7 +50396,9 @@ subroutine PMPI_Session_create_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_create_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_detach_buffer_f08
 subroutine MPI_Session_detach_buffer_f08( &
   session, &
   buffer_addr, &
@@ -48608,7 +50425,9 @@ subroutine MPI_Session_detach_buffer_f08( &
   buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_detach_buffer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_detach_buffer_c_f08
 subroutine MPI_Session_detach_buffer_c_f08( &
   session, &
   buffer_addr, &
@@ -48635,7 +50454,9 @@ subroutine MPI_Session_detach_buffer_c_f08( &
   buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_detach_buffer_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_detach_buffer_f08
 subroutine PMPI_Session_detach_buffer_f08( &
   session, &
   buffer_addr, &
@@ -48662,7 +50483,9 @@ subroutine PMPI_Session_detach_buffer_f08( &
   buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_detach_buffer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_detach_buffer_c_f08
 subroutine PMPI_Session_detach_buffer_c_f08( &
   session, &
   buffer_addr, &
@@ -48689,7 +50512,9 @@ subroutine PMPI_Session_detach_buffer_c_f08( &
   buffer_addr = transfer(tmp_buffer_addr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_detach_buffer_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_finalize_f08
 subroutine MPI_Session_finalize_f08( &
   session, &
   ierror &
@@ -48707,7 +50532,9 @@ subroutine MPI_Session_finalize_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_finalize_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_finalize_f08
 subroutine PMPI_Session_finalize_f08( &
   session, &
   ierror &
@@ -48725,7 +50552,9 @@ subroutine PMPI_Session_finalize_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_finalize_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_flush_buffer_f08
 subroutine MPI_Session_flush_buffer_f08( &
   session, &
   ierror &
@@ -48743,7 +50572,9 @@ subroutine MPI_Session_flush_buffer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_flush_buffer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_flush_buffer_f08
 subroutine PMPI_Session_flush_buffer_f08( &
   session, &
   ierror &
@@ -48761,7 +50592,9 @@ subroutine PMPI_Session_flush_buffer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_flush_buffer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_get_errhandler_f08
 subroutine MPI_Session_get_errhandler_f08( &
   session, &
   errhandler, &
@@ -48782,7 +50615,9 @@ subroutine MPI_Session_get_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_get_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_get_errhandler_f08
 subroutine PMPI_Session_get_errhandler_f08( &
   session, &
   errhandler, &
@@ -48803,7 +50638,9 @@ subroutine PMPI_Session_get_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_get_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_get_info_f08
 subroutine MPI_Session_get_info_f08( &
   session, &
   info_used, &
@@ -48824,7 +50661,9 @@ subroutine MPI_Session_get_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_get_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_get_info_f08
 subroutine PMPI_Session_get_info_f08( &
   session, &
   info_used, &
@@ -48845,7 +50684,9 @@ subroutine PMPI_Session_get_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_get_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_get_nth_pset_f08
 subroutine MPI_Session_get_nth_pset_f08( &
   session, &
   info, &
@@ -48875,7 +50716,9 @@ subroutine MPI_Session_get_nth_pset_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_get_nth_pset_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_get_nth_pset_f08
 subroutine PMPI_Session_get_nth_pset_f08( &
   session, &
   info, &
@@ -48905,7 +50748,9 @@ subroutine PMPI_Session_get_nth_pset_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_get_nth_pset_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_get_num_psets_f08
 subroutine MPI_Session_get_num_psets_f08( &
   session, &
   info, &
@@ -48929,7 +50774,9 @@ subroutine MPI_Session_get_num_psets_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_get_num_psets_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_get_num_psets_f08
 subroutine PMPI_Session_get_num_psets_f08( &
   session, &
   info, &
@@ -48953,7 +50800,9 @@ subroutine PMPI_Session_get_num_psets_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_get_num_psets_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_get_pset_info_f08
 subroutine MPI_Session_get_pset_info_f08( &
   session, &
   pset_name, &
@@ -48977,7 +50826,9 @@ subroutine MPI_Session_get_pset_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_get_pset_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_get_pset_info_f08
 subroutine PMPI_Session_get_pset_info_f08( &
   session, &
   pset_name, &
@@ -49001,7 +50852,9 @@ subroutine PMPI_Session_get_pset_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_get_pset_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_iflush_buffer_f08
 subroutine MPI_Session_iflush_buffer_f08( &
   session, &
   request, &
@@ -49022,7 +50875,9 @@ subroutine MPI_Session_iflush_buffer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_iflush_buffer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_iflush_buffer_f08
 subroutine PMPI_Session_iflush_buffer_f08( &
   session, &
   request, &
@@ -49043,7 +50898,9 @@ subroutine PMPI_Session_iflush_buffer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_iflush_buffer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_init_f08
 subroutine MPI_Session_init_f08( &
   info, &
   errhandler, &
@@ -49067,7 +50924,9 @@ subroutine MPI_Session_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_init_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_init_f08
 subroutine PMPI_Session_init_f08( &
   info, &
   errhandler, &
@@ -49091,7 +50950,9 @@ subroutine PMPI_Session_init_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_init_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Session_set_errhandler_f08
 subroutine MPI_Session_set_errhandler_f08( &
   session, &
   errhandler, &
@@ -49112,7 +50973,9 @@ subroutine MPI_Session_set_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Session_set_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Session_set_errhandler_f08
 subroutine PMPI_Session_set_errhandler_f08( &
   session, &
   errhandler, &
@@ -49133,7 +50996,9 @@ subroutine PMPI_Session_set_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Session_set_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ssend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ssend_f08ts( &
   buf, &
@@ -49201,7 +51066,9 @@ subroutine MPI_Ssend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ssend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ssend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ssend_c_f08ts( &
   buf, &
@@ -49269,7 +51136,9 @@ subroutine MPI_Ssend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ssend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ssend_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ssend_f08ts( &
   buf, &
@@ -49337,7 +51206,9 @@ subroutine PMPI_Ssend_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ssend_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ssend_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ssend_c_f08ts( &
   buf, &
@@ -49405,7 +51276,9 @@ subroutine PMPI_Ssend_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ssend_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ssend_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ssend_init_f08ts( &
   buf, &
@@ -49479,7 +51352,9 @@ subroutine MPI_Ssend_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ssend_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Ssend_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Ssend_init_c_f08ts( &
   buf, &
@@ -49553,7 +51428,9 @@ subroutine MPI_Ssend_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Ssend_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ssend_init_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ssend_init_f08ts( &
   buf, &
@@ -49627,7 +51504,9 @@ subroutine PMPI_Ssend_init_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ssend_init_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Ssend_init_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Ssend_init_c_f08ts( &
   buf, &
@@ -49701,7 +51580,9 @@ subroutine PMPI_Ssend_init_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Ssend_init_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Start_f08
 subroutine MPI_Start_f08( &
   request, &
   ierror &
@@ -49719,7 +51600,9 @@ subroutine MPI_Start_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Start_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Start_f08
 subroutine PMPI_Start_f08( &
   request, &
   ierror &
@@ -49737,7 +51620,9 @@ subroutine PMPI_Start_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Start_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Startall_f08
 subroutine MPI_Startall_f08( &
   count, &
   array_of_requests, &
@@ -49758,7 +51643,9 @@ subroutine MPI_Startall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Startall_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Startall_f08
 subroutine PMPI_Startall_f08( &
   count, &
   array_of_requests, &
@@ -49779,7 +51666,9 @@ subroutine PMPI_Startall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Startall_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Status_get_error_f08
 subroutine MPI_Status_get_error_f08( &
   status, &
   err, &
@@ -49800,7 +51689,9 @@ subroutine MPI_Status_get_error_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Status_get_error_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Status_get_error_f08
 subroutine PMPI_Status_get_error_f08( &
   status, &
   err, &
@@ -49821,7 +51712,9 @@ subroutine PMPI_Status_get_error_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Status_get_error_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Status_get_source_f08
 subroutine MPI_Status_get_source_f08( &
   status, &
   source, &
@@ -49842,7 +51735,9 @@ subroutine MPI_Status_get_source_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Status_get_source_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Status_get_source_f08
 subroutine PMPI_Status_get_source_f08( &
   status, &
   source, &
@@ -49863,7 +51758,9 @@ subroutine PMPI_Status_get_source_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Status_get_source_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Status_get_tag_f08
 subroutine MPI_Status_get_tag_f08( &
   status, &
   tag, &
@@ -49884,7 +51781,9 @@ subroutine MPI_Status_get_tag_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Status_get_tag_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Status_get_tag_f08
 subroutine PMPI_Status_get_tag_f08( &
   status, &
   tag, &
@@ -49905,7 +51804,9 @@ subroutine PMPI_Status_get_tag_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Status_get_tag_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Status_set_cancelled_f08
 subroutine MPI_Status_set_cancelled_f08( &
   status, &
   flag, &
@@ -49926,7 +51827,9 @@ subroutine MPI_Status_set_cancelled_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Status_set_cancelled_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Status_set_cancelled_f08
 subroutine PMPI_Status_set_cancelled_f08( &
   status, &
   flag, &
@@ -49947,7 +51850,9 @@ subroutine PMPI_Status_set_cancelled_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Status_set_cancelled_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Status_set_elements_f08
 subroutine MPI_Status_set_elements_f08( &
   status, &
   datatype, &
@@ -49971,7 +51876,9 @@ subroutine MPI_Status_set_elements_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Status_set_elements_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Status_set_elements_c_f08
 subroutine MPI_Status_set_elements_c_f08( &
   status, &
   datatype, &
@@ -49995,7 +51902,9 @@ subroutine MPI_Status_set_elements_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Status_set_elements_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Status_set_elements_f08
 subroutine PMPI_Status_set_elements_f08( &
   status, &
   datatype, &
@@ -50019,7 +51928,9 @@ subroutine PMPI_Status_set_elements_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Status_set_elements_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Status_set_elements_c_f08
 subroutine PMPI_Status_set_elements_c_f08( &
   status, &
   datatype, &
@@ -50043,7 +51954,9 @@ subroutine PMPI_Status_set_elements_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Status_set_elements_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Status_set_elements_x_f08
 subroutine MPI_Status_set_elements_x_f08( &
   status, &
   datatype, &
@@ -50067,7 +51980,9 @@ subroutine MPI_Status_set_elements_x_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Status_set_elements_x_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Status_set_elements_x_f08
 subroutine PMPI_Status_set_elements_x_f08( &
   status, &
   datatype, &
@@ -50091,7 +52006,9 @@ subroutine PMPI_Status_set_elements_x_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Status_set_elements_x_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Status_set_error_f08
 subroutine MPI_Status_set_error_f08( &
   status, &
   err, &
@@ -50112,7 +52029,9 @@ subroutine MPI_Status_set_error_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Status_set_error_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Status_set_error_f08
 subroutine PMPI_Status_set_error_f08( &
   status, &
   err, &
@@ -50133,7 +52052,9 @@ subroutine PMPI_Status_set_error_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Status_set_error_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Status_set_source_f08
 subroutine MPI_Status_set_source_f08( &
   status, &
   source, &
@@ -50154,7 +52075,9 @@ subroutine MPI_Status_set_source_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Status_set_source_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Status_set_source_f08
 subroutine PMPI_Status_set_source_f08( &
   status, &
   source, &
@@ -50175,7 +52098,9 @@ subroutine PMPI_Status_set_source_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Status_set_source_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Status_set_tag_f08
 subroutine MPI_Status_set_tag_f08( &
   status, &
   tag, &
@@ -50196,7 +52121,9 @@ subroutine MPI_Status_set_tag_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Status_set_tag_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Status_set_tag_f08
 subroutine PMPI_Status_set_tag_f08( &
   status, &
   tag, &
@@ -50217,7 +52144,9 @@ subroutine PMPI_Status_set_tag_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Status_set_tag_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Test_f08
 subroutine MPI_Test_f08( &
   request, &
   flag, &
@@ -50241,7 +52170,9 @@ subroutine MPI_Test_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Test_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Test_f08
 subroutine PMPI_Test_f08( &
   request, &
   flag, &
@@ -50265,7 +52196,9 @@ subroutine PMPI_Test_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Test_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Test_cancelled_f08
 subroutine MPI_Test_cancelled_f08( &
   status, &
   flag, &
@@ -50286,7 +52219,9 @@ subroutine MPI_Test_cancelled_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Test_cancelled_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Test_cancelled_f08
 subroutine PMPI_Test_cancelled_f08( &
   status, &
   flag, &
@@ -50307,7 +52242,9 @@ subroutine PMPI_Test_cancelled_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Test_cancelled_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Testall_f08
 subroutine MPI_Testall_f08( &
   count, &
   array_of_requests, &
@@ -50334,7 +52271,9 @@ subroutine MPI_Testall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Testall_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Testall_f08
 subroutine PMPI_Testall_f08( &
   count, &
   array_of_requests, &
@@ -50361,7 +52300,9 @@ subroutine PMPI_Testall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Testall_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Testany_f08
 subroutine MPI_Testany_f08( &
   count, &
   array_of_requests, &
@@ -50391,7 +52332,9 @@ subroutine MPI_Testany_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Testany_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Testany_f08
 subroutine PMPI_Testany_f08( &
   count, &
   array_of_requests, &
@@ -50421,7 +52364,9 @@ subroutine PMPI_Testany_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Testany_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Testsome_f08
 subroutine MPI_Testsome_f08( &
   incount, &
   array_of_requests, &
@@ -50451,7 +52396,9 @@ subroutine MPI_Testsome_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Testsome_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Testsome_f08
 subroutine PMPI_Testsome_f08( &
   incount, &
   array_of_requests, &
@@ -50481,7 +52428,9 @@ subroutine PMPI_Testsome_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Testsome_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Topo_test_f08
 subroutine MPI_Topo_test_f08( &
   comm, &
   status, &
@@ -50502,7 +52451,9 @@ subroutine MPI_Topo_test_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Topo_test_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Topo_test_f08
 subroutine PMPI_Topo_test_f08( &
   comm, &
   status, &
@@ -50523,7 +52474,9 @@ subroutine PMPI_Topo_test_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Topo_test_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_commit_f08
 subroutine MPI_Type_commit_f08( &
   datatype, &
   ierror &
@@ -50541,7 +52494,9 @@ subroutine MPI_Type_commit_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_commit_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_commit_f08
 subroutine PMPI_Type_commit_f08( &
   datatype, &
   ierror &
@@ -50559,7 +52514,9 @@ subroutine PMPI_Type_commit_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_commit_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_contiguous_f08
 subroutine MPI_Type_contiguous_f08( &
   count, &
   oldtype, &
@@ -50583,7 +52540,9 @@ subroutine MPI_Type_contiguous_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_contiguous_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_contiguous_c_f08
 subroutine MPI_Type_contiguous_c_f08( &
   count, &
   oldtype, &
@@ -50607,7 +52566,9 @@ subroutine MPI_Type_contiguous_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_contiguous_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_contiguous_f08
 subroutine PMPI_Type_contiguous_f08( &
   count, &
   oldtype, &
@@ -50631,7 +52592,9 @@ subroutine PMPI_Type_contiguous_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_contiguous_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_contiguous_c_f08
 subroutine PMPI_Type_contiguous_c_f08( &
   count, &
   oldtype, &
@@ -50655,7 +52618,9 @@ subroutine PMPI_Type_contiguous_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_contiguous_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_darray_f08
 subroutine MPI_Type_create_darray_f08( &
   size, &
   rank, &
@@ -50700,7 +52665,9 @@ subroutine MPI_Type_create_darray_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_darray_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_darray_c_f08
 subroutine MPI_Type_create_darray_c_f08( &
   size, &
   rank, &
@@ -50745,7 +52712,9 @@ subroutine MPI_Type_create_darray_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_darray_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_darray_f08
 subroutine PMPI_Type_create_darray_f08( &
   size, &
   rank, &
@@ -50790,7 +52759,9 @@ subroutine PMPI_Type_create_darray_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_darray_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_darray_c_f08
 subroutine PMPI_Type_create_darray_c_f08( &
   size, &
   rank, &
@@ -50835,7 +52806,9 @@ subroutine PMPI_Type_create_darray_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_darray_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_f90_complex_f08
 subroutine MPI_Type_create_f90_complex_f08( &
   p, &
   r, &
@@ -50859,7 +52832,9 @@ subroutine MPI_Type_create_f90_complex_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_f90_complex_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_f90_complex_f08
 subroutine PMPI_Type_create_f90_complex_f08( &
   p, &
   r, &
@@ -50883,7 +52858,9 @@ subroutine PMPI_Type_create_f90_complex_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_f90_complex_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_f90_integer_f08
 subroutine MPI_Type_create_f90_integer_f08( &
   r, &
   newtype, &
@@ -50904,7 +52881,9 @@ subroutine MPI_Type_create_f90_integer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_f90_integer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_f90_integer_f08
 subroutine PMPI_Type_create_f90_integer_f08( &
   r, &
   newtype, &
@@ -50925,7 +52904,9 @@ subroutine PMPI_Type_create_f90_integer_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_f90_integer_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_f90_real_f08
 subroutine MPI_Type_create_f90_real_f08( &
   p, &
   r, &
@@ -50949,7 +52930,9 @@ subroutine MPI_Type_create_f90_real_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_f90_real_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_f90_real_f08
 subroutine PMPI_Type_create_f90_real_f08( &
   p, &
   r, &
@@ -50973,7 +52956,9 @@ subroutine PMPI_Type_create_f90_real_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_f90_real_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_hindexed_f08
 subroutine MPI_Type_create_hindexed_f08( &
   count, &
   array_of_blocklengths, &
@@ -51003,7 +52988,9 @@ subroutine MPI_Type_create_hindexed_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_hindexed_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_hindexed_c_f08
 subroutine MPI_Type_create_hindexed_c_f08( &
   count, &
   array_of_blocklengths, &
@@ -51033,7 +53020,9 @@ subroutine MPI_Type_create_hindexed_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_hindexed_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_hindexed_f08
 subroutine PMPI_Type_create_hindexed_f08( &
   count, &
   array_of_blocklengths, &
@@ -51063,7 +53052,9 @@ subroutine PMPI_Type_create_hindexed_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_hindexed_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_hindexed_c_f08
 subroutine PMPI_Type_create_hindexed_c_f08( &
   count, &
   array_of_blocklengths, &
@@ -51093,7 +53084,9 @@ subroutine PMPI_Type_create_hindexed_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_hindexed_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_hindexed_block_f08
 subroutine MPI_Type_create_hindexed_block_f08( &
   count, &
   blocklength, &
@@ -51123,7 +53116,9 @@ subroutine MPI_Type_create_hindexed_block_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_hindexed_block_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_hindexed_block_c_f08
 subroutine MPI_Type_create_hindexed_block_c_f08( &
   count, &
   blocklength, &
@@ -51153,7 +53148,9 @@ subroutine MPI_Type_create_hindexed_block_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_hindexed_block_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_hindexed_block_f08
 subroutine PMPI_Type_create_hindexed_block_f08( &
   count, &
   blocklength, &
@@ -51183,7 +53180,9 @@ subroutine PMPI_Type_create_hindexed_block_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_hindexed_block_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_hindexed_block_c_f08
 subroutine PMPI_Type_create_hindexed_block_c_f08( &
   count, &
   blocklength, &
@@ -51213,7 +53212,9 @@ subroutine PMPI_Type_create_hindexed_block_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_hindexed_block_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_hvector_f08
 subroutine MPI_Type_create_hvector_f08( &
   count, &
   blocklength, &
@@ -51243,7 +53244,9 @@ subroutine MPI_Type_create_hvector_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_hvector_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_hvector_c_f08
 subroutine MPI_Type_create_hvector_c_f08( &
   count, &
   blocklength, &
@@ -51273,7 +53276,9 @@ subroutine MPI_Type_create_hvector_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_hvector_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_hvector_f08
 subroutine PMPI_Type_create_hvector_f08( &
   count, &
   blocklength, &
@@ -51303,7 +53308,9 @@ subroutine PMPI_Type_create_hvector_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_hvector_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_hvector_c_f08
 subroutine PMPI_Type_create_hvector_c_f08( &
   count, &
   blocklength, &
@@ -51333,7 +53340,9 @@ subroutine PMPI_Type_create_hvector_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_hvector_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_indexed_block_f08
 subroutine MPI_Type_create_indexed_block_f08( &
   count, &
   blocklength, &
@@ -51363,7 +53372,9 @@ subroutine MPI_Type_create_indexed_block_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_indexed_block_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_indexed_block_c_f08
 subroutine MPI_Type_create_indexed_block_c_f08( &
   count, &
   blocklength, &
@@ -51393,7 +53404,9 @@ subroutine MPI_Type_create_indexed_block_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_indexed_block_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_indexed_block_f08
 subroutine PMPI_Type_create_indexed_block_f08( &
   count, &
   blocklength, &
@@ -51423,7 +53436,9 @@ subroutine PMPI_Type_create_indexed_block_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_indexed_block_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_indexed_block_c_f08
 subroutine PMPI_Type_create_indexed_block_c_f08( &
   count, &
   blocklength, &
@@ -51453,7 +53468,9 @@ subroutine PMPI_Type_create_indexed_block_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_indexed_block_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_keyval_f08
 subroutine MPI_Type_create_keyval_f08( &
   type_copy_attr_fn, &
   type_delete_attr_fn, &
@@ -51480,7 +53497,9 @@ subroutine MPI_Type_create_keyval_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_keyval_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_keyval_f08
 subroutine PMPI_Type_create_keyval_f08( &
   type_copy_attr_fn, &
   type_delete_attr_fn, &
@@ -51507,7 +53526,9 @@ subroutine PMPI_Type_create_keyval_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_keyval_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_resized_f08
 subroutine MPI_Type_create_resized_f08( &
   oldtype, &
   lb, &
@@ -51534,7 +53555,9 @@ subroutine MPI_Type_create_resized_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_resized_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_resized_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
 subroutine MPI_Type_create_resized_c_f08( &
   oldtype, &
@@ -51563,7 +53586,9 @@ subroutine MPI_Type_create_resized_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_resized_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_resized_f08
 subroutine PMPI_Type_create_resized_f08( &
   oldtype, &
   lb, &
@@ -51590,7 +53615,9 @@ subroutine PMPI_Type_create_resized_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_resized_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_resized_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
 subroutine PMPI_Type_create_resized_c_f08( &
   oldtype, &
@@ -51619,7 +53646,9 @@ subroutine PMPI_Type_create_resized_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_resized_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_struct_f08
 subroutine MPI_Type_create_struct_f08( &
   count, &
   array_of_blocklengths, &
@@ -51649,7 +53678,9 @@ subroutine MPI_Type_create_struct_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_struct_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_struct_c_f08
 subroutine MPI_Type_create_struct_c_f08( &
   count, &
   array_of_blocklengths, &
@@ -51679,7 +53710,9 @@ subroutine MPI_Type_create_struct_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_struct_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_struct_f08
 subroutine PMPI_Type_create_struct_f08( &
   count, &
   array_of_blocklengths, &
@@ -51709,7 +53742,9 @@ subroutine PMPI_Type_create_struct_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_struct_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_struct_c_f08
 subroutine PMPI_Type_create_struct_c_f08( &
   count, &
   array_of_blocklengths, &
@@ -51739,7 +53774,9 @@ subroutine PMPI_Type_create_struct_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_struct_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_subarray_f08
 subroutine MPI_Type_create_subarray_f08( &
   ndims, &
   array_of_sizes, &
@@ -51775,7 +53812,9 @@ subroutine MPI_Type_create_subarray_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_subarray_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_create_subarray_c_f08
 subroutine MPI_Type_create_subarray_c_f08( &
   ndims, &
   array_of_sizes, &
@@ -51811,7 +53850,9 @@ subroutine MPI_Type_create_subarray_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_create_subarray_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_subarray_f08
 subroutine PMPI_Type_create_subarray_f08( &
   ndims, &
   array_of_sizes, &
@@ -51847,7 +53888,9 @@ subroutine PMPI_Type_create_subarray_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_subarray_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_create_subarray_c_f08
 subroutine PMPI_Type_create_subarray_c_f08( &
   ndims, &
   array_of_sizes, &
@@ -51883,7 +53926,9 @@ subroutine PMPI_Type_create_subarray_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_create_subarray_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_delete_attr_f08
 subroutine MPI_Type_delete_attr_f08( &
   datatype, &
   type_keyval, &
@@ -51904,7 +53949,9 @@ subroutine MPI_Type_delete_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_delete_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_delete_attr_f08
 subroutine PMPI_Type_delete_attr_f08( &
   datatype, &
   type_keyval, &
@@ -51925,7 +53972,9 @@ subroutine PMPI_Type_delete_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_delete_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_dup_f08
 subroutine MPI_Type_dup_f08( &
   oldtype, &
   newtype, &
@@ -51946,7 +53995,9 @@ subroutine MPI_Type_dup_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_dup_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_dup_f08
 subroutine PMPI_Type_dup_f08( &
   oldtype, &
   newtype, &
@@ -51967,7 +54018,9 @@ subroutine PMPI_Type_dup_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_dup_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_free_f08
 subroutine MPI_Type_free_f08( &
   datatype, &
   ierror &
@@ -51985,7 +54038,9 @@ subroutine MPI_Type_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_free_f08
 subroutine PMPI_Type_free_f08( &
   datatype, &
   ierror &
@@ -52003,7 +54058,9 @@ subroutine PMPI_Type_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_free_keyval_f08
 subroutine MPI_Type_free_keyval_f08( &
   type_keyval, &
   ierror &
@@ -52021,7 +54078,9 @@ subroutine MPI_Type_free_keyval_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_free_keyval_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_free_keyval_f08
 subroutine PMPI_Type_free_keyval_f08( &
   type_keyval, &
   ierror &
@@ -52039,7 +54098,9 @@ subroutine PMPI_Type_free_keyval_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_free_keyval_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_attr_f08
 subroutine MPI_Type_get_attr_f08( &
   datatype, &
   type_keyval, &
@@ -52066,7 +54127,9 @@ subroutine MPI_Type_get_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_attr_f08
 subroutine PMPI_Type_get_attr_f08( &
   datatype, &
   type_keyval, &
@@ -52093,7 +54156,9 @@ subroutine PMPI_Type_get_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_contents_f08
 subroutine MPI_Type_get_contents_f08( &
   datatype, &
   max_integers, &
@@ -52129,7 +54194,9 @@ subroutine MPI_Type_get_contents_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_contents_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_contents_c_f08
 subroutine MPI_Type_get_contents_c_f08( &
   datatype, &
   max_integers, &
@@ -52171,7 +54238,9 @@ subroutine MPI_Type_get_contents_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_contents_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_contents_f08
 subroutine PMPI_Type_get_contents_f08( &
   datatype, &
   max_integers, &
@@ -52207,7 +54276,9 @@ subroutine PMPI_Type_get_contents_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_contents_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_contents_c_f08
 subroutine PMPI_Type_get_contents_c_f08( &
   datatype, &
   max_integers, &
@@ -52249,7 +54320,9 @@ subroutine PMPI_Type_get_contents_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_contents_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_envelope_f08
 subroutine MPI_Type_get_envelope_f08( &
   datatype, &
   num_integers, &
@@ -52279,7 +54352,9 @@ subroutine MPI_Type_get_envelope_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_envelope_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_envelope_c_f08
 subroutine MPI_Type_get_envelope_c_f08( &
   datatype, &
   num_integers, &
@@ -52312,7 +54387,9 @@ subroutine MPI_Type_get_envelope_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_envelope_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_envelope_f08
 subroutine PMPI_Type_get_envelope_f08( &
   datatype, &
   num_integers, &
@@ -52342,7 +54419,9 @@ subroutine PMPI_Type_get_envelope_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_envelope_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_envelope_c_f08
 subroutine PMPI_Type_get_envelope_c_f08( &
   datatype, &
   num_integers, &
@@ -52375,7 +54454,9 @@ subroutine PMPI_Type_get_envelope_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_envelope_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_extent_f08
 subroutine MPI_Type_get_extent_f08( &
   datatype, &
   lb, &
@@ -52399,7 +54480,9 @@ subroutine MPI_Type_get_extent_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_extent_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_extent_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
 subroutine MPI_Type_get_extent_c_f08( &
   datatype, &
@@ -52425,7 +54508,9 @@ subroutine MPI_Type_get_extent_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_extent_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_extent_f08
 subroutine PMPI_Type_get_extent_f08( &
   datatype, &
   lb, &
@@ -52449,7 +54534,9 @@ subroutine PMPI_Type_get_extent_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_extent_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_extent_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
 subroutine PMPI_Type_get_extent_c_f08( &
   datatype, &
@@ -52475,7 +54562,9 @@ subroutine PMPI_Type_get_extent_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_extent_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_extent_x_f08
 subroutine MPI_Type_get_extent_x_f08( &
   datatype, &
   lb, &
@@ -52499,7 +54588,9 @@ subroutine MPI_Type_get_extent_x_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_extent_x_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_extent_x_f08
 subroutine PMPI_Type_get_extent_x_f08( &
   datatype, &
   lb, &
@@ -52523,7 +54614,9 @@ subroutine PMPI_Type_get_extent_x_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_extent_x_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_name_f08
 subroutine MPI_Type_get_name_f08( &
   datatype, &
   type_name, &
@@ -52547,7 +54640,9 @@ subroutine MPI_Type_get_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_name_f08
 subroutine PMPI_Type_get_name_f08( &
   datatype, &
   type_name, &
@@ -52571,7 +54666,9 @@ subroutine PMPI_Type_get_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_true_extent_f08
 subroutine MPI_Type_get_true_extent_f08( &
   datatype, &
   true_lb, &
@@ -52595,7 +54692,9 @@ subroutine MPI_Type_get_true_extent_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_true_extent_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_true_extent_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
 subroutine MPI_Type_get_true_extent_c_f08( &
   datatype, &
@@ -52621,7 +54720,9 @@ subroutine MPI_Type_get_true_extent_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_true_extent_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_true_extent_f08
 subroutine PMPI_Type_get_true_extent_f08( &
   datatype, &
   true_lb, &
@@ -52645,7 +54746,9 @@ subroutine PMPI_Type_get_true_extent_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_true_extent_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_true_extent_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
 subroutine PMPI_Type_get_true_extent_c_f08( &
   datatype, &
@@ -52671,7 +54774,9 @@ subroutine PMPI_Type_get_true_extent_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_true_extent_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_true_extent_x_f08
 subroutine MPI_Type_get_true_extent_x_f08( &
   datatype, &
   true_lb, &
@@ -52695,7 +54800,9 @@ subroutine MPI_Type_get_true_extent_x_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_true_extent_x_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_true_extent_x_f08
 subroutine PMPI_Type_get_true_extent_x_f08( &
   datatype, &
   true_lb, &
@@ -52719,7 +54826,9 @@ subroutine PMPI_Type_get_true_extent_x_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_true_extent_x_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_get_value_index_f08
 subroutine MPI_Type_get_value_index_f08( &
   value_type, &
   index_type, &
@@ -52743,7 +54852,9 @@ subroutine MPI_Type_get_value_index_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_get_value_index_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_get_value_index_f08
 subroutine PMPI_Type_get_value_index_f08( &
   value_type, &
   index_type, &
@@ -52767,7 +54878,9 @@ subroutine PMPI_Type_get_value_index_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_get_value_index_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_indexed_f08
 subroutine MPI_Type_indexed_f08( &
   count, &
   array_of_blocklengths, &
@@ -52797,7 +54910,9 @@ subroutine MPI_Type_indexed_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_indexed_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_indexed_c_f08
 subroutine MPI_Type_indexed_c_f08( &
   count, &
   array_of_blocklengths, &
@@ -52827,7 +54942,9 @@ subroutine MPI_Type_indexed_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_indexed_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_indexed_f08
 subroutine PMPI_Type_indexed_f08( &
   count, &
   array_of_blocklengths, &
@@ -52857,7 +54974,9 @@ subroutine PMPI_Type_indexed_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_indexed_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_indexed_c_f08
 subroutine PMPI_Type_indexed_c_f08( &
   count, &
   array_of_blocklengths, &
@@ -52887,7 +55006,9 @@ subroutine PMPI_Type_indexed_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_indexed_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_match_size_f08
 subroutine MPI_Type_match_size_f08( &
   typeclass, &
   size, &
@@ -52911,7 +55032,9 @@ subroutine MPI_Type_match_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_match_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_match_size_f08
 subroutine PMPI_Type_match_size_f08( &
   typeclass, &
   size, &
@@ -52935,7 +55058,9 @@ subroutine PMPI_Type_match_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_match_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_set_attr_f08
 subroutine MPI_Type_set_attr_f08( &
   datatype, &
   type_keyval, &
@@ -52959,7 +55084,9 @@ subroutine MPI_Type_set_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_set_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_set_attr_f08
 subroutine PMPI_Type_set_attr_f08( &
   datatype, &
   type_keyval, &
@@ -52983,7 +55110,9 @@ subroutine PMPI_Type_set_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_set_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_set_name_f08
 subroutine MPI_Type_set_name_f08( &
   datatype, &
   type_name, &
@@ -53004,7 +55133,9 @@ subroutine MPI_Type_set_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_set_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_set_name_f08
 subroutine PMPI_Type_set_name_f08( &
   datatype, &
   type_name, &
@@ -53025,7 +55156,9 @@ subroutine PMPI_Type_set_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_set_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_size_f08
 subroutine MPI_Type_size_f08( &
   datatype, &
   size, &
@@ -53046,7 +55179,9 @@ subroutine MPI_Type_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_size_c_f08
 subroutine MPI_Type_size_c_f08( &
   datatype, &
   size, &
@@ -53067,7 +55202,9 @@ subroutine MPI_Type_size_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_size_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_size_f08
 subroutine PMPI_Type_size_f08( &
   datatype, &
   size, &
@@ -53088,7 +55225,9 @@ subroutine PMPI_Type_size_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_size_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_size_c_f08
 subroutine PMPI_Type_size_c_f08( &
   datatype, &
   size, &
@@ -53109,7 +55248,9 @@ subroutine PMPI_Type_size_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_size_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_size_x_f08
 subroutine MPI_Type_size_x_f08( &
   datatype, &
   size, &
@@ -53130,7 +55271,9 @@ subroutine MPI_Type_size_x_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_size_x_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_size_x_f08
 subroutine PMPI_Type_size_x_f08( &
   datatype, &
   size, &
@@ -53151,7 +55294,9 @@ subroutine PMPI_Type_size_x_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_size_x_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_vector_f08
 subroutine MPI_Type_vector_f08( &
   count, &
   blocklength, &
@@ -53181,7 +55326,9 @@ subroutine MPI_Type_vector_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_vector_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Type_vector_c_f08
 subroutine MPI_Type_vector_c_f08( &
   count, &
   blocklength, &
@@ -53211,7 +55358,9 @@ subroutine MPI_Type_vector_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Type_vector_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_vector_f08
 subroutine PMPI_Type_vector_f08( &
   count, &
   blocklength, &
@@ -53241,7 +55390,9 @@ subroutine PMPI_Type_vector_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_vector_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Type_vector_c_f08
 subroutine PMPI_Type_vector_c_f08( &
   count, &
   blocklength, &
@@ -53271,7 +55422,9 @@ subroutine PMPI_Type_vector_c_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Type_vector_c_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Unpack_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Unpack_f08ts( &
   inbuf, &
@@ -53345,7 +55498,9 @@ subroutine MPI_Unpack_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Unpack_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Unpack_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Unpack_c_f08ts( &
   inbuf, &
@@ -53419,7 +55574,9 @@ subroutine MPI_Unpack_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Unpack_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Unpack_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Unpack_f08ts( &
   inbuf, &
@@ -53493,7 +55650,9 @@ subroutine PMPI_Unpack_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Unpack_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Unpack_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Unpack_c_f08ts( &
   inbuf, &
@@ -53567,7 +55726,9 @@ subroutine PMPI_Unpack_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Unpack_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Unpack_external_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Unpack_external_f08ts( &
   datarep, &
@@ -53643,7 +55804,9 @@ subroutine MPI_Unpack_external_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Unpack_external_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Unpack_external_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Unpack_external_c_f08ts( &
   datarep, &
@@ -53719,7 +55882,9 @@ subroutine MPI_Unpack_external_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Unpack_external_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Unpack_external_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Unpack_external_f08ts( &
   datarep, &
@@ -53795,7 +55960,9 @@ subroutine PMPI_Unpack_external_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Unpack_external_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Unpack_external_c_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Unpack_external_c_f08ts( &
   datarep, &
@@ -53871,7 +56038,9 @@ subroutine PMPI_Unpack_external_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Unpack_external_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Unpublish_name_f08
 subroutine MPI_Unpublish_name_f08( &
   service_name, &
   info, &
@@ -53895,7 +56064,9 @@ subroutine MPI_Unpublish_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Unpublish_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Unpublish_name_f08
 subroutine PMPI_Unpublish_name_f08( &
   service_name, &
   info, &
@@ -53919,7 +56090,9 @@ subroutine PMPI_Unpublish_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Unpublish_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Wait_f08
 subroutine MPI_Wait_f08( &
   request, &
   status, &
@@ -53940,7 +56113,9 @@ subroutine MPI_Wait_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Wait_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Wait_f08
 subroutine PMPI_Wait_f08( &
   request, &
   status, &
@@ -53961,7 +56136,9 @@ subroutine PMPI_Wait_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Wait_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Waitall_f08
 subroutine MPI_Waitall_f08( &
   count, &
   array_of_requests, &
@@ -53985,7 +56162,9 @@ subroutine MPI_Waitall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Waitall_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Waitall_f08
 subroutine PMPI_Waitall_f08( &
   count, &
   array_of_requests, &
@@ -54009,7 +56188,9 @@ subroutine PMPI_Waitall_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Waitall_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Waitany_f08
 subroutine MPI_Waitany_f08( &
   count, &
   array_of_requests, &
@@ -54036,7 +56217,9 @@ subroutine MPI_Waitany_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Waitany_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Waitany_f08
 subroutine PMPI_Waitany_f08( &
   count, &
   array_of_requests, &
@@ -54063,7 +56246,9 @@ subroutine PMPI_Waitany_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Waitany_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Waitsome_f08
 subroutine MPI_Waitsome_f08( &
   incount, &
   array_of_requests, &
@@ -54093,7 +56278,9 @@ subroutine MPI_Waitsome_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Waitsome_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Waitsome_f08
 subroutine PMPI_Waitsome_f08( &
   incount, &
   array_of_requests, &
@@ -54123,7 +56310,9 @@ subroutine PMPI_Waitsome_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Waitsome_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_allocate_f08
 subroutine MPI_Win_allocate_f08( &
   size, &
   disp_unit, &
@@ -54159,7 +56348,9 @@ subroutine MPI_Win_allocate_f08( &
   baseptr = transfer(tmp_baseptr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_allocate_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_allocate_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
 subroutine MPI_Win_allocate_c_f08( &
   size, &
@@ -54197,7 +56388,9 @@ subroutine MPI_Win_allocate_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_allocate_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_allocate_f08
 subroutine PMPI_Win_allocate_f08( &
   size, &
   disp_unit, &
@@ -54233,7 +56426,9 @@ subroutine PMPI_Win_allocate_f08( &
   baseptr = transfer(tmp_baseptr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_allocate_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_allocate_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
 subroutine PMPI_Win_allocate_c_f08( &
   size, &
@@ -54271,7 +56466,9 @@ subroutine PMPI_Win_allocate_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_allocate_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_allocate_shared_f08
 subroutine MPI_Win_allocate_shared_f08( &
   size, &
   disp_unit, &
@@ -54307,7 +56504,9 @@ subroutine MPI_Win_allocate_shared_f08( &
   baseptr = transfer(tmp_baseptr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_allocate_shared_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_allocate_shared_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
 subroutine MPI_Win_allocate_shared_c_f08( &
   size, &
@@ -54345,7 +56544,9 @@ subroutine MPI_Win_allocate_shared_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_allocate_shared_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_allocate_shared_f08
 subroutine PMPI_Win_allocate_shared_f08( &
   size, &
   disp_unit, &
@@ -54381,7 +56582,9 @@ subroutine PMPI_Win_allocate_shared_f08( &
   baseptr = transfer(tmp_baseptr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_allocate_shared_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_allocate_shared_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
 subroutine PMPI_Win_allocate_shared_c_f08( &
   size, &
@@ -54419,7 +56622,9 @@ subroutine PMPI_Win_allocate_shared_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_allocate_shared_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_attach_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Win_attach_f08ts( &
   win, &
@@ -54469,7 +56674,9 @@ subroutine MPI_Win_attach_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_attach_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_attach_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Win_attach_f08ts( &
   win, &
@@ -54519,7 +56726,9 @@ subroutine PMPI_Win_attach_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_attach_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_call_errhandler_f08
 subroutine MPI_Win_call_errhandler_f08( &
   win, &
   errorcode, &
@@ -54540,7 +56749,9 @@ subroutine MPI_Win_call_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_call_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_call_errhandler_f08
 subroutine PMPI_Win_call_errhandler_f08( &
   win, &
   errorcode, &
@@ -54561,7 +56772,9 @@ subroutine PMPI_Win_call_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_call_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_complete_f08
 subroutine MPI_Win_complete_f08( &
   win, &
   ierror &
@@ -54579,7 +56792,9 @@ subroutine MPI_Win_complete_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_complete_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_complete_f08
 subroutine PMPI_Win_complete_f08( &
   win, &
   ierror &
@@ -54597,7 +56812,9 @@ subroutine PMPI_Win_complete_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_complete_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_create_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Win_create_f08ts( &
   base, &
@@ -54665,7 +56882,9 @@ subroutine MPI_Win_create_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_create_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_create_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Win_create_c_f08ts( &
@@ -54735,7 +56954,9 @@ subroutine MPI_Win_create_c_f08( &
 end subroutine MPI_Win_create_c_f08
 #endif
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_create_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Win_create_f08ts( &
   base, &
@@ -54803,7 +57024,9 @@ subroutine PMPI_Win_create_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_create_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_create_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Win_create_c_f08ts( &
@@ -54873,7 +57096,9 @@ subroutine PMPI_Win_create_c_f08( &
 end subroutine PMPI_Win_create_c_f08
 #endif
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_create_dynamic_f08
 subroutine MPI_Win_create_dynamic_f08( &
   info, &
   comm, &
@@ -54897,7 +57122,9 @@ subroutine MPI_Win_create_dynamic_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_create_dynamic_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_create_dynamic_f08
 subroutine PMPI_Win_create_dynamic_f08( &
   info, &
   comm, &
@@ -54921,7 +57148,9 @@ subroutine PMPI_Win_create_dynamic_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_create_dynamic_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_create_errhandler_f08
 subroutine MPI_Win_create_errhandler_f08( &
   win_errhandler_fn, &
   errhandler, &
@@ -54942,7 +57171,9 @@ subroutine MPI_Win_create_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_create_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_create_errhandler_f08
 subroutine PMPI_Win_create_errhandler_f08( &
   win_errhandler_fn, &
   errhandler, &
@@ -54963,7 +57194,9 @@ subroutine PMPI_Win_create_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_create_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_create_keyval_f08
 subroutine MPI_Win_create_keyval_f08( &
   win_copy_attr_fn, &
   win_delete_attr_fn, &
@@ -54990,7 +57223,9 @@ subroutine MPI_Win_create_keyval_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_create_keyval_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_create_keyval_f08
 subroutine PMPI_Win_create_keyval_f08( &
   win_copy_attr_fn, &
   win_delete_attr_fn, &
@@ -55017,7 +57252,9 @@ subroutine PMPI_Win_create_keyval_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_create_keyval_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_delete_attr_f08
 subroutine MPI_Win_delete_attr_f08( &
   win, &
   win_keyval, &
@@ -55038,7 +57275,9 @@ subroutine MPI_Win_delete_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_delete_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_delete_attr_f08
 subroutine PMPI_Win_delete_attr_f08( &
   win, &
   win_keyval, &
@@ -55059,7 +57298,9 @@ subroutine PMPI_Win_delete_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_delete_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_detach_f08
 #ifdef MPIF_HAVE_CFI
 subroutine MPI_Win_detach_f08ts( &
   win, &
@@ -55103,7 +57344,9 @@ subroutine MPI_Win_detach_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_detach_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_detach_f08
 #ifdef MPIF_HAVE_CFI
 subroutine PMPI_Win_detach_f08ts( &
   win, &
@@ -55147,7 +57390,9 @@ subroutine PMPI_Win_detach_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_detach_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_fence_f08
 subroutine MPI_Win_fence_f08( &
   assert, &
   win, &
@@ -55168,7 +57413,9 @@ subroutine MPI_Win_fence_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_fence_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_fence_f08
 subroutine PMPI_Win_fence_f08( &
   assert, &
   win, &
@@ -55189,7 +57436,9 @@ subroutine PMPI_Win_fence_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_fence_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_flush_f08
 subroutine MPI_Win_flush_f08( &
   rank, &
   win, &
@@ -55210,7 +57459,9 @@ subroutine MPI_Win_flush_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_flush_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_flush_f08
 subroutine PMPI_Win_flush_f08( &
   rank, &
   win, &
@@ -55231,7 +57482,9 @@ subroutine PMPI_Win_flush_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_flush_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_flush_all_f08
 subroutine MPI_Win_flush_all_f08( &
   win, &
   ierror &
@@ -55249,7 +57502,9 @@ subroutine MPI_Win_flush_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_flush_all_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_flush_all_f08
 subroutine PMPI_Win_flush_all_f08( &
   win, &
   ierror &
@@ -55267,7 +57522,9 @@ subroutine PMPI_Win_flush_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_flush_all_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_flush_local_f08
 subroutine MPI_Win_flush_local_f08( &
   rank, &
   win, &
@@ -55288,7 +57545,9 @@ subroutine MPI_Win_flush_local_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_flush_local_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_flush_local_f08
 subroutine PMPI_Win_flush_local_f08( &
   rank, &
   win, &
@@ -55309,7 +57568,9 @@ subroutine PMPI_Win_flush_local_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_flush_local_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_flush_local_all_f08
 subroutine MPI_Win_flush_local_all_f08( &
   win, &
   ierror &
@@ -55327,7 +57588,9 @@ subroutine MPI_Win_flush_local_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_flush_local_all_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_flush_local_all_f08
 subroutine PMPI_Win_flush_local_all_f08( &
   win, &
   ierror &
@@ -55345,7 +57608,9 @@ subroutine PMPI_Win_flush_local_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_flush_local_all_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_free_f08
 subroutine MPI_Win_free_f08( &
   win, &
   ierror &
@@ -55363,7 +57628,9 @@ subroutine MPI_Win_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_free_f08
 subroutine PMPI_Win_free_f08( &
   win, &
   ierror &
@@ -55381,7 +57648,9 @@ subroutine PMPI_Win_free_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_free_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_free_keyval_f08
 subroutine MPI_Win_free_keyval_f08( &
   win_keyval, &
   ierror &
@@ -55399,7 +57668,9 @@ subroutine MPI_Win_free_keyval_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_free_keyval_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_free_keyval_f08
 subroutine PMPI_Win_free_keyval_f08( &
   win_keyval, &
   ierror &
@@ -55417,7 +57688,9 @@ subroutine PMPI_Win_free_keyval_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_free_keyval_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_get_attr_f08
 subroutine MPI_Win_get_attr_f08( &
   win, &
   win_keyval, &
@@ -55444,7 +57717,9 @@ subroutine MPI_Win_get_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_get_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_get_attr_f08
 subroutine PMPI_Win_get_attr_f08( &
   win, &
   win_keyval, &
@@ -55471,7 +57746,9 @@ subroutine PMPI_Win_get_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_get_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_get_errhandler_f08
 subroutine MPI_Win_get_errhandler_f08( &
   win, &
   errhandler, &
@@ -55492,7 +57769,9 @@ subroutine MPI_Win_get_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_get_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_get_errhandler_f08
 subroutine PMPI_Win_get_errhandler_f08( &
   win, &
   errhandler, &
@@ -55513,7 +57792,9 @@ subroutine PMPI_Win_get_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_get_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_get_group_f08
 subroutine MPI_Win_get_group_f08( &
   win, &
   group, &
@@ -55534,7 +57815,9 @@ subroutine MPI_Win_get_group_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_get_group_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_get_group_f08
 subroutine PMPI_Win_get_group_f08( &
   win, &
   group, &
@@ -55555,7 +57838,9 @@ subroutine PMPI_Win_get_group_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_get_group_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_get_info_f08
 subroutine MPI_Win_get_info_f08( &
   win, &
   info_used, &
@@ -55576,7 +57861,9 @@ subroutine MPI_Win_get_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_get_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_get_info_f08
 subroutine PMPI_Win_get_info_f08( &
   win, &
   info_used, &
@@ -55597,7 +57884,9 @@ subroutine PMPI_Win_get_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_get_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_get_name_f08
 subroutine MPI_Win_get_name_f08( &
   win, &
   win_name, &
@@ -55621,7 +57910,9 @@ subroutine MPI_Win_get_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_get_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_get_name_f08
 subroutine PMPI_Win_get_name_f08( &
   win, &
   win_name, &
@@ -55645,7 +57936,9 @@ subroutine PMPI_Win_get_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_get_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_lock_f08
 subroutine MPI_Win_lock_f08( &
   lock_type, &
   rank, &
@@ -55672,7 +57965,9 @@ subroutine MPI_Win_lock_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_lock_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_lock_f08
 subroutine PMPI_Win_lock_f08( &
   lock_type, &
   rank, &
@@ -55699,7 +57994,9 @@ subroutine PMPI_Win_lock_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_lock_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_lock_all_f08
 subroutine MPI_Win_lock_all_f08( &
   assert, &
   win, &
@@ -55720,7 +58017,9 @@ subroutine MPI_Win_lock_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_lock_all_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_lock_all_f08
 subroutine PMPI_Win_lock_all_f08( &
   assert, &
   win, &
@@ -55741,7 +58040,9 @@ subroutine PMPI_Win_lock_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_lock_all_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_post_f08
 subroutine MPI_Win_post_f08( &
   group, &
   assert, &
@@ -55765,7 +58066,9 @@ subroutine MPI_Win_post_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_post_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_post_f08
 subroutine PMPI_Win_post_f08( &
   group, &
   assert, &
@@ -55789,7 +58092,9 @@ subroutine PMPI_Win_post_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_post_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_set_attr_f08
 subroutine MPI_Win_set_attr_f08( &
   win, &
   win_keyval, &
@@ -55813,7 +58118,9 @@ subroutine MPI_Win_set_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_set_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_set_attr_f08
 subroutine PMPI_Win_set_attr_f08( &
   win, &
   win_keyval, &
@@ -55837,7 +58144,9 @@ subroutine PMPI_Win_set_attr_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_set_attr_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_set_errhandler_f08
 subroutine MPI_Win_set_errhandler_f08( &
   win, &
   errhandler, &
@@ -55858,7 +58167,9 @@ subroutine MPI_Win_set_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_set_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_set_errhandler_f08
 subroutine PMPI_Win_set_errhandler_f08( &
   win, &
   errhandler, &
@@ -55879,7 +58190,9 @@ subroutine PMPI_Win_set_errhandler_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_set_errhandler_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_set_info_f08
 subroutine MPI_Win_set_info_f08( &
   win, &
   info, &
@@ -55900,7 +58213,9 @@ subroutine MPI_Win_set_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_set_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_set_info_f08
 subroutine PMPI_Win_set_info_f08( &
   win, &
   info, &
@@ -55921,7 +58236,9 @@ subroutine PMPI_Win_set_info_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_set_info_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_set_name_f08
 subroutine MPI_Win_set_name_f08( &
   win, &
   win_name, &
@@ -55942,7 +58259,9 @@ subroutine MPI_Win_set_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_set_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_set_name_f08
 subroutine PMPI_Win_set_name_f08( &
   win, &
   win_name, &
@@ -55963,7 +58282,9 @@ subroutine PMPI_Win_set_name_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_set_name_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_shared_query_f08
 subroutine MPI_Win_shared_query_f08( &
   win, &
   rank, &
@@ -55996,7 +58317,9 @@ subroutine MPI_Win_shared_query_f08( &
   baseptr = transfer(tmp_baseptr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_shared_query_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_shared_query_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
 subroutine MPI_Win_shared_query_c_f08( &
   win, &
@@ -56031,7 +58354,9 @@ subroutine MPI_Win_shared_query_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_shared_query_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_shared_query_f08
 subroutine PMPI_Win_shared_query_f08( &
   win, &
   rank, &
@@ -56064,7 +58389,9 @@ subroutine PMPI_Win_shared_query_f08( &
   baseptr = transfer(tmp_baseptr, C_NULL_PTR)
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_shared_query_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_shared_query_c_f08
 #ifdef MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
 subroutine PMPI_Win_shared_query_c_f08( &
   win, &
@@ -56099,7 +58426,9 @@ subroutine PMPI_Win_shared_query_c_f08( &
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_shared_query_c_f08
 #endif
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_start_f08
 subroutine MPI_Win_start_f08( &
   group, &
   assert, &
@@ -56123,7 +58452,9 @@ subroutine MPI_Win_start_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_start_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_start_f08
 subroutine PMPI_Win_start_f08( &
   group, &
   assert, &
@@ -56147,7 +58478,9 @@ subroutine PMPI_Win_start_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_start_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_sync_f08
 subroutine MPI_Win_sync_f08( &
   win, &
   ierror &
@@ -56165,7 +58498,9 @@ subroutine MPI_Win_sync_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_sync_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_sync_f08
 subroutine PMPI_Win_sync_f08( &
   win, &
   ierror &
@@ -56183,7 +58518,9 @@ subroutine PMPI_Win_sync_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_sync_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_test_f08
 subroutine MPI_Win_test_f08( &
   win, &
   flag, &
@@ -56204,7 +58541,9 @@ subroutine MPI_Win_test_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_test_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_test_f08
 subroutine PMPI_Win_test_f08( &
   win, &
   flag, &
@@ -56225,7 +58564,9 @@ subroutine PMPI_Win_test_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_test_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_unlock_f08
 subroutine MPI_Win_unlock_f08( &
   rank, &
   win, &
@@ -56246,7 +58587,9 @@ subroutine MPI_Win_unlock_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_unlock_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_unlock_f08
 subroutine PMPI_Win_unlock_f08( &
   rank, &
   win, &
@@ -56267,7 +58610,9 @@ subroutine PMPI_Win_unlock_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_unlock_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_unlock_all_f08
 subroutine MPI_Win_unlock_all_f08( &
   win, &
   ierror &
@@ -56285,7 +58630,9 @@ subroutine MPI_Win_unlock_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_unlock_all_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_unlock_all_f08
 subroutine PMPI_Win_unlock_all_f08( &
   win, &
   ierror &
@@ -56303,7 +58650,9 @@ subroutine PMPI_Win_unlock_all_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_unlock_all_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Win_wait_f08
 subroutine MPI_Win_wait_f08( &
   win, &
   ierror &
@@ -56321,7 +58670,9 @@ subroutine MPI_Win_wait_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine MPI_Win_wait_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Win_wait_f08
 subroutine PMPI_Win_wait_f08( &
   win, &
   ierror &
@@ -56339,7 +58690,9 @@ subroutine PMPI_Win_wait_f08( &
   )
   if (present(ierror)) ierror = tmp_ierror
 end subroutine PMPI_Win_wait_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Wtick_f08
 function MPI_Wtick_f08( &
 ) result(result)
   use mpif_f08_constants
@@ -56350,7 +58703,9 @@ function MPI_Wtick_f08( &
   result = MPIF_Wtick( &
   )
 end function MPI_Wtick_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Wtick_f08
 function PMPI_Wtick_f08( &
 ) result(result)
   use mpif_f08_constants
@@ -56361,7 +58716,9 @@ function PMPI_Wtick_f08( &
   result = PMPIF_Wtick( &
   )
 end function PMPI_Wtick_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN MPI_Wtime_f08
 function MPI_Wtime_f08( &
 ) result(result)
   use mpif_f08_constants
@@ -56372,7 +58729,9 @@ function MPI_Wtime_f08( &
   result = MPIF_Wtime( &
   )
 end function MPI_Wtime_f08
+! MPIF-SPLIT-END
 
+! MPIF-SPLIT-BEGIN PMPI_Wtime_f08
 function PMPI_Wtime_f08( &
 ) result(result)
   use mpif_f08_constants
@@ -56383,4 +58742,5 @@ function PMPI_Wtime_f08( &
   result = PMPIF_Wtime( &
   )
 end function PMPI_Wtime_f08
+! MPIF-SPLIT-END
 

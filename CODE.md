@@ -203,6 +203,59 @@ Install it into a prefix of its own. `bin/mpifort` links a bare
 `-lmpifort_abi`, so an archive and a shared library in one libdir leave the
 linker to choose, and it chooses the shared one.
 
+### Separable wrappers
+
+MPI-5.0 §15.2.1 asks (2) that MPI functions a profiler has not replaced "still
+be linked into an executable image without causing name clashes" and (4) that
+the wrappers of a layered Fortran binding be "separable from the rest of the
+library". §15.2.5 says what separable means, and it is a statement about archive
+members: they have to be extractable "using a tool such as `ar`" and "without
+bringing along any other unnecessary code". A shared library satisfies both by
+construction, the executable's definition winning at load time; an archive whose
+one member holds every wrapper satisfies neither.
+
+So a static build compiles each `MPI_` entry point on its own.
+`MPIF_SPLIT_WRAPPERS`, on when `BUILD_SHARED_LIBS` is off, runs
+`ci-scripts/split-wrappers.sh` at configure time over `gen/mpif_functions.c`,
+`gen/mpif_f08_wrappers.F90` and `src/mpif_removed.c`. It is an option rather
+than a plain `if(NOT BUILD_SHARED_LIBS)` so that both combinations can be built
+on purpose — `scripts/macos-build-mpif.sh` passes `MPIF_SPLIT_WRAPPERS` through.
+
+- **The cut is by marker, not by parsing.** `dev/mpiapi.jl` brackets every entry
+  point with `MPIF-SPLIT-BEGIN <symbol>` / `MPIF-SPLIT-END`, and
+  `src/mpif_removed.c` carries the same by hand. Whatever lies *outside* a
+  region is shared prologue — the `#include`s, `gen/mpif_functions.c`'s five
+  `#undef`/`#define` pairs, `src/mpif_removed.c`'s macros — and every part gets a
+  copy of all of it. That is why the `PMPI_` bodies are marked too: an unmarked
+  body would count as prologue, and would be duplicated into every part after it.
+- **`MPI_` names only**, and one member per *symbol* rather than per routine.
+  A profiling library holds the `MPI_` wrappers and calls `PMPI_` into the base
+  library, so only the `MPI_` names have to be extractable and only they can
+  clash; and §15.2.1(2) means a profiler that replaces `mpi_send_` but not
+  `mpi_send_c_` must still link. The `PMPI_` forms go to one member per input.
+  That policy is in the splitter rather than in the generator, so revisiting it
+  does not mean regenerating `gen/`.
+- **What it costs.** A clean static `mpich-gcc` build here went from 36 s to
+  67 s and the archive from 27 members to 1218, of which 1186 are MPI entry
+  points. Nothing else pays: a shared build compiles the three files whole,
+  exactly as before.
+- **The parts are outputs of a configure-time step**, so the splitter stamps its
+  output directory and returns without touching anything when neither the input
+  nor the splitter has changed. Without that, every `cmake` re-run would rewrite
+  ~1200 files and force a full rebuild. `CMAKE_CONFIGURE_DEPENDS` on the same
+  four files is what re-runs it.
+- **The tests are `test/profile_f90` and `test/profile_f08`**, each replacing
+  `MPI_Comm_rank` and `MPI_Barrier` with its own and reaching the real ones
+  through `PMPI_`. They run under a static build as under a shared one — 78 tests
+  either way. Build a static mpif with `MPIF_SPLIT_WRAPPERS=OFF` and both stop
+  linking, on `duplicate symbol '_mpi_comm_rank_'` and `'_mpi_barrier_'` and on
+  `'_mpi_comm_rank_f08_'` and `'_mpi_barrier_f08_'` respectively; measured.
+- **Two families are deliberately left together**: `gen/mpif_f08_cdesc.c`'s
+  `mpi_*_cdesc`, which are names mpif invented and nothing replaces, and
+  `src/mpif_attr_fns.F90`'s fourteen predefined callbacks, which A.1.1 makes
+  constants rather than entry points. `ci-scripts/check-static-build.sh` excludes
+  exactly those two by name; `MISSING.md` has the reasoning.
+
 What a static link puts at risk is the two arrangements that publish *data*
 across the language boundary, because an archive yields a member only when
 something references a symbol in it. Neither chain is declared anywhere; both
@@ -212,9 +265,18 @@ with `ar d` and relinking:
 - **The sentinel cells** (`src/mpif_constants.c`) are referenced from
   `gen/mpif_functions.c`, `gen/mpif_f08_cdesc.c`, `src/mpif_check.c` and
   `src/mpif_removed.c` — through the `static inline` translators of
-  `include/mpif_sentinels.h`, which every wrapper inlines. `gen/mpif_functions.c`
-  is one translation unit holding every wrapper, so any MPI call at all pulls it,
-  and it pulls the cells.
+  `include/mpif_sentinels.h`, which every wrapper that can be handed a sentinel
+  inlines. Under `MPIF_SPLIT_WRAPPERS` those wrappers are a member each, so the
+  chain is local rather than global: 277 of the archive's members reference
+  `mpif_bottom_`, and pulling any one of them pulls the cells. A program that
+  calls nothing able to take a sentinel therefore need not pull them, and on
+  Mach-O pulls them anyway — ld64 loads a member to define a common symbol the
+  link already has. Measured, `mpich-gcc`: a program calling only `MPI_Init` and
+  `MPI_Finalize` still gets `__TEXT,__const` cells, and `-why_load` names
+  `_mpif_argv_null_` as the cause. Not relied on, because whether GNU ld does the
+  same was not measured: `bin/mpif_info` calls `MPI_Gather`, so the wrapper's own
+  reference is there on either platform, and that is what
+  `ci-scripts/check-static-build.sh` reads.
   **This failure is silent.** A consumer's COMMON block is a *definition*, not a
   reference, so with the member gone the link still succeeds and the program still
   works: the consumer's own tentative definitions win, C and Fortran resolve one
@@ -243,24 +305,27 @@ with `ar d` and relinking:
 a duplicate of the run-time check. It requires the archive to be there with no
 shared library beside it, `bin/mpif_info` to name `libmpi_abi` and *not*
 `libmpifort_abi` among its dynamic dependencies, every sentinel cell in that
-executable to be a defined read-only symbol, and both logical symbols to be
-defined. It reads the cell names out of `include/mpif_sentinels.h` rather than
-listing them, the way `ci-scripts/check-headers.sh` does.
+executable to be a defined read-only symbol, both logical symbols to be defined,
+and no archive member to define more than one MPI entry point. It reads the cell
+names out of `include/mpif_sentinels.h` rather than listing them, the way
+`ci-scripts/check-headers.sh` does. For the last of those it unpacks the archive
+with `ar x` into a temporary directory and runs one `nm -g -A` over the members:
+`nm -A` on the *archive* would do as well but for its member field being spelled
+differently by ELF and Mach-O `nm`.
 
 CI's `static` job runs it, then `test/` and `test-consume/` — the two routes a
 consumer can reach the archive by, one through `bin/mpifort`'s `-lmpifort_abi`
 and one through `find_package(mpif)`'s imported target. One leg, on Linux,
 because GNU ld is the linker that reports symbol size and alignment mismatches
 at all; `dev/build-macos-all.sh static` covers Mach-O locally over all four
-variants. A static build was measured to produce no such warning, in a Debian
-container with GNU ld — the same harness that found 1516 of them from a uniform
-cell size.
+variants, and `docker/mpich-gcc-static-arm64v8.dockerfile` covers aarch64 — the
+cells' size and alignment are chosen against the Fortran COMMON blocks merged
+onto them, and both quantities differ by target. A static build was measured to
+produce no such warning, in a Debian container with GNU ld — the same harness
+that found 1516 of them from a uniform cell size.
 
-One thing an archive cannot do: **profiling by interposition needs a shared
-mpif.** `MPIF_TEST_STATIC_MPIF=ON` skips `test/profile_f90` and
-`test/profile_f08` for that reason, so a static run is 76 tests rather than 78.
-MPI-5.0 §15.2.1(2) and (4) are what that fails, and `MISSING.md` has the
-measurement and the decision.
+A static build is 78 tests, the same as a shared one; what used to make it 76 is
+in "Separable wrappers" above.
 
 ## Sanitizer builds
 
@@ -457,9 +522,11 @@ were found and verified.
     `mpi_*_` and `pmpi_*_` symbol sets leaves exactly the predefined
     callbacks without twins.
   - Tests: `test/pmpi_f.f`, `test/pmpi_f90.f90`, `test/pmpi_f08.f90` call the
-    P forms from each interface; `test/profile_f90.f90` replaces `mpi_send_`
-    and asserts its counter in both directions (interception happened; PMPI
-    did not come back through the interceptor).
+    P forms from each interface; `test/profile_f90.f90` replaces
+    `MPI_Comm_rank` and `MPI_Barrier` and asserts its counters in both
+    directions (interception happened; PMPI did not come back through the
+    interceptor). Both profiling tests run against an archive too — see
+    "Separable wrappers" under "Static linking".
 - **Nothing is silently dropped.** Replaying the generator's filters over
   `apis.json` gives 430 kept functions, 589 including `_c` variants, and
   `gen/mpif_f08_functions.F90` contains exactly those. The 102 skipped as

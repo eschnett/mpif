@@ -66,12 +66,6 @@ cmake_args=()
 if [[ ${run_mpi} == openmpi ]]; then
     cmake_args+=("-DMPIEXEC_PREFLAGS=${MPIF_TEST_MPIEXEC_PREFLAGS:---oversubscribe;--mca;btl_tcp_if_include;lo0}")
 fi
-# The two profiling tests replace one of mpif's entry points with their own, which
-# an archive cannot satisfy without a duplicate symbol; see MPIF_TEST_STATIC_MPIF
-# in test/CMakeLists.txt.
-if [[ -n ${static} ]]; then
-    cmake_args+=("-DMPIF_TEST_STATIC_MPIF=ON")
-fi
 
 rm -rf "${tests_build}"
 cmake \

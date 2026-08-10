@@ -2267,6 +2267,16 @@ for key in sort(collect(keys(apis)))
             @assert false
         end
 
+        # Where one entry point begins and ends, for
+        # ci-scripts/split-wrappers.sh: a static build compiles each MPI_ entry
+        # point as a translation unit of its own, so that a profiling wrapper can
+        # replace one without clashing with the member the link needs for the
+        # rest (MPI-5.0 section 15.2.1(2) and (4)). Every entry point is marked,
+        # PMPI_ ones included, because the splitter's rule is that whatever lies
+        # *outside* a marked region is shared prologue that every part gets a
+        # copy of -- an unmarked body would be duplicated into every part after
+        # it.
+        push!(c_implementations, "// MPIF-SPLIT-BEGIN $name_f")
         push!(c_implementations, "$return_type $name_f(")
         for (n, arg) in enumerate(input_arguments)
             comma = n < length(input_arguments) ? "," : ""
@@ -2854,6 +2864,12 @@ for key in sort(collect(keys(apis)))
         isempty(specific_guard) || push!(f08_specific_interfaces, "#endif")
         push!(f08_specific_interfaces, "")
 
+        # The same markers as the C entry points get, and outside both #ifdefs:
+        # one region holds the two spellings of one specific -- the assumed-rank
+        # MPI_Send_f08ts and the ignore_tkr MPI_Send_f08 -- of which the
+        # preprocessor keeps one. The region is labelled with the scheme-1A name,
+        # which is the one that exists on both branches.
+        push!(f08_wrapper_bodies, "! MPIF-SPLIT-BEGIN $f08_name")
         isempty(specific_guard) || push!(f08_wrapper_bodies, "#ifdef $specific_guard")
         if emit_ts
             push!(f08_wrapper_bodies, "#ifdef MPIF_HAVE_CFI")
@@ -2942,6 +2958,7 @@ for key in sort(collect(keys(apis)))
         push!(f08_wrapper_bodies, "end $f_unit $f08_name")
         emit_ts && push!(f08_wrapper_bodies, "#endif")
         isempty(specific_guard) || push!(f08_wrapper_bodies, "#endif")
+        push!(f08_wrapper_bodies, "! MPIF-SPLIT-END")
         push!(f08_wrapper_bodies, "")
 
         push!(c_implementations, "{")
@@ -2996,6 +3013,7 @@ for key in sort(collect(keys(apis)))
         end
 
         push!(c_implementations, "}")
+        push!(c_implementations, "// MPIF-SPLIT-END")
         push!(f_interfaces, "  end $f_unit $f_name")
 
     end                         # for pmpi, embiggen

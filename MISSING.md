@@ -810,34 +810,39 @@ decision recorded on filing it.
 
 `-DBUILD_SHARED_LIBS=OFF` builds `libmpifort_abi.a`, CI's `static` job runs
 `test/` and `test-consume/` against one, and `CODE.md` "Static linking" has the
-mechanism. Five things left undone, each on purpose:
+mechanism. Eight things left undone, each on purpose:
 
-- **A static mpif cannot be profiled by interposition, and MPI-5.0 §15.2.1
-  requires that it could.** Replacing an entry point with your own — which is what
-  `test/profile_f90.f90` and `test/profile_f08.f90` do, and what a profiling layer
-  does — works against a shared library, the executable's definition winning at
-  load time. Against the archive the linker sees two definitions instead, because
-  the member holding `mpi_barrier_` holds every other wrapper too and the link
-  needs it for those:
-
-      duplicate symbol '_mpi_barrier_f08_' in:
-          CMakeFiles/profile_f08.dir/profile_f08.f90.o
-          libmpifort_abi.a[28](mpif_f08_wrappers.F90.o)
-
-  §15.2.1(2) asks that unreplaced functions "still be linked into an executable
-  image without causing name clashes", and (4) that a layered binding's wrappers
-  be "separable from the rest of the library ... at least with Unix linker
-  semantics". Both hold for a shared mpif; neither holds for the archive, and both
-  interfaces are affected — `gen/mpif_functions.c` for the C entry points,
-  `gen/mpif_f08_wrappers.F90` for the f08 specifics.
-  What (4) actually asks for is one object per routine, which the generator could
-  emit: ~1600 extra translation units, slowing every build everywhere for a
-  configuration CI runs one leg of. Not done, and on the `TODO.md` list instead.
-  Weak definitions would fix half of it and are not portable for the other half:
-  `#pragma weak` covers the C entry points, and neither gfortran nor flang has a
-  way to weaken a Fortran procedure symbol. `MPIF_TEST_STATIC_MPIF=ON` skips the
-  two tests, and it skips *target creation* rather than registration because the
-  failure is at link time.
+- **The `PMPI_` wrappers are not separable, and are not meant to be.**
+  `MPIF_SPLIT_WRAPPERS` gives every `MPI_` entry point an archive member of its
+  own, which is what MPI-5.0 §15.2.1(2) and (4) ask for; `CODE.md` "Separable
+  wrappers" has the mechanism. The `PMPI_` forms are left as they were, three
+  members between them. §15.2.5 says what the requirement is *for*: a profiling library has to be
+  able to hold the Fortran wrappers, or none of the profiled entry points is
+  undefined when it is scanned and the program links unprofiled. Such a library
+  holds the `MPI_` names and calls `PMPI_` into the base library — it never
+  defines a `PMPI_` name, so there is nothing to clash with and nothing to
+  extract. Splitting them as well would double the ~1200 extra translation units
+  for a case nothing asks for. The rule is one line of
+  `ci-scripts/split-wrappers.sh` rather than of `dev/mpiapi.jl`, so reversing it
+  would not mean regenerating `gen/`.
+- **`gen/mpif_f08_cdesc.c` is not split.** Its 273 `mpi_*_cdesc` entry points are
+  `bind(C)` names mpif invented; no standard mentions them, so no profiler
+  replaces them and nothing else defines them. They are in the one exclusion list
+  `ci-scripts/check-static-build.sh` carries, by the `_cdesc` suffix.
+- **The predefined callbacks stay in one member** (`src/mpif_attr_fns.F90`,
+  fourteen symbols: A.1.1's twelve, plus `MPI_CONVERSION_FN_NULL` and its
+  large-count form). A.1.1 lists the twelve among the *defined constants*, so in
+  the ABI they are constants rather than entry points — the same fact that gives them no `PMPI_` form (`CODE.md` "The PMPI
+  profiling interface"). A tools layer forwards one as a `PROCEDURE(...)` dummy
+  and never defines `MPI_COMM_DUP_FN` itself. They are the second entry in
+  `check-static-build.sh`'s exclusion list.
+- **The `MPI_`/`PMPI_` module procedures are outside the requirement.**
+  `src/mpif_cptr.F90`'s `_cptr` overloads, `src/mpif_types.F90`'s `MPI_Sizeof`
+  specifics and `src/mpif_handle_types.F90`'s status converters are module
+  procedures, so the compiler mangles their symbols
+  (`__mpif_cptr_MOD_mpi_alloc_mem_cptr`). Nothing can interpose a name it cannot
+  predict, under any arrangement of members, which is exactly why the f08
+  specifics are *external* procedures instead.
 - **A fully static executable, with the MPI linked in too, is not supported.**
   It would need static MPI libraries — MPICH can supply them, Open MPI largely
   cannot — and it would destroy the arrangement the rest of the design rests on:
@@ -854,10 +859,25 @@ mechanism. Five things left undone, each on purpose:
   which is why a uniform cell size cost 1516 warnings before a container found
   them (`HISTORY.md`) — so that is the leg worth having. Mach-O is covered by
   `dev/build-macos-all.sh static` over all four variants, locally rather than in
-  CI. Neither Open MPI nor the vendor compilers of the `compile` job build an
+  CI, and aarch64/ELF by `docker/mpich-gcc-static-arm64v8.dockerfile`, which is
+  the shared arm64v8 image with `-DBUILD_SHARED_LIBS=OFF` and nothing else
+  changed. That matters because both quantities the cells are chosen against are
+  target-dependent: `__BIGGEST_ALIGNMENT__` is 16 on aarch64 and up to 64 on
+  x86-64. Neither Open MPI nor the vendor compilers of the `compile` job build an
   archive anywhere; `ci-scripts/compile-only.sh` was left alone because what it
   would add is a second link of the same objects, and the failure this is about
   is not a compile failure.
+- **The MPICH suite has never run against a static mpif, and cannot gate on one
+  yet.** Its f77, f90 and f08 `profile` directories each replace `mpi_send` and
+  `mpi_recv` with the test's own, so all three fail to link against an archive for
+  the reason above; all three pass today and none is in
+  `ci-scripts/suite/mpich-suite-xfail.txt`. The blocker is that list's variant
+  key, `<mpi>/<toolchain>/<os>/<os-version>/<arch>`, which has nowhere to say
+  "static" — every component is detected, and a static build's `mpifort` reports
+  the same toolchain as a shared one's. So the static docker image runs the suite
+  and stops there, deliberately, rather than the suite being dropped from it:
+  the stage is where the work will start, and an image that skipped it would hide
+  the gap instead of naming it.
 - **`mpif_check_environment` cannot see a lost cell member, and is not being
   taught to.** With `src/mpif_constants.c`'s member absent from the archive the
   consumer's own COMMON blocks become the definitions, C and Fortran still
