@@ -52,7 +52,16 @@ bash "${repodir}/ci-scripts/install-mpi-stubs.sh" "${mpi_prefix}"
 
 # One pass over both branches. `default` lets the probe decide and is the
 # interesting one; `no-cfi` forces the fallback.
-for branch in default no-cfi; do
+#
+# A branch that fails does not stop the other one. Which of the two a compiler
+# fails on is most of the diagnosis -- ifx compiles the whole library and then
+# hits an internal compiler error on the first assumed-rank sentinel, and
+# whether its fallback branch is clean is what says the defect is in that path
+# and nowhere else. Stopping at the first failure would cost a whole CI run to
+# learn it. The exit status still reflects both.
+branch_status=""
+run_branch() {
+    branch=$1
     case ${branch} in
         default) enable_cfi=ON  expect_subarrays=auto ;;
         no-cfi)  enable_cfi=OFF expect_subarrays=OFF ;;
@@ -106,19 +115,42 @@ for branch in default no-cfi; do
         -DMPIF_TEST_BUILD_ONLY=ON \
         -DMPIF_TEST_EXPECT_SUBARRAYS="${expect_subarrays}"
     cmake --build "${testbuild}" --parallel "${jobs}"
+}
+
+status=0
+for branch in default no-cfi; do
+    # The subshell re-enables `set -e` for itself, because bash disables it
+    # inside a function or subshell whose status is being tested -- which is
+    # exactly what the `if` below does.
+    set +e
+    ( set -e; run_branch "${branch}" )
+    rc=$?
+    set -e
+    if [[ ${rc} -eq 0 ]]; then
+        branch_status="${branch_status}${branch}=ok "
+    else
+        branch_status="${branch_status}${branch}=FAILED "
+        status=1
+    fi
 done
 
-# The one line worth reading at the end of a long log. MPIF_HAVE_CFI reaches
-# the cache only when the probe ran, so its absence on the no-cfi branch is the
-# expected "no" rather than a missing answer.
+# The lines worth reading at the end of a long log. MPIF_HAVE_CFI reaches the
+# cache only when the probe ran, so its absence on the no-cfi branch is the
+# expected "no" rather than a missing answer, and a branch that died before
+# configuring has no cache at all.
 echo "=== summary ==="
 for branch in default no-cfi; do
-    have=$(sed -n 's|^MPIF_HAVE_CFI:[A-Z]*=\(.*\)|\1|p' \
-        "${workdir}/build-${branch}/CMakeCache.txt" | head -1)
-    case ${have} in
-        ""|OFF|FALSE|NO|0) have=no ;;
-        *) have=yes ;;
-    esac
+    cache=${workdir}/build-${branch}/CMakeCache.txt
+    have=no
+    if [[ -f ${cache} ]]; then
+        case $(sed -n 's|^MPIF_HAVE_CFI:[A-Z]*=\(.*\)|\1|p' "${cache}" | head -1) in
+            ""|OFF|FALSE|NO|0) have=no ;;
+            *) have=yes ;;
+        esac
+    else
+        have="(not configured)"
+    fi
     printf '%-10s MPIF_HAVE_CFI=%s\n' "${branch}" "${have}"
 done
-echo "compile-only.sh: both branches configured, built and installed"
+echo "compile-only.sh: ${branch_status}"
+exit "${status}"

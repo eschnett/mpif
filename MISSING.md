@@ -154,6 +154,25 @@ Green as of the first run: gfortran 8, 9 and 12, and `amdflang` (ROCm's LLVM
 flang), each on both CFI branches. `ifx` 2026.1 compiles the whole library and
 `nvfortran` 26.5 does not get past configure; both are below.
 
+### `ifx` aborts on a sentinel passed as an assumed-rank actual
+
+`ifx` 2026.1 compiles and installs the whole library on the TS 29113 branch,
+then dies building `test/inplace_f08.f90`:
+
+    inplace_f08.f90(14): error #5623: **Internal compiler error: internal
+    abort** Please report this error along with the circumstances in which it
+    occurred in a Software Problem Report.
+
+Line 14 is `MPI_Allreduce(MPI_IN_PLACE, sum, ...)` — the first place a
+sentinel, which is a Cray pointee (`include/mpif_constants.h`), reaches a
+`TYPE(*), DIMENSION(..)` dummy. A compiler defect, and nothing mpif can spell
+differently: the sentinel and the assumed-rank dummy are each what the standard
+asks for.
+
+Whether `-DMPIF_ENABLE_CFI=OFF` gets `ifx` through is what says the defect is
+confined to that path; `ci-scripts/compile-only.sh` now runs both branches
+whatever the first one does, so a run answers it. Not gating meanwhile.
+
 ### `nvfortran` does not diagnose an ambiguous generic interface
 
 `nvfortran` 26.5 compiles a generic over two specifics that differ only in one
