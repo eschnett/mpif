@@ -68,25 +68,33 @@ option(MPIF_TEST_BUILD_ONLY
 # `--oversubscribe --mca btl_tcp_if_include lo` for Open MPI; the suite passes the
 # same things through MPIEXEC_ARGS.
 # A target whose `main` is in C but whose sources include Fortran, so CMake
-# links it with the Fortran driver. Intel's driver then contributes its own
-# `main` from for_main.o, which calls the Fortran main program under the name
-# MAIN__, and the link fails on that being undefined -- measured as
-# `interlanguage`, `c2f` and `datarep_c`, the only three targets here that mix
-# the two languages, failing with "undefined reference to `MAIN__'" under ifx
-# while the other 71 built. `-nofor-main` tells the driver the program's `main`
-# is somebody else's, which is what it is for.
+# links it with the Fortran driver. Two drivers then contribute a `main` of
+# their own, which calls the Fortran main program:
 #
-# Guarded on the compiler, since no other driver does this; the linker language
-# stays Fortran, because these programs call Fortran and need its runtime. The
-# same three targets are the ones the INTERFACE_COMPILE_OPTIONS rewrite above
-# exists for -- mixing the languages in one target is what finds this class of
-# defect.
+# - ifx, out of for_main.o: "undefined reference to `MAIN__'".
+# - nvfortran, out of f90main.o: "multiple definition of `main'" *and*
+#   "undefined reference to `MAIN_'" -- one underscore, and both complaints at
+#   once because its object defines the symbol rather than only referring to it.
+#
+# Each has a flag for exactly this, telling the driver the program's `main` is
+# somebody else's. gfortran and flang need nothing, hence the guard.
+#
+# The four targets are every one here that mixes the two languages, which is
+# also the set the INTERFACE_COMPILE_OPTIONS rewrite above exists for: mixing
+# them in one target is what finds this class of defect. `mpif_test_c_main`
+# rather than a property on each: the list is worth having in one place, since
+# a fifth such target would otherwise fail on a compiler nobody runs locally.
+#
+# The linker language stays Fortran -- these programs call Fortran and need its
+# runtime.
 function(mpif_test_c_main name)
   if(NOT TARGET ${name})
     return()
   endif()
   if(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
     target_link_options(${name} PRIVATE -nofor-main)
+  elseif(CMAKE_Fortran_COMPILER_ID MATCHES "^(NVHPC|PGI)$")
+    target_link_options(${name} PRIVATE -Mnomain)
   endif()
 endfunction()
 
@@ -187,6 +195,7 @@ add_mpi_test(neighbor_alltoallw_f08 SOURCES neighbor_alltoallw_f08.f90 NPROCS 2 
 add_mpi_test(alltoallw_inplace_guard
   SOURCES alltoallw_inplace_guard.c alltoallw_inplace_guard_subf.f alltoallw_inplace_guard_subf90.f90
   NPROCS 2 LIBS MPI::MPI_Fortran MPI::MPI_C)
+mpif_test_c_main(alltoallw_inplace_guard)
 # Three, so that the two groups differ in size and the local one is the wrong
 # answer.
 add_mpi_test(alltoallw_inter_f08    SOURCES alltoallw_inter_f08.f90   NPROCS 3      LIBS MPI::MPI_Fortran)

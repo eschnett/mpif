@@ -181,22 +181,28 @@ an object, so no Fortran entity can be declared *at* it, and a `bind(C)`
 variable would have storage of its own at the wrong address. Any of the six
 targets is a reproducer for an Intel report. Not gating.
 
-### `ifx` links a C `main` against its own — fixed in `test/`
+### `ifx` and `nvfortran` link a C `main` against their own — fixed in `test/`
 
-Three more targets failed, for an unrelated and non-defect reason:
-`interlanguage`, `c2f` and `datarep_c`, the only three that mix C and Fortran.
-Their `main` is in C, CMake links them with the Fortran driver, and Intel's
-driver contributes a `main` of its own out of `for_main.o` that calls the
-Fortran main program:
+Four targets mix C and Fortran — `interlanguage`, `c2f`, `datarep_c` and
+`alltoallw_inplace_guard` — with `main` in C, so CMake links them with the
+Fortran driver, and two drivers then contribute a `main` of their own that calls
+the Fortran main program:
 
-    ld: /opt/intel/oneapi/compiler/2026.1/lib/for_main.o: in function `main':
-    for_main.c:(.text+0x49): undefined reference to `MAIN__'
+    ifx:       for_main.o: undefined reference to `MAIN__'
+    nvfortran: f90main.o: multiple definition of `main'
+               f90main.o: undefined reference to `MAIN_'
 
-`-nofor-main` is the flag for exactly this, and `mpif_test_c_main` in
-`test/CMakeLists.txt` applies it to those three under an Intel Fortran
-compiler. The linker language stays Fortran: these programs call Fortran and
-need its runtime. Anything else mixing a C `main` with mpif's Fortran under ifx
-wants the same flag.
+nvfortran says both at once, its object defining the symbol rather than only
+referring to it, and spells the entry point with one underscore. `-nofor-main`
+and `-Mnomain` are the respective flags for exactly this, applied by
+`mpif_test_c_main` in `test/CMakeLists.txt`; gfortran and flang need nothing.
+The linker language stays Fortran, these programs needing its runtime.
+
+Anything else mixing a C `main` with mpif's Fortran wants the same flag. The
+four are listed in one place for that reason: a fifth would otherwise fail on a
+compiler nobody runs locally, which is how `alltoallw_inplace_guard` came to be
+missed the first time — under ifx it aborts in the compiler before reaching the
+link, so only nvfortran showed it.
 
 ### `test/check_env_nodesize_fail` has flaked once, under the gcc sanitizer
 
@@ -249,8 +255,9 @@ though all three of `merge`'s arguments are constants. So both guards came out
 subtraction alone, written so the difference is never negative; the optional-kind
 probes were changed the same way, having had the same `merge` in them.
 
-With the guards right, `nvfortran` reaches the library and stops on two further
-things, both below.
+With the guards right, `nvfortran` reaches the library; with the two entries
+below fixed, it builds and installs it on both branches and gets into `test/`,
+where the only failures left were the four C-`main` targets above.
 
 ### `nvfortran` cannot resolve a renamed generic that shares a specific's name — worked around
 
