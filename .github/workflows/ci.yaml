@@ -388,7 +388,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: mpi
     if: ${{ !cancelled() }}
-    timeout-minutes: 90
+    timeout-minutes: 30
 
     strategy:
       fail-fast: false
@@ -505,45 +505,6 @@ jobs:
           cmake --build build-tests --parallel
           ctest --test-dir build-tests --output-on-failure
 
-      # MPICH's own suite has ~300 Fortran tests across mpif.h, `use mpi` and
-      # `use mpi_f08`, and disables all of them for the standard ABI because the
-      # ABI has no Fortran bindings -- which is what mpif supplies. Far broader
-      # coverage than test/, so worth running even before every test passes.
-      # The failures that are expected are listed in
-      # ci-scripts/suite/mpich-suite-xfail.txt with a reason apiece, and the step fails
-      # on a difference from that list rather than on a failure -- in either
-      # direction, so a test that starts passing is caught too. A variant with no
-      # `triaged` line there is reported and cannot fail, which is how the
-      # variants nobody has measured yet stay honest.
-      - name: Run MPICH's Fortran test suite
-        run: |
-          # Open MPI refuses to oversubscribe by default, and the runners have
-          # fewer cores than the suite asks processes for
-          if [[ ${{ matrix.mpi }} == openmpi ]]; then
-              args=--oversubscribe
-              # Keep Open MPI on the loopback interface: everything here runs on
-              # one host, so no other interface is wanted, and left to itself it
-              # picks one it cannot use. On macOS that is fatal --
-              # "setsockopt(TCP_NODELAY) failed: Invalid argument (22)" and its own
-              # warning that this "may end up hanging", which it does, in every
-              # test that communicates across a spawned intercommunicator, each
-              # then burning runtests' 180-second timeout. On Linux's x86_64
-              # runners it picked the docker0 bridge those images have.
-              #
-              # The interface is lo0 on macOS and lo on Linux. See
-              # scripts/macos-test-mpich-suite.sh, which does the same locally.
-              if [[ ${RUNNER_OS} == macOS ]]; then
-                  args="${args} --mca btl_tcp_if_include lo0"
-              else
-                  args="${args} --mca btl_tcp_if_include lo"
-              fi
-              export MPIEXEC_ARGS="${args}"
-          fi
-          # The runtime MPI is the installation's remembered default, as in the
-          # test step above.
-          ci-scripts/suite/test-mpich-suite.sh \
-              "$("${MPIF_PREFIX}/bin/mpifort" -showme:mpiprefix)" "${MPIF_PREFIX}"
-
       # Hand the installation to the jobs below. Separately from the MPI prefix,
       # which they get from the `mpi` job: sanitize wants only the MPI, compare
       # wants only the two mpifs, and a cross leg wants one mpif and both MPIs.
@@ -569,6 +530,102 @@ jobs:
                   fi
               done
           done
+
+  # MPICH's own suite has ~300 Fortran tests across mpif.h, `use mpi` and
+  # `use mpi_f08`, and disables all of them for the standard ABI because the ABI
+  # has no Fortran bindings -- which is what mpif supplies. Far broader coverage
+  # than test/, so worth running even before every test passes. The failures that
+  # are expected are listed in ci-scripts/suite/mpich-suite-xfail.txt with a
+  # reason apiece, and the run fails on a difference from that list rather than on
+  # a failure -- in either direction, so a test that starts passing is caught too.
+  # A variant with no `triaged` line there is reported and cannot fail, which is
+  # how the variants nobody has measured yet stay honest.
+  #
+  # Its own job rather than the tail of `mpif`, because it is the longest thing
+  # here -- five to eleven minutes a leg -- and nothing waits on its result.
+  # Sharing a job with mpif put it in front of every cross leg, for no reason
+  # other than that the two happened to be neighbours.
+  suite:
+    name: suite / ${{ matrix.mpi }} / ${{ matrix.toolchain }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs: mpif
+    if: ${{ !cancelled() }}
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+        mpi: [mpich, openmpi]
+        toolchain: [gcc, llvm]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up paths
+        run: |
+          {
+              echo "MPI_PREFIX=${RUNNER_TEMP}/opt/mpi-${{ matrix.mpi }}"
+              echo "MPIF_PREFIX=${RUNNER_TEMP}/opt/mpif-${{ matrix.mpi }}"
+          } >>"${GITHUB_ENV}"
+
+      - name: Restore the MPI prefix
+        uses: ./.github/actions/restore-prefix
+        with:
+          name: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}
+
+      # The suite recompiles every one of its tests, in Fortran, against the
+      # restored mpif's modules -- which is why this restore checks the compiler.
+      - name: Set up the toolchain
+        uses: ./.github/actions/setup-toolchain
+        with:
+          toolchain: ${{ matrix.toolchain }}
+
+      - name: Restore the mpif prefix
+        uses: ./.github/actions/restore-prefix
+        with:
+          name: mpif-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}
+          check-fortran: "true"
+
+      - name: Add MPI to the environment
+        run: |
+          echo "${MPI_PREFIX}/bin" >>"${GITHUB_PATH}"
+          if [[ ${RUNNER_OS} == Linux ]]; then
+              echo "LD_LIBRARY_PATH=${MPI_PREFIX}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" >>"${GITHUB_ENV}"
+          fi
+
+      - name: Run MPICH's Fortran test suite
+        run: |
+          # Open MPI refuses to oversubscribe by default, and the runners have
+          # fewer cores than the suite asks processes for
+          if [[ ${{ matrix.mpi }} == openmpi ]]; then
+              args=--oversubscribe
+              # Keep Open MPI on the loopback interface: everything here runs on
+              # one host, so no other interface is wanted, and left to itself it
+              # picks one it cannot use. On macOS that is fatal --
+              # "setsockopt(TCP_NODELAY) failed: Invalid argument (22)" and its own
+              # warning that this "may end up hanging", which it does, in every
+              # test that communicates across a spawned intercommunicator, each
+              # then burning runtests' 180-second timeout. On Linux's x86_64
+              # runners it picked the docker0 bridge those images have.
+              #
+              # The interface is lo0 on macOS and lo on Linux. See
+              # scripts/macos-test-mpich-suite.sh, which does the same locally.
+              if [[ ${RUNNER_OS} == macOS ]]; then
+                  args="${args} --mca btl_tcp_if_include lo0"
+              else
+                  args="${args} --mca btl_tcp_if_include lo"
+              fi
+              export MPIEXEC_ARGS="${args}"
+          fi
+          # The runtime MPI is the installation's remembered default, read back
+          # from the installed wrapper rather than respecified as ${MPI_PREFIX}:
+          # what is under test is what the installation would give a user. Here
+          # the two are the same directory; the cross job below is where they
+          # differ.
+          ci-scripts/suite/test-mpich-suite.sh \
+              "$("${MPIF_PREFIX}/bin/mpifort" -showme:mpiprefix)" "${MPIF_PREFIX}"
 
   # A sanitizer build of mpif, on the MPI the `mpi` jobs already installed.
   #
