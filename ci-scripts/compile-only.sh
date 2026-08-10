@@ -94,6 +94,29 @@ run_branch() {
     echo "=== probes (${branch}) ==="
     bash "${repodir}/ci-scripts/check-configure-probes.sh" "${build}"
 
+    # A compiler that declines TS 29113 compiles only the fallback, so a green
+    # row means half of what a capable compiler's does -- and the reason it
+    # declined is a fact about the compiler worth having. CMake writes the
+    # probe's compile, link and run output to CMakeConfigureLog.yaml, which the
+    # workflow dumps only when a job fails, so on a passing row it would be
+    # thrown away. Print the probe's own entry instead, and only when it said
+    # no: nvfortran 26.5 answers no here and nothing said why.
+    if [[ ${enable_cfi} == ON ]] &&
+           ! grep -q '^MPIF_HAVE_CFI:INTERNAL=TRUE' "${build}/CMakeCache.txt"; then
+        log=${build}/CMakeFiles/CMakeConfigureLog.yaml
+        echo "=== why MPIF_HAVE_CFI is off (${branch}) ==="
+        if [[ -f ${log} ]]; then
+            # The probe is a try_compile over a *project*, which CMake records
+            # without a test name -- so the entry is found by its source
+            # directory, and runs to the exitCode that ends it.
+            awk '/source: ".*\/cmake\/cfi-probe"/ {p = 1}
+                 p {print}
+                 p && /exitCode/ {exit}' "${log}"
+        else
+            echo "(no ${log}; CMake older than 3.26 writes CMakeError.log instead)"
+        fi
+    fi
+
     cmake --build "${build}" --parallel "${jobs}"
     cmake --install "${build}"
 

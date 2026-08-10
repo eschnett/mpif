@@ -56,8 +56,8 @@ jobs:
   # says why. A row gates once it has been green, and until then is
   # `report_only` with the reason beside it and an entry in MISSING.md -- the
   # rule CLAUDE.md states for an untriaged suite variant, applied to a compiler.
-  # The two that report rather than gate are both compiler defects with nothing
-  # for mpif to change; each is measured and written up.
+  # The one that reports rather than gates is a compiler defect with nothing for
+  # mpif to change; it is measured and written up.
   #
   # The gfortran row is an official `gcc:<n>` image rather than a Debian
   # release, so the image name is the compiler version with nothing to look up;
@@ -95,13 +95,13 @@ jobs:
           - name: ifx
             container: ""
             report_only: true
-          # MISSING.md "`nvfortran` does not diagnose an ambiguous generic
-          # interface": worked around, the guards now comparing kind values, so
-          # this gets past configure. What it does with the library is what this
-          # row is now measuring.
+          # Green since three of its defects were worked around; MISSING.md has
+          # them. It answers no to the TS 29113 probe, so this row compiles the
+          # ignore_tkr fallback twice and the scheme-1B path never -- the one
+          # green here that means less than the others.
           - name: nvfortran
             container: ""
-            report_only: true
+            report_only: false
 
     steps:
       - name: Checkout repository

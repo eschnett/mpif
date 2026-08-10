@@ -119,9 +119,9 @@ GitHub has no FreeBSD runner; the `freebsd` job boots a FreeBSD 14.3 VM via
 ### Other compilers are compiled and not run, and three cannot be tested at all
 
 The `compile` job builds mpif under compilers the twelve variants do not cover
-— gfortran 8, 9 and 12, Intel `ifx`, NVIDIA `nvfortran`, AMD `amdflang` — with
-the Forum's ABI stub library standing in for an MPI, and runs nothing.
-`ci-scripts/README.md` says how; the decisions are here.
+— gfortran 9, Intel `ifx`, NVIDIA `nvfortran`, AMD `amdflang` — with the
+Forum's ABI stub library standing in for an MPI, and runs nothing. All but `ifx`
+are green and gate. `ci-scripts/README.md` says how; the decisions are here.
 
 - **Compile-only, deliberately.** What varies between Fortran frontends and is
   cheap to ask is whether the configure stage detects the right features and
@@ -137,7 +137,8 @@ the Forum's ABI stub library standing in for an MPI, and runs nothing.
   in a `gcc:7` container. That is exactly why: the floor is the ABI one in
   "`bind(C)`" below (hidden character lengths were `int` before 8), and a stage
   that compiles without running cannot see it. A green row there would mean
-  nothing. 10 and 11 also compile and are left out only for cost.
+  nothing. 8, 10, 11 and 12 also compile; one row stands for them, 13 and 15
+  being covered by `build`.
 - **Cray CCE cannot be tested.** It is licensed and distributed only with HPE
   Cray systems; there is no public download and no runner that has it. Nothing
   to work around — a scope limit, like Open MPI's 32-bit one below.
@@ -150,9 +151,10 @@ the Forum's ABI stub library standing in for an MPI, and runs nothing.
   AMD's build of LLVM flang. Should AMD ever publish a direct URL, AOCC is a
   row's worth of work and no more.
 
-Green as of the first run: gfortran 8, 9 and 12, and `amdflang` (ROCm's LLVM
-flang), each on both CFI branches. `ifx` 2026.1 compiles the whole library and
-`nvfortran` 26.5 does not get past configure; both are below.
+Green and gating: gfortran 9 and `amdflang` (ROCm's LLVM flang), each on both
+CFI branches, and `nvfortran` 26.5 with the caveat below. `ifx` 2026.1 builds
+the whole library and aborts on six test programs; it reports and does not gate.
+Both vendors' entries follow.
 
 ### `ifx` aborts on a sentinel passed to a choice buffer
 
@@ -163,13 +165,17 @@ then dies building the tests that pass a sentinel:
     abort** Please report this error along with the circumstances in which it
     occurred in a Software Problem Report.
 
-Line 14 is `MPI_Allreduce(MPI_IN_PLACE, sum, ...)`. Six targets abort, and they
-are exactly the ones passing a sentinel — a Cray pointee, from
-`include/mpif_constants.h` — to an `mpi_f08` choice buffer: `inplace_f08`,
-`inplace_cfi_f08`, `alltoallw_inplace_f08`, `alltoallw_inplace_guard`,
-`bottom_cfi_f08` (`MPI_BOTTOM`) and `argv_null_f08` (`MPI_ARGV_NULL`). So it is
-sentinels in general, not `MPI_IN_PLACE` in particular. **71 of the ~80 test
-programs build.**
+Line 14 is `MPI_Allreduce(MPI_IN_PLACE, sum, ...)`. Six targets abort, and once the C-`main`
+linking below was fixed they are the *only* six that fail — exactly the ones
+passing a sentinel (a Cray pointee, from `include/mpif_constants.h`) to an
+`mpi_f08` choice buffer: `inplace_f08`, `inplace_cfi_f08`,
+`alltoallw_inplace_f08`, `alltoallw_inplace_guard`, `bottom_cfi_f08`
+(`MPI_BOTTOM`) and `argv_null_f08` (`MPI_ARGV_NULL`). So it is sentinels in
+general, not `MPI_IN_PLACE` in particular, and everything else — the whole
+library and the other ~74 test programs — builds.
+
+Two sites for a report, not one: `inplace_f08.f90:14` and
+`alltoallw_inplace_guard_subf90.f90:79`.
 
 `-DMPIF_ENABLE_CFI=OFF` aborts identically, so the trigger is the Cray pointee
 and not the assumed-rank mechanism: `TYPE(*), DIMENSION(..)` and
@@ -255,9 +261,13 @@ though all three of `merge`'s arguments are constants. So both guards came out
 subtraction alone, written so the difference is never negative; the optional-kind
 probes were changed the same way, having had the same `merge` in them.
 
-With the guards right, `nvfortran` reaches the library; with the two entries
-below fixed, it builds and installs it on both branches and gets into `test/`,
-where the only failures left were the four C-`main` targets above.
+`nvfortran` **passes** as of the four workarounds below, and gates. What its
+green does not cover: it answers no to the TS 29113 probe, so both of its
+branches compile the `ignore_tkr` fallback and the scheme-1B path never gets
+compiled by it at all. Why the probe declines is not yet known --
+`nvc` finds `ISO_Fortran_binding.h` unaided, so it is not the header --
+and `ci-scripts/compile-only.sh` now prints the probe's own compile, link and
+run output whenever it answers no, which the next run will show.
 
 ### `nvfortran` cannot resolve a renamed generic that shares a specific's name — worked around
 
@@ -302,7 +312,7 @@ so the probes read `complex(4 - kind(x))` and `complex(32 - kind(x))`. gfortran
 15 and flang 22 answer for the complex kind exactly as they do for the real one,
 so nothing changes there.
 
-Not gating until a run is green.
+These four were what it took. The row gates now.
 
 ### `nvfortran` accepts kind specifiers it does not implement — probes tightened
 
