@@ -203,8 +203,20 @@ jobs:
               cat "${dir}/CMakeError.log" 2>/dev/null || true
           done
 
-  build:
-    name: ${{ matrix.mpi }} / ${{ matrix.toolchain }} / ${{ matrix.os }}
+  # Stage one: an MPI installation per variant, and nothing else. Everything
+  # below needs one, nothing below can change one, and it is much the most
+  # expensive thing here -- five to sixteen minutes from source against two
+  # seconds from the cache. Giving it a job of its own is what lets the jobs that
+  # consume it start when it is ready rather than when a suite run that happened
+  # to share its job has finished.
+  #
+  # It is also the right unit to cache. actions/cache saves in a post step
+  # declared `post-if: success()`, so while this was one job with the tests, a
+  # test failure or a triaged suite difference on a cache miss discarded the MPI
+  # that had just been built, and the next push rebuilt it. The predicate is now
+  # exactly "the MPI installed and check-mpi-install.sh passed".
+  mpi:
+    name: mpi / ${{ matrix.mpi }} / ${{ matrix.toolchain }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
 
@@ -224,25 +236,22 @@ jobs:
         mpi: [mpich, openmpi]
         toolchain: [gcc, llvm]
 
-    env:
-      # Suffix of shared libraries
-      SHLIB_EXT: ${{ startsWith(matrix.os, 'macos') && 'dylib' || 'so' }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
       # Set here rather than in the job's `env:`, because the `runner` context
-      # is not available there. The prefixes carry the implementation's name --
+      # is not available there. The prefix carries the implementation's name --
       # opt/mpi-mpich, not opt/mpi -- because the cross job below restores both
       # implementations' prefixes onto one runner, at the exact absolute paths
-      # everything baked at build time (wrapper defaults, RPATHs, macOS install
-      # names), and those paths must not collide.
+      # everything baked at install time (wrapper defaults, RPATHs, macOS install
+      # names), and those paths must not collide. One implementation per job here
+      # does not make opt/mpi sufficient, and renaming it would cost another
+      # cache-key bump; MISSING.md records what the last one cost.
       - name: Set up paths
         run: |
           {
               echo "MPI_PREFIX=${RUNNER_TEMP}/opt/mpi-${{ matrix.mpi }}"
-              echo "MPIF_PREFIX=${RUNNER_TEMP}/opt/mpif-${{ matrix.mpi }}"
               echo "MPI_SRC_DIR=${RUNNER_TEMP}/mpi-src"
           } >>"${GITHUB_ENV}"
 
@@ -355,6 +364,80 @@ jobs:
       - name: Check the MPI installation
         run: ci-scripts/check-mpi-install.sh "${MPI_PREFIX}"
 
+      - name: Upload the MPI prefix
+        uses: ./.github/actions/upload-prefix
+        with:
+          name: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}
+          path: opt/mpi-${{ matrix.mpi }}
+          cache: ${{ steps.cache-mpi.outputs.cache-hit == 'true' && 'hit' || 'miss' }}
+
+  # Stage two: mpif itself, and test/ -- mpif's own tests, small and fast, whose
+  # job is to say whether this installation works at all before the broad ones
+  # spend ten minutes on it. What comes out is the installed prefix, which is
+  # what every job below consumes; nothing below rebuilds mpif.
+  #
+  # `if: ${{ !cancelled() }}` rather than the default `needs` semantics, here and
+  # in every stage below. Otherwise one failing MPI installation would skip all
+  # twelve legs of all four stages and the run would say nothing about the other
+  # eleven variants. With it, the legs whose artifact is missing fail by name --
+  # restore-prefix downloads by `name:`, which throws -- and the rest report.
+  # Not `always()`, which would also run these on cancellation and fight
+  # `cancel-in-progress` above.
+  mpif:
+    name: mpif / ${{ matrix.mpi }} / ${{ matrix.toolchain }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs: mpi
+    if: ${{ !cancelled() }}
+    timeout-minutes: 90
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+        mpi: [mpich, openmpi]
+        toolchain: [gcc, llvm]
+
+    env:
+      # Suffix of shared libraries
+      SHLIB_EXT: ${{ startsWith(matrix.os, 'macos') && 'dylib' || 'so' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up paths
+        run: |
+          {
+              echo "MPI_PREFIX=${RUNNER_TEMP}/opt/mpi-${{ matrix.mpi }}"
+              echo "MPIF_PREFIX=${RUNNER_TEMP}/opt/mpif-${{ matrix.mpi }}"
+          } >>"${GITHUB_ENV}"
+
+      # Before the toolchain, so that a leg whose MPI installation failed costs
+      # fifteen seconds rather than a minute of `apt-get install`. Nothing about
+      # an MPI prefix needs a compiler to unpack or to check.
+      - name: Restore the MPI prefix
+        uses: ./.github/actions/restore-prefix
+        with:
+          name: mpi-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}
+
+      - name: Set up the toolchain
+        uses: ./.github/actions/setup-toolchain
+        with:
+          toolchain: ${{ matrix.toolchain }}
+
+      - name: Add MPI to the environment
+        run: |
+          echo "${MPI_PREFIX}/bin" >>"${GITHUB_PATH}"
+          if [[ ${RUNNER_OS} == Linux ]]; then
+              echo "LD_LIBRARY_PATH=${MPI_PREFIX}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" >>"${GITHUB_ENV}"
+          fi
+
+      # A prefix that arrived over an artifact rather than out of the install
+      # script's own hands, so it is checked again here -- and its output is what
+      # diagnoses a broken one.
+      - name: Check the MPI installation
+        run: ci-scripts/check-mpi-install.sh "${MPI_PREFIX}"
+
       - name: Configure, build, and install mpif
         run: |
           cmake \
@@ -461,21 +544,14 @@ jobs:
           ci-scripts/suite/test-mpich-suite.sh \
               "$("${MPIF_PREFIX}/bin/mpifort" -showme:mpiprefix)" "${MPIF_PREFIX}"
 
-      # Hand both prefixes to the cross job below. tar first: upload-artifact
-      # dereferences symbolic links, and lib/libmpi_abi.so -> libmpi_abi.so.1
-      # and friends must arrive as links, not copies.
-      - name: Upload the prefixes for the cross job
-        run: |
-          tar -C "${RUNNER_TEMP}" -czf \
-              "prefixes-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}.tar.gz" \
-              "opt/mpi-${{ matrix.mpi }}" "opt/mpif-${{ matrix.mpi }}"
-
-      - uses: actions/upload-artifact@v4
+      # Hand the installation to the jobs below. Separately from the MPI prefix,
+      # which they get from the `mpi` job: sanitize wants only the MPI, compare
+      # wants only the two mpifs, and a cross leg wants one mpif and both MPIs.
+      - name: Upload the mpif prefix
+        uses: ./.github/actions/upload-prefix
         with:
-          name: prefixes-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}
-          path: prefixes-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}.tar.gz
-          retention-days: 2
-          if-no-files-found: error
+          name: mpif-${{ matrix.mpi }}-${{ matrix.toolchain }}-${{ matrix.os }}
+          path: opt/mpif-${{ matrix.mpi }}
 
       # CMake keeps the compiler and linker output of its own checks -- such as
       # the one behind `missing: MPI_C_WORKS` -- in these files, and reports
@@ -494,24 +570,7 @@ jobs:
               done
           done
 
-  # The cross-implementation tests: mpif is built against the C MPI ABI, so a
-  # build made against one implementation must work, unchanged, with the
-  # other -- the test results may depend only on the MPI it *runs* with, never
-  # on the MPI it was *built* against. Per (os, toolchain) this job takes the
-  # two build jobs' prefixes (both MPIs, both mpifs) and runs the two cross
-  # pairings the build jobs cannot: mpif-built-against-MPICH under Open MPI,
-  # and the mirror. Toolchains are never mixed -- gcc and llvm Fortran are not
-  # ABI-compatible -- so the pairing varies only the MPI.
-  #
-  # Two models, on purpose:
-  # - test/ swaps the runtime under unchanged binaries: everything is linked
-  #   against the built mpif's default MPI, and LD_LIBRARY_PATH (macOS:
-  #   DYLD_LIBRARY_PATH) puts the other implementation's libmpi_abi -- same
-  #   conventional versioned name, libmpi_abi.so.1 -- in front of the rpath'd
-  #   default at run time. That is the loader-level mechanism applications use,
-  #   tested directly; MPIF_TEST_MPI_LIBRARY makes the tests assert the swap
-  #   actually happened.
-  # A sanitizer build of mpif, on the MPI the build jobs already installed.
+  # A sanitizer build of mpif, on the MPI the `mpi` jobs already installed.
   #
   # What it adds is a diagnosis. A memory error in mpif's own conversion layer
   # -- which allocates, copies strings both directions and walks handle arrays
@@ -532,15 +591,15 @@ jobs:
   # is the same object code whichever MPI is loaded next to it, and it links no
   # MPI at all (see "Choosing the MPI at run time" in CODE.md).
   #
-  # It takes the MPI prefix from the build job's artifact rather than installing
+  # It takes the MPI prefix from the `mpi` job's artifact rather than installing
   # one, the way `cross` does, so this job costs a runner and not an MPI build.
-  # Only opt/mpi-mpich is wanted out of that archive; the ordinary mpif prefix
-  # rides along in it and is deliberately not used -- every path below names the
-  # -asan prefix this job installs.
+  # That is also all it takes: it installs its own instrumented mpif, so it waits
+  # on stage one alone and not on any test run.
   sanitize:
     name: sanitize / ${{ matrix.toolchain }}
     runs-on: ubuntu-24.04
-    needs: build
+    needs: mpi
+    if: ${{ !cancelled() }}
     timeout-minutes: 60
 
     strategy:
@@ -560,30 +619,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      # The MPI prefix at the exact absolute path the `mpi` job installed it at,
+      # so its wrappers, RPATHs and baked defaults are valid again. Before the
+      # toolchain, as everywhere else: unpacking and checking an MPI prefix needs
+      # no compiler.
+      - name: Restore the MPI prefix
+        uses: ./.github/actions/restore-prefix
+        with:
+          name: mpi-mpich-${{ matrix.toolchain }}-ubuntu-24.04
+
       # Only what compiles mpif and test/: nothing here builds an MPI, so no
-      # autotools and no ccache. Same versions as the build and cross jobs, the
+      # autotools and no ccache. Same versions as the mpif and cross jobs, the
       # restored prefix's wrappers naming these compilers bare.
       - name: Set up the toolchain
         uses: ./.github/actions/setup-toolchain
         with:
           toolchain: ${{ matrix.toolchain }}
 
-      # The MPI prefix at the exact absolute path the build job used, so its
-      # wrappers, RPATHs and baked defaults are valid again.
-      - uses: actions/download-artifact@v4
-        with:
-          name: prefixes-mpich-${{ matrix.toolchain }}-ubuntu-24.04
-
-      - name: Unpack the MPI prefix
+      - name: Set up paths
         run: |
-          tar -C "${RUNNER_TEMP}" -xzf \
-              "prefixes-mpich-${{ matrix.toolchain }}-ubuntu-24.04.tar.gz"
           # Set here and not in the job's `env:`, which cannot see the
-          # `runner` context -- the same reason the build job has a "Set up
+          # `runner` context -- the same reason the `mpi` job has a "Set up
           # paths" step.
           echo "MPI_PREFIX=${RUNNER_TEMP}/opt/mpi-mpich" >>"${GITHUB_ENV}"
           echo "LD_LIBRARY_PATH=${RUNNER_TEMP}/opt/mpi-mpich/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" >>"${GITHUB_ENV}"
-          ls "${RUNNER_TEMP}/opt"
 
       - name: Check the MPI installation
         run: ci-scripts/check-mpi-install.sh "${MPI_PREFIX}"
@@ -645,6 +704,23 @@ jobs:
               done
           done
 
+  # The cross-implementation tests: mpif is built against the C MPI ABI, so a
+  # build made against one implementation must work, unchanged, with the
+  # other -- the test results may depend only on the MPI it *runs* with, never on
+  # the MPI it was *built* against. Per (os, toolchain) this job takes the two
+  # mpif jobs' prefixes and both MPIs, and runs the two cross pairings those jobs
+  # cannot: mpif-built-against-MPICH under Open MPI, and the mirror. Toolchains
+  # are never mixed -- gcc and llvm Fortran are not ABI-compatible -- so the
+  # pairing varies only the MPI.
+  #
+  # Two models, on purpose:
+  # - test/ swaps the runtime under unchanged binaries: everything is linked
+  #   against the built mpif's default MPI, and LD_LIBRARY_PATH (macOS:
+  #   DYLD_LIBRARY_PATH) puts the other implementation's libmpi_abi -- same
+  #   conventional versioned name, libmpi_abi.so.1 -- in front of the rpath'd
+  #   default at run time. That is the loader-level mechanism applications use,
+  #   tested directly; MPIF_TEST_MPI_LIBRARY makes the tests assert the swap
+  #   actually happened.
   # - the MPICH suite relinks against the runtime MPI (test-mpich-suite.sh
   #   exports MPIF_MPI_PREFIX from its first argument): its harness runs
   #   through the system perl and shells, from which macOS SIP strips DYLD_*,
@@ -655,7 +731,8 @@ jobs:
   cross:
     name: cross / ${{ matrix.toolchain }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    needs: build
+    needs: mpif
+    if: ${{ !cancelled() }}
     timeout-minutes: 120
 
     strategy:
@@ -671,7 +748,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # The same compilers as the build jobs, because this job compiles test/
+      # All four prefixes go back at the exact absolute paths they were installed
+      # at, so every baked path -- wrapper defaults, RPATHs, macOS install
+      # names -- is valid again. One `name:` apiece, never a `pattern:`;
+      # restore-prefix says why. The MPI prefixes come before the toolchain
+      # because unpacking and checking one needs no compiler, so a leg whose
+      # upstream failed says so in fifteen seconds; the mpif prefixes come after,
+      # because their Fortran-compiler assertion needs FC.
+      - name: Restore the MPICH prefix
+        uses: ./.github/actions/restore-prefix
+        with:
+          name: mpi-mpich-${{ matrix.toolchain }}-${{ matrix.os }}
+      - name: Restore the Open MPI prefix
+        uses: ./.github/actions/restore-prefix
+        with:
+          name: mpi-openmpi-${{ matrix.toolchain }}-${{ matrix.os }}
+
+      # The same compilers as the mpif jobs, because this job compiles test/
       # (four configurations) and the suite's Fortran side. No autotools and no
       # ccache: nothing here builds an MPI.
       - name: Set up the toolchain
@@ -679,20 +772,16 @@ jobs:
         with:
           toolchain: ${{ matrix.toolchain }}
 
-      # Restore both implementations' prefixes at the exact absolute paths the
-      # build jobs used, so every baked path -- wrapper defaults, RPATHs, macOS
-      # install names -- is valid again.
-      - uses: actions/download-artifact@v4
+      - name: Restore the mpif built against MPICH
+        uses: ./.github/actions/restore-prefix
         with:
-          pattern: prefixes-*-${{ matrix.toolchain }}-${{ matrix.os }}
-          merge-multiple: true
-
-      - name: Unpack the prefixes
-        run: |
-          for archive in prefixes-*-${{ matrix.toolchain }}-${{ matrix.os }}.tar.gz; do
-              tar -C "${RUNNER_TEMP}" -xzf "${archive}"
-          done
-          ls "${RUNNER_TEMP}/opt"
+          name: mpif-mpich-${{ matrix.toolchain }}-${{ matrix.os }}
+          check-fortran: "true"
+      - name: Restore the mpif built against Open MPI
+        uses: ./.github/actions/restore-prefix
+        with:
+          name: mpif-openmpi-${{ matrix.toolchain }}-${{ matrix.os }}
+          check-fortran: "true"
 
       # The two mpif installations must not depend on the MPI they were built
       # against. The headers and modules must be identical outright. The

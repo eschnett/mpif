@@ -1,0 +1,82 @@
+name: Restore an installation prefix
+description: >
+  Take an installation prefix a previous job installed, put it back at the exact
+  absolute path it was installed at, and assert that it is usable here.
+
+# Downloaded by `name:` and never by `pattern:`. download-artifact@v4 throws
+# "Artifact '<name>' not found" for a missing name, but a `pattern:` matching
+# nothing logs the count and *succeeds* -- which would turn a missing upstream
+# artifact into `tar: no such file` three steps later, in a job that is not the
+# one at fault.
+#
+# The two assertions, both of which this arrangement newly makes possible to get
+# wrong:
+#
+# - RUNNER_TEMP. Everything baked into a prefix at install time names it --
+#   wrapper defaults, RPATHs, macOS install names -- so it has to be the same
+#   directory here. It is a property of the runner image and not of the job
+#   (/home/runner/work/_temp, /Users/runner/work/_temp), which is why this works
+#   at all; but a `container:` job gets /__w/_temp, and a larger or self-hosted
+#   runner could differ. Left unchecked the symptom is "cannot find
+#   libmpi_abi", several steps along.
+#
+# - The Fortran compiler, for an mpif prefix. Module files are
+#   compiler-version-specific, and after the stage split the job that reads them
+#   is not the job that wrote them: it installed its own compiler, minutes later,
+#   from an apt.llvm.org snapshot that moves daily. Unlikely inside one run, and
+#   baffling when it happens. This is the same move as the local build's
+#   install-complete marker, which records its compilers for the same reason.
+
+inputs:
+  name:
+    description: Artifact name, as given to upload-prefix.
+    required: true
+  check-fortran:
+    description: >
+      Compare the recorded Fortran compiler against this job's. For a prefix
+      whose Fortran modules will be read here -- so every mpif prefix, and no MPI
+      prefix. Needs FC set, hence a toolchain.
+    required: false
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ runner.temp }}/artifacts
+
+    - name: Unpack and check ${{ inputs.name }}
+      shell: bash
+      env:
+        NAME: ${{ inputs.name }}
+        CHECK_FORTRAN: ${{ inputs.check-fortran }}
+      run: |
+        tar -C "${RUNNER_TEMP}" -xzf "${RUNNER_TEMP}/artifacts/${NAME}.tar.gz"
+        stamp=${RUNNER_TEMP}/stamp-${NAME}.txt
+        echo "::group::${NAME} was installed by"
+        cat "${stamp}"
+        echo "::endgroup::"
+
+        recorded=$(sed -n 's/^runner-temp=//p' "${stamp}")
+        if [[ ${recorded} != "${RUNNER_TEMP}" ]]; then
+            echo "::error::${NAME} was installed under RUNNER_TEMP=${recorded}," \
+                 "and this job has ${RUNNER_TEMP}. Every path baked into the" \
+                 "prefix names the first one."
+            exit 1
+        fi
+
+        if [[ ${CHECK_FORTRAN} == true ]]; then
+            recorded=$(sed -n 's/^fc=//p' "${stamp}")
+            here=$("${FC}" --version | head -1)
+            if [[ ${recorded} != "${here}" ]]; then
+                echo "::error::${NAME} was built by '${recorded}' and this job" \
+                     "has '${here}'. Fortran module files are" \
+                     "compiler-version-specific, so this prefix cannot be used" \
+                     "here."
+                exit 1
+            fi
+        fi
+
+        ls "${RUNNER_TEMP}/opt"

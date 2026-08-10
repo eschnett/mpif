@@ -1,0 +1,65 @@
+name: Upload an installation prefix
+description: >
+  Hand an installation prefix to the jobs downstream: a provenance stamp beside
+  it, both into a tarball, and the tarball up as an artifact.
+
+# The stamp's format lives here because its only reader is next door, in
+# .github/actions/restore-prefix. Two of its fields are assertions rather than
+# decoration; see that file for what they catch.
+
+inputs:
+  name:
+    description: >
+      Artifact name, e.g. mpi-mpich-gcc-ubuntu-24.04. Also names the tarball and
+      the stamp inside it, so that restore-prefix can find both from this alone.
+    required: true
+  path:
+    description: The prefix directory, relative to RUNNER_TEMP.
+    required: true
+  cache:
+    description: What the MPI installation cache did, when that is meaningful.
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Stamp and pack ${{ inputs.name }}
+      shell: bash
+      env:
+        NAME: ${{ inputs.name }}
+        PREFIX: ${{ inputs.path }}
+        CACHE: ${{ inputs.cache }}
+        RUN: ${{ github.run_id }}.${{ github.run_attempt }}
+        COMMIT: ${{ github.sha }}
+      run: |
+        stamp=stamp-${NAME}.txt
+        {
+            echo "name=${NAME}"
+            echo "prefix=${PREFIX}"
+            echo "runner-temp=${RUNNER_TEMP}"
+            echo "run=${RUN}"
+            echo "commit=${COMMIT}"
+            echo "cache=${CACHE:-n/a}"
+            echo "cc=$("${CC}" --version | head -1)"
+            echo "fc=$("${FC}" --version | head -1)"
+        } >"${RUNNER_TEMP}/${stamp}"
+        cat "${RUNNER_TEMP}/${stamp}"
+        # tar rather than handing the directory to upload-artifact, which
+        # dereferences symbolic links: lib/libmpi_abi.so -> libmpi_abi.so.1 and
+        # friends must arrive as links, not as copies.
+        tar -C "${RUNNER_TEMP}" -czf "${RUNNER_TEMP}/${NAME}.tar.gz" \
+            "${PREFIX}" "${stamp}"
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ runner.temp }}/${{ inputs.name }}.tar.gz
+        # Long enough for a "re-run failed jobs" the next morning, and no longer:
+        # every one of these is reproducible from the commit.
+        retention-days: 2
+        if-no-files-found: error
+        # v4 artifacts are immutable and a duplicate name is a hard failure. With
+        # four chained stages, re-running one stage of a run is ordinary
+        # recovery rather than a curiosity, so let it replace its own output.
+        overwrite: true
