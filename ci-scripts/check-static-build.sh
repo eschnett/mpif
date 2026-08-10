@@ -113,7 +113,7 @@ if [ -z "$needed" ]; then
   exit 1
 fi
 
-if printf '%s\n' "$needed" | grep -q 'libmpifort_abi'; then
+if grep -q 'libmpifort_abi' <<<"$needed"; then
   echo "$me: $exe still depends on libmpifort_abi at run time:" >&2
   printf '%s\n' "$needed" | grep 'libmpifort_abi' | sed 's/^/         /' >&2
   echo "       It was linked against a shared mpif, not the archive." >&2
@@ -124,7 +124,7 @@ fi
 # section 20.2.1 wants mpi_abi to be the application binary's sole direct MPI
 # dependency, and it is the loader that picks the implementation -- so an
 # executable that had swallowed the MPI too would have lost that.
-if ! printf '%s\n' "$needed" | grep -q 'libmpi_abi'; then
+if ! grep -q 'libmpi_abi' <<<"$needed"; then
   echo "$me: $exe does not depend on libmpi_abi." >&2
   echo "       A static mpif still links the MPI dynamically; see" >&2
   echo "       \"Choosing the MPI at run time\" in CODE.md." >&2
@@ -158,7 +158,7 @@ fi
 # A real Mach-O listing names sections as `(__SEG,__sect)`, so that is the test.
 nm_flavour=elf
 symbols="$(nm -m "$exe" 2>/dev/null || true)"
-if printf '%s\n' "$symbols" | grep -q '(__[A-Za-z_]*,__'; then
+if grep -q '(__[A-Za-z_]*,__' <<<"$symbols"; then
   nm_flavour=mach-o
 else
   symbols="$(nm "$exe" 2>/dev/null || true)"
@@ -173,7 +173,7 @@ for cell in $cells; do
   # Mach-O prefixes C symbols with an underscore; match either spelling, and
   # anchor on the end of the line so mpif_status_ignore_ does not match
   # mpif_f08_status_ignore_.
-  line="$(printf '%s\n' "$symbols" | grep -E "[ _]${cell}\$" | head -1 || true)"
+  line="$(grep -E "[ _]${cell}\$" <<<"$symbols" | head -1 || true)"
   if [ -z "$line" ]; then
     echo "$me: $exe defines no symbol ${cell}." >&2
     echo "       Every sentinel cell should be in it: the executable is what" >&2
@@ -213,7 +213,7 @@ done
 # consumer defines them too, and these cannot. Checked anyway, cheaply, since
 # what makes it loud is a property of the current reference graph.
 for symbol in mpif_logical_true_ mpif_logical_false_; do
-  if ! printf '%s\n' "$symbols" | grep -qE "[ _]${symbol}\$"; then
+  if ! grep -qE "[ _]${symbol}\$" <<<"$symbols"; then
     echo "$me: $exe defines no symbol ${symbol}," \
          "so src/mpif_logical.F90's BLOCK DATA did not reach the link" >&2
     status=1
