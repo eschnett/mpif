@@ -451,6 +451,13 @@ jobs:
           cmake --build build --parallel
           cmake --install build
 
+      # The MPI these tests run against is the one mpif was built against, which
+      # in this job is also the one it remembers.
+      - name: Work out the launcher flags
+        uses: ./.github/actions/mpiexec-flags
+        with:
+          mpi: ${{ matrix.mpi }}
+
       - name: Configure, build, and run tests
         run: |
           # The MPI these tests build and run against is the *default the mpif
@@ -467,26 +474,11 @@ jobs:
           # MPI it was not built against. test/CMakeLists.txt fails the configure
           # if this is missing.
           #
-          # CMake takes a preflag list semicolon-separated, and Open MPI needs
-          # the same two things the suite step below does, for the same reasons
-          # given there: it refuses to oversubscribe, and left to itself it picks
-          # an interface it cannot use. MPICH needs neither, and gets no flag at
-          # all rather than an empty one.
-          #
-          # MPIF_TEST_MPI_LIBRARY makes the environment-check tests assert which
-          # implementation MPI_Get_library_version reports -- here the one mpif
-          # was built against, in the cross job the other one.
+          # MPICH wants no preflags at all rather than an empty list, which is why
+          # this is a guard and not an unconditional -D.
           cmake_args=()
-          if [[ ${{ matrix.mpi }} == openmpi ]]; then
-              mpi_library="Open MPI"
-              if [[ ${RUNNER_OS} == macOS ]]; then
-                  loopback=lo0
-              else
-                  loopback=lo
-              fi
-              cmake_args+=("-DMPIEXEC_PREFLAGS=--oversubscribe;--mca;btl_tcp_if_include;${loopback}")
-          else
-              mpi_library=MPICH
+          if [[ -n ${MPIEXEC_PREFLAGS:-} ]]; then
+              cmake_args+=("-DMPIEXEC_PREFLAGS=${MPIEXEC_PREFLAGS}")
           fi
           cmake \
               -Stest \
@@ -500,7 +492,7 @@ jobs:
               -DMPI_C_LIB_NAMES=mpi_abi \
               -DMPI_mpi_abi_LIBRARY="${mpi_prefix}/lib/libmpi_abi.${SHLIB_EXT}" \
               -DMPIEXEC_EXECUTABLE="${mpi_prefix}/bin/mpiexec" \
-              -DMPIF_TEST_MPI_LIBRARY="${mpi_library}" \
+              -DMPIF_TEST_MPI_LIBRARY="${MPIF_TEST_MPI_LIBRARY}" \
               "${cmake_args[@]}"
           cmake --build build-tests --parallel
           ctest --test-dir build-tests --output-on-failure
@@ -595,35 +587,19 @@ jobs:
               echo "LD_LIBRARY_PATH=${MPI_PREFIX}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" >>"${GITHUB_ENV}"
           fi
 
+      - name: Work out the launcher flags
+        uses: ./.github/actions/mpiexec-flags
+        with:
+          mpi: ${{ matrix.mpi }}
+
       - name: Run MPICH's Fortran test suite
         run: |
-          # Open MPI refuses to oversubscribe by default, and the runners have
-          # fewer cores than the suite asks processes for
-          if [[ ${{ matrix.mpi }} == openmpi ]]; then
-              args=--oversubscribe
-              # Keep Open MPI on the loopback interface: everything here runs on
-              # one host, so no other interface is wanted, and left to itself it
-              # picks one it cannot use. On macOS that is fatal --
-              # "setsockopt(TCP_NODELAY) failed: Invalid argument (22)" and its own
-              # warning that this "may end up hanging", which it does, in every
-              # test that communicates across a spawned intercommunicator, each
-              # then burning runtests' 180-second timeout. On Linux's x86_64
-              # runners it picked the docker0 bridge those images have.
-              #
-              # The interface is lo0 on macOS and lo on Linux. See
-              # scripts/macos-test-mpich-suite.sh, which does the same locally.
-              if [[ ${RUNNER_OS} == macOS ]]; then
-                  args="${args} --mca btl_tcp_if_include lo0"
-              else
-                  args="${args} --mca btl_tcp_if_include lo"
-              fi
-              export MPIEXEC_ARGS="${args}"
-          fi
           # The runtime MPI is the installation's remembered default, read back
           # from the installed wrapper rather than respecified as ${MPI_PREFIX}:
           # what is under test is what the installation would give a user. Here
           # the two are the same directory; the cross job below is where they
-          # differ.
+          # differ. MPIEXEC_ARGS comes from the step above, and is unset for
+          # MPICH, which the script itself guards for.
           ci-scripts/suite/test-mpich-suite.sh \
               "$("${MPIF_PREFIX}/bin/mpifort" -showme:mpiprefix)" "${MPIF_PREFIX}"
 
@@ -761,36 +737,24 @@ jobs:
               done
           done
 
-  # The cross-implementation tests: mpif is built against the C MPI ABI, so a
-  # build made against one implementation must work, unchanged, with the
-  # other -- the test results may depend only on the MPI it *runs* with, never on
-  # the MPI it was *built* against. Per (os, toolchain) this job takes the two
-  # mpif jobs' prefixes and both MPIs, and runs the two cross pairings those jobs
-  # cannot: mpif-built-against-MPICH under Open MPI, and the mirror. Toolchains
-  # are never mixed -- gcc and llvm Fortran are not ABI-compatible -- so the
-  # pairing varies only the MPI.
+  # The two mpif installations must not depend on the MPI they were built
+  # against. The headers and modules must be identical outright. The library must
+  # export and reference exactly the same symbols -- it links no MPI, so there is
+  # nothing implementation-specific left to differ. Byte identity of the libraries
+  # is reported but not (yet) required: it is expected, both jobs building
+  # identical sources in identically named directories, but it has not been
+  # measured across runners.
   #
-  # Two models, on purpose:
-  # - test/ swaps the runtime under unchanged binaries: everything is linked
-  #   against the built mpif's default MPI, and LD_LIBRARY_PATH (macOS:
-  #   DYLD_LIBRARY_PATH) puts the other implementation's libmpi_abi -- same
-  #   conventional versioned name, libmpi_abi.so.1 -- in front of the rpath'd
-  #   default at run time. That is the loader-level mechanism applications use,
-  #   tested directly; MPIF_TEST_MPI_LIBRARY makes the tests assert the swap
-  #   actually happened.
-  # - the MPICH suite relinks against the runtime MPI (test-mpich-suite.sh
-  #   exports MPIF_MPI_PREFIX from its first argument): its harness runs
-  #   through the system perl and shells, from which macOS SIP strips DYLD_*,
-  #   and it recompiles every test per run anyway. Its results are gated
-  #   against the *runtime* MPI's rows of mpich-suite-xfail.txt -- the same
-  #   rows as that MPI's native run, which is the "results depend only on the
-  #   runtime MPI" assertion, enforced by the existing list without new keys.
-  cross:
-    name: cross / ${{ matrix.toolchain }} / ${{ matrix.os }}
+  # Its own job rather than the first step of a cross run, because it needs no
+  # compiler at all -- diff, nm and cmp -- and because a red leg then names the
+  # assertion that broke. It still has to run on the matching runner: nm reads
+  # the platform's own object format.
+  compare:
+    name: compare / ${{ matrix.toolchain }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     needs: mpif
     if: ${{ !cancelled() }}
-    timeout-minutes: 120
+    timeout-minutes: 10
 
     strategy:
       fail-fast: false
@@ -798,55 +762,21 @@ jobs:
         os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
         toolchain: [gcc, llvm]
 
-    env:
-      SHLIB_EXT: ${{ startsWith(matrix.os, 'macos') && 'dylib' || 'so' }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # All four prefixes go back at the exact absolute paths they were installed
-      # at, so every baked path -- wrapper defaults, RPATHs, macOS install
-      # names -- is valid again. One `name:` apiece, never a `pattern:`;
-      # restore-prefix says why. The MPI prefixes come before the toolchain
-      # because unpacking and checking one needs no compiler, so a leg whose
-      # upstream failed says so in fifteen seconds; the mpif prefixes come after,
-      # because their Fortran-compiler assertion needs FC.
-      - name: Restore the MPICH prefix
-        uses: ./.github/actions/restore-prefix
-        with:
-          name: mpi-mpich-${{ matrix.toolchain }}-${{ matrix.os }}
-      - name: Restore the Open MPI prefix
-        uses: ./.github/actions/restore-prefix
-        with:
-          name: mpi-openmpi-${{ matrix.toolchain }}-${{ matrix.os }}
-
-      # The same compilers as the mpif jobs, because this job compiles test/
-      # (four configurations) and the suite's Fortran side. No autotools and no
-      # ccache: nothing here builds an MPI.
-      - name: Set up the toolchain
-        uses: ./.github/actions/setup-toolchain
-        with:
-          toolchain: ${{ matrix.toolchain }}
-
+      # No `check-fortran`: this job installs no compiler and compiles nothing,
+      # so it has no FC to compare against and no modules to be wrong about.
       - name: Restore the mpif built against MPICH
         uses: ./.github/actions/restore-prefix
         with:
           name: mpif-mpich-${{ matrix.toolchain }}-${{ matrix.os }}
-          check-fortran: "true"
       - name: Restore the mpif built against Open MPI
         uses: ./.github/actions/restore-prefix
         with:
           name: mpif-openmpi-${{ matrix.toolchain }}-${{ matrix.os }}
-          check-fortran: "true"
 
-      # The two mpif installations must not depend on the MPI they were built
-      # against. The headers and modules must be identical outright. The
-      # library must export and reference exactly the same symbols -- it links
-      # no MPI, so there is nothing implementation-specific left to differ.
-      # Byte identity of the libraries is reported but not (yet) required:
-      # it is expected, both jobs building identical sources in identically
-      # named directories, but it has not been measured across runners.
       - name: Compare the two mpif installations
         run: |
           a="${RUNNER_TEMP}/opt/mpif-mpich"
@@ -869,110 +799,167 @@ jobs:
               echo "note: the libraries differ in their bytes (not required)"
           fi
 
-      # Same binaries, swapped runtime. Each pairing configures test/ exactly
-      # as the build job did for the *built* MPI -- compilers, header and
-      # library all from the built mpif's remembered default -- except that the
-      # launcher is the *runtime* MPI's and the tests expect the runtime
-      # implementation's MPI_Get_library_version. The loader search path then
-      # swaps libmpi_abi under the unchanged executables at ctest time.
+  # The cross-implementation tests: mpif is built against the C MPI ABI, so a
+  # build made against one implementation must work, unchanged, with the other --
+  # the test results may depend only on the MPI it *runs* with, never on the MPI
+  # it was *built* against. One leg per direction: mpif-built-against-MPICH under
+  # Open MPI, and the mirror. Toolchains are never mixed -- gcc and llvm Fortran
+  # are not ABI-compatible -- so a pairing varies only the MPI.
+  #
+  # One direction per job, where the two used to share one: they are independent
+  # work, and running them in sequence made this the longest job in the pipeline
+  # at 1075 seconds of suite on macOS. It also gives each leg a single runtime
+  # MPI, known at job level, which is what lets the launcher flags come from a
+  # step rather than from a branch inside a loop.
+  #
+  # Two models, on purpose:
+  # - test/ swaps the runtime under unchanged binaries: everything is linked
+  #   against the built mpif's default MPI, and LD_LIBRARY_PATH (macOS:
+  #   DYLD_LIBRARY_PATH) puts the other implementation's libmpi_abi -- same
+  #   conventional versioned name, libmpi_abi.so.1 -- in front of the rpath'd
+  #   default at run time. That is the loader-level mechanism applications use,
+  #   tested directly; MPIF_TEST_MPI_LIBRARY makes the tests assert the swap
+  #   actually happened.
+  # - the MPICH suite relinks against the runtime MPI (test-mpich-suite.sh
+  #   exports MPIF_MPI_PREFIX from its first argument): its harness runs through
+  #   the system perl and shells, from which macOS SIP strips DYLD_*, and it
+  #   recompiles every test per run anyway. Its results are gated against the
+  #   *runtime* MPI's rows of mpich-suite-xfail.txt -- the same rows as that MPI's
+  #   native run, which is the "results depend only on the runtime MPI"
+  #   assertion, enforced by the existing list without new keys. The variant key
+  #   is detected, not passed: the implementation from the runtime prefix, the
+  #   toolchain from mpif's own mpifort.
+  cross:
+    name: cross / ${{ matrix.built }}-run-${{ matrix.run }} / ${{ matrix.toolchain }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    needs: mpif
+    if: ${{ !cancelled() }}
+    timeout-minutes: 90
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+        toolchain: [gcc, llvm]
+        built: [mpich, openmpi]
+        # `run` is the other implementation. An include entry whose keys already
+        # name an axis value merges into the combinations that match it, rather
+        # than adding legs -- so this adds `run` to the six legs apiece and the
+        # matrix stays twelve.
+        include:
+          - built: mpich
+            run: openmpi
+          - built: openmpi
+            run: mpich
+
+    env:
+      SHLIB_EXT: ${{ startsWith(matrix.os, 'macos') && 'dylib' || 'so' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up paths
+        run: |
+          {
+              echo "MPIF_PREFIX=${RUNNER_TEMP}/opt/mpif-${{ matrix.built }}"
+              echo "RUN_PREFIX=${RUNNER_TEMP}/opt/mpi-${{ matrix.run }}"
+          } >>"${GITHUB_ENV}"
+
+      # Both MPIs, at the exact absolute paths they were installed at so that
+      # every baked path -- wrapper defaults, RPATHs, macOS install names -- is
+      # valid again: the one the tests run against, and the one mpif was built
+      # against, which is still what its wrapper links against. One `name:`
+      # apiece and never a `pattern:`; restore-prefix says why. These come before
+      # the toolchain because unpacking and checking an MPI prefix needs no
+      # compiler, so a leg whose upstream failed says so in fifteen seconds.
+      - name: Restore the ${{ matrix.run }} prefix, the runtime
+        uses: ./.github/actions/restore-prefix
+        with:
+          name: mpi-${{ matrix.run }}-${{ matrix.toolchain }}-${{ matrix.os }}
+      - name: Restore the ${{ matrix.built }} prefix, what mpif links against
+        uses: ./.github/actions/restore-prefix
+        with:
+          name: mpi-${{ matrix.built }}-${{ matrix.toolchain }}-${{ matrix.os }}
+
+      # The same compilers as the mpif jobs, because this job compiles test/ and
+      # the suite's Fortran side. No autotools and no ccache: nothing here builds
+      # an MPI.
+      - name: Set up the toolchain
+        uses: ./.github/actions/setup-toolchain
+        with:
+          toolchain: ${{ matrix.toolchain }}
+
+      - name: Restore the mpif built against ${{ matrix.built }}
+        uses: ./.github/actions/restore-prefix
+        with:
+          name: mpif-${{ matrix.built }}-${{ matrix.toolchain }}-${{ matrix.os }}
+          check-fortran: "true"
+
+      # The flags follow the MPI the tests *run* against, which is the one this
+      # job varies.
+      - name: Work out the launcher flags
+        uses: ./.github/actions/mpiexec-flags
+        with:
+          mpi: ${{ matrix.run }}
+
+      # test/ configured exactly as the mpif job configured it for the *built*
+      # MPI -- compilers, header and library all from the built mpif's remembered
+      # default -- except that the launcher is the *runtime* MPI's and the tests
+      # expect the runtime implementation's MPI_Get_library_version.
       - name: Cross-run test/ (same binaries, swapped runtime)
         run: |
-          for built in mpich openmpi; do
-              if [[ ${built} == mpich ]]; then
-                  run=openmpi
-              else
-                  run=mpich
-              fi
-              echo "::group::built against ${built}, running against ${run}"
-              mpif_prefix=${RUNNER_TEMP}/opt/mpif-${built}
-              run_prefix=${RUNNER_TEMP}/opt/mpi-${run}
-              link_prefix=$("${mpif_prefix}/bin/mpifort" -showme:mpiprefix)
-              cmake_args=()
-              if [[ ${run} == openmpi ]]; then
-                  mpi_library="Open MPI"
-                  if [[ ${RUNNER_OS} == macOS ]]; then
-                      loopback=lo0
-                  else
-                      loopback=lo
-                  fi
-                  cmake_args+=("-DMPIEXEC_PREFLAGS=--oversubscribe;--mca;btl_tcp_if_include;${loopback}")
-              else
-                  mpi_library=MPICH
-              fi
-              builddir=build-tests-${built}-run-${run}
-              cmake \
-                  -Stest \
-                  -B"${builddir}" \
-                  -DCMAKE_BUILD_TYPE=Debug \
-                  -DCMAKE_C_COMPILER="${CC}" \
-                  -DCMAKE_Fortran_COMPILER="${FC}" \
-                  -DMPI_C_COMPILER="${link_prefix}/bin/mpicc" \
-                  -DMPI_Fortran_COMPILER="${mpif_prefix}/bin/mpifort" \
-                  -DMPI_C_HEADER_DIR="${link_prefix}/include" \
-                  -DMPI_C_LIB_NAMES=mpi_abi \
-                  -DMPI_mpi_abi_LIBRARY="${link_prefix}/lib/libmpi_abi.${SHLIB_EXT}" \
-                  -DMPIEXEC_EXECUTABLE="${run_prefix}/bin/mpiexec" \
-                  -DMPIF_TEST_MPI_LIBRARY="${mpi_library}" \
-                  "${cmake_args[@]}"
-              cmake --build "${builddir}" --parallel
-              if [[ ${RUNNER_OS} == macOS ]]; then
-                  DYLD_LIBRARY_PATH="${run_prefix}/lib" \
-                      ctest --test-dir "${builddir}" --output-on-failure
-              else
-                  LD_LIBRARY_PATH="${run_prefix}/lib" \
-                      ctest --test-dir "${builddir}" --output-on-failure
-              fi
-              echo "::endgroup::"
-          done
+          link_prefix=$("${MPIF_PREFIX}/bin/mpifort" -showme:mpiprefix)
+          cmake_args=()
+          if [[ -n ${MPIEXEC_PREFLAGS:-} ]]; then
+              cmake_args+=("-DMPIEXEC_PREFLAGS=${MPIEXEC_PREFLAGS}")
+          fi
+          cmake \
+              -Stest \
+              -Bbuild-tests \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_C_COMPILER="${CC}" \
+              -DCMAKE_Fortran_COMPILER="${FC}" \
+              -DMPI_C_COMPILER="${link_prefix}/bin/mpicc" \
+              -DMPI_Fortran_COMPILER="${MPIF_PREFIX}/bin/mpifort" \
+              -DMPI_C_HEADER_DIR="${link_prefix}/include" \
+              -DMPI_C_LIB_NAMES=mpi_abi \
+              -DMPI_mpi_abi_LIBRARY="${link_prefix}/lib/libmpi_abi.${SHLIB_EXT}" \
+              -DMPIEXEC_EXECUTABLE="${RUN_PREFIX}/bin/mpiexec" \
+              -DMPIF_TEST_MPI_LIBRARY="${MPIF_TEST_MPI_LIBRARY}" \
+              "${cmake_args[@]}"
+          cmake --build build-tests --parallel
+          # The swap itself, at ctest time and not at link time
+          if [[ ${RUNNER_OS} == macOS ]]; then
+              DYLD_LIBRARY_PATH="${RUN_PREFIX}/lib" \
+                  ctest --test-dir build-tests --output-on-failure
+          else
+              LD_LIBRARY_PATH="${RUN_PREFIX}/lib" \
+                  ctest --test-dir build-tests --output-on-failure
+          fi
 
-      # The broad test: the MPICH suite, ~300 Fortran tests, with the Fortran
-      # side supplied by the mpif built against the *other* implementation.
-      # test-mpich-suite.sh relinks against its first argument and gates
-      # against that runtime MPI's expected-failure rows; a cross run must
-      # therefore report exactly what the native run of that MPI reported.
-      # Each pairing gets its own tree: two suite runs sharing one rebuild and
-      # delete executables under each other.
+      # The broad test: the MPICH suite, ~300 Fortran tests, with the Fortran side
+      # supplied by the mpif built against the other implementation.
+      # test-mpich-suite.sh relinks against its first argument and gates against
+      # that runtime MPI's expected-failure rows; a cross run must therefore
+      # report exactly what the native run of that MPI reported.
       - name: Cross-run the MPICH suite (relinked against the runtime)
         run: |
-          for built in mpich openmpi; do
-              if [[ ${built} == mpich ]]; then
-                  run=openmpi
-              else
-                  run=mpich
-              fi
-              echo "::group::built against ${built}, running against ${run}"
-              mpif_prefix=${RUNNER_TEMP}/opt/mpif-${built}
-              run_prefix=${RUNNER_TEMP}/opt/mpi-${run}
-              unset MPIEXEC_ARGS
-              if [[ ${run} == openmpi ]]; then
-                  args=--oversubscribe
-                  if [[ ${RUNNER_OS} == macOS ]]; then
-                      args="${args} --mca btl_tcp_if_include lo0"
-                  else
-                      args="${args} --mca btl_tcp_if_include lo"
-                  fi
-                  export MPIEXEC_ARGS="${args}"
-              fi
-              if [[ ${RUNNER_OS} == Linux ]]; then
-                  export LD_LIBRARY_PATH="${run_prefix}/lib"
-              fi
-              MPICH_TESTS_DIR="${RUNNER_TEMP}/tests-${built}-run-${run}" \
-                  ci-scripts/suite/test-mpich-suite.sh "${run_prefix}" "${mpif_prefix}"
-              echo "::endgroup::"
-          done
+          if [[ ${RUNNER_OS} == Linux ]]; then
+              export LD_LIBRARY_PATH="${RUN_PREFIX}/lib"
+          fi
+          ci-scripts/suite/test-mpich-suite.sh "${RUN_PREFIX}" "${MPIF_PREFIX}"
 
       - name: Show CMake's check logs
         if: failure()
         run: |
-          for dir in build-tests-*; do
-              for log in "${dir}"/CMakeFiles/CMakeConfigureLog.yaml \
-                         "${dir}"/CMakeFiles/CMakeError.log; do
-                  if [[ -f ${log} ]]; then
-                      echo "::group::${log}"
-                      cat "${log}"
-                      echo "::endgroup::"
-                  fi
-              done
+          for log in build-tests/CMakeFiles/CMakeConfigureLog.yaml \
+                     build-tests/CMakeFiles/CMakeError.log; do
+              if [[ -f ${log} ]]; then
+                  echo "::group::${log}"
+                  cat "${log}"
+                  echo "::endgroup::"
+              fi
           done
 
   # The 32-bit variant, which the job above cannot express. The suite's

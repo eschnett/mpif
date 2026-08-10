@@ -1,0 +1,63 @@
+name: Work out the launcher flags
+description: >
+  What mpiexec has to be told about the MPI the tests will run against, in the
+  two shapes the callers need it in.
+
+# Open MPI needs two things on a CI runner and MPICH needs neither, and that
+# asymmetry was written out at four sites before this file. Both flags concern
+# the MPI the tests *run* against, which is why a cross job can only use this
+# once it has one runtime MPI per job rather than a loop over both.
+#
+# Written to GITHUB_ENV rather than returned as outputs, so that a caller reads
+# ${MPIEXEC_ARGS} instead of ${{ steps.something.outputs.args }} inside a shell
+# script. Nothing is written for MPICH, deliberately: the two consumers guard on
+# the variable being non-empty -- test-mpich-suite.sh does so itself -- so
+# "unset" means "no flags" without either side special-casing an empty string.
+
+inputs:
+  mpi:
+    description: The implementation the tests will run against, mpich or openmpi.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Launcher flags for ${{ inputs.mpi }}
+      shell: bash
+      env:
+        MPI: ${{ inputs.mpi }}
+      run: |
+        if [[ ${MPI} != openmpi ]]; then
+            echo "MPIF_TEST_MPI_LIBRARY=MPICH" >>"${GITHUB_ENV}"
+            echo "MPICH: no launcher flags needed"
+            exit 0
+        fi
+
+        # Open MPI refuses to oversubscribe by default, and the runners have
+        # fewer cores than the suite asks processes for.
+        #
+        # And keep it on the loopback interface: everything here runs on one
+        # host, so no other interface is wanted, and left to itself it picks one
+        # it cannot use. On macOS that is fatal -- "setsockopt(TCP_NODELAY)
+        # failed: Invalid argument (22)" and its own warning that this "may end up
+        # hanging", which it does, in every test that communicates across a
+        # spawned intercommunicator, each then burning runtests' 180-second
+        # timeout. On Linux's x86_64 runners it picked the docker0 bridge those
+        # images have. See scripts/macos-test-mpich-suite.sh, which does the same
+        # locally, and the same flags in each docker/openmpi-*.dockerfile.
+        if [[ ${RUNNER_OS} == macOS ]]; then
+            loopback=lo0
+        else
+            loopback=lo
+        fi
+
+        {
+            # For test-mpich-suite.sh, which passes it to mpiexec as it stands
+            echo "MPIEXEC_ARGS=--oversubscribe --mca btl_tcp_if_include ${loopback}"
+            # For test/'s configure, which takes a preflag list semicolon-separated
+            echo "MPIEXEC_PREFLAGS=--oversubscribe;--mca;btl_tcp_if_include;${loopback}"
+            # Makes the environment-check tests assert which implementation
+            # MPI_Get_library_version reports -- so, which one actually answered
+            echo "MPIF_TEST_MPI_LIBRARY=Open MPI"
+        } >>"${GITHUB_ENV}"
+        echo "Open MPI: --oversubscribe, and pinned to ${loopback}"
