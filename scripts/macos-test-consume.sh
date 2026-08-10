@@ -13,7 +13,7 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/macos-common.sh" "$@"
 
 require_marker "${mpif_prefix}" \
-    "${MPIF_SANITIZE:+MPIF_SANITIZE=${MPIF_SANITIZE} }scripts/macos-build-mpif.sh ${mpi} ${toolchain}"
+    "${MPIF_STATIC:+MPIF_STATIC=${MPIF_STATIC} }${MPIF_SANITIZE:+MPIF_SANITIZE=${MPIF_SANITIZE} }scripts/macos-build-mpif.sh ${mpi} ${toolchain}"
 
 echo "Consuming the mpif in build/mpif/${tagged}:"
 show_marker "${mpif_prefix}"

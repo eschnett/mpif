@@ -10,9 +10,18 @@
 ! block and Fortran reads it, here Fortran defines it and C reads it. See
 ! include/mpif_logical.h for the other half.
 !
-! A BLOCK DATA is the only way to give a common block an initial value. mpif is
-! built as a shared library, so the object is always linked in; were it ever
-! built as a static library, this would need a reference to drag it in.
+! A BLOCK DATA is the only way to give a common block an initial value, and it
+! needs a reference to drag it out of a static archive. It has one:
+! src/mpif_logical.c refers to both symbols, and delete this object from
+! libmpifort_abi.a and the link fails saying so --
+!
+!     Undefined symbols: "_mpif_logical_true_", referenced from
+!     _mpif_bool2logical in libmpifort_abi.a(mpif_logical.c.o)
+!
+! -- which is the point: nothing outside mpif declares these two common blocks,
+! so a member that failed to come out is loud. The sentinels of
+! src/mpif_constants.c are the opposite case, every consumer declaring them too,
+! and there the same failure is silent; see "Static linking" in CODE.md.
 
 block data mpif_logical_block
 

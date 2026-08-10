@@ -329,3 +329,54 @@ and nothing failed to link. That red *is* the put-the-bug-back evidence for the
 whole change, obtained before the fix rather than reconstructed after it. The
 generator's restructuring was then proved inert on its own by a temporary
 `translate_sentinels = false` switch, under which `git diff gen/` was empty.
+
+## The static build, and two predictions that were wrong
+
+`libmpifort_abi` was shared-only until 2026-08-10, and two COMMON-block
+arrangements were expected to break in an archive. Both predictions were written
+down in the source, and both were wrong — in opposite directions, which is the
+useful part.
+
+- **`src/mpif_logical.F90` predicted the wrong failure and the wrong direction.**
+  Its comment said the `BLOCK DATA` "is always linked in" because mpif is shared,
+  and "were it ever built as a static library, this would need a reference to drag
+  it in." It has one: `src/mpif_logical.c` refers to both symbols. Deleting the
+  member with `ar d` and relinking fails outright — `Undefined symbols:
+  "_mpif_logical_true_", referenced from _mpif_bool2logical` — so the case the
+  comment feared is the loud one. A configure probe for `transfer(.true., 0)` was
+  designed to remove the `BLOCK DATA` entirely and then not written, the hazard
+  being imaginary; `MISSING.md` keeps the mechanism and the reason.
+- **The sentinels were expected to fail loudly and fail silently instead.** The
+  plan for the static job assumed that if `src/mpif_constants.c`'s member never
+  came out of the archive the link would break, or that
+  `mpif_check_environment` would catch it. Neither. With the member removed the
+  link succeeds, `test/check_f08` passes, and the program is *correct*: a
+  consumer's COMMON block is a definition rather than a reference, so the
+  consumer's own tentative definitions win, and C and Fortran then resolve one
+  symbol to one address — which is all translation needs. `mpif_check_environment`
+  compares those two, so it cannot see it and never could.
+  What silently disappears is both backstops *behind* the translation. The cells
+  stop being `const`, so a missed translation that writes scribbles instead of
+  faulting, and stop being poisoned: `MPI_BOTTOM(1)` reads `0xBAADC0DE` through
+  the archive's cell and `0x00000000` without it. The discriminator is the section
+  the cell landed in — `__TEXT,__const` against `__DATA,__common` — which is why
+  `ci-scripts/check-static-build.sh` reads sections and not addresses.
+
+The asymmetry is the lesson, and it is general: a COMMON block that only mpif
+declares fails loudly when its archive member is missed, and one that every
+consumer also declares fails silently, because the consumer supplies a
+replacement. Nothing about being data made the two alike.
+
+Both were found the same way — `ar d` on a copy of the archive, relink, look at
+`nm -m` — which cost minutes and is worth reaching for before reasoning about
+what a linker will do.
+
+What the new stage found on its first run was neither of the two: `profile_f90`
+and `profile_f08` failed to *link*, with duplicate `mpi_barrier_` and
+`mpi_comm_rank_`. Interposition is load-time behaviour, and against an archive the
+linker sees two definitions instead — the member holding the replaced entry point
+holds every other wrapper too. MPI-5.0 §15.2.1(2) and (4) are exactly about this,
+and the fix they describe is one object per routine; `MISSING.md` records why that
+was not done. Worth noting how it was found: not by reasoning about the sentinels,
+which was the whole reason for building the stage, but by running everything else
+against it.

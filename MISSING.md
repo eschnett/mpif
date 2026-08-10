@@ -772,6 +772,82 @@ decision recorded on filing it.
   symbol lists; the bytes differ on every platform for meaningless reasons
   (debug-info build paths, linker ids, timestamps).
 
+### What the static build deliberately does not do
+
+`-DBUILD_SHARED_LIBS=OFF` builds `libmpifort_abi.a`, CI's `static` job runs
+`test/` and `test-consume/` against one, and `CODE.md` "Static linking" has the
+mechanism. Five things left undone, each on purpose:
+
+- **A static mpif cannot be profiled by interposition, and MPI-5.0 §15.2.1
+  requires that it could.** Replacing an entry point with your own — which is what
+  `test/profile_f90.f90` and `test/profile_f08.f90` do, and what a profiling layer
+  does — works against a shared library, the executable's definition winning at
+  load time. Against the archive the linker sees two definitions instead, because
+  the member holding `mpi_barrier_` holds every other wrapper too and the link
+  needs it for those:
+
+      duplicate symbol '_mpi_barrier_f08_' in:
+          CMakeFiles/profile_f08.dir/profile_f08.f90.o
+          libmpifort_abi.a[28](mpif_f08_wrappers.F90.o)
+
+  §15.2.1(2) asks that unreplaced functions "still be linked into an executable
+  image without causing name clashes", and (4) that a layered binding's wrappers
+  be "separable from the rest of the library ... at least with Unix linker
+  semantics". Both hold for a shared mpif; neither holds for the archive, and both
+  interfaces are affected — `gen/mpif_functions.c` for the C entry points,
+  `gen/mpif_f08_wrappers.F90` for the f08 specifics.
+  What (4) actually asks for is one object per routine, which the generator could
+  emit: ~1600 extra translation units, slowing every build everywhere for a
+  configuration CI runs one leg of. Not done, and on the `TODO.md` list instead.
+  Weak definitions would fix half of it and are not portable for the other half:
+  `#pragma weak` covers the C entry points, and neither gfortran nor flang has a
+  way to weaken a Fortran procedure symbol. `MPIF_TEST_STATIC_MPIF=ON` skips the
+  two tests, and it skips *target creation* rather than registration because the
+  failure is at link time.
+- **A fully static executable, with the MPI linked in too, is not supported.**
+  It would need static MPI libraries — MPICH can supply them, Open MPI largely
+  cannot — and it would destroy the arrangement the rest of the design rests on:
+  MPI-5.0 §20.2.1's "sole direct dependency" is what lets the loader pick the
+  implementation, and an executable that swallowed `libmpi_abi` could not be
+  handed another one. What "static" means here is mpif itself; the MPI stays
+  shared, which is also where the interesting failure modes are.
+- **`POSITION_INDEPENDENT_CODE` is not set**, so the archive is for linking into
+  executables and not into someone else's shared library. Nothing asks for the
+  latter yet, and on ELF it would mean `-fPIC` throughout for a configuration no
+  test covers. Adding it later is one property.
+- **CI runs one static leg, on Linux/MPICH/gcc.** GNU ld is the linker that
+  reports symbol size and alignment mismatches at all — macOS's says nothing,
+  which is why a uniform cell size cost 1516 warnings before a container found
+  them (`HISTORY.md`) — so that is the leg worth having. Mach-O is covered by
+  `dev/build-macos-all.sh static` over all four variants, locally rather than in
+  CI. Neither Open MPI nor the vendor compilers of the `compile` job build an
+  archive anywhere; `ci-scripts/compile-only.sh` was left alone because what it
+  would add is a second link of the same objects, and the failure this is about
+  is not a compile failure.
+- **`mpif_check_environment` cannot see a lost cell member, and is not being
+  taught to.** With `src/mpif_constants.c`'s member absent from the archive the
+  consumer's own COMMON blocks become the definitions, C and Fortran still
+  resolve one symbol to one address, and the check passes — measured, with
+  `test/check_f08`. What is lost is the read-only fault and the poison behind the
+  translation, which is a property of the *section* the cell landed in, not of any
+  address a running program can compare. So the check for it is
+  `ci-scripts/check-static-build.sh`, before anything runs, and the run-time check
+  keeps the job it can actually do.
+- **The `.TRUE.`/`.FALSE.` bit patterns stay in a `BLOCK DATA`.** Asking the
+  compiler for them at configure time is possible, and would delete
+  `src/mpif_logical.F90` outright: `check_fortran_source_compiles` over candidate
+  values in the kind-arithmetic idiom the optional-kind probes already use
+  (`CMakeLists.txt` "The optional kinds"), since `transfer(.true., 0)` is a
+  constant expression on every compiler CI reaches — it is in that file today.
+  Not done, because the hazard that motivated it is not real: the `BLOCK DATA`'s
+  member is dragged out of the archive by `src/mpif_logical.c`'s reference, and
+  removing it fails the link loudly rather than silently (measured; see the
+  comment in `src/mpif_logical.F90`). The probe would also cost a `FATAL_ERROR`
+  for a compiler whose representation is not on the candidate list — the shape of
+  hard failure the Cray-pointer removal deliberately got rid of — and would move
+  a fact the Fortran compiler currently states by construction into a probe that
+  has to agree with it.
+
 ### Assumed-rank choice buffers
 
 **Taken on 2026-08-09, for `mpi_f08` and where the toolchain can do it** —

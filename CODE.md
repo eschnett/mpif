@@ -191,6 +191,77 @@ arrangements make that true:
   suite cross-run is gated against the *runtime* MPI's rows of
   `mpich-suite-xfail.txt`.
 
+## Static linking
+
+`-DBUILD_SHARED_LIBS=OFF` builds `libmpifort_abi.a` instead of a shared library.
+The MPI stays shared: the archive's `MPI_*`/`PMPI_*` references are deferred to
+the consumer's link line, where `bin/mpifort` already supplies `-lmpi_abi`, so
+everything above about choosing the implementation at run time still holds. A
+fully static executable is not supported — see `MISSING.md`.
+
+Install it into a prefix of its own. `bin/mpifort` links a bare
+`-lmpifort_abi`, so an archive and a shared library in one libdir leave the
+linker to choose, and it chooses the shared one.
+
+What a static link puts at risk is the two arrangements that publish *data*
+across the language boundary, because an archive yields a member only when
+something references a symbol in it. Neither chain is declared anywhere; both
+were measured, on `mpich-gcc` with gfortran 15 and ld64, by deleting the member
+with `ar d` and relinking:
+
+- **The sentinel cells** (`src/mpif_constants.c`) are referenced from
+  `gen/mpif_functions.c`, `gen/mpif_f08_cdesc.c`, `src/mpif_check.c` and
+  `src/mpif_removed.c` — through the `static inline` translators of
+  `include/mpif_sentinels.h`, which every wrapper inlines. `gen/mpif_functions.c`
+  is one translation unit holding every wrapper, so any MPI call at all pulls it,
+  and it pulls the cells.
+  **This failure is silent.** A consumer's COMMON block is a *definition*, not a
+  reference, so with the member gone the link still succeeds and the program still
+  works: the consumer's own tentative definitions win, C and Fortran resolve one
+  symbol to one address, and every translation still matches. What disappears is
+  both backstops behind the translation — the cells are no longer `const`, so a
+  missed translation that writes scribbles instead of faulting, and no longer
+  poisoned, so a missed read sends zeros instead of something conspicuous.
+  Measured: `MPI_BOTTOM(1)` reads `0xBAADC0DE` through the archive's cell and
+  `0x00000000` without it, and `test/check_f08` passes either way.
+  `mpif_check_environment` cannot see this and does not claim to — it compares the
+  Fortran sentinel's address against the cell, and those are one symbol whichever
+  definition won. The section each cell landed in is the only discriminator:
+  `__TEXT,__const` merged onto the archive's definition, `__DATA,__common` left to
+  the consumer's. That is what `ci-scripts/check-static-build.sh` reads.
+- **The `.TRUE.`/`.FALSE.` bit patterns** (`src/mpif_logical.F90`, a `BLOCK DATA`)
+  are referenced from `src/mpif_logical.c`, itself reached from
+  `gen/mpif_functions.c`, `src/mpif_callbacks.c` and `src/mpif_check.c`.
+  **This failure is loud**: nothing outside mpif declares those two COMMON
+  blocks, so there is no tentative definition to substitute and the link fails
+  with `Undefined symbols: "_mpif_logical_true_", referenced from
+  _mpif_bool2logical`. That asymmetry — silent for the sentinels, loud here — is
+  exactly the difference between a block the consumer also declares and one it
+  does not.
+
+`ci-scripts/check-static-build.sh` is what keeps all of that true, and it is not
+a duplicate of the run-time check. It requires the archive to be there with no
+shared library beside it, `bin/mpif_info` to name `libmpi_abi` and *not*
+`libmpifort_abi` among its dynamic dependencies, every sentinel cell in that
+executable to be a defined read-only symbol, and both logical symbols to be
+defined. It reads the cell names out of `include/mpif_sentinels.h` rather than
+listing them, the way `ci-scripts/check-headers.sh` does.
+
+CI's `static` job runs it, then `test/` and `test-consume/` — the two routes a
+consumer can reach the archive by, one through `bin/mpifort`'s `-lmpifort_abi`
+and one through `find_package(mpif)`'s imported target. One leg, on Linux,
+because GNU ld is the linker that reports symbol size and alignment mismatches
+at all; `dev/build-macos-all.sh static` covers Mach-O locally over all four
+variants. A static build was measured to produce no such warning, in a Debian
+container with GNU ld — the same harness that found 1516 of them from a uniform
+cell size.
+
+One thing an archive cannot do: **profiling by interposition needs a shared
+mpif.** `MPIF_TEST_STATIC_MPIF=ON` skips `test/profile_f90` and
+`test/profile_f08` for that reason, so a static run is 76 tests rather than 78.
+MPI-5.0 §15.2.1(2) and (4) are what that fails, and `MISSING.md` has the
+measurement and the decision.
+
 ## Sanitizer builds
 
 `-DMPIF_SANITIZE=address` builds mpif with AddressSanitizer; off by default:

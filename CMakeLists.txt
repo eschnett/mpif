@@ -563,7 +563,21 @@ foreach(_mpif_san_rt_dir IN LISTS MPIF_SANITIZE_RPATH)
   string(APPEND MPIF_SANITIZE_LINK_STR " -Wl,-rpath,${_mpif_san_rt_dir}")
 endforeach()
 
-add_library(mpifort_abi SHARED
+# No SHARED/STATIC here: `BUILD_SHARED_LIBS` decides, and both configurations
+# are supported. A shared library is what the design is written around -- see
+# "Choosing the MPI at run time" in CODE.md -- but an archive works too, and the
+# `static` CI job builds one and runs test/ and test-consume against it. The two
+# arrangements that publish *data* across the language boundary are the ones a
+# static link puts at risk, because an archive yields a member only when
+# something references a symbol in it: the sentinel cells of
+# src/mpif_constants.c and the BLOCK DATA of src/mpif_logical.F90. Both are
+# reached, transitively, from gen/mpif_functions.c -- see "Static linking" in
+# CODE.md for the chain and what checks it.
+#
+# Install a static build into a prefix of its own. `bin/mpifort` links a bare
+# `-lmpifort_abi`, which would be ambiguous with an archive and a shared library
+# side by side in one libdir.
+add_library(mpifort_abi
   # MPI Fortran header files
   include/mpif.h
   # MPI Fortran modules
@@ -648,7 +662,13 @@ if(MPIF_SANITIZE_RPATH)
   set_property(TARGET mpifort_abi APPEND PROPERTY INSTALL_RPATH ${MPIF_SANITIZE_RPATH})
 endif()
 if(APPLE)
-  # Ensure that there is only one instance of our MPI common blocks
+  # Ensure that there is only one instance of our MPI common blocks.
+  #
+  # Unconditional, though it names dylibs: in a static build there is no dylib
+  # for a consumer's common to resolve against, so the flag is inert rather than
+  # wrong, and a consumer may still link dylibs of its own. The archive's own
+  # arrangement is a plain merge onto the definitions in the `.o` members the
+  # link pulled in.
   target_link_options(mpifort_abi INTERFACE "LINKER:-commons,use_dylibs")
 endif()
 # The library links NO MPI: its MPI_*/PMPI_* references stay undefined and
@@ -664,10 +684,15 @@ endif()
 # inert today, but a per-implementation difference in what is supposed to be
 # an implementation-independent build.
 target_include_directories(mpifort_abi PRIVATE ${MPI_C_INCLUDE_DIRS})
-if(APPLE)
+if(APPLE AND BUILD_SHARED_LIBS)
   # ELF shared libraries may have undefined symbols by default; ld64 needs to
   # be told. Symbols marked for dynamic lookup bind flat at load time, from
   # whatever images the executable brought in.
+  #
+  # Shared only, and guarded rather than left to be ignored: an archive is
+  # created by `ar`, which runs no linker and has nothing to resolve, so the
+  # library's undefined MPI_*/PMPI_* references are simply deferred to the
+  # consumer's link line -- where `bin/mpifort` already supplies `-lmpi_abi`.
   target_link_options(mpifort_abi PRIVATE "LINKER:-undefined,dynamic_lookup")
 endif()
 list(APPEND public_headers
@@ -678,10 +703,22 @@ list(APPEND public_headers
   include/mpif_functions.h
 )
 set_target_properties(mpifort_abi PROPERTIES
-  VERSION ${PROJECT_VERSION}
-  SOVERSION ${SOVERSION}
   PUBLIC_HEADER "${public_headers}"
 )
+# Shared only, because that is what the two properties mean: a soname and the
+# versioned filename the loader follows, neither of which an archive has.
+#
+# Not a fix for anything. Measured on CMake 3.31: a static target with VERSION
+# set is still `libmpifort_abi.a`, so leaving them unconditional would have been
+# harmless today. The guard says which configuration they belong to instead of
+# relying on the other one ignoring them -- the same reason the flang platform
+# settings at the top of this file are guarded rather than merely inert.
+if(BUILD_SHARED_LIBS)
+  set_target_properties(mpifort_abi PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${SOVERSION}
+  )
+endif()
 
 install(TARGETS mpifort_abi EXPORT mpifort_abiTargets
   LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}

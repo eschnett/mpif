@@ -12,6 +12,7 @@
 #   suite      8  the MPICH Fortran suite, same eight pairings
 #   consume    4  find_package(mpif)
 #   sanitize   4  the AddressSanitizer mpif and its tests, llvm only
+#   static     4  a static libmpifort_abi.a, its tests and the consume test
 #   all           all of the above, in that order (the default)
 #
 # The stages are separate because the two build stages are the expensive ones and
@@ -91,10 +92,31 @@ stage_sanitize() {
     done; done
 }
 
+# The static stage runs on every variant, unlike the sanitizer one: nothing in a
+# toolchain gates it. CI runs static on Linux only, where GNU ld is the linker
+# that reports symbol size and alignment mismatches at all -- so this is the
+# Mach-O half of the coverage, and the reason it runs all four rather than one.
+# The consume test is included because it reaches the archive by the other route:
+# find_package(mpif) and an imported target, rather than bin/mpifort's
+# `-lmpifort_abi`.
+stage_static() {
+    for mpi in ${mpis}; do for tc in ${toolchains}; do
+        run "static mpif ${mpi} ${tc}" \
+            env MPIF_STATIC=1 bash "${scripts}/macos-build-mpif.sh" "${mpi}" "${tc}"
+        for run_mpi in ${mpis}; do
+            run "static test ${mpi} ${tc} run-${run_mpi}" \
+                env MPIF_STATIC=1 bash "${scripts}/macos-test-mpif.sh" \
+                    "${mpi}" "${tc}" "${run_mpi}"
+        done
+        run "static consume ${mpi} ${tc}" \
+            env MPIF_STATIC=1 bash "${scripts}/macos-test-consume.sh" "${mpi}" "${tc}"
+    done; done
+}
+
 stages=${*:-all}
 for stage in ${stages}; do
     case ${stage} in
-        mpi | mpif | test | suite | consume | sanitize) "stage_${stage}" ;;
+        mpi | mpif | test | suite | consume | sanitize | static) "stage_${stage}" ;;
         all)
             stage_mpi
             stage_mpif
@@ -102,9 +124,11 @@ for stage in ${stages}; do
             stage_suite
             stage_consume
             stage_sanitize
+            stage_static
             ;;
         *)
-            echo "usage: $(basename "$0") [mpi|mpif|test|suite|consume|sanitize|all ...]" >&2
+            echo "usage: $(basename "$0")" \
+                 "[mpi|mpif|test|suite|consume|sanitize|static|all ...]" >&2
             exit 1
             ;;
     esac

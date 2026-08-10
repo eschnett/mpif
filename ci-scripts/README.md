@@ -11,11 +11,12 @@ and on a laptop.
     ci-scripts/            building and installing an MPI
     ci-scripts/suite/      running MPICH's Fortran test suite against it
 
-(Three of the files here belong to neither: `install-mpi-stubs.sh`,
-`compile-only.sh` and `check-configure-probes.sh` build no MPI and run no
-suite. They are in the cache key, which costs an MPI rebuild when one of them
-changes and is the safe direction; see "Compiling under another compiler"
-below.)
+(Some of the files here belong to neither: `install-mpi-stubs.sh`,
+`compile-only.sh` and `check-configure-probes.sh` build no MPI and run no suite,
+and neither do `check-sanitizer-build.sh` and `check-static-build.sh`, which ask
+whether a build came out the way it was asked for. All of them are in the cache
+key, which costs an MPI rebuild when one of them changes and is the safe
+direction; see "Compiling under another compiler" below.)
 
 The division is not tidiness. Both are expensive -- building an MPI from source
 takes minutes per variant, and building MPICH's suite takes minutes more -- and
@@ -105,6 +106,16 @@ about the answer depends on a libc, so the old-gfortran rows are plain
 containers. It answers only "does configure detect this compiler correctly and
 does the code compile" -- the `mpif`, `suite` and `cross` stages are what
 answer anything about behaviour.
+
+Asking whether a build came out as asked, with no MPI and nothing run:
+
+| file | what it does |
+|------|--------------|
+| `check-sanitizer-build.sh` | read the installed library for undefined `__asan_*`/`__ubsan_*` references. A sanitizer build whose flags never reached the compiler passes every test, which is what a correct one does on clean code, so no test can tell them apart |
+| `check-static-build.sh` | assert that a `-DBUILD_SHARED_LIBS=OFF` prefix holds an archive and no shared library, that `bin/mpif_info` names `libmpi_abi` and not `libmpifort_abi` among its dynamic dependencies, and that every sentinel cell in it is read-only. The last is the one nothing else catches: if `mpif_constants.c`'s member never comes out of the archive the program still works, and silently loses the read-only fault and the poison behind every sentinel translation. See "Static linking" in CODE.md |
+
+Both are called by `scripts/macos-build-mpif.sh` as well as by CI, so a local
+build of either kind is held to the same thing.
 
 Running the suite, in `suite/`:
 

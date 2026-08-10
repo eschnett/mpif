@@ -34,9 +34,12 @@ the others:
     build/consume/<variant>          the consume test      4
 
 `<r>` is the *runtime* MPI: one installed mpif serves both implementations, and
-both pairings are measured. A sanitizer build appends `-sanitize-address` to
-the variant; it gets no `mpi`/`mpi-src` of its own and builds against the
-shared, uninstrumented `build/mpi/mpich-llvm`.
+both pairings are measured. Each optional way of building mpif appends a tag to
+the variant — `-static` for `MPIF_STATIC=1`, `-sanitize-address` for
+`MPIF_SANITIZE=address` — and gets a prefix and build tree of its own, so the
+ordinary build stays available without a rebuild. Neither gets an `mpi`/`mpi-src`
+of its own: both build against the shared, uninstrumented MPI of the same
+variant.
 
 - `rm -rf build` starts over. The ignore rule is `/build*/`, anchored, so a
   stray build tree anywhere else shows up in `git status`.
@@ -146,7 +149,7 @@ pinned to `lo0`, and mpif's own `test/` never spawns.
     bash scripts/macos-test-mpich-suite.sh <mpich|openmpi> <gcc|llvm> [<run-mpi>]
     bash scripts/macos-test-consume.sh <mpich|openmpi> <gcc|llvm>
 
-    bash dev/build-macos-all.sh [mpi|mpif|test|suite|consume|sanitize|all ...]
+    bash dev/build-macos-all.sh [mpi|mpif|test|suite|consume|sanitize|static|all ...]
 
 - The first two arguments name the mpif under test; the optional third names
   the MPI the tests *run* against and defaults to the first. A cross run's
@@ -217,6 +220,17 @@ To run one directory of the suite rather than all of it:
   libsanitizer on macOS, and CMake stops rather than producing an
   uninstrumented build under a sanitizer name). See "Verifying a fix" below
   and "Sanitizer builds" in `CODE.md`.
+- `MPIF_STATIC=1` on the build, test and consume scripts builds
+  `libmpifort_abi.a` instead of a shared library, into a prefix tagged
+  `-static`. Both toolchains can do it. The MPI stays shared. What it is for is
+  that mpif publishes *data* across the language boundary through COMMON blocks,
+  and an archive yields a member only when something references a symbol in it;
+  `scripts/macos-build-mpif.sh` then runs
+  `ci-scripts/check-static-build.sh`, which is the only thing that catches the
+  sentinel half of that going wrong — it fails silently, and
+  `mpif_check_environment` cannot see it. See "Static linking" in `CODE.md`.
+  CI runs one static leg on Linux, so `dev/build-macos-all.sh static` is the
+  Mach-O coverage.
 - `MPIF_ENABLE_CFI=0` on `scripts/macos-build-mpif.sh` forces the
   `ignore_tkr` fallback on a toolchain whose TS 29113 probe would pass —
   how that branch stays testable. It reuses the ordinary prefix rather than

@@ -14,6 +14,12 @@
 #     build/suite/<variant>-run-<r>    the MPICH suite       8
 #     build/consume/<variant>          the consume test      4
 #
+# A variant gains a tag for each optional way of building mpif -- `-static` for
+# MPIF_STATIC, `-sanitize-<what>` for MPIF_SANITIZE -- which names a prefix and a
+# build tree of its own, so an ordinary build stays available without a rebuild.
+# `build/mpi` and `build/mpi-src` never carry a tag: the MPI underneath is the
+# same one.
+#
 # `<r>` is the *runtime* MPI, the third argument, and it defaults to the
 # implementation mpif was built against, so a native run is two arguments and a
 # cross run is three. There are eight of each test because one installed mpif
@@ -121,10 +127,26 @@ if [[ -n ${sanitize} ]]; then
     export UBSAN_OPTIONS=${UBSAN_OPTIONS:-print_stacktrace=1:halt_on_error=1}
 fi
 
+# A static mpif, the other optional variant. `MPIF_STATIC=1` builds
+# libmpifort_abi as an archive instead of a shared library, and the tag keeps it
+# in a prefix of its own -- which is not a convenience: `bin/mpifort` links a
+# bare `-lmpifort_abi`, so an archive and a dylib in one libdir would leave the
+# linker to choose. The MPI underneath stays shared either way; see
+# "Static linking" in CODE.md for why a fully static executable is not what this
+# tests. Both toolchains can do it, unlike the sanitizer.
+#
+#     MPIF_STATIC=1 bash scripts/macos-build-mpif.sh mpich gcc
+#     MPIF_STATIC=1 bash scripts/macos-test-mpif.sh  mpich gcc
+static=${MPIF_STATIC:-}
+static_tag=
+if [[ -n ${static} ]]; then
+    static_tag=-static
+fi
+
 # `tagged` names everything mpif owns, `variant` everything the MPI owns. The
-# distinction is the sanitizer one above and nothing else, so the two are equal
-# for an ordinary build.
-tagged=${variant}${sanitize_tag}
+# distinction is the static and sanitizer tags above and nothing else, so the two
+# are equal for an ordinary build.
+tagged=${variant}${static_tag}${sanitize_tag}
 
 # Keeping the source tree around lets a rebuild skip the download and `autogen`;
 # see ci-scripts/install-${mpi}.sh

@@ -6,6 +6,9 @@
 # Usage: scripts/macos-build-mpif.sh <mpich|openmpi> <gcc|llvm>
 #
 # Environment:
+#   MPIF_STATIC=1  build libmpifort_abi as an archive rather than a shared
+#                  library, into a build tree and prefix of its own. The MPI
+#                  underneath stays shared. See scripts/macos-common.sh.
 #   MPIF_SANITIZE  build with these sanitizers (`address`, or a list such as
 #                  `address,undefined`) into a build tree and prefix of their
 #                  own, leaving the ordinary build alone. See
@@ -48,10 +51,15 @@ if ! abi_check=$("${repodir}/ci-scripts/check-mpi-install.sh" "${mpi_prefix}" 2>
 fi
 
 rm -rf "${build}" "${mpif_prefix}"
+if [[ -n ${static} ]]; then
+    shared_libs=OFF
+else
+    shared_libs=ON
+fi
 cmake \
     -S "${repodir}" \
     -B "${build}" \
-    -DBUILD_SHARED_LIBS=ON \
+    -DBUILD_SHARED_LIBS="${shared_libs}" \
     -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_C_COMPILER="${CC}" \
     -DCMAKE_Fortran_COMPILER="${FC}" \
@@ -68,9 +76,15 @@ if [[ -n ${sanitize} ]]; then
     bash "${repodir}/ci-scripts/check-sanitizer-build.sh" "${mpif_prefix}"
 fi
 
+# Same shape of silent failure: a static build that also left a shared library in
+# the prefix would have every test link the shared one and pass.
+if [[ -n ${static} ]]; then
+    bash "${repodir}/ci-scripts/check-static-build.sh" "${mpif_prefix}"
+fi
+
 # Last, after the sanitizer check, so the marker means the whole stage finished.
 # The MPI's own marker line goes in it because a reinstall at the same path can
 # change what libmpi_abi's install name says while the path itself is unchanged,
 # and then this mpif is stale without any path having moved.
-write_marker "${mpif_prefix}" "mpif: ${mpi}, ${toolchain}${sanitize:+, sanitize=${sanitize}}" \
+write_marker "${mpif_prefix}" "mpif: ${mpi}, ${toolchain}${static:+, static}${sanitize:+, sanitize=${sanitize}}" \
     "mpi      build/mpi/${variant} $(sed -n 2p "${mpi_prefix}/install-complete")"

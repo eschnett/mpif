@@ -784,6 +784,146 @@ jobs:
               done
           done
 
+  # mpif built as an archive rather than a shared library, and linked into
+  # executables both ways a consumer can reach it.
+  #
+  # What this is for: the two arrangements that publish *data* across the language
+  # boundary depend on an archive yielding a member, and a member comes out only
+  # when something references a symbol in it. The sentinel cells of
+  # src/mpif_constants.c are referenced from gen/mpif_functions.c, and
+  # src/mpif_logical.F90's BLOCK DATA from src/mpif_logical.c, so both are reached
+  # transitively -- see "Static linking" in CODE.md, which also records what was
+  # measured about each. Neither chain is declared anywhere, so a check is what
+  # keeps them true, and check-static-build.sh is that check: the sentinel half
+  # fails *silently* if it ever breaks, translation still working while the cells
+  # lose the read-only fault and the poison behind it.
+  #
+  # One leg, no matrix, and on Linux: GNU ld is the linker that reports symbol
+  # size and alignment mismatches at all -- macOS's says nothing, which is what
+  # made a uniform cell size cost 1516 warnings before a container found them
+  # (HISTORY.md) -- and merging a consumer's COMMON onto archive members is a path
+  # nothing else here exercises. macOS/Mach-O is covered locally instead, by
+  # `dev/build-macos-all.sh static` over all four variants. `mpi` rather than
+  # `mpif` in `needs:` because this builds an mpif of its own, like `sanitize`.
+  static:
+    name: static
+    runs-on: ubuntu-24.04
+    needs: mpi
+    if: ${{ !cancelled() }}
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # Before the toolchain, as everywhere else: unpacking and checking an MPI
+      # prefix needs no compiler.
+      - name: Restore the MPI prefix
+        uses: ./.github/actions/restore-prefix
+        with:
+          name: mpi-mpich-gcc-ubuntu-24.04
+
+      - name: Set up the toolchain
+        uses: ./.github/actions/setup-toolchain
+        with:
+          toolchain: gcc
+
+      - name: Set up paths
+        run: |
+          # Set here and not in the job's `env:`, which cannot see the
+          # `runner` context -- the same reason the `mpi` job has a "Set up
+          # paths" step.
+          echo "MPI_PREFIX=${RUNNER_TEMP}/opt/mpi-mpich" >>"${GITHUB_ENV}"
+          echo "MPIF_PREFIX=${RUNNER_TEMP}/opt/mpif-mpich-static" >>"${GITHUB_ENV}"
+          echo "LD_LIBRARY_PATH=${RUNNER_TEMP}/opt/mpi-mpich/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}" >>"${GITHUB_ENV}"
+
+      - name: Check the MPI installation
+        run: ci-scripts/check-mpi-install.sh "${MPI_PREFIX}"
+
+      # A prefix of its own, and not only for tidiness: `bin/mpifort` links a bare
+      # `-lmpifort_abi`, so an archive and a shared library in one libdir would
+      # leave the linker to choose -- and it would choose the shared one, quietly
+      # turning this job back into the `mpif` job.
+      - name: Configure, build, and install mpif as a static library
+        run: |
+          cmake \
+              -Bbuild-static \
+              -DBUILD_SHARED_LIBS=OFF \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_C_COMPILER="${CC}" \
+              -DCMAKE_Fortran_COMPILER="${FC}" \
+              -DCMAKE_INSTALL_PREFIX="${MPIF_PREFIX}" \
+              -DMPI_HOME="${MPI_PREFIX}"
+          cmake --build build-static --parallel
+          cmake --install build-static
+
+      # The archive exists, nothing shared sits beside it, the installed
+      # executable does not name libmpifort_abi among its dynamic dependencies but
+      # does name libmpi_abi, and every sentinel cell in it is read-only. The last
+      # is the one nothing else can see: mpif_check_environment compares the
+      # Fortran sentinel's address against the cell, and those are one symbol
+      # whichever definition won, so it passes either way.
+      - name: Check that the library is really static
+        run: ci-scripts/check-static-build.sh "${MPIF_PREFIX}"
+
+      # Route one: FindMPI queries bin/mpifort, so the link line is the wrapper's
+      # own `-lmpifort_abi`.
+      - name: Build and run test/ against the static mpif
+        run: |
+          cmake \
+              -Stest \
+              -Bbuild-static-tests \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_C_COMPILER="${CC}" \
+              -DCMAKE_Fortran_COMPILER="${FC}" \
+              -DMPI_C_COMPILER="${MPI_PREFIX}/bin/mpicc" \
+              -DMPI_Fortran_COMPILER="${MPIF_PREFIX}/bin/mpifort" \
+              -DMPI_C_HEADER_DIR="${MPI_PREFIX}/include" \
+              -DMPI_C_LIB_NAMES=mpi_abi \
+              -DMPI_mpi_abi_LIBRARY="${MPI_PREFIX}/lib/libmpi_abi.so" \
+              -DMPIEXEC_EXECUTABLE="${MPI_PREFIX}/bin/mpiexec" \
+              -DMPIF_TEST_MPI_LIBRARY=MPICH \
+              -DMPIF_TEST_STATIC_MPIF=ON
+          cmake --build build-static-tests --parallel
+          ctest --test-dir build-static-tests --output-on-failure
+
+      # Route two, and the reason it is here rather than only in the local stage:
+      # test-consume/ reaches the archive through find_package(mpif) and the
+      # imported target mpif::mpifort_abi, which names the file by full path and
+      # never goes near the wrapper. A static build could work through one route
+      # and not the other. This is also the only CI coverage test-consume/ has.
+      - name: Build and run the consume test against the static mpif
+        run: |
+          cmake \
+              -Stest-consume \
+              -Bbuild-static-consume \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_Fortran_COMPILER="${FC}" \
+              -DCMAKE_PREFIX_PATH="${MPIF_PREFIX};${MPI_PREFIX}" \
+              -DMPI_C_COMPILER="${MPI_PREFIX}/bin/mpicc" \
+              -DMPI_C_HEADER_DIR="${MPI_PREFIX}/include" \
+              -DMPI_C_LIB_NAMES=mpi_abi \
+              -DMPI_mpi_abi_LIBRARY="${MPI_PREFIX}/lib/libmpi_abi.so"
+          cmake --build build-static-consume --parallel
+          ctest --test-dir build-static-consume --output-on-failure
+
+      # FindMPI suppresses the compile and link output of its own probes -- a
+      # bare "missing: MPI_Fortran_WORKS" is all the console gets -- and the
+      # detail goes here. The `mpif` and `sanitize` jobs carry the same step.
+      - name: Show CMake's check logs
+        if: failure()
+        run: |
+          for dir in build-static build-static-tests build-static-consume; do
+              for log in "${dir}"/CMakeFiles/CMakeConfigureLog.yaml \
+                         "${dir}"/CMakeFiles/CMakeError.log; do
+                  if [[ -f ${log} ]]; then
+                      echo "::group::${log}"
+                      cat "${log}"
+                      echo "::endgroup::"
+                  fi
+              done
+          done
+
   # The two mpif installations must not depend on the MPI they were built
   # against. The headers and modules must be identical outright. The library must
   # export and reference exactly the same symbols -- it links no MPI, so there is

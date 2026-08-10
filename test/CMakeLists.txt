@@ -56,6 +56,29 @@ enable_testing()
 option(MPIF_TEST_BUILD_ONLY
   "Build the tests but register none with CTest; for an MPI that cannot run" OFF)
 
+# Say that mpif is an archive, in which case the two tests that replace one of its
+# entry points with their own cannot be built at all.
+#
+# Unlike MPIF_TEST_BUILD_ONLY this skips *target creation*, not registration, and
+# has to: the failure is at link time. A user object defining `mpi_barrier_`
+# interposes on a shared library at load time, which is what makes
+# profile_f90.f90 and profile_f08.f90 work; against an archive the linker instead
+# sees two definitions, because the member holding `mpi_barrier_` holds every
+# other wrapper too and the link needs it for those. It says so:
+#
+#     duplicate symbol '_mpi_barrier_f08_' in:
+#         CMakeFiles/profile_f08.dir/profile_f08.f90.o
+#         libmpifort_abi.a[28](mpif_f08_wrappers.F90.o)
+#
+# MPI-5.0 section 15.2.1 is what that fails: (2) unreplaced functions must "still
+# be linked into an executable image without causing name clashes", and (4) a
+# layered binding's wrappers must be "separable from the rest of the library ...
+# at least with Unix linker semantics". Both hold for a shared mpif and neither
+# for the archive; MISSING.md "What the static build deliberately does not do"
+# records the decision not to make gen/ one object per routine.
+option(MPIF_TEST_STATIC_MPIF
+  "mpif is a static archive; skip the tests that need symbol interposition" OFF)
+
 # Most of these tests are single-rank and run the executable directly. NPROCS
 # asks for more, which needs mpiexec.
 #
@@ -185,8 +208,11 @@ add_mpi_test(dist_graph_weights     SOURCES dist_graph_weights.f90              
 add_mpi_test(pmpi_f                 SOURCES pmpi_f.f                                LIBS MPI::MPI_Fortran)
 add_mpi_test(pmpi_f90               SOURCES pmpi_f90.f90                            LIBS MPI::MPI_Fortran)
 add_mpi_test(pmpi_f08               SOURCES pmpi_f08.f90                            LIBS MPI::MPI_Fortran)
-add_mpi_test(profile_f90            SOURCES profile_f90.f90                         LIBS MPI::MPI_Fortran)
-add_mpi_test(profile_f08            SOURCES profile_f08.f90                         LIBS MPI::MPI_Fortran)
+# Interposition, so not against an archive; see MPIF_TEST_STATIC_MPIF above.
+if(NOT MPIF_TEST_STATIC_MPIF)
+  add_mpi_test(profile_f90          SOURCES profile_f90.f90                         LIBS MPI::MPI_Fortran)
+  add_mpi_test(profile_f08          SOURCES profile_f08.f90                         LIBS MPI::MPI_Fortran)
+endif()
 
 # The alltoallw family, whose handle arrays are the one place mpif has to work
 # out for itself how many entries there are. Multi-rank on purpose: at one rank
