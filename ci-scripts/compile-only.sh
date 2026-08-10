@@ -114,7 +114,17 @@ run_branch() {
         -DMPI_Fortran_COMPILER="${prefix}/bin/mpifort" \
         -DMPIF_TEST_BUILD_ONLY=ON \
         -DMPIF_TEST_EXPECT_SUBARRAYS="${expect_subarrays}"
-    cmake --build "${testbuild}" --parallel "${jobs}"
+    # On failure, once more with make's keep-going, purely to enumerate. `make`
+    # stops at the first broken target, and with ~80 independent programs the
+    # difference between "one test does not compile" and "none of them do" is
+    # the whole diagnosis -- learning it otherwise costs another CI run, which
+    # is what ifx's internal compiler error cost. The retry's own status is
+    # ignored; the failure has already been recorded.
+    if ! cmake --build "${testbuild}" --parallel "${jobs}"; then
+        echo "=== test/ (${branch}): every target that fails ==="
+        cmake --build "${testbuild}" --parallel "${jobs}" -- -k || true
+        return 1
+    fi
 }
 
 status=0

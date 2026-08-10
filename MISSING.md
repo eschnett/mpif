@@ -180,23 +180,30 @@ the first failing target, and `MPI_BOTTOM`'s test never got its turn. Not
 gating. A minimal reproducer is what an Intel report needs and is not written
 yet.
 
-### `nvfortran` does not diagnose an ambiguous generic interface
+### `nvfortran` does not diagnose an ambiguous generic interface — worked around
 
 `nvfortran` 26.5 compiles a generic over two specifics that differ only in one
-argument's kind, where the two kinds are the same. Which is exactly the shape
-of the `MPIF_ADDRESS_KIND_DIFFERS_FROM_*` probes, so on a 64-bit platform it
-answers *yes* to both — impossible, `MPI_ADDRESS_KIND` being 8 there, equal to
-`MPI_COUNT_KIND` and unequal to the default integer kind. ifx diagnoses the
-same source correctly ("error #5286: Ambiguous generic interface").
+argument's kind, where the two kinds are the same. `ifx` diagnoses the same
+source correctly ("error #5286: Ambiguous generic interface").
 
-Left as it stands. The probe is deliberately the ambiguity itself, so that it
-is the very rule the compiler will apply to the generated code
-(`CMakeLists.txt`, "Each probe is the ambiguity itself"), and a compiler that
-gets the rule wrong would build an `mpi_f08` whose four extent routines have
-generics that duplicate specifics already there — resolved by something other
-than the standard's rule, or not at all. `ci-scripts/check-configure-probes.sh`
-refuses to go on, which is the answer wanted: the `nvfortran` row is red and
-not gating, rather than green and wrong.
+That used to be the shape of the `MPIF_ADDRESS_KIND_DIFFERS_FROM_*` probes, so
+`nvfortran` answered *yes* to both — impossible on a 64-bit platform, where
+`MPI_ADDRESS_KIND` is 8, equal to `MPI_COUNT_KIND` and unequal to the default
+integer kind — and the library would have been built with four extent routines
+carrying generics that duplicate specifics already there.
+
+The guards now compare the kind values, which is the standard's own rule for
+whether two specifics are distinguishable and needs nothing from the compiler
+beyond arithmetic on `kind(loc(dummy))` and `selected_int_kind(18)` — the very
+expressions `include/mpif_constants.h` defines the two kinds by. The ambiguity
+question is still asked, under
+`MPIF_GENERIC_DISTINGUISHES_ADDRESS_FROM_{INTEGER,COUNT}`, and reported rather
+than enforced: mpif emits what the standard permits, so the generated code is
+right either way, and following the compiler instead would mean emitting an
+ambiguous generic on purpose.
+
+Not gating until a run is green — the guards being right only gets `nvfortran`
+past configure, and what it does with the rest of the library is unmeasured.
 
 ### `nvfortran` accepts kind specifiers it does not implement — probes tightened
 

@@ -187,11 +187,55 @@ endif()
 # committed file compiled on both, so it asks here rather than at generation
 # time; see the guards in dev/mpiapi.jl.
 #
-# Each probe is the ambiguity itself: a generic over two specifics differing
-# only in the kind of one argument, which compiles if and only if the two kinds
-# differ. `loc` needs the same flags the library is built with.
+# The guards ask the kinds directly: `kind(loc(dummy))` and
+# `selected_int_kind(18)` are what include/mpif_constants.h defines
+# MPI_ADDRESS_KIND and MPI_COUNT_KIND to be, so comparing them here is the
+# standard's own rule for whether the two specifics are distinguishable. A
+# probe that instead *is* the ambiguity -- a generic over two specifics
+# differing only in one argument's kind, which compiles if and only if the
+# kinds differ -- was what these used to be, and it is one indirection too
+# many: nvfortran 26.5 does not diagnose the ambiguity, so it answered yes to
+# both guards, which on a 64-bit platform cannot both be true, and the library
+# would have been built with four extent routines carrying generics that
+# duplicate specifics already there. See MISSING.md.
+#
+# The ambiguity question is still worth asking, and is asked below under its own
+# name, reported and not fatal: where a compiler disagrees with the rule the
+# standard states, it is the compiler that is wrong, and mpif has nothing to
+# gain by following it into emitting an ambiguous generic.
+#
+# `loc` needs the same flags the library is built with. Each probe forces its
+# own failure by naming kind -1, which no compiler accepts.
 set(saved_CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS}")
 set(CMAKE_REQUIRED_FLAGS "${MPIF_Fortran_FLAGS_STR}")
+check_fortran_source_compiles(
+  "
+  program test
+    integer :: dummy
+    integer, parameter :: address_kind = kind(loc(dummy))
+    integer(merge(1, -1, address_kind /= kind(1))) :: differs
+  end
+  "
+  MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+  SRC_EXT f90
+)
+check_fortran_source_compiles(
+  "
+  program test
+    integer :: dummy
+    integer, parameter :: address_kind = kind(loc(dummy))
+    integer, parameter :: count_kind = selected_int_kind(18)
+    integer(merge(1, -1, address_kind /= count_kind)) :: differs
+  end
+  "
+  MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+  SRC_EXT f90
+)
+
+# Whether the compiler applies the standard's rule to the generics the guards
+# above decide to emit. Informational: a disagreement is a compiler defect, and
+# ci-scripts/check-configure-probes.sh reports it beside the guard it disagrees
+# with.
 check_fortran_source_compiles(
   "
   module probe
@@ -212,7 +256,7 @@ check_fortran_source_compiles(
   end module probe
   end
   "
-  MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
+  MPIF_GENERIC_DISTINGUISHES_ADDRESS_FROM_INTEGER
   SRC_EXT f90
 )
 check_fortran_source_compiles(
@@ -236,7 +280,7 @@ check_fortran_source_compiles(
   end module probe
   end
   "
-  MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+  MPIF_GENERIC_DISTINGUISHES_ADDRESS_FROM_COUNT
   SRC_EXT f90
 )
 set(CMAKE_REQUIRED_FLAGS "${saved_CMAKE_REQUIRED_FLAGS}")

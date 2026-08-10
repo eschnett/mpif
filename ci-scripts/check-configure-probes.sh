@@ -79,9 +79,12 @@ report Fortran_flag_allow_argument_mismatch
 report Fortran_flag_cray_pointer
 report HAVE_Fortran_cray_pointer
 
-# The large-count generics that are legal on only one width.
+# The large-count generics that are legal on only one width, and whether the
+# compiler agrees with the rule that decided them.
 report MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND
 report MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND
+report MPIF_GENERIC_DISTINGUISHES_ADDRESS_FROM_INTEGER
+report MPIF_GENERIC_DISTINGUISHES_ADDRESS_FROM_COUNT
 
 # TS 29113 choice buffers -- the one probe whose answer changes which code
 # exists. MPIF_CFI_HEADER says whether cmake/cfi-include-dir.cmake had to find
@@ -127,6 +130,25 @@ if [[ ${integer_differs} != "${want_integer}" || ${count_differs} != "${want_cou
          "reason reports the same 'no' as one where the kinds agree." >&2
     status=1
 fi
+
+# A compiler that resolves generics by some rule other than the standard's is
+# reported and not refused: mpif emits what the standard says is legal, so the
+# generated code is right either way, and following the compiler instead would
+# mean emitting an ambiguous generic. nvfortran 26.5 is the measured case; see
+# MISSING.md. Named as a defect rather than left to be read off two lines.
+for pair in INTEGER:MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND \
+            COUNT:MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND; do
+    which=${pair%%:*}
+    guard=${pair#*:}
+    agrees=MPIF_GENERIC_DISTINGUISHES_ADDRESS_FROM_${which}
+    if is_true "${guard}"; then want=yes; else want=no; fi
+    if is_true "${agrees}"; then got=yes; else got=no; fi
+    if [[ ${want} != "${got}" ]]; then
+        echo "note: this compiler resolves generics by its own rule:" \
+             "${guard} is ${want}, but it says a generic over the two" \
+             "specifics is ${got}. mpif follows the standard. Not fatal."
+    fi
+done
 
 # -DMPIF_ENABLE_CFI=OFF is how the fallback branch stays testable; a build that
 # asked for it and got the TS branch anyway is testing the wrong one.

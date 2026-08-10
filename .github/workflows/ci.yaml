@@ -59,14 +59,15 @@ jobs:
   # The two that report rather than gate are both compiler defects with nothing
   # for mpif to change; each is measured and written up.
   #
-  # The gfortran rows are the official `gcc:<n>` images rather than a Debian
+  # The gfortran row is an official `gcc:<n>` image rather than a Debian
   # release, so the image name is the compiler version with nothing to look up;
-  # they carry git and curl but no CMake, which the step below fetches. 8 is the
-  # floor MISSING.md's "bind(C)" gives (before it, hidden character lengths were
-  # `int`), and 13 and 15 are already covered by `build`. gfortran 7 and 10 and
-  # 11 were measured once locally and compile too -- 7 included, which is why it
-  # is not a row here: it would report a green that says nothing, the hidden
-  # length convention being invisible to a stage that compiles and does not run.
+  # it carries git and curl but no CMake, which the step below fetches. One
+  # version standing for the old ones: 7 through 12 were each measured locally
+  # and all compile mpif, both branches, and 13 and 15 are covered by `build`.
+  # 7 compiling is why the floor is not a row -- it is the ABI floor in
+  # MISSING.md's "bind(C)" (hidden character lengths were `int` before 8), which
+  # a stage that compiles and does not run cannot see, so a green there would
+  # say nothing.
   #
   # The three vendor rows are x86-64 only, and use each vendor's own C compiler
   # beside its Fortran one, which is both what their users do and the case where
@@ -82,14 +83,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: gfortran-8
-            container: gcc:8
-            report_only: false
           - name: gfortran-9
             container: gcc:9
-            report_only: false
-          - name: gfortran-12
-            container: gcc:12
             report_only: false
           - name: amdflang
             container: ""
@@ -101,8 +96,9 @@ jobs:
             container: ""
             report_only: true
           # MISSING.md "`nvfortran` does not diagnose an ambiguous generic
-          # interface": it answers yes to both address-kind probes, which
-          # cannot both be true, and check-configure-probes.sh stops there.
+          # interface": worked around, the guards now comparing kind values, so
+          # this gets past configure. What it does with the library is what this
+          # row is now measuring.
           - name: nvfortran
             container: ""
             report_only: true
