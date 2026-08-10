@@ -810,7 +810,8 @@ decision recorded on filing it.
 
 `-DBUILD_SHARED_LIBS=OFF` builds `libmpifort_abi.a`, CI's `static` job runs
 `test/` and `test-consume/` against one, and `CODE.md` "Static linking" has the
-mechanism. Eight things left undone, each on purpose:
+mechanism. What is left undone below is left undone on purpose, each with its
+reason:
 
 - **The `PMPI_` wrappers are not separable, and are not meant to be.**
   `MPIF_SPLIT_WRAPPERS` gives every `MPI_` entry point an archive member of its
@@ -867,17 +868,17 @@ mechanism. Eight things left undone, each on purpose:
   archive anywhere; `ci-scripts/compile-only.sh` was left alone because what it
   would add is a second link of the same objects, and the failure this is about
   is not a compile failure.
-- **The MPICH suite has never run against a static mpif, and cannot gate on one
-  yet.** Its f77, f90 and f08 `profile` directories each replace `mpi_send` and
-  `mpi_recv` with the test's own, so all three fail to link against an archive for
-  the reason above; all three pass today and none is in
-  `ci-scripts/suite/mpich-suite-xfail.txt`. The blocker is that list's variant
-  key, `<mpi>/<toolchain>/<os>/<os-version>/<arch>`, which has nowhere to say
-  "static" — every component is detected, and a static build's `mpifort` reports
-  the same toolchain as a shared one's. So the static docker image runs the suite
-  and stops there, deliberately, rather than the suite being dropped from it:
-  the stage is where the work will start, and an image that skipped it would hide
-  the gap instead of naming it.
+- **A static suite run is gated against the shared rows, and that is left alone.**
+  The variant key `<mpi>/<toolchain>/<os>/<os-version>/<arch>` has nowhere to say
+  "static": every component is detected, and a static build's `mpifort` reports
+  the same toolchain as a shared one's. So
+  `docker/mpich-gcc-static-arm64v8.dockerfile`'s suite stage is compared against
+  `mpich/gcc/linux/26.04/aarch64`, the same rows the shared image uses. Measured
+  and left that way rather than given a key of its own, because the two agreeing
+  is the claim worth making: an archive should not change which of MPICH's tests
+  pass. A static run on `mpich/gcc/darwin/26/arm64` reports no differences from
+  that variant's rows, the three `profile` tests among the passes. Should the two
+  ever diverge, the key is where the work would go.
 - **`mpif_check_environment` cannot see a lost cell member, and is not being
   taught to.** With `src/mpif_constants.c`'s member absent from the archive the
   consumer's own COMMON blocks become the definitions, C and Fortran still

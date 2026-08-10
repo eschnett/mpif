@@ -166,12 +166,17 @@ against one expected-failure list; see MISSING.md "MPICH is built from `main`".
   in the consumer, since every path baked into a prefix names it, and that an
   mpif prefix's Fortran compiler is the consumer's, since module files are
   compiler-version-specific and producer and consumer are no longer one job.
-- `docker/*.dockerfile` -- seven Linux variants, not a cross product. arm64v8
-  carries the full four (MPICH and Open MPI, gcc and flang); amd64 carries
-  Open MPI with gcc alone; nothing records why the other three are missing
-  there, so do not read the gap as a decision. The other two are the 32-bit
-  ABIs: the i386 that CI runs in a container, and the arm32v7 that CI has no
-  runner for and that qemu makes too slow to run per push. Both 32-bit ones are
-  MPICH-only, Open MPI having dropped 32-bit environments.
+- `docker/*.dockerfile` -- Linux variants, not a cross product. arm64v8 carries
+  the full four (MPICH and Open MPI, gcc and flang); amd64 carries Open MPI with
+  gcc alone; nothing records why the other three are missing there, so do not
+  read the gap as a decision. Two are the 32-bit ABIs: the i386 that CI runs in
+  a container, and the arm32v7 that CI has no runner for and that qemu makes too
+  slow to run per push. Both 32-bit ones are MPICH-only, Open MPI having dropped
+  32-bit environments. The last is `mpich-gcc-static-arm64v8`, which is
+  `mpich-gcc-arm64v8` with `-DBUILD_SHARED_LIBS=OFF` and nothing else changed, so
+  that a difference between the two is a difference static linking made. It is
+  the only place the MPICH suite runs against an archive, which is what exercises
+  the separable members of `split-wrappers.sh` at the granularity the suite's
+  three `profile` tests need.
 - `scripts/macos-*.sh` -- the same recipes locally; see "Working on this" in
   MISSING.md.

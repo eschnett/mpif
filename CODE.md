@@ -249,7 +249,19 @@ on purpose — `scripts/macos-build-mpif.sh` passes `MPIF_SPLIT_WRAPPERS` throug
   through `PMPI_`. They run under a static build as under a shared one — 78 tests
   either way. Build a static mpif with `MPIF_SPLIT_WRAPPERS=OFF` and both stop
   linking, on `duplicate symbol '_mpi_comm_rank_'` and `'_mpi_barrier_'` and on
-  `'_mpi_comm_rank_f08_'` and `'_mpi_barrier_f08_'` respectively; measured.
+  `'_mpi_barrier_f08_'` and `'_mpi_comm_rank_f08_'` respectively; measured.
+  MPICH's suite covers the same ground independently, its `f77/profile`,
+  `f90/profile` and `f08/profile` directories replacing `mpi_send` and `mpi_recv`;
+  a static run on `mpich/gcc/darwin/26/arm64` reports no differences from that
+  variant's rows of `mpich-suite-xfail.txt`, those three among the passes.
+  `docker/mpich-gcc-static-arm64v8.dockerfile` is where that runs by itself.
+- **What the granularity actually is**, measured on the `mpich-gcc` archive:
+  1186 members define exactly one `MPI_` entry point, one defines 273
+  (`mpi_*_cdesc`), one defines fourteen (the predefined callbacks) and 29 define
+  none. Each replaceable symbol is alone in its member *and* has no `PMPI_`
+  symbol beside it — which is the part that matters, since a profiling wrapper
+  reaches the real routine through `PMPI_` and would otherwise pull in the very
+  `MPI_` definition it is replacing.
 - **Two families are deliberately left together**: `gen/mpif_f08_cdesc.c`'s
   `mpi_*_cdesc`, which are names mpif invented and nothing replaces, and
   `src/mpif_attr_fns.F90`'s fourteen predefined callbacks, which A.1.1 makes
