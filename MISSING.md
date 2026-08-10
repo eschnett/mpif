@@ -163,15 +163,22 @@ then dies building `test/inplace_f08.f90`:
     abort** Please report this error along with the circumstances in which it
     occurred in a Software Problem Report.
 
-Line 14 is `MPI_Allreduce(MPI_IN_PLACE, sum, ...)` — the first place a
-sentinel, which is a Cray pointee (`include/mpif_constants.h`), reaches a
-`TYPE(*), DIMENSION(..)` dummy. A compiler defect, and nothing mpif can spell
-differently: the sentinel and the assumed-rank dummy are each what the standard
-asks for.
+Line 14 is `MPI_Allreduce(MPI_IN_PLACE, sum, ...)`, the first place a sentinel —
+a Cray pointee, `include/mpif_constants.h` — is passed to an `mpi_f08` choice
+buffer.
 
-Whether `-DMPIF_ENABLE_CFI=OFF` gets `ifx` through is what says the defect is
-confined to that path; `ci-scripts/compile-only.sh` now runs both branches
-whatever the first one does, so a run answers it. Not gating meanwhile.
+**Both branches, same line, same abort.** `-DMPIF_ENABLE_CFI=OFF` fails
+identically, so the trigger is the Cray pointee reaching a choice buffer and
+not the assumed-rank mechanism: `TYPE(*), DIMENSION(..)` and `integer :: buf(*)`
+under `ignore_tkr` abort alike. The library itself compiles and installs both
+ways; only a caller passing a sentinel fails.
+
+A compiler defect with nothing for mpif to spell differently — the sentinel and
+the choice-buffer dummy are each what the standard asks for. Whether it is
+`MPI_IN_PLACE` in particular or any sentinel is not known: the build stops at
+the first failing target, and `MPI_BOTTOM`'s test never got its turn. Not
+gating. A minimal reproducer is what an Intel report needs and is not written
+yet.
 
 ### `nvfortran` does not diagnose an ambiguous generic interface
 

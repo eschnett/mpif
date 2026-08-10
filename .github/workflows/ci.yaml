@@ -55,10 +55,11 @@ jobs:
   # can be plain containers, because nothing has to match the runner's libc.
   #
   # Every row builds both halves of the CFI decision; ci-scripts/compile-only.sh
-  # says why. And every row is `continue-on-error`, so a compiler that cannot
-  # build mpif is reported rather than blocking the branch: the same rule
-  # CLAUDE.md states for an untriaged suite variant. Promote a row once it has
-  # been green, and record what stopped one in MISSING.md.
+  # says why. A row gates once it has been green, and until then is
+  # `report_only` with the reason beside it and an entry in MISSING.md -- the
+  # rule CLAUDE.md states for an untriaged suite variant, applied to a compiler.
+  # The two that report rather than gate are both compiler defects with nothing
+  # for mpif to change; each is measured and written up.
   #
   # The gfortran rows are the official `gcc:<n>` images rather than a Debian
   # release, so the image name is the compiler version with nothing to look up;
@@ -76,7 +77,7 @@ jobs:
     name: compile / ${{ matrix.name }}
     runs-on: ubuntu-24.04
     container: ${{ matrix.container }}
-    continue-on-error: true
+    continue-on-error: ${{ matrix.report_only }}
     timeout-minutes: 60
 
     strategy:
@@ -85,16 +86,28 @@ jobs:
         include:
           - name: gfortran-8
             container: gcc:8
+            report_only: false
           - name: gfortran-9
             container: gcc:9
+            report_only: false
           - name: gfortran-12
             container: gcc:12
-          - name: ifx
-            container: ""
-          - name: nvfortran
-            container: ""
+            report_only: false
           - name: amdflang
             container: ""
+            report_only: false
+          # MISSING.md "`ifx` aborts on a sentinel passed as an assumed-rank
+          # actual": an internal compiler error on both branches, at the first
+          # sentinel reaching a choice buffer. The library itself builds.
+          - name: ifx
+            container: ""
+            report_only: true
+          # MISSING.md "`nvfortran` does not diagnose an ambiguous generic
+          # interface": it answers yes to both address-kind probes, which
+          # cannot both be true, and check-configure-probes.sh stops there.
+          - name: nvfortran
+            container: ""
+            report_only: true
 
     steps:
       - name: Checkout repository
