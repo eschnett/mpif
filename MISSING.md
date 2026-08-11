@@ -873,12 +873,14 @@ reason:
   "static": every component is detected, and a static build's `mpifort` reports
   the same toolchain as a shared one's. So
   `docker/mpich-gcc-static-arm64v8.dockerfile`'s suite stage is compared against
-  `mpich/gcc/linux/26.04/aarch64`, the same rows the shared image uses. Measured
-  and left that way rather than given a key of its own, because the two agreeing
-  is the claim worth making: an archive should not change which of MPICH's tests
-  pass. A static run on `mpich/gcc/darwin/26/arm64` reports no differences from
-  that variant's rows, the three `profile` tests among the passes. Should the two
-  ever diverge, the key is where the work would go.
+  `mpich/gcc/linux/26.04/aarch64`, the same rows the shared image uses. Left that
+  way rather than given a key of its own, because the two agreeing is the claim
+  worth making: an archive should not change which of MPICH's tests pass. Measured
+  — the image's own suite stage reports `no differences: every failure is expected
+  and every expectation held` against those rows, 16 expected failures over 363
+  tests in the three interfaces, the three `profile` tests among the passes; a
+  static run on `mpich/gcc/darwin/26/arm64` says the same of its own rows. Should
+  the two ever diverge, the key is where the work would go.
 - **`mpif_check_environment` cannot see a lost cell member, and is not being
   taught to.** With `src/mpif_constants.c`'s member absent from the archive the
   consumer's own COMMON blocks become the definitions, C and Fortran still

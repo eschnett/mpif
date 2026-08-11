@@ -251,10 +251,12 @@ on purpose — `scripts/macos-build-mpif.sh` passes `MPIF_SPLIT_WRAPPERS` throug
   linking, on `duplicate symbol '_mpi_comm_rank_'` and `'_mpi_barrier_'` and on
   `'_mpi_barrier_f08_'` and `'_mpi_comm_rank_f08_'` respectively; measured.
   MPICH's suite covers the same ground independently, its `f77/profile`,
-  `f90/profile` and `f08/profile` directories replacing `mpi_send` and `mpi_recv`;
-  a static run on `mpich/gcc/darwin/26/arm64` reports no differences from that
-  variant's rows of `mpich-suite-xfail.txt`, those three among the passes.
-  `docker/mpich-gcc-static-arm64v8.dockerfile` is where that runs by itself.
+  `f90/profile` and `f08/profile` directories replacing `mpi_send` and `mpi_recv`.
+  `docker/mpich-gcc-static-arm64v8.dockerfile` runs it against an archive and is
+  the only thing that does: its stage reports no differences from
+  `mpich/gcc/linux/26.04/aarch64`'s rows of `mpich-suite-xfail.txt`, those three
+  among the passes, and a static run here says the same of
+  `mpich/gcc/darwin/26/arm64`.
 - **What the granularity actually is**, measured on the `mpich-gcc` archive:
   1186 members define exactly one `MPI_` entry point, one defines 273
   (`mpi_*_cdesc`), one defines fourteen (the predefined callbacks) and 29 define
