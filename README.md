@@ -60,7 +60,10 @@ implementation actually loads is decided by the dynamic loader:
 
   (`DYLD_LIBRARY_PATH` on macOS.)
 - At link time, choose a different default with
-  `MPIF_MPI_PREFIX=<other-prefix> mpifort ...`.
+  `MPIF_MPI_PREFIX=<other-prefix> mpifort ...`. That assumes the other MPI's
+  libraries sit in the same place under its prefix as the build-time MPI's do;
+  `MPIF_MPI_LIBDIR=<other-libdir>` names the directory outright when they do
+  not.
 
 The installed `mpif_info` binary verifies a setup: it prints the pathname of
 the `libmpi_abi` file the loader actually resolved, the implementation's own

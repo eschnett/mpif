@@ -75,6 +75,30 @@ if(NOT MPIF_MPI_ABI_LIBRARY)
   message(FATAL_ERROR "MPI_C_LIBRARIES (${MPI_C_LIBRARIES}) names no libmpi_abi;"
     " mpif requires an MPI that implements the standard ABI")
 endif()
+# Where that library lives, which is *not* $MPIF_MPI_PREFIX/lib: an MPI packaged
+# by a distribution that uses lib64, or configured with --libdir, puts it
+# somewhere else, and the wrapper's -L and mpif_info's rpath both have to name
+# the real directory. It comes from the ABI library's own path rather than from
+# _mpif_mpi_libdir above, because that one is computed only when MPI_HOME is
+# unset -- ci-scripts/compile-only.sh passes MPI_HOME and never reaches it.
+get_filename_component(MPIF_MPI_LIBDIR "${MPIF_MPI_ABI_LIBRARY}" DIRECTORY)
+if(NOT IS_ABSOLUTE "${MPIF_MPI_LIBDIR}")
+  message(FATAL_ERROR "MPI_C_LIBRARIES names libmpi_abi as"
+    " '${MPIF_MPI_ABI_LIBRARY}', which is not an absolute path;"
+    " mpif cannot tell where the MPI's libraries are")
+endif()
+# What bin/mpifort.in bakes in is the libdir *relative to the prefix*, so that
+# MPIF_MPI_PREFIX in the environment still redirects both the -L and the rpath
+# to another MPI of the same shape. An MPI whose libdir is not under its prefix
+# gets the absolute path instead and loses that; MPIF_MPI_LIBDIR in the
+# environment is then the only way to point the wrapper elsewhere.
+file(RELATIVE_PATH _mpif_mpi_libdir_rel "${MPIF_MPI_PREFIX}" "${MPIF_MPI_LIBDIR}")
+if(_mpif_mpi_libdir_rel MATCHES "^\\.\\.")
+  set(MPIF_MPI_LIBDIR_DEFAULT "${MPIF_MPI_LIBDIR}")
+else()
+  # The \${...} survives configure_file(@ONLY) verbatim; the shell expands it.
+  set(MPIF_MPI_LIBDIR_DEFAULT "\${MPIF_MPI_PREFIX}/${_mpif_mpi_libdir_rel}")
+endif()
 
 # Check for Fortran features
 
@@ -867,8 +891,8 @@ if(APPLE)
   set(LINK_FLAGS "-Wl,-commons,use_dylibs")
 endif()
 
-# The wrapper links applications with a generic `-lmpi_abi` from
-# $MPIF_MPI_PREFIX/lib rather than the absolute library list FindMPI reports:
+# The wrapper links applications with a generic `-lmpi_abi` from the MPI's own
+# libdir rather than the absolute library list FindMPI reports:
 # the executable's sole direct MPI dependency is the ABI library's
 # conventional versioned name, the same for every implementation, so the
 # loader's search path can substitute another MPI at run time. On ELF the
@@ -937,7 +961,7 @@ endif()
 # nothing in its place, and bin/mpif_info dies at load.
 set(MPIF_INFO_RPATH
   "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}"
-  "${MPIF_MPI_PREFIX}/lib"
+  "${MPIF_MPI_LIBDIR}"
   # In a sanitizer build the runtime is a dependency of libmpifort_abi, which
   # carries its own rpath to it -- but BUILD_WITH_INSTALL_RPATH below replaces
   # this binary's entire rpath with this list, so the directory has to be named

@@ -8,7 +8,7 @@
 # MPICH supports "-compile-info" and "-link-info".
 
 # The MPI this mpif was built against is only a *default*. Applications link a
-# generic -lmpi_abi from $MPIF_MPI_PREFIX/lib, so the executable's sole direct
+# generic -lmpi_abi from $MPIF_MPI_LIBDIR, so the executable's sole direct
 # MPI dependency is the ABI library's conventional versioned name
 # (libmpi_abi.so.1 / libmpi_abi.1.dylib), the same for every implementation:
 # - at link time, MPIF_MPI_PREFIX selects a different default (and rpath);
@@ -21,6 +21,14 @@
 MPIF_FC=${MPIF_FC:-@CMAKE_Fortran_COMPILER@}
 MPIF_FCFLAGS=${MPIF_FCFLAGS:-@CMAKE_Fortran_FLAGS@ @MPIF_Fortran_FLAGS_STR@}
 MPIF_MPI_PREFIX=${MPIF_MPI_PREFIX:-@MPIF_MPI_PREFIX@}
+# The MPI's libdir, which is not necessarily $MPIF_MPI_PREFIX/lib -- a
+# distribution that uses lib64, or an MPI configured with --libdir, puts it
+# elsewhere. What CMake bakes in here is the directory's name relative to the
+# prefix, so overriding MPIF_MPI_PREFIX above still redirects this too; set
+# MPIF_MPI_LIBDIR instead for an MPI whose layout differs from the build-time
+# one, or whose libdir is not under its prefix at all (in which case CMake had
+# to bake an absolute path and MPIF_MPI_PREFIX no longer reaches it).
+MPIF_MPI_LIBDIR=${MPIF_MPI_LIBDIR:-@MPIF_MPI_LIBDIR_DEFAULT@}
 # @MPIF_SANITIZE_LINK_STR@ is empty unless this is a sanitizer build, and then
 # it names the sanitizer runtime and an rpath to it. It comes *first* because
 # DT_NEEDED follows link order and ASan refuses to run unless its runtime leads
@@ -29,7 +37,7 @@ MPIF_MPI_PREFIX=${MPIF_MPI_PREFIX:-@MPIF_MPI_PREFIX@}
 # reports as libraries and drops a bare -fsanitize=address from the link line
 # while still passing it to the compile. See MPIF_SANITIZE_LINK_STR in
 # CMakeLists.txt for both measurements.
-MPIF_FCLIBS=${MPIF_FCLIBS:-@MPIF_SANITIZE_LINK_STR@ -L@CMAKE_INSTALL_PREFIX@/lib -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/lib -lmpifort_abi -L${MPIF_MPI_PREFIX}/lib -Wl,-rpath,${MPIF_MPI_PREFIX}/lib -lmpi_abi}
+MPIF_FCLIBS=${MPIF_FCLIBS:-@MPIF_SANITIZE_LINK_STR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpifort_abi -L${MPIF_MPI_LIBDIR} -Wl,-rpath,${MPIF_MPI_LIBDIR} -lmpi_abi}
 
 case "$1" in
     -showme:command)

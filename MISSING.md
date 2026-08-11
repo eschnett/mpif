@@ -67,6 +67,29 @@ and `docker/*.dockerfile` deliberately do not.
   had both rotted by some 165 lines before anyone noticed, and the stage split
   moved everything again; a step name is findable and stays true.
 
+### No test exercises an MPI whose libdir is not `lib`
+
+`bin/mpifort.in`'s `-L`/`-rpath` for `-lmpi_abi` and `mpif_info`'s rpath come
+from `MPIF_MPI_LIBDIR` in `CMakeLists.txt`, the directory FindMPI reports
+`libmpi_abi` in, precisely because it need not be `<prefix>/lib`. Nothing
+checks that afterwards:
+
+- **Every environment gives `lib`.** GNUInstallDirs answers `lib64` only on
+  non-Debian 64-bit Linux and the multiarch triplet only when the prefix is
+  `/usr`; CI's Linux legs are Debian-family with a prefix under `$RUNNER_TEMP`,
+  macOS and FreeBSD give `lib`, and both MPIs are built from source into
+  `<prefix>/lib`. `ci-scripts/install-mpi-stubs.sh` pins the stub MPI to
+  `-DCMAKE_INSTALL_LIBDIR=lib`.
+- **Not adding a CI leg for it.** The detection is four lines with one
+  `file(RELATIVE_PATH)` branch, and the layouts that would exercise it (a
+  distribution's `lib64` MPI package) are not layouts mpif's own scripts can
+  produce without building a second MPI.
+- **The cheap way to exercise it by hand**, if the wrapper's or `mpif_info`'s
+  library paths are touched again: install the stub MPI, `mv lib lib64` in its
+  prefix, then configure mpif and `test/` against it the way
+  `ci-scripts/compile-only.sh` does. Before the libdir was detected, that
+  reproduced as `ld: library 'mpi_abi' not found` on the first wrapper link.
+
 ### CI's stages are barriers, and gcc waits for llvm
 
 `.github/workflows/ci.yaml` is four stages of one matrix each — `mpi`, `mpif`,

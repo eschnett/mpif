@@ -162,9 +162,17 @@ arrangements make that true:
   table are identical whichever MPI the build was configured against.
 - **Applications link `-lmpi_abi`, and the loader picks the implementation.**
   `bin/mpifort.in` links `-lmpifort_abi` plus a generic `-lmpi_abi` from
-  `$MPIF_MPI_PREFIX/lib`; `MPIF_MPI_PREFIX` defaults to the baked build-time
+  `$MPIF_MPI_LIBDIR`; `MPIF_MPI_PREFIX` defaults to the baked build-time
   prefix and the environment can override it per link. `-showme:mpiprefix`
   reports it, which is how the test scripts derive mpiexec and mpicc. The
+  libdir is not assumed to be `$MPIF_MPI_PREFIX/lib` — CMake takes it from the
+  path FindMPI reports for `libmpi_abi` (`MPIF_MPI_LIBDIR` in
+  `CMakeLists.txt`), because an MPI packaged for a `lib64` distribution or
+  configured with `--libdir` puts it elsewhere; what the wrapper bakes in is
+  that directory's name *relative to the prefix*, so the `MPIF_MPI_PREFIX`
+  override still reaches it, and `MPIF_MPI_LIBDIR` in the environment names it
+  outright when the substituted MPI's layout differs. `mpif_info`'s rpath gets
+  the same directory, absolute. The
   executable records only the ABI library's conventional versioned name —
   `libmpi_abi.so.1` on Linux, `libmpi_abi.1.dylib` with compatibility version
   2.0.0 on macOS (the convention is stated in Open MPI's `ompi/VERSION`) —
