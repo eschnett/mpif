@@ -170,6 +170,9 @@ module mpif_f08_constants
        MPI_COMBINER_F90_COMPLEX, & 
        MPI_COMBINER_RESIZED, & 
        MPI_COMBINER_VALUE_INDEX, & 
+       MPI_COMBINER_HVECTOR_INTEGER, &
+       MPI_COMBINER_HINDEXED_INTEGER, &
+       MPI_COMBINER_STRUCT_INTEGER, &
        ! Fortran Datatype Matching
        MPIX_TYPECLASS_LOGICAL, & 
        MPI_TYPECLASS_INTEGER, & 
@@ -433,6 +436,9 @@ module mpif_f08_constants
        MPI_COMBINER_F90_COMPLEX, & 
        MPI_COMBINER_RESIZED, & 
        MPI_COMBINER_VALUE_INDEX, & 
+       MPI_COMBINER_HVECTOR_INTEGER, &
+       MPI_COMBINER_HINDEXED_INTEGER, &
+       MPI_COMBINER_STRUCT_INTEGER, &
        ! Fortran Datatype Matching
        MPIX_TYPECLASS_LOGICAL, & 
        MPI_TYPECLASS_INTEGER, & 
