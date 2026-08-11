@@ -12,29 +12,30 @@
 // mark the definitions below weak; ELF needs nothing, its lookup not
 // distinguishing weak definitions from strong ones. f2c_abi_openmpi.c is the
 // same decision made for the other implementation's toolbox.
+//
+// The list is exactly what this file defines, and that is the whole rule. The
+// MPI_*_fromint and MPI_*_toint the bodies below call belong to the MPI, not to
+// mpif, so they are deliberately absent: `#pragma weak` on a name this
+// translation unit does not define makes the *reference* weak rather than a
+// definition, which would turn a genuinely missing accessor from a link error
+// into a null call at run time. Measured with `nm -m`: a pragma'd undefined
+// name becomes "(undefined) weak external", an unpragma'd one stays
+// "(undefined) external". f2c_abi_openmpi.c names none of them either.
 #if defined(__APPLE__)
 #pragma weak MPI_Comm_c2f
 #pragma weak MPI_Comm_f2c
-#pragma weak MPI_Comm_fromint
-#pragma weak MPI_Comm_toint
 #pragma weak MPI_Errhandler_c2f
 #pragma weak MPI_Errhandler_f2c
 #pragma weak MPI_File_c2f
 #pragma weak MPI_File_f2c
-#pragma weak MPI_File_fromint
-#pragma weak MPI_File_toint
 #pragma weak MPI_Group_c2f
 #pragma weak MPI_Group_f2c
 #pragma weak MPI_Info_c2f
 #pragma weak MPI_Info_f2c
-#pragma weak MPI_Info_fromint
-#pragma weak MPI_Info_toint
 #pragma weak MPI_Message_c2f
 #pragma weak MPI_Message_f2c
 #pragma weak MPI_Op_c2f
 #pragma weak MPI_Op_f2c
-#pragma weak MPI_Op_fromint
-#pragma weak MPI_Op_toint
 #pragma weak MPI_Request_c2f
 #pragma weak MPI_Request_f2c
 #pragma weak MPI_Session_c2f
@@ -47,8 +48,6 @@
 #pragma weak MPI_Type_f2c
 #pragma weak MPI_Win_c2f
 #pragma weak MPI_Win_f2c
-#pragma weak MPI_Win_fromint
-#pragma weak MPI_Win_toint
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
