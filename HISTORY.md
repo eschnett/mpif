@@ -391,3 +391,25 @@ and the fix they describe is one object per routine; `MISSING.md` records why th
 was not done. Worth noting how it was found: not by reasoning about the sentinels,
 which was the whole reason for building the stage, but by running everything else
 against it.
+
+## The separability check that could not fail
+
+The check written for that (`c89d30a`, 2026-08-10) grouped symbols by the file
+name `nm -g -A` prints, and read that field in only the spelling this machine
+uses: Mach-O's `nm` prints `foo.o: <addr>`, so stripping a trailing colon gave the
+member. GNU binutils prints `foo.o:<addr>`, gluing the address on, so the key was
+unique per symbol, every group held one member, and "more than one MPI entry point
+per member" could not trigger. Both GNU callers — CI's `static` job and
+`docker/mpich-gcc-static-arm64v8.dockerfile` — therefore enforced nothing for a
+day, while printing an entry-point count that was correct, being taken per symbol.
+Found by review, not by a run, which is the point: a check that cannot fail says
+nothing when it passes. Measured afterwards against real GNU nm 2.40 output from a
+`gcc:12` container: over a listing with `mpi_recv_` and `mpi_send_` in one member
+the old script reports "3 separable MPI entry points" and exits 0, and the same
+listing respelled Mach-O-style makes it exit 1.
+
+Two lessons. A check that parses another tool's output has to be tried in the
+spelling each platform prints, and the local spelling is the one CI is guaranteed
+*not* to use. And where misreading an input can only widen what passes, the
+misreading has to be an error: the pass now counts first fields that are not a
+`.o` and fails on any.

@@ -325,7 +325,14 @@ names out of `include/mpif_sentinels.h` rather than listing them, the way
 `ci-scripts/check-headers.sh` does. For the last of those it unpacks the archive
 with `ar x` into a temporary directory and runs one `nm -g -A` over the members:
 `nm -A` on the *archive* would do as well but for its member field being spelled
-differently by ELF and Mach-O `nm`.
+differently by ELF and Mach-O `nm`. The file name `-A` prints is spelled two ways
+too — `foo.o: <addr>` from Mach-O's `nm`, `foo.o:<addr>` from GNU binutils, which
+glues the address onto the name — and that name is the key the members are
+grouped by, so the check strips an address as well as a bare colon, and fails on
+a first field it cannot reduce to a `.o` at all. That last part is not
+belt-and-braces: a misread key is unique per symbol, which makes every group a
+group of one and the check vacuous while it still prints its entry-point count.
+`HISTORY.md` records the day it was.
 
 CI's `static` job runs it, then `test/` and `test-consume/` — the two routes a
 consumer can reach the archive by, one through `bin/mpifort`'s `-lmpifort_abi`

@@ -255,29 +255,58 @@ if ! (cd "$members" && ar x "$archive_abs"); then
   exit 1
 fi
 # One nm over every member at once: `-A` then prints the file name on each line,
-# which is what makes the grouping below unambiguous. `nm -A` on the *archive*
-# is not, its member field being spelled differently by ELF and Mach-O nm.
+# which is what the grouping below keys on. `nm -A` on the *archive* would not
+# do, its member field being spelled differently by ELF and Mach-O nm -- and the
+# file-name field is spelled two ways as well, which is the trap here:
+#
+#     Mach-O:  foo.o: 00000000000002ec T _mpi_recv_
+#     GNU:     foo.o:0000000000000008 T mpi_recv_
+#
+# GNU binutils glues the address straight onto the name. Strip an address before
+# the colon as well as a bare colon, so the key is the member under either
+# spelling. Getting this wrong does not fail: it makes every key unique, every
+# group a group of one, and the whole check vacuous while it still reports the
+# entry-point count -- which is what it did on every GNU-nm run until 2026-08-11.
+# So a field that survives both strips and still does not look like a member is
+# an error rather than a pass. The `.o$` test is exact and not a guess: the glob
+# above is `*.o`, so every file nm was handed ends that way.
 report="$(nm -g -A "$members"/*.o 2>/dev/null | awk '
   $(NF-1) != "U" && $(NF-1) != "C" && $NF ~ /^_?mpi_/ {
     sym = $NF; sub(/^_/, "", sym)
     if (sym ~ /_cdesc$/) next
     if (sym ~ /_fn(_null)?(_c)?_$/) next
     total++
-    member = $1; sub(/:$/, "", member); sub(/^.*\//, "", member)
+    member = $1
+    sub(/:[0-9a-fA-F]+$/, "", member)
+    sub(/:$/, "", member)
+    sub(/^.*\//, "", member)
+    if (member !~ /\.o$/) { unparsed++; if (unparsed == 1) sample = $0 }
     n[member]++
     if (n[member] <= 4) e[member] = e[member] " " sym
   }
   END {
-    printf "%d\n", total + 0
-    for (m in n) if (n[m] > 1) printf "%s %d%s\n", m, n[m], e[m]
+    printf "total %d\n", total + 0
+    printf "unparsed %d %s\n", unparsed + 0, sample
+    for (m in n) if (n[m] > 1) printf "crowded %s %d%s\n", m, n[m], e[m]
   }
 ')"
-found="$(printf '%s\n' "$report" | head -1)"
-crowded="$(printf '%s\n' "$report" | tail -n +2)"
+found="$(printf '%s\n' "$report" | sed -n 's/^total //p')"
+unparsed="$(printf '%s\n' "$report" | sed -n 's/^unparsed //p')"
+crowded="$(printf '%s\n' "$report" | sed -n 's/^crowded //p')"
 if [ "$found" -eq 0 ]; then
   echo "$me: found no MPI entry points in $archive at all," \
        "so this check cannot say anything about them" >&2
   exit 1
+fi
+if [ "${unparsed%% *}" -ne 0 ]; then
+  echo "$me: ${unparsed%% *} of nm's lines name no archive member in their" \
+       "first field:" >&2
+  echo "         ${unparsed#* }" >&2
+  echo "       This check groups symbols by that field. Unread, every symbol" >&2
+  echo "       lands in a group of its own and no member could ever be" >&2
+  echo "       reported as crowded, so the check would pass without checking." >&2
+  echo "       Teach the awk above whatever spelling this nm uses." >&2
+  status=1
 fi
 if [ -n "$crowded" ]; then
   echo "$me: these archive members define more than one MPI entry point:" >&2
