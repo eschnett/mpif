@@ -610,6 +610,36 @@ What mpif can be held to: it no longer refuses the call before MPI sees it
 trampolines marshal correctly (`test/datarep_c.c` calls them directly — the
 substitute for an end-to-end test until an implementation grows the feature).
 
+### `MPI_SESSION_GET_NTH_PSET` reports the required length only when asked for it alone, in both implementations
+
+MPI-5.0 §11.3.2: "On return, the value of pset_len will be set to the required
+buffer size to hold the process set name." Unconditionally — there is no `flag`
+to key it on, unlike `MPI_INFO_GET_STRING`, which both implementations get
+right. Neither does it here: each sets `*pset_len` only when the value passed in
+was zero, and otherwise leaves it as it found it
+(`src/mpi/session/session_impl.c` `MPIR_Session_get_nth_pset_impl`;
+`ompi/instance/instance.c` `ompi_instance_get_nth_pset`).
+
+mpif cannot repair it. It hands MPI a length and reads back whatever MPI leaves
+there; the only way to learn the required size is the second call with zero,
+which is the caller's to make. So a Fortran caller that passes a non-zero
+`pset_len` gets back the length mpif passed in, less the NUL — not the length
+the name needs. The idiom the standard recommends (query with 0, allocate,
+query again) is unaffected and is what `test/session_get_nth_pset_f08.f90`
+asserts; its other cases admit either answer deliberately, so they will keep
+passing when this is fixed.
+
+Open MPI has a second defect in the same routine: it truncates with `strncpy`
+and so returns no terminating NUL, though "In C, this function returns a null
+terminated string in all cases where the pset_len input value is greater than
+0." mpif no longer depends on that — every string-output wrapper now keeps one
+byte past what it ever offers MPI and NULs it before the call, so the `strlen`
+that follows stops inside the array either way. Measured before that byte:
+AddressSanitizer `dynamic-stack-buffer-overflow`, `READ of size 6` in `strlen`
+from `mpi_session_get_nth_pset_`, on `openmpi-llvm-sanitize-address`.
+
+Neither is reported upstream yet; no reproducer kept.
+
 ### MPICH: attributes on predefined datatypes aborted in ABI builds — fixed upstream
 
 <https://github.com/pmodels/mpich/issues/7916>

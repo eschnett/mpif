@@ -824,6 +824,35 @@ were found and verified.
 - **`MPI_Comm_spawn_multiple` frees the per-command `char*` vector**
   (`free(argv_$parname[i])` after the inner loop; the row is NULL where the
   conversion did not run, and `free(NULL)` is defined).
+- **Two routines make the caller declare how much room its string has, and
+  neither may be passed through.** `MPI_INFO_GET_STRING`'s `buflen` (MPI-5.0
+  §10.1.2) and `MPI_SESSION_GET_NTH_PSET`'s `pset_len` (§11.3.2) have the same
+  semantics word for word, and `string_length_handshake` in `dev/mpiapi.jl` is
+  the list of them — the `MPI_T_` routines share the shape and are not
+  `f90_expressible`. Three corrections, none of which the generic integer and
+  string paths make:
+  - **+1 in, −1 out.** "In C, <len> includes the required space for the null
+    terminator"; Fortran counts characters.
+  - **Clamp to the caller's CHARACTER length.** Fortran may name a length
+    larger than the string it passes with it — MPICH's own suite does, in
+    `f90/info/infogetstrf90.f90` — and MPI would write past our buffer.
+  - **No copy-back when the length passed in was zero**, that being the
+    standard's way of asking for the length alone: the buffer is untouched, so
+    copying it out would hand back uninitialised memory and `strlen` would read
+    it to decide how much.
+
+  `MPI_Info_get_string` alone also has `flag`, and writes neither `value` nor
+  `buflen` when the key does not exist; `pset_len` is written back
+  unconditionally, as the standard states it. `test/info_get_string_f08.f90`
+  and `test/session_get_nth_pset_f08.f90` are the pair, both with a `canary`
+  declared right after the string. What the implementations do *not* do is in
+  `MISSING.md`.
+- **Every string-output wrapper's buffer is one byte longer than MPI is ever
+  told, and that byte is NUL before the call.** The standard has MPI return a
+  terminated string; Open MPI's `MPI_SESSION_GET_NTH_PSET` truncates with
+  `strncpy` and does not, and the `strlen` that follows is mpif's own code
+  reading past its own array. The byte costs nothing and removes the
+  dependence.
 - **`mpifort -showme:compile` reports gfortran's Fortran-only flag
   (`-fallow-argument-mismatch`), rightly** — relaxed argument matching is the
   whole idiom of the include-file interface. (It used to report

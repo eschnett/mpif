@@ -4304,7 +4304,8 @@ void mpi_comm_get_name_(
 {
   const size_t buflen_comm_name = MPI_MAX_OBJECT_NAME;
   const size_t length_comm_name = MPI_MAX_OBJECT_NAME - 1;
-  char c_comm_name[buflen_comm_name + 1];
+  char c_comm_name[buflen_comm_name + 2];
+  c_comm_name[buflen_comm_name + 1] = '\0';
   *ierror = MPI_Comm_get_name(
     MPI_Comm_fromint(*comm),
     c_comm_name,
@@ -4324,7 +4325,8 @@ void pmpi_comm_get_name_(
 {
   const size_t buflen_comm_name = MPI_MAX_OBJECT_NAME;
   const size_t length_comm_name = MPI_MAX_OBJECT_NAME - 1;
-  char c_comm_name[buflen_comm_name + 1];
+  char c_comm_name[buflen_comm_name + 2];
+  c_comm_name[buflen_comm_name + 1] = '\0';
   *ierror = PMPI_Comm_get_name(
     MPI_Comm_fromint(*comm),
     c_comm_name,
@@ -5574,7 +5576,8 @@ void mpi_error_string_(
 {
   const size_t buflen_string = MPI_MAX_ERROR_STRING;
   const size_t length_string = MPI_MAX_ERROR_STRING - 1;
-  char c_string[buflen_string + 1];
+  char c_string[buflen_string + 2];
+  c_string[buflen_string + 1] = '\0';
   *ierror = MPI_Error_string(
     *errorcode,
     c_string,
@@ -5594,7 +5597,8 @@ void pmpi_error_string_(
 {
   const size_t buflen_string = MPI_MAX_ERROR_STRING;
   const size_t length_string = MPI_MAX_ERROR_STRING - 1;
-  char c_string[buflen_string + 1];
+  char c_string[buflen_string + 2];
+  c_string[buflen_string + 1] = '\0';
   *ierror = PMPI_Error_string(
     *errorcode,
     c_string,
@@ -6376,7 +6380,8 @@ void mpi_file_get_view_(
   MPI_Datatype c_etype = MPI_DATATYPE_NULL;
   MPI_Datatype c_filetype = MPI_DATATYPE_NULL;
   const size_t buflen_datarep = length_datarep;
-  char c_datarep[buflen_datarep + 1];
+  char c_datarep[buflen_datarep + 2];
+  c_datarep[buflen_datarep + 1] = '\0';
   *ierror = MPI_File_get_view(
     MPI_File_fromint(*fh),
     disp,
@@ -6404,7 +6409,8 @@ void pmpi_file_get_view_(
   MPI_Datatype c_etype = MPI_DATATYPE_NULL;
   MPI_Datatype c_filetype = MPI_DATATYPE_NULL;
   const size_t buflen_datarep = length_datarep;
-  char c_datarep[buflen_datarep + 1];
+  char c_datarep[buflen_datarep + 2];
+  c_datarep[buflen_datarep + 1] = '\0';
   *ierror = PMPI_File_get_view(
     MPI_File_fromint(*fh),
     disp,
@@ -10815,7 +10821,8 @@ void mpi_get_library_version_(
 {
   const size_t buflen_version = MPI_MAX_LIBRARY_VERSION_STRING;
   const size_t length_version = MPI_MAX_LIBRARY_VERSION_STRING - 1;
-  char c_version[buflen_version + 1];
+  char c_version[buflen_version + 2];
+  c_version[buflen_version + 1] = '\0';
   *ierror = MPI_Get_library_version(
     c_version,
     resultlen
@@ -10833,7 +10840,8 @@ void pmpi_get_library_version_(
 {
   const size_t buflen_version = MPI_MAX_LIBRARY_VERSION_STRING;
   const size_t length_version = MPI_MAX_LIBRARY_VERSION_STRING - 1;
-  char c_version[buflen_version + 1];
+  char c_version[buflen_version + 2];
+  c_version[buflen_version + 1] = '\0';
   *ierror = PMPI_Get_library_version(
     c_version,
     resultlen
@@ -10851,7 +10859,8 @@ void mpi_get_processor_name_(
 {
   const size_t buflen_name = MPI_MAX_PROCESSOR_NAME;
   const size_t length_name = MPI_MAX_PROCESSOR_NAME - 1;
-  char c_name[buflen_name + 1];
+  char c_name[buflen_name + 2];
+  c_name[buflen_name + 1] = '\0';
   *ierror = MPI_Get_processor_name(
     c_name,
     resultlen
@@ -10869,7 +10878,8 @@ void pmpi_get_processor_name_(
 {
   const size_t buflen_name = MPI_MAX_PROCESSOR_NAME;
   const size_t length_name = MPI_MAX_PROCESSOR_NAME - 1;
-  char c_name[buflen_name + 1];
+  char c_name[buflen_name + 2];
+  c_name[buflen_name + 1] = '\0';
   *ierror = PMPI_Get_processor_name(
     c_name,
     resultlen
@@ -14434,7 +14444,8 @@ void mpi_info_get_(
   char* const c_key = mpif_strdup_f2c_trim(key, length_key);
   const size_t buflen_value = *valuelen;
   const size_t length_value = *valuelen;
-  char c_value[buflen_value + 1];
+  char c_value[buflen_value + 2];
+  c_value[buflen_value + 1] = '\0';
   MPI_Fint c_flag = 0;
   *ierror = MPI_Info_get(
     MPI_Info_fromint(*info),
@@ -14464,7 +14475,8 @@ void pmpi_info_get_(
   char* const c_key = mpif_strdup_f2c_trim(key, length_key);
   const size_t buflen_value = *valuelen;
   const size_t length_value = *valuelen;
-  char c_value[buflen_value + 1];
+  char c_value[buflen_value + 2];
+  c_value[buflen_value + 1] = '\0';
   MPI_Fint c_flag = 0;
   *ierror = PMPI_Info_get(
     MPI_Info_fromint(*info),
@@ -14518,7 +14530,8 @@ void mpi_info_get_nthkey_(
 )
 {
   const size_t buflen_key = length_key;
-  char c_key[buflen_key + 1];
+  char c_key[buflen_key + 2];
+  c_key[buflen_key + 1] = '\0';
   *ierror = MPI_Info_get_nthkey(
     MPI_Info_fromint(*info),
     *n,
@@ -14538,7 +14551,8 @@ void pmpi_info_get_nthkey_(
 )
 {
   const size_t buflen_key = length_key;
-  char c_key[buflen_key + 1];
+  char c_key[buflen_key + 2];
+  c_key[buflen_key + 1] = '\0';
   *ierror = PMPI_Info_get_nthkey(
     MPI_Info_fromint(*info),
     *n,
@@ -14568,7 +14582,8 @@ void mpi_info_get_string_(
                     ? (int)f_buflen + 1
                     : (int)length_value + 1;
   const size_t buflen_value = length_value;
-  char c_value[buflen_value + 1];
+  char c_value[buflen_value + 2];
+  c_value[buflen_value + 1] = '\0';
   MPI_Fint c_flag = 0;
   *ierror = MPI_Info_get_string(
     MPI_Info_fromint(*info),
@@ -14606,7 +14621,8 @@ void pmpi_info_get_string_(
                     ? (int)f_buflen + 1
                     : (int)length_value + 1;
   const size_t buflen_value = length_value;
-  char c_value[buflen_value + 1];
+  char c_value[buflen_value + 2];
+  c_value[buflen_value + 1] = '\0';
   MPI_Fint c_flag = 0;
   *ierror = PMPI_Info_get_string(
     MPI_Info_fromint(*info),
@@ -16704,7 +16720,8 @@ void mpi_lookup_name_(
   char* const c_service_name = mpif_strdup_f2c(service_name, length_service_name);
   const size_t buflen_port_name = MPI_MAX_PORT_NAME;
   const size_t length_port_name = MPI_MAX_PORT_NAME - 1;
-  char c_port_name[buflen_port_name + 1];
+  char c_port_name[buflen_port_name + 2];
+  c_port_name[buflen_port_name + 1] = '\0';
   *ierror = MPI_Lookup_name(
     c_service_name,
     MPI_Info_fromint(*info),
@@ -16727,7 +16744,8 @@ void pmpi_lookup_name_(
   char* const c_service_name = mpif_strdup_f2c(service_name, length_service_name);
   const size_t buflen_port_name = MPI_MAX_PORT_NAME;
   const size_t length_port_name = MPI_MAX_PORT_NAME - 1;
-  char c_port_name[buflen_port_name + 1];
+  char c_port_name[buflen_port_name + 2];
+  c_port_name[buflen_port_name + 1] = '\0';
   *ierror = PMPI_Lookup_name(
     c_service_name,
     MPI_Info_fromint(*info),
@@ -18611,7 +18629,8 @@ void mpi_open_port_(
 {
   const size_t buflen_port_name = MPI_MAX_PORT_NAME;
   const size_t length_port_name = MPI_MAX_PORT_NAME - 1;
-  char c_port_name[buflen_port_name + 1];
+  char c_port_name[buflen_port_name + 2];
+  c_port_name[buflen_port_name + 1] = '\0';
   *ierror = MPI_Open_port(
     MPI_Info_fromint(*info),
     c_port_name
@@ -18629,7 +18648,8 @@ void pmpi_open_port_(
 {
   const size_t buflen_port_name = MPI_MAX_PORT_NAME;
   const size_t length_port_name = MPI_MAX_PORT_NAME - 1;
-  char c_port_name[buflen_port_name + 1];
+  char c_port_name[buflen_port_name + 2];
+  c_port_name[buflen_port_name + 1] = '\0';
   *ierror = PMPI_Open_port(
     MPI_Info_fromint(*info),
     c_port_name
@@ -23531,16 +23551,25 @@ void mpi_session_get_nth_pset_(
   const size_t length_pset_name
 )
 {
+  const MPI_Fint f_pset_len = *pset_len;
+  int c_pset_len = 0;
+  if (f_pset_len > 0)
+    c_pset_len = (size_t)f_pset_len <= length_pset_name
+                    ? (int)f_pset_len + 1
+                    : (int)length_pset_name + 1;
   const size_t buflen_pset_name = length_pset_name;
-  char c_pset_name[buflen_pset_name + 1];
+  char c_pset_name[buflen_pset_name + 2];
+  c_pset_name[buflen_pset_name + 1] = '\0';
   *ierror = MPI_Session_get_nth_pset(
     MPI_Session_fromint(*session),
     MPI_Info_fromint(*info),
     *n,
-    pset_len,
+    &c_pset_len,
     c_pset_name
   );
-  mpif_strcpy_c2f(pset_name, c_pset_name, length_pset_name, strlen(c_pset_name));
+  *pset_len = c_pset_len > 0 ? (MPI_Fint)(c_pset_len - 1) : 0;
+  if (f_pset_len > 0)
+    mpif_strcpy_c2f(pset_name, c_pset_name, length_pset_name, strlen(c_pset_name));
 }
 // MPIF-SPLIT-END
 
@@ -23555,16 +23584,25 @@ void pmpi_session_get_nth_pset_(
   const size_t length_pset_name
 )
 {
+  const MPI_Fint f_pset_len = *pset_len;
+  int c_pset_len = 0;
+  if (f_pset_len > 0)
+    c_pset_len = (size_t)f_pset_len <= length_pset_name
+                    ? (int)f_pset_len + 1
+                    : (int)length_pset_name + 1;
   const size_t buflen_pset_name = length_pset_name;
-  char c_pset_name[buflen_pset_name + 1];
+  char c_pset_name[buflen_pset_name + 2];
+  c_pset_name[buflen_pset_name + 1] = '\0';
   *ierror = PMPI_Session_get_nth_pset(
     MPI_Session_fromint(*session),
     MPI_Info_fromint(*info),
     *n,
-    pset_len,
+    &c_pset_len,
     c_pset_name
   );
-  mpif_strcpy_c2f(pset_name, c_pset_name, length_pset_name, strlen(c_pset_name));
+  *pset_len = c_pset_len > 0 ? (MPI_Fint)(c_pset_len - 1) : 0;
+  if (f_pset_len > 0)
+    mpif_strcpy_c2f(pset_name, c_pset_name, length_pset_name, strlen(c_pset_name));
 }
 // MPIF-SPLIT-END
 
@@ -26064,7 +26102,8 @@ void mpi_type_get_name_(
 {
   const size_t buflen_type_name = MPI_MAX_OBJECT_NAME;
   const size_t length_type_name = MPI_MAX_OBJECT_NAME - 1;
-  char c_type_name[buflen_type_name + 1];
+  char c_type_name[buflen_type_name + 2];
+  c_type_name[buflen_type_name + 1] = '\0';
   *ierror = MPI_Type_get_name(
     MPI_Type_fromint(*datatype),
     c_type_name,
@@ -26084,7 +26123,8 @@ void pmpi_type_get_name_(
 {
   const size_t buflen_type_name = MPI_MAX_OBJECT_NAME;
   const size_t length_type_name = MPI_MAX_OBJECT_NAME - 1;
-  char c_type_name[buflen_type_name + 1];
+  char c_type_name[buflen_type_name + 2];
+  c_type_name[buflen_type_name + 1] = '\0';
   *ierror = PMPI_Type_get_name(
     MPI_Type_fromint(*datatype),
     c_type_name,
@@ -27952,7 +27992,8 @@ void mpi_win_get_name_(
 {
   const size_t buflen_win_name = MPI_MAX_OBJECT_NAME;
   const size_t length_win_name = MPI_MAX_OBJECT_NAME - 1;
-  char c_win_name[buflen_win_name + 1];
+  char c_win_name[buflen_win_name + 2];
+  c_win_name[buflen_win_name + 1] = '\0';
   *ierror = MPI_Win_get_name(
     MPI_Win_fromint(*win),
     c_win_name,
@@ -27972,7 +28013,8 @@ void pmpi_win_get_name_(
 {
   const size_t buflen_win_name = MPI_MAX_OBJECT_NAME;
   const size_t length_win_name = MPI_MAX_OBJECT_NAME - 1;
-  char c_win_name[buflen_win_name + 1];
+  char c_win_name[buflen_win_name + 2];
+  c_win_name[buflen_win_name + 1] = '\0';
   *ierror = PMPI_Win_get_name(
     MPI_Win_fromint(*win),
     c_win_name,

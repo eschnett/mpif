@@ -152,6 +152,23 @@ strip_leading_blanks = Set([("MPI_Comm_spawn", "argv"),
                             ("MPI_Info_set", "key"),
                             ("MPI_Info_set", "value")])
 
+# The routines where the caller says how much room its string has and MPI answers
+# with how much it needs. MPI-5.0 gives MPI_INFO_GET_STRING's `buflen` (10.1.2)
+# and MPI_SESSION_GET_NTH_PSET's `pset_len` (11.3.2) the same semantics word for
+# word -- the string is truncated when the length is too small, "If <len> is set
+# to 0, <string> is not changed", "On return, the value of <len> will be set to
+# the required buffer size", "In C, <len> includes the required space for the null
+# terminator" -- so both need the same three corrections, and none of them is made
+# by the generic integer and string paths. The MPI_T_ routines have the same shape
+# and are not `f90_expressible`, so these two are all of them.
+#
+# The pair differ only in MPI_Info_get_string's `flag`: when the key does not
+# exist it writes neither `value` nor `buflen`, and neither may we. Nothing tells
+# MPI_Session_get_nth_pset apart that way, so its length is written back
+# unconditionally, which is also how the standard states it.
+string_length_handshake = Dict("MPI_Info_get_string" => (len="buflen", str="value", flag="c_flag"),
+                               "MPI_Session_get_nth_pset" => (len="pset_len", str="pset_name", flag=nothing))
+
 # The argument-vector sentinels: how C recognises each one, and the C constant it
 # stands for.
 #
@@ -914,7 +931,7 @@ for key in sort(collect(keys(apis)))
     #
     # `name` itself is never prefixed. It is what every special case below is
     # keyed on -- the MPI_ARGV_NULL sentinels, the parameters whose leading
-    # blanks are kept, MPI_Cancel's request, MPI_Info_get_string's buflen,
+    # blanks are kept, MPI_Cancel's request, the string-length handshakes,
     # `f08_explicit_large_count` -- and prefixing it would make all of them
     # quietly stop matching. `P` goes on the emitted names only.
     for pmpi in [false, true], embiggen in (need_embiggen ? [false, true] : [false])
@@ -1484,33 +1501,43 @@ for key in sort(collect(keys(apis)))
                             push!(input_arguments, "$type* restrict const $parname")
                             if "c_parameter" ∉ suppress
                                 @assert !optional
-                                if name == "MPI_Info_get_string" && parname == "buflen"
-                                    # `buflen` describes the caller's `value`, and cannot
+                                if haskey(string_length_handshake, name) && parname == string_length_handshake[name].len
+                                    # The length describes the caller's string, and cannot
                                     # be passed straight through: in Fortran it counts
                                     # characters, in C it counts characters plus the
                                     # terminating NUL. It also has to be clamped. A
-                                    # Fortran caller may pass a `buflen` larger than
-                                    # `len(value)` -- MPICH's own test suite does, in
-                                    # f90/info/infogetstrf90.f90 -- and MPI would then
-                                    # write past the end of the buffer we hand it.
-                                    # `length_value` is the hidden length argument for
-                                    # `value`, and `c_value` is one byte longer than that.
+                                    # Fortran caller may pass a length larger than the
+                                    # string it passes with it -- MPICH's own test suite
+                                    # does, in f90/info/infogetstrf90.f90 -- and MPI would
+                                    # then write past the end of the buffer we hand it.
+                                    # `length_<str>` is the hidden length argument for the
+                                    # string, and the clamp is what keeps the length we
+                                    # hand MPI within the `c_<str>` allocated below.
+                                    handshake = string_length_handshake[name]
                                     append!(input_conversions,
                                             ["const MPI_Fint f_$parname = *$parname;",
                                              "int c_$parname = 0;",
                                              "if (f_$parname > 0)",
-                                             "  c_$parname = (size_t)f_$parname <= length_value",
+                                             "  c_$parname = (size_t)f_$parname <= length_$(handshake.str)",
                                              "                  ? (int)f_$parname + 1",
-                                             "                  : (int)length_value + 1;"])
+                                             "                  : (int)length_$(handshake.str) + 1;"])
                                     push!(call_arguments, "&c_$parname")
                                     # MPI reports the length it needs including the NUL,
-                                    # Fortran wants it without. MPI leaves `buflen` alone
-                                    # when the key does not exist, and so must we: after
-                                    # the clamp above the value we hold is not necessarily
-                                    # the one the caller passed in.
-                                    append!(output_conversions,
-                                            ["if (c_flag)",
-                                             "  *$parname = c_$parname > 0 ? (MPI_Fint)(c_$parname - 1) : 0;"])
+                                    # Fortran wants it without.
+                                    assign = "*$parname = c_$parname > 0 ? (MPI_Fint)(c_$parname - 1) : 0;"
+                                    if handshake.flag == nothing
+                                        # Unconditional, as the standard states it. Not
+                                        # guarded on `*ierror` either: a failed call
+                                        # leaves the value undefined either way.
+                                        push!(output_conversions, assign)
+                                    else
+                                        # MPI leaves the length alone when the key does not
+                                        # exist, and so must we: after the clamp above the
+                                        # value we hold is not necessarily the one the
+                                        # caller passed in.
+                                        append!(output_conversions,
+                                                ["if ($(handshake.flag))", "  $assign"])
+                                    end
                                 elseif kind == "INDEX" && request_count != nothing
                                     # An index into the array of requests. C
                                     # numbers those from zero and Fortran from
@@ -1810,20 +1837,37 @@ for key in sort(collect(keys(apis)))
                         @show name parname length
                         @assert false
                     end
-                    push!(input_conversions, "char c_$parname[buflen_$parname + 1];")
+                    # One byte more than MPI is ever told the buffer holds, set to
+                    # NUL before the call, so that the `strlen` below stops inside
+                    # the array whatever MPI wrote. The standard has MPI return a
+                    # terminated string, but Open MPI's MPI_SESSION_GET_NTH_PSET
+                    # truncates with `strncpy` and leaves none
+                    # (ompi/instance/instance.c `ompi_instance_get_nth_pset`), and
+                    # reading past our own array is mpif's defect then, not its
+                    # excuse. Measured: AddressSanitizer reports a
+                    # dynamic-stack-buffer-overflow in `strlen` without this byte.
+                    push!(input_conversions, "char c_$parname[buflen_$parname + 2];")
+                    push!(input_conversions, "c_$parname[buflen_$parname + 1] = '\\0';")
                     push!(call_arguments, "c_$parname")
                     # Pad or truncate to the caller's length, never to buflen
                     copy_c2f = "mpif_strcpy_c2f($parname, c_$parname, length_$parname, strlen(c_$parname));"
-                    # The only two routines whose string output is conditional. Both
-                    # write nothing at all when the key does not exist -- MPI_INFO_GET
-                    # "sets flag to false and leaves value unchanged" -- and
-                    # MPI_INFO_GET_STRING additionally writes nothing when `buflen` is
-                    # zero. The caller's string has to be left untouched in those
-                    # cases: `c_value` is still uninitialised, so copying it out would
-                    # hand back garbage, and `strlen` would read uninitialised memory to
-                    # decide how much of it.
-                    if name ∈ ["MPI_Info_get", "MPI_Info_get_string"] && parname == "value"
-                        guard = name == "MPI_Info_get_string" ? "c_flag && f_buflen > 0" : "c_flag"
+                    # The routines whose string output is conditional. MPI_INFO_GET
+                    # writes nothing at all when the key does not exist -- it "sets
+                    # flag to false and leaves value unchanged" -- and each routine
+                    # with a length handshake writes nothing when the length passed in
+                    # is zero, that being the standard's own way of asking for the
+                    # length alone. The caller's string has to be left untouched in
+                    # those cases: `c_<str>` is still uninitialised, so copying it out
+                    # would hand back garbage, and `strlen` would read uninitialised
+                    # memory to decide how much of it.
+                    if name == "MPI_Info_get" && parname == "value"
+                        append!(output_conversions, ["if (c_flag)", "  $copy_c2f"])
+                    elseif haskey(string_length_handshake, name) && parname == string_length_handshake[name].str
+                        handshake = string_length_handshake[name]
+                        guard = "f_$(handshake.len) > 0"
+                        if handshake.flag != nothing
+                            guard = "$(handshake.flag) && $guard"
+                        end
                         append!(output_conversions, ["if ($guard)", "  $copy_c2f"])
                     else
                         push!(output_conversions, copy_c2f)
