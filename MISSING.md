@@ -515,7 +515,9 @@ checks for that; it used to demand the null handle, and so called a fixed
 MPICH broken. mpif's own generated bindings still null their pure-out handle
 arrays themselves (`dev/mpiapi.jl`) rather than depend on any of this.
 
-### MPICH: `cdesc_create_datatype` places a contiguous level by extent — not reported yet
+### MPICH: `cdesc_create_datatype` places a contiguous level by extent
+
+<https://github.com/pmodels/mpich/issues/7932>
 
 `src/binding/fortran/use_mpi_f08/wrappers_c/cdesc.c` picks
 `PMPI_Type_contiguous` for a dimension when `cdesc->dim[i].sm == accum_sm`,
@@ -523,20 +525,28 @@ where `accum_sm` is the *span* of the levels below (`dim[i-1].sm *
 dim[i-1].extent`). But contiguous replicates at multiples of the inner type's
 **extent**, and an hvector of `n` copies at stride `sm` over an extent-`e` type
 has extent `sm*(n-1) + e`, not `sm*n`. Above a strided dimension the two
-disagree and every replica but the first is placed short.
+disagree and every replica but the first is placed short. Both the
+`extent <= INT_MAX` branch and the `_c` branch carry the same test.
 
-Read in the pinned tree (`ab53493d`,
-`build/mpi-src/mpich-gcc/mpich/...`); not run, because these bindings are
-pruned out of the prefixes here. The shape that fails is any section whose
-strided dimension has a dimension above it: on `integer a(20,3)`,
-`MPI_Sendrecv(a(1:20:2,:), 30, MPI_INTEGER, ...)` builds
-hvector(10,1,8) of extent 76 and then contiguous(3) over it, so columns 2 and
-3 start 4 and 8 bytes early — 20 of 30 elements wrong, silently. Measured
-against mpif's copy of the same logic, which had it too.
+Measured against MPICH's own `mpi_f08`, not only read: the bindings are built
+in `build/mpi-src/<variant>/mpich` and only *pruned* out of the prefix, so a
+program compiled against that tree's `mpi_f08.mod` and `libmpifort.0.dylib`
+runs them. On `ab53493d` (`MPICH Version: 5.1.0a1`) with
+`MPI_SUBARRAYS_SUPPORTED = .true.`, `integer a(20,3)`:
+
+- `MPI_Sendrecv(a(1:20:2,:), 30, MPI_INTEGER, ...)` — hvector(10,1,8) of
+  extent 76, then contiguous(3) over it, so columns 2 and 3 start 4 and 8
+  bytes early: 20 of 30 elements wrong, silently.
+- Receiving into `b(1:20:2,:)` — the same 20 wrong, **plus 10 elements
+  clobbered outside the section the caller named** (`b(20,1)` and the even
+  rows of the later columns). The displacements only shrink, so nothing lands
+  past the end of `b`.
+- `integer t(2,4,3)`, section `t(:, 1:4:2, :)` — 8 of 12 wrong, so it is any
+  dimension above a strided one, not a rank-2 quirk.
 
 mpif diverges: it takes the contiguous branch only while the levels below are
 dense and drops to hvector for good afterwards (`src/mpif_cdesc.c`,
-`test/subarray_strided_cfi_f08.f90`). Filing this upstream is still to do.
+`test/subarray_strided_cfi_f08.f90`).
 
 ### MPICH: the generalized request tests require `extra_state` to alias the caller's variable
 

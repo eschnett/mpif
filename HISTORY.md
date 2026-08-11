@@ -117,7 +117,10 @@ Once the biggest time sink in the project; the rules in `CLAUDE.md`
   `a(1:20:2,:)` count 30 — `a(20,1)` arrives at position 11, column 3 two
   elements early, 20 of 30 wrong — which is what
   `test/subarray_strided_cfi_f08.f90` now pins. Inherited from MPICH's
-  `cdesc_create_datatype`, which still has it (`MISSING.md`).
+  `cdesc_create_datatype`, which still has it (pmodels/mpich#7932) — and where
+  it also writes outside the section on a receive; measured against MPICH's own
+  `mpi_f08` by compiling against the build tree, since the prefixes here have
+  those bindings pruned.
 - `mpif.h`'s `MPI_SIZEOF` declared array specifics only, so a scalar actual
   failed generic resolution under the explicit interfaces — the `mpi` module
   masked it by having both. Fixed by emitting scalar twins (`_s` names) from
