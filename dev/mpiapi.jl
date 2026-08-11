@@ -1745,27 +1745,48 @@ for key in sort(collect(keys(apis)))
                         push!(call_arguments, "&c_$parname")
                         push!(output_conversions, "*$parname = mpif_bool2logical(c_$parname);")
                     elseif length == "maxdims"
+                        # MPI_CART_GET is the only routine here: its `periods` is
+                        # the one out-LOGICAL array in the standard, and so the
+                        # one that needs a C temporary and a conversion back
+                        # (`dims` and `coords` are INTEGER and reach MPI
+                        # directly). The bound below is that routine's, so say so
+                        # rather than let a later arrival inherit it silently.
+                        @assert name == "MPI_Cart_get"
                         push!(input_arguments, "MPI_Fint* restrict const $parname")
                         append!(input_conversions, ["int c_$parname[$(vla_size("*maxdims"))];"])
-                        # Pre-filled over the whole extent, like the handle arrays
-                        # and for the stronger of the two reasons: MPI_CART_GET
-                        # writes only as many entries as the topology has
-                        # dimensions, and `maxdims` may exceed that, so the
-                        # surplus is legitimately unwritten *on success* as well
-                        # as on failure. MPI-5.0 section 8.5 gives the extreme
-                        # case -- "If comm is associated with a
-                        # zero-dimensional Cartesian topology, MPI_CARTDIM_GET
-                        # returns ndims = 0 and MPI_CART_GET will keep all output
-                        # arguments unchanged" -- where nothing at all is
-                        # written and the loop below still converts every entry.
-                        # `false` is the logical analogue of the handle arrays'
-                        # MPI_*_NULL.
+                        # Pre-filled over the whole extent, like the handle
+                        # arrays: nothing below reads an entry MPI did not write,
+                        # but that argument rests on the dimensionality read back
+                        # agreeing with what MPI wrote, and mpif does not depend
+                        # on an implementation for that kind of thing.
                         append!(input_conversions,
                                 ["for (int dim=0; dim<*maxdims; ++dim)",
                                  "  c_$parname[dim] = 0;"])
                         push!(call_arguments, "c_$parname")
+                        # Only the entries MPI wrote are converted back, so the
+                        # caller's surplus is left exactly as it was passed.
+                        # MPI-5.0 section 8.5 requires that: "If comm is
+                        # associated with a zero-dimensional Cartesian topology,
+                        # MPI_CARTDIM_GET returns ndims = 0 and MPI_CART_GET will
+                        # keep all output arguments unchanged", and `maxdims` may
+                        # exceed the dimensionality generally, not just at zero.
+                        # How many that is only the topology knows, hence the
+                        # second call -- PMPI_, because a profiler interposed on
+                        # MPI_CARTDIM_GET must not see a call the program did not
+                        # make (src/mpif_cdesc.c makes the same choice for the
+                        # datatypes it builds). Clamped to `*maxdims` because
+                        # passing fewer than the topology has is "unspecified"
+                        # rather than forbidden, and the temporary is only that
+                        # long; zero when either call failed, so a failure
+                        # converts nothing at all.
                         append!(output_conversions,
-                                ["for (int dim=0; dim<*maxdims; ++dim)",
+                                ["int ndims_$parname = 0;",
+                                 "if (*ierror == MPI_SUCCESS)",
+                                 "  if (PMPI_Cartdim_get(MPI_Comm_fromint(*comm), &ndims_$parname) != MPI_SUCCESS)",
+                                 "    ndims_$parname = 0;",
+                                 "if (ndims_$parname > *maxdims)",
+                                 "  ndims_$parname = *maxdims;",
+                                 "for (int dim=0; dim<ndims_$parname; ++dim)",
                                  "  $parname[dim] = mpif_bool2logical(c_$parname[dim]);"])
                     else
                         @show name length

@@ -436,3 +436,22 @@ spelling each platform prints, and the local spelling is the one CI is guarantee
 *not* to use. And where misreading an input can only widen what passes, the
 misreading has to be an error: the pass now counts first fields that are not a
 `.o` and fails on any.
+
+### `MPI_CART_GET`'s surplus was pre-filled before it was bounded
+
+Review found `mpi_cart_get_` converting `*maxdims` entries of an uninitialised
+`c_periods`. The first fix (`6a65db6`) pre-filled the temporary with `false` and
+kept converting the whole extent, which closed the uninitialised read but wrote
+the caller's surplus — following the pure-out handle arrays, whose comment
+argues against depending on an implementation to null what it did not write. The
+reasoning was recorded in `MISSING.md` as an accepted divergence, since
+MPI-5.0 §8.5 says a zero-dimensional topology "will keep all output arguments
+unchanged".
+
+That divergence was not worth keeping: the count is available from
+`MPI_CARTDIM_GET`, so the conversion is now bounded and the surplus survives.
+The lesson is about which precedent to follow. The handle-array shape was the
+right analogy for the uninitialised read and the wrong one for the surplus,
+because only there does the standard state what happens to the entries MPI did
+not write. Consulting it per routine, rather than reusing the shape, is what
+separated the two halves.

@@ -812,7 +812,19 @@ were found and verified.
     copy-back is guarded: `MPI_SESSION_GET_NTH_PSET`'s guard tests the length
     the caller passed in, not whether the call succeeded.
   - **`MPI_Cart_get`'s `periods`**, the only out-LOGICAL *array* in
-    `data/apis.json`, is pre-filled with `false` over `*maxdims`.
+    `data/apis.json`, is pre-filled with `false` over `*maxdims` — and is the
+    one place where the conversion back is *bounded* rather than walking the
+    whole extent. MPI writes only as many entries as the topology has
+    dimensions, and MPI-5.0 §8.5 requires the rest be left alone: "If comm is
+    associated with a zero-dimensional Cartesian topology, MPI_CARTDIM_GET
+    returns ndims = 0 and MPI_CART_GET will keep all output arguments
+    unchanged." Only the topology knows that count, so the wrapper reads it
+    with `PMPI_Cartdim_get` — PMPI_ so a profiler does not see a call the
+    program never made, as in `src/mpif_cdesc.c` — clamps it to `*maxdims`,
+    and converts nothing at all when either call failed. `dims` and `coords`
+    are INTEGER and reach MPI directly, so their surplus is untouched by
+    construction; `periods` is the only one needing the arrangement.
+    `test/cart_get_f90.f90` checks both the two- and zero-dimensional cases.
   - **`MPI_Type_get_contents`' pure-out `array_of_datatypes`** is pre-filled
     with `MPI_DATATYPE_NULL` — the same defect this project patched one level
     down in MPICH (see `MISSING.md`), so mpif's copy no longer depends on that
@@ -822,13 +834,21 @@ were found and verified.
     the other way, guarding its conversion on `*ierror == MPI_SUCCESS`, because
     a handle is the one case where the conversion itself may object.
 
-  The last two bullets are about the surplus of an array the caller sized:
-  MPI writes only what the object has, and MPI-5.0 lets the caller ask for
-  more — a zero-dimensional Cartesian topology "will keep all output arguments
-  unchanged" (§8.5) — so there the temporary is legitimately unwritten *on
-  success* too. Elsewhere no test can fail on any of this, a caller not being
-  allowed to inspect an out argument after a failing call; `git diff gen/`
-  after regeneration is the verification.
+  Two of those are about the surplus of an array the caller oversized, where
+  MPI writes only what the object has and the rest is unwritten *on success*
+  too, so the pre-fill is not only about the failure path. They resolve it
+  differently, and the difference is the standard's: §8.5 says in as many words
+  that `MPI_CART_GET` leaves what it did not write, so `periods` is bounded and
+  the caller's surplus survives; nothing says that of
+  `MPI_Type_get_contents`' `array_of_datatypes`, so there the whole extent is
+  converted and the surplus comes back `MPI_DATATYPE_NULL`. Bounding costs an
+  extra MPI call and only the Cartesian routines publish a count to bound by.
+
+  A conforming program can observe the surplus, so `test/cart_get_f90.f90`
+  covers it. The failure-path half no test can reach, a caller not being
+  allowed to inspect an out argument after a failing call, and with the
+  trailing NUL in place not even AddressSanitizer sees the string case;
+  `git diff gen/` after regeneration is the verification there.
 - **The f08 twins of `MPI_CONVERSION_FN_NULL`/`_C` set
   `ierror = MPI_ERR_INTERN`**, agreeing with their `mpif.h`/`mpi` twins:
   these are pure sentinels MPI never calls (the wrappers substitute the ABI

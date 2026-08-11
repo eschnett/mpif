@@ -3076,7 +3076,13 @@ void mpi_cart_get_(
     c_periods,
     coords
   );
-  for (int dim=0; dim<*maxdims; ++dim)
+  int ndims_periods = 0;
+  if (*ierror == MPI_SUCCESS)
+    if (PMPI_Cartdim_get(MPI_Comm_fromint(*comm), &ndims_periods) != MPI_SUCCESS)
+      ndims_periods = 0;
+  if (ndims_periods > *maxdims)
+    ndims_periods = *maxdims;
+  for (int dim=0; dim<ndims_periods; ++dim)
     periods[dim] = mpif_bool2logical(c_periods[dim]);
 }
 // MPIF-SPLIT-END
@@ -3101,7 +3107,13 @@ void pmpi_cart_get_(
     c_periods,
     coords
   );
-  for (int dim=0; dim<*maxdims; ++dim)
+  int ndims_periods = 0;
+  if (*ierror == MPI_SUCCESS)
+    if (PMPI_Cartdim_get(MPI_Comm_fromint(*comm), &ndims_periods) != MPI_SUCCESS)
+      ndims_periods = 0;
+  if (ndims_periods > *maxdims)
+    ndims_periods = *maxdims;
+  for (int dim=0; dim<ndims_periods; ++dim)
     periods[dim] = mpif_bool2logical(c_periods[dim]);
 }
 // MPIF-SPLIT-END

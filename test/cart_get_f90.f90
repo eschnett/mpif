@@ -1,18 +1,19 @@
 ! MPI_CART_GET's `periods` is the only out-LOGICAL *array* in data/apis.json, and
 ! so the only argument of its kind that needs a C temporary and a per-element
-! conversion back. `dims` and `coords` are INTEGER and reach MPI directly.
+! conversion back. `dims` and `coords` are INTEGER and reach MPI directly, which
+! is why only `periods` ever had a question here.
 !
 ! MPI writes only as many entries as the topology has dimensions, and `maxdims`
-! may be larger than that. mpif pre-fills its temporary with `false` and converts
-! the whole extent, so the surplus comes back `.false.` rather than untouched --
-! deliberately, and at odds with what MPI-5.0 section 8.5 says for the
-! zero-dimensional case; MISSING.md has the reasoning under "MPI_CART_GET writes
-! the surplus of periods rather than leaving it alone". Without the pre-fill those
-! entries were converted from uninitialised stack memory instead.
+! may be larger. MPI-5.0 section 8.5 states the extreme case: "If comm is
+! associated with a zero-dimensional Cartesian topology, MPI_CARTDIM_GET returns
+! ndims = 0 and MPI_CART_GET will keep all output arguments unchanged." mpif
+! therefore converts back only the entries MPI wrote, reading the count from
+! MPI_CARTDIM_GET, and leaves the caller's surplus exactly as passed.
 !
-! This pins both halves: the entries MPI writes, and what the surplus becomes.
-! The surplus assertions are about mpif's own choice, not about the standard, so
-! they are the ones to change if that decision is ever revisited.
+! It once converted the whole `*maxdims` extent from an uninitialised temporary,
+! which both read uninitialised memory and overwrote elements MPI never touched.
+! Both halves are checked below, in the two-dimensional case and in the
+! zero-dimensional one the sentence above names.
 
 program cart_get_f90
   use mpi
@@ -20,7 +21,7 @@ program cart_get_f90
 
   integer, parameter :: ndims = 2, maxdims = 4
 
-  integer :: ierr, cart, nprocs, i
+  integer :: ierr, cart, cart0, nprocs, i, dimget
   integer :: dims(ndims)
   logical :: periods_in(ndims)
   integer :: gdims(maxdims), gcoords(maxdims)
@@ -39,8 +40,11 @@ program cart_get_f90
        ierr)
   if (ierr /= MPI_SUCCESS) stop 2
 
-  ! Every out element starts at a value the call must be seen to change or leave,
-  ! so that a conversion doing nothing is as visible as one doing the wrong thing
+  ! Every out element starts at a value the call must be seen to change or to
+  ! leave alone, so that a conversion doing nothing is as visible as one doing
+  ! too much. `.true.` for periods is the telling one: MPI_CART_GET reports the
+  ! second dimension as non-periodic, so an entry that stays `.true.` past the
+  ! second is mpif having left it, not MPI having written it.
   gdims = -1
   gcoords = -1
   gperiods = .true.
@@ -55,20 +59,51 @@ program cart_get_f90
      if (gcoords(i) < 0 .or. gcoords(i) >= dims(i)) stop 6
   end do
 
-  ! The surplus of `periods`: mpif converts its whole temporary, so `.false.`
+  ! The surplus, for all three arguments alike: untouched. `periods` is the one
+  ! that has to be arranged for, the other two being untouched by construction.
   do i = ndims + 1, maxdims
-     if (gperiods(i)) stop 7
-  end do
-
-  ! The surplus of `dims` and `coords`, which have no temporary and so are left
-  ! exactly as passed. This is the contrast that shows why only `periods` has the
-  ! question at all.
-  do i = ndims + 1, maxdims
+     if (.not. gperiods(i)) stop 7
      if (gdims(i) /= -1) stop 8
      if (gcoords(i) /= -1) stop 9
   end do
 
-  print '("cart_get_f90: surplus periods are .false., dims and coords untouched")'
+  ! MPI_CARTDIM_GET is what mpif reads the bound from, so check it says what the
+  ! loops above assumed
+  call MPI_Cartdim_get(cart, dimget, ierr)
+  if (ierr /= MPI_SUCCESS) stop 10
+  if (dimget /= ndims) stop 11
+
+  print '("cart_get_f90: 2-D topology, surplus of all three left as passed")'
+
+  ! The zero-dimensional topology of section 8.5, where MPI writes nothing at all
+  ! and every one of the four entries must come back as it was passed. Only one
+  ! process can be in a zero-dimensional topology, so the rest get MPI_COMM_NULL
+  ! and sit this part out.
+  call MPI_Cart_create(MPI_COMM_WORLD, 0, dims, periods_in, .false., cart0, ierr)
+  if (ierr /= MPI_SUCCESS) stop 12
+
+  if (cart0 /= MPI_COMM_NULL) then
+     call MPI_Cartdim_get(cart0, dimget, ierr)
+     if (ierr /= MPI_SUCCESS) stop 13
+     if (dimget /= 0) stop 14
+
+     gdims = -1
+     gcoords = -1
+     gperiods = .true.
+
+     call MPI_Cart_get(cart0, maxdims, gdims, gperiods, gcoords, ierr)
+     if (ierr /= MPI_SUCCESS) stop 15
+
+     do i = 1, maxdims
+        if (.not. gperiods(i)) stop 16
+        if (gdims(i) /= -1) stop 17
+        if (gcoords(i) /= -1) stop 18
+     end do
+
+     print '("cart_get_f90: 0-D topology, all output arguments unchanged")'
+     call MPI_Comm_free(cart0, ierr)
+  end if
+
   print '("cart_get_f90: all ok")'
 
   call MPI_Comm_free(cart, ierr)
