@@ -107,6 +107,17 @@ Once the biggest time sink in the project; the rules in `CLAUDE.md`
   specifics that nothing ever defined, invisible because three sibling
   probes existed and made the pattern look wired up. Both fixed 2026-08-06;
   the drift risks that remain are recorded in `MISSING.md`.
+- The cdesc walker placed a level above a strided one with
+  `MPI_Type_contiguous`, which replicates by the inner type's extent while the
+  walker was comparing against its span — every replica but the first short by
+  the difference, silent wrong data on every walk-class buffer of every
+  `MPIF_HAVE_CFI` variant. `test/subarray_nonblocking_f08.f90` could not see
+  it: its two sections are 1-D strided and `ma(:, 2:6:2)`, and both put the
+  strided level *last*, so nothing sits above one. Put back and measured on
+  `a(1:20:2,:)` count 30 — `a(20,1)` arrives at position 11, column 3 two
+  elements early, 20 of 30 wrong — which is what
+  `test/subarray_strided_cfi_f08.f90` now pins. Inherited from MPICH's
+  `cdesc_create_datatype`, which still has it (`MISSING.md`).
 - `mpif.h`'s `MPI_SIZEOF` declared array specifics only, so a scalar actual
   failed generic resolution under the explicit interfaces — the `mpi` module
   masked it by having both. Fixed by emitting scalar twins (`_s` names) from

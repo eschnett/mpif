@@ -47,12 +47,35 @@ int mpif_cdesc_create_datatype(const CFI_cdesc_t *cdesc, MPI_Count oldcount,
 
   // Walk the dimensions innermost first. Each level wraps `cur` in a type
   // covering one more dimension -- contiguous where the dimension's byte
-  // stride is exactly what the levels below cover, hvector otherwise --
-  // until `count` elements are accounted for. The last level may cover the
-  // dimension only partly, which is a section like a(1:3) of a larger a.
+  // stride is exactly what the levels below cover *and* `dense` still holds,
+  // hvector otherwise -- until `count` elements are accounted for. The last
+  // level may cover the dimension only partly, which is a section like
+  // a(1:3) of a larger a.
   MPI_Count elems_per_cur = 1;
   MPI_Count bytes_per_cur = (MPI_Count)cdesc->elem_len;
   int done = 0;
+
+  // `dense` is the invariant extent(cur) == bytes_per_cur, and it is what
+  // makes the contiguous branch legal: MPI_Type_contiguous places replica i
+  // at i*extent(cur), not at i*bytes_per_cur, and the two part company as
+  // soon as one level is strided -- an hvector of n copies at stride sm over
+  // an extent-e type has extent sm*(n-1) + e, short of the span sm*n it
+  // covers. Contiguous above such a level places every replica but the first
+  // short, which is wrong data and no error; an hvector is right whatever the
+  // inner extent is, its blocks landing at exact byte offsets. So the walk
+  // drops to hvector for good once the invariant is gone. This is the one
+  // place it departs from MPICH's shape, which compares against the span and
+  // gets this wrong; see MISSING.md.
+  //
+  // Seeded from the base type rather than assumed: the innermost level is
+  // contiguous only if extent(oldtype) is the descriptor's element length
+  // too, which a resized `oldtype` would not be.
+  MPI_Count cur_lb, cur_extent;
+  err = PMPI_Type_get_extent_c(cur, &cur_lb, &cur_extent);
+  if (err != MPI_SUCCESS)
+    goto fail;
+  int dense = (cur_lb == 0 && cur_extent == bytes_per_cur);
+
   for (int i = 0; i < cdesc->rank && !done; ++i) {
     if (count % elems_per_cur != 0) {
       // The count stops mid-`cur`: describing that would take an indexed
@@ -66,11 +89,15 @@ int mpif_cdesc_create_datatype(const CFI_cdesc_t *cdesc, MPI_Count oldcount,
     else
       done = 1;
     MPI_Datatype next;
-    if ((MPI_Count)cdesc->dim[i].sm == bytes_per_cur)
+    if (dense && (MPI_Count)cdesc->dim[i].sm == bytes_per_cur) {
       err = PMPI_Type_contiguous_c(extent, cur, &next);
-    else
+    } else {
       err = PMPI_Type_create_hvector_c(extent, 1, (MPI_Count)cdesc->dim[i].sm,
                                        cur, &next);
+      // An hvector level restores extent == span only when the stride is the
+      // inner extent, which is the contiguous case; so once lost, lost.
+      dense = 0;
+    }
     if (err != MPI_SUCCESS)
       goto fail;
     if (owned)

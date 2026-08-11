@@ -357,3 +357,9 @@ add_mpi_test(bottom_cfi_f08         SOURCES bottom_cfi_f08.f90                  
 add_mpi_test(scalar_char_cfi_f08    SOURCES scalar_char_cfi_f08.f90                 LIBS MPI::MPI_Fortran)
 target_compile_options(scalar_char_cfi_f08 PRIVATE $<$<COMPILE_LANGUAGE:Fortran>:-O2>)
 add_mpi_test(reduction_noncontig_cfi_f08 SOURCES reduction_noncontig_cfi_f08.f90  LIBS MPI::MPI_Fortran)
+# Sections with a dimension *above* a strided one -- the shape where the walker
+# may not place a level with MPI_Type_contiguous, since that replicates by the
+# inner extent and an hvector's extent is short of its span. See the file's
+# header. subarray_nonblocking_f08's two sections both put the strided level
+# last and pass either way.
+add_mpi_test(subarray_strided_cfi_f08 SOURCES subarray_strided_cfi_f08.f90       LIBS MPI::MPI_Fortran)

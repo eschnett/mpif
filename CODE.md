@@ -424,7 +424,13 @@ held to a frozen per-class tally so a new `apis.json` reclassifies loudly):
   and the `PMPI_*_c` constructors; a descriptor element longer than the
   datatype (a `character(len=8)` buffer under `MPI_CHARACTER`) folds the
   factor into a contiguous base type where MPICH only asserts under error
-  checking; only the outermost type is committed. The call gets count 1 and
+  checking; a level is contiguous only while every level below it is *dense*,
+  because `MPI_Type_contiguous` replicates at multiples of the inner type's
+  extent and an hvector's extent — `sm*(n-1) + e` — falls short of the span
+  `sm*n` it covers, so contiguous above a strided dimension misplaces every
+  replica but the first (MPICH compares against the span and gets this wrong;
+  `MISSING.md` "MPICH: `cdesc_create_datatype` places a contiguous level by
+  extent"); only the outermost type is committed. The call gets count 1 and
   the walked type, freed right after — legal even for a nonblocking call,
   the request holding its own reference. A root-only buffer walks under
   `q_at_root`, so a non-root rank never walks against `MPI_DATATYPE_NULL`.
@@ -460,7 +466,10 @@ anyway.
 What the tests pin, and what they cannot: `test/subarray_nonblocking_f08.f90`
 (compiled `-O2`, like every test whose assertion is about the caller's
 optimiser) fails if the walker ignores strides;
-`test/scalar_char_cfi_f08.f90` fails if the element-length factor breaks;
+`test/subarray_strided_cfi_f08.f90` fails if a level above a strided one is
+placed by the inner extent rather than by the stride — the shape the
+nonblocking test cannot see, both of its sections putting the strided level
+last; `test/scalar_char_cfi_f08.f90` fails if the element-length factor breaks;
 `test/subarrays_constants_f08.F90` re-derives the expected
 `MPI_SUBARRAYS_SUPPORTED` from the same probe at test-configure time, so a
 build whose constants disagree with its buffers fails whichever way the
