@@ -17,6 +17,18 @@ project(
 # major/minor version number.
 set(SOVERSION 1)
 
+# A shared library is mpif's default configuration. CMake's own default for
+# `BUILD_SHARED_LIBS` is OFF, so without this a bare `cmake ..` -- the first
+# thing a packager runs -- would produce the archive, which is the
+# configuration that needs `MPIF_SPLIT_WRAPPERS` below and
+# `ci-scripts/check-static-build.sh` to stay correct: an archive yields a
+# member only when something references a symbol in it, and mpif publishes
+# data across the language boundary through COMMON blocks. Every caller in
+# this tree passes the value explicitly; this default is for everyone else.
+option(BUILD_SHARED_LIBS
+  "Build mpif as a shared library rather than an archive"
+  ON)
+
 set(CMAKE_C_STANDARD 11)   # C11 for <stdatomic.h>, used by the callback registry
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
 include(GNUInstallDirs)
