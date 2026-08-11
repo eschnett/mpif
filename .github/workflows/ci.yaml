@@ -975,15 +975,55 @@ jobs:
           b="${RUNNER_TEMP}/opt/mpif-openmpi"
           diff -r "${a}/include" "${b}/include"
           echo "include/ identical"
-          if [[ ${RUNNER_OS} == macOS ]]; then
-              liba=${a}/lib/libmpifort_abi.1.0.0.dylib
-              libb=${b}/lib/libmpifort_abi.1.0.0.dylib
-          else
-              liba=${a}/lib/libmpifort_abi.so.1.0.0
-              libb=${b}/lib/libmpifort_abi.so.1.0.0
+
+          # The library is found, not spelled: its versioned name carries
+          # PROJECT_VERSION (CMakeLists.txt), and a literal 1.0.0 would name a
+          # file that does not exist from the next bump onwards -- silently, see
+          # the emptiness check below. The glob for the other platform matches
+          # nothing and stays literal, which the -f discards; the -L discards the
+          # two symlinks CMake installs beside the real file. Exactly one
+          # regular match, so a prefix holding two versions is an error too.
+          # No arrays: the macOS runners still have bash 3.2.
+          find_lib() {
+              local prefix=$1 found= n=0
+              for cand in "${prefix}"/lib/libmpifort_abi.*.dylib \
+                          "${prefix}"/lib/libmpifort_abi.so.*; do
+                  if [[ -f ${cand} && ! -L ${cand} ]]; then
+                      found=${cand}
+                      n=$((n + 1))
+                  fi
+              done
+              if [[ ${n} -ne 1 ]]; then
+                  # On stderr: stdout here is the caller's command substitution.
+                  echo "::error::expected exactly one shared libmpifort_abi" \
+                       "under ${prefix}/lib, found ${n}" >&2
+                  exit 1
+              fi
+              printf '%s\n' "${found}"
+          }
+          liba=$(find_lib "${a}")
+          libb=$(find_lib "${b}")
+          if [[ ${liba##*/} != "${libb##*/}" ]]; then
+              echo "::error::the two installations disagree about the library's" \
+                   "name: ${liba##*/} against ${libb##*/}"
+              exit 1
           fi
+          echo "comparing ${liba##*/}"
+
+          # Into variables first, where a failing nm reaches `set -e` through
+          # pipefail. A failure *inside* a process substitution reaches neither,
+          # so `diff <(nm ...) <(nm ...)` on two unreadable files compares two
+          # empty streams and passes; the emptiness check is what keeps this
+          # from reporting agreement having compared nothing.
           symbols() { nm -g "$1" | awk '{ print $(NF-1), $NF }' | sort; }
-          diff <(symbols "${liba}") <(symbols "${libb}")
+          syms_a=$(symbols "${liba}")
+          syms_b=$(symbols "${libb}")
+          if [[ -z ${syms_a} || -z ${syms_b} ]]; then
+              echo "::error::nm produced no symbols for ${liba} or ${libb};" \
+                   "there would be nothing to compare"
+              exit 1
+          fi
+          diff <(printf '%s\n' "${syms_a}") <(printf '%s\n' "${syms_b}")
           echo "exported and undefined symbols identical"
           if cmp -s "${liba}" "${libb}"; then
               echo "the libraries are byte-identical"
