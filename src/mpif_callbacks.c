@@ -118,10 +118,25 @@ int mpif_predefined_callback(mpif_fortran_procedure callback, void **result) {
 // MPI reuses for a later keyval overwrites its entry, so the table grows only
 // to the number of keyvals live at one time.
 //
-// Access is lock-free. `keyval` is published with release ordering once the
-// procedures are in place and read with acquire ordering, so a reader either
-// does not see the entry or sees it complete. MPI_KEYVAL_INVALID is 0, which is
-// what static storage starts as, so a zeroed slot reads as free.
+// Access is lock-free, and the ordering covers less than it may look like it
+// does. Claiming a slot CASes `keyval` from MPI_KEYVAL_INVALID to
+// KEYVAL_RESERVED, so no concurrent registration takes the same slot and no
+// concurrent lookup matches a half-built entry; the release store that follows
+// publishes the slot under its real keyval, and `find_attr_entry`'s acquire
+// load pairs with that. MPI_KEYVAL_INVALID is 0, which is what static storage
+// starts as, so a zeroed slot reads as free.
+//
+// What the pair does *not* cover is `copy_fn` and `delete_fn`. They are plain
+// fields written *after* the entry is published, and they have to be: the copy
+// callback and the delete callback are registered in two separate calls, and a
+// keyval MPI has reused updates an entry that is already published, so there is
+// no ordering in which the payload is complete before the slot is findable.
+// Concurrent use is safe for a reason outside this file instead. MPI hands a new
+// keyval out only through the creating call's output argument, and the generated
+// wrapper does not return until both registrations are done, so whatever the
+// caller then uses to give another thread the keyval supplies the
+// happens-before. A thread that could find this entry any earlier would be
+// using a keyval it cannot legally have yet.
 
 enum { MPIF_MAX_KEYVALS = 256 };
 enum { KEYVAL_RESERVED = -1 };
@@ -328,8 +343,6 @@ int mpif_register_attr_callback(int keyval, enum mpif_attr_callback_kind kind,
     entry->delete_fn = callback;
     break;
   }
-  // Make the procedure visible to a thread that later finds this entry
-  atomic_thread_fence(memory_order_release);
   return MPI_SUCCESS;
 }
 
