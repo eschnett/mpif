@@ -83,17 +83,40 @@ awk -v outdir="$outdir" -v prefix="$prefix" -v ext="$ext" \
     # Runs of blank lines collapse to one: the generator separates its entry
     # points with a blank line, which is outside every region, so without this
     # each part would carry 1180 of them ahead of its own body.
+    # The depth is checked per line, not just at the end. A net-balance check
+    # alone accepts a nested or misordered pair, and either one silently drops
+    # code rather than failing: a region opened inside a region ends at the
+    # first END, so the tail of the outer region joins the prologue that every
+    # part carries, and an END ahead of its BEGIN takes the lines before it
+    # into a region no name closes. The generated markers cannot get this
+    # wrong, but the ones in src/mpif_removed.c are written by hand. The second
+    # pass below walks the same lines and so needs no check of its own.
+    #
+    # No apostrophes in this comment: the whole awk program is a single-quoted
+    # shell word.
     depth = 0
     blank = 0
     for (i = 1; i <= NR; i++) {
-      if (index(line[i], "MPIF-SPLIT-BEGIN ")) { depth++; continue }
-      if (index(line[i], "MPIF-SPLIT-END"))    { depth--; continue }
+      if (index(line[i], "MPIF-SPLIT-BEGIN ")) {
+        if (++depth > 1) {
+          printf "%s: nested MPIF-SPLIT-BEGIN at line %d\n", me, i > "/dev/stderr"
+          exit 1
+        }
+        continue
+      }
+      if (index(line[i], "MPIF-SPLIT-END")) {
+        if (--depth < 0) {
+          printf "%s: MPIF-SPLIT-END without a BEGIN at line %d\n", me, i > "/dev/stderr"
+          exit 1
+        }
+        continue
+      }
       if (depth != 0) continue
       if (line[i] ~ /^[ \t]*$/) { if (blank++) continue } else blank = 0
       prologue = prologue line[i] "\n"
     }
     if (depth != 0) {
-      printf "%s: unbalanced MPIF-SPLIT markers\n", me > "/dev/stderr"
+      printf "%s: unterminated MPIF-SPLIT-BEGIN\n", me > "/dev/stderr"
       exit 1
     }
 
