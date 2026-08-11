@@ -292,6 +292,7 @@ summaries=()
 differences=()
 unexpected=()
 flakynotes=()
+unseennotes=()
 for language in "${languages[@]}"; do
     if [[ ! -d ${language} ]]; then
         echo "error: the suite has no ${language} directory" >&2
@@ -392,6 +393,7 @@ for language in "${languages[@]}"; do
     while read -r kind test; do
         case ${kind} in
             flaky,*)     flakynotes+=("${language}: ${kind} ${test}") ;;
+            unseen:)     unseennotes+=("${language}: xfail entry never seen -- ${test}") ;;
             unexpected)
                 # `read` leaves the name at the end of ${test}, as in
                 # "failure: spawnf"; "unexpectedly passes" gives a different
@@ -436,6 +438,18 @@ for language in "${languages[@]}"; do
             for (name in flaky)
                 if (name in failed) print "flaky, failed this time:", name
                 else if (name in passed) print "flaky, passed this time:", name
+            # An expectation whose test the run never mentioned at all -- not
+            # passed, not failed, not skipped. Retired by a MPICH_VERSION bump,
+            # renamed upstream, or misspelled when it was added; without this it
+            # sits in the list forever, since comparison is by name and a name
+            # nothing reports matches nothing. This is also what makes a TAP
+            # file that names no tests visible: every expectation for that
+            # language reports at once, where "no differences" was the old
+            # answer. Reported, never gating -- a hand-run of one directory
+            # legitimately mentions nothing from the others.
+            for (name in expected)
+                if (!(name in passed) && !(name in failed) && !(name in skipped))
+                    print "unseen:", name
         }
     ' "${xfail_file}" "${tap}")
 done
@@ -451,6 +465,9 @@ echo
 echo "=== Against ${xfail_file##*/}, variant ${variant}"
 if [[ ${#flakynotes[@]} -gt 0 ]]; then
     printf '  %s\n' "${flakynotes[@]}"
+fi
+if [[ ${#unseennotes[@]} -gt 0 ]]; then
+    printf '  %s\n' "${unseennotes[@]}"
 fi
 if [[ ${#differences[@]} -eq 0 ]]; then
     echo "  no differences: every failure is expected and every expectation held"
