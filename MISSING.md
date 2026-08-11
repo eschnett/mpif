@@ -875,12 +875,17 @@ reason:
   `docker/mpich-gcc-static-arm64v8.dockerfile`'s suite stage is compared against
   `mpich/gcc/linux/26.04/aarch64`, the same rows the shared image uses. Left that
   way rather than given a key of its own, because the two agreeing is the claim
-  worth making: an archive should not change which of MPICH's tests pass. Measured
-  — the image's own suite stage reports `no differences: every failure is expected
-  and every expectation held` against those rows, 16 expected failures over 363
-  tests in the three interfaces, the three `profile` tests among the passes; a
-  static run on `mpich/gcc/darwin/26/arm64` says the same of its own rows. Should
-  the two ever diverge, the key is where the work would go.
+  worth making: an archive should not change which of MPICH's tests pass.
+  Measured, by building both images from the same commit — they report the same
+  failures interface by interface, 3 of 105 in f77, 5 of 122 in f90 and 8 of 136
+  in f08, and both end in `no differences: every failure is expected and every
+  expectation held`, the three `profile` tests among the passes. A static run on
+  `mpich/gcc/darwin/26/arm64` says the same of its own rows. Should the two ever
+  diverge, the key is where the work would go.
+  The two images share every layer up to and including the MPICH install, their
+  instructions being identical that far, so rebuilding one after the other costs
+  only mpif and the tests — which is also what makes the comparison cheap to
+  repeat.
 - **`mpif_check_environment` cannot see a lost cell member, and is not being
   taught to.** With `src/mpif_constants.c`'s member absent from the archive the
   consumer's own COMMON blocks become the definitions, C and Fortran still
