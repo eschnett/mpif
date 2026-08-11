@@ -136,7 +136,7 @@ MPIF_DEFINE_TYPE_STRUCT(pmpi_type_struct_, PMPI_Type_create_struct)
 
 #define MPIF_DEFINE_ADDRESS(fname, get_address)                                \
   void fname(const void *location, MPI_Fint *address, MPI_Fint *ierror) {      \
-    MPI_Aint c_address;                                                        \
+    MPI_Aint c_address = 0;                                                    \
     *ierror = get_address(mpif_c_cbuffer(location), &c_address);               \
     *address = (MPI_Fint)c_address;                                            \
   }
@@ -153,10 +153,18 @@ MPIF_DEFINE_ADDRESS(pmpi_address_, PMPI_Get_address)
 // The MPI-1 routines predate the distinction between the true extent and the
 // extent with padding, and there was never an MPI_TYPE_GET_UB: the upper bound
 // is the lower bound plus the extent.
+//
+// The MPI_Aint locals are initialised for the reason CODE.md's "out-temporaries
+// are initialised" gives: a failing MPI_Type_get_extent writes neither of them,
+// and the cast to MPI_Fint below runs whatever the call returned, so without
+// this it converts an indeterminate value. MPIF_NEWTYPE_ON_SUCCESS above
+// reaches the same end by guarding its conversion instead, because a handle's
+// MPI_*_toint may look garbage up in a table and abort; an MPI_Aint has no such
+// objection, so initialising is enough here.
 
 #define MPIF_DEFINE_TYPE_EXTENT(fname, type_get_extent)                        \
   void fname(const MPI_Fint *datatype, MPI_Fint *extent, MPI_Fint *ierror) {   \
-    MPI_Aint lb, c_extent;                                                     \
+    MPI_Aint lb = 0, c_extent = 0;                                             \
     *ierror = type_get_extent(MPI_Type_fromint(*datatype), &lb, &c_extent);    \
     *extent = (MPI_Fint)c_extent;                                              \
   }
@@ -171,7 +179,7 @@ MPIF_DEFINE_TYPE_EXTENT(pmpi_type_extent_, PMPI_Type_get_extent)
 #define MPIF_DEFINE_TYPE_LB(fname, type_get_extent)                            \
   void fname(const MPI_Fint *datatype, MPI_Fint *displacement,                 \
              MPI_Fint *ierror) {                                               \
-    MPI_Aint lb, extent;                                                       \
+    MPI_Aint lb = 0, extent = 0;                                               \
     *ierror = type_get_extent(MPI_Type_fromint(*datatype), &lb, &extent);      \
     *displacement = (MPI_Fint)lb;                                              \
   }
@@ -186,7 +194,7 @@ MPIF_DEFINE_TYPE_LB(pmpi_type_lb_, PMPI_Type_get_extent)
 #define MPIF_DEFINE_TYPE_UB(fname, type_get_extent)                            \
   void fname(const MPI_Fint *datatype, MPI_Fint *displacement,                 \
              MPI_Fint *ierror) {                                               \
-    MPI_Aint lb, extent;                                                       \
+    MPI_Aint lb = 0, extent = 0;                                               \
     *ierror = type_get_extent(MPI_Type_fromint(*datatype), &lb, &extent);      \
     *displacement = (MPI_Fint)(lb + extent);                                   \
   }
