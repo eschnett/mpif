@@ -231,6 +231,15 @@ add_mpi_test(check_c                SOURCES check_c.c                           
 # exit status (PASS_REGULAR_EXPRESSION decides regardless of it): the
 # pre-initialization failure path raises SIGABRT, which WILL_FAIL would report
 # as an exception, and under mpiexec the launcher absorbs the signal anyway.
+#
+# The positive run passes on the layout line that stating a node expectation
+# makes rank 0 print, which is the only thing that checks that instrument -- and
+# which also states the layout the two negative node tests need to be wrong. Note
+# what that line must not say: its prefix is "mpif: node layout: " and not
+# "mpif: mpif_check_environment: ", because a line carrying the latter would
+# satisfy every failure test below without any check having failed. See the
+# printing walk in src/mpif_check.c and MISSING.md "The two node-layout tests
+# flake, on CI runners and not here".
 function(add_check_env_test name nprocs env)
   if(MPIF_TEST_BUILD_ONLY)
     return()
@@ -246,7 +255,8 @@ function(add_check_env_test name nprocs env)
   endif()
 endfunction()
 add_check_env_test(check_env 2
-  "MPIF_SIZE=2;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=2;MPIF_MPI_LIBRARY=${MPIF_TEST_MPI_LIBRARY}")
+  "MPIF_SIZE=2;MPIF_NUM_NODES=1;MPIF_NODE_SIZE=2;MPIF_MPI_LIBRARY=${MPIF_TEST_MPI_LIBRARY}"
+  "mpif: node layout: .*: 2 processes on 1 node")
 add_check_env_test(check_env_size_fail 2 "MPIF_SIZE=3"
   "mpif: mpif_check_environment: ")
 add_check_env_test(check_env_nodes_fail 2 "MPIF_NUM_NODES=2"

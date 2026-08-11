@@ -307,47 +307,85 @@ link, so only nvfortran showed it.
 `check_env_nodes_fail` and `check_env_nodesize_fail` each run 2 ranks, state a
 node layout the run does not have, and expect `mpif_check_environment` to
 refuse. Sometimes no diagnostic comes and the test fails on the missing regular
-expression. Three observations, all on GitHub runners:
+expression. Four observations, all on GitHub runners, all under MPICH:
 
 | when | job | test |
 |---|---|---|
-| first | `sanitize / gcc` | `check_env_nodesize_fail` (`MPIF_NODE_SIZE=1`) |
+| first | `sanitize / gcc` (ubuntu) | `check_env_nodesize_fail` (`MPIF_NODE_SIZE=1`) |
 | run `31429326321` | `mpif / mpich / gcc / macos-15` | `check_env_nodesize_fail` |
-| run `31429326321` | `static` | `check_env_nodes_fail` (`MPIF_NUM_NODES=2`) |
+| run `31429326321` | `static` (ubuntu) | `check_env_nodes_fail` (`MPIF_NUM_NODES=2`) |
+| run `31524365669` | `mpif / mpich / llvm / macos-15` | `check_env_nodes_fail` |
 
 The first was rerun on the same commit and passed. Every other test passed in all
-three, and the sibling test passed in each.
+four, and the sibling test passed in each. Not macOS-specific — `sanitize` and
+`static` run on `ubuntu-24.04`. No Open MPI sighting, over roughly half the
+opportunities.
 
-**Inferred**, still not established, but now supported from two directions:
-`src/mpif_check.c` derives the layout by gathering `MPI_Get_processor_name` to
-rank 0 and grouping equal names, so both tests refuse only when the two ranks
-report the *same* name. Two differing names give two nodes of one process each —
-which is exactly what `MPIF_NODE_SIZE=1` claims *and* what `MPIF_NUM_NODES=2`
-claims. So the two tests are satisfied by the same wrong layout, and having seen
-each of them accept it once is two independent sightings of one cause rather than
-two puzzles. What makes the ranks disagree about the name for one run in many is
-still unknown.
+**Measured.** In the fourth sighting ctest captured *zero bytes* of test output,
+under `--output-on-failure` — not even MPICH's own
+`application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0`, which rank 0
+writes to the same fd immediately after mpif's line. A passing run of that case
+emits both (149 bytes here). The run took 0.06 s, the same as its passing
+siblings.
 
-Two things that look like evidence and are not:
+**Two candidates, and an empty capture fits both.**
+
+1. **The layout was accepted.** `src/mpif_check.c` derives the layout by
+   gathering `MPI_Get_processor_name` to rank 0 and grouping equal names, so both
+   tests refuse only when the two ranks report the *same* name. Two differing
+   names give two nodes of one process each — exactly what `MPIF_NODE_SIZE=1`
+   claims *and* what `MPIF_NUM_NODES=2` claims. The program then exits 0 having
+   printed nothing. What would make the ranks disagree is unknown.
+2. **The launcher dropped the aborting rank's output.** Rank 0 writes into a pipe
+   the hydra proxy has not read yet, then `MPI_Abort` makes the proxy tear the job
+   down; everything rank 0 wrote is lost, banner included.
+
+Which way the exposure pattern points: candidate 1 exposes four tests, not two.
+Measured, by making every rank append its rank to its own processor name and
+running the suite: `check_env`, `check_env_nodes_fail`, `check_env_nodesize_fail`
+and `mpif_info` all fail together, because the two positive tests assert the
+*true* layout. All four sightings landed in the two negative tests alone, a
+1-in-16 coincidence under candidate 1. Candidate 2 predicts the observed set
+exactly —
+only a test where a *single* rank prints and then calls `MPI_Abort` is exposed:
+`check_env_size_fail` prints from both ranks, `check_env_library_fail` aborts
+before `MPI_Init` so the launcher learns of the death by pipe EOF having drained
+it, and `check_env_mpiexec_fail` has no launcher. None of the three has flaked.
+Suggestive, not decisive, either way.
+
+Things that look like evidence and are not:
 
 - **`check_env` passing in the same job says nothing.** It asserts the true layout
-  (`MPIF_NUM_NODES=1;MPIF_NODE_SIZE=2`) and would fail if the names disagreed —
-  but every test is its own `mpiexec` invocation, so it reports on a different
-  run.
-- **Not reproducible here.** 400 two-rank MPICH runs on this machine gathered
-  identical names every time (`MPI_Get_processor_name`, gathered and compared).
-  That places it on the runners, not in the code path being exercised.
+  and would fail if the names disagreed — but every test is its own `mpiexec`
+  invocation, so it reports on a different run.
+- **Not reproducible here.** 2400 two-rank MPICH runs of the failing case itself,
+  1200 idle and 600 with 24 spinners on 12 cores, plus 600 of `MPIF_SIZE=3`: the
+  diagnostic and the abort banner arrived every time. (An earlier 400 runs
+  compared only the gathered names, so they bore on candidate 1 alone.)
 
 `test/` has no expected-failure list and should be entirely green, so this is
 recorded rather than accommodated. It is **not** specific to any variant or to
 the static build: `static` was simply a thirteenth place for it to appear, and it
 turned that job red on its first run.
 
-The remedy this entry used to name — print the gathered names on mismatch — would
-not have caught any of the three, because the failure is the *absence* of a
-mismatch. The instrument that would is printing the gathered names whenever an
-expectation was stated at all, which is what the next occurrence needs and what
-nobody has written.
+**What was done, and what deliberately was not.** Stating either node variable
+now makes rank 0 print the layout it gathered whether or not the expectation
+holds, which is what separates the candidates at the next occurrence: candidate 1
+leaves a `mpif: node layout: ...` line and no refusal, candidate 2 leaves nothing
+at all. `check_env` asserts that line, so the instrument cannot rot. The earlier
+idea — print the names on mismatch — would have caught none of the four, the
+failure being the *absence* of a mismatch. Two remedies were rejected:
+
+- **Gating the failure tests on the launcher's exit status** instead of the
+  diagnostic. It would cure candidate 2 outright — every aborting case makes its
+  launcher exit nonzero, measured on all four local variants: 1 for the four
+  `MPI_Abort` cases under both implementations, 6 (MPICH) and 134 (Open MPI) for
+  the pre-`MPI_Init` `abort()`. Not done, because it would cure the symptom
+  before either candidate is established, and the flake is the only evidence
+  there is.
+- **Making the expectations unsatisfiable** (`MPIF_NUM_NODES=3`, `MPIF_NODE_SIZE=3`
+  at 2 ranks, which no layout can satisfy). It would cure candidate 1 by hiding
+  it, and would stop the tests demonstrating that the layout is derived at all.
 
 One consequence worth knowing: a failure here in the `mpif` stage takes three
 more jobs with it, because `test/` runs before the artifact upload, so

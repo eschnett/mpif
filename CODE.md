@@ -111,7 +111,10 @@ chapter 20 frames the ABI version macros exactly this way.
 - `mpif_check_environment()` checks what it can and aborts on the first
   inconsistency; the file's header comment enumerates the checks and the
   optional `MPIF_MPI_LIBRARY`/`MPIF_SIZE`/`MPIF_NUM_NODES`/`MPIF_NODE_SIZE`
-  environment variables. Two contracts: outside the
+  environment variables. Setting either node variable also makes rank 0 print
+  the layout it gathered, accepted or not — the only case that had no witness
+  was the accepted one (`MISSING.md` "The two node-layout tests flake"). Two
+  contracts: outside the
   initialized-and-not-finalized window (MPI-5.0 §11.4.1, Table 11.1) only the
   version and library-name checks run, the rest skipped silently; inside it
   the function is *collective over MPI_COMM_WORLD*. Local checks run before

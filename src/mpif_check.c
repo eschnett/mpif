@@ -48,6 +48,9 @@
 //   MPIF_NUM_NODES    exact number of distinct nodes (MPI_Get_processor_name)
 //   MPIF_NODE_SIZE    exact number of processes on every node -- a node count
 //                     alone cannot tell an even 4x4 layout from 13+1+1+1
+// Setting either node variable also makes rank 0 print the layout it gathered,
+// whether or not the expectation holds; see the printing walk below for why the
+// accepting case is the one that needed a witness.
 // A malformed value ("MPIF_SIZE=abc") aborts rather than being ignored: a
 // typo'd guard that guards nothing would defeat the purpose. The launcher
 // variables PMI_SIZE, OMPI_COMM_WORLD_SIZE, SLURM_NTASKS and SLURM_NPROCS are
@@ -533,6 +536,50 @@ void mpif_check_environment(void) {
                MPI_MAX_PROCESSOR_NAME, MPI_CHAR, 0, comm);
     if (rank == 0) {
       qsort(names, size, MPI_MAX_PROCESSOR_NAME, mpif_check_name_cmp);
+      // What the gather found, printed whether or not the expectation holds.
+      // The case that needed a witness is the one where the layout is
+      // *accepted*: a rank whose name differs from the others' turns two
+      // processes on one node into two nodes of one, which is what
+      // MPIF_NUM_NODES=2 and MPIF_NODE_SIZE=1 each claim, so a run that should
+      // have been refused passes in silence. Printing only on mismatch cannot
+      // see that; printing here can. See MISSING.md "The two node-layout tests
+      // flake, on CI runners and not here".
+      //
+      // The prefix is deliberately NOT "mpif: mpif_check_environment: ", which
+      // is what every check_env*_fail test in test/CMakeLists.txt passes on: a
+      // line carrying that prefix would satisfy those tests with no check
+      // having failed, which is exactly the silence this is here to break.
+      //
+      // Printed before the checks below, and complete before any of them can
+      // abort. The counts trail the names because num_nodes is not known until
+      // the walk ends; at most eight names are listed, so a large job still
+      // prints one bounded line, with the true totals.
+      {
+        enum { max_listed = 8 };
+        int listed = 0, printed_nodes = 0;
+        fprintf(stderr, "mpif: node layout:");
+        for (int i = 0; i < size;) {
+          const char *const node = names + (size_t)i * MPI_MAX_PROCESSOR_NAME;
+          int node_size = 0;
+          while (i < size &&
+                 strcmp(names + (size_t)i * MPI_MAX_PROCESSOR_NAME, node) ==
+                     0) {
+            ++node_size;
+            ++i;
+          }
+          if (listed < max_listed) {
+            fprintf(stderr, "%s \"%s\" x%d", listed == 0 ? "" : ",", node,
+                    node_size);
+            ++listed;
+          }
+          ++printed_nodes;
+        }
+        if (printed_nodes > listed)
+          fprintf(stderr, ", ... (%d more)", printed_nodes - listed);
+        fprintf(stderr, ": %d process%s on %d node%s\n", size,
+                size == 1 ? "" : "es", printed_nodes,
+                printed_nodes == 1 ? "" : "s");
+      }
       int num_nodes = 0;
       for (int i = 0; i < size;) {
         const char *const node = names + (size_t)i * MPI_MAX_PROCESSOR_NAME;
