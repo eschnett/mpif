@@ -18,6 +18,11 @@ require_marker "${mpif_prefix}" \
 echo "Consuming the mpif in build/mpif/${tagged}:"
 show_marker "${mpif_prefix}"
 
+# The consume project below says find_package(mpif REQUIRED) and pins the ABI
+# library, so it cannot see what an *optional* consumer sees, nor reach the
+# find_library fallback. This does both.
+bash "${repodir}/ci-scripts/check-package-config.sh" "${mpif_prefix}" "${mpi_prefix}"
+
 build=${consume_build}
 
 rm -rf "${build}"

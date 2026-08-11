@@ -1,7 +1,5 @@
 @PACKAGE_INIT@
 
-include("${CMAKE_CURRENT_LIST_DIR}/mpifTargets.cmake")
-
 # libmpifort_abi deliberately links no MPI library (see "Choosing the MPI at
 # run time" in CODE.md): the application is what links `mpi_abi`, per MPI-5.0
 # section 20.2.1, and which MPI that is gets decided here, in the *consumer's*
@@ -30,12 +28,29 @@ if(NOT MPIF_MPI_ABI_LIBRARY)
       DOC "The MPI ABI library that applications link")
   endif()
 endif()
+
+# Report rather than abort. A package configuration file is allowed to fail:
+# `find_package(mpif)` without REQUIRED -- QUIET or not -- must leave the
+# consumer's configure running with mpif_FOUND false, which is what lets mpif
+# be an optional dependency. message(FATAL_ERROR) here would end that
+# consumer's configure instead. A REQUIRED caller loses nothing: CMake raises
+# its own fatal error and prints this text back as the reason given by the
+# package. Returning before mpifTargets.cmake is the other half -- an mpif that
+# reports itself not found leaves no mpif::mpifort_abi behind, so a consumer
+# cannot reach a target whose ABI library was never attached.
 if(NOT MPIF_MPI_ABI_LIBRARY)
-  message(FATAL_ERROR "mpif: no MPI ABI library (libmpi_abi) found. Point "
+  # string(CONCAT) rather than set(): set() with several arguments makes a
+  # list, and the message would come out semicolon-separated.
+  string(CONCAT mpif_NOT_FOUND_MESSAGE
+    "no MPI ABI library (libmpi_abi) found. Point "
     "CMAKE_PREFIX_PATH or MPI_HOME at an MPI implementing the standard ABI, "
     "or set MPIF_MPI_ABI_LIBRARY (or FindMPI's MPI_mpi_abi_LIBRARY) to the "
     "library itself.")
+  set(mpif_FOUND FALSE)
+  return()
 endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/mpifTargets.cmake")
 
 set_property(TARGET mpif::mpifort_abi APPEND PROPERTY
   INTERFACE_LINK_LIBRARIES "${MPIF_MPI_ABI_LIBRARY}")

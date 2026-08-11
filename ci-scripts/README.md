@@ -13,10 +13,11 @@ and on a laptop.
 
 (Some of the files here belong to neither: `install-mpi-stubs.sh`,
 `compile-only.sh` and `check-configure-probes.sh` build no MPI and run no suite,
-and neither do `check-sanitizer-build.sh` and `check-static-build.sh`, which ask
-whether a build came out the way it was asked for. All of them are in the cache
-key, which costs an MPI rebuild when one of them changes and is the safe
-direction; see "Compiling under another compiler" below.)
+and neither do `check-sanitizer-build.sh`, `check-static-build.sh` and
+`check-package-config.sh`, which ask whether a build came out the way it was
+asked for. All of them are in the cache key, which costs an MPI rebuild when one
+of them changes and is the safe direction; see "Compiling under another
+compiler" below.)
 
 The division is not tidiness. Both are expensive -- building an MPI from source
 takes minutes per variant, and building MPICH's suite takes minutes more -- and
@@ -107,15 +108,19 @@ containers. It answers only "does configure detect this compiler correctly and
 does the code compile" -- the `mpif`, `suite` and `cross` stages are what
 answer anything about behaviour.
 
-Asking whether a build came out as asked, with no MPI and nothing run:
+Asking whether a build came out as asked, with no MPI built and no MPI program
+run:
 
 | file | what it does |
 |------|--------------|
 | `check-sanitizer-build.sh` | read the installed library for undefined `__asan_*`/`__ubsan_*` references. A sanitizer build whose flags never reached the compiler passes every test, which is what a correct one does on clean code, so no test can tell them apart |
 | `check-static-build.sh` | assert that a `-DBUILD_SHARED_LIBS=OFF` prefix holds an archive and no shared library, that `bin/mpif_info` names `libmpi_abi` and not `libmpifort_abi` among its dynamic dependencies, that every sentinel cell in it is read-only, and that no archive member defines more than one MPI entry point. The read-only one is what nothing else catches: if `mpif_constants.c`'s member never comes out of the archive the program still works, and silently loses the read-only fault and the poison behind every sentinel translation. The one-entry-point-per-member one is MPI-5.0 §15.2.1(4). See "Static linking" in CODE.md |
+| `check-package-config.sh` | configure three throwaway projects against an installed prefix: `find_package(mpif QUIET)` with no `libmpi_abi` to be found must leave the consumer configuring with `mpif_FOUND` false and a reason set, the same absence under `REQUIRED` must fail and say what to set, and `MPI_HOME` pointing at an MPI must find it and define `mpif::mpifort_abi`. `test-consume/` says `REQUIRED` and pins `MPI_mpi_abi_LIBRARY`, so it passes whether the config file reports a failure or raises one, and never reaches the `find_library` fallback. See "Choosing the MPI at run time" in CODE.md |
 
-Both are called by `scripts/macos-build-mpif.sh` as well as by CI, so a local
-build of either kind is held to the same thing.
+The first two are called by `scripts/macos-build-mpif.sh` as well as by CI, so a
+local build of either kind is held to the same thing; the third is called by
+`scripts/macos-test-consume.sh` and by CI's `static` job, beside the
+`test-consume/` build it complements.
 
 One script is not a check but a build step:
 

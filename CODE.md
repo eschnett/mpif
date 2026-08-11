@@ -191,6 +191,21 @@ arrangements make that true:
   suite cross-run is gated against the *runtime* MPI's rows of
   `mpich-suite-xfail.txt`.
 
+A consumer that goes through `find_package(mpif)` makes the same choice in its
+own configure: `cmake/mpifConfig.cmake.in` locates `libmpi_abi` — an explicit
+`MPI_mpi_abi_LIBRARY`, else `MPI_HOME`, else the ordinary search — and appends
+it to `mpif::mpifort_abi`, so `target_link_libraries(app PRIVATE
+mpif::mpifort_abi)` is the whole of it. Not finding one is *reported*, not
+raised: the file sets `mpif_NOT_FOUND_MESSAGE`, sets `mpif_FOUND FALSE` and
+returns, which is what lets a project depend on mpif optionally —
+`message(FATAL_ERROR)` there would end the configure of a consumer that wrote
+`find_package(mpif QUIET)`. A `REQUIRED` consumer is no quieter for it: CMake
+raises its own error and quotes the message back. The `return()` comes before
+`mpifTargets.cmake`, so a not-found mpif leaves no imported target behind for a
+consumer to reach around `mpif_FOUND` and link against.
+`ci-scripts/check-package-config.sh` is what keeps all three true —
+`test-consume/` says `REQUIRED` and pins the library, so it passes either way.
+
 ## Static linking
 
 `-DBUILD_SHARED_LIBS=OFF` builds `libmpifort_abi.a` instead of a shared library.

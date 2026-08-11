@@ -899,6 +899,10 @@ jobs:
       # and not the other. This is also the only CI coverage test-consume/ has.
       - name: Build and run the consume test against the static mpif
         run: |
+          # test-consume/ says REQUIRED and pins the ABI library, so it cannot
+          # see what an optional consumer sees, and never reaches the
+          # find_library fallback. This checks the half it cannot see.
+          bash ci-scripts/check-package-config.sh "${MPIF_PREFIX}" "${MPI_PREFIX}"
           cmake \
               -Stest-consume \
               -Bbuild-static-consume \
