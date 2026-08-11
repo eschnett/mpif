@@ -28,7 +28,7 @@ int mpif_cdesc_create_datatype(const CFI_cdesc_t *cdesc, MPI_Count oldcount,
   err = PMPI_Type_size_c(oldtype, &size);
   if (err != MPI_SUCCESS)
     return err;
-  if (size <= 0 || cdesc->elem_len % (size_t)size != 0)
+  if (size <= 0 || (MPI_Count)cdesc->elem_len % size != 0)
     return MPI_ERR_ARG;
   MPI_Count factor = (MPI_Count)cdesc->elem_len / size;
 
