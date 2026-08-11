@@ -1846,7 +1846,21 @@ for key in sort(collect(keys(apis)))
                     # reading past our own array is mpif's defect then, not its
                     # excuse. Measured: AddressSanitizer reports a
                     # dynamic-stack-buffer-overflow in `strlen` without this byte.
+                    #
+                    # The *first* byte is NUL for a different reason: the copy-back
+                    # below runs whatever the call returned, and a failing call
+                    # writes no string at all, so without this `strlen` reads an
+                    # uninitialised array to decide how much to hand back. This is
+                    # CODE.md's "out-temporaries are initialised" applied to
+                    # strings. It goes at every declaration site, including the
+                    # three whose copy-back is guarded, so there is no judgement
+                    # call to get wrong -- and MPI_SESSION_GET_NTH_PSET's guard
+                    # tests the length the caller passed in, not whether the call
+                    # succeeded, so that site needs it as much as the unguarded
+                    # ones. The caller's CHARACTER is then blank-padded on
+                    # failure, which it may not inspect anyway.
                     push!(input_conversions, "char c_$parname[buflen_$parname + 2];")
+                    push!(input_conversions, "c_$parname[0] = '\\0';")
                     push!(input_conversions, "c_$parname[buflen_$parname + 1] = '\\0';")
                     push!(call_arguments, "c_$parname")
                     # Pad or truncate to the caller's length, never to buflen
