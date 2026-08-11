@@ -9,6 +9,12 @@
 !
 ! MPI_Sizeof lives in the mpi module and mpif.h; MPI-4.0 removed the mpi_f08
 ! form.
+!
+! `ierror` is mandatory, not optional: MPI-5.0 A.5.16 spells the binding
+! MPI_SIZEOF(X, SIZE, IERROR) with "INTEGER SIZE, IERROR", and only mpi_f08
+! makes ierror optional. mpif once declared it OPTIONAL here and this test
+! asserted that omitting it worked, which accepted code that then would not
+! compile against MPICH; there is deliberately no such call below.
 
 program sizeof_f90
   use mpi
@@ -64,13 +70,6 @@ program sizeof_f90
   if (sz /= ref) stop 12
 
   print '("scalars and rank-1 arrays agree with MPI_Type_size")'
-
-  ! ierror is optional in mpif's specifics, so omitting it must work
-  sz = 0
-  call MPI_Sizeof(r1, sz)
-  call MPI_Type_size(MPI_REAL, ref, ierr)
-  if (sz /= ref) stop 13
-  print '("optional ierror: ok")'
 
   print '("sizeof_f90: all ok")'
 
