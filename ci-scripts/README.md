@@ -142,6 +142,38 @@ not the `MPICH_COMMIT` the library is built from. The tests are deliberately
 held still while the library moves, so that bumping the commit is one variable
 against one expected-failure list; see MISSING.md "MPICH is built from `main`".
 
+It compiles each language's tests with `make -k -j` before running any of them,
+rather than leaving that to `runtests`, which builds one test at a time. Most of
+a suite run is that compiling, not MPI. To re-measure that share, run with
+`MPIF_SUITE_PREBUILD=0` -- which restores the on-demand behaviour, and is also
+what puts each test's compiler output beside that test in the log -- and sum the
+per-test `time=` fields of a `tap-*.txt` against the wall time its
+`runtests-*.log` reports: with the build on demand the difference is the
+compiler. The switch has to be off for that, because with the prebuild the
+compiling has already happened and the same subtraction measures only what is
+left.
+
+Measured with that switch, `mpich/gcc/darwin/26/arm64`, twelve cores: 660 s
+becomes 419 s, the three sweeps going 146/179/186 s to 52/58/64 s, with the same
+tests passing and failing either way. So the parallel build is about 3.5x on this
+machine and the remaining 174 s is the tests actually running. Expect less on the
+three-core macOS runners and more under qemu, where the containers build.
+
+A test that does not compile is reported by `runtests` either way -- it finds no
+executable and builds it itself -- so the expected-failures comparison sees no
+difference. Verified by breaking one test on purpose: the prebuild fails it,
+keeps going for the rest of the directory, and `runtests` still records
+`not ok 4 - ./sendf08 2` with the compiler output and the offending line beneath
+it.
+
+What does change is where those errors appear. Some expected failures *are*
+build failures -- `attrmpi1f08` on every 64-bit architecture is one, and the
+FreeBSD job shows it for real -- so the prebuild now prints their compiler
+diagnostics in a batch of its own, ahead of the tests, as well as against the
+failing test in the TAP where they were before. A log that opens with
+`error: Semantic errors in attrmpi1f08.f90` is the expected state, not a
+regression; the verdict is still the comparison line at the end.
+
 ## Where else these are used
 
 - `.github/workflows/ci.yaml` -- twelve variants natively, and the authority on

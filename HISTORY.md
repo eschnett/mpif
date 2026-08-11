@@ -30,6 +30,20 @@ Once the biggest time sink in the project; the rules in `CLAUDE.md`
 
 ## Withdrawn diagnoses
 
+- **"The slow CI jobs are `ifx`, `nvfortran` and FreeBSD."** They are the
+  slowest-looking rows — 540, 562 and 516 s — and all three were measured in
+  detail before anyone asked what actually gated a run. Nothing did: on run
+  `31490812177` they all finished by t+9 min of a 26-minute wall, while the
+  macOS `suite` and `cross` legs ran to t+26 min, five at a time against a
+  five-wide pool, with measured queue waits of 525, 539, 713 and 730 s. The
+  work then went where the time was, and the suite's own compiling turned out
+  to be most of it: `runtests` builds one test at a time, and prebuilding each
+  language with `make -k -j` took a local `mpich/gcc` run from 660 s to 419 s
+  with an identical pass/fail set. The lesson is that "which job is slow" and
+  "which job is on the critical path" are different questions, and job
+  durations alone answer only the first; the completion times and queue waits
+  in `gh api .../jobs` answer the second.
+
 - **The alltoallw four** (`alltoallwf08`, `nonblockingf08`,
   `nonblocking_inpf08`, `vw_inplacef08`; failed under gfortran on both
   implementations, passed under flang). Two diagnoses were withdrawn: first
@@ -183,6 +197,12 @@ Once the biggest time sink in the project; the rules in `CLAUDE.md`
   prefix their run did not finish and why `check-mpi-install.sh` gained
   teeth — its old "compiles a program that uses the ABI" check passed on
   both broken prefixes.
+- **Editing a script while a run was executing it**, paid a second time and on
+  a different file: `test-mpich-suite.sh` was edited — comments only, but the
+  byte offsets moved — during a timing run that had it open, and the run had to
+  be discarded rather than trusted. `CLAUDE.md` said this about the install
+  scripts; it is true of every script a long job is running, and a comment is
+  not a safe edit because bash seeks by offset and not by line.
 - Two trap subtleties from making the scripts atomic, both measured:
   `trap ... EXIT` does not run when the shell dies of an untrapped signal,
   and bash runs a trapped `INT` handler with `$?` = 0, so signals get their

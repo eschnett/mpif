@@ -183,8 +183,10 @@ pinned to `lo0`, and mpif's own `test/` never spawns.
   about what a handle is. `ci-scripts/check-mpi-install.sh` detects it in a
   second, and both `test-mpich-suite.sh` and `scripts/macos-build-mpif.sh`
   run it before anything expensive.
-- **Do not edit an install script while it is running** (bash reads scripts
-  incrementally by byte offset), and do not stop one with a bare
+- **Do not edit any script while a run is executing it** — install scripts, the
+  test scripts, `test-mpich-suite.sh` — because bash reads scripts incrementally
+  by byte offset, so even a comment-only edit that shifts the offsets can derail
+  the run. Discard the run rather than trust it. Also do not stop one with a bare
   `pkill -f <script>`: the orphaned `configure`/`make` keep writing into the
   source tree, and the next run's `rm -rf` then fails on "Directory not
   empty", which looks like a build error and is not. Check `ps` for the
@@ -213,8 +215,16 @@ To run one directory of the suite rather than all of it:
   share one tree and destroy each other's executables, and the scripted run
   additionally re-unpacks the suite at the start. Different pairings (and the
   sanitizer variants) are different trees and can run concurrently.
-- `MPIF_KEEP_TESTS=1` stops `runtests` deleting each executable after it
-  runs — what a debugger needs to turn "test failed" into a backtrace.
+- The suite compiles each language's tests with `make -k -j` before running any
+  of them, because `runtests` builds one at a time and that is most of a run.
+  `MPIF_SUITE_PREBUILD=0` restores the on-demand behaviour — slower, but it puts
+  each test's compiler output beside that test in the log.
+  `MPIF_SUITE_BUILD_JOBS` sets the width.
+- `MPIF_KEEP_TESTS=1` keeps the work directory, and stops `runtests` deleting
+  each executable and its `.o` after it runs — what a debugger needs to turn
+  "test failed" into a backtrace. With the prebuild above those survive anyway,
+  `runtests` deleting only what it built itself, so this now matters for the
+  work directory and under `MPIF_SUITE_PREBUILD=0`.
 - `MPIF_SANITIZE=address` on the build and test scripts builds and tests an
   AddressSanitizer mpif as a fifth variant (`llvm` only; MacPorts GCC ships no
   libsanitizer on macOS, and CMake stops rather than producing an

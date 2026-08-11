@@ -115,6 +115,56 @@ the cheap half is to split the `mpi` stage's matrix by toolchain — that is whe
 the whole penalty lives — as literal duplication, workflow files supporting no
 YAML anchors.
 
+### What is slow in CI is the macOS suite legs, and the pool they queue for
+
+Measured on run `31490812177` (warm MPI cache, 26 minutes wall). The critical
+path is macOS and nothing else is close: the four vendor-compiler `compile` rows
+and the `freebsd` job all finish inside nine minutes and never gate a run.
+
+The cause is not slow runners but a **five-wide macOS pool** — GitHub Free with
+public repositories allows 20 concurrent jobs, five of them macOS, and no
+`runs-on` label changes that. All ten macOS stage-3 legs are created at once and
+carry some 4800 s of work between them, so five start and the rest wait;
+measured queue times of 525, 539, 713 and 730 s. Makespan is therefore bounded
+below by `macOS work / 5`, which is why the fix was to make the suite cheaper
+rather than to reschedule anything: `runtests` compiles one test at a time and
+that is most of a leg, so `test-mpich-suite.sh` now builds each language with
+`make -k -j` first. Measured locally at 660 s to 419 s on twelve cores; see
+`ci-scripts/README.md`, "Running the suite". A three-core runner has less to
+gain, so what CI gets is still to be measured.
+
+Decisions that follow from that, all **not done**:
+
+- **`ifx` (540 s), `nvfortran` (562 s), `freebsd` (516 s)**: off the critical
+  path, so their cost is runner-minutes, not latency. For the record, in case
+  it becomes worth it: `ifx` spends 39 s installing and 498 s compiling, nearly
+  all of it one serial module chain — `gen/mpif_f08_functions.F90` alone is
+  161 s on one core of four. `nvfortran` spends 410 s installing, of which only
+  38 s is download and ~330 s is `dpkg` unpacking 14.9 GB out of a single
+  5.09 GB `.deb`; no smaller package exists (checked against the repository's
+  `Packages` index) and there is no single-CUDA tarball, so the only lever is
+  extracting the `compilers/` subtree by hand. `nvfortran` also answers no to
+  the CFI probe, which makes `compile-only.sh`'s two branches identical work for
+  that row alone — `gfortran-9` and `amdflang` answer yes then no and genuinely
+  differ. `freebsd` spends 230 s of its 516 s building MPICH from source, which
+  `ci.yaml` explains it does not cache.
+- **A newer macOS runner label.** `macos-14`, `macos-15`, `macos-26` and
+  `macos-latest` are all 3 CPU (M1), 7 GB, arm64. `macos-26-intel` has 4 CPU and
+  14 GB, but it is x86-64: it would trade away the arm64 coverage that is the
+  reason for these legs, and move the variant key from `darwin/15/arm64` to
+  `darwin/26/x86_64`, needing every row re-triaged.
+- **Splitting a suite leg into three language legs.** It makes things worse: the
+  pool is the binding constraint, and triplicating the ~80 s of per-leg setup
+  raises total macOS work, which raises the floor.
+- **Dropping macOS `cross` legs, or running the cross suite for one language.**
+  That would halve macOS stage-3 work, but it is a coverage cut rather than a
+  speedup.
+- **Caching the suite's `configure`** (~80 s a leg) and **the 53 s
+  `brew install llvm flang`** on each of the nine macOS `llvm` legs. Both are
+  now the largest remaining items, and both are separate changes: the first has
+  to argue with the "always unpack a fresh copy" hazard that
+  `test-mpich-suite.sh` documents.
+
 ### An unpruned Open MPI prefix, and the six handle-conversion I/O tests it fails
 
 Symptom: the six `MPI_File_c2f`/`f2c` round-trip tests (`c2f2ciof*`,
@@ -164,11 +214,13 @@ GitHub has no FreeBSD runner; the `freebsd` job boots a FreeBSD 14.3 VM via
   and the action's `run` block is root. No cross-run either — that claim is
   about mpif's artifact, tested where both implementations exist.
 - **Not triaged**: no `triaged` line, so suite differences are reported and
-  cannot fail the run; `test/` gates as everywhere. Expect `attrmpi1f08`
-  among the differences (its xfail is enumerated per 64-bit architecture and
-  FreeBSD says `amd64` where Linux/macOS say `x86_64`).
-- Status: no run has reached the suite yet; the `/etc/hosts` fix is untested
-  by an actual MPI run. There is still no FreeBSD row to triage.
+  cannot fail the run; `test/` gates as everywhere.
+- Status: measured. All 79 of `test/` pass, and the suite completes — 3 of 105
+  f77, 5 of 122 f90 and 8 of 136 f08 failing, against one unexpected
+  difference, `attrmpi1f08`. That is the one this entry predicted: its xfail is
+  enumerated per 64-bit architecture and FreeBSD says `amd64` where Linux and
+  macOS say `x86_64`. So the `/etc/hosts` fix works, and the remaining work is
+  to add the row rather than to find out what it would say.
 
 ### Other compilers are compiled and not run, and three cannot be tested at all
 

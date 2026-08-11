@@ -61,13 +61,24 @@
 #                    and everything built in it are 32-bit. Prefer this over
 #                    MPIF_SUITE_VARIANT when only the architecture is wrong, so
 #                    that the rest of the key is still detected.
-#   MPIF_KEEP_TESTS  if non-empty, keep each test executable after it has run
-#                    instead of letting `runtests` delete it, and keep the work
-#                    directory too. Set this before chasing a crash: the
-#                    executable is what a debugger needs to turn the suite's
-#                    "test failed" into a backtrace, and by default it is gone
-#                    by the time the summary is printed. What is kept lasts
-#                    until the next run, which unpacks the suite again.
+#   MPIF_KEEP_TESTS  if non-empty, keep each test executable and its object file
+#                    after it has run instead of letting `runtests` delete them,
+#                    and keep the work directory too. Set this before chasing a
+#                    crash: the executable is what a debugger needs to turn the
+#                    suite's "test failed" into a backtrace. What is kept lasts
+#                    until the next run, which unpacks the suite again. Under the
+#                    prebuild below both survive without this -- `runtests`
+#                    deletes only what it built itself -- so what it still buys
+#                    is the work directory, and everything, with the prebuild
+#                    turned off.
+#   MPIF_SUITE_PREBUILD
+#                    set to 0 to let `runtests` compile each test on demand, one
+#                    at a time, as it did before the prebuild below. Slow, but it
+#                    is the reference behaviour to compare against, and it puts
+#                    each test's compiler output next to that test in the log
+#                    rather than in one batch ahead of them all.
+#   MPIF_SUITE_BUILD_JOBS
+#                    parallelism for the prebuild (default: the core count).
 
 set -euo pipefail
 
@@ -94,13 +105,14 @@ scriptdir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 # reads live apart from them so that editing the expected-failures list cannot
 # invalidate a cached MPI build. See the comment in .github/workflows/ci.yaml.
 installdir=$(cd "${scriptdir}/.." && pwd)
-# See install-mpich.sh for why this is not `getconf` alone. Only the summary
-# line reports this one, so a wrong answer would be cosmetic -- but a summary
-# that says how many cores the numbers came from should not be able to say
-# nothing.
+# See install-mpich.sh for why this is not `getconf` alone. The summary line
+# reports it, and the prebuild below uses it as its default parallelism -- so a
+# wrong answer costs speed rather than correctness, and a summary that says how
+# many cores the numbers came from should not be able to say nothing.
 nprocs=$(getconf _NPROCESSORS_ONLN 2>/dev/null ||
              sysctl -n hw.ncpu 2>/dev/null || echo 4)
 maxnp=${MPIEXEC_MAXNP:-4}
+build_jobs=${MPIF_SUITE_BUILD_JOBS:-${nprocs}}
 
 # The suite compiles its C files with the implementation's own `mpicc` and its
 # Fortran with mpif's `mpifort`, and the two only agree if the prefix exposes
@@ -290,6 +302,45 @@ for language in "${languages[@]}"; do
     log=${workdir}/runtests-${language}.log
     # `runtests` writes this relative to the directory it runs in
     tap=$(cd "${language}" && pwd)/tap-${language}.txt
+
+    # Compile the language's tests before running any of them, in parallel.
+    #
+    # `runtests` builds each test on demand, one at a time, and that -- not the
+    # MPI -- is most of a suite run: summing the per-test `time=` fields of a
+    # tap-*.txt against the wall time in the matching runtests-*.log puts test
+    # execution at under a third of it, so the rest is a single compiler using
+    # one core while the others idle. That is worst where it costs most, the
+    # three-core macOS runners being the longest legs in CI.
+    #
+    # `all` in a language directory is exactly the right set: each leaf
+    # Makefile's `noinst_PROGRAMS` lists the programs its testlist names and
+    # nothing else, so this compiles what is about to be run and not one program
+    # more. Afterwards `runtests` finds each executable already there --
+    # BuildMPIProgram tests `! -x $programname` -- and its `make` is a no-op.
+    #
+    # The util libraries first and on their own, because every leaf Makefile
+    # carries its own rule to recurse into util and build them. Automake's
+    # recursive rule walks SUBDIRS in a serial shell loop, so no two leaves can
+    # be in util at once and -j applies within a leaf, where make builds each
+    # library once; this is insurance against that reasoning being wrong rather
+    # than a fix for a race that has been seen. Getting it wrong looks like
+    # `ar: .libs/mtest_f77.o: No such file or directory`.
+    #
+    # The status is deliberately discarded. A test that does not compile is a
+    # result for `runtests` to report -- it finds no executable, runs `make`
+    # itself, fails, and routes that through the same TAP `not ok` as a test that
+    # ran and failed, which is what the comparison below is gating on. `-k` so
+    # that one broken test does not hide the rest, the same reason
+    # ci-scripts/compile-only.sh retries with it.
+    if [[ ${MPIF_SUITE_PREBUILD:-1} != 0 ]]; then
+        echo "--- building ${language} with ${build_jobs} jobs"
+        (
+            cd "${language}"
+            make -C ../util "libmtest_${language}.la" libmtest_single.la
+            make -k -j"${build_jobs}" all
+        ) || echo "--- ${language}: some tests did not compile; runtests will report them"
+    fi
+
     (
         cd "${language}"
         # `-mpiexecarg=` is not a command line option -- it is a key recognised
@@ -305,7 +356,9 @@ for language in "${languages[@]}"; do
         export MPIF_REAL_MPIEXEC="${mpi_prefix}/bin/mpiexec"
         # `runtests` has no command line option for this -- it unlinks the
         # executable and its .o right after each test unless MPITEST_CLEANUP
-        # says otherwise
+        # says otherwise. With the prebuild above both survive regardless: the
+        # unlink is guarded by the same `! -x` answer that decided whether
+        # runtests built the test at all. So this is for the prebuild being off.
         if [[ -n ${MPIF_KEEP_TESTS:-} ]]; then
             export MPITEST_CLEANUP=0
         fi
