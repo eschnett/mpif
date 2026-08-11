@@ -489,6 +489,32 @@ not there. This is on mpif's side, and is fixed: each of the four probes now
 uses the answer as a kind value, so a fallback names kind -1, which no compiler
 accepts. gfortran 15 and flang 22 answer exactly as they did before.
 
+### `MPI_CART_GET` writes the surplus of `periods` rather than leaving it alone
+
+`periods` is the only out-LOGICAL array in `data/apis.json`, so it needs a C
+temporary and a conversion back; `dims` and `coords` are INTEGER and reach MPI
+directly, which is why only this one has the question. mpif pre-fills the
+temporary with `false` and converts the whole `*maxdims` extent, the same shape
+`dev/mpiapi.jl` uses for pure-out handle arrays. The consequence is that where
+`maxdims` exceeds the topology's dimensionality, the caller's surplus elements
+come back `.false.` instead of untouched — and MPI-5.0 §8.5 states the extreme
+case the other way: "If comm is associated with a zero-dimensional Cartesian
+topology, MPI_CARTDIM_GET returns ndims = 0 and MPI_CART_GET will keep all
+output arguments unchanged."
+
+Not fixing that, for the reason the handle arrays give: converting only what MPI
+wrote means knowing how much it wrote, and mpif cannot tell. Reading it back
+with `PMPI_Cartdim_get` would be an extra MPI call inside one wrapper and a
+per-routine exception in a generic branch of the generator. Distinguishing
+written from unwritten entries by pre-filling with a value MPI never writes does
+not work either: MPI writes a C `int` logical, "true" is any nonzero, and
+picking a sentinel would tie mpif to the two implementations that happen to
+write 1 — the dependence the `MPI_Type_get_contents` entry above exists to avoid.
+So the uninitialised read is closed and the surplus write is accepted. A caller
+that passes `maxdims` larger than `MPI_CARTDIM_GET` reports, and then reads the
+elements past that, sees `.false.` from mpif where another binding leaves its
+own value.
+
 ## External blockers
 
 ### The ABI header gets the partitioned-communication count wrong, twice — carried as a local patch

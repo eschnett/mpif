@@ -153,6 +153,7 @@ add_mpi_test(keyval_create_f08      SOURCES keyval_create_f08.f90               
 add_mpi_test(grequest_f08           SOURCES grequest_f08.f90                        LIBS MPI::MPI_Fortran)
 add_mpi_test(sizeof_f               SOURCES sizeof_f.f                              LIBS MPI::MPI_Fortran)
 add_mpi_test(sizeof_f90             SOURCES sizeof_f90.f90                          LIBS MPI::MPI_Fortran)
+add_mpi_test(cart_get_f90           SOURCES cart_get_f90.f90                        LIBS MPI::MPI_Fortran)
 add_mpi_test(rma_disp_f08           SOURCES rma_disp_f08.f90                        LIBS MPI::MPI_Fortran)
 add_mpi_test(alloc_mem_cptr        SOURCES alloc_mem_cptr.f90                      LIBS MPI::MPI_Fortran)
 add_mpi_test(large_count_f08        SOURCES large_count_f08.f90                     LIBS MPI::MPI_Fortran)

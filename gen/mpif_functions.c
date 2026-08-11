@@ -3067,6 +3067,8 @@ void mpi_cart_get_(
 )
 {
   int c_periods[*maxdims > 0 ? *maxdims : 1];
+  for (int dim=0; dim<*maxdims; ++dim)
+    c_periods[dim] = 0;
   *ierror = MPI_Cart_get(
     MPI_Comm_fromint(*comm),
     *maxdims,
@@ -3090,6 +3092,8 @@ void pmpi_cart_get_(
 )
 {
   int c_periods[*maxdims > 0 ? *maxdims : 1];
+  for (int dim=0; dim<*maxdims; ++dim)
+    c_periods[dim] = 0;
   *ierror = PMPI_Cart_get(
     MPI_Comm_fromint(*comm),
     *maxdims,

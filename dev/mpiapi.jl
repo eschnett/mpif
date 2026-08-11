@@ -1747,6 +1747,22 @@ for key in sort(collect(keys(apis)))
                     elseif length == "maxdims"
                         push!(input_arguments, "MPI_Fint* restrict const $parname")
                         append!(input_conversions, ["int c_$parname[$(vla_size("*maxdims"))];"])
+                        # Pre-filled over the whole extent, like the handle arrays
+                        # and for the stronger of the two reasons: MPI_CART_GET
+                        # writes only as many entries as the topology has
+                        # dimensions, and `maxdims` may exceed that, so the
+                        # surplus is legitimately unwritten *on success* as well
+                        # as on failure. MPI-5.0 section 8.5 gives the extreme
+                        # case -- "If comm is associated with a
+                        # zero-dimensional Cartesian topology, MPI_CARTDIM_GET
+                        # returns ndims = 0 and MPI_CART_GET will keep all output
+                        # arguments unchanged" -- where nothing at all is
+                        # written and the loop below still converts every entry.
+                        # `false` is the logical analogue of the handle arrays'
+                        # MPI_*_NULL.
+                        append!(input_conversions,
+                                ["for (int dim=0; dim<*maxdims; ++dim)",
+                                 "  c_$parname[dim] = 0;"])
                         push!(call_arguments, "c_$parname")
                         append!(output_conversions,
                                 ["for (int dim=0; dim<*maxdims; ++dim)",
