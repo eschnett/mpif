@@ -175,7 +175,16 @@ static const struct {
      MPIF_SENTINEL_STATUS_BYTES},
 };
 
-static int mpif_sentinel_reported;
+// Thread-local, because mpif_check_environment resets this and then compares it
+// against MPIF_SENTINEL_COUNT: two threads calling that function at overlapping
+// times would each reset the other's count part-built and report a spurious
+// disagreement. A plain `static int` is also an unsynchronised read-modify-write
+// shared between them, which is a data race whatever the arithmetic comes to.
+// One count per thread costs nothing here -- the reporters run entirely within
+// one call -- and the sentinel check is the one part of mpif_check_environment
+// that runs before MPI_Init, where no MPI thread-level guarantee is in effect
+// yet and nothing else would serialise the callers.
+static _Thread_local int mpif_sentinel_reported;
 
 // Called once per sentinel by the two Fortran reporters. Aborts on the first
 // disagreement rather than counting: any one of them means every wrapper's

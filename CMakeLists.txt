@@ -29,7 +29,9 @@ option(BUILD_SHARED_LIBS
   "Build mpif as a shared library rather than an archive"
   ON)
 
-set(CMAKE_C_STANDARD 11)   # C11 for <stdatomic.h>, used by the callback registry
+# C11 for <stdatomic.h>, used by the callback registry, and for _Thread_local,
+# used by the sentinel counter in src/mpif_check.c
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
 include(GNUInstallDirs)
 
