@@ -800,17 +800,35 @@ were found and verified.
   `MPI_Type_create_struct`, zero-dimensional Cartesian routines and others.
   Loops still run to the true count. The same floor is in
   `src/mpif_removed.c`'s macros.
-- **Out-temporaries are initialised**: the out-LOGICAL scalar conversion
-  starts from `MPI_Fint c_$parname = 0;` and out-handle temporaries start
-  from `MPI_$( kind )_NULL`, so a failing call never converts an unwritten
-  temporary (for a handle, `MPI_*_toint` is entitled to look garbage up in a
-  table and abort). `MPI_Type_get_contents`' pure-out `array_of_datatypes`
-  is pre-filled with `MPI_DATATYPE_NULL` before the call, because the
-  surplus past the envelope's count is legitimately unwritten *on success* —
-  the same defect this project patched one level down in MPICH (see
-  `MISSING.md`), so mpif's copy no longer depends on that patch. No test can
-  fail on these (a caller may not inspect an out argument after a failing
-  call); `git diff gen/` after regeneration is the verification.
+- **Out-temporaries are initialised**, every kind of them, because every
+  conversion back to Fortran runs whatever the call returned:
+  - **out-LOGICAL scalars** start from `MPI_Fint c_$parname = 0;`, and
+    **out-handle temporaries** from `MPI_$( kind )_NULL`, so a failing call
+    never converts an unwritten temporary (for a handle, `MPI_*_toint` is
+    entitled to look garbage up in a table and abort).
+  - **out-string temporaries** get `c_$parname[0] = '\0';` as well as the
+    trailing NUL below, so the `strlen` that sizes the copy-back does not read
+    an unwritten array. At every declaration site, including the three whose
+    copy-back is guarded: `MPI_SESSION_GET_NTH_PSET`'s guard tests the length
+    the caller passed in, not whether the call succeeded.
+  - **`MPI_Cart_get`'s `periods`**, the only out-LOGICAL *array* in
+    `data/apis.json`, is pre-filled with `false` over `*maxdims`.
+  - **`MPI_Type_get_contents`' pure-out `array_of_datatypes`** is pre-filled
+    with `MPI_DATATYPE_NULL` — the same defect this project patched one level
+    down in MPICH (see `MISSING.md`), so mpif's copy no longer depends on that
+    patch.
+  - **`src/mpif_removed.c`'s `MPI_Aint` locals** are `= 0`, the hand-written
+    half of the same rule. `MPIF_NEWTYPE_ON_SUCCESS` there reaches the same end
+    the other way, guarding its conversion on `*ierror == MPI_SUCCESS`, because
+    a handle is the one case where the conversion itself may object.
+
+  The last two bullets are about the surplus of an array the caller sized:
+  MPI writes only what the object has, and MPI-5.0 lets the caller ask for
+  more — a zero-dimensional Cartesian topology "will keep all output arguments
+  unchanged" (§8.5) — so there the temporary is legitimately unwritten *on
+  success* too. Elsewhere no test can fail on any of this, a caller not being
+  allowed to inspect an out argument after a failing call; `git diff gen/`
+  after regeneration is the verification.
 - **The f08 twins of `MPI_CONVERSION_FN_NULL`/`_C` set
   `ierror = MPI_ERR_INTERN`**, agreeing with their `mpif.h`/`mpi` twins:
   these are pure sentinels MPI never calls (the wrappers substitute the ABI
