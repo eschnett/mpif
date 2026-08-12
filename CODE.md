@@ -583,6 +583,15 @@ were found and verified.
 
     It found `MPI_Cart_sub`'s probe, which threaded the prefix by a second
     spelling and so survived the first pass at this.
+
+    `src/mpif_check.c` follows the same rule for the same reason: its seventeen
+    calls are the environment check verifying itself, not the program
+    communicating, so a tool counting collectives must not be shown the
+    `MPI_Comm_dup`, two `MPI_Allreduce`s, `MPI_Bcast`, `MPI_Sendrecv`,
+    `MPI_Reduce` and `MPI_Gather` that `mpif_check_environment` issues. Every
+    `PMPI_` form it needs exists in both implementations, `PMPI_Abi_get_version`
+    and `PMPI_Abi_get_fortran_booleans` included — §15.2.1(1) requires one per
+    MPI function, and `nm` confirms it.
   - **The `MPI_` form calls C's `MPI_`, and that is what makes a C-only
     profiler sufficient.** §15.2.1(3) requires an implementation to "document
     the implementation of different language bindings of the MPI interface if
