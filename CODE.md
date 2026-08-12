@@ -556,13 +556,33 @@ were found and verified.
   `dev/mpiapi.jl`, beside `for embiggen`, so the two copies cannot drift; the
   hand-written half is the removed MPI-1 routines, the `_cptr` overloads,
   `MPI_Sizeof` and the status converters. Not to re-decide:
-  - **The P form must call C's `PMPI_`, never `MPI_`** — including the group
-    size/rank/dimension probes some wrappers make, which is why `State`
-    carries the prefix. The handle conversions are left alone
-    (`MPI_Comm_fromint` is nothing a profiler can usefully replace). The
-    prefix applies to a probe in *both* directions, so the `MPI_` form probes
-    through `MPI_`: `nm`-free check that it stayed that way is that the two
-    spellings of each probe occur equally often in `gen/mpif_functions.c`.
+  - **A probe always calls `PMPI_`, in the `MPI_` copy of a wrapper as much as
+    the `PMPI_` one.** The group size/rank/dimension probes are mpif working out
+    how long an array is — calls the program did not make — so a tool counting
+    `MPI_Comm_rank` must not be shown them. `MPI_BARRIER` and the neighbourhood
+    collectives were reporting mpif's bookkeeping to a profiler as though the
+    program had called it. This subsumes the older rule that a P form never
+    re-enters `MPI_`, which is the same requirement for one of the two copies,
+    and it is why `State` no longer carries a prefix. `src/mpif_cdesc.c` says
+    the same for the datatypes it builds. The handle conversions are left alone
+    (`MPI_Comm_fromint` is nothing a profiler can usefully replace).
+
+    The invariant to check is that in each wrapper body the only unprefixed
+    `MPI_` call is the routine that body implements:
+
+        python3 -c '
+        import re
+        for p in ("gen/mpif_functions.c",):
+            s=open(p).read()
+            for sym,b in re.findall(r"// MPIF-SPLIT-BEGIN (\S+)\n(.*?)\n// MPIF-SPLIT-END",s,re.S):
+                for c in set(re.findall(r"\b(P?MPI_[A-Za-z0-9_]+)\s*\(",b)):
+                    if c.startswith("PMPI_") or re.match(r"MPI_[A-Za-z]+_(fromint|toint)$",c): continue
+                    if c.lower() in (sym.rstrip("_").lower(), sym.rstrip("_").lower()+"_c"): continue
+                    if c=="MPI_Fint": continue
+                    print(sym,c)'
+
+    It found `MPI_Cart_sub`'s probe, which threaded the prefix by a second
+    spelling and so survived the first pass at this.
   - **The `MPI_` form calls C's `MPI_`, and that is what makes a C-only
     profiler sufficient.** §15.2.1(3) requires an implementation to "document
     the implementation of different language bindings of the MPI interface if

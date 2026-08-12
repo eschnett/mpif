@@ -1752,10 +1752,10 @@ void mpi_alltoallw_(
   int q_group_size = 0;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror == MPI_SUCCESS)
-      q_ierror = q_inter ? MPI_Comm_remote_size(q_comm, &q_group_size)
-                         : MPI_Comm_size(q_comm, &q_group_size);
+      q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)
+                         : PMPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -1806,10 +1806,10 @@ void mpi_alltoallw_c_(
   int q_group_size = 0;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror == MPI_SUCCESS)
-      q_ierror = q_inter ? MPI_Comm_remote_size(q_comm, &q_group_size)
-                         : MPI_Comm_size(q_comm, &q_group_size);
+      q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)
+                         : PMPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -1970,10 +1970,10 @@ void mpi_alltoallw_init_(
   int q_group_size = 0;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror == MPI_SUCCESS)
-      q_ierror = q_inter ? MPI_Comm_remote_size(q_comm, &q_group_size)
-                         : MPI_Comm_size(q_comm, &q_group_size);
+      q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)
+                         : PMPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -2030,10 +2030,10 @@ void mpi_alltoallw_init_c_(
   int q_group_size = 0;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror == MPI_SUCCESS)
-      q_ierror = q_inter ? MPI_Comm_remote_size(q_comm, &q_group_size)
-                         : MPI_Comm_size(q_comm, &q_group_size);
+      q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)
+                         : PMPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -3078,7 +3078,7 @@ void mpi_cart_get_(
   );
   int ndims_periods = 0;
   if (*ierror == MPI_SUCCESS)
-    if (MPI_Cartdim_get(MPI_Comm_fromint(*comm), &ndims_periods) != MPI_SUCCESS)
+    if (PMPI_Cartdim_get(MPI_Comm_fromint(*comm), &ndims_periods) != MPI_SUCCESS)
       ndims_periods = 0;
   if (ndims_periods > *maxdims)
     ndims_periods = *maxdims;
@@ -3247,7 +3247,7 @@ void mpi_cart_sub_(
   const MPI_Comm q_comm = MPI_Comm_fromint(*comm);
   int ndims;
   {
-    const int q_ierror = MPI_Cartdim_get(q_comm, &ndims);
+    const int q_ierror = PMPI_Cartdim_get(q_comm, &ndims);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -3369,7 +3369,7 @@ void mpi_comm_accept_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -3378,7 +3378,7 @@ void mpi_comm_accept_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -3595,7 +3595,7 @@ void mpi_comm_connect_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -3604,7 +3604,7 @@ void mpi_comm_connect_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -4819,7 +4819,7 @@ void mpi_comm_spawn_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -4828,7 +4828,7 @@ void mpi_comm_spawn_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -4952,7 +4952,7 @@ void mpi_comm_spawn_multiple_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -4961,7 +4961,7 @@ void mpi_comm_spawn_multiple_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -9535,7 +9535,7 @@ void mpi_gather_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -9544,7 +9544,7 @@ void mpi_gather_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -9584,7 +9584,7 @@ void mpi_gather_c_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -9593,7 +9593,7 @@ void mpi_gather_c_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -9733,7 +9733,7 @@ void mpi_gather_init_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -9742,7 +9742,7 @@ void mpi_gather_init_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -9788,7 +9788,7 @@ void mpi_gather_init_c_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -9797,7 +9797,7 @@ void mpi_gather_init_c_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -9952,7 +9952,7 @@ void mpi_gatherv_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -9961,7 +9961,7 @@ void mpi_gatherv_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -10003,7 +10003,7 @@ void mpi_gatherv_c_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -10012,7 +10012,7 @@ void mpi_gatherv_c_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -10158,7 +10158,7 @@ void mpi_gatherv_init_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -10167,7 +10167,7 @@ void mpi_gatherv_init_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -10215,7 +10215,7 @@ void mpi_gatherv_init_c_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -10224,7 +10224,7 @@ void mpi_gatherv_init_c_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -12355,10 +12355,10 @@ void mpi_ialltoallw_(
   int q_group_size = 0;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror == MPI_SUCCESS)
-      q_ierror = q_inter ? MPI_Comm_remote_size(q_comm, &q_group_size)
-                         : MPI_Comm_size(q_comm, &q_group_size);
+      q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)
+                         : PMPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -12413,10 +12413,10 @@ void mpi_ialltoallw_c_(
   int q_group_size = 0;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror == MPI_SUCCESS)
-      q_ierror = q_inter ? MPI_Comm_remote_size(q_comm, &q_group_size)
-                         : MPI_Comm_size(q_comm, &q_group_size);
+      q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)
+                         : PMPI_Comm_size(q_comm, &q_group_size);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -12938,7 +12938,7 @@ void mpi_igather_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -12947,7 +12947,7 @@ void mpi_igather_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -12991,7 +12991,7 @@ void mpi_igather_c_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -13000,7 +13000,7 @@ void mpi_igather_c_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -13151,7 +13151,7 @@ void mpi_igatherv_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -13160,7 +13160,7 @@ void mpi_igatherv_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -13206,7 +13206,7 @@ void mpi_igatherv_c_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -13215,7 +13215,7 @@ void mpi_igatherv_c_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -14027,24 +14027,24 @@ void mpi_ineighbor_alltoallw_(
   int q_indegree = 0, q_outdegree = 0;
   {
     int q_topology;
-    int q_ierror = MPI_Topo_test(q_comm, &q_topology);
+    int q_ierror = PMPI_Topo_test(q_comm, &q_topology);
     if (q_ierror == MPI_SUCCESS) {
       if (q_topology == MPI_CART) {
         int q_ndims;
-        q_ierror = MPI_Cartdim_get(q_comm, &q_ndims);
+        q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);
         if (q_ierror == MPI_SUCCESS)
           q_indegree = q_outdegree = 2 * q_ndims;
       } else if (q_topology == MPI_GRAPH) {
         int q_neighbor_rank;
         int q_nneighbors;
-        q_ierror = MPI_Comm_rank(q_comm, &q_neighbor_rank);
+        q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);
         if (q_ierror == MPI_SUCCESS)
-          q_ierror = MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+          q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
         if (q_ierror == MPI_SUCCESS)
           q_indegree = q_outdegree = q_nneighbors;
       } else if (q_topology == MPI_DIST_GRAPH) {
         int q_weighted;
-        q_ierror = MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+        q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
       }
     }
     if (q_ierror != MPI_SUCCESS) {
@@ -14101,24 +14101,24 @@ void mpi_ineighbor_alltoallw_c_(
   int q_indegree = 0, q_outdegree = 0;
   {
     int q_topology;
-    int q_ierror = MPI_Topo_test(q_comm, &q_topology);
+    int q_ierror = PMPI_Topo_test(q_comm, &q_topology);
     if (q_ierror == MPI_SUCCESS) {
       if (q_topology == MPI_CART) {
         int q_ndims;
-        q_ierror = MPI_Cartdim_get(q_comm, &q_ndims);
+        q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);
         if (q_ierror == MPI_SUCCESS)
           q_indegree = q_outdegree = 2 * q_ndims;
       } else if (q_topology == MPI_GRAPH) {
         int q_neighbor_rank;
         int q_nneighbors;
-        q_ierror = MPI_Comm_rank(q_comm, &q_neighbor_rank);
+        q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);
         if (q_ierror == MPI_SUCCESS)
-          q_ierror = MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+          q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
         if (q_ierror == MPI_SUCCESS)
           q_indegree = q_outdegree = q_nneighbors;
       } else if (q_topology == MPI_DIST_GRAPH) {
         int q_weighted;
-        q_ierror = MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+        q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
       }
     }
     if (q_ierror != MPI_SUCCESS) {
@@ -15756,7 +15756,7 @@ void mpi_iscatter_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -15765,7 +15765,7 @@ void mpi_iscatter_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -15809,7 +15809,7 @@ void mpi_iscatter_c_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -15818,7 +15818,7 @@ void mpi_iscatter_c_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -15969,7 +15969,7 @@ void mpi_iscatterv_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -15978,7 +15978,7 @@ void mpi_iscatterv_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -16024,7 +16024,7 @@ void mpi_iscatterv_c_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -16033,7 +16033,7 @@ void mpi_iscatterv_c_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -17922,24 +17922,24 @@ void mpi_neighbor_alltoallw_(
   int q_indegree = 0, q_outdegree = 0;
   {
     int q_topology;
-    int q_ierror = MPI_Topo_test(q_comm, &q_topology);
+    int q_ierror = PMPI_Topo_test(q_comm, &q_topology);
     if (q_ierror == MPI_SUCCESS) {
       if (q_topology == MPI_CART) {
         int q_ndims;
-        q_ierror = MPI_Cartdim_get(q_comm, &q_ndims);
+        q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);
         if (q_ierror == MPI_SUCCESS)
           q_indegree = q_outdegree = 2 * q_ndims;
       } else if (q_topology == MPI_GRAPH) {
         int q_neighbor_rank;
         int q_nneighbors;
-        q_ierror = MPI_Comm_rank(q_comm, &q_neighbor_rank);
+        q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);
         if (q_ierror == MPI_SUCCESS)
-          q_ierror = MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+          q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
         if (q_ierror == MPI_SUCCESS)
           q_indegree = q_outdegree = q_nneighbors;
       } else if (q_topology == MPI_DIST_GRAPH) {
         int q_weighted;
-        q_ierror = MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+        q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
       }
     }
     if (q_ierror != MPI_SUCCESS) {
@@ -17992,24 +17992,24 @@ void mpi_neighbor_alltoallw_c_(
   int q_indegree = 0, q_outdegree = 0;
   {
     int q_topology;
-    int q_ierror = MPI_Topo_test(q_comm, &q_topology);
+    int q_ierror = PMPI_Topo_test(q_comm, &q_topology);
     if (q_ierror == MPI_SUCCESS) {
       if (q_topology == MPI_CART) {
         int q_ndims;
-        q_ierror = MPI_Cartdim_get(q_comm, &q_ndims);
+        q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);
         if (q_ierror == MPI_SUCCESS)
           q_indegree = q_outdegree = 2 * q_ndims;
       } else if (q_topology == MPI_GRAPH) {
         int q_neighbor_rank;
         int q_nneighbors;
-        q_ierror = MPI_Comm_rank(q_comm, &q_neighbor_rank);
+        q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);
         if (q_ierror == MPI_SUCCESS)
-          q_ierror = MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+          q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
         if (q_ierror == MPI_SUCCESS)
           q_indegree = q_outdegree = q_nneighbors;
       } else if (q_topology == MPI_DIST_GRAPH) {
         int q_weighted;
-        q_ierror = MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+        q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
       }
     }
     if (q_ierror != MPI_SUCCESS) {
@@ -18204,24 +18204,24 @@ void mpi_neighbor_alltoallw_init_(
   int q_indegree = 0, q_outdegree = 0;
   {
     int q_topology;
-    int q_ierror = MPI_Topo_test(q_comm, &q_topology);
+    int q_ierror = PMPI_Topo_test(q_comm, &q_topology);
     if (q_ierror == MPI_SUCCESS) {
       if (q_topology == MPI_CART) {
         int q_ndims;
-        q_ierror = MPI_Cartdim_get(q_comm, &q_ndims);
+        q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);
         if (q_ierror == MPI_SUCCESS)
           q_indegree = q_outdegree = 2 * q_ndims;
       } else if (q_topology == MPI_GRAPH) {
         int q_neighbor_rank;
         int q_nneighbors;
-        q_ierror = MPI_Comm_rank(q_comm, &q_neighbor_rank);
+        q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);
         if (q_ierror == MPI_SUCCESS)
-          q_ierror = MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+          q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
         if (q_ierror == MPI_SUCCESS)
           q_indegree = q_outdegree = q_nneighbors;
       } else if (q_topology == MPI_DIST_GRAPH) {
         int q_weighted;
-        q_ierror = MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+        q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
       }
     }
     if (q_ierror != MPI_SUCCESS) {
@@ -18280,24 +18280,24 @@ void mpi_neighbor_alltoallw_init_c_(
   int q_indegree = 0, q_outdegree = 0;
   {
     int q_topology;
-    int q_ierror = MPI_Topo_test(q_comm, &q_topology);
+    int q_ierror = PMPI_Topo_test(q_comm, &q_topology);
     if (q_ierror == MPI_SUCCESS) {
       if (q_topology == MPI_CART) {
         int q_ndims;
-        q_ierror = MPI_Cartdim_get(q_comm, &q_ndims);
+        q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);
         if (q_ierror == MPI_SUCCESS)
           q_indegree = q_outdegree = 2 * q_ndims;
       } else if (q_topology == MPI_GRAPH) {
         int q_neighbor_rank;
         int q_nneighbors;
-        q_ierror = MPI_Comm_rank(q_comm, &q_neighbor_rank);
+        q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);
         if (q_ierror == MPI_SUCCESS)
-          q_ierror = MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
+          q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);
         if (q_ierror == MPI_SUCCESS)
           q_indegree = q_outdegree = q_nneighbors;
       } else if (q_topology == MPI_DIST_GRAPH) {
         int q_weighted;
-        q_ierror = MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
+        q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);
       }
     }
     if (q_ierror != MPI_SUCCESS) {
@@ -21939,7 +21939,7 @@ void mpi_scatter_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -21948,7 +21948,7 @@ void mpi_scatter_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -21988,7 +21988,7 @@ void mpi_scatter_c_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -21997,7 +21997,7 @@ void mpi_scatter_c_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -22137,7 +22137,7 @@ void mpi_scatter_init_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -22146,7 +22146,7 @@ void mpi_scatter_init_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -22192,7 +22192,7 @@ void mpi_scatter_init_c_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -22201,7 +22201,7 @@ void mpi_scatter_init_c_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -22356,7 +22356,7 @@ void mpi_scatterv_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -22365,7 +22365,7 @@ void mpi_scatterv_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -22407,7 +22407,7 @@ void mpi_scatterv_c_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -22416,7 +22416,7 @@ void mpi_scatterv_c_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -22562,7 +22562,7 @@ void mpi_scatterv_init_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -22571,7 +22571,7 @@ void mpi_scatterv_init_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;
@@ -22619,7 +22619,7 @@ void mpi_scatterv_init_c_(
   int q_at_root;
   {
     int q_inter;
-    int q_ierror = MPI_Comm_test_inter(q_comm, &q_inter);
+    int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);
     if (q_ierror != MPI_SUCCESS) {
       *ierror = q_ierror;
       return;
@@ -22628,7 +22628,7 @@ void mpi_scatterv_init_c_(
       q_at_root = *root == MPI_ROOT;
     } else {
       int q_comm_rank;
-      q_ierror = MPI_Comm_rank(q_comm, &q_comm_rank);
+      q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);
       if (q_ierror != MPI_SUCCESS) {
         *ierror = q_ierror;
         return;

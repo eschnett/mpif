@@ -245,14 +245,22 @@ struct State
     # they may share a length, as MPI_Comm_spawn_multiple's three do.
     root_counts::Set{String}
 
-    # "" while the MPI wrappers are being emitted and "P" while the PMPI ones
-    # are, so that the probes the helpers below emit call PMPI_Comm_size in the
-    # PMPI copy. A tool counting MPI_Comm_size calls should not be shown calls
-    # the program never made.
-    prefix::String
-
-    State(prefix) = new(Ref(false), Ref(false), Ref(false), Ref(false), Set{String}(), prefix)
+    State() = new(Ref(false), Ref(false), Ref(false), Ref(false), Set{String}())
 end
+
+# Every probe the helpers below emit calls a `PMPI_` name, in the MPI_ copy of a
+# wrapper as well as the PMPI_ one. These are calls the program did not make --
+# mpif working out how long an array is -- and a tool counting MPI_Comm_size or
+# MPI_Comm_rank must not be shown them. That holds whichever copy is running, so
+# the name is fixed here rather than following the wrapper's own prefix; doing
+# the latter told a profiler about mpif's bookkeeping every time a Fortran
+# program called MPI_BARRIER or a neighbourhood collective. It also keeps the
+# older rule that a PMPI_ wrapper never re-enters MPI_, that being a special case
+# of this one. src/mpif_cdesc.c says the same thing for the datatypes it builds.
+#
+# The principal call is the opposite case and stays `MPI_` in the MPI_ copy: that
+# one *is* the call the program made, and a profiler has to see it. CODE.md, "The
+# PMPI profiling interface", has both halves.
 
 # Convert an attribute value that MPI returned through a `void**`.
 #
@@ -305,10 +313,10 @@ function ensure_group_size!(state, input_conversions)
             ["int q_group_size = 0;",
              "{",
              "  int q_inter;",
-             "  int q_ierror = $(state.prefix)MPI_Comm_test_inter(q_comm, &q_inter);",
+             "  int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);",
              "  if (q_ierror == MPI_SUCCESS)",
-             "    q_ierror = q_inter ? $(state.prefix)MPI_Comm_remote_size(q_comm, &q_group_size)",
-             "                       : $(state.prefix)MPI_Comm_size(q_comm, &q_group_size);",
+             "    q_ierror = q_inter ? PMPI_Comm_remote_size(q_comm, &q_group_size)",
+             "                       : PMPI_Comm_size(q_comm, &q_group_size);",
              "  if (q_ierror != MPI_SUCCESS) {",
              "    *ierror = q_ierror;",
              "    return;",
@@ -335,24 +343,24 @@ function ensure_neighbor_degrees!(state, input_conversions)
             ["int q_indegree = 0, q_outdegree = 0;",
              "{",
              "  int q_topology;",
-             "  int q_ierror = $(state.prefix)MPI_Topo_test(q_comm, &q_topology);",
+             "  int q_ierror = PMPI_Topo_test(q_comm, &q_topology);",
              "  if (q_ierror == MPI_SUCCESS) {",
              "    if (q_topology == MPI_CART) {",
              "      int q_ndims;",
-             "      q_ierror = $(state.prefix)MPI_Cartdim_get(q_comm, &q_ndims);",
+             "      q_ierror = PMPI_Cartdim_get(q_comm, &q_ndims);",
              "      if (q_ierror == MPI_SUCCESS)",
              "        q_indegree = q_outdegree = 2 * q_ndims;",
              "    } else if (q_topology == MPI_GRAPH) {",
              "      int q_neighbor_rank;",
              "      int q_nneighbors;",
-             "      q_ierror = $(state.prefix)MPI_Comm_rank(q_comm, &q_neighbor_rank);",
+             "      q_ierror = PMPI_Comm_rank(q_comm, &q_neighbor_rank);",
              "      if (q_ierror == MPI_SUCCESS)",
-             "        q_ierror = $(state.prefix)MPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);",
+             "        q_ierror = PMPI_Graph_neighbors_count(q_comm, q_neighbor_rank, &q_nneighbors);",
              "      if (q_ierror == MPI_SUCCESS)",
              "        q_indegree = q_outdegree = q_nneighbors;",
              "    } else if (q_topology == MPI_DIST_GRAPH) {",
              "      int q_weighted;",
-             "      q_ierror = $(state.prefix)MPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);",
+             "      q_ierror = PMPI_Dist_graph_neighbors_count(q_comm, &q_indegree, &q_outdegree, &q_weighted);",
              "    }",
              "  }",
              "  if (q_ierror != MPI_SUCCESS) {",
@@ -420,7 +428,7 @@ function ensure_at_root!(state, input_conversions, name, parameters)
             ["int q_at_root;",
              "{",
              "  int q_inter;",
-             "  int q_ierror = $(state.prefix)MPI_Comm_test_inter(q_comm, &q_inter);",
+             "  int q_ierror = PMPI_Comm_test_inter(q_comm, &q_inter);",
              "  if (q_ierror != MPI_SUCCESS) {",
              "    *ierror = q_ierror;",
              "    return;",
@@ -429,7 +437,7 @@ function ensure_at_root!(state, input_conversions, name, parameters)
              "    q_at_root = *root == MPI_ROOT;",
              "  } else {",
              "    int q_comm_rank;",
-             "    q_ierror = $(state.prefix)MPI_Comm_rank(q_comm, &q_comm_rank);",
+             "    q_ierror = PMPI_Comm_rank(q_comm, &q_comm_rank);",
              "    if (q_ierror != MPI_SUCCESS) {",
              "      *ierror = q_ierror;",
              "      return;",
@@ -966,7 +974,7 @@ for key in sort(collect(keys(apis)))
         f08_generic = embiggen && name ∈ f08_explicit_large_count ?
             P * name * "_c" : P * name
 
-        state = State(P)
+        state = State()
         input_arguments = []
         final_input_arguments = []
         # Each choice buffer's translated address, `q_<name>`. A list of its own
@@ -1719,7 +1727,7 @@ for key in sort(collect(keys(apis)))
                         append!(input_conversions,
                                 ["int ndims;",
                                  "{",
-                                 "  const int q_ierror = $(P)MPI_Cartdim_get(q_comm, &ndims);",
+                                 "  const int q_ierror = PMPI_Cartdim_get(q_comm, &ndims);",
                                  "  if (q_ierror != MPI_SUCCESS) {",
                                  "    *ierror = q_ierror;",
                                  "    return;",
@@ -1771,21 +1779,17 @@ for key in sort(collect(keys(apis)))
                         # keep all output arguments unchanged", and `maxdims` may
                         # exceed the dimensionality generally, not just at zero.
                         # How many that is only the topology knows, hence the
-                        # second call. It carries `state.prefix` like every other
-                        # probe here -- the neighbourhood ones a few hundred lines
-                        # up read MPI_CARTDIM_GET the same way -- so the MPI_ form
-                        # probes through MPI_ and the P form through PMPI_. That is
-                        # the invariant that matters: a P form must never re-enter
-                        # MPI_. (src/mpif_cdesc.c is always-PMPI_ instead, but it
-                        # builds datatypes rather than probing, and is
-                        # hand-written.) Clamped to `*maxdims` because passing
-                        # fewer than the topology has is "unspecified" rather than
-                        # forbidden, and the temporary is only that long; zero when
-                        # either call failed, so a failure converts nothing at all.
+                        # second call, and like every other probe here it goes
+                        # through PMPI_ in both copies, not being a call the
+                        # program made -- see the note above the helpers. Clamped
+                        # to `*maxdims` because passing fewer than the topology
+                        # has is "unspecified" rather than forbidden and the
+                        # temporary is only that long; zero when either call
+                        # failed, so a failure converts nothing at all.
                         append!(output_conversions,
                                 ["int ndims_$parname = 0;",
                                  "if (*ierror == MPI_SUCCESS)",
-                                 "  if ($(state.prefix)MPI_Cartdim_get(MPI_Comm_fromint(*comm), &ndims_$parname) != MPI_SUCCESS)",
+                                 "  if (PMPI_Cartdim_get(MPI_Comm_fromint(*comm), &ndims_$parname) != MPI_SUCCESS)",
                                  "    ndims_$parname = 0;",
                                  "if (ndims_$parname > *maxdims)",
                                  "  ndims_$parname = *maxdims;",

@@ -455,3 +455,23 @@ right analogy for the uninitialised read and the wrong one for the surplus,
 because only there does the standard state what happens to the entries MPI did
 not write. Consulting it per routine, rather than reusing the shape, is what
 separated the two halves.
+
+### Internal probes followed the wrapper's prefix, so MPI_ wrappers made phantom calls
+
+`dev/mpiapi.jl`'s `State` carried a prefix, `""` or `"P"`, and the probes the
+helpers emit — `MPI_Comm_size`, `MPI_Comm_rank`, `MPI_Cartdim_get` and the rest,
+used to work out how long an array argument is — were spelled with it. The
+field's own comment gave the goal as "A tool counting MPI_Comm_size calls should
+not be shown calls the program never made", but threading the prefix achieved
+that for the `PMPI_` copy only: in the `MPI_` copy the probes called `MPI_`, so a
+profiler interposed on `MPI_Comm_rank` saw mpif's bookkeeping every time a
+Fortran program called `MPI_BARRIER` or a neighbourhood collective.
+
+Raised in review as a question about the principal calls, which are the opposite
+case and correctly `MPI_`. Probes are now unconditionally `PMPI_` and the field is
+gone. Two lessons. A partial fix reads like a considered one once the mechanism
+looks deliberate — the prefix threading was machinery built for half the problem,
+and its comment stated the whole goal, which is what made it look settled. And a
+mechanical sweep is not a proof: substituting `$(state.prefix)MPI_` missed
+`MPI_Cart_sub`'s probe, which spelled the same prefix `$(P)MPI_`. The invariant
+check in `CODE.md` found it, and is the thing to run rather than the sweep.
