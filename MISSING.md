@@ -1325,14 +1325,11 @@ it were an oversight.
    then the `triaged` line. Expect `attrmpi1f08` (the `amd64` spelling);
    treat anything else as a real question about a platform nothing here had
    run on.
-4. **Triage the two remaining Docker images**, both emulated on this machine
-   and neither run by CI. `mpich/gcc/linux/26.04/armv7l` is the one 32-bit
-   variant without a `triaged` line — do not carry the i686 list over:
-   different 32-bit ABIs, different alignment.
-   `openmpi/gcc/linux/26.04/x86_64` should read like its `aarch64` twin plus
-   the eleven spawn tests, but that is a prediction and not a measurement.
-   Measure each from an image the dockerfile has just built, not from
-   whatever the daemon still holds under that tag.
+4. **Triage `openmpi/gcc/linux/26.04/x86_64`**, the last Docker image with no
+   `triaged` line, emulated on this machine and not run by CI. It should read
+   like its `aarch64` twin plus the eleven spawn tests, but that is a
+   prediction and not a measurement. Measure it from an image the dockerfile
+   has just built, not from whatever the daemon still holds under that tag.
 
 Upstream reporting status — the sections above are the authority; this is a
 summary:
@@ -1387,25 +1384,30 @@ rather than re-measured, and CI is what confirms them.
   `darwin/26` rows above, which is the same machine and the same compilers
   differing only in the OS the key names. Their `dgraph` six and the flang
   `i_fcoll_test` are what the extra rows in the expected-failures list cover.
+- Nor is the armv7l Docker image (`mpich/gcc/linux/26.04/armv7l`), measured
+  2026-08-12 under qemu: 3/5/7, one fewer f08 failure than its aarch64
+  sibling's 3/5/8 because `attrmpi1f08` builds on a 32-bit arch. It carries
+  no `xfail` entry of its own — every failure is one the wildcards already
+  cover — and the i686 list was not carried over: different 32-bit ABI,
+  different alignment.
 - The two Open MPI x86_64 rows are higher by exactly the eleven spawn tests
   ("a spawned child is not reachable over TCP" above).
 - Thirteen of CI's fourteen variants are `triaged` (the twelve above plus
   `mpich/gcc/linux/13/i686`, which gates on three consecutive agreeing
   runs), so any difference there fails the run; `mpich/gcc/freebsd/14/amd64`
   is unmeasured and does not gate. The other `triaged` lines are
-  environments outside CI: this machine's four `darwin/26` rows, and the
-  four `linux/26.04/aarch64` Docker images. Two Docker images remain
-  unmeasured and so still do not gate — `openmpi/gcc/linux/26.04/x86_64`
-  and `mpich/gcc/linux/26.04/armv7l`, both of which need qemu here and
-  neither of which CI runs.
+  environments outside CI: this machine's four `darwin/26` rows, the four
+  `linux/26.04/aarch64` Docker images and the armv7l one.
+  `openmpi/gcc/linux/26.04/x86_64` is the one Docker image still unmeasured
+  and so still does not gate; it needs qemu here and CI does not run it.
 - Most rows rest on a single measurement, so expect some churn: a flaky
   entry surfaces as an unexpected pass, which is the mechanism working.
 - `test/`, mpif's own suite, is entirely green: all four local variants,
-  each against both runtime MPIs, the AddressSanitizer variants, and the
-  four arm64v8 Docker images. `ctest` registers more than `add_mpi_test`
-  does — the runtime-check and `mpif_info` groups use bare `add_test` for
-  cases that are about the launch environment rather than a binding. Count
-  rather than trust a number; a written one rotted here once:
+  each against both runtime MPIs, the AddressSanitizer variants, the four
+  arm64v8 Docker images, and the armv7l one. `ctest` registers more than
+  `add_mpi_test` does — the runtime-check and `mpif_info` groups use bare
+  `add_test` for cases that are about the launch environment rather than a
+  binding. Count rather than trust a number; a written one rotted here once:
 
       ctest --test-dir build/test/<variant>-run-<runtime> -N | tail -1
 

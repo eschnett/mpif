@@ -98,7 +98,7 @@ triaged openmpi/llvm/linux/24.04/aarch64
 # only because docker/mpich-gcc-i386.dockerfile makes it -- which is the thing
 # those runs had to confirm, since locally the image runs under qemu and would say
 # i686 regardless. The armv7l image is the other 32-bit ABI and is not covered by
-# this line; see "Worth doing next" in MISSING.md.
+# this line; it has one of its own, below.
 triaged mpich/gcc/linux/13/i686
 
 # `mpich/gcc/freebsd/14/amd64`, which the `freebsd` job in
@@ -137,14 +137,32 @@ triaged openmpi/llvm/darwin/26/arm64
 # the OS the key names. What the OS costs is the flang `i_fcoll_test` row, which
 # had to be widened to reach them.
 #
-# The other two images are unmeasured and so cannot fail a build --
-# `openmpi/gcc/linux/26.04/x86_64` (docker/openmpi-gcc-amd64.dockerfile) and
-# `mpich/gcc/linux/26.04/armv7l` (docker/mpich-gcc-arm32v7.dockerfile), both of
-# which need qemu here. See "Worth doing next" in MISSING.md.
+# One image is still unmeasured and so cannot fail a build --
+# `openmpi/gcc/linux/26.04/x86_64` (docker/openmpi-gcc-amd64.dockerfile), which
+# needs qemu here. See "Worth doing next" in MISSING.md.
 triaged mpich/gcc/linux/26.04/aarch64
 triaged mpich/llvm/linux/26.04/aarch64
 triaged openmpi/gcc/linux/26.04/aarch64
 triaged openmpi/llvm/linux/26.04/aarch64
+
+# The armv7l image (docker/mpich-gcc-arm32v7.dockerfile), measured 2026-08-12,
+# one run, and then confirmed by rebuilding the image with this line in place --
+# the suite step that gates the build is the run that measured it. It fails 3/5/7
+# tests across f77/f90/f08 and needed no `xfail` line of its own: every failure is
+# one the wildcards below already carry, and every entry that selects it fired.
+#
+# The f08 count is one below the aarch64 images' 8 because `attrmpi1f08` builds
+# and passes here. That is the measurement the three per-64-bit-arch
+# `attrmpi1f08` rows predicted, and the reason they are per arch rather than
+# wildcarded. The i686 list was *not* carried over -- different 32-bit ABI,
+# different alignment -- so the two 32-bit variants are triaged separately.
+#
+# Unlike the i686 line, no native run backs the key: this machine is arm64, so
+# the image runs under qemu, and `uname -m` says armv7l because qemu says so.
+# Nothing here and nothing in CI runs 32-bit ARM natively, so that cannot be
+# confirmed the way the i686 arch override was; the line gates local rebuilds of
+# this image and nothing else.
+triaged mpich/gcc/linux/26.04/armv7l
 
 # --- Accounted for -------------------------------------------------------------
 #
