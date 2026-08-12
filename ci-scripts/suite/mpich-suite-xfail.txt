@@ -136,10 +136,6 @@ triaged openmpi/llvm/darwin/26/arm64
 # `darwin/26` rows above: the same machine and the same compilers, differing in
 # the OS the key names. What the OS costs is the flang `i_fcoll_test` row, which
 # had to be widened to reach them.
-#
-# One image is still unmeasured and so cannot fail a build --
-# `openmpi/gcc/linux/26.04/x86_64` (docker/openmpi-gcc-amd64.dockerfile), which
-# needs qemu here. See "Worth doing next" in MISSING.md.
 triaged mpich/gcc/linux/26.04/aarch64
 triaged mpich/llvm/linux/26.04/aarch64
 triaged openmpi/gcc/linux/26.04/aarch64
@@ -163,6 +159,24 @@ triaged openmpi/llvm/linux/26.04/aarch64
 # confirmed the way the i686 arch override was; the line gates local rebuilds of
 # this image and nothing else.
 triaged mpich/gcc/linux/26.04/armv7l
+
+# The amd64 image (docker/openmpi-gcc-amd64.dockerfile), measured 2026-08-12, one
+# run, and then confirmed by rebuilding the image with these lines in place. It
+# fails 11/15/17 across f77/f90/f08, which is its aarch64 sibling's 7/9/13 plus
+# the eleven `openmpi/*/*/*/x86_64` spawn rows plus `spawnmult2` in each language.
+# Emulated here, like the armv7l image and for the same reason, and that shows:
+#
+# - The `dgraph` six fail here too, which is what widened their 26.04 rows from
+#   `aarch64` to `*`. That one is about what hwloc sees and not about emulation.
+# - Every test that spawns times out at 180 seconds -- sixteen of them, 48 minutes
+#   of the run's 70. The eleven spawn rows above are matched by name and their
+#   reason is about GitHub's runners, so **this variant measures nothing about
+#   Open MPI's spawn behaviour**; it gates the rest. MISSING.md "the emulated
+#   amd64 image cannot run Open MPI's spawn tests" has the evidence.
+#
+# Being emulated, it says nothing about a native x86_64 Linux either, which is
+# what would settle the eleven rows' cause. See "Worth doing next" in MISSING.md.
+triaged openmpi/gcc/linux/26.04/x86_64
 
 # --- Accounted for -------------------------------------------------------------
 #
@@ -191,12 +205,17 @@ xfail mpich/*/*/*/*            f90  bsendf90           # attaches 400 bytes, und
 # the same six with the same message, on macOS 26 and on the Ubuntu 26.04 images
 # alike. treematch is C, so the Fortran compiler has nothing to do with whether it
 # permutes.
-xfail openmpi/*/linux/26.04/aarch64   f77  dgraph_unwgtf      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/*/linux/26.04/aarch64   f08  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/*/linux/26.04/aarch64   f90  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/*/linux/26.04/aarch64   f77  dgraph_wgtf        # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/*/linux/26.04/aarch64   f08  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
-xfail openmpi/*/linux/26.04/aarch64   f90  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+#
+# The architecture went the same way for Ubuntu 26.04, and again because a run
+# said so: the amd64 image fails the same six with the same message, so the 26.04
+# rows are `openmpi/*/linux/26.04/*` and not per arch. CI's 24.04 x86_64 runners
+# pass them, which is what keeps the OS version in the selector.
+xfail openmpi/*/linux/26.04/*         f77  dgraph_unwgtf      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/linux/26.04/*         f08  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/linux/26.04/*         f90  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/linux/26.04/*         f77  dgraph_wgtf        # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/linux/26.04/*         f08  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
+xfail openmpi/*/linux/26.04/*         f90  dgraph_wgtf90      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/*/darwin/26/arm64       f77  dgraph_unwgtf      # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/*/darwin/26/arm64       f08  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
 xfail openmpi/*/darwin/26/arm64       f90  dgraph_unwgtf90    # passes reorder=.true. and then requires no reordering; MISSING.md "suite tests that cannot pass"
@@ -226,6 +245,15 @@ xfail openmpi/*/*/*/x86_64     f90  spawnmultf90       # Open MPI cannot TCP con
 xfail openmpi/*/*/*/x86_64     f08  spawnf90           # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
 xfail openmpi/*/*/*/x86_64     f08  spawnmultf03       # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
 xfail openmpi/*/*/*/x86_64     f08  spawnmultf90       # Open MPI cannot TCP connect to a spawned child on GitHub's x86_64 runners; MISSING.md "a spawned child"
+# In the emulated amd64 image every test that spawns fails instead at the
+# 180-second timeout, so the eleven rows above and the two `*/*/*/*/*` f08
+# `spawnargv` rows match it by name while naming a cause that is not the one
+# operating there. These three are what was left over. MISSING.md "the emulated
+# amd64 image cannot run Open MPI's spawn tests" has the evidence, and says what
+# that variant therefore does not measure.
+xfail openmpi/*/linux/26.04/x86_64    f77  spawnmult2f        # spawn times out under emulation; MISSING.md "the emulated amd64 image cannot run Open MPI's spawn tests"
+xfail openmpi/*/linux/26.04/x86_64    f90  spawnmult2f90      # spawn times out under emulation; MISSING.md "the emulated amd64 image cannot run Open MPI's spawn tests"
+xfail openmpi/*/linux/26.04/x86_64    f08  spawnmult2f90      # spawn times out under emulation; MISSING.md "the emulated amd64 image cannot run Open MPI's spawn tests"
 xfail */*/*/*/*                f08  statusconv         # C file spelling the ABI's MPI_F08_Status as MPICH's MPI_F08_status
 xfail openmpi/*/*/*/*          f77  typesnamef         # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"
 xfail openmpi/*/*/*/*          f08  typesnamef08       # Open MPI names a dup "Dup <name>" where the standard says nothing; MISSING.md "object names"

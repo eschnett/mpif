@@ -864,6 +864,37 @@ expected failures under `openmpi/*/*/*/x86_64` with the abort as the reason.
 The arithmetic that supports the diagnosis: subtracting the eleven makes the
 x86_64 baseline rows equal their aarch64 twins.
 
+The emulated amd64 image (next section) is *not* a second sighting of this: it
+fails these eleven for a different reason, and does not reach the teardown the
+abort happens in.
+
+### OpenMPI: the emulated amd64 image cannot run Open MPI's spawn tests
+
+In `docker/openmpi-gcc-amd64.dockerfile`, which is emulated on this arm64
+machine, every suite test that calls `MPI_Comm_spawn` or
+`MPI_Comm_spawn_multiple` fails at the 180-second timeout: four in f77, six in
+f90, six in f08, 48 minutes of a 70-minute run. The two tests in the `spawn`
+directories that do not spawn (`namepubf`, `connaccf`) pass, in each language.
+
+- The only diagnostic Open MPI prints is `setsockopt(sd, SOL_SOCKET,
+  SO_RCVTIMEO, ...)` failing with "Numerical argument out of domain (33)" —
+  EDOM, what Linux returns for a `timeval` it will not accept. So the emulator
+  is handing the kernel a garbled `timeval`, Open MPI's warning says the socket
+  setup "may end up hanging", and it hangs. Inferred from the message, not
+  traced.
+- What rules out configuration: the native aarch64 image, same dockerfile
+  family and the same `--mca btl_tcp_if_include lo`, passes all sixteen.
+- Not reported upstream. An emulator translating a socket option wrongly is
+  not Open MPI's defect, and saying anything about Open MPI here would need a
+  native x86_64 Linux run.
+
+Consequence for `ci-scripts/suite/mpich-suite-xfail.txt`: the eleven
+`openmpi/*/*/*/x86_64` rows above and the two `*/*/*/*/*` f08 `spawnargv` rows
+match this variant by name while naming causes that are not what fails here,
+and `spawnmult2` in each language needed rows of its own. The variant is
+`triaged` on that footing — it gates everything except spawn, and measures
+nothing about spawn.
+
 ### MPICH: a spawned child connects back to whatever `gethostname()` resolves to
 
 Fails every MPICH spawn test in the suite, 180 seconds each, on a machine
@@ -906,10 +937,10 @@ pointing here.
   remaps (deterministically, machine-dependent); MPICH never does, which is
   what the test was written against. Scoped in the xfail file to the
   variants where remapping has been seen (`openmpi/*/darwin/26/arm64` and
-  the Ubuntu 26.04 arm64 image; toolchain wildcarded because `treematch` is
-  C, OS version pinned because macOS 15 does not remap) — CI's Open MPI
-  runners pass these today and may stop at any time without anything having
-  changed on this side.
+  every Ubuntu 26.04 image, arm64 and amd64 alike; toolchain wildcarded
+  because `treematch` is C, OS version pinned because macOS 15 and Ubuntu
+  24.04 do not remap) — CI's Open MPI runners pass these today and may stop
+  at any time without anything having changed on this side.
 - **`allctypesf` + f90/f08** run `MPI_LB`/`MPI_UB` past `MPI_Type_get_name`;
   both were removed in MPI-3.0 and are not in the ABI header, so mpif does
   not define them either.
@@ -1325,11 +1356,13 @@ it were an oversight.
    then the `triaged` line. Expect `attrmpi1f08` (the `amd64` spelling);
    treat anything else as a real question about a platform nothing here had
    run on.
-4. **Triage `openmpi/gcc/linux/26.04/x86_64`**, the last Docker image with no
-   `triaged` line, emulated on this machine and not run by CI. It should read
-   like its `aarch64` twin plus the eleven spawn tests, but that is a
-   prediction and not a measurement. Measure it from an image the dockerfile
-   has just built, not from whatever the daemon still holds under that tag.
+4. **Get one Open MPI x86_64 Linux suite run that is neither GitHub's runners
+   nor an emulator.** Two entries rest on x86_64 Open MPI spawn behaviour
+   nobody has been able to look at directly: the eleven "not reachable over
+   TCP" rows, measured only on the runners, and the emulated amd64 image's
+   timeouts, which are the emulator's. A native x86_64 Linux box would tell
+   the two apart, and could settle whether the eleven are Open MPI's or
+   GitHub's.
 
 Upstream reporting status — the sections above are the authority; this is a
 summary:
@@ -1390,21 +1423,29 @@ rather than re-measured, and CI is what confirms them.
   no `xfail` entry of its own — every failure is one the wildcards already
   cover — and the i686 list was not carried over: different 32-bit ABI,
   different alignment.
-- The two Open MPI x86_64 rows are higher by exactly the eleven spawn tests
-  ("a spawned child is not reachable over TCP" above).
+- Nor is the amd64 Docker image (`openmpi/gcc/linux/26.04/x86_64`), measured
+  2026-08-12 emulated: 11/15/17, which is its aarch64 sibling's 7/9/13 plus
+  the eleven x86_64 spawn rows plus `spawnmult2` in each language. Two
+  findings came with it — the `dgraph` six fail here too, which widened their
+  26.04 rows off `aarch64`, and every spawning test times out under
+  emulation, so the variant gates everything except spawn and measures
+  nothing about spawn ("the emulated amd64 image cannot run Open MPI's spawn
+  tests" above).
+- The two Open MPI x86_64 rows in the table are higher than their aarch64
+  twins by exactly the eleven spawn tests ("a spawned child is not reachable
+  over TCP" above).
 - Thirteen of CI's fourteen variants are `triaged` (the twelve above plus
   `mpich/gcc/linux/13/i686`, which gates on three consecutive agreeing
   runs), so any difference there fails the run; `mpich/gcc/freebsd/14/amd64`
   is unmeasured and does not gate. The other `triaged` lines are
-  environments outside CI: this machine's four `darwin/26` rows, the four
-  `linux/26.04/aarch64` Docker images and the armv7l one.
-  `openmpi/gcc/linux/26.04/x86_64` is the one Docker image still unmeasured
-  and so still does not gate; it needs qemu here and CI does not run it.
+  environments outside CI: this machine's four `darwin/26` rows and every
+  Docker variant — the four `linux/26.04/aarch64`, the armv7l one and the
+  amd64 one. So every image CI does not run now gates its own build.
 - Most rows rest on a single measurement, so expect some churn: a flaky
   entry surfaces as an unexpected pass, which is the mechanism working.
 - `test/`, mpif's own suite, is entirely green: all four local variants,
-  each against both runtime MPIs, the AddressSanitizer variants, the four
-  arm64v8 Docker images, and the armv7l one. `ctest` registers more than
+  each against both runtime MPIs, the AddressSanitizer variants, and every
+  Docker image. `ctest` registers more than
   `add_mpi_test` does — the runtime-check and `mpif_info` groups use bare
   `add_test` for cases that are about the launch environment rather than a
   binding. Count rather than trust a number; a written one rotted here once:
