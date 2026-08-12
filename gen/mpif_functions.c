@@ -3078,7 +3078,7 @@ void mpi_cart_get_(
   );
   int ndims_periods = 0;
   if (*ierror == MPI_SUCCESS)
-    if (PMPI_Cartdim_get(MPI_Comm_fromint(*comm), &ndims_periods) != MPI_SUCCESS)
+    if (MPI_Cartdim_get(MPI_Comm_fromint(*comm), &ndims_periods) != MPI_SUCCESS)
       ndims_periods = 0;
   if (ndims_periods > *maxdims)
     ndims_periods = *maxdims;

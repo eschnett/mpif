@@ -559,7 +559,25 @@ were found and verified.
   - **The P form must call C's `PMPI_`, never `MPI_`** — including the group
     size/rank/dimension probes some wrappers make, which is why `State`
     carries the prefix. The handle conversions are left alone
-    (`MPI_Comm_fromint` is nothing a profiler can usefully replace).
+    (`MPI_Comm_fromint` is nothing a profiler can usefully replace). The
+    prefix applies to a probe in *both* directions, so the `MPI_` form probes
+    through `MPI_`: `nm`-free check that it stayed that way is that the two
+    spellings of each probe occur equally often in `gen/mpif_functions.c`.
+  - **The `MPI_` form calls C's `MPI_`, and that is what makes a C-only
+    profiler sufficient.** §15.2.1(3) requires an implementation to "document
+    the implementation of different language bindings of the MPI interface if
+    they are layered on top of each other, so that the profiler developer knows
+    whether to implement the profile interface for each binding, or to economize
+    by implementing it only for the lowest level routines". mpif is layered, and
+    this is that documentation: `mpi_send_` calls C's `MPI_Send`, so a profiler
+    that replaces the C entry point alone already sees every call a Fortran
+    program makes, and need not implement any of the Fortran specific names.
+    Having the wrappers call `PMPI_` instead would invert that — a C profiler
+    would go blind to Fortran programs, and a tool would have to interpose on
+    every specific name §19.1.5 defines, several per routine. The `PMPI_`
+    Fortran forms are the bypass for whoever wants the other behaviour, which is
+    why both exist. `test/profile_f08` and the suite's `f77/profile`,
+    `f90/profile` and `f08/profile` directories are what hold this up.
   - **`PMPI_Sizeof` exists here and in neither implementation.** The standard
     makes no exception for it.
   - **No PMPI form of a predefined callback** (`PMPI_COMM_DUP_FN` etc.), and

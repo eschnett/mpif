@@ -1771,18 +1771,21 @@ for key in sort(collect(keys(apis)))
                         # keep all output arguments unchanged", and `maxdims` may
                         # exceed the dimensionality generally, not just at zero.
                         # How many that is only the topology knows, hence the
-                        # second call -- PMPI_, because a profiler interposed on
-                        # MPI_CARTDIM_GET must not see a call the program did not
-                        # make (src/mpif_cdesc.c makes the same choice for the
-                        # datatypes it builds). Clamped to `*maxdims` because
-                        # passing fewer than the topology has is "unspecified"
-                        # rather than forbidden, and the temporary is only that
-                        # long; zero when either call failed, so a failure
-                        # converts nothing at all.
+                        # second call. It carries `state.prefix` like every other
+                        # probe here -- the neighbourhood ones a few hundred lines
+                        # up read MPI_CARTDIM_GET the same way -- so the MPI_ form
+                        # probes through MPI_ and the P form through PMPI_. That is
+                        # the invariant that matters: a P form must never re-enter
+                        # MPI_. (src/mpif_cdesc.c is always-PMPI_ instead, but it
+                        # builds datatypes rather than probing, and is
+                        # hand-written.) Clamped to `*maxdims` because passing
+                        # fewer than the topology has is "unspecified" rather than
+                        # forbidden, and the temporary is only that long; zero when
+                        # either call failed, so a failure converts nothing at all.
                         append!(output_conversions,
                                 ["int ndims_$parname = 0;",
                                  "if (*ierror == MPI_SUCCESS)",
-                                 "  if (PMPI_Cartdim_get(MPI_Comm_fromint(*comm), &ndims_$parname) != MPI_SUCCESS)",
+                                 "  if ($(state.prefix)MPI_Cartdim_get(MPI_Comm_fromint(*comm), &ndims_$parname) != MPI_SUCCESS)",
                                  "    ndims_$parname = 0;",
                                  "if (ndims_$parname > *maxdims)",
                                  "  ndims_$parname = *maxdims;",
