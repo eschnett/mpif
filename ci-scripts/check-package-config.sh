@@ -15,7 +15,7 @@
 # message(FATAL_ERROR) in the config file ends that consumer's configure
 # instead, and mpif cannot be an optional dependency of anything.
 #
-# Three configures, against the installed prefix:
+# Seven configures, against the installed prefix:
 #
 #   1. optional, no ABI MPI      -- must succeed, mpif_FOUND false, and a
 #                                   reason recorded in mpif_NOT_FOUND_MESSAGE
@@ -24,9 +24,24 @@
 #   3. optional, ABI MPI present -- must find it and define the imported
 #                                   target, so this script cannot pass by
 #                                   never finding anything
+#   4. the recorded compiler     -- must not warn
+#   5. another compiler          -- must warn, and still configure
+#   6. another major version     -- must warn
+#   7. another compiler, with
+#      MPIF_SKIP_COMPILER_CHECK  -- must not warn
 #
 # Leg 3 points MPI_HOME at the MPI rather than pinning MPI_mpi_abi_LIBRARY the
 # way the test harnesses do, because that is the branch nothing else exercises.
+#
+# Legs 4-7 are about the other half of what an installed mpif is: a set of
+# `.mod` files in one compiler's private format. A consumer using another
+# compiler is told so here, once, instead of by whatever its own compiler says
+# about the first `use mpi_f08` it meets. Each leg states the consumer's
+# compiler by setting CMAKE_Fortran_COMPILER_ID, which is what a project that
+# enabled Fortran would have; the probe project still enables no language, so
+# no compiler needs to exist for the leg to be run. Leg 4 is the one that keeps
+# the other three honest -- without it, a config file that warned unconditionally
+# would pass legs 5 and 6.
 #
 # The first two legs have to fail to find libmpi_abi *deterministically*: a
 # copy in /usr/local or /opt/local would otherwise make this script lie about
@@ -209,6 +224,110 @@ else
          "consumer's configure. See $work/optional-present.log:" \
          "$(tail -n 5 "$work/optional-present.log" 2>/dev/null)"
   fi
+fi
+
+# The compiler-identity legs. They need an mpif that reports itself found --
+# the compiler check runs after the ABI library is resolved, so that a consumer
+# who has no MPI at all is told that one thing and not two -- hence the same
+# guard as leg 3.
+#
+# What the installation recorded is read out of the config file rather than
+# passed in: the value under test is exactly what a consumer will compare
+# against, and reading it here also catches an install that recorded nothing.
+recorded_id="$(sed -n 's/^set(mpif_Fortran_COMPILER_ID "\(.*\)")$/\1/p' "$config")"
+recorded_version="$(sed -n 's/^set(mpif_Fortran_COMPILER_VERSION "\(.*\)")$/\1/p' "$config")"
+
+# A leg's verdict is the presence of the warning in its log. The phrase is the
+# first clause of the message in cmake/mpifConfig.cmake.in; matching that rather
+# than the word "warning" keeps a warning from anywhere else -- a deprecated
+# CMake feature, a policy -- from being read as this one.
+warning_phrase="mpif was built with"
+
+# $1: leg name, $2: extra cmake arguments, $3: "warn" or "quiet"
+compiler_leg() {
+  write_project 'find_package(mpif QUIET)'
+  if ! configure "$1" "-DMPI_HOME=$mpi_prefix $2"; then
+    fail "the compiler check ended the consumer's configure ($1). It warns;" \
+         "it must not raise. See $work/$1.log:" \
+         "$(tail -n 5 "$work/$1.log" 2>/dev/null)"
+    return
+  fi
+  if [ "$(report_line 1)" != "found" ] || [ "$(report_line 3)" != "target" ]; then
+    fail "the $1 leg left mpif not found or its target undefined, so what it" \
+         "says about the compiler warning means nothing."
+    return
+  fi
+  if grep -q "$warning_phrase" "$work/$1.log"; then
+    if [ "$3" = "warn" ]; then
+      echo "  $1: warned, and configured anyway"
+    else
+      fail "the $1 leg warned about the Fortran compiler when it should not" \
+           "have. mpif was built with $recorded_id $recorded_version." \
+           "$(grep -A 8 "$warning_phrase" "$work/$1.log" | head -n 9)"
+    fi
+  else
+    if [ "$3" = "warn" ]; then
+      fail "the $1 leg did not warn about the Fortran compiler." \
+           "mpif was built with $recorded_id $recorded_version, and this leg" \
+           "told the config file it was using something else. A consumer that" \
+           "is not told here meets the mismatch as a module-file error in its" \
+           "own sources instead."
+    else
+      echo "  $1: did not warn"
+    fi
+  fi
+}
+
+if [ -z "$mpi_prefix" ]; then
+  echo "  no <mpi-prefix> given, so the compiler check is not exercised here"
+elif [ -z "$recorded_id" ]; then
+  fail "the config file records no mpif_Fortran_COMPILER_ID, so a consumer" \
+       "using a different Fortran compiler than the one that built these" \
+       "modules is told nothing about it. See $config."
+else
+  echo "$(basename "$0"): mpif records Fortran compiler" \
+       "$recorded_id $recorded_version"
+
+  # Leg 4: the compiler that built it.
+  compiler_leg matching-compiler \
+    "-DCMAKE_Fortran_COMPILER_ID=$recorded_id
+     -DCMAKE_Fortran_COMPILER_VERSION=$recorded_version" quiet
+
+  # Leg 5: another compiler. Whichever of the two this build is not, so that
+  # the leg is a mismatch under either toolchain and the message it produces is
+  # one a user could really see.
+  if [ "$recorded_id" = "GNU" ]; then
+    other_id=LLVMFlang
+  else
+    other_id=GNU
+  fi
+  compiler_leg other-compiler \
+    "-DCMAKE_Fortran_COMPILER_ID=$other_id
+     -DCMAKE_Fortran_COMPILER_VERSION=$recorded_version" warn
+
+  # Leg 6: the same compiler, one major version on -- where the module format
+  # turns over. Skipped if the recorded version does not begin with a number,
+  # which would leave nothing to increment.
+  recorded_major="${recorded_version%%.*}"
+  case "$recorded_major" in
+    ''|*[!0-9]*)
+      echo "  recorded version \"$recorded_version\" has no major number," \
+           "so the version leg is skipped"
+      ;;
+    *)
+      compiler_leg other-major-version \
+        "-DCMAKE_Fortran_COMPILER_ID=$recorded_id
+         -DCMAKE_Fortran_COMPILER_VERSION=$((recorded_major + 1)).0.0" warn
+      ;;
+  esac
+
+  # Leg 7: the escape hatch. A consumer who knows better than the comparison --
+  # one using only mpif.h, say -- must be able to turn it off, or the warning
+  # becomes something to be ignored on every configure.
+  compiler_leg skip-compiler-check \
+    "-DCMAKE_Fortran_COMPILER_ID=$other_id
+     -DCMAKE_Fortran_COMPILER_VERSION=$recorded_version
+     -DMPIF_SKIP_COMPILER_CHECK=ON" quiet
 fi
 
 if [ "$status" -eq 0 ]; then

@@ -227,6 +227,20 @@ consumer to reach around `mpif_FOUND` and link against.
 `ci-scripts/check-package-config.sh` is what keeps all three true —
 `test-consume/` says `REQUIRED` and pins the library, so it passes either way.
 
+The one thing about an installed mpif that is *not* interchangeable is the
+Fortran compiler, so the same file records it — `mpif_Fortran_COMPILER_ID`,
+`_VERSION` and the compiler's path — and warns when the consuming project's
+compiler differs in identity, or in major version. Without it the first sign is
+the consumer's own compiler rejecting `use mpi_f08` at a source line that has
+nothing to do with mpif: gfortran calls the module file a different version's,
+flang reports it as unparseable (measured here: "Unmatched '('", "Bad character
+in Hollerith literal"). It is a warning, not a not-found — see `MISSING.md`
+"What the compiler-identity check in `mpifConfig.cmake` does not do" — and
+`MPIF_SKIP_COMPILER_CHECK` silences it. Legs 4–7 of
+`ci-scripts/check-package-config.sh` check both verdicts and the silencer, by
+telling the config file which compiler the consumer has rather than by needing
+a second toolchain installed.
+
 ## Static linking
 
 `-DBUILD_SHARED_LIBS=OFF` builds `libmpifort_abi.a` instead of a shared library.

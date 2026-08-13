@@ -1039,6 +1039,28 @@ decision recorded on filing it.
   CI re-measures on every run. If an implementation grows such a detector,
   this is the test that starts failing.
 
+### What the compiler-identity check in `mpifConfig.cmake` does not do
+
+The installation records the Fortran compiler that built it, and
+`find_package(mpif)` compares it against the consuming project's; the
+mismatch it is for is a `.mod` file no other compiler can read. What it
+settles for:
+
+- **It warns; it does not report the package not found.** The comparison is a
+  proxy, not a proof — a consumer that only uses `include 'mpif.h'` may well
+  build and run, and two compilers can be more compatible than their version
+  numbers say. `MPIF_SKIP_COMPILER_CHECK` turns it off for the consumer who
+  knows which case they are in.
+- **Major versions only.** That is where `.mod` formats turn over in gfortran
+  and LLVM flang; a minor-version comparison would warn on the
+  15.1-against-15.2 build, which works. So a compiler that broke its module
+  format within a major release would pass this check and fail at compile.
+- **Nothing warns for a consumer that uses `bin/mpifort` instead.** The
+  wrapper bakes in the compiler that built mpif, so the default is right by
+  construction; `MPIF_FC` overrides it silently, and the wrapper is a `sh`
+  script with no place to compare identities. `find_package` is the path
+  where the consumer names its own compiler and the two can disagree unseen.
+
 ### What the cross-tests deliberately do not do
 
 (See "Choosing the MPI at run time" in `CODE.md`.)

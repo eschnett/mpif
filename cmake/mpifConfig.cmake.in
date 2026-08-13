@@ -55,4 +55,76 @@ include("${CMAKE_CURRENT_LIST_DIR}/mpifTargets.cmake")
 set_property(TARGET mpif::mpifort_abi APPEND PROPERTY
   INTERFACE_LINK_LIBRARIES "${MPIF_MPI_ABI_LIBRARY}")
 
+# The Fortran compiler that built this mpif. Recorded because the installation
+# is not compiler-neutral and nothing else says so: `mpi.mod` and `mpi_f08.mod`
+# are that compiler's private format, so a consumer using another one gets its
+# first `use mpi_f08` rejected, at its own source line and with nothing naming
+# mpif or the real cause. Measured, flang 22 reading gfortran 15's modules:
+# "Cannot parse module file for module 'mpi_f08': Unmatched '('", then "Bad
+# character in Hollerith literal". The `.mod` files are only the
+# first thing to break: whether a Fortran compiler passes a hidden character
+# length, and as what type, is its own convention too, so an `include 'mpif.h'`
+# consumer that gets past the modules is not thereby safe.
+#
+# These stay set whatever the verdict, so a consumer can ask rather than be
+# told: `mpif_Fortran_COMPILER_ID`, `_VERSION` and the compiler itself.
+set(mpif_Fortran_COMPILER_ID "@CMAKE_Fortran_COMPILER_ID@")
+set(mpif_Fortran_COMPILER_VERSION "@CMAKE_Fortran_COMPILER_VERSION@")
+set(mpif_Fortran_COMPILER "@CMAKE_Fortran_COMPILER@")
+
+# Warn, not fail. A warning is what the case deserves: the comparison below is
+# a proxy -- major versions are where the module format usually turns over, not
+# where it is promised to -- and a consumer that only calls into the library
+# through `mpif.h`, or one whose compilers are more compatible than their
+# version numbers suggest, has a build that works. `MPIF_SKIP_COMPILER_CHECK`
+# silences it for the consumer who knows which of those they are -- and it is
+# the only thing that does: `find_package(mpif QUIET)` still gets the warning,
+# QUIET being a request for silence about the *search*, which this is not a
+# statement about.
+#
+# The condition is that the consumer's Fortran compiler is *known*, rather than
+# that Fortran appears in ENABLED_LANGUAGES: those are the same thing for a
+# project that called enable_language(Fortran), and asking this way also lets a
+# project that has not -- a CMAKE_Fortran_COMPILER_ID passed on the command
+# line -- state which compiler it will use and get the same answer.
+# ci-scripts/check-package-config.sh tests both verdicts that way.
+if(CMAKE_Fortran_COMPILER_ID AND NOT MPIF_SKIP_COMPILER_CHECK)
+  set(_mpif_compiler_mismatch "")
+  if(NOT CMAKE_Fortran_COMPILER_ID STREQUAL mpif_Fortran_COMPILER_ID)
+    set(_mpif_compiler_mismatch "a different Fortran compiler")
+  else()
+    # Major versions only. gfortran's module format turns over with the major
+    # release and is stable within it, and LLVM's flang works the same way; a
+    # minor-version comparison would warn on every 15.1-against-15.2 build,
+    # which is the case that does work. Either version being unknown (a
+    # compiler CMake could not extract one from) skips the comparison rather
+    # than guessing.
+    string(REGEX MATCH "^[0-9]+" _mpif_built_major
+      "${mpif_Fortran_COMPILER_VERSION}")
+    string(REGEX MATCH "^[0-9]+" _mpif_using_major
+      "${CMAKE_Fortran_COMPILER_VERSION}")
+    if(_mpif_built_major AND _mpif_using_major
+        AND NOT _mpif_built_major STREQUAL _mpif_using_major)
+      set(_mpif_compiler_mismatch "a different major version of the same compiler")
+    endif()
+  endif()
+  if(_mpif_compiler_mismatch)
+    string(CONCAT _mpif_compiler_warning
+      "mpif was built with ${mpif_Fortran_COMPILER_ID} "
+      "${mpif_Fortran_COMPILER_VERSION} (${mpif_Fortran_COMPILER}), and this "
+      "project uses ${_mpif_compiler_mismatch}: ${CMAKE_Fortran_COMPILER_ID} "
+      "${CMAKE_Fortran_COMPILER_VERSION} (${CMAKE_Fortran_COMPILER}). "
+      "The installed mpi.mod and mpi_f08.mod are in the format of the compiler "
+      "that wrote them, so `use mpi` and `use mpi_f08` will most likely fail to "
+      "compile against this installation. Build mpif with this compiler, or "
+      "point CMAKE_Fortran_COMPILER at the one above. Set "
+      "MPIF_SKIP_COMPILER_CHECK to silence this.")
+    message(WARNING "${_mpif_compiler_warning}")
+    unset(_mpif_compiler_warning)
+  endif()
+  unset(_mpif_compiler_mismatch)
+  unset(_mpif_built_major)
+  unset(_mpif_using_major)
+endif()
+
 check_required_components(mpif)

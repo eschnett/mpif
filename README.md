@@ -74,7 +74,10 @@ if the launcher and the loaded library do not belong together:
 
 The one thing that cannot be mixed is Fortran compilers: mpif's modules and
 library serve applications built with the same Fortran compiler family that
-built mpif (gcc and llvm Fortran are not ABI-compatible).
+built mpif (gcc and llvm Fortran are not ABI-compatible). The installation
+records which compiler that was, and `find_package(mpif)` warns when the
+consuming project uses another one, or another major version of the same one
+-- set `MPIF_SKIP_COMPILER_CHECK` to silence it.
 
 ## Compilers
 
