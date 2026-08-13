@@ -1025,6 +1025,14 @@ decision recorded on filing it.
   at any time would be a behavioural change disguised as a check. Whether
   mpif should register its booleans at initialization is a real question,
   for somewhere that runs exactly once.
+- **No test covers a *failing* MPI call inside the checks.** Every call there
+  has its return code checked and reports which one failed, but nothing here
+  can make one fail: the calls are all to `PMPI_` names, which is exactly what
+  a profiling interposer may not replace (§15.2), and every argument is the
+  file's own. Making the path testable would mean a seam that exists only for
+  the test. So the code is written for a failure it has never been shown
+  handling; what *is* measured is that the private communicator carries
+  `MPI_ERRORS_RETURN`, since every run reaches that call.
 - Measurement note: `check_env_mpiexec_fail` runs the binary launcher-less
   with `SLURM_NTASKS=4`, relying on neither implementation's singleton init
   reacting to that variable alone — measured on all four local variants;

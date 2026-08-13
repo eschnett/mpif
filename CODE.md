@@ -121,6 +121,16 @@ chapter 20 frames the ABI version macros exactly this way.
   the first collective so a detectable mismatch aborts rather than hangs, and
   the communication runs on an `MPI_Comm_dup` so a wildcard receive already
   posted cannot swallow the smoke test's token.
+- Every MPI call in the file is a `PMPI_` one — none is a call the program
+  made — and every one has its return code checked, through `mpif_check_mpi`.
+  A diagnostic that steps over a failed call reports on values nothing wrote:
+  under `MPI_ERRORS_RETURN` (MPI-5.0 §9.3, the application's choice, not
+  mpif's) a failed `Allreduce` would leave the consistency loop comparing
+  uninitialised arrays and announcing a disagreement between ranks that is
+  really its own. The private `MPI_Comm_dup` is given `MPI_ERRORS_RETURN` of
+  its own so the smoke test's answer does not depend on which handler the
+  application installed; the two calls in the abort path are the only
+  unchecked ones, since checking them would recurse.
 - All three bindings share the two external symbols; C callers declare
   `void mpif_check_version(int, int, int)` and
   `void mpif_check_environment(void)` themselves (`test/check_c.c`).

@@ -73,6 +73,28 @@
 // implementations' ABI libraries with `nm`, the two MPI_Abi_* accessors
 // included, they being new in MPI-5.0.
 //
+// Every one of those calls has its return code checked, through
+// mpif_check_mpi below. That is not defensive habit: this function is a
+// diagnostic, and a diagnostic that keeps going after a failed call reports on
+// values no call ever wrote. Which error handler is in force is the
+// application's choice, and MPI-5.0 section 9.3 states the one that matters
+// here -- "MPI_ERRORS_RETURN: The handler has no effect other than returning
+// the error code to the user", set by any program that "may choose to handle
+// errors in its main code, by testing the return code of MPI calls". Under it a
+// failed PMPI_Allreduce simply returns, leaving the consistency loop below to
+// compare two uninitialised arrays and announce whatever it finds as a
+// disagreement between the ranks: a misdiagnosis delivered exactly when
+// something really is wrong. The same section is why a failure ends the run
+// rather than being noted and stepped over -- "[s]ome errors might prevent MPI
+// from completing further API calls successfully" -- so there is nothing to be
+// gained by asking the remaining questions.
+//
+// The private communicator gets MPI_ERRORS_RETURN of its own so that the answer
+// does not depend on which handler the application chose: a failure inside the
+// smoke test is then mpif's message naming the call, rather than the
+// implementation's abort text under the default handler and a wrong answer
+// under the other.
+//
 // Fortran calling convention as elsewhere in mpif: lowercase name with a
 // trailing underscore, every argument by reference. The C-callable forms exist
 // too; no C header is installed for them (nothing needs one yet), so a C
@@ -122,11 +144,45 @@ static void mpif_check_fail(const char *restrict const routine,
   va_end(ap);
   fputc('\n', stderr);
   int initialized = 0, finalized = 0;
-  PMPI_Initialized(&initialized);
-  PMPI_Finalized(&finalized);
+  // Unchecked on purpose, and the only two calls in this file that are: this
+  // is the failure path itself, so there is nothing to hand a diagnosis to,
+  // and routing them through mpif_check_mpi below would recurse. A call that
+  // fails is taken to have written nothing, which lands on abort() -- the
+  // outcome that needs no MPI.
+  if (PMPI_Initialized(&initialized) != MPI_SUCCESS)
+    initialized = 0;
+  if (PMPI_Finalized(&finalized) != MPI_SUCCESS)
+    finalized = 1;
   if (initialized && !finalized)
     PMPI_Abort(MPI_COMM_WORLD, 1);
   abort();
+}
+
+// Every other MPI call in this file goes through this. `call` names the
+// function, so the message says which one failed rather than only that
+// something did; the code itself is implementation-defined, so MPI_Error_string
+// is what turns it into text. That one is usable wherever this file is:
+// MPI-5.0 section 9.4 makes it "one of the few routines that may be called
+// before MPI is initialized or after MPI is finalized", which is the window the
+// version and sentinel checks run in.
+static void mpif_check_mpi(const char *restrict const routine,
+                           const char *restrict const call, const int ierr) {
+  if (ierr == MPI_SUCCESS)
+    return;
+  // MPI_Error_string may itself fail -- an invalid error code is the obvious
+  // way -- and the standard says nothing about what it leaves in the buffer
+  // then, so the fallback text has to be here rather than in what it wrote.
+  char text[MPI_MAX_ERROR_STRING];
+  memset(text, 0, sizeof text);
+  int textlen = 0;
+  if (PMPI_Error_string(ierr, text, &textlen) != MPI_SUCCESS || !text[0])
+    snprintf(text, sizeof text, "no description available");
+  text[MPI_MAX_ERROR_STRING - 1] = '\0';
+  mpif_check_fail(routine,
+                  "%s failed with error code %d (%.*s). The check itself "
+                  "cannot run against an MPI whose own calls fail, so nothing "
+                  "below it has been judged",
+                  call, ierr, (int)strcspn(text, "\n"), text);
 }
 
 // The sentinel arrangement, checked at run time because nothing else can see
@@ -339,8 +395,9 @@ void mpif_check_environment(void) {
   // are backwards compatible, major bumps are not. So the runtime major must
   // equal the header's, and the runtime minor must not be smaller -- the
   // header may name handle types and constants an older minor lacks.
-  int abi_major, abi_minor;
-  PMPI_Abi_get_version(&abi_major, &abi_minor);
+  int abi_major = -1, abi_minor = -1;
+  mpif_check_mpi(routine, "MPI_Abi_get_version",
+                 PMPI_Abi_get_version(&abi_major, &abi_minor));
   if (abi_major == -1)
     mpif_check_fail(routine,
                     "the loaded MPI library does not implement the MPI "
@@ -357,8 +414,9 @@ void mpif_check_environment(void) {
   // runtime reporting less implements an older API level, so entry points the
   // header declares may be missing and would fail only when first called; a
   // newer runtime is fine, additions being backwards compatible.
-  int mpi_version, mpi_subversion;
-  PMPI_Get_version(&mpi_version, &mpi_subversion);
+  int mpi_version = 0, mpi_subversion = 0;
+  mpif_check_mpi(routine, "MPI_Get_version",
+                 PMPI_Get_version(&mpi_version, &mpi_subversion));
   if (mpi_version < MPI_VERSION ||
       (mpi_version == MPI_VERSION && mpi_subversion < MPI_SUBVERSION))
     mpif_check_fail(routine,
@@ -373,8 +431,9 @@ void mpif_check_environment(void) {
   // MPICH's string is its entire configure line.
   char libver[MPI_MAX_LIBRARY_VERSION_STRING];
   memset(libver, 0, sizeof libver);
-  int libverlen;
-  PMPI_Get_library_version(libver, &libverlen);
+  int libverlen = 0;
+  mpif_check_mpi(routine, "MPI_Get_library_version",
+                 PMPI_Get_library_version(libver, &libverlen));
   libver[MPI_MAX_LIBRARY_VERSION_STRING - 1] = '\0';
   const char *const expected_library = getenv("MPIF_MPI_LIBRARY");
   if (expected_library && *expected_library &&
@@ -387,8 +446,8 @@ void mpif_check_environment(void) {
   // Everything below needs more than Table 11.1 allows outside the
   // initialized-and-not-finalized window, so outside it the check ends here.
   int initialized = 0, finalized = 0;
-  PMPI_Initialized(&initialized);
-  PMPI_Finalized(&finalized);
+  mpif_check_mpi(routine, "MPI_Initialized", PMPI_Initialized(&initialized));
+  mpif_check_mpi(routine, "MPI_Finalized", PMPI_Finalized(&finalized));
   if (!initialized || finalized)
     return;
 
@@ -402,8 +461,9 @@ void mpif_check_environment(void) {
   // registering here would be a behavioral change, not a check.
   MPI_Fint lib_true = 0, lib_false = 0;
   int booleans_set = 0;
-  PMPI_Abi_get_fortran_booleans((int)sizeof(MPI_Fint), &lib_true, &lib_false,
-                               &booleans_set);
+  mpif_check_mpi(routine, "MPI_Abi_get_fortran_booleans",
+                 PMPI_Abi_get_fortran_booleans((int)sizeof(MPI_Fint), &lib_true,
+                                               &lib_false, &booleans_set));
   if (booleans_set && (lib_true != mpif_bool2logical(1) ||
                        lib_false != mpif_bool2logical(0)))
     mpif_check_fail(routine,
@@ -414,9 +474,11 @@ void mpif_check_environment(void) {
                     (int)lib_true, (int)lib_false, (int)mpif_bool2logical(1),
                     (int)mpif_bool2logical(0));
 
-  int size, rank;
-  PMPI_Comm_size(MPI_COMM_WORLD, &size);
-  PMPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  int size = 0, rank = 0;
+  mpif_check_mpi(routine, "MPI_Comm_size",
+                 PMPI_Comm_size(MPI_COMM_WORLD, &size));
+  mpif_check_mpi(routine, "MPI_Comm_rank",
+                 PMPI_Comm_rank(MPI_COMM_WORLD, &rank));
 
   // The wrong-mpiexec failure: an mpiexec from a different implementation
   // than the loaded library starts N processes that each initialize as an
@@ -451,8 +513,20 @@ void mpif_check_environment(void) {
 
   // The smoke test, on a duplicate of MPI_COMM_WORLD (see the header comment
   // for why). From here on the function is collective.
-  MPI_Comm comm;
-  PMPI_Comm_dup(MPI_COMM_WORLD, &comm);
+  MPI_Comm comm = MPI_COMM_NULL;
+  mpif_check_mpi(routine, "MPI_Comm_dup",
+                 PMPI_Comm_dup(MPI_COMM_WORLD, &comm));
+
+  // The duplicate inherits MPI_COMM_WORLD's error handler, which belongs to
+  // the application; MPI_ERRORS_RETURN here makes every call below answer to
+  // mpif_check_mpi instead, whichever handler that was. Under the default
+  // MPI_ERRORS_ARE_FATAL the failure would otherwise be the implementation's
+  // abort message, which names neither this function nor what it was checking;
+  // under MPI_ERRORS_RETURN it would be no message at all, the checks reading
+  // buffers the failed call never wrote. Setting it on the private duplicate
+  // and not on MPI_COMM_WORLD is what keeps this invisible to the application.
+  mpif_check_mpi(routine, "MPI_Comm_set_errhandler",
+                 PMPI_Comm_set_errhandler(comm, MPI_ERRORS_RETURN));
 
   // Every rank must have resolved the same mpif and the same MPI library.
   // The last two entries carry MPIF_NUM_NODES and MPIF_NODE_SIZE (0 when
@@ -478,8 +552,12 @@ void mpif_check_environment(void) {
                               (int)expected_nodes,
                               (int)expected_node_size};
   int vmin[nfields], vmax[nfields];
-  PMPI_Allreduce(local, vmin, nfields, MPI_INT, MPI_MIN, comm);
-  PMPI_Allreduce(local, vmax, nfields, MPI_INT, MPI_MAX, comm);
+  mpif_check_mpi(
+      routine, "MPI_Allreduce (MPI_MIN)",
+      PMPI_Allreduce(local, vmin, nfields, MPI_INT, MPI_MIN, comm));
+  mpif_check_mpi(
+      routine, "MPI_Allreduce (MPI_MAX)",
+      PMPI_Allreduce(local, vmax, nfields, MPI_INT, MPI_MAX, comm));
   for (int i = 0; i < nfields; ++i) {
     // The env-var fields tolerate unset (0); the version fields tolerate
     // nothing.
@@ -501,7 +579,9 @@ void mpif_check_environment(void) {
   // comparison is between well-formed strings.
   char rootver[MPI_MAX_LIBRARY_VERSION_STRING];
   memcpy(rootver, libver, sizeof rootver);
-  PMPI_Bcast(rootver, MPI_MAX_LIBRARY_VERSION_STRING, MPI_CHAR, 0, comm);
+  mpif_check_mpi(routine, "MPI_Bcast",
+                 PMPI_Bcast(rootver, MPI_MAX_LIBRARY_VERSION_STRING, MPI_CHAR,
+                            0, comm));
   rootver[MPI_MAX_LIBRARY_VERSION_STRING - 1] = '\0';
   if (strcmp(libver, rootver) != 0)
     mpif_check_fail(routine,
@@ -517,8 +597,9 @@ void mpif_check_environment(void) {
   const int right = (rank + 1) % size;
   const int left = (rank + size - 1) % size;
   int token = rank, received = -1;
-  PMPI_Sendrecv(&token, 1, MPI_INT, right, 0, &received, 1, MPI_INT, left, 0,
-               comm, MPI_STATUS_IGNORE);
+  mpif_check_mpi(routine, "MPI_Sendrecv",
+                 PMPI_Sendrecv(&token, 1, MPI_INT, right, 0, &received, 1,
+                               MPI_INT, left, 0, comm, MPI_STATUS_IGNORE));
   if (received != left)
     mpif_check_fail(routine,
                     "rank %d: the token ring delivered %d where rank %d was "
@@ -528,7 +609,8 @@ void mpif_check_environment(void) {
   // The head count: everyone contributes 1, the root checks the sum.
   const int one = 1;
   int count = -1;
-  PMPI_Reduce(&one, &count, 1, MPI_INT, MPI_SUM, 0, comm);
+  mpif_check_mpi(routine, "MPI_Reduce",
+                 PMPI_Reduce(&one, &count, 1, MPI_INT, MPI_SUM, 0, comm));
   if (rank == 0 && count != size)
     mpif_check_fail(routine,
                     "rank 0: MPI_Reduce counted %d processes where "
@@ -542,8 +624,9 @@ void mpif_check_environment(void) {
   if (vmax[nfields - 2] > 0 || vmax[nfields - 1] > 0) {
     char name[MPI_MAX_PROCESSOR_NAME];
     memset(name, 0, sizeof name);
-    int namelen;
-    PMPI_Get_processor_name(name, &namelen);
+    int namelen = 0;
+    mpif_check_mpi(routine, "MPI_Get_processor_name",
+                   PMPI_Get_processor_name(name, &namelen));
     // Re-zero the padding: the records are compared with memcmp, and the
     // library may have used the buffer past the NUL as scratch.
     name[MPI_MAX_PROCESSOR_NAME - 1] = '\0';
@@ -553,8 +636,9 @@ void mpif_check_environment(void) {
     if (rank == 0 && !names)
       mpif_check_fail(routine, "out of memory gathering %d processor names",
                       size);
-    PMPI_Gather(name, MPI_MAX_PROCESSOR_NAME, MPI_CHAR, names,
-               MPI_MAX_PROCESSOR_NAME, MPI_CHAR, 0, comm);
+    mpif_check_mpi(routine, "MPI_Gather",
+                   PMPI_Gather(name, MPI_MAX_PROCESSOR_NAME, MPI_CHAR, names,
+                               MPI_MAX_PROCESSOR_NAME, MPI_CHAR, 0, comm));
     if (rank == 0) {
       qsort(names, size, MPI_MAX_PROCESSOR_NAME, mpif_check_name_cmp);
       // What the gather found, printed whether or not the expectation holds.
@@ -626,7 +710,7 @@ void mpif_check_environment(void) {
     }
   }
 
-  PMPI_Comm_free(&comm);
+  mpif_check_mpi(routine, "MPI_Comm_free", PMPI_Comm_free(&comm));
 }
 
 void mpif_check_environment_(void) { mpif_check_environment(); }
