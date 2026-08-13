@@ -1082,7 +1082,7 @@ settles for:
 
 ### What the static build deliberately does not do
 
-`-DBUILD_SHARED_LIBS=OFF` builds `libmpifort_abi.a`, CI's `static` job runs
+`-DBUILD_SHARED_LIBS=OFF` builds `libmpif.a`, CI's `static` job runs
 `test/` and `test-consume/` against one, and `CODE.md` "Static linking" has the
 mechanism. What is left undone below is left undone on purpose, each with its
 reason:

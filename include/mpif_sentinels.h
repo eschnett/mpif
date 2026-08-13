@@ -43,7 +43,7 @@
 // resolves --
 //
 //     ld: warning: size of symbol `mpif_unweighted_' changed from 4 in
-//     caller.o to 64 in libmpifort_abi.so
+//     caller.o to 64 in libmpif.so
 //
 // -- so a cell merely *big enough* produces ten or twelve of those in every
 // consumer's build. That is the same kind of per-link noise in someone else's
@@ -67,7 +67,7 @@
 // caller does and GNU ld warns, once per sentinel and on every link:
 //
 //     ld: warning: alignment 16 of normal symbol `mpif_statuses_ignore_'
-//     in libmpifort_abi.so is smaller than 32 used by the common definition
+//     in libmpif.so is smaller than 32 used by the common definition
 //
 // Nothing is ever genuinely misaligned -- no vector instruction touches these
 // -- but the warning is alarming and it fired for everyone building for a

@@ -1,11 +1,11 @@
 @PACKAGE_INIT@
 
-# libmpifort_abi deliberately links no MPI library (see "Choosing the MPI at
+# libmpif deliberately links no MPI library (see "Choosing the MPI at
 # run time" in CODE.md): the application is what links `mpi_abi`, per MPI-5.0
 # section 20.2.1, and which MPI that is gets decided here, in the *consumer's*
 # configure, not by whatever mpif happened to be built against. Attaching the
 # ABI library to the imported target keeps one-line consumption working --
-#     target_link_libraries(app PRIVATE mpif::mpifort_abi)
+#     target_link_libraries(app PRIVATE mpif::mpif)
 # -- where without it the executable would link, on macOS, and then die at
 # its first MPI call, no libmpi_abi having been loaded to resolve the
 # library's dynamic-lookup references.
@@ -36,7 +36,7 @@ endif()
 # consumer's configure instead. A REQUIRED caller loses nothing: CMake raises
 # its own fatal error and prints this text back as the reason given by the
 # package. Returning before mpifTargets.cmake is the other half -- an mpif that
-# reports itself not found leaves no mpif::mpifort_abi behind, so a consumer
+# reports itself not found leaves no mpif::mpif behind, so a consumer
 # cannot reach a target whose ABI library was never attached.
 if(NOT MPIF_MPI_ABI_LIBRARY)
   # string(CONCAT) rather than set(): set() with several arguments makes a
@@ -52,7 +52,7 @@ endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/mpifTargets.cmake")
 
-set_property(TARGET mpif::mpifort_abi APPEND PROPERTY
+set_property(TARGET mpif::mpif APPEND PROPERTY
   INTERFACE_LINK_LIBRARIES "${MPIF_MPI_ABI_LIBRARY}")
 
 # The Fortran compiler that built this mpif. Recorded because the installation

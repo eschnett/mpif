@@ -549,8 +549,8 @@ endif()
 # to your application or manually preload it with LD_PRELOAD" -- because
 # anything loaded ahead of it, libc included, wins the symbol lookup for
 # `malloc`, and an ASan whose allocator is not in play tracks nothing. Reaching
-# the runtime as a dependency-of-a-dependency through libmpifort_abi is exactly
-# that situation: the executable's DT_NEEDED begins with libmpifort_abi and libc
+# the runtime as a dependency-of-a-dependency through libmpif is exactly
+# that situation: the executable's DT_NEEDED begins with libmpif and libc
 # arrives before libasan. Measured, on both toolchains, as 69 of 69 tests dying
 # on that line. macOS has no such rule and worked either way; naming it in both
 # is one arrangement to explain instead of two.
@@ -571,10 +571,10 @@ endif()
 #
 # `--no-as-needed` leads it on ELF, and is deliberately never restored. The
 # executable references no sanitizer symbol of its own -- the instrumented code
-# is all inside libmpifort_abi -- so GNU ld's default `--as-needed` drops the
+# is all inside libmpif -- so GNU ld's default `--as-needed` drops the
 # runtime as a library that contributed nothing, DT_NEEDED and all. Measured:
 # with the runtime named but not pinned, `readelf -d` on a test binary listed
-# libmpifort_abi first and no libasan anywhere, and all 69 tests still failed on
+# libmpif first and no libasan anywhere, and all 69 tests still failed on
 # the link-order line.
 #
 # Not restored, because `find_package(MPI)` does not keep this string intact.
@@ -584,7 +584,7 @@ endif()
 # next to its opening flag, hundreds of arguments before the library it was
 # meant to stop covering, and cancels it. `--push-state`/`--pop-state` would be
 # the tidy spelling and it fails the same way. Leaving `--no-as-needed` on
-# covers libmpifort_abi and libmpi_abi too, which is harmless -- both are
+# covers libmpif and libmpi_abi too, which is harmless -- both are
 # genuinely used, and MPI-5.0 section 20.2.1 wants libmpi_abi recorded as a
 # direct dependency in any case.
 #
@@ -698,9 +698,9 @@ endif()
 # "Static linking" in CODE.md for the chain and what checks it.
 #
 # Install a static build into a prefix of its own. `bin/mpifort` links a bare
-# `-lmpifort_abi`, which would be ambiguous with an archive and a shared library
+# `-lmpif`, which would be ambiguous with an archive and a shared library
 # side by side in one libdir.
-add_library(mpifort_abi
+add_library(mpif
   # MPI Fortran header files
   include/mpif.h
   # MPI Fortran modules
@@ -739,7 +739,7 @@ add_library(mpifort_abi
   # whole or split; see MPIF_SPLIT_WRAPPERS above.
   ${mpif_wrapper_sources}
 )
-target_include_directories(mpifort_abi
+target_include_directories(mpif
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_Fortran_MODULE_DIRECTORY}>
@@ -749,9 +749,9 @@ if(MPIF_HAVE_CFI AND MPIF_CFI_INCLUDE_DIR)
   # The Fortran compiler's ISO_Fortran_binding.h, for gen/mpif_f08_cdesc.c
   # and src/mpif_cdesc.c on toolchains whose C compiler does not ship it;
   # see cmake/cfi-include-dir.cmake.
-  target_include_directories(mpifort_abi PRIVATE "${MPIF_CFI_INCLUDE_DIR}")
+  target_include_directories(mpif PRIVATE "${MPIF_CFI_INCLUDE_DIR}")
 endif()
-target_compile_definitions(mpifort_abi PRIVATE
+target_compile_definitions(mpif PRIVATE
   ENABLE_FORTRAN
   # mpif's own version, for src/mpif_check.c. Not spelled MPIF_VERSION /
   # MPIF_SUBVERSION / MPIF_PATCH: these definitions reach the preprocessed
@@ -769,20 +769,20 @@ target_compile_definitions(mpifort_abi PRIVATE
   $<$<BOOL:${MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND}>:MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND>
   $<$<BOOL:${MPIF_HAVE_CFI}>:MPIF_HAVE_CFI>
 )
-target_compile_options(mpifort_abi PRIVATE
+target_compile_options(mpif PRIVATE
   $<$<COMPILE_LANGUAGE:Fortran>:${MPIF_Fortran_FLAGS_LIST}>
   $<$<COMPILE_LANGUAGE:C>:${MPIF_SANITIZE_C_FLAGS}>
   $<$<COMPILE_LANGUAGE:Fortran>:${MPIF_SANITIZE_Fortran_FLAGS}>
 )
 # The link, in whichever of the two shapes the Fortran compiler allows: its own
 # `-fsanitize` flag where it has one, the runtime library and an rpath to it
-# where it has not. Both are PUBLIC, so an executable linking mpifort_abi
+# where it has not. Both are PUBLIC, so an executable linking mpif
 # inherits them; the tests and mpif_info do exactly that.
-target_link_options(mpifort_abi PUBLIC ${MPIF_SANITIZE_Fortran_FLAGS})
-target_link_libraries(mpifort_abi PUBLIC ${MPIF_SANITIZE_LIBRARIES})
+target_link_options(mpif PUBLIC ${MPIF_SANITIZE_Fortran_FLAGS})
+target_link_libraries(mpif PUBLIC ${MPIF_SANITIZE_LIBRARIES})
 if(MPIF_SANITIZE_RPATH)
-  set_property(TARGET mpifort_abi APPEND PROPERTY BUILD_RPATH ${MPIF_SANITIZE_RPATH})
-  set_property(TARGET mpifort_abi APPEND PROPERTY INSTALL_RPATH ${MPIF_SANITIZE_RPATH})
+  set_property(TARGET mpif APPEND PROPERTY BUILD_RPATH ${MPIF_SANITIZE_RPATH})
+  set_property(TARGET mpif APPEND PROPERTY INSTALL_RPATH ${MPIF_SANITIZE_RPATH})
 endif()
 if(APPLE)
   # Ensure that there is only one instance of our MPI common blocks.
@@ -792,7 +792,7 @@ if(APPLE)
   # wrong, and a consumer may still link dylibs of its own. The archive's own
   # arrangement is a plain merge onto the definitions in the `.o` members the
   # link pulled in.
-  target_link_options(mpifort_abi INTERFACE "LINKER:-commons,use_dylibs")
+  target_link_options(mpif INTERFACE "LINKER:-commons,use_dylibs")
 endif()
 # The library links NO MPI: its MPI_*/PMPI_* references stay undefined and
 # resolve at load time from the libmpi_abi that the application links, which
@@ -806,7 +806,7 @@ endif()
 # compile definitions would leak MPICH's -DMPI_ABI into the compile line --
 # inert today, but a per-implementation difference in what is supposed to be
 # an implementation-independent build.
-target_include_directories(mpifort_abi PRIVATE ${MPI_C_INCLUDE_DIRS})
+target_include_directories(mpif PRIVATE ${MPI_C_INCLUDE_DIRS})
 if(APPLE AND BUILD_SHARED_LIBS)
   # ELF shared libraries may have undefined symbols by default; ld64 needs to
   # be told. Symbols marked for dynamic lookup bind flat at load time, from
@@ -816,7 +816,7 @@ if(APPLE AND BUILD_SHARED_LIBS)
   # created by `ar`, which runs no linker and has nothing to resolve, so the
   # library's undefined MPI_*/PMPI_* references are simply deferred to the
   # consumer's link line -- where `bin/mpifort` already supplies `-lmpi_abi`.
-  target_link_options(mpifort_abi PRIVATE "LINKER:-undefined,dynamic_lookup")
+  target_link_options(mpif PRIVATE "LINKER:-undefined,dynamic_lookup")
 endif()
 list(APPEND public_headers
   include/mpif.h
@@ -825,25 +825,25 @@ list(APPEND public_headers
   include/mpif_constants.h
   include/mpif_functions.h
 )
-set_target_properties(mpifort_abi PROPERTIES
+set_target_properties(mpif PROPERTIES
   PUBLIC_HEADER "${public_headers}"
 )
 # Shared only, because that is what the two properties mean: a soname and the
 # versioned filename the loader follows, neither of which an archive has.
 #
 # Not a fix for anything. Measured on CMake 3.31: a static target with VERSION
-# set is still `libmpifort_abi.a`, so leaving them unconditional would have been
+# set is still `libmpif.a`, so leaving them unconditional would have been
 # harmless today. The guard says which configuration they belong to instead of
 # relying on the other one ignoring them -- the same reason the flang platform
 # settings at the top of this file are guarded rather than merely inert.
 if(BUILD_SHARED_LIBS)
-  set_target_properties(mpifort_abi PROPERTIES
+  set_target_properties(mpif PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${SOVERSION}
   )
 endif()
 
-install(TARGETS mpifort_abi EXPORT mpifort_abiTargets
+install(TARGETS mpif EXPORT mpifTargets
   LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME       DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -875,7 +875,7 @@ install(FILES
 include(CMakePackageConfigHelpers)
 set(MPIF_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/mpif")
 
-install(EXPORT mpifort_abiTargets
+install(EXPORT mpifTargets
   FILE mpifTargets.cmake
   NAMESPACE mpif::
   DESTINATION ${MPIF_INSTALL_CMAKEDIR}
@@ -926,10 +926,10 @@ install(
 )
 
 # mpif_info, the diagnostic that prints what a launched setup actually loaded
-# and runs mpif_check_environment. Not part of the mpifort_abiTargets export
+# and runs mpif_check_environment. Not part of the mpifTargets export
 # set: it is a program, not something to link against.
 #
-# It is linked like an ordinary application on purpose: mpifort_abi, the ABI
+# It is linked like an ordinary application on purpose: libmpif, the ABI
 # library (only -- not MPI_C_LIBRARIES, whose extra entries would make the
 # build implementation a direct dependency), and the default rpath. It finds
 # its MPI exactly the way user binaries do, so what it reports is what an
@@ -949,24 +949,24 @@ target_include_directories(mpif_info PRIVATE ${MPI_C_INCLUDE_DIRS})
 # The sanitizer runtime leads the list for the same reason the wrapper puts it
 # first, and needs saying separately because this is the one executable the
 # wrapper does not link: CMake emits a target's own libraries in the order
-# given, so without this libmpifort_abi comes first and the runtime arrives
+# given, so without this libmpif comes first and the runtime arrives
 # behind it -- measured as mpif_info and mpif_info_singleton failing on the
 # link-order line under flang while the other 67 tests passed. Under gfortran
-# it happened to work already, mpifort_abi's PUBLIC `-fsanitize=address` link
+# it happened to work already, mpif's PUBLIC `-fsanitize=address` link
 # option reaching this target and letting the driver order the runtime itself.
 # Empty lists expand to nothing, so an ordinary build gets what it always got.
 if(MPIF_SANITIZE_RUNTIME AND NOT APPLE)
   target_link_options(mpif_info PRIVATE "LINKER:--no-as-needed")
 endif()
 target_link_libraries(mpif_info PRIVATE
-  ${MPIF_SANITIZE_RUNTIME} mpifort_abi ${MPIF_MPI_ABI_LIBRARY} ${CMAKE_DL_LIBS})
+  ${MPIF_SANITIZE_RUNTIME} mpif ${MPIF_MPI_ABI_LIBRARY} ${CMAKE_DL_LIBS})
 if(NOT APPLE)
   # The default MPI below must be DT_RUNPATH, not DT_RPATH, so that
   # LD_LIBRARY_PATH can put another implementation in front of it.
   target_link_options(mpif_info PRIVATE "LINKER:--enable-new-dtags")
 endif()
-# The installed binary must find libmpifort_abi -- whose install name is
-# @rpath/libmpifort_abi.1.dylib -- and the *default* MPI: on Linux the
+# The installed binary must find libmpif -- whose install name is
+# @rpath/libmpif.1.dylib -- and the *default* MPI: on Linux the
 # executable records the ABI library's bare SONAME, on macOS its absolute
 # install name, and either way the loader's search path can override the
 # default at run time. Nothing else in this project needs an RPATH: the
@@ -976,7 +976,7 @@ endif()
 set(MPIF_INFO_RPATH
   "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}"
   "${MPIF_MPI_LIBDIR}"
-  # In a sanitizer build the runtime is a dependency of libmpifort_abi, which
+  # In a sanitizer build the runtime is a dependency of libmpif, which
   # carries its own rpath to it -- but BUILD_WITH_INSTALL_RPATH below replaces
   # this binary's entire rpath with this list, so the directory has to be named
   # again rather than inherited from the link.

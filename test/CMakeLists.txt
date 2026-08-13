@@ -218,7 +218,7 @@ add_mpi_test(alltoallw_inter_f08    SOURCES alltoallw_inter_f08.f90   NPROCS 3  
 # a failure aborts, so running to completion is the assertion. Three ranks for
 # the f08 one so the token ring, the head count and the cross-rank comparisons
 # are non-degenerate. check_c links MPI::MPI_Fortran too: the routines live in
-# libmpifort_abi, which plain MPI::MPI_C does not pull in.
+# libmpif, which plain MPI::MPI_C does not pull in.
 add_mpi_test(check_f                SOURCES check_f.f                               LIBS MPI::MPI_Fortran)
 add_mpi_test(check_f90              SOURCES check_f90.f90                           LIBS MPI::MPI_Fortran)
 add_mpi_test(check_f08              SOURCES check_f08.f90             NPROCS 3      LIBS MPI::MPI_Fortran)

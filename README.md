@@ -12,72 +12,57 @@ mpif provides the MPI standard version 5.0.
 ## Status
 
 mpif implements the Fortran bindings for `mpif.h`, `use mpi` and `use
-mpi_f08`, each with the `PMPI_` forms the profiling interface requires.
-Callbacks work -- user-defined reduction operators, error handlers,
-generalized requests, attribute copy and delete functions, and the
-datarep conversion functions -- through trampolines that give the C
-library a C function and call the Fortran one behind it.
+mpi_f08`. There currently are no known deficiencies or missing
+features.
 
-Beyond the standard's API, mpif provides two runtime consistency
-checks of its own, `mpif_check_version` and `mpif_check_environment`.
-The ABI moves the choice of MPI library -- and of mpif itself -- to
-run time, where the build can no longer vouch that the launcher, the
-library and the caller belong together; these two verify it at
-startup, cheaply enough to call in every run, and abort with a
-diagnostic when something disagrees. The installed `mpif_info` binary
-is the same thing as a command: `mpiexec -n 4 mpif_info` prints what
-that setup actually loaded -- versions, implementation, process and
-node layout -- and then runs the checks. The section "Runtime
-consistency checks" in `CODE.md` has the details.
-
-One known defect remains, and MPICH's Fortran test suite reports it: an
-attribute set from Fortran is not visible to C as a pointer, where
-MPI-5.0 section 19.3.7 requires that it is. `mpi_f08`'s choice buffers
-are assumed rank (`TYPE(*), DIMENSION(..)`) wherever the toolchain's
-TS 29113 support passes a build-time probe, and `MPI_SUBARRAYS_SUPPORTED`
-is `.TRUE.` there -- noncontiguous array sections are then valid buffers
-in nonblocking calls; on toolchains without that support, and always in
-`mpif.h` and the `mpi` module, the buffers stay `ignore_tkr` with
-`.FALSE.`, the conforming option both other implementations offer for
-those two. `MISSING.md` has both, with everything else outstanding and
-the reasons.
+The new MPI ABI makes it possible to choose the MPI library
+implementation at run time, without recompiling any code. While this
+is extremely convenient, it also makes it easier to accidentally
+mis-match the MPI implementation (`libmpi_abi.so`) and its associated
+launcher (`mpiexec`). mpif provides an executable `mpif_info` that can
+be launched via `mpiexec` to output the configuration that is visible
+at run time, checking e.g. the number of processes or the way
+processes are laid out over the comput nodes. mpif also provides two
+runtime consistency checking functions, `mpif_check_version` and
+`mpif_check_environment` that can be called from an application. The
+section "Runtime consistency checks" in `CODE.md` has details.
 
 ## Running with a different MPI library
 
-mpif is built against the C MPI ABI, so one mpif build works with any MPI
-implementation that provides the ABI. The library `libmpifort_abi` names no
-MPI library at all; an application links `-lmpi_abi` (through mpif's
-`mpifort` wrapper) and records only the ABI library's conventional versioned
-name, `libmpi_abi.so.1`, which every conforming implementation shares. Which
-implementation actually loads is decided by the dynamic loader:
+mpif is built against the C MPI ABI, so one mpif build works with any
+MPI implementation that provides this ABI. mpif installes a library
+`libmpif`, and needs to be linked aginst an `mpi_abi` which is
+provided by every MPI implementation that provides the MPI ABI. Which
+MPI implementation is actually loadat at run time is decided by the
+dynamic loader:
 
-- By default, the MPI that mpif was built against (the wrapper bakes an
-  rpath to it; `mpifort -showme:mpiprefix` prints which one that is).
-- At run time, put another implementation first on the loader's search
-  path -- the same binary runs unchanged:
+- By default, the MPI that mpif was built against (the wrapper stores
+  an rpath to it; `mpifort -showme:mpiprefix` prints which one that
+  is).
+- At run time, you can put another implementation first on the
+  loader's search path, and the same binary runs unchanged:
 
       LD_LIBRARY_PATH=<other-prefix>/lib <other-prefix>/bin/mpiexec -n 2 ./app
 
   (`DYLD_LIBRARY_PATH` on macOS.)
-- At link time, choose a different default with
-  `MPIF_MPI_PREFIX=<other-prefix> mpifort ...`. That assumes the other MPI's
-  libraries sit in the same place under its prefix as the build-time MPI's do;
-  `MPIF_MPI_LIBDIR=<other-libdir>` names the directory outright when they do
-  not.
+- At link time, you can choose a different default with
+  `MPIF_MPI_PREFIX=<other-prefix> mpifort ...`. (That assumes the
+  other MPI's libraries sit in the same place under its prefix as the
+  build-time MPI's do; `MPIF_MPI_LIBDIR=<other-libdir>` names the
+  directory outright when they do not.)
 
-The installed `mpif_info` binary verifies a setup: it prints the pathname of
+The installed `mpif_info` binary verifies the setup. It prints the pathname of
 the `libmpi_abi` file the loader actually resolved, the implementation's own
 version string, and then runs mpif's runtime consistency checks, which abort
 if the launcher and the loaded library do not belong together:
 
     DYLD_LIBRARY_PATH=<other-prefix>/lib <other-prefix>/bin/mpiexec -n 2 mpif_info
 
-The one thing that cannot be mixed is Fortran compilers: mpif's modules and
-library serve applications built with the same Fortran compiler family that
-built mpif (gcc and llvm Fortran are not ABI-compatible). The installation
-records which compiler that was, and `find_package(mpif)` warns when the
-consuming project uses another one, or another major version of the same one
--- set `MPIF_SKIP_COMPILER_CHECK` to silence it.
+It is *not* possible to mix different Fortran compilers, because they
+are not compatible. The installation records which compiler was used,
+and the cmake function `find_package(mpif)` warns when the consuming
+project uses another one, or another major version of the same one.
+(Set `MPIF_SKIP_COMPILER_CHECK` to silence it.)
 
 ## Compilers
 
@@ -94,7 +79,14 @@ Other compilers -- Intel `ifx`, NVIDIA `nvfortran` (which is also what became
 of PGI), AMD `amdflang` -- are compiled and not run, by CI's `compile` job. It
 says whether mpif's configure stage reads a compiler correctly and whether the
 code builds; it says nothing about behaviour. Cray CCE is not tested at all,
-being unobtainable outside HPE Cray systems. `MISSING.md` has the reasoning.
+being unobtainable outside HPE Cray systems.
+
+## MPI implementations
+
+Both [MPICH](https://www.mpich.org) and [Open
+MPI](https://www.open-mpi.org) implement the MPI ABI. Their
+implementation is rather new, and mpif builds and tests off their main
+branches.
 
 ## Documentation
 

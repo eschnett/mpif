@@ -10,7 +10,7 @@
  * The direct MPI_Init reference below is also what obliges this executable to
  * link -lmpi_abi itself, keeping mpif_info shaped like a real application:
  * per MPI-5.0 section 20.2.1 the ABI library is the sole direct MPI
- * dependency of the application binary, and libmpifort_abi deliberately
+ * dependency of the application binary, and libmpif deliberately
  * carries none.
  *
  * Compiled into bin/mpif_info only, never into the library. */

@@ -6,7 +6,7 @@
 # Usage: scripts/macos-build-mpif.sh <mpich|openmpi> <gcc|llvm>
 #
 # Environment:
-#   MPIF_STATIC=1  build libmpifort_abi as an archive rather than a shared
+#   MPIF_STATIC=1  build libmpif as an archive rather than a shared
 #                  library, into a build tree and prefix of its own. The MPI
 #                  underneath stays shared. See scripts/macos-common.sh.
 #   MPIF_SANITIZE  build with these sanitizers (`address`, or a list such as

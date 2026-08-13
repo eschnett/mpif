@@ -128,9 +128,9 @@ if [[ -n ${sanitize} ]]; then
 fi
 
 # A static mpif, the other optional variant. `MPIF_STATIC=1` builds
-# libmpifort_abi as an archive instead of a shared library, and the tag keeps it
+# libmpif as an archive instead of a shared library, and the tag keeps it
 # in a prefix of its own -- which is not a convenience: `bin/mpifort` links a
-# bare `-lmpifort_abi`, so an archive and a dylib in one libdir would leave the
+# bare `-lmpif`, so an archive and a dylib in one libdir would leave the
 # linker to choose. The MPI underneath stays shared either way; see
 # "Static linking" in CODE.md for why a fully static executable is not what this
 # tests. Both toolchains can do it, unlike the sanitizer.

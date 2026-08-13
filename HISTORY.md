@@ -475,3 +475,19 @@ and its comment stated the whole goal, which is what made it look settled. And a
 mechanical sweep is not a proof: substituting `$(state.prefix)MPI_` missed
 `MPI_Cart_sub`'s probe, which spelled the same prefix `$(P)MPI_`. The invariant
 check in `CODE.md` found it, and is the thing to run rather than the sweep.
+
+## The library was named `libmpif`, then `libmpifort_abi`, then `libmpif` again
+
+`84399ab` (2026-04-21, version 0.1.7 → 0.2.0) renamed the library from `mpif`
+to `mpifort_abi`, recording no reason. It was renamed back on 2026-08-13, before
+1.0, which is the last moment at which the name is free: after the release both
+the CMake target `mpif::mpif` and the soname (`libmpif.so.1`,
+`@rpath/libmpif.1.dylib`) are commitments, and changing either means relinking
+every binary that carries it. No forwarding target was left behind, for the same
+reason the 0.2.0 rename left none: nothing outside this repository consumes the
+package yet.
+
+Entries above this one name `libmpifort_abi`, and are left that way — they
+record what the file was called when the thing happened. Nothing in the
+standard decides the name in either direction: MPI-5.0 §20.2.1 requires the
+header `mpi.h` and the C library `mpi_abi`, and defines no Fortran ABI at all.

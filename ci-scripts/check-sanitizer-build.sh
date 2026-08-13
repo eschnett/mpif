@@ -36,16 +36,16 @@ fi
 # says which file it looked at when it fails.
 lib=""
 for candidate in \
-    "$prefix"/lib/libmpifort_abi.so \
-    "$prefix"/lib/libmpifort_abi.*.dylib \
-    "$prefix"/lib/libmpifort_abi.so.*; do
+    "$prefix"/lib/libmpif.so \
+    "$prefix"/lib/libmpif.*.dylib \
+    "$prefix"/lib/libmpif.so.*; do
   if [ -e "$candidate" ]; then
     lib="$candidate"
     break
   fi
 done
 if [ -z "$lib" ]; then
-  echo "$(basename "$0"): no libmpifort_abi under $prefix/lib" >&2
+  echo "$(basename "$0"): no libmpif under $prefix/lib" >&2
   exit 1
 fi
 

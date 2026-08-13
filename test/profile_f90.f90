@@ -16,7 +16,7 @@
 ! and what a `PMPI_Comm_rank` implemented as a rename of `MPI_Comm_rank` would do
 ! immediately, and unboundedly.
 !
-! It works because libmpifort_abi is a shared library: the executable's definition
+! It works because libmpif is a shared library: the executable's definition
 ! of `mpi_comm_rank_` takes precedence over the library's for the executable's own
 ! calls. That is the same mechanism a real tools layer relies on.
 

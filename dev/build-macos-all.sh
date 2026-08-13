@@ -12,7 +12,7 @@
 #   suite      8  the MPICH Fortran suite, same eight pairings
 #   consume    4  find_package(mpif)
 #   sanitize   4  the AddressSanitizer mpif and its tests, llvm only
-#   static     4  a static libmpifort_abi.a, its tests and the consume test
+#   static     4  a static libmpif.a, its tests and the consume test
 #   all           all of the above, in that order (the default)
 #
 # The stages are separate because the two build stages are the expensive ones and
@@ -98,7 +98,7 @@ stage_sanitize() {
 # Mach-O half of the coverage, and the reason it runs all four rather than one.
 # The consume test is included because it reaches the archive by the other route:
 # find_package(mpif) and an imported target, rather than bin/mpifort's
-# `-lmpifort_abi`.
+# `-lmpif`.
 stage_static() {
     for mpi in ${mpis}; do for tc in ${toolchains}; do
         run "static mpif ${mpi} ${tc}" \

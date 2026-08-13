@@ -231,7 +231,7 @@ To run one directory of the suite rather than all of it:
   uninstrumented build under a sanitizer name). See "Verifying a fix" below
   and "Sanitizer builds" in `CODE.md`.
 - `MPIF_STATIC=1` on the build, test and consume scripts builds
-  `libmpifort_abi.a` instead of a shared library, into a prefix tagged
+  `libmpif.a` instead of a shared library, into a prefix tagged
   `-static`. Both toolchains can do it. The MPI stays shared. What it is for is
   that mpif publishes *data* across the language boundary through COMMON blocks,
   and an archive yields a member only when something references a symbol in it;

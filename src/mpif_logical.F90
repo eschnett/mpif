@@ -13,10 +13,10 @@
 ! A BLOCK DATA is the only way to give a common block an initial value, and it
 ! needs a reference to drag it out of a static archive. It has one:
 ! src/mpif_logical.c refers to both symbols, and delete this object from
-! libmpifort_abi.a and the link fails saying so --
+! libmpif.a and the link fails saying so --
 !
 !     Undefined symbols: "_mpif_logical_true_", referenced from
-!     _mpif_bool2logical in libmpifort_abi.a(mpif_logical.c.o)
+!     _mpif_bool2logical in libmpif.a(mpif_logical.c.o)
 !
 ! -- which is the point: nothing outside mpif declares these two common blocks,
 ! so a member that failed to come out is loud. The sentinels of

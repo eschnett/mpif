@@ -8,11 +8,11 @@
 # Two silent failures, both of which leave every test passing.
 #
 # The first is not being static at all. `bin/mpifort` links a bare
-# `-lmpifort_abi`, so a prefix holding both an archive and a shared library lets
+# `-lmpif`, so a prefix holding both an archive and a shared library lets
 # the linker choose, and it chooses the shared one -- which is a perfectly good
 # mpif, so the whole run is green and says nothing about archives. The prefix
 # therefore has to hold the archive and nothing else, and the one installed
-# executable has to prove it by not naming libmpifort_abi among its dynamic
+# executable has to prove it by not naming libmpif among its dynamic
 # dependencies.
 #
 # The second is the one static linking actually risks, and nothing else can see
@@ -58,7 +58,7 @@ status=0
 
 # --- the archive, and nothing beside it -----------------------------------
 
-archive="$prefix/lib/libmpifort_abi.a"
+archive="$prefix/lib/libmpif.a"
 if [ ! -e "$archive" ]; then
   echo "$me: no $archive." >&2
   echo "       This prefix was not built with -DBUILD_SHARED_LIBS=OFF." >&2
@@ -67,10 +67,10 @@ fi
 
 shared=""
 for candidate in \
-    "$prefix"/lib/libmpifort_abi.so \
-    "$prefix"/lib/libmpifort_abi.so.* \
-    "$prefix"/lib/libmpifort_abi.dylib \
-    "$prefix"/lib/libmpifort_abi.*.dylib; do
+    "$prefix"/lib/libmpif.so \
+    "$prefix"/lib/libmpif.so.* \
+    "$prefix"/lib/libmpif.dylib \
+    "$prefix"/lib/libmpif.*.dylib; do
   if [ -e "$candidate" ]; then
     shared="$shared $candidate"
   fi
@@ -78,7 +78,7 @@ done
 if [ -n "$shared" ]; then
   echo "$me: $prefix/lib holds a shared library as well as the archive:" >&2
   for lib in $shared; do echo "         $lib" >&2; done
-  echo "       \`-lmpifort_abi\` would then be ambiguous and every test would" >&2
+  echo "       \`-lmpif\` would then be ambiguous and every test would" >&2
   echo "       link the shared one. Install a static build into a prefix of" >&2
   echo "       its own." >&2
   exit 1
@@ -113,9 +113,13 @@ if [ -z "$needed" ]; then
   exit 1
 fi
 
-if grep -q 'libmpifort_abi' <<<"$needed"; then
-  echo "$me: $exe still depends on libmpifort_abi at run time:" >&2
-  printf '%s\n' "$needed" | grep 'libmpifort_abi' | sed 's/^/         /' >&2
+# `libmpif\.` and not a bare `libmpif`: the name is a prefix of MPICH's own
+# `libmpifort`, which a prefix that was pruned wrongly could still be carrying,
+# and matching that here would report the wrong defect. Every shared form of
+# this library has a dot after the name -- libmpif.so.1, libmpif.1.dylib.
+if grep -q 'libmpif\.' <<<"$needed"; then
+  echo "$me: $exe still depends on libmpif at run time:" >&2
+  printf '%s\n' "$needed" | grep 'libmpif\.' | sed 's/^/         /' >&2
   echo "       It was linked against a shared mpif, not the archive." >&2
   status=1
 fi

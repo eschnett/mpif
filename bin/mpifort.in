@@ -37,7 +37,7 @@ MPIF_MPI_LIBDIR=${MPIF_MPI_LIBDIR:-@MPIF_MPI_LIBDIR_DEFAULT@}
 # reports as libraries and drops a bare -fsanitize=address from the link line
 # while still passing it to the compile. See MPIF_SANITIZE_LINK_STR in
 # CMakeLists.txt for both measurements.
-MPIF_FCLIBS=${MPIF_FCLIBS:-@MPIF_SANITIZE_LINK_STR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpifort_abi -L${MPIF_MPI_LIBDIR} -Wl,-rpath,${MPIF_MPI_LIBDIR} -lmpi_abi}
+MPIF_FCLIBS=${MPIF_FCLIBS:-@MPIF_SANITIZE_LINK_STR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpif -L${MPIF_MPI_LIBDIR} -Wl,-rpath,${MPIF_MPI_LIBDIR} -lmpi_abi}
 
 case "$1" in
     -showme:command)

@@ -164,7 +164,7 @@ mpif is built against the C MPI ABI, and a build made against one
 implementation works, unchanged, with any other that provides the ABI. Three
 arrangements make that true:
 
-- **`libmpifort_abi` links no MPI.** Its `MPI_*`/`PMPI_*` references stay
+- **`libmpif` links no MPI.** Its `MPI_*`/`PMPI_*` references stay
   undefined and resolve at load time from whatever `libmpi_abi` the
   application brought in (ELF default; ld64 needs `-undefined
   dynamic_lookup`). MPI-5.0 §20.2.1 requires implementations "not require
@@ -174,7 +174,7 @@ arrangements make that true:
   CI's `compare` job: the installed `include/` and the library's entire symbol
   table are identical whichever MPI the build was configured against.
 - **Applications link `-lmpi_abi`, and the loader picks the implementation.**
-  `bin/mpifort.in` links `-lmpifort_abi` plus a generic `-lmpi_abi` from
+  `bin/mpifort.in` links `-lmpif` plus a generic `-lmpi_abi` from
   `$MPIF_MPI_LIBDIR`; `MPIF_MPI_PREFIX` defaults to the baked build-time
   prefix and the environment can override it per link. `-showme:mpiprefix`
   reports it, which is how the test scripts derive mpiexec and mpicc. The
@@ -215,8 +215,8 @@ arrangements make that true:
 A consumer that goes through `find_package(mpif)` makes the same choice in its
 own configure: `cmake/mpifConfig.cmake.in` locates `libmpi_abi` — an explicit
 `MPI_mpi_abi_LIBRARY`, else `MPI_HOME`, else the ordinary search — and appends
-it to `mpif::mpifort_abi`, so `target_link_libraries(app PRIVATE
-mpif::mpifort_abi)` is the whole of it. Not finding one is *reported*, not
+it to `mpif::mpif`, so `target_link_libraries(app PRIVATE
+mpif::mpif)` is the whole of it. Not finding one is *reported*, not
 raised: the file sets `mpif_NOT_FOUND_MESSAGE`, sets `mpif_FOUND FALSE` and
 returns, which is what lets a project depend on mpif optionally —
 `message(FATAL_ERROR)` there would end the configure of a consumer that wrote
@@ -243,14 +243,14 @@ a second toolchain installed.
 
 ## Static linking
 
-`-DBUILD_SHARED_LIBS=OFF` builds `libmpifort_abi.a` instead of a shared library.
+`-DBUILD_SHARED_LIBS=OFF` builds `libmpif.a` instead of a shared library.
 The MPI stays shared: the archive's `MPI_*`/`PMPI_*` references are deferred to
 the consumer's link line, where `bin/mpifort` already supplies `-lmpi_abi`, so
 everything above about choosing the implementation at run time still holds. A
 fully static executable is not supported — see `MISSING.md`.
 
 Install it into a prefix of its own. `bin/mpifort` links a bare
-`-lmpifort_abi`, so an archive and a shared library in one libdir leave the
+`-lmpif`, so an archive and a shared library in one libdir leave the
 linker to choose, and it chooses the shared one.
 
 ### Separable wrappers
@@ -368,7 +368,7 @@ with `ar d` and relinking:
 `ci-scripts/check-static-build.sh` is what keeps all of that true, and it is not
 a duplicate of the run-time check. It requires the archive to be there with no
 shared library beside it, `bin/mpif_info` to name `libmpi_abi` and *not*
-`libmpifort_abi` among its dynamic dependencies, every sentinel cell in that
+`libmpif` among its dynamic dependencies, every sentinel cell in that
 executable to be a defined read-only symbol, both logical symbols to be defined,
 and no archive member to define more than one MPI entry point. It reads the cell
 names out of `include/mpif_sentinels.h` rather than listing them, the way
@@ -385,7 +385,7 @@ group of one and the check vacuous while it still prints its entry-point count.
 `HISTORY.md` records the day it was.
 
 CI's `static` job runs it, then `test/` and `test-consume/` — the two routes a
-consumer can reach the archive by, one through `bin/mpifort`'s `-lmpifort_abi`
+consumer can reach the archive by, one through `bin/mpifort`'s `-lmpif`
 and one through `find_package(mpif)`'s imported target. One leg, on Linux,
 because GNU ld is the linker that reports symbol size and alignment mismatches
 at all; `dev/build-macos-all.sh static` covers Mach-O locally over all four
@@ -438,7 +438,7 @@ in "Separable wrappers" above.
   no sanitizer symbol of its own, so GNU ld's `--as-needed` would drop the
   runtime, and FindMPI reorders any closing flag next to its opener.
   `mpif_info`, the one executable the wrapper does not link, lists the
-  runtime ahead of `mpifort_abi` by hand. Darwin has no such rule.
+  runtime ahead of `libmpif` by hand. Darwin has no such rule.
 - **Nothing fails silently.** A toolchain that cannot do it fails at
   configure time: the probes compile *and link*, and the ones without a
   runtime fail at the link (GCC on macOS — neither MacPorts' nor Homebrew's

@@ -121,7 +121,7 @@ if(mpif_FOUND)
 else()
   file(WRITE "\${MPIF_REPORT}" "not-found\n\${mpif_NOT_FOUND_MESSAGE}\n")
 endif()
-if(TARGET mpif::mpifort_abi)
+if(TARGET mpif::mpif)
   file(APPEND "\${MPIF_REPORT}" "target\n")
 else()
   file(APPEND "\${MPIF_REPORT}" "no-target\n")
@@ -171,7 +171,7 @@ if configure optional-missing "$no_mpi_args"; then
          "mpif_NOT_FOUND_MESSAGE, so a REQUIRED consumer is told nothing" \
          "about what to install or set."
   elif [ "$target" != "no-target" ]; then
-    fail "a not-found mpif left mpif::mpifort_abi defined." \
+    fail "a not-found mpif left mpif::mpif defined." \
          "The target carries no ABI library, so a consumer that reaches it" \
          "links an executable that dies at its first MPI call."
   else
@@ -215,7 +215,7 @@ else
            "$found. The find_library fallback did not turn up" \
            "$mpi_prefix/lib/libmpi_abi."
     elif [ "$target" != "target" ]; then
-      fail "mpif reported itself found but defined no mpif::mpifort_abi."
+      fail "mpif reported itself found but defined no mpif::mpif."
     else
       echo "  optional consumer, MPI_HOME set: found, target defined"
     fi

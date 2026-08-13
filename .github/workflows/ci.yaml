@@ -844,7 +844,7 @@ jobs:
         run: ci-scripts/check-mpi-install.sh "${MPI_PREFIX}"
 
       # A prefix of its own, and not only for tidiness: `bin/mpifort` links a bare
-      # `-lmpifort_abi`, so an archive and a shared library in one libdir would
+      # `-lmpif`, so an archive and a shared library in one libdir would
       # leave the linker to choose -- and it would choose the shared one, quietly
       # turning this job back into the `mpif` job.
       - name: Configure, build, and install mpif as a static library
@@ -861,7 +861,7 @@ jobs:
           cmake --install build-static
 
       # The archive exists, nothing shared sits beside it, the installed
-      # executable does not name libmpifort_abi among its dynamic dependencies but
+      # executable does not name libmpif among its dynamic dependencies but
       # does name libmpi_abi, every sentinel cell in it is read-only, and no
       # archive member defines more than one MPI entry point. The read-only one is
       # what nothing else can see: mpif_check_environment compares the Fortran
@@ -873,7 +873,7 @@ jobs:
         run: ci-scripts/check-static-build.sh "${MPIF_PREFIX}"
 
       # Route one: FindMPI queries bin/mpifort, so the link line is the wrapper's
-      # own `-lmpifort_abi`.
+      # own `-lmpif`.
       - name: Build and run test/ against the static mpif
         run: |
           cmake \
@@ -894,7 +894,7 @@ jobs:
 
       # Route two, and the reason it is here rather than only in the local stage:
       # test-consume/ reaches the archive through find_package(mpif) and the
-      # imported target mpif::mpifort_abi, which names the file by full path and
+      # imported target mpif::mpif, which names the file by full path and
       # never goes near the wrapper. A static build could work through one route
       # and not the other. This is also the only CI coverage test-consume/ has.
       - name: Build and run the consume test against the static mpif
@@ -990,8 +990,8 @@ jobs:
           # No arrays: the macOS runners still have bash 3.2.
           find_lib() {
               local prefix=$1 found= n=0
-              for cand in "${prefix}"/lib/libmpifort_abi.*.dylib \
-                          "${prefix}"/lib/libmpifort_abi.so.*; do
+              for cand in "${prefix}"/lib/libmpif.*.dylib \
+                          "${prefix}"/lib/libmpif.so.*; do
                   if [[ -f ${cand} && ! -L ${cand} ]]; then
                       found=${cand}
                       n=$((n + 1))
@@ -999,7 +999,7 @@ jobs:
               done
               if [[ ${n} -ne 1 ]]; then
                   # On stderr: stdout here is the caller's command substitution.
-                  echo "::error::expected exactly one shared libmpifort_abi" \
+                  echo "::error::expected exactly one shared libmpif" \
                        "under ${prefix}/lib, found ${n}" >&2
                   exit 1
               fi
