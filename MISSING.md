@@ -119,7 +119,7 @@ YAML anchors.
 
 Measured on run `31490812177` (warm MPI cache, 26 minutes wall). The critical
 path is macOS and nothing else is close: the four vendor-compiler `compile` rows
-and the `freebsd` job all finish inside nine minutes and never gate a run.
+and the `freebsd` job all finish inside nine minutes and never set the pace.
 
 The cause is not slow runners but a **five-wide macOS pool** — GitHub Free with
 public repositories allows 20 concurrent jobs, five of them macOS, and no
@@ -188,7 +188,7 @@ Symptom: the six `MPI_File_c2f`/`f2c` round-trip tests (`c2f2ciof*`,
   `scripts/macos-build-mpif.sh` run that check before anything expensive,
   since a prefix written by hand never goes near the install script's traps.
 
-### FreeBSD is tested in a VM, and its variant is not triaged yet
+### FreeBSD is tested in a VM
 
 GitHub has no FreeBSD runner; the `freebsd` job boots a FreeBSD 14.3 VM via
 `vmactions/freebsd-vm` and runs the ordinary recipe. One variant,
@@ -213,14 +213,15 @@ GitHub has no FreeBSD runner; the `freebsd` job boots a FreeBSD 14.3 VM via
 - MPICH only: Open MPI refuses to run as root without `--allow-run-as-root`,
   and the action's `run` block is root. No cross-run either — that claim is
   about mpif's artifact, tested where both implementations exist.
-- **Not triaged**: no `triaged` line, so suite differences are reported and
-  cannot fail the run; `test/` gates as everywhere.
-- Status: measured. All 79 of `test/` pass, and the suite completes — 3 of 105
-  f77, 5 of 122 f90 and 8 of 136 f08 failing, against one unexpected
-  difference, `attrmpi1f08`. That is the one this entry predicted: its xfail is
-  enumerated per 64-bit architecture and FreeBSD says `amd64` where Linux and
-  macOS say `x86_64`. So the `/etc/hosts` fix works, and the remaining work is
-  to add the row rather than to find out what it would say.
+- **Triaged**, from three consecutive runs that agreed: all of `test/` passes,
+  and the suite fails 3 of 105 f77, 5 of 122 f90 and 8 of 136 f08 with one
+  difference from the list, `attrmpi1f08`. That is the one this entry predicted
+  before the platform had run: its xfail is enumerated per 64-bit architecture
+  and FreeBSD says `amd64` where Linux and macOS say `x86_64`. The row is added
+  under that spelling and the variant now gates, `test/` as everywhere else.
+  Worth knowing what carried the prediction: the failure is a *compile* error,
+  `no specific subroutine for the generic 'mpi_keyval_create'`, so it depends on
+  the two integer kinds differing and not on anything FreeBSD does at run time.
 
 ### Other compilers are compiled and not run, and three cannot be tested at all
 
@@ -1387,12 +1388,7 @@ it were an oversight.
    message is absent) and not the flang `STOP` output; passes on Ubuntu
    26.04, fails on 24.04. Start from the "## Test output" block in the run's
    TAP file.
-3. **Triage `mpich/gcc/freebsd/14/amd64`** from the first green `freebsd`
-   job: read the differences, give each a reason, add the `xfail` lines and
-   then the `triaged` line. Expect `attrmpi1f08` (the `amd64` spelling);
-   treat anything else as a real question about a platform nothing here had
-   run on.
-4. **Get one Open MPI x86_64 Linux suite run that is neither GitHub's runners
+3. **Get one Open MPI x86_64 Linux suite run that is neither GitHub's runners
    nor an emulator.** Two entries rest on x86_64 Open MPI spawn behaviour
    nobody has been able to look at directly: the eleven "not reachable over
    TCP" rows, measured only on the runners, and the emulated amd64 image's
@@ -1470,13 +1466,13 @@ rather than re-measured, and CI is what confirms them.
 - The two Open MPI x86_64 rows in the table are higher than their aarch64
   twins by exactly the eleven spawn tests ("a spawned child is not reachable
   over TCP" above).
-- Thirteen of CI's fourteen variants are `triaged` (the twelve above plus
-  `mpich/gcc/linux/13/i686`, which gates on three consecutive agreeing
-  runs), so any difference there fails the run; `mpich/gcc/freebsd/14/amd64`
-  is unmeasured and does not gate. The other `triaged` lines are
-  environments outside CI: this machine's four `darwin/26` rows and every
-  Docker variant — the four `linux/26.04/aarch64`, the armv7l one and the
-  amd64 one. So every image CI does not run now gates its own build.
+- Every one of CI's fourteen variants is `triaged` — the twelve above, plus
+  `mpich/gcc/linux/13/i686` and `mpich/gcc/freebsd/14/amd64`, each gating from
+  three consecutive agreeing runs — so any difference in CI fails the run. The
+  other `triaged` lines are environments outside CI: this machine's four
+  `darwin/26` rows and every Docker variant, the four `linux/26.04/aarch64`,
+  the armv7l one and the amd64 one. Nothing is left ungated; a variant with no
+  line would have to be a new one.
 - Most rows rest on a single measurement, so expect some churn: a flaky
   entry surfaces as an unexpected pass, which is the mechanism working.
 - `test/`, mpif's own suite, is entirely green: all four local variants,

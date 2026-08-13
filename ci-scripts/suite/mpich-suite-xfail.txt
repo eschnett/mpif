@@ -101,12 +101,16 @@ triaged openmpi/llvm/linux/24.04/aarch64
 # this line; it has one of its own, below.
 triaged mpich/gcc/linux/13/i686
 
-# `mpich/gcc/freebsd/14/amd64`, which the `freebsd` job in
-# .github/workflows/ci.yaml runs in a VM, has no line here and has never been
-# measured: it is reported and cannot fail a run. Expect its first run to report
-# `attrmpi1f08` among the differences whatever else it says, since that entry is
-# per 64-bit architecture and amd64 is a spelling no line above carries yet.
+# The VM one, which the `freebsd` job in .github/workflows/ci.yaml boots. It
+# gates from three consecutive runs that agreed under its own key -- 31529952264,
+# 31546418030 and 31644908585 -- each 3/5/8 across f77/f90/f08 with the same
+# single difference, `attrmpi1f08` failing to *compile*: "There is no specific
+# subroutine for the generic 'mpi_keyval_create'". That is what this file
+# predicted before the platform had ever run, the entry being per 64-bit
+# architecture and `amd64` a spelling no row carried; it now has one. Everything
+# else matched, and no expectation went unseen, so nothing else needed a reason.
 # MISSING.md "FreeBSD is tested in a VM" has the rest.
+triaged mpich/gcc/freebsd/14/amd64
 
 # Measured outside CI, which the OS version in the key now tells apart from it:
 # this machine runs macOS 26 where the runners run 15, and the Docker images run
@@ -193,6 +197,7 @@ xfail */*/*/*/*                f90  attrlangf90        # attributes set in Fortr
 xfail */*/*/*/arm64            f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds
 xfail */*/*/*/aarch64          f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds
 xfail */*/*/*/x86_64           f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds
+xfail */*/*/*/amd64            f08  attrmpi1f08        # the same, under FreeBSD's spelling of the same 64-bit x86 that x86_64 above names
 xfail mpich/*/*/*/*            f77  bsendf             # attaches 400 bytes, under the ABI's MPI_BSEND_OVERHEAD of 512; MISSING.md "suite tests that cannot pass"
 xfail mpich/*/*/*/*            f90  bsendf90           # attaches 400 bytes, under the ABI's MPI_BSEND_OVERHEAD of 512; MISSING.md "suite tests that cannot pass"
 # The `dgraph` six are per OS version rather than per OS on purpose. Open MPI
