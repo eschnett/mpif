@@ -563,8 +563,8 @@ void mpif_check_environment(void) {
       // processes on one node into two nodes of one, which is what
       // MPIF_NUM_NODES=2 and MPIF_NODE_SIZE=1 each claim, so a run that should
       // have been refused passes in silence. Printing only on mismatch cannot
-      // see that; printing here can. See MISSING.md "The two node-layout tests
-      // flake, on CI runners and not here".
+      // see that; printing here can. See MISSING.md "The `check_env*_fail`
+      // tests flake, on CI runners and not here".
       //
       // The prefix is deliberately NOT "mpif: mpif_check_environment: ", which
       // is what every check_env*_fail test in test/CMakeLists.txt passes on: a

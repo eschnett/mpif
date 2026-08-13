@@ -239,8 +239,14 @@ add_mpi_test(check_c                SOURCES check_c.c                           
 # what that line must not say: its prefix is "mpif: node layout: " and not
 # "mpif: mpif_check_environment: ", because a line carrying the latter would
 # satisfy every failure test below without any check having failed. See the
-# printing walk in src/mpif_check.c and MISSING.md "The two node-layout tests
+# printing walk in src/mpif_check.c and MISSING.md "The `check_env*_fail` tests
 # flake, on CI runners and not here".
+#
+# check_f90 itself prints, on stderr and under its own "check_f90: " prefix, the
+# MPIF_* variables it can see and whether it reached the end. That is the other
+# half of the same instrument: when one of these tests flakes, those two lines
+# say whether the process saw the expectation at all, or whether the launcher
+# threw its output away.
 function(add_check_env_test name nprocs env)
   if(MPIF_TEST_BUILD_ONLY)
     return()

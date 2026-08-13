@@ -302,12 +302,12 @@ compiler nobody runs locally, which is how `alltoallw_inplace_guard` came to be
 missed the first time — under ifx it aborts in the compiler before reaching the
 link, so only nvfortran showed it.
 
-### The two node-layout tests flake, on CI runners and not here
+### The `check_env*_fail` tests flake, on CI runners and not here
 
-`check_env_nodes_fail` and `check_env_nodesize_fail` each run 2 ranks, state a
-node layout the run does not have, and expect `mpif_check_environment` to
-refuse. Sometimes no diagnostic comes and the test fails on the missing regular
-expression. Four observations, all on GitHub runners, all under MPICH:
+Each of these runs `check_f90` under `mpiexec`, states something about the run
+that is not true, and expects `mpif_check_environment` to refuse. Sometimes no
+diagnostic comes and the test fails on the missing regular expression. Five
+observations, all on GitHub runners, all under MPICH:
 
 | when | job | test |
 |---|---|---|
@@ -315,43 +315,62 @@ expression. Four observations, all on GitHub runners, all under MPICH:
 | run `31429326321` | `mpif / mpich / gcc / macos-15` | `check_env_nodesize_fail` |
 | run `31429326321` | `static` (ubuntu) | `check_env_nodes_fail` (`MPIF_NUM_NODES=2`) |
 | run `31524365669` | `mpif / mpich / llvm / macos-15` | `check_env_nodes_fail` |
+| run `31644908585` | `static` (ubuntu) | `check_env_size_fail` (`MPIF_SIZE=3`) |
 
 The first was rerun on the same commit and passed. Every other test passed in all
-four, and the sibling test passed in each. Not macOS-specific — `sanitize` and
+five, and the sibling tests passed in each. Not macOS-specific — `sanitize` and
 `static` run on `ubuntu-24.04`. No Open MPI sighting, over roughly half the
 opportunities.
 
-**Measured.** In the fourth sighting ctest captured *zero bytes* of test output,
-under `--output-on-failure` — not even MPICH's own
+**Measured.** In the fourth and fifth sightings ctest captured *zero bytes* of
+test output, under `--output-on-failure` — not even MPICH's own
 `application called MPI_Abort(MPI_COMM_WORLD, 1) - process 0`, which rank 0
-writes to the same fd immediately after mpif's line. A passing run of that case
-emits both (149 bytes here). The run took 0.06 s, the same as its passing
-siblings.
+writes to the same fd immediately after mpif's line. A passing run emits both
+(149 bytes here). Each took the same 0.02–0.06 s as its passing siblings, so
+nothing hung.
 
-**Two candidates, and an empty capture fits both.**
+**The fifth sighting is what the previous two candidates were told apart by, and
+it went against both.**
 
 1. **The layout was accepted.** `src/mpif_check.c` derives the layout by
-   gathering `MPI_Get_processor_name` to rank 0 and grouping equal names, so both
-   tests refuse only when the two ranks report the *same* name. Two differing
-   names give two nodes of one process each — exactly what `MPIF_NODE_SIZE=1`
-   claims *and* what `MPIF_NUM_NODES=2` claims. The program then exits 0 having
-   printed nothing. What would make the ranks disagree is unknown.
-2. **The launcher dropped the aborting rank's output.** Rank 0 writes into a pipe
-   the hydra proxy has not read yet, then `MPI_Abort` makes the proxy tear the job
-   down; everything rank 0 wrote is lost, banner included.
+   gathering `MPI_Get_processor_name` to rank 0 and grouping equal names, so the
+   two node tests refuse only when the two ranks report the *same* name. Two
+   differing names give two nodes of one process each — exactly what
+   `MPIF_NODE_SIZE=1` claims *and* what `MPIF_NUM_NODES=2` claims. The program
+   then exits 0 having printed nothing. **This cannot be the fifth sighting.**
+   `MPIF_SIZE` is compared against `MPI_Comm_size` before the first collective,
+   with no gather and no processor name anywhere near it.
+2. **The launcher dropped the aborting rank's output**, into a pipe the hydra
+   proxy had not read when `MPI_Abort` made it tear the job down. This entry used
+   to add that only a test where a *single* rank prints is exposed, which is why
+   it predicted `check_env_size_fail` would never flake: both ranks print there.
+   **That refinement is now falsified** — either the teardown can drop every
+   rank's output rather than just the aborting one, or this is not the mechanism.
 
-Which way the exposure pattern points: candidate 1 exposes four tests, not two.
-Measured, by making every rank append its rank to its own processor name and
-running the suite: `check_env`, `check_env_nodes_fail`, `check_env_nodesize_fail`
-and `mpif_info` all fail together, because the two positive tests assert the
-*true* layout. All four sightings landed in the two negative tests alone, a
-1-in-16 coincidence under candidate 1. Candidate 2 predicts the observed set
-exactly —
-only a test where a *single* rank prints and then calls `MPI_Abort` is exposed:
-`check_env_size_fail` prints from both ranks, `check_env_library_fail` aborts
-before `MPI_Init` so the launcher learns of the death by pipe EOF having drained
-it, and `check_env_mpiexec_fail` has no launcher. None of the three has flaked.
-Suggestive, not decisive, either way.
+So one mechanism no longer covers the five, unless it is one of these:
+
+3. **Teardown drops the whole job's output**, candidate 2 without its
+   single-printer refinement. Covers all five. Predicts
+   `check_env_library_fail` is exposed as well (one rank, and it aborts before
+   `MPI_Init`, so the launcher learns of the death by pipe EOF having drained
+   it — a real difference, and it has never flaked), and predicts
+   `check_env_mpiexec_fail` never is, having no launcher.
+4. **The expectation never reached the ranks.** If `MPIF_*` is not in the
+   environment `check_f90` sees, `mpif_check_environment` skips that check
+   silently and the program exits 0 — indistinguishable, from outside, from a
+   check that ran and agreed. Covers all five, and would be the launcher's
+   environment forwarding failing intermittently. Nothing yet says whether this
+   happens.
+
+Things that look like evidence and are not:
+
+- **`check_env` passing in the same job says nothing.** It asserts the true layout
+  and would fail if the names disagreed — but every test is its own `mpiexec`
+  invocation, so it reports on a different run.
+- **Not reproducible here.** 2400 two-rank MPICH runs of the failing case itself,
+  1200 idle and 600 with 24 spinners on 12 cores, plus 600 of `MPIF_SIZE=3`: the
+  diagnostic and the abort banner arrived every time. (An earlier 400 runs
+  compared only the gathered names, so they bore on candidate 1 alone.)
 
 Things that look like evidence and are not:
 
@@ -368,13 +387,30 @@ recorded rather than accommodated. It is **not** specific to any variant or to
 the static build: `static` was simply a thirteenth place for it to appear, and it
 turned that job red on its first run.
 
-**What was done, and what deliberately was not.** Stating either node variable
-now makes rank 0 print the layout it gathered whether or not the expectation
-holds, which is what separates the candidates at the next occurrence: candidate 1
-leaves a `mpif: node layout: ...` line and no refusal, candidate 2 leaves nothing
-at all. `check_env` asserts that line, so the instrument cannot rot. The earlier
-idea — print the names on mismatch — would have caught none of the four, the
-failure being the *absence* of a mismatch. Two remedies were rejected:
+**What was done, and what deliberately was not.** Two instruments, both printing
+to stderr so that everything a process emits shares one fd and one fate:
+
+- Stating either node variable makes rank 0 print the layout it gathered whether
+  or not the expectation holds (`mpif: node layout: ...`, the printing walk in
+  `src/mpif_check.c`). `check_env` asserts that line, so it cannot rot. It said
+  nothing at the fifth sighting, and could not have: `check_env_size_fail` states
+  no node variable, so there was no layout to print either way.
+- `test/check_f90.f90` prints, before the first check, one line naming every
+  `MPIF_*` variable with the value that process sees or `<unset>`, and prints
+  `check_f90: every check completed` if it reaches the end. This is what
+  separates the surviving candidates at the next occurrence, in one reading of
+  the captured output:
+
+  | what the capture shows | what it means |
+  |---|---|
+  | nothing at all | candidate 3: teardown dropped the whole job's output |
+  | `MPIF_...=<unset>` and "every check completed" | candidate 4: the expectation never reached the rank |
+  | the stated value, and no refusal | neither: the check saw the expectation and did not fire, which would be mpif's own bug |
+
+  Demonstrated locally against MPICH by driving `check_f90` by hand in all three
+  shapes; the third cannot be produced, which is the point of listing it.
+
+Two remedies were rejected:
 
 - **Gating the failure tests on the launcher's exit status** instead of the
   diagnostic. It would cure candidate 2 outright — every aborting case makes its

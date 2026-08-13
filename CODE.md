@@ -113,7 +113,7 @@ chapter 20 frames the ABI version macros exactly this way.
   optional `MPIF_MPI_LIBRARY`/`MPIF_SIZE`/`MPIF_NUM_NODES`/`MPIF_NODE_SIZE`
   environment variables. Setting either node variable also makes rank 0 print
   the layout it gathered, accepted or not — the only case that had no witness
-  was the accepted one (`MISSING.md` "The two node-layout tests flake"). Two
+  was the accepted one (`MISSING.md` "The `check_env*_fail` tests flake"). Two
   contracts: outside the
   initialized-and-not-finalized window (MPI-5.0 §11.4.1, Table 11.1) only the
   version and library-name checks run, the rest skipped silently; inside it
