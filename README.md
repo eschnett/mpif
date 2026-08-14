@@ -22,7 +22,7 @@ mis-match the MPI implementation (`libmpi_abi.so`) and its associated
 launcher (`mpiexec`). mpif provides an executable `mpif_info` that can
 be launched via `mpiexec` to output the configuration that is visible
 at run time, checking e.g. the number of processes or the way
-processes are laid out over the comput nodes. mpif also provides two
+processes are laid out over the compute nodes. mpif also provides two
 runtime consistency checking functions, `mpif_check_version` and
 `mpif_check_environment` that can be called from an application. The
 section "Runtime consistency checks" in `CODE.md` has details.
@@ -30,10 +30,10 @@ section "Runtime consistency checks" in `CODE.md` has details.
 ## Running with a different MPI library
 
 mpif is built against the C MPI ABI, so one mpif build works with any
-MPI implementation that provides this ABI. mpif installes a library
-`libmpif`, and needs to be linked aginst an `mpi_abi` which is
+MPI implementation that provides this ABI. mpif installs a library
+`libmpif`, and needs to be linked against an `mpi_abi` which is
 provided by every MPI implementation that provides the MPI ABI. Which
-MPI implementation is actually loadat at run time is decided by the
+MPI implementation is actually loaded at run time is decided by the
 dynamic loader:
 
 - By default, the MPI that mpif was built against (the wrapper stores
@@ -113,7 +113,7 @@ Four working notes:
 - `src`: source files
 - `test`: tests
 
-The tests are an indepdendent cmake project. They require the mpif
+The tests are an independent cmake project. They require the mpif
 package to be properly installed. This allows testing not just the
 mpif implementation but also whether its installation procedure is
 working. Given that autotools and cmake use an outdated and awkward
