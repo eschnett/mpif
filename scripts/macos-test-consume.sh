@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check that an installed mpif can be consumed the way a user would consume it,
-# through find_package(mpif).
+# through find_package(mpif) and through pkg-config.
 #
 # Usage: scripts/macos-test-consume.sh <mpich|openmpi> <gcc|llvm>
 #
@@ -22,6 +22,13 @@ show_marker "${mpif_prefix}"
 # library, so it cannot see what an *optional* consumer sees, nor reach the
 # find_library fallback. This does both.
 bash "${repodir}/ci-scripts/check-package-config.sh" "${mpif_prefix}" "${mpi_prefix}"
+
+# The third consumption route, beside find_package(mpif) below and bin/mpifort
+# -- which test/ uses for everything it builds, so it is covered by every test
+# stage. Nothing else here reads lib/pkgconfig/mpif.pc, and its strongest leg
+# compiles, links and runs test-consume/consume_f08.f90 with plain ${FC} and
+# pkg-config's flags alone.
+bash "${repodir}/ci-scripts/check-pkg-config.sh" "${mpif_prefix}" "${mpi_prefix}"
 
 build=${consume_build}
 

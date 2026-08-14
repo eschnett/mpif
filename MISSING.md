@@ -14,7 +14,45 @@ official ABI header and the MPI-5.0 standard — see "Checking a claim" in
 
 ## Errors
 
-None outstanding.
+### A sanitizer build's exported target carries the ASan runtime without an rpath to it
+
+`find_package(mpif)` against a sanitizer-built prefix produces an executable
+that does not load:
+
+    dyld[…]: Library not loaded: @rpath/libclang_rt.asan_osx_dynamic.dylib
+      Referenced from: …/consume_f08
+      Reason: tried: '<mpif-prefix>/lib/libclang_rt.asan_osx_dynamic.dylib'
+              (no such file)
+
+The runtime is in the interface by absolute path —
+`target_link_libraries(mpif PUBLIC ${MPIF_SANITIZE_LIBRARIES})`, which
+`install(EXPORT)` writes out as
+`INTERFACE_LINK_LIBRARIES "/opt/…/libclang_rt.asan_osx_dynamic.dylib"` — but the
+directory it lives in reaches consumers through nothing. `MPIF_SANITIZE_RPATH`
+is set as `libmpif`'s own `INSTALL_RPATH`, and an `INSTALL_RPATH` is a property
+of the target that has it, not something `install(EXPORT)` hands on. The
+runtime's install name is `@rpath/libclang_rt.asan_osx_dynamic.dylib`, so the
+consumer records that and has only its own rpaths to resolve it with —
+`<mpif-prefix>/lib`, from the imported library, and nothing else. Measured:
+`libmpif.1.dylib` does carry `LC_RPATH /opt/local/libexec/llvm-22/lib/clang/22/lib/darwin`;
+the consumer's executable carries only `<mpif-prefix>/lib`.
+
+The other two consumption routes are unaffected, both because they publish the
+directory as well as the library: `bin/mpifort` and `lib/pkgconfig/mpif.pc` each
+put `-Wl,-rpath,<runtime dir>` in `MPIF_SANITIZE_LINK_STR`. So `test/` — which
+goes through the wrapper — is green under a sanitizer, and so is
+`ci-scripts/check-pkg-config.sh`, whose leg 5 links and runs an executable of
+its own.
+
+Nothing had run the failing combination before: no stage pairs
+`MPIF_SANITIZE` with `scripts/macos-test-consume.sh`, and CI's `sanitize` job has
+no consume step. It was found by running it by hand, and confirmed to predate
+the pkg-config work by stashing that work and reproducing it.
+
+The likely fix is
+`set_property(TARGET mpif APPEND PROPERTY INTERFACE_LINK_OPTIONS "LINKER:-rpath,${dir}")`
+for each `MPIF_SANITIZE_RPATH` entry, which `install(EXPORT)` does carry — not
+attempted here, and not verified.
 
 ## Not defects
 
@@ -1055,11 +1093,80 @@ settles for:
   and LLVM flang; a minor-version comparison would warn on the
   15.1-against-15.2 build, which works. So a compiler that broke its module
   format within a major release would pass this check and fail at compile.
-- **Nothing warns for a consumer that uses `bin/mpifort` instead.** The
-  wrapper bakes in the compiler that built mpif, so the default is right by
-  construction; `MPIF_FC` overrides it silently, and the wrapper is a `sh`
-  script with no place to compare identities. `find_package` is the path
+- **Nothing warns for a consumer that uses `bin/mpifort` or pkg-config
+  instead.** The wrapper bakes in the compiler that built mpif, so its default
+  is right by construction; `MPIF_FC` overrides it silently, and the wrapper is
+  a `sh` script with no place to compare identities. `mpif.pc` records the same
+  three facts as `fortran_compiler`, `_id` and `_version`, and a `.pc` file has
+  no hook that could compare them — a consumer has to ask
+  (`pkg-config --variable=fortran_compiler_id mpif`).
+  `ci-scripts/check-pkg-config.sh` does ask, and compiles with what it gets, so
+  the values are at least known to be right. `find_package` is the one path
   where the consumer names its own compiler and the two can disagree unseen.
+
+### What `mpif.pc` does not do
+
+`lib/pkgconfig/mpif.pc`, generated from `cmake/mpif.pc.in`, is the third way to
+consume an installed mpif. Five decisions in it, and what each costs:
+
+- **No `Requires:` naming the MPI**, and no `Libs.private:` at all. `libmpif`
+  links no MPI, and MPI-5.0 §20.2.1 makes `mpi_abi` the *application's* sole
+  direct dependency, so `-lmpi_abi` belongs in `Libs` in the static
+  configuration as much as the shared one — which also makes `--libs --static`
+  identical to `--libs`. A `Requires:` could not work here in any case: the MPIs
+  mpif is tested against have their own `.pc` files pruned away
+  (`ci-scripts/mpich-prune.txt`, `ci-scripts/openmpi-prune.txt`), so the one
+  environment that would exercise the line is the one where it cannot resolve.
+  Consequence: the MPI in the file is a default, redirected with
+  `pkg-config --define-variable=mpi_prefix=<other>`.
+- **The Fortran flags are not in `Cflags`.** pkg-config has one compile-flag
+  field for every language, and the two build systems that consume a `.pc` as a
+  target — `pkg_check_modules(IMPORTED_TARGET)` and Meson's `dependency()` —
+  put it into unguarded interface compile options, which reach a target's C
+  sources: the defect `test/CMakeLists.txt` works around for FindMPI, and the
+  one that cost the FreeBSD leg, where clang errors on
+  `-fallow-argument-mismatch` and gcc's C frontend only warns. They are in a
+  `fortran_flags` variable instead. What that costs, measured here on
+  gfortran 15: a mismatched actual argument is reported as `Type mismatch
+  between actual argument at (1) and actual argument at (2)` and the flag is
+  never named, so a consumer who asked only for `--cflags` is *not* told what to
+  add. The trade is a loud failure they must look up against a confusing failure
+  in an unrelated C file; the file's own comment header and CODE.md are what say
+  it. `ci-scripts/check-pkg-config.sh` asserts the split explicitly, because the
+  leg that diffs the file against `bin/mpifort` cannot see it: moving the flags
+  from the variable into `Cflags` leaves the per-phase token sets identical
+  (measured — that leg stayed green while the new assertion failed).
+- **The rpaths cannot be turned off from the command line.** They are in `Libs`
+  because the run-time arrangement is `DT_RUNPATH` (see CODE.md "Choosing the
+  MPI at run time"), and a packager installing into `/usr` gets a
+  `-Wl,-rpath,/usr/lib` they do not want: pkg-config strips `-L/usr/lib` from
+  its answer but nothing strips the rpath. No knob was shipped because none can
+  work — measured on 0.29.2, `--define-variable=x=` and
+  `--define-variable="x= "` both fail with "does not have a value for the
+  variable", so an empty override is not expressible. Editing or patching the
+  installed file is the remedy, which is what distributions do to `.pc` files
+  anyway.
+- **Nothing asserts that the licence is installed.** `install(FILES)` on a path
+  that does not exist fails `cmake --install` outright, so a `LICENSE` that went
+  missing breaks every build rather than shipping a prefix that quietly lacks
+  its terms. There is no silent failure here of the kind the other check scripts
+  were written for.
+- **Nothing checks that the sanitizer runtime leads `Libs:`.** It is written
+  first, for the reason `bin/mpifort.in` writes it first — on ELF, ASan refuses
+  to start unless its runtime leads the initial library list — but the only run
+  that could catch a regression is an ELF one under a sanitizer, and there is
+  none: `dev/build-macos-all.sh sanitize` has no consume stage, and CI's
+  `sanitize` job does not run `check-pkg-config.sh` while the `static` job that
+  does is not a sanitizer build. Measured here: moving the runtime behind
+  `-lmpif` in the template and reinstalling left
+  `MPIF_SANITIZE=address bash scripts/macos-test-consume.sh mpich llvm` entirely
+  green — except for a failure in the `find_package` route that has nothing to do
+  with it (see "A sanitizer build's exported target carries the ASan runtime
+  without an rpath to it" above, which is what stops a sanitizer consume stage
+  simply being added) — because Darwin has no such link-order rule. The check is
+  written to catch it (the leg that runs the executable is the only one that
+  could), and the assertion is untested until a Linux sanitizer build runs the
+  consume stage.
 
 ### What the cross-tests deliberately do not do
 
@@ -1392,6 +1499,14 @@ the two modes cannot simply be combined.
   hand, one `use` and one `public` line per name, and nothing diffs those
   lists against `include/mpif_constants.h` — one missing pair among hundreds
   is invisible (it has happened; `test/version_f08.f90` pins the instance).
+- `bin/mpifort.in` and `cmake/mpif.pc.in` publish one flag inventory through
+  two mechanisms. Every *value* either substitutes comes from the same CMake
+  variable, and one `if` decides the MPI-libdir question for both, so what can
+  drift is the shape of the two lines. `ci-scripts/check-pkg-config.sh` diffs
+  what the installed pair report — as token sets, not sequences, because
+  pkg-config hoists `-L` and dedupes it while `-showme:link` names mpif's pair
+  twice, so a *reordering* is invisible to that leg and is caught only by the
+  leg that runs the executable.
 
 ### MemorySanitizer cannot be run against an MPI
 

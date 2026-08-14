@@ -903,6 +903,14 @@ jobs:
           # see what an optional consumer sees, and never reaches the
           # find_library fallback. This checks the half it cannot see.
           bash ci-scripts/check-package-config.sh "${MPIF_PREFIX}" "${MPI_PREFIX}"
+          # Route three: lib/pkgconfig/mpif.pc, which nothing else here reads.
+          # Its strongest leg compiles, links and runs
+          # test-consume/consume_f08.f90 with plain ${FC} and pkg-config's
+          # flags, with the loader's search path cleared -- which matters here
+          # in particular, because this job sets LD_LIBRARY_PATH for every step.
+          # The archive is the interesting case: -lmpif has to resolve to it and
+          # -lmpi_abi has to follow it on the link line.
+          bash ci-scripts/check-pkg-config.sh "${MPIF_PREFIX}" "${MPI_PREFIX}"
           cmake \
               -Stest-consume \
               -Bbuild-static-consume \

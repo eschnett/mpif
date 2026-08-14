@@ -241,6 +241,42 @@ in Hollerith literal"). It is a warning, not a not-found — see `MISSING.md`
 telling the config file which compiler the consumer has rather than by needing
 a second toolchain installed.
 
+A consumer that asks pkg-config gets the third route, `lib/pkgconfig/mpif.pc`
+from `cmake/mpif.pc.in`, and it makes the same choice through two variables:
+`mpi_prefix` is the recorded default and `mpi_libdir` is written relative to it
+wherever the MPI's libdir is under its prefix, so
+`pkg-config --define-variable=mpi_prefix=<other> --libs mpif` is the
+counterpart of the wrapper's `MPIF_MPI_PREFIX` — one `if` in `CMakeLists.txt`
+decides the relative-or-absolute question for both templates. Four things about
+that file are deliberate:
+
+- **The rpaths are in `Libs:`**, with `-Wl,--enable-new-dtags` beside them. The
+  arrangement above *is* `DT_RUNPATH`; a minimal `-L`/`-l` line would produce an
+  executable that links and then dies at `exec`, leaving this the one route with
+  no default MPI at all. The cost is a packager's: `pkg-config` strips
+  `-L/usr/lib` from its answer but nothing strips `-Wl,-rpath,/usr/lib`, and
+  `--define-variable=x=` with an empty value is a hard error, so there is no
+  knob and the file has to be edited.
+- **No `Requires:` on the MPI, and no `Libs.private:`.** `libmpif` links no MPI,
+  so `-lmpi_abi` is the *application's* direct dependency and belongs in `Libs`
+  in the static configuration as much as the shared one, which also makes
+  `--libs --static` identical to `--libs`.
+- **The Fortran flags are in a `fortran_flags` variable, not `Cflags`** —
+  pkg-config has one compile-flag field for every language. See `MISSING.md`
+  "`mpif.pc` keeps the Fortran flags out of `Cflags`" for what that trade costs.
+- **The build compiler is recorded** as `fortran_compiler`, `_id` and
+  `_version`, for the reason the CMake config file records it, but a `.pc` has
+  nowhere to compare and warn from, so these are values and nothing more.
+
+`ci-scripts/check-pkg-config.sh` is what keeps that true, and it is the only
+check here that builds something from published flags with no CMake and no
+wrapper in the way and then *runs* it with `LD_LIBRARY_PATH` and
+`DYLD_LIBRARY_PATH` cleared — so the rpaths are what find the libraries. It also
+diffs what the file and the wrapper report, as token sets rather than sequences:
+pkg-config hoists every `-L` to the front of `--libs` and collapses a duplicate
+`-L` while keeping a duplicate `-Wl,-rpath` (measured on 0.29.2), and
+`-showme:link` names mpif's pair twice.
+
 ## Static linking
 
 `-DBUILD_SHARED_LIBS=OFF` builds `libmpif.a` instead of a shared library.
@@ -438,7 +474,10 @@ in "Separable wrappers" above.
   no sanitizer symbol of its own, so GNU ld's `--as-needed` would drop the
   runtime, and FindMPI reorders any closing flag next to its opener.
   `mpif_info`, the one executable the wrapper does not link, lists the
-  runtime ahead of `libmpif` by hand. Darwin has no such rule.
+  runtime ahead of `libmpif` by hand. `cmake/mpif.pc.in` puts the same string
+  ahead of `-lmpif` in `Libs:` for the same reason; pkg-config preserves the
+  order of `-l` and non-`-L` fragments relative to each other, so it survives
+  `--libs` (measured on 0.29.2). Darwin has no such rule.
 - **Nothing fails silently.** A toolchain that cannot do it fails at
   configure time: the probes compile *and link*, and the ones without a
   runtime fail at the link (GCC on macOS — neither MacPorts' nor Homebrew's

@@ -13,9 +13,9 @@ and on a laptop.
 
 (Some of the files here belong to neither: `install-mpi-stubs.sh`,
 `compile-only.sh` and `check-configure-probes.sh` build no MPI and run no suite,
-and neither do `check-sanitizer-build.sh`, `check-static-build.sh` and
-`check-package-config.sh`, which ask whether a build came out the way it was
-asked for. All of them are in the cache key, which costs an MPI rebuild when one
+and neither do `check-sanitizer-build.sh`, `check-static-build.sh`,
+`check-package-config.sh` and `check-pkg-config.sh`, which ask whether a build
+came out the way it was asked for. All of them are in the cache key, which costs an MPI rebuild when one
 of them changes and is the safe direction; see "Compiling under another
 compiler" below.)
 
@@ -116,11 +116,12 @@ run:
 | `check-sanitizer-build.sh` | read the installed library for undefined `__asan_*`/`__ubsan_*` references. A sanitizer build whose flags never reached the compiler passes every test, which is what a correct one does on clean code, so no test can tell them apart |
 | `check-static-build.sh` | assert that a `-DBUILD_SHARED_LIBS=OFF` prefix holds an archive and no shared library, that `bin/mpif_info` names `libmpi_abi` and not `libmpif` among its dynamic dependencies, that every sentinel cell in it is read-only, and that no archive member defines more than one MPI entry point. The read-only one is what nothing else catches: if `mpif_constants.c`'s member never comes out of the archive the program still works, and silently loses the read-only fault and the poison behind every sentinel translation. The one-entry-point-per-member one is MPI-5.0 §15.2.1(4). See "Static linking" in CODE.md |
 | `check-package-config.sh` | configure three throwaway projects against an installed prefix: `find_package(mpif QUIET)` with no `libmpi_abi` to be found must leave the consumer configuring with `mpif_FOUND` false and a reason set, the same absence under `REQUIRED` must fail and say what to set, and `MPI_HOME` pointing at an MPI must find it and define `mpif::mpif`. `test-consume/` says `REQUIRED` and pins `MPI_mpi_abi_LIBRARY`, so it passes whether the config file reports a failure or raises one, and never reaches the `find_library` fallback. See "Choosing the MPI at run time" in CODE.md |
+| `check-pkg-config.sh` | the same question for `lib/pkgconfig/mpif.pc`, the third consumption route, which nothing else here reads: that it installs and parses, that `--modversion` agrees with `bin/mpifort`, that `--cflags` names a directory holding `mpif.h` and `mpi_f08.mod` and carries no Fortran-only flag, that `--libs` carries both libraries, both `-L`, both rpaths and the platform link flag, that `--define-variable=mpi_prefix` redirects the MPI, and that what the file reports and what the wrapper reports are the same tokens -- the two are generated from separate templates. Alone in this table it also *runs* something: it compiles and links `test-consume/consume_f08.f90` with plain `$FC` and these flags alone and runs it with `LD_LIBRARY_PATH` and `DYLD_LIBRARY_PATH` cleared, because `--libs` is worthless if the executable it produces cannot start. Skips its query legs, with a reason printed, when no `pkg-config` is on `PATH`. See "Choosing the MPI at run time" in CODE.md |
 
 The first two are called by `scripts/macos-build-mpif.sh` as well as by CI, so a
-local build of either kind is held to the same thing; the third is called by
+local build of either kind is held to the same thing; the last two are called by
 `scripts/macos-test-consume.sh` and by CI's `static` job, beside the
-`test-consume/` build it complements.
+`test-consume/` build they complement.
 
 One script is not a check but a build step:
 

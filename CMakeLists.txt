@@ -109,9 +109,16 @@ endif()
 file(RELATIVE_PATH _mpif_mpi_libdir_rel "${MPIF_MPI_PREFIX}" "${MPIF_MPI_LIBDIR}")
 if(_mpif_mpi_libdir_rel MATCHES "^\\.\\.")
   set(MPIF_MPI_LIBDIR_DEFAULT "${MPIF_MPI_LIBDIR}")
+  set(MPIF_PC_MPI_LIBDIR "${MPIF_MPI_LIBDIR}")
 else()
   # The \${...} survives configure_file(@ONLY) verbatim; the shell expands it.
   set(MPIF_MPI_LIBDIR_DEFAULT "\${MPIF_MPI_PREFIX}/${_mpif_mpi_libdir_rel}")
+  # The same relative name for lib/pkgconfig/mpif.pc, where pkg-config rather
+  # than the shell does the expanding and `mpi_prefix` is what a consumer
+  # redirects with `--define-variable=mpi_prefix=...`. One `if` for both, so the
+  # wrapper and the .pc cannot come to disagree about whether this MPI's libdir
+  # is under its prefix.
+  set(MPIF_PC_MPI_LIBDIR "\${mpi_prefix}/${_mpif_mpi_libdir_rel}")
 endif()
 
 # Check for Fortran features
@@ -869,6 +876,26 @@ install(FILES
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
+# The license, so the installed tree carries its own terms instead of leaving
+# them behind in the repository. CMAKE_INSTALL_DOCDIR is share/doc/mpif here,
+# derived from PROJECT_NAME by the GNUInstallDirs included above -- the one path
+# a packager already knows how to redirect. `share/licenses/mpif` would be a
+# string mpif invented, and no CMake variable names it. Saying this
+# declaratively -- project(LICENSE ...), or SPDX package metadata -- would need
+# CMake 3.25 and 4.0 respectively, above this project's floor of 3.13.
+#
+# Nothing checks that this arrives, and nothing needs to: install(FILES) on a
+# path that does not exist fails `cmake --install` outright, so a LICENSE that
+# went missing from the repository breaks the build rather than shipping a
+# prefix that quietly lacks it.
+#
+# The name stays LICENSE. A Debian package wants
+# usr/share/doc/<pkg>/copyright and places its own; renaming here would only
+# make the upstream tree disagree with itself.
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
+  DESTINATION ${CMAKE_INSTALL_DOCDIR}
+)
+
 # Generate and install package configuration so consumers can use
 # find_package(mpif).
 
@@ -923,6 +950,44 @@ install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpifc ${CMAKE_CURRENT_BINARY_DIR}/bin/mpifort
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+)
+
+# Install pkg-config metadata
+
+# The same inventory as a pkg-config file, for a consumer whose build system
+# asks pkg-config rather than CMake or the wrapper. Here rather than beside the
+# CMake package configuration above, because it substitutes the wrapper's flag
+# variables and two of them -- LINK_FLAGS and MPIF_LINKER_DTAGS_FLAG -- are set
+# immediately above (MPIF_SANITIZE_LINK_STR comes from the sanitizer block much
+# earlier): a reader editing one template sees the other, which is the cheap half
+# of keeping the two in step. ci-scripts/check-pkg-config.sh is the other half.
+#
+# libdir and includedir are written through ${prefix}/${exec_prefix} wherever
+# GNUInstallDirs gave a relative path. That is pkg-config's own convention, and
+# it is what lets `pkg-config --define-prefix` -- which pkgconf does by itself
+# on Windows -- move a whole installation by re-deriving the prefix from the .pc
+# file's location. A packager who set CMAKE_INSTALL_LIBDIR to an absolute path
+# has asked for something that cannot be written that way and gets
+# CMAKE_INSTALL_FULL_LIBDIR instead, forfeiting only the relocatability they
+# already gave up. (bin/mpifort.in pastes prefix and libdir together
+# unconditionally; that is a separate, older question about the wrapper.)
+if(IS_ABSOLUTE "${CMAKE_INSTALL_LIBDIR}")
+  set(MPIF_PC_LIBDIR "${CMAKE_INSTALL_FULL_LIBDIR}")
+else()
+  set(MPIF_PC_LIBDIR "\${exec_prefix}/${CMAKE_INSTALL_LIBDIR}")
+endif()
+if(IS_ABSOLUTE "${CMAKE_INSTALL_INCLUDEDIR}")
+  set(MPIF_PC_INCLUDEDIR "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
+else()
+  set(MPIF_PC_INCLUDEDIR "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+endif()
+# Derived from CMAKE_INSTALL_LIBDIR rather than fixed at lib/pkgconfig, for the
+# reason MPIF_INSTALL_CMAKEDIR above is: a distribution that answers lib64, or
+# Debian's lib/<triplet>, is where its pkg-config looks too.
+set(MPIF_INSTALL_PKGCONFIGDIR "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+configure_file(cmake/mpif.pc.in mpif.pc @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mpif.pc
+  DESTINATION ${MPIF_INSTALL_PKGCONFIGDIR}
 )
 
 # mpif_info, the diagnostic that prints what a launched setup actually loaded

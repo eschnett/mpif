@@ -17,6 +17,11 @@
 # On ELF, @MPIF_LINKER_DTAGS_FLAG@ is -Wl,--enable-new-dtags so the baked
 # default is DT_RUNPATH, which LD_LIBRARY_PATH precedes; DT_RPATH would
 # shadow the override.
+#
+# cmake/mpif.pc.in publishes this same inventory as pkg-config metadata, and
+# makes the same choices for the same reasons. Every value both bake in comes
+# from one CMake variable, so what can drift is the shape of the two link lines;
+# ci-scripts/check-pkg-config.sh compares what the two report.
 
 MPIF_FC=${MPIF_FC:-@CMAKE_Fortran_COMPILER@}
 MPIF_FCFLAGS=${MPIF_FCFLAGS:-@CMAKE_Fortran_FLAGS@ @MPIF_Fortran_FLAGS_STR@}

@@ -241,6 +241,17 @@ To run one directory of the suite rather than all of it:
   `mpif_check_environment` cannot see it. See "Static linking" in `CODE.md`.
   CI runs one static leg on Linux, so `dev/build-macos-all.sh static` is the
   Mach-O coverage.
+- `scripts/macos-test-consume.sh` checks all three consumption routes, not just
+  `find_package`: after `ci-scripts/check-package-config.sh` it runs
+  `ci-scripts/check-pkg-config.sh`, whose strongest leg compiles, links and
+  *runs* `test-consume/consume_f08.f90` with plain `$FC` and
+  `pkg-config`'s flags alone, with `LD_LIBRARY_PATH` and `DYLD_LIBRARY_PATH`
+  cleared — so the rpaths in `Libs:` are what find the libraries. It also diffs
+  what `mpif.pc` and `bin/mpifort` report, which is what keeps the two templates
+  from drifting. With no `pkg-config` on `PATH` it checks that the file was
+  installed, prints that it could not read it, and passes; `PKG_CONFIG` names
+  another one. It is not in "Checking a claim" above because it needs an
+  installed prefix.
 - `MPIF_ENABLE_CFI=0` on `scripts/macos-build-mpif.sh` forces the
   `ignore_tkr` fallback on a toolchain whose TS 29113 probe would pass —
   how that branch stays testable. It reuses the ordinary prefix rather than
