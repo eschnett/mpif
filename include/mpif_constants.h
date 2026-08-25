@@ -6,7 +6,7 @@
 
       integer, parameter :: MPIF_VERSION        = 1
       integer, parameter :: MPIF_SUBVERSION     = 0
-      integer, parameter :: MPIF_PATCH          = 0
+      integer, parameter :: MPIF_PATCH          = 1
 
       integer :: MPIF_DUMMY
 !     MPI_Aint is intptr_t in the standard ABI, so this follows the pointer.

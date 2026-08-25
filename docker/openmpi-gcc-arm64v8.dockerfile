@@ -75,7 +75,7 @@ RUN ci-scripts/install-openmpi.sh ${mpi_prefix}
 ################################################################################
 # mpif
 
-COPY --parents bin cmake CMakeLists.txt gen include src .
+COPY --parents bin cmake CMakeLists.txt gen include LICENSE src .
 
 # Configure
 ENV mpif_prefix=/cactus/mpif-openmpi-gcc

@@ -68,12 +68,15 @@ The MPI and mpif build stages skip on an `install-complete` marker;
 "Build-stage caching". The decision worth defending:
 
 - **The marker is a plain file, not a checksum of the inputs.** A complete
-  checksum is impossible — `ci-scripts/install-mpi-header.sh` clones
-  `mpi-forum/mpi-abi-stubs` at whatever HEAD is that day — and a marker that
-  looked authoritative without being so is worse than one that plainly says
-  "I was here". (The existing `prepared-<version>-<cksum>` stamp in
-  `install-mpich.sh` is the cautionary example: a genuine checksum that still
-  missed the relink-on-prefix-move case.)
+  checksum is impossible — the compilers, system headers and CMake a build
+  used are inputs as much as the tree is, and none of them are in it — and a
+  marker that looked authoritative without being so is worse than one that
+  plainly says "I was here". The three sources fetched from elsewhere are at
+  least pinned — `MPICH_COMMIT`, `OMPI_COMMIT` and `MPI_ABI_STUBS_COMMIT` —
+  so what a build gets no longer depends on the day it ran. (The existing
+  `prepared-<version>-<cksum>` stamp in `install-mpich.sh` is the cautionary
+  example: a genuine checksum that still missed the relink-on-prefix-move
+  case.)
 - Mitigation is provenance: each marker records time, commit, dirtiness and
   compilers; an mpif marker names the MPI marker it was built against; every
   consuming stage prints it.
@@ -345,7 +348,7 @@ link, so only nvfortran showed it.
 
 Each of these runs `check_f90` under `mpiexec`, states something about the run
 that is not true, and expects `mpif_check_environment` to refuse. Sometimes no
-diagnostic comes and the test fails on the missing regular expression. Five
+diagnostic comes and the test fails on the missing regular expression. Six
 observations, all on GitHub runners, all under MPICH:
 
 | when | job | test |
@@ -355,9 +358,10 @@ observations, all on GitHub runners, all under MPICH:
 | run `31429326321` | `static` (ubuntu) | `check_env_nodes_fail` (`MPIF_NUM_NODES=2`) |
 | run `31524365669` | `mpif / mpich / llvm / macos-15` | `check_env_nodes_fail` |
 | run `31644908585` | `static` (ubuntu) | `check_env_size_fail` (`MPIF_SIZE=3`) |
+| run `32857104381` | `mpich / clang+gfortran / freebsd (VM)` | `check_env_size_fail` |
 
 The first was rerun on the same commit and passed. Every other test passed in all
-five, and the sibling tests passed in each. Not macOS-specific — `sanitize` and
+six, and the sibling tests passed in each. Not macOS-specific — `sanitize` and
 `static` run on `ubuntu-24.04`. No Open MPI sighting, over roughly half the
 opportunities.
 
@@ -411,16 +415,6 @@ Things that look like evidence and are not:
   diagnostic and the abort banner arrived every time. (An earlier 400 runs
   compared only the gathered names, so they bore on candidate 1 alone.)
 
-Things that look like evidence and are not:
-
-- **`check_env` passing in the same job says nothing.** It asserts the true layout
-  and would fail if the names disagreed — but every test is its own `mpiexec`
-  invocation, so it reports on a different run.
-- **Not reproducible here.** 2400 two-rank MPICH runs of the failing case itself,
-  1200 idle and 600 with 24 spinners on 12 cores, plus 600 of `MPIF_SIZE=3`: the
-  diagnostic and the abort banner arrived every time. (An earlier 400 runs
-  compared only the gathered names, so they bore on candidate 1 alone.)
-
 `test/` has no expected-failure list and should be entirely green, so this is
 recorded rather than accommodated. It is **not** specific to any variant or to
 the static build: `static` was simply a thirteenth place for it to appear, and it
@@ -448,6 +442,27 @@ to stderr so that everything a process emits shares one fd and one fate:
 
   Demonstrated locally against MPICH by driving `check_f90` by hand in all three
   shapes; the third cannot be produced, which is the point of listing it.
+
+**The sixth sighting read the instrument, and produced a fourth outcome the
+table does not have.** FreeBSD, `check_env_size_fail`, run `32857104381`: ctest
+captured both ranks' `check_f90: environment: MPIF_SIZE=3 ...` and nothing else
+— no refusal, no MPICH abort banner, and no `check_f90: every check completed`.
+
+- **Candidate 4 is excluded here.** The stated value reached both ranks and both
+  printed it, so the expectation was not lost on the way in.
+- **Candidate 3 survives, with its wording corrected.** The loss is *partial*:
+  a line written and flushed before the check survived, and everything written
+  from the refusal onwards did not. "Teardown drops the whole job's output" was
+  the shape the fourth and fifth sightings had (zero bytes captured); this one
+  keeps the earlier write, which is what a pipe drained up to some point and
+  then torn down would leave.
+- **Not "the check saw the expectation and did not fire".** That third row of
+  the table predicts `check_f90: every check completed` and exit 0, and the line
+  is absent — the program did not reach its end.
+
+So the mechanism is losing output written at abort time rather than losing the
+job's output as a whole, and the next occurrence should be read for how much of
+the tail is missing rather than for whether anything is.
 
 Two remedies were rejected:
 
@@ -566,22 +581,27 @@ accepts. gfortran 15 and flang 22 answer exactly as they did before.
 
 ## External blockers
 
-### The ABI header gets the partitioned-communication count wrong, twice — carried as a local patch
+### The ABI header got the partitioned-communication count wrong, twice — fixed upstream, patch hunks dropped
 
 The ABI stubs header (`mpi-forum/mpi-abi-stubs`, fetched by
-`ci-scripts/install-mpi-header.sh`) declares `MPI_Psend_init`/`MPI_Precv_init`
-with an `int` count and invents `MPI_Psend_init_c`/`MPI_Precv_init_c`.
+`ci-scripts/install-mpi-header.sh`) declared `MPI_Psend_init`/`MPI_Precv_init`
+with an `int` count and invented `MPI_Psend_init_c`/`MPI_Precv_init_c`.
 MPI-5.0 gives the base forms an `MPI_Count` count and no `_c` form (the name
 appears nowhere in the standard; neither implementation defines it — a
 routine whose only form takes a count has nothing for `_c` to add).
+Unpatched, the generated wrapper passed an `MPI_Count` to a prototype
+declaring `int` — 32 bits materialised where the callee reads 64.
 
-- Unpatched, the generated wrapper passed an `MPI_Count` to a prototype
-  declaring `int` — 32 bits materialised where the callee reads 64.
-- `fortran/mpi.h.patch` corrects the four base prototypes and deletes the
-  four phantom declarations. **Drop those hunks once the stubs header is
-  fixed**; `patch` will report them already applied.
-- `dev/mpiapi.jl` asserts neither routine ever takes the `_c` path.
-- Not reported upstream yet, and worth reporting.
+- Fixed upstream by mpi-forum/mpi-abi-stubs#93 (commit `4457390d`, merged
+  2026-08-19), which corrects both base prototypes and deletes both phantom
+  names in `mpi.h`, `mpilib.c` and `mpilib.def`. The Forum found it on its own;
+  it was never reported from here. The pinned commit
+  (`MPI_ABI_STUBS_COMMIT` in `ci-scripts/install-mpi-header.sh`) is a
+  descendant, so the four correcting hunks are gone from
+  `fortran/mpi.h.patch`, which now only adds Fortran declarations.
+- `dev/mpiapi.jl` still asserts neither routine ever takes the `_c` path, and
+  `test/partitioned_f08.f90` still makes the count's kind a compile-time
+  assertion. Both are about mpif rather than about the header, so both stay.
 
 ### OpenMPI: 32-bit environments are not supported
 
@@ -1544,9 +1564,8 @@ it were an oversight.
 Upstream reporting status — the sections above are the authority; this is a
 summary:
 
-- Not yet reported: the ABI stubs header's partitioned count (goes to
-  `mpi-forum/mpi-abi-stubs`; correction already in `fortran/mpi.h.patch`);
-  Open MPI's `MPI_Register_datarep` no-op (needs a reproducer first).
+- Not yet reported: Open MPI's `MPI_Register_datarep` no-op (needs a
+  reproducer first).
 - Filed and open: open-mpi/ompi#14278/#14279 (aio, with patch),
   open-mpi/ompi#14297 (info_create_env), open-mpi/ompi#14298 (window name),
   pmodels/mpich#7922 (grequest tests). Where a patch was held back, the

@@ -25,11 +25,11 @@
 
 #include "mpi.h"
 
-// The header this is compiled against is the stub repository's own, before
-// fortran/mpi.h.patch goes on -- the patch cannot be applied first, for the
-// reason ci-scripts/install-mpi-stubs.sh gives -- so the two Fortran types it
-// would have introduced are declared here. Identical to what the patch adds,
-// and a repeated typedef is legal C should this ever meet a patched header.
+// The header this is compiled against is the stub repository's own, in the
+// clone; fortran/mpi.h.patch goes on the installed copy afterwards, so the two
+// Fortran types it would have introduced are declared here. Identical to what
+// the patch adds, and a repeated typedef is legal C should this ever meet a
+// patched header.
 typedef int MPI_Fint;
 
 typedef MPI_Status MPI_F08_Status;

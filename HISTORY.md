@@ -197,6 +197,15 @@ Once the biggest time sink in the project; the rules in `CLAUDE.md`
   prefix their run did not finish and why `check-mpi-install.sh` gained
   teeth — its old "compiles a program that uses the ABI" check passed on
   both broken prefixes.
+- **A new `install(FILES ...)` broke the container images, and only there.**
+  e0aebf3 added `install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE ...)`; the
+  images `COPY` a hand-written list of paths rather than the whole tree, and
+  none of the eight named `LICENSE`, so `cmake --install` failed in the
+  container with `file INSTALL cannot find "/cactus/mpif/LICENSE"` while every
+  native leg passed. The lesson is the coupling: `docker/*.dockerfile`'s COPY
+  list is an allowlist of what the build *reads*, and anything CMake installs
+  is read at install time. `.dockerignore` is a denylist for the same reason
+  in reverse, and deliberately does not have to track COPY.
 - **Editing a script while a run was executing it**, paid a second time and on
   a different file: `test-mpich-suite.sh` was edited — comments only, but the
   byte offsets moved — during a timing run that had it open, and the run had to

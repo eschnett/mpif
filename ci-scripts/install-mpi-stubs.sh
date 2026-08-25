@@ -12,11 +12,9 @@
 # links no MPI at all (see "Choosing the MPI at run time" in CODE.md), so a
 # library that cannot run is enough to compile and link everything.
 #
-# The clone floats on the default branch, as install-mpi-header.sh's does --
-# the two take the same header from the same repository, and pinning one while
-# the other floats would be worse than either. An upstream change that matters
-# here announces itself: fortran/mpi.h.patch stops applying, and the run fails
-# on that rather than on something downstream.
+# The clone is pinned to the same commit install-mpi-header.sh's is, read out of
+# that script by name -- the two take the same header from the same repository,
+# and pinning one while the other floated would be worse than either.
 #
 # Usage: install-mpi-stubs.sh <prefix>
 #
@@ -32,8 +30,18 @@ repodir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 workdir=$(mktemp -d)
 trap 'rm -rf "${workdir}"' EXIT
 
+commit=$(sed -n 's/^MPI_ABI_STUBS_COMMIT=//p' \
+    "${repodir}/ci-scripts/install-mpi-header.sh")
+if [[ -z ${commit} ]]; then
+    echo "install-mpi-stubs.sh: cannot read MPI_ABI_STUBS_COMMIT from" >&2
+    echo "                      ci-scripts/install-mpi-header.sh" >&2
+    exit 1
+fi
+
 git clone --quiet --depth 1 \
     https://github.com/mpi-forum/mpi-abi-stubs "${workdir}/mpi-abi-stubs"
+git -C "${workdir}/mpi-abi-stubs" fetch --quiet --depth 1 origin "${commit}"
+git -C "${workdir}/mpi-abi-stubs" checkout --quiet "${commit}"
 
 # Both sources in one library. The copy into the stub tree is what
 # install-mpich.sh does with f2c_abi_mpich.c, and here it also settles the
@@ -41,16 +49,10 @@ git clone --quiet --depth 1 \
 # cache variable the stubs project passes straight to add_library, which splits
 # a `;`-separated value the way CMake splits any list.
 #
-# The library is built against the *unpatched* header, and the patch goes on
-# afterwards, where install-mpi-header.sh puts it. It cannot go on first:
-# besides the Fortran declarations it also corrects the partitioned-
-# communication prototypes (an `int` count where MPI-5.0 has an MPI_Count, and
-# two `_c` names the standard does not define), and mpilib.c still implements
-# the shapes it corrects, so a patched header makes the stub library itself
-# fail to compile. The MPI_Psend_init that results is then declared with one
-# count type and defined with another -- C links by name, so this builds, and
-# nothing here ever runs. f2c_abi_stubs.c carries the two typedefs it needs for
-# the same reason.
+# The library is built against the *unpatched* header in the clone, and the
+# patch goes on the installed copy afterwards, where install-mpi-header.sh puts
+# it. So f2c_abi_stubs.c compiles against a header that declares no Fortran
+# anything, and carries the two typedefs it needs itself.
 cp "${repodir}/fortran/f2c_abi_stubs.c" "${workdir}/mpi-abi-stubs/"
 
 cmake -S "${workdir}/mpi-abi-stubs" -B "${workdir}/build" \
