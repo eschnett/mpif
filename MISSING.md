@@ -348,7 +348,7 @@ link, so only nvfortran showed it.
 
 Each of these runs `check_f90` under `mpiexec`, states something about the run
 that is not true, and expects `mpif_check_environment` to refuse. Sometimes no
-diagnostic comes and the test fails on the missing regular expression. Five
+diagnostic comes and the test fails on the missing regular expression. Six
 observations, all on GitHub runners, all under MPICH:
 
 | when | job | test |
@@ -358,9 +358,10 @@ observations, all on GitHub runners, all under MPICH:
 | run `31429326321` | `static` (ubuntu) | `check_env_nodes_fail` (`MPIF_NUM_NODES=2`) |
 | run `31524365669` | `mpif / mpich / llvm / macos-15` | `check_env_nodes_fail` |
 | run `31644908585` | `static` (ubuntu) | `check_env_size_fail` (`MPIF_SIZE=3`) |
+| run `32857104381` | `mpich / clang+gfortran / freebsd (VM)` | `check_env_size_fail` |
 
 The first was rerun on the same commit and passed. Every other test passed in all
-five, and the sibling tests passed in each. Not macOS-specific — `sanitize` and
+six, and the sibling tests passed in each. Not macOS-specific — `sanitize` and
 `static` run on `ubuntu-24.04`. No Open MPI sighting, over roughly half the
 opportunities.
 
@@ -414,16 +415,6 @@ Things that look like evidence and are not:
   diagnostic and the abort banner arrived every time. (An earlier 400 runs
   compared only the gathered names, so they bore on candidate 1 alone.)
 
-Things that look like evidence and are not:
-
-- **`check_env` passing in the same job says nothing.** It asserts the true layout
-  and would fail if the names disagreed — but every test is its own `mpiexec`
-  invocation, so it reports on a different run.
-- **Not reproducible here.** 2400 two-rank MPICH runs of the failing case itself,
-  1200 idle and 600 with 24 spinners on 12 cores, plus 600 of `MPIF_SIZE=3`: the
-  diagnostic and the abort banner arrived every time. (An earlier 400 runs
-  compared only the gathered names, so they bore on candidate 1 alone.)
-
 `test/` has no expected-failure list and should be entirely green, so this is
 recorded rather than accommodated. It is **not** specific to any variant or to
 the static build: `static` was simply a thirteenth place for it to appear, and it
@@ -451,6 +442,27 @@ to stderr so that everything a process emits shares one fd and one fate:
 
   Demonstrated locally against MPICH by driving `check_f90` by hand in all three
   shapes; the third cannot be produced, which is the point of listing it.
+
+**The sixth sighting read the instrument, and produced a fourth outcome the
+table does not have.** FreeBSD, `check_env_size_fail`, run `32857104381`: ctest
+captured both ranks' `check_f90: environment: MPIF_SIZE=3 ...` and nothing else
+— no refusal, no MPICH abort banner, and no `check_f90: every check completed`.
+
+- **Candidate 4 is excluded here.** The stated value reached both ranks and both
+  printed it, so the expectation was not lost on the way in.
+- **Candidate 3 survives, with its wording corrected.** The loss is *partial*:
+  a line written and flushed before the check survived, and everything written
+  from the refusal onwards did not. "Teardown drops the whole job's output" was
+  the shape the fourth and fifth sightings had (zero bytes captured); this one
+  keeps the earlier write, which is what a pipe drained up to some point and
+  then torn down would leave.
+- **Not "the check saw the expectation and did not fire".** That third row of
+  the table predicts `check_f90: every check completed` and exit 0, and the line
+  is absent — the program did not reach its end.
+
+So the mechanism is losing output written at abort time rather than losing the
+job's output as a whole, and the next occurrence should be read for how much of
+the tail is missing rather than for whether anything is.
 
 Two remedies were rejected:
 
