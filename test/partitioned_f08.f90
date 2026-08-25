@@ -17,8 +17,8 @@
 ! either way. The calls sit behind a branch that is never taken, which is enough:
 ! the compiler checks the interface regardless, and that is what was wrong.
 ! See "MPICH: partitioned communication is not implemented" in MISSING.md. The
-! count does reach C as an MPI_Count now: the ABI header declared it `int`, which
-! `fortran/mpi.h.patch` corrects.
+! count does reach C as an MPI_Count: the ABI header once declared it `int`,
+! which a hunk of `fortran/mpi.h.patch` corrected until upstream fixed it.
 
 program partitioned_f08
   use mpi_f08

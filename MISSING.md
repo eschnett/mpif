@@ -68,12 +68,15 @@ The MPI and mpif build stages skip on an `install-complete` marker;
 "Build-stage caching". The decision worth defending:
 
 - **The marker is a plain file, not a checksum of the inputs.** A complete
-  checksum is impossible — `ci-scripts/install-mpi-header.sh` clones
-  `mpi-forum/mpi-abi-stubs` at whatever HEAD is that day — and a marker that
-  looked authoritative without being so is worse than one that plainly says
-  "I was here". (The existing `prepared-<version>-<cksum>` stamp in
-  `install-mpich.sh` is the cautionary example: a genuine checksum that still
-  missed the relink-on-prefix-move case.)
+  checksum is impossible — the compilers, system headers and CMake a build
+  used are inputs as much as the tree is, and none of them are in it — and a
+  marker that looked authoritative without being so is worse than one that
+  plainly says "I was here". The three sources fetched from elsewhere are at
+  least pinned — `MPICH_COMMIT`, `OMPI_COMMIT` and `MPI_ABI_STUBS_COMMIT` —
+  so what a build gets no longer depends on the day it ran. (The existing
+  `prepared-<version>-<cksum>` stamp in `install-mpich.sh` is the cautionary
+  example: a genuine checksum that still missed the relink-on-prefix-move
+  case.)
 - Mitigation is provenance: each marker records time, commit, dirtiness and
   compilers; an mpif marker names the MPI marker it was built against; every
   consuming stage prints it.
@@ -566,22 +569,27 @@ accepts. gfortran 15 and flang 22 answer exactly as they did before.
 
 ## External blockers
 
-### The ABI header gets the partitioned-communication count wrong, twice — carried as a local patch
+### The ABI header got the partitioned-communication count wrong, twice — fixed upstream, patch hunks dropped
 
 The ABI stubs header (`mpi-forum/mpi-abi-stubs`, fetched by
-`ci-scripts/install-mpi-header.sh`) declares `MPI_Psend_init`/`MPI_Precv_init`
-with an `int` count and invents `MPI_Psend_init_c`/`MPI_Precv_init_c`.
+`ci-scripts/install-mpi-header.sh`) declared `MPI_Psend_init`/`MPI_Precv_init`
+with an `int` count and invented `MPI_Psend_init_c`/`MPI_Precv_init_c`.
 MPI-5.0 gives the base forms an `MPI_Count` count and no `_c` form (the name
 appears nowhere in the standard; neither implementation defines it — a
 routine whose only form takes a count has nothing for `_c` to add).
+Unpatched, the generated wrapper passed an `MPI_Count` to a prototype
+declaring `int` — 32 bits materialised where the callee reads 64.
 
-- Unpatched, the generated wrapper passed an `MPI_Count` to a prototype
-  declaring `int` — 32 bits materialised where the callee reads 64.
-- `fortran/mpi.h.patch` corrects the four base prototypes and deletes the
-  four phantom declarations. **Drop those hunks once the stubs header is
-  fixed**; `patch` will report them already applied.
-- `dev/mpiapi.jl` asserts neither routine ever takes the `_c` path.
-- Not reported upstream yet, and worth reporting.
+- Fixed upstream by mpi-forum/mpi-abi-stubs#93 (commit `4457390d`, merged
+  2026-08-19), which corrects both base prototypes and deletes both phantom
+  names in `mpi.h`, `mpilib.c` and `mpilib.def`. The Forum found it on its own;
+  it was never reported from here. The pinned commit
+  (`MPI_ABI_STUBS_COMMIT` in `ci-scripts/install-mpi-header.sh`) is a
+  descendant, so the four correcting hunks are gone from
+  `fortran/mpi.h.patch`, which now only adds Fortran declarations.
+- `dev/mpiapi.jl` still asserts neither routine ever takes the `_c` path, and
+  `test/partitioned_f08.f90` still makes the count's kind a compile-time
+  assertion. Both are about mpif rather than about the header, so both stay.
 
 ### OpenMPI: 32-bit environments are not supported
 
@@ -1544,9 +1552,8 @@ it were an oversight.
 Upstream reporting status — the sections above are the authority; this is a
 summary:
 
-- Not yet reported: the ABI stubs header's partitioned count (goes to
-  `mpi-forum/mpi-abi-stubs`; correction already in `fortran/mpi.h.patch`);
-  Open MPI's `MPI_Register_datarep` no-op (needs a reproducer first).
+- Not yet reported: Open MPI's `MPI_Register_datarep` no-op (needs a
+  reproducer first).
 - Filed and open: open-mpi/ompi#14278/#14279 (aio, with patch),
   open-mpi/ompi#14297 (info_create_env), open-mpi/ompi#14298 (window name),
   pmodels/mpich#7922 (grequest tests). Where a patch was held back, the

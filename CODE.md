@@ -14,7 +14,7 @@ questions below were originally found and verified is `HISTORY.md`.
     include/            mpif.h and the headers it includes, all hand-written
     test/               mpif's own tests, one executable each
     ci-scripts/         installing the implementations, running MPICH's suite
-    fortran/            the ABI stubs header and the patches carried against it
+    fortran/            the ABI header's Fortran patch, and the f2c toolboxes
 
 `dev/mpiapi.jl` emits four files; the split is the shape of the binding:
 
@@ -846,7 +846,7 @@ were found and verified.
 - **No phantom `_c` bindings.** The generated f08 output has exactly the
   `_c` forms Appendix A.4 has; `MPI_Psend_init` and `MPI_Precv_init`
   correctly have none, and `dev/mpiapi.jl` asserts they never gain one (the
-  ABI stubs header invents them — see `MISSING.md`).
+  ABI stubs header used to invent them — see `MISSING.md`).
 - **`MPI_Count` is `int64_t` where `MPI_Aint` is a pointer.** The ABI header:
   `MPI_ABI_Aint` is `intptr_t`, `MPI_ABI_Offset`/`MPI_ABI_Count` are
   `int64_t`. So `MPI_OFFSET_KIND` and `MPI_COUNT_KIND` are

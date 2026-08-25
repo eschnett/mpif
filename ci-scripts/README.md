@@ -81,7 +81,7 @@ Building and installing an MPI:
 |------|--------------|
 | `install-mpich.sh` | clone `main` at the pinned commit, configure, build and install MPICH for the standard ABI. It carries no patches at the moment -- MISSING.md "MPICH is built from `main`" says what it used to carry and where each went |
 | `install-openmpi.sh` | the same for Open MPI |
-| `install-mpi-header.sh` | install the MPI Forum's official ABI `mpi.h` over the implementation's own |
+| `install-mpi-header.sh` | install the MPI Forum's official ABI `mpi.h` over the implementation's own, from `mpi-forum/mpi-abi-stubs` at the pinned `MPI_ABI_STUBS_COMMIT` and patched by `fortran/mpi.h.patch` for the Fortran declarations it omits. `install-mpi-stubs.sh` reads that commit out of this file |
 | `prune-install.sh` | delete everything the standard ABI does not define, from a list |
 | `mpich-prune.txt`, `openmpi-prune.txt` | those lists |
 | `openmpi-*.patch` | fixes carried against the pinned upstream trees; each says in its preamble what it is and why, and MISSING.md has the stories. `git apply` refuses fuzz, so one stops applying the day upstream moves the code under it -- which is how the MPICH ones were retired |
