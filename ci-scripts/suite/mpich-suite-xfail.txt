@@ -272,8 +272,8 @@ xfail openmpi/*/*/*/*          f90  winnamef90         # Open MPI gives a fresh 
 # Nobody has diagnosed these. Each says what it does, so that whoever picks one
 # up starts from the symptom rather than from a rerun. What is left is
 # i_fcoll_test on CI's Linux runners. The other two rows it used to have are gone:
-# Open MPI on macOS is fixed by ci-scripts/openmpi-fbtl-posix-aio.patch, and flang
-# on macOS turned out not to be a failure at all -- both are above.
+# Open MPI on macOS is fixed upstream (open-mpi/ompi#14278, in the pinned tree),
+# and flang on macOS turned out not to be a failure at all -- both are above.
 #
 # Read the whole of a test's output before diagnosing it. `runtests` prints ten
 # lines and then "... ...", and the eleven Open MPI spawn tests above cost two

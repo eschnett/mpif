@@ -24,14 +24,25 @@
 
 set -euo pipefail
 
-# open-mpi/ompi#13280, the branch that added the MPI standard ABI, merged into
-# `main` on 2026-08-05 as commit 003e0ca0d2d0145359c661f239633427919f4b13 --
-# checked via `gh api repos/open-mpi/ompi/branches/main`, which reports that
-# commit as `main`'s current tip. Pinned to that commit rather than tracking
-# `main` by name, for the same reason the stamp below is keyed on this value:
-# a floating ref would never invalidate the cached, prepared tree, and a
-# moving upstream is exactly what the stamp exists to notice.
-OMPI_COMMIT=003e0ca0d2d0145359c661f239633427919f4b13
+# Open MPI v6.0.0rc1, the first release candidate to carry the MPI standard ABI
+# (v6.0.x changelog: "Added support for the MPI-5.0 standard ABI ... Note that
+# Fortran ABI support is not yet included" -- which is what f2c_abi_openmpi.c
+# below supplies). The tag resolves to commit
+# a7b1e6d6e13219472869997a57ab5ad1700ea7ca, tagged 2026-09-16.
+#
+# Pinned by commit rather than by the tag name, for the same reason the stamp
+# below is keyed on this value: a name that upstream can re-cut -- and an rc tag
+# is exactly the kind that gets re-cut -- would never invalidate the cached,
+# prepared tree, and a moving upstream is what the stamp exists to notice.
+#
+# `v6.0.x` is not a snapshot of `main`. It branched at 67b2aa0a (2025-10-24),
+# months before open-mpi/ompi#13280 put the ABI on `main` (2026-08-05), so the
+# ABI here arrived by backport and the two lines have diverged: `gh api
+# repos/open-mpi/ompi/compare/<main-tip>...v6.0.0rc1` reports `diverged`, not
+# `ahead`. Anything checked against a `main` commit therefore has to be checked
+# again here rather than inferred from ancestry -- which is how the two fixes
+# named below were established.
+OMPI_COMMIT=a7b1e6d6e13219472869997a57ab5ad1700ea7ca
 
 prefix=${1:-}
 prepare_only=${MPI_PREPARE_ONLY:-0}
@@ -46,18 +57,28 @@ repodir=$(cd "${scriptdir}/.." && pwd)
 nprocs=$(getconf _NPROCESSORS_ONLN 2>/dev/null ||
              sysctl -n hw.ncpu 2>/dev/null || echo 4)
 
-# Fixes applied to the source tree below. Each patch says in its own preamble what
-# it is, where it comes from and why it is still needed here. The one here is a
-# local fix carried ahead of upstream for a defect that is reported --
-# open-mpi/ompi#14278, with the patch itself open as #14279 -- and its preamble
-# says so; the one that used to be here, for the empty `MPI_Info_set` value, is
-# upstream as of the
-# commit above and was dropped. The array is expanded with the `${a[@]+...}`
-# guard throughout so that being empty -- which it was, and may be again -- is not
-# an unbound variable under `set -u` in bash 3.2, which is what macOS has.
-patches=(
-    "${scriptdir}/openmpi-fbtl-posix-aio.patch"
-)
+# Fixes applied to the source tree below. Each patch would say in its own preamble
+# what it is, where it comes from and why it is still needed here. There are none
+# at present: both that this repository carried are in the pinned tree, and
+# neither by ancestry -- v6.0.x diverged from `main`, so each was established by
+# reading the pinned source.
+#
+#   - The empty `MPI_Info_set` value (open-mpi/ompi#14246, fixed on `main` by
+#     5e21b7b2). `ompi/mpi/c/info_set.c.in` here has no `0 == value_length`
+#     clause, so the backport is in.
+#   - The posix fbtl losing nonblocking I/O when the aio queue fills
+#     (open-mpi/ompi#14278, patch #14279, merged to `main` 2026-08-21).
+#     `ompi/mca/fbtl/posix/fbtl_posix_ipwritev.c` here calls
+#     `mca_fbtl_posix_post_reqs`, so the backport is in -- and in the form
+#     review settled on, which additionally returns `MPI_ERR_IO` from the
+#     initiating call and sets `req_mpi_object.file` so the error handler is
+#     reachable. That is strictly more than the patch this repository carried,
+#     which is why the patch is gone rather than rebased.
+#
+# The array is expanded with the `${a[@]+...}` guard throughout so that being
+# empty -- which it is, and has been before -- is not an unbound variable under
+# `set -u` in bash 3.2, which is what macOS has.
+patches=()
 
 # A prefix is not usable when `make install` is done with it, only when the four
 # steps after it are: until the wrapper compilers point at the ABI library, the
@@ -145,10 +166,12 @@ else
     git checkout --quiet "${OMPI_COMMIT}"
     git submodule update --init --recursive
 
-    # Carry the upstream fixes the ABI branch does not have yet. `git apply`
-    # rather than `patch`, because it refuses to apply with fuzz: once the
-    # branch picks a fix up, or moves the code it touches, the patch stops
-    # applying and says so here rather than landing somewhere unintended.
+    # Carry whatever fixes the pinned tree does not have yet; the array above
+    # is empty at present. `git apply` rather than `patch`, because it refuses
+    # to apply with fuzz: once upstream picks a fix up, or moves the code it
+    # touches, the patch stops applying and says so here rather than landing
+    # somewhere unintended. That is how the fbtl patch's removal was noticed --
+    # it stopped applying because the pinned tree already had it.
     for patch in ${patches[@]+"${patches[@]}"}; do
         echo "Applying $(basename "${patch}")"
         git apply "${patch}"
