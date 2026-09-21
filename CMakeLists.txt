@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13...3.28)
 project(
-  mpif VERSION 1.0.1
+  mpif VERSION 1.0.2
   DESCRIPTION "MPI Fortran bindings"
   HOMEPAGE_URL "https://github.com/eschnett/mpif"
   LANGUAGES C Fortran
