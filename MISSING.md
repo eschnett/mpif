@@ -657,6 +657,55 @@ what changed is that the workarounds went away.
   disagreements below (`greqf*`, `bsendf*`, `statusconv`, `spawnargvf90`),
   which are about the tests rather than the library.
 
+### Open MPI is built from the `v6.0.0rc1` tag
+
+`ci-scripts/install-openmpi.sh` clones open-mpi/ompi and checks out
+`OMPI_COMMIT`, the commit the `v6.0.0rc1` tag resolves to. A commit rather than
+the tag name because an rc tag is the kind upstream re-cuts, and the stamp in
+`MPI_SRC_DIR` is keyed on this value — a name that moved under it would reuse a
+stale prepared tree rather than re-preparing one.
+
+Why a release candidate rather than `main`: it is the first Open MPI release
+series to ship the standard ABI, it moves only when a new rc is cut, and it
+carries both fixes this repository used to carry — so Open MPI is unpatched
+now, `patches=()` in that script. What it does not carry is the Fortran ABI:
+the v6.0.x changelog says so outright, which is why `fortran/f2c_abi_openmpi.c`
+is still copied in and hooked into `Makefile_abi.include`.
+
+**`v6.0.x` is not a snapshot of `main`, and this is the trap.** It branched at
+`67b2aa0a` (2025-10-24), months before open-mpi/ompi#13280 put the ABI on
+`main` (2026-08-05); the ABI arrived here by backport. `gh api
+repos/open-mpi/ompi/compare/<main-tip>...v6.0.0rc1` reports `diverged`, not
+`ahead`. So a fix known to be on `main` is *not* thereby in this tree:
+`5e21b7b2`, which fixed the empty `MPI_Info_set` value, is not an ancestor of
+the pinned commit even though the fix is present. Check the pinned source, not
+the ancestry — both entries below were settled that way, by reading
+`ompi/mpi/c/info_set.c.in` and
+`ompi/mca/fbtl/posix/fbtl_posix_ipwritev.c` in the checked-out tree.
+
+Measured on `darwin/27/arm64` before adopting it, one run each: `openmpi/gcc`
+fails 7/9/13 tests across f77/f90/f08 and `openmpi/llvm` 7/9/14 — the counts
+this file's `darwin/26` rows record for those two variants — and `test/` is 81
+of 81 and `consume` green on both. Every failure matched an expected-failure entry except the six
+`dgraph` rows, whose key is `darwin/26` while this machine now reports
+`darwin/27`; the six reported names line up one for one with those rows, so the
+difference is the OS in the key, not the pin. **Neither run could have failed**:
+there is no `triaged` line for `darwin/27`, so the comparison above is the
+evidence and the exit status is not. The two cross pairings, where Open MPI is
+the runtime under an MPICH-built mpif, were not run.
+
+- Checked before adopting it, from the tag's tree: `Makefile_abi.include` is
+  byte-identical to the previous pin's but for an added SPDX line, so the
+  `comm_fromint_abi.c` hook and its `grep -q` guard still land; and all four
+  configure options the script passes exist
+  (`--enable-standard-abi` and `--enable-mpi1-compatibility` in
+  `config/ompi_configure_options.m4`, `--enable-script-wrapper-compilers` in
+  `config/opal_configure_options.m4`).
+- Still open upstream and unaffected by the move: open-mpi/ompi#14297
+  (`MPI_Info_create_env` across `MPI_Init`) and #14298 (a fresh window has a
+  name). Their xfail entries stand.
+
+
 ### MPICH: strong `MPI_*` exports on Darwin broke substituting the library — fixed upstream
 
 The ABI implementations export `MPI_*` as weak definitions, and on Mach-O
@@ -898,45 +947,61 @@ an empty string if no such name exists". Reproducer:
   Fails `typesnamef*`. A question for the standard rather than a defect to
   file; not recorded as having been asked.
 
-### OpenMPI on macOS: a nonblocking collective write is lost when the aio queue fills — carried as a local patch
+### OpenMPI on macOS: a nonblocking collective write was lost when the aio queue filled — fixed upstream, patch dropped
 
-Symptom: `f08/io/i_fcoll_test` reads back zeros;
-`mca_fbtl_posix_ipwritev: error in aio_write(): Resource temporarily
-unavailable`. Four separable defects in the posix fbtl (Open MPI 6.1.0a1):
+<https://github.com/open-mpi/ompi/issues/14278>
 
-1. The in-flight limit comes from `sysconf(_SC_AIO_MAX)` (system-wide
-   `kern.aiomax`, 90) where the per-process limit is `kern.aioprocmax` (16).
-2. The EAGAIN retry loop cannot work: slots are freed by `aio_return`, whose
-   only caller is the progress function, assigned *after* the loop.
-3. The failure is discarded — the ipwritev return value is assigned to
-   nothing, and `MPI_File_iwrite_all` is not collective in ompio (no fcoll
-   component implements it), so nothing aggregates the fragmented view.
-   `MPI_Wait` then reports `MPI_SUCCESS` on a request nobody progressed.
-4. The error path frees the aiocbs with operations outstanding and reaps
-   none, retiring every slot the process has — all later nonblocking file
-   I/O fails too.
+`f08/io/i_fcoll_test` read back zeros after `mca_fbtl_posix_ipwritev: error in
+aio_write(): Resource temporarily unavailable`. Four separable defects in the
+posix fbtl: the in-flight limit came from `sysconf(_SC_AIO_MAX)` (system-wide
+`kern.aiomax`, 90) where the per-process limit is `kern.aioprocmax` (16); the
+EAGAIN retry loop could not work, slots being freed by `aio_return` whose only
+caller is the progress function, assigned *after* the loop; the ipwritev return
+value was assigned to nothing, so `MPI_Wait` reported `MPI_SUCCESS` on a request
+nobody progressed; and the error path freed the aiocbs with operations
+outstanding, retiring every slot the process had.
 
-- Reported as open-mpi/ompi#14278, patch open-mpi/ompi#14279;
-  carried as `ci-scripts/openmpi-fbtl-posix-aio.patch` (reads
-  `kern.aioprocmax` on Darwin, exposes it as an MCA parameter, replaces the
-  retry with back-pressure, acts on the fbtl's return, reaps before
-  freeing). Both reproducers in `bug-ompi-aio-eagain/` pass with it and fail
-  with it reverted. If upstream reshapes the fix, this entry and the patch
-  follow it.
-- There is no run-time workaround: measured, `fbtl_posix_priority`, `fcoll`
-  settings do nothing (fcoll is not in the path), `--mca fbtl ^posix` leaves
-  no fbtl, ROMIO is gone.
-- The blocking path (`pwritev`, no aio) is unaffected, measured.
-- Left alone, both reachable only from genuine I/O errors: the discarded
-  return values in the blocking paths, and the partial-completion re-post in
-  the progress function.
-- Related but distinct: `i_fcoll_test` under flang fails on both
-  implementations because flang's `STOP` prints an IEEE-exceptions line after
-  "No Errors", which `runtests` counts as unexpected output — not an MPI
+Fixed upstream by PR 14279, merged to `main` 2026-08-21 and backported to
+`v6.0.x`, so the local patch is gone. Upstream's form does two things the
+carried patch did not: it returns `MPI_ERR_IO` from the initiating call, and it
+sets `req_mpi_object.file` so the error handler is reachable. Reproducers:
+`bug-ompi-aio-eagain/`.
+
+- Established by reading `ompi/mca/fbtl/posix/fbtl_posix_ipwritev.c` in the
+  pinned tree, not by ancestry: the merge is on `main`, and `v6.0.x` diverged
+  from `main` long before it. See "Open MPI is built from the `v6.0.0rc1` tag".
+- Related but distinct, and still current: `i_fcoll_test` under flang fails on
+  both implementations because flang's `STOP` prints an IEEE-exceptions line
+  after "No Errors", which `runtests` counts as unexpected output — not an MPI
   defect. Expected on `*/llvm/darwin/*/*` and, measured on both
-  implementations, on `*/llvm/linux/26.04/*`. Still untriaged:
-  `*/*/linux/24.04/*`, where gcc fails it too, the aio message is absent and
-  this patch changes nothing (see "Worth doing next").
+  implementations, on `*/llvm/linux/26.04/*` and `openmpi/llvm/linux/24.04/*`.
+  Still untriaged, and now MPICH's alone: `mpich/*/linux/24.04/*`. Open MPI
+  under gcc on 24.04 used to fail it too, with no aio message and for no reason
+  anyone had found; moving the pin to `v6.0.0rc1` made it pass, so that half was
+  this defect after all, reaching CI's runners without the Darwin symptom. What
+  MPICH fails it for on the same runners is still unknown (see "Worth doing
+  next").
+
+### OpenMPI on aarch64 Linux: a libevent warning trails a passing spawn test
+
+`spawnmult2f90` prints its `No Errors` and then, through PRRTE, libevent adds
+
+    [warn] event_active: event has no event_base set.
+
+twice. The test passed; `runtests` compares the whole output and fails it for
+the trailing lines. Seen on `openmpi/*/linux/24.04/aarch64` with the pinned
+`v6.0.0rc1`, not on x86_64, and **intermittently** — one run had it under f90
+alone, the next under f90 and f08.
+
+- Dropped by `ci-scripts/suite/mpiexec-filter.sh`, which already exists for the
+  `schizo_proxy` banner, rather than listed here: an expectation that only
+  sometimes holds fails as "unexpectedly passes" the moment the warning does
+  not fire. The line is matched in full, so any other libevent warning still
+  reaches the suite.
+- Not diagnosed and not reported upstream. It is a real libevent misuse
+  somewhere in PRRTE's teardown — an `event_active` on an event never handed a
+  base — but nothing here shows which call, and it changes no result.
+
 
 ### OpenMPI: left to itself it picks an interface it cannot use
 
@@ -1566,9 +1631,10 @@ summary:
 
 - Not yet reported: Open MPI's `MPI_Register_datarep` no-op (needs a
   reproducer first).
-- Filed and open: open-mpi/ompi#14278/#14279 (aio, with patch),
-  open-mpi/ompi#14297 (info_create_env), open-mpi/ompi#14298 (window name),
-  pmodels/mpich#7922 (grequest tests). Where a patch was held back, the
+- Filed and open: open-mpi/ompi#14297 (info_create_env),
+  open-mpi/ompi#14298 (window name), pmodels/mpich#7922 (grequest tests).
+  Filed and closed: open-mpi/ompi#14278 with its patch #14279 (aio), merged
+  upstream and in the pinned tree. Where a patch was held back, the
   local one is provisional: an upstream fix of a different shape supersedes
   it — which is what happened to pmodels/mpich#7929 (f90 datatypes) and
   #7930 (get_contents), both fixed on `main` in a shape of upstream's own

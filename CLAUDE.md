@@ -49,8 +49,8 @@ variant.
 - CI and the Docker images keep their own directory layouts, deliberately —
   see `MISSING.md`.
 - `kern.aioprocmax` is 16 here (tens of thousands on Linux), which is why the
-  Open MPI aio defect fixed by `ci-scripts/openmpi-fbtl-posix-aio.patch`
-  surfaced on macOS and nowhere else.
+  Open MPI aio defect — open-mpi/ompi#14278, fixed upstream and in the pinned
+  tree — surfaced on macOS and nowhere else. Reproducers: `bug-ompi-aio-eagain/`.
 - CI runs twelve variants natively, plus a 32-bit i386 container and a FreeBSD
   VM. This machine is `<mpi>/<toolchain>/darwin/26/arm64`, which is *not* one
   of CI's rows; do not expect the suite baseline table to match a local run.
@@ -169,12 +169,15 @@ pinned to `lo0`, and mpif's own `test/` never spawns.
   exist. **A missing `build/mpi/<variant>` means the last install failed**;
   the scripts discard a prefix their run did not finish, so the cure is to
   run the install again.
-- **Both implementations are pinned to a commit, not a release** —
-  `MPICH_COMMIT` and `OMPI_COMMIT` in `ci-scripts/install-*.sh`. The MPICH
+- **Both implementations are pinned by commit** — `MPICH_COMMIT` and
+  `OMPI_COMMIT` in `ci-scripts/install-*.sh` — but to different kinds of
+  thing: MPICH to a commit on `main`, Open MPI to the commit the `v6.0.0rc1`
+  tag resolves to. A commit either way, because a name upstream can move or
+  re-cut would never invalidate the cached, prepared source tree. The MPICH
   *suite* is separate and stays on the last release (`MPICH_VERSION` in the
   same file), so bumping the library is one variable against one
-  expected-failure list. `MISSING.md` "MPICH is built from `main`" says what
-  following it bought and what it costs.
+  expected-failure list. `MISSING.md` "MPICH is built from `main`" and
+  "Open MPI is built from the `v6.0.0rc1` tag" say what each buys and costs.
 - **Never `make install` an MPI into `build/mpi/<variant>` by hand.** The
   install script afterwards repoints the wrapper compilers at the ABI
   library, prunes the implementation's own headers, Fortran modules and
