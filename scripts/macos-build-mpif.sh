@@ -96,6 +96,12 @@ if [[ -n ${static} ]]; then
     bash "${repodir}/ci-scripts/check-static-build.sh" "${mpif_prefix}"
 fi
 
+# And again: the deprecation marks on the fifteen routines mpif keeps outside
+# the ABI are comments to a compiler that does not take them, and a directive
+# naming a generic rather than a specific is accepted and does nothing. Neither
+# shows up in a build. This compiles four callers and reads what came back.
+bash "${repodir}/ci-scripts/check-deprecation-warnings.sh" "${mpif_prefix}"
+
 # Last, after the sanitizer check, so the marker means the whole stage finished.
 # The MPI's own marker line goes in it because a reinstall at the same path can
 # change what libmpi_abi's install name says while the path itself is unchanged,

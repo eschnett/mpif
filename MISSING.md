@@ -1522,8 +1522,18 @@ points. The standard gives no such binding (A.5 has no `!(_c)` markers;
 
 ### Fortran-set attribute values are not visible to C as a pointer
 
-The one mpif defect the suite still reports (four tests on all twelve
-variants: `attrlangf90/f08`, `fandcattrf90/f08`). MPI-5.0 §19.3.7: when an
+The one mpif defect the suite still reports (four tests: `attrlangf90/f08`,
+`fandcattrf90/f08`). Two of the four now report it on some variants only.
+`attrlang*`'s C half calls `MPI_Keyval_create` and `MPI_Attr_put`, which the
+ABI header stopped declaring (mpi-forum/mpi-abi-stubs#96), so whether they
+still run turns on the *C* compiler's default standard, not on the header:
+measured, clang 23 (every macOS row, and CI's Homebrew clang) makes an
+implicit declaration an error and the test fails to build, while gcc 13.3
+(Ubuntu 24.04) makes it a warning, links against the symbols the
+implementation still exports, and the test runs and fails for the reason
+below. Both outcomes match the same `*/*/*/*/*` xfail entry, so no run's
+verdict moves either way. `fandcattr*` uses none of the removed names and is
+unaffected. MPI-5.0 §19.3.7: when an
 integer-valued attribute is accessed from C, get_attr must return "the
 address of (a pointer to) the integer-valued attribute". mpif's wrapper
 hands MPI the value itself (`MPI_Comm_set_attr(comm, keyval,
@@ -1592,6 +1602,42 @@ the two modes cannot simply be combined.
   pkg-config hoists `-L` and dedupes it while `-showme:link` names mpif's pair
   twice, so a *reordering* is invisible to that leg and is caught only by the
   leg that runs the executable.
+
+### `mpif.h` cannot carry a deprecation, and three compilers ignore one
+
+The fifteen routines mpif keeps outside the ABI are marked `!GCC$ ATTRIBUTES
+DEPRECATED` — see "Deprecation warnings" in `CODE.md`. Three gaps, none of
+them fixable here:
+
+- **`include/mpif.h` gets no mark.** It is read by Fortran `include` and never
+  preprocessed, so it cannot carry an `#ifdef` — and the directive must be
+  guarded, because gfortran 9 and 10 reject the attribute outright ("Unknown
+  attribute in `!GCC$ ATTRIBUTES` statement"; measured on `gcc:9` and `gcc:10`,
+  accepted from `gcc:11` on). Writing it unguarded would stop mpif compiling on
+  CI's `gfortran-9` row. So `include 'mpif.h'` programs — which is most of the
+  legacy code these routines exist for — get no warning.
+  `ci-scripts/check-deprecation-warnings.sh` asserts that `mpif.h` keeps
+  compiling and keeps quiet, so this stays a decision rather than drifting.
+- **Only gfortran acts on it.** Measured on CI's compile matrix, through
+  `ci-scripts/check-deprecation-warnings.sh`, which compiles a deprecated
+  module of its own: flang, ifx, nvfortran and amdflang all accept the
+  directive — `MPIF_HAVE_DEPRECATED_ATTRIBUTE` is "yes" on all four — and
+  none of them warns. Accepting-and-ignoring and not recognising the `!GCC$`
+  sentinel look identical from outside, and nothing here distinguishes them.
+  The warning is a gfortran-11-and-later feature, not an mpif one.
+- **`mpi_f08` does not get the removed ten.** `src/mpif_removed.F90` is used
+  by `src/mpi.F90` only. Those routines take INTEGER handles and MPI-3.0
+  removed them before `mpi_f08` could have offered them, so declaring them
+  there would invite passing a `TYPE(MPI_Datatype)` to a dummy expecting an
+  INTEGER. An `mpi_f08` program can still call them as undeclared externals,
+  exactly as it can today, and gets no warning; the suite's
+  `f08/rma/baseattrwinf08` is the measured case.
+
+No runtime warning to go with it, deliberately. It would reach all three
+interfaces and every compiler, which the compile-time mark does not — but the
+only honest default is on, and a line on stderr from a library is a thing
+every output-comparing test suite has to be taught about, for a diagnosis the
+caller can already get at compile time.
 
 ### MemorySanitizer cannot be run against an MPI
 

@@ -120,6 +120,13 @@ run_branch() {
     cmake --build "${build}" --parallel "${jobs}"
     cmake --install "${build}"
 
+    # Whether the routines mpif keeps outside the ABI warn at the call site,
+    # and whether marking them left mpif.h includable. This is the stage that
+    # matters most for it: the gfortran-9 row rejects the attribute outright,
+    # so it is the one that proves the guard is really a guard.
+    echo "=== deprecation marks (${branch}) ==="
+    bash "${repodir}/ci-scripts/check-deprecation-warnings.sh" "${prefix}"
+
     echo "=== test/ (${branch}) ==="
     # MPIF_TEST_BUILD_ONLY builds every test and registers none: there is no
     # launcher, and nothing linked against the stub library can run.

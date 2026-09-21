@@ -3,6 +3,12 @@ module mpi
   use mpif_types
   use mpif_functions
   use mpif_cptr
+
+  ! The ten MPI-1 routines MPI-3.0 removed, which src/mpif_removed.c defines and
+  ! src/mpif_removed.F90 names. Nothing here needs the declarations -- a program
+  ! can call an undeclared external -- but naming them is what lets a compiler
+  ! that understands it call them deprecated at the call site.
+  use mpif_removed
   use mpif_attr_fns
   use mpif_check_fns
 

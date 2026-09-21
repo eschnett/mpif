@@ -225,6 +225,55 @@ attr_callback_kinds = Dict(["MPI_Comm_copy_attr_function" => "MPIF_ATTR_COMM_COP
                             "MPI_Copy_function" => "MPIF_ATTR_COMM_COPY_10",
                             "MPI_Delete_function" => "MPIF_ATTR_COMM_DELETE_10"])
 
+# ... and the C type the entry point that takes one declares. The ABI header
+# stopped declaring the two deprecated typedefs (mpi-forum/mpi-abi-stubs#96,
+# under MPI-5.0 20.2.1: "The API defined in mpi.h associated with the standard
+# ABI does not include features of MPI deprecated in MPI-3.1 or earlier"), so
+# naming them no longer compiles. Their MPI-2.0 replacements have the identical
+# C signature, and MPI_Keyval_create is already redirected to
+# MPI_Comm_create_keyval below, whose prototype names them -- so this is a
+# rename with nothing behind it. The Fortran side is untouched: mpif keeps the
+# deprecated abstract interfaces, which differ from their replacements in
+# `extra_state`'s kind (see "MPI_Copy_function and MPI_Delete_function give
+# extra_state default INTEGER" in CODE.md), and the trampoline kind above is
+# what carries that difference.
+deprecated_func_types = Dict(["MPI_Copy_function" => "MPI_Comm_copy_attr_function",
+                              "MPI_Delete_function" => "MPI_Comm_delete_attr_function"])
+
+# The routines mpif offers that the ABI does not: MPI-2.0 deprecated these five
+# and MPI-5.0 Chapter 16 still gives their Fortran bindings, so mpif keeps them
+# and calls their MPI-2.0 replacements. They are marked deprecated to the
+# compiler where the compiler has a way of hearing it; see `deprecation_block`
+# below and "Deprecation warnings" in CODE.md. The ten routines MPI-3.0 removed
+# outright are the other half of the same list and are marked in
+# src/mpif_removed.F90, which is also where they are declared at all.
+deprecated_routines = ["MPI_Attr_delete", "MPI_Attr_get", "MPI_Attr_put",
+                       "MPI_Keyval_create", "MPI_Keyval_free"]
+
+# `!GCC$ ATTRIBUTES DEPRECATED` for each of `names`, guarded, for the end of a
+# module's specification part. Three things this shape had to get right, each
+# measured:
+#
+# - The guard. gfortran 9 and 10 reject the attribute outright ("Unknown
+#   attribute in !GCC$ ATTRIBUTES statement") and CI has a gfortran-9 row, so
+#   the directive can only appear in a preprocessed file behind
+#   MPIF_HAVE_DEPRECATED_ATTRIBUTE. That is also why mpif.h carries none of
+#   this: it is read by Fortran `include` and never preprocessed.
+# - The names. A directive on a *generic* interface name is accepted and
+#   silently does nothing; only one on the specific warns, and it warns at a
+#   call written through the generic too. So mpi_f08 is marked on its `_f08`
+#   specifics, not on the generics that gather them.
+# - Column 1. Free form would accept it indented; column 1 is the one position
+#   valid in fixed form too, so the directive reads the same wherever it is
+#   written.
+deprecation_block(names) =
+    ["",
+     "#ifdef MPIF_HAVE_DEPRECATED_ATTRIBUTE",
+     "  ! Deprecated in MPI-2.0 and outside the MPI-5.0 ABI; mpif keeps them and",
+     "  ! forwards to the MPI-2.0 replacements. See CODE.md.",
+     ["!GCC\$ ATTRIBUTES DEPRECATED :: $name" for name in names]...,
+     "#endif"]
+
 # The callback prototypes, by the name a `func_type` gives. Keyed on the name
 # rather than on `apis`' own key, which is the name lowercased but need not be.
 callback_prototypes = Dict(a["name"] => a for a in values(apis) if a["attributes"]["callback"])
@@ -750,7 +799,11 @@ append!(c_implementations,
          "#include <stdlib.h>",
          "#include <string.h>",
          "",
-         "// Avoid deleted MPI-1 functions",
+         "// The five MPI-1 attribute routines are deprecated, so the ABI",
+         "// excludes them (MPI-5.0 20.2.1) and the ABI header no longer",
+         "// declares them at all. Their MPI-2.0 replacements take the same",
+         "// arguments and mean the same thing, so mpif keeps the Fortran",
+         "// bindings and calls those.",
          "",
          "#undef MPI_Attr_delete",
          "#undef MPI_Attr_get",
@@ -764,9 +817,9 @@ append!(c_implementations,
          "#define MPI_Keyval_free MPI_Comm_free_keyval",
          "",
          "// And again for the PMPI wrappers: the defines above say nothing about",
-         "// the token PMPI_Attr_delete. The ABI header declares all five PMPI_",
-         "// names, and Open MPI defines none of them, so the redirection is as",
-         "// necessary here as it is above.",
+         "// the token PMPI_Attr_delete, which mpif\'s own pmpi_attr_delete_ has",
+         "// to call. Neither the ABI header nor Open MPI has these five, so the",
+         "// redirection is as necessary here as it is above.",
          "",
          "#undef PMPI_Attr_delete",
          "#undef PMPI_Attr_get",
@@ -2092,7 +2145,10 @@ for key in sort(collect(keys(apis)))
                         any(startswith(p["kind"], "POLY") for p in prototype["parameters"])
                 embiggen_func = embiggen && kind == "POLYFUNCTION"
                 func_type = parameter["func_type"] * (embiggen_func ? "_c" : "")
-                push!(input_arguments, "$func_type* const $parname")
+                # The name in C, which is the name in Fortran except for the two
+                # deprecated attribute callbacks; see `deprecated_func_types`.
+                c_func_type = get(deprecated_func_types, func_type, func_type)
+                push!(input_arguments, "$c_func_type* const $parname")
                 if func_type ∈ keys(attr_callback_kinds)
                     # Predefined callbacks become the ABI's sentinel; a
                     # user-defined procedure becomes a trampoline, which finds
@@ -2102,7 +2158,7 @@ for key in sort(collect(keys(apis)))
                             ["void *c_$parname;",
                              "if (!mpif_predefined_callback((mpif_fortran_procedure)$parname, &c_$parname))",
                              "  c_$parname = mpif_attr_trampoline($attr_kind);"])
-                    push!(call_arguments, "($func_type*)c_$parname")
+                    push!(call_arguments, "($c_func_type*)c_$parname")
                     # Only once MPI has produced the keyval to register against
                     keyval = only(p["name"] for p in parameters if p["kind"] == "KEYVAL")
                     append!(output_conversions,
@@ -3134,11 +3190,12 @@ if translate_sentinels
 end
 
 append!(f_interfaces,
-        ["",
-         "  end interface",
-         "",
-         "end module mpif_functions",
-         ])
+        [["",
+          "  end interface"];
+         deprecation_block([q * r for r in deprecated_routines for q in ["", "P"]]);
+         ["",
+          "end module mpif_functions",
+          ]])
 
 # One generic per base name -- every base name, not just the overloaded ones,
 # since `MPI_Isend` is no longer a procedure but only the name a call is written
@@ -3267,8 +3324,11 @@ f08_implementations = [f08_raw_interfaces;
                        f08_generic_interfaces;
                        ["  interface"];
                        f08_specific_interfaces;
-                       ["  end interface";
-                        "";
+                       ["  end interface"];
+                       deprecation_block([q * r * "_f08"
+                                          for r in deprecated_routines
+                                          for q in ["", "P"]]);
+                       ["";
                         "end module mpif_f08_functions"]]
 
 println("Writing \"gen/mpif_functions.c\"...")

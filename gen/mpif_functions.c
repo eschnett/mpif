@@ -13,7 +13,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Avoid deleted MPI-1 functions
+// The five MPI-1 attribute routines are deprecated, so the ABI
+// excludes them (MPI-5.0 20.2.1) and the ABI header no longer
+// declares them at all. Their MPI-2.0 replacements take the same
+// arguments and mean the same thing, so mpif keeps the Fortran
+// bindings and calls those.
 
 #undef MPI_Attr_delete
 #undef MPI_Attr_get
@@ -27,9 +31,9 @@
 #define MPI_Keyval_free MPI_Comm_free_keyval
 
 // And again for the PMPI wrappers: the defines above say nothing about
-// the token PMPI_Attr_delete. The ABI header declares all five PMPI_
-// names, and Open MPI defines none of them, so the redirection is as
-// necessary here as it is above.
+// the token PMPI_Attr_delete, which mpif's own pmpi_attr_delete_ has
+// to call. Neither the ABI header nor Open MPI has these five, so the
+// redirection is as necessary here as it is above.
 
 #undef PMPI_Attr_delete
 #undef PMPI_Attr_get
@@ -16662,8 +16666,8 @@ void pmpi_issend_c_(
 
 // MPIF-SPLIT-BEGIN mpi_keyval_create_
 void mpi_keyval_create_(
-  MPI_Copy_function* const copy_fn,
-  MPI_Delete_function* const delete_fn,
+  MPI_Comm_copy_attr_function* const copy_fn,
+  MPI_Comm_delete_attr_function* const delete_fn,
   MPI_Fint* restrict const keyval,
   const MPI_Fint* restrict const extra_state,
   MPI_Fint* restrict const ierror
@@ -16676,8 +16680,8 @@ void mpi_keyval_create_(
   if (!mpif_predefined_callback((mpif_fortran_procedure)delete_fn, &c_delete_fn))
     c_delete_fn = mpif_attr_trampoline(MPIF_ATTR_COMM_DELETE_10);
   *ierror = MPI_Keyval_create(
-    (MPI_Copy_function*)c_copy_fn,
-    (MPI_Delete_function*)c_delete_fn,
+    (MPI_Comm_copy_attr_function*)c_copy_fn,
+    (MPI_Comm_delete_attr_function*)c_delete_fn,
     keyval,
     (void*)(intptr_t)*extra_state
   );
@@ -16690,8 +16694,8 @@ void mpi_keyval_create_(
 
 // MPIF-SPLIT-BEGIN pmpi_keyval_create_
 void pmpi_keyval_create_(
-  MPI_Copy_function* const copy_fn,
-  MPI_Delete_function* const delete_fn,
+  MPI_Comm_copy_attr_function* const copy_fn,
+  MPI_Comm_delete_attr_function* const delete_fn,
   MPI_Fint* restrict const keyval,
   const MPI_Fint* restrict const extra_state,
   MPI_Fint* restrict const ierror
@@ -16704,8 +16708,8 @@ void pmpi_keyval_create_(
   if (!mpif_predefined_callback((mpif_fortran_procedure)delete_fn, &c_delete_fn))
     c_delete_fn = mpif_attr_trampoline(MPIF_ATTR_COMM_DELETE_10);
   *ierror = PMPI_Keyval_create(
-    (MPI_Copy_function*)c_copy_fn,
-    (MPI_Delete_function*)c_delete_fn,
+    (MPI_Comm_copy_attr_function*)c_copy_fn,
+    (MPI_Comm_delete_attr_function*)c_delete_fn,
     keyval,
     (void*)(intptr_t)*extra_state
   );
