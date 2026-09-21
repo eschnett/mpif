@@ -1522,8 +1522,11 @@ points. The standard gives no such binding (A.5 has no `!(_c)` markers;
 
 ### Fortran-set attribute values are not visible to C as a pointer
 
-The one mpif defect the suite still reports (four tests on all twelve
-variants: `attrlangf90/f08`, `fandcattrf90/f08`). MPI-5.0 §19.3.7: when an
+The one mpif defect the suite still reports (`fandcattrf90/f08`, on all
+twelve variants). `attrlangf90/f08` reported it too until the ABI header
+stopped declaring `MPI_Keyval_create` and `MPI_Attr_put`
+(mpi-forum/mpi-abi-stubs#96); their C half calls both, so they now fail to
+build and say nothing about this. MPI-5.0 §19.3.7: when an
 integer-valued attribute is accessed from C, get_attr must return "the
 address of (a pointer to) the integer-valued attribute". mpif's wrapper
 hands MPI the value itself (`MPI_Comm_set_attr(comm, keyval,
@@ -1544,8 +1547,8 @@ What a fix needs — a feature, not a correction:
   (`fandcattrf90` tests exactly this).
 
 No test in `test/`, deliberately: it would be a failing test rather than an
-assertion, and the four suite tests state the requirement. Write one with
-the fix.
+assertion, and the two `fandcattr` suite tests state the requirement. Write
+one with the fix.
 
 ### `bind(C)`
 

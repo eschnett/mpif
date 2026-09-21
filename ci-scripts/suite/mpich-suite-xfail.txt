@@ -192,8 +192,8 @@ triaged openmpi/gcc/linux/26.04/x86_64
 xfail */*/*/*/*                f77  allctypesf         # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
 xfail */*/*/*/*                f08  allctypesf08       # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
 xfail */*/*/*/*                f90  allctypesf90       # uses MPI_LB and MPI_UB, removed in MPI-3.0 and absent from the MPI-5.0 ABI
-xfail */*/*/*/*                f08  attrlangf08        # attributes set in Fortran are not visible to C as a pointer; MISSING.md "Fortran-set attribute values"
-xfail */*/*/*/*                f90  attrlangf90        # attributes set in Fortran are not visible to C as a pointer; MISSING.md "Fortran-set attribute values"
+xfail */*/*/*/*                f08  attrlangf08        # its C half calls MPI_Keyval_create/MPI_Attr_put, which the ABI header no longer declares, so it no longer builds; it failed before that because attributes set in Fortran are not visible to C as a pointer, MISSING.md "Fortran-set attribute values"
+xfail */*/*/*/*                f90  attrlangf90        # its C half calls MPI_Keyval_create/MPI_Attr_put, which the ABI header no longer declares, so it no longer builds; it failed before that because attributes set in Fortran are not visible to C as a pointer, MISSING.md "Fortran-set attribute values"
 xfail */*/*/*/arm64            f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds
 xfail */*/*/*/aarch64          f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds
 xfail */*/*/*/x86_64           f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds

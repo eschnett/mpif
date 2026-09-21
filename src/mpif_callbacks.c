@@ -60,10 +60,16 @@ struct predefined_callback {
 // well defined on every platform mpif targets, and the ABI's own sentinels are
 // function pointers holding the addresses 0x0 and 0x1.
 static const struct predefined_callback predefined_callbacks[] = {
-    // Deprecated in MPI-2.0, still used by MPI_Keyval_create
-    {mpi_null_copy_fn_, (void *)MPI_NULL_COPY_FN},
-    {mpi_dup_fn_, (void *)MPI_DUP_FN},
-    {mpi_null_delete_fn_, (void *)MPI_NULL_DELETE_FN},
+    // Deprecated in MPI-2.0, still used by MPI_Keyval_create. The ABI
+    // header no longer declares MPI_NULL_COPY_FN, MPI_DUP_FN or
+    // MPI_NULL_DELETE_FN (MPI-5.0 20.2.1 excludes what MPI-3.1 deprecated), and
+    // the MPI_COMM_ forms are what they have to become anyway: mpif's
+    // MPI_Keyval_create is MPI_Comm_create_keyval (gen/mpif_functions.c), which
+    // takes the MPI_COMM_ sentinels. The ABI gave both spellings the same
+    // addresses -- 0x0, 0x1, 0x0 -- so this changes no address.
+    {mpi_null_copy_fn_, (void *)MPI_COMM_NULL_COPY_FN},
+    {mpi_dup_fn_, (void *)MPI_COMM_DUP_FN},
+    {mpi_null_delete_fn_, (void *)MPI_COMM_NULL_DELETE_FN},
 
     {mpi_comm_null_copy_fn_, (void *)MPI_COMM_NULL_COPY_FN},
     {mpi_comm_dup_fn_, (void *)MPI_COMM_DUP_FN},

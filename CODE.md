@@ -893,6 +893,31 @@ were found and verified.
     at all. And A.4 gives `MPI_TYPE_NULL_DELETE_FN`'s `ierror` `INTENT(OUT)`
     where its own abstract interface gives none — an inconsistency in the
     standard; mpif follows the abstract interface.
+- **The five deprecated MPI-1 attribute routines keep their Fortran bindings
+  and none of their C names.** MPI-5.0 §20.2.1: "The API defined in mpi.h
+  associated with the standard ABI does not include features of MPI deprecated
+  in MPI-3.1 or earlier", so the ABI header declares neither
+  `MPI_Attr_delete`/`get`/`put`, `MPI_Keyval_create`/`free`, nor the typedefs
+  `MPI_Copy_function`/`MPI_Delete_function`, nor the sentinels
+  `MPI_NULL_COPY_FN`/`MPI_DUP_FN`/`MPI_NULL_DELETE_FN`
+  (mpi-forum/mpi-abi-stubs#96). Chapter 16 still gives all five Fortran
+  bindings, so mpif still has them, and every one of them reaches MPI through
+  its MPI-2.0 replacement:
+  - `gen/mpif_functions.c`'s prologue `#define`s the five `MPI_`/`PMPI_` names
+    onto `MPI_Comm_*_attr`/`MPI_Comm_*_keyval` (`dev/mpiapi.jl`, the
+    `// The five MPI-1 attribute routines are deprecated` block). This predates
+    the ABI change — Open MPI never defined the `PMPI_` half either.
+  - The C entry point that takes the two callbacks declares them
+    `MPI_Comm_copy_attr_function`/`MPI_Comm_delete_attr_function`, whose C
+    signatures are those of the typedefs they replace, argument for argument
+    (`deprecated_func_types` in `dev/mpiapi.jl`); only Fortran tells the two
+    pairs apart.
+  - `src/mpif_callbacks.c` maps the three deprecated Fortran sentinels onto the
+    `MPI_COMM_` ABI values, which is what `MPI_Comm_create_keyval` wants and the
+    same three addresses (0x0, 0x1, 0x0) the deprecated spellings held.
+
+  None of this touches Fortran: the deprecated abstract interfaces stay, and
+  their `extra_state` keeps the kind the next bullet describes.
 - **`MPI_Copy_function` and `MPI_Delete_function` give `extra_state` default
   `INTEGER`, not `INTEGER(MPI_ADDRESS_KIND)`.** Chapter 16's own binding
   declares every argument `INTEGER` — unlike `MPI_Comm_copy_attr_function`,

@@ -79,9 +79,9 @@ case ${toolchain} in
         export FC=${FC:-gfortran-mp-15}
         ;;
     llvm)
-        export CC=${CC:-clang-mp-22}
-        export CXX=${CXX:-clang++-mp-22}
-        export FC=${FC:-flang-mp-22}
+        export CC=${CC:-clang-mp-23}
+        export CXX=${CXX:-clang++-mp-23}
+        export FC=${FC:-flang-mp-23}
         ;;
 esac
 

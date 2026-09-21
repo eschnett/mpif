@@ -14,9 +14,9 @@ bindings, which the installs here prune away.
 
 ## This machine
 
-- macOS 26.6 (Darwin 25.6.0), arm64, 12 cores, 36 GiB
+- macOS 27.0 (Darwin 27.0.0), arm64, 12 cores, 36 GiB
 - gfortran: `/opt/local/bin/gfortran-mp-15` (MacPorts gcc 15)
-- flang: `/opt/local/bin/flang-mp-22` (MacPorts `llvm` toolchain)
+- flang: `/opt/local/bin/flang-mp-23` (MacPorts `llvm` toolchain)
 - julia 1.12, for `dev/mpiapi.jl` and `dev/check-f08-bindings.jl`
 - pdftotext: `/opt/local/bin/pdftotext` (MacPorts poppler)
 
@@ -52,8 +52,11 @@ variant.
   Open MPI aio defect — open-mpi/ompi#14278, fixed upstream and in the pinned
   tree — surfaced on macOS and nowhere else. Reproducers: `bug-ompi-aio-eagain/`.
 - CI runs twelve variants natively, plus a 32-bit i386 container and a FreeBSD
-  VM. This machine is `<mpi>/<toolchain>/darwin/26/arm64`, which is *not* one
-  of CI's rows; do not expect the suite baseline table to match a local run.
+  VM. This machine is `<mpi>/<toolchain>/darwin/27/arm64`, which is *not* one
+  of CI's rows and has no `triaged` line, so a local suite run reports and
+  cannot fail; do not expect the suite baseline table to match it. Entries
+  scoped to `darwin/26` are this machine before the OS upgrade and no longer
+  match — see `MISSING.md` "Measured on `darwin/27/arm64`".
 
 **This machine's own name does not resolve to this machine.** `gethostname()`
 returns `Mac.pitp.io`, and the DNS this network hands out answers that with an
