@@ -974,9 +974,34 @@ sets `req_mpi_object.file` so the error handler is reachable. Reproducers:
   both implementations because flang's `STOP` prints an IEEE-exceptions line
   after "No Errors", which `runtests` counts as unexpected output — not an MPI
   defect. Expected on `*/llvm/darwin/*/*` and, measured on both
-  implementations, on `*/llvm/linux/26.04/*`. Still untriaged:
-  `*/*/linux/24.04/*`, where gcc fails it too, the aio message is absent and
-  the fix above changes nothing (see "Worth doing next").
+  implementations, on `*/llvm/linux/26.04/*` and `openmpi/llvm/linux/24.04/*`.
+  Still untriaged, and now MPICH's alone: `mpich/*/linux/24.04/*`. Open MPI
+  under gcc on 24.04 used to fail it too, with no aio message and for no reason
+  anyone had found; moving the pin to `v6.0.0rc1` made it pass, so that half was
+  this defect after all, reaching CI's runners without the Darwin symptom. What
+  MPICH fails it for on the same runners is still unknown (see "Worth doing
+  next").
+
+### OpenMPI on aarch64 Linux: a libevent warning trails a passing spawn test
+
+`spawnmult2f90` prints its `No Errors` and then, through PRRTE, libevent adds
+
+    [warn] event_active: event has no event_base set.
+
+twice. The test passed; `runtests` compares the whole output and fails it for
+the trailing lines. Seen on `openmpi/*/linux/24.04/aarch64` with the pinned
+`v6.0.0rc1`, not on x86_64, and **intermittently** — one run had it under f90
+alone, the next under f90 and f08.
+
+- Dropped by `ci-scripts/suite/mpiexec-filter.sh`, which already exists for the
+  `schizo_proxy` banner, rather than listed here: an expectation that only
+  sometimes holds fails as "unexpectedly passes" the moment the warning does
+  not fire. The line is matched in full, so any other libevent warning still
+  reaches the suite.
+- Not diagnosed and not reported upstream. It is a real libevent misuse
+  somewhere in PRRTE's teardown — an `event_active` on an event never handed a
+  base — but nothing here shows which call, and it changes no result.
+
 
 ### OpenMPI: left to itself it picks an interface it cannot use
 

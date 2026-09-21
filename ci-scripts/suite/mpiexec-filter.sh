@@ -26,6 +26,19 @@
 # So filter it out here instead. Only blocks that say "deprecated MCA variable"
 # are dropped: genuine Open MPI errors use the same dashed delimiters and must
 # still reach the test suite.
+#
+# One single line is dropped as well, by exact text:
+#
+#     [warn] event_active: event has no event_base set.
+#
+# libevent prints it through PRRTE while a spawn test tears down, after the
+# program has printed its "No Errors" -- so the test passed and `runtests`
+# failed it for the trailing line. Seen on aarch64 Linux with the Open MPI the
+# installer pins, on `spawnmult2f90`, and intermittently: one run had it under
+# f90 alone, another under f90 and f08. That is why it is filtered rather than
+# listed in mpich-suite-xfail.txt -- an expectation that only sometimes holds
+# would fail as "unexpectedly passes" the moment the warning did not fire.
+# Matched in full, so a libevent warning about anything else still gets through.
 
 set -uo pipefail
 
@@ -51,6 +64,7 @@ fi
         }
         next
     }
+    /^\[warn\] event_active: event has no event_base set\.$/ { next }
     { print }
     # An unterminated block is not ours to judge, so pass it through
     END { if (inblock) printf "%s", buf }
