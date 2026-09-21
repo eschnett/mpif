@@ -1522,11 +1522,18 @@ points. The standard gives no such binding (A.5 has no `!(_c)` markers;
 
 ### Fortran-set attribute values are not visible to C as a pointer
 
-The one mpif defect the suite still reports (`fandcattrf90/f08`, on all
-twelve variants). `attrlangf90/f08` reported it too until the ABI header
-stopped declaring `MPI_Keyval_create` and `MPI_Attr_put`
-(mpi-forum/mpi-abi-stubs#96); their C half calls both, so they now fail to
-build and say nothing about this. MPI-5.0 §19.3.7: when an
+The one mpif defect the suite still reports (four tests: `attrlangf90/f08`,
+`fandcattrf90/f08`). Two of the four now report it on some variants only.
+`attrlang*`'s C half calls `MPI_Keyval_create` and `MPI_Attr_put`, which the
+ABI header stopped declaring (mpi-forum/mpi-abi-stubs#96), so whether they
+still run turns on the *C* compiler's default standard, not on the header:
+measured, clang 23 (every macOS row, and CI's Homebrew clang) makes an
+implicit declaration an error and the test fails to build, while gcc 13.3
+(Ubuntu 24.04) makes it a warning, links against the symbols the
+implementation still exports, and the test runs and fails for the reason
+below. Both outcomes match the same `*/*/*/*/*` xfail entry, so no run's
+verdict moves either way. `fandcattr*` uses none of the removed names and is
+unaffected. MPI-5.0 §19.3.7: when an
 integer-valued attribute is accessed from C, get_attr must return "the
 address of (a pointer to) the integer-valued attribute". mpif's wrapper
 hands MPI the value itself (`MPI_Comm_set_attr(comm, keyval,
@@ -1547,8 +1554,8 @@ What a fix needs — a feature, not a correction:
   (`fandcattrf90` tests exactly this).
 
 No test in `test/`, deliberately: it would be a failing test rather than an
-assertion, and the two `fandcattr` suite tests state the requirement. Write
-one with the fix.
+assertion, and the four suite tests state the requirement. Write one with
+the fix.
 
 ### `bind(C)`
 
@@ -1611,10 +1618,13 @@ them fixable here:
   legacy code these routines exist for — get no warning.
   `ci-scripts/check-deprecation-warnings.sh` asserts that `mpif.h` keeps
   compiling and keeps quiet, so this stays a decision rather than drifting.
-- **Only gfortran acts on it.** flang accepts the directive and silently
-  ignores it (measured, flang 23); ifx and nvfortran do not recognise the
-  `!GCC$` sentinel at all, so it is a comment to them. The warning is a
-  gfortran-11-and-later feature, not an mpif one.
+- **Only gfortran acts on it.** Measured on CI's compile matrix, through
+  `ci-scripts/check-deprecation-warnings.sh`, which compiles a deprecated
+  module of its own: flang, ifx, nvfortran and amdflang all accept the
+  directive — `MPIF_HAVE_DEPRECATED_ATTRIBUTE` is "yes" on all four — and
+  none of them warns. Accepting-and-ignoring and not recognising the `!GCC$`
+  sentinel look identical from outside, and nothing here distinguishes them.
+  The warning is a gfortran-11-and-later feature, not an mpif one.
 - **`mpi_f08` does not get the removed ten.** `src/mpif_removed.F90` is used
   by `src/mpi.F90` only. Those routines take INTEGER handles and MPI-3.0
   removed them before `mpi_f08` could have offered them, so declaring them
