@@ -173,6 +173,21 @@ add_mpi_test(status_error_f08       SOURCES status_error_f08.f90                
 # deleted -- at -O2, and not at the -O0 the rest of these tests are built with.
 # MPICH's mprobef08 caught it only because its suite compiles with -O2.
 target_compile_options(status_error_f08 PRIVATE $<$<COMPILE_LANGUAGE:Fortran>:-O2>)
+
+# The two tests whose subject is the deprecated MPI-1 attribute routines call
+# them on purpose, and mpif marks them deprecated where the compiler can hear
+# it (CODE.md, "Deprecation warnings"). Silenced here alone, so that a
+# deprecation warning from any other test is a real one. Probed rather than
+# passed unconditionally: only gfortran has both the attribute and the flag.
+include(CheckFortranCompilerFlag)
+check_fortran_compiler_flag(-Wno-deprecated-declarations
+                            mpif_test_flag_no_deprecated_declarations)
+if(mpif_test_flag_no_deprecated_declarations)
+  foreach(t attr_fns_f90 keyval_create_f08)
+    target_compile_options(${t} PRIVATE
+      $<$<COMPILE_LANGUAGE:Fortran>:-Wno-deprecated-declarations>)
+  endforeach()
+endif()
 add_mpi_test(handle_types_f90       SOURCES handle_types_f90.f90                    LIBS MPI::MPI_Fortran)
 add_mpi_test(sentinel_addresses_c   SOURCES sentinel_addresses_c.c                  LIBS MPI::MPI_Fortran MPI::MPI_C)
 add_mpi_test(buffer_detach          SOURCES buffer_detach.f90                       LIBS MPI::MPI_Fortran)

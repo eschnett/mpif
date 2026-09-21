@@ -73,6 +73,14 @@ report HAVE_REAL16
 report HAVE_COMPLEX4
 report HAVE_COMPLEX32
 
+# Whether `!GCC$ ATTRIBUTES DEPRECATED` compiles, which is what marks the
+# fifteen routines mpif keeps outside the ABI. It guards no code -- a "no"
+# costs the warning and nothing else, the routines being there either way --
+# so it is reported and never asserted. gfortran 9 and 10 reject the attribute
+# and answer "no"; flang accepts and ignores it and answers "yes", which is
+# the one answer this probe cannot tell from a compiler that acts on it.
+report MPIF_HAVE_DEPRECATED_ATTRIBUTE
+
 # The one flag mpif asks for, and it asks in gfortran's spelling, so a compiler
 # that relaxes argument matching by default reports "no" here and is fine --
 # flang does, measured. There is no longer a Cray-pointer flag or feature to

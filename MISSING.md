@@ -1596,6 +1596,39 @@ the two modes cannot simply be combined.
   twice, so a *reordering* is invisible to that leg and is caught only by the
   leg that runs the executable.
 
+### `mpif.h` cannot carry a deprecation, and three compilers ignore one
+
+The fifteen routines mpif keeps outside the ABI are marked `!GCC$ ATTRIBUTES
+DEPRECATED` — see "Deprecation warnings" in `CODE.md`. Three gaps, none of
+them fixable here:
+
+- **`include/mpif.h` gets no mark.** It is read by Fortran `include` and never
+  preprocessed, so it cannot carry an `#ifdef` — and the directive must be
+  guarded, because gfortran 9 and 10 reject the attribute outright ("Unknown
+  attribute in `!GCC$ ATTRIBUTES` statement"; measured on `gcc:9` and `gcc:10`,
+  accepted from `gcc:11` on). Writing it unguarded would stop mpif compiling on
+  CI's `gfortran-9` row. So `include 'mpif.h'` programs — which is most of the
+  legacy code these routines exist for — get no warning.
+  `ci-scripts/check-deprecation-warnings.sh` asserts that `mpif.h` keeps
+  compiling and keeps quiet, so this stays a decision rather than drifting.
+- **Only gfortran acts on it.** flang accepts the directive and silently
+  ignores it (measured, flang 23); ifx and nvfortran do not recognise the
+  `!GCC$` sentinel at all, so it is a comment to them. The warning is a
+  gfortran-11-and-later feature, not an mpif one.
+- **`mpi_f08` does not get the removed ten.** `src/mpif_removed.F90` is used
+  by `src/mpi.F90` only. Those routines take INTEGER handles and MPI-3.0
+  removed them before `mpi_f08` could have offered them, so declaring them
+  there would invite passing a `TYPE(MPI_Datatype)` to a dummy expecting an
+  INTEGER. An `mpi_f08` program can still call them as undeclared externals,
+  exactly as it can today, and gets no warning; the suite's
+  `f08/rma/baseattrwinf08` is the measured case.
+
+No runtime warning to go with it, deliberately. It would reach all three
+interfaces and every compiler, which the compile-time mark does not — but the
+only honest default is on, and a line on stderr from a library is a thing
+every output-comparing test suite has to be taught about, for a diagnosis the
+caller can already get at compile time.
+
 ### MemorySanitizer cannot be run against an MPI
 
 MSan is the instrument that would answer "was this byte ever written", and

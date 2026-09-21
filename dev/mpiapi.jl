@@ -240,6 +240,40 @@ attr_callback_kinds = Dict(["MPI_Comm_copy_attr_function" => "MPIF_ATTR_COMM_COP
 deprecated_func_types = Dict(["MPI_Copy_function" => "MPI_Comm_copy_attr_function",
                               "MPI_Delete_function" => "MPI_Comm_delete_attr_function"])
 
+# The routines mpif offers that the ABI does not: MPI-2.0 deprecated these five
+# and MPI-5.0 Chapter 16 still gives their Fortran bindings, so mpif keeps them
+# and calls their MPI-2.0 replacements. They are marked deprecated to the
+# compiler where the compiler has a way of hearing it; see `deprecation_block`
+# below and "Deprecation warnings" in CODE.md. The ten routines MPI-3.0 removed
+# outright are the other half of the same list and are marked in
+# src/mpif_removed.F90, which is also where they are declared at all.
+deprecated_routines = ["MPI_Attr_delete", "MPI_Attr_get", "MPI_Attr_put",
+                       "MPI_Keyval_create", "MPI_Keyval_free"]
+
+# `!GCC$ ATTRIBUTES DEPRECATED` for each of `names`, guarded, for the end of a
+# module's specification part. Three things this shape had to get right, each
+# measured:
+#
+# - The guard. gfortran 9 and 10 reject the attribute outright ("Unknown
+#   attribute in !GCC$ ATTRIBUTES statement") and CI has a gfortran-9 row, so
+#   the directive can only appear in a preprocessed file behind
+#   MPIF_HAVE_DEPRECATED_ATTRIBUTE. That is also why mpif.h carries none of
+#   this: it is read by Fortran `include` and never preprocessed.
+# - The names. A directive on a *generic* interface name is accepted and
+#   silently does nothing; only one on the specific warns, and it warns at a
+#   call written through the generic too. So mpi_f08 is marked on its `_f08`
+#   specifics, not on the generics that gather them.
+# - Column 1. Free form would accept it indented; column 1 is the one position
+#   valid in fixed form too, so the directive reads the same wherever it is
+#   written.
+deprecation_block(names) =
+    ["",
+     "#ifdef MPIF_HAVE_DEPRECATED_ATTRIBUTE",
+     "  ! Deprecated in MPI-2.0 and outside the MPI-5.0 ABI; mpif keeps them and",
+     "  ! forwards to the MPI-2.0 replacements. See CODE.md.",
+     ["!GCC\$ ATTRIBUTES DEPRECATED :: $name" for name in names]...,
+     "#endif"]
+
 # The callback prototypes, by the name a `func_type` gives. Keyed on the name
 # rather than on `apis`' own key, which is the name lowercased but need not be.
 callback_prototypes = Dict(a["name"] => a for a in values(apis) if a["attributes"]["callback"])
@@ -3156,11 +3190,12 @@ if translate_sentinels
 end
 
 append!(f_interfaces,
-        ["",
-         "  end interface",
-         "",
-         "end module mpif_functions",
-         ])
+        [["",
+          "  end interface"];
+         deprecation_block([q * r for r in deprecated_routines for q in ["", "P"]]);
+         ["",
+          "end module mpif_functions",
+          ]])
 
 # One generic per base name -- every base name, not just the overloaded ones,
 # since `MPI_Isend` is no longer a procedure but only the name a call is written
@@ -3289,8 +3324,11 @@ f08_implementations = [f08_raw_interfaces;
                        f08_generic_interfaces;
                        ["  interface"];
                        f08_specific_interfaces;
-                       ["  end interface";
-                        "";
+                       ["  end interface"];
+                       deprecation_block([q * r * "_f08"
+                                          for r in deprecated_routines
+                                          for q in ["", "P"]]);
+                       ["";
                         "end module mpif_f08_functions"]]
 
 println("Writing \"gen/mpif_functions.c\"...")

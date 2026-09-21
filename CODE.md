@@ -576,6 +576,68 @@ attribute against A.4 on the TS branch, all 216 buffers and the 59
 asynchronous metadata arguments, and reported 762 divergences when it was
 put back.
 
+## Deprecation warnings
+
+mpif's API is deliberately wider than the ABI's: fifteen routines that
+MPI-5.0 §20.2.1 keeps out of `mpi.h` are here anyway, because legacy Fortran
+calls them and both implementations still offer them. They are marked
+deprecated so that a program using one is told at the call site rather than
+only in this file.
+
+- **What is marked.** The five MPI-1 attribute routines MPI-2.0 deprecated
+  (`MPI_ATTR_DELETE`/`GET`/`PUT`, `MPI_KEYVAL_CREATE`/`FREE`) and the ten
+  MPI-1 routines MPI-3.0 removed (`MPI_ADDRESS`, `MPI_TYPE_HVECTOR`/
+  `HINDEXED`/`STRUCT`, `MPI_TYPE_EXTENT`/`LB`/`UB`,
+  `MPI_ERRHANDLER_CREATE`/`SET`/`GET`), each with its `PMPI_` form: thirty
+  names. They keep working; a warning is all that changes.
+- **How.** `!GCC$ ATTRIBUTES DEPRECATED`, behind
+  `MPIF_HAVE_DEPRECATED_ATTRIBUTE` — a `check_fortran_source_compiles` in
+  `CMakeLists.txt`. The five deprecated routines are marked in the generated
+  modules (`dev/mpiapi.jl`'s `deprecation_block`, emitted at the end of
+  `gen/mpif_functions.F90` and `gen/mpif_f08_functions.F90`); the ten removed
+  ones in `src/mpif_removed.F90`, which is also the only place they are
+  declared at all.
+- **`EXTERNAL`, not an interface block**, for the removed ten. They are
+  reachable today only because Fortran lets a program call an undeclared
+  external procedure, and their arguments are wrong in exactly the way that
+  got them removed. An interface block would start type-checking calls that
+  compile everywhere else; `EXTERNAL` gives the attribute something to attach
+  to and leaves the interface implicit.
+
+Four facts decided the shape, each measured rather than assumed:
+
+- **gfortran 9 and 10 reject the attribute** ("Unknown attribute in `!GCC$
+  ATTRIBUTES` statement"), gfortran 11 and later act on it, and flang accepts
+  and ignores it. CI has a `gfortran-9` row, so the directive can only appear
+  where a guard can reach it — which is why the probe exists and why
+  `include/mpif.h` carries none of this. See `MISSING.md`.
+- **A directive on a generic interface name is accepted and does nothing.**
+  Only one on the specific warns — and it warns at a call written through the
+  generic too. So `mpi_f08` is marked on its `_f08` specifics.
+- **The attribute survives separate compilation**: gfortran records it in the
+  `.mod`, so a consumer of the installed `mpi.mod` gets the warning at its own
+  call.
+- **`src/mpif_removed.F90` has to be installed.** It declares no procedure and
+  compiles to an object with no symbols, but flang's `mpi.mod` names it, so a
+  consumer without `mpif_removed.mod` cannot `use mpi` at all. Caught by the
+  check below on the first flang run.
+
+Two places mark deprecated calls of their own on purpose and are silenced, so
+that a warning anywhere else is a real one: `gen/mpif_f08_wrappers.F90`, whose
+f08 forms of the five call the `mpi` module's forms of the same five, and
+`test/attr_fns_f90` and `test/keyval_create_f08`, whose subject they are. Both
+use `-Wno-deprecated-declarations` under a `check_fortran_compiler_flag`.
+
+`ci-scripts/check-deprecation-warnings.sh <mpif-prefix>` is the check, run by
+`scripts/macos-build-mpif.sh` and by `ci-scripts/compile-only.sh` on both CFI
+branches. It compiles its own deprecated module first to find out whether this
+compiler *acts* on the attribute — CMake's probe cannot tell accepting from
+acting, and flang accepts — then requires a warning from `use mpi` (both
+halves of the list) and `use mpi_f08` where it should come, and requires
+`include 'mpif.h'` to compile and stay quiet. Three ways this fails silently
+without it: the `#ifdef` off, a directive naming a generic, and a directive
+put where `mpif.h` would carry it.
+
 ## Verified as correct
 
 How the parts that look surprising actually work, recorded so that they do

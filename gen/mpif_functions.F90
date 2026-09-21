@@ -23638,4 +23638,19 @@ module mpif_functions
 
   end interface
 
+#ifdef MPIF_HAVE_DEPRECATED_ATTRIBUTE
+  ! Deprecated in MPI-2.0 and outside the MPI-5.0 ABI; mpif keeps them and
+  ! forwards to the MPI-2.0 replacements. See CODE.md.
+!GCC$ ATTRIBUTES DEPRECATED :: MPI_Attr_delete
+!GCC$ ATTRIBUTES DEPRECATED :: PMPI_Attr_delete
+!GCC$ ATTRIBUTES DEPRECATED :: MPI_Attr_get
+!GCC$ ATTRIBUTES DEPRECATED :: PMPI_Attr_get
+!GCC$ ATTRIBUTES DEPRECATED :: MPI_Attr_put
+!GCC$ ATTRIBUTES DEPRECATED :: PMPI_Attr_put
+!GCC$ ATTRIBUTES DEPRECATED :: MPI_Keyval_create
+!GCC$ ATTRIBUTES DEPRECATED :: PMPI_Keyval_create
+!GCC$ ATTRIBUTES DEPRECATED :: MPI_Keyval_free
+!GCC$ ATTRIBUTES DEPRECATED :: PMPI_Keyval_free
+#endif
+
 end module mpif_functions

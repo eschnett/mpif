@@ -350,6 +350,28 @@ check_fortran_source_compiles(
   MPIF_GENERIC_DISTINGUISHES_ADDRESS_FROM_COUNT
   SRC_EXT f90
 )
+
+# Whether the compiler accepts `!GCC$ ATTRIBUTES DEPRECATED`, which is how the
+# routines mpif keeps outside the ABI -- the five deprecated MPI-1 attribute
+# routines and the ten MPI-1 routines MPI-3.0 removed -- warn at the call site
+# instead of only in the documentation. See "Deprecation warnings" in CODE.md.
+#
+# Probed rather than assumed because gfortran 9 and 10 reject the attribute
+# outright ("Unknown attribute in !GCC$ ATTRIBUTES statement"), and CI has a
+# gfortran-9 row. A compiler that accepts the directive and ignores it -- flang
+# does, measured -- passes this probe and gains nothing, which costs nothing.
+check_fortran_source_compiles(
+  "
+  module probe
+    implicit none
+    external :: deprecated_thing
+!GCC$ ATTRIBUTES DEPRECATED :: deprecated_thing
+  end module probe
+  end
+  "
+  MPIF_HAVE_DEPRECATED_ATTRIBUTE
+  SRC_EXT F90
+)
 set(CMAKE_REQUIRED_FLAGS "${saved_CMAKE_REQUIRED_FLAGS}")
 
 # TS 29113 choice buffers
@@ -715,6 +737,7 @@ add_library(mpif
   src/mpif_constants.F90
   src/mpif_cptr.F90
   src/mpif_handle_types.F90
+  src/mpif_removed.F90
   src/mpif_types.F90
   src/mpi_f08.F90
   src/mpif_f08_constants.F90
@@ -775,7 +798,22 @@ target_compile_definitions(mpif PRIVATE
   $<$<BOOL:${MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND}>:MPIF_ADDRESS_KIND_DIFFERS_FROM_INTEGER_KIND>
   $<$<BOOL:${MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND}>:MPIF_ADDRESS_KIND_DIFFERS_FROM_COUNT_KIND>
   $<$<BOOL:${MPIF_HAVE_CFI}>:MPIF_HAVE_CFI>
+  $<$<BOOL:${MPIF_HAVE_DEPRECATED_ATTRIBUTE}>:MPIF_HAVE_DEPRECATED_ATTRIBUTE>
 )
+# mpif's own mpi_f08 wrappers for the five deprecated attribute routines call
+# the mpi module's forms of the same five, so the library warns about itself
+# ten times -- the one place where the deprecation is being used on purpose and
+# has nowhere else to go. Silenced for that file alone, and only where the
+# compiler takes both the attribute and the flag, so a warning anywhere else
+# still stands out. src/mpif_removed.c's callers are C and never see this.
+if(MPIF_HAVE_DEPRECATED_ATTRIBUTE)
+  check_fortran_compiler_flag(-Wno-deprecated-declarations
+                              Fortran_flag_no_deprecated_declarations)
+  if(Fortran_flag_no_deprecated_declarations)
+    set_source_files_properties(gen/mpif_f08_wrappers.F90 PROPERTIES
+      COMPILE_OPTIONS -Wno-deprecated-declarations)
+  endif()
+endif()
 target_compile_options(mpif PRIVATE
   $<$<COMPILE_LANGUAGE:Fortran>:${MPIF_Fortran_FLAGS_LIST}>
   $<$<COMPILE_LANGUAGE:C>:${MPIF_SANITIZE_C_FLAGS}>
@@ -869,6 +907,7 @@ install(FILES
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_raw.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_f08_types.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_handle_types.mod
+  ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_removed.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_functions.mod
   ${CMAKE_Fortran_MODULE_DIRECTORY}/mpif_types.mod
