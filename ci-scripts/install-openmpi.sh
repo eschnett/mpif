@@ -24,11 +24,12 @@
 
 set -euo pipefail
 
-# Open MPI v6.0.0rc1, the first release candidate to carry the MPI standard ABI
-# (v6.0.x changelog: "Added support for the MPI-5.0 standard ABI ... Note that
-# Fortran ABI support is not yet included" -- which is what f2c_abi_openmpi.c
-# below supplies). The tag resolves to commit
-# a7b1e6d6e13219472869997a57ab5ad1700ea7ca, tagged 2026-09-16.
+# Open MPI v6.0.0rc2. The v6.0.x series is the first to carry the MPI standard
+# ABI (v6.0.x changelog: "Added support for the MPI-5.0 standard ABI ... Note
+# that Fortran ABI support is not yet included" -- which is what
+# f2c_abi_openmpi.c below supplies). The tag resolves to commit
+# 733f33ec094d58b73d38c1c948265cf4aa211e3a, tagged 2026-10-01, a descendant of
+# v6.0.0rc1 (a7b1e6d6, the previous pin) by 108 commits.
 #
 # Pinned by commit rather than by the tag name, for the same reason the stamp
 # below is keyed on this value: a name that upstream can re-cut -- and an rc tag
@@ -38,11 +39,11 @@ set -euo pipefail
 # `v6.0.x` is not a snapshot of `main`. It branched at 67b2aa0a (2025-10-24),
 # months before open-mpi/ompi#13280 put the ABI on `main` (2026-08-05), so the
 # ABI here arrived by backport and the two lines have diverged: `gh api
-# repos/open-mpi/ompi/compare/<main-tip>...v6.0.0rc1` reports `diverged`, not
+# repos/open-mpi/ompi/compare/<main-tip>...v6.0.0rc2` reports `diverged`, not
 # `ahead`. Anything checked against a `main` commit therefore has to be checked
 # again here rather than inferred from ancestry -- which is how the two fixes
 # named below were established.
-OMPI_COMMIT=a7b1e6d6e13219472869997a57ab5ad1700ea7ca
+OMPI_COMMIT=733f33ec094d58b73d38c1c948265cf4aa211e3a
 
 prefix=${1:-}
 prepare_only=${MPI_PREPARE_ONLY:-0}

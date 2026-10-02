@@ -29,11 +29,12 @@
 //
 // Pure C, no Fortran involved. Exits nonzero when a surplus entry was written.
 //
-// Fixed upstream on `main` by 31d79547ba, which callocs the temporary and skips
-// the zero entries when converting back -- so the surplus is now left exactly as
-// the caller passed it in, rather than set to the null handle. The check below
-// therefore asks whether the entries were *touched*, seeded with a sentinel: a
-// probe that insisted on MPI_DATATYPE_NULL would report a fixed MPICH as broken,
+// Fixed upstream on `main` by 31d79547ba, and in 5.0.2 the same way: the
+// temporary is calloc'd and the zero entries skipped when converting back -- so
+// the surplus is now left exactly as the caller passed it in, rather than set
+// to the null handle. The check below therefore asks whether the entries were
+// *touched*, seeded with a sentinel: a probe that insisted on
+// MPI_DATATYPE_NULL would report a fixed MPICH as broken,
 // which it did before this was rewritten. The standard requires nothing of the
 // surplus; the defect was the conversion, not the value.
 

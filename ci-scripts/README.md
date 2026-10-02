@@ -45,10 +45,11 @@ depends on `ci-scripts/` and not on `ci-scripts/suite/`":
   pattern is wrong again.
 - each `docker/*.dockerfile` copies `ci-scripts/*.sh ci-scripts/*.txt
   ci-scripts/*.patch` before the MPI build, and `ci-scripts/suite` only at the end,
-  after the MPI and mpif are both built. There are no `*.patch` files at the
-  moment and that is fine: measured with BuildKit 29.8, a `COPY` builds as long
-  as *some* source glob matches, and fails only when they all match nothing. So
-  the pattern can stay for the next patch rather than being added back with it.
+  after the MPI and mpif are both built. The `*.patch` glob may match nothing
+  (it did while both implementations were carried unpatched) and that is fine:
+  measured with BuildKit 29.8, a `COPY` builds as long as *some* source glob
+  matches, and fails only when they all match nothing. So the pattern stays
+  whether or not a patch is carried.
 
 Both are patterns rather than lists of filenames, and deliberately. A key that
 names its inputs rots silently: a new install input left out of it would be served
@@ -83,12 +84,12 @@ Building and installing an MPI:
 
 | file | what it does |
 |------|--------------|
-| `install-mpich.sh` | clone `main` at the pinned commit, configure, build and install MPICH for the standard ABI. It carries no patches at the moment -- MISSING.md "MPICH is built from `main`" says what it used to carry and where each went |
-| `install-openmpi.sh` | the same for Open MPI, at the commit the `v6.0.0rc1` tag resolves to rather than on `main`. It too carries no patches at the moment -- MISSING.md "Open MPI is built from the `v6.0.0rc1` tag" says what it used to carry, and why a fix being on `main` does not put it in this tree |
+| `install-mpich.sh` | clone MPICH at the commit the `v5.0.2` tag resolves to, configure, build and install it for the standard ABI. It carries one patch, `mpich-abi-darwin-weak.patch` -- MISSING.md "MPICH is built from the v5.0.2 release" says what it carries, what it used to carry and where each went |
+| `install-openmpi.sh` | the same for Open MPI, at the commit the `v6.0.0rc2` tag resolves to rather than on `main`. It carries no patches at the moment -- MISSING.md "Open MPI is built from the `v6.0.0rc2` tag" says what it used to carry, and why a fix being on `main` does not put it in this tree |
 | `install-mpi-header.sh` | install the MPI Forum's official ABI `mpi.h` over the implementation's own, from `mpi-forum/mpi-abi-stubs` at the pinned `MPI_ABI_STUBS_COMMIT` and patched by `fortran/mpi.h.patch` for the Fortran declarations it omits. `install-mpi-stubs.sh` reads that commit out of this file |
 | `prune-install.sh` | delete everything the standard ABI does not define, from a list |
 | `mpich-prune.txt`, `openmpi-prune.txt` | those lists |
-| `*.patch` | fixes carried against the pinned upstream trees; each would say in its preamble what it is and why, and MISSING.md has the stories. There are none at present: both implementations are carried unpatched. `git apply` refuses fuzz, so one stops applying the day upstream moves the code under it -- which is how the MPICH ones were retired, and how the last Open MPI one was noticed to be upstream |
+| `*.patch` | fixes carried against the pinned upstream trees; each would say in its preamble what it is and why, and MISSING.md has the stories. One at present, `mpich-abi-darwin-weak.patch`, for MPICH 5.0.2 on macOS; Open MPI is carried unpatched. `git apply` refuses fuzz, so one stops applying the day upstream moves the code under it -- which is how the MPICH ones were retired, and how the last Open MPI one was noticed to be upstream |
 | `check-mpi-install.sh` | assert that what was installed is the standard ABI and nothing else |
 | `check-headers.sh` | check that every sentinel COMMON block in `mpif_constants.h` and `mpif_f08_types.F90` has its storage in `mpif_constants.c`, and that the set is MPI-5.0 §2.5.4's ten; run by the `checks` job in CI, and needs no MPI or compiler |
 | `flang-darwin-shim.sh` | works around flang's `-Wl,` handling on macOS, for MPICH's libtool |
@@ -143,10 +144,10 @@ Running the suite, in `suite/`:
 | `mpiexec-filter.sh` | drop the launcher banner Open MPI prints on every run, which the suite would otherwise read as test output |
 
 `test-mpich-suite.sh` takes the MPI prefix and the mpif prefix. It reads
-`MPICH_VERSION` out of `install-mpich.sh` one directory up -- the last release,
-not the `MPICH_COMMIT` the library is built from. The tests are deliberately
-held still while the library moves, so that bumping the commit is one variable
-against one expected-failure list; see MISSING.md "MPICH is built from `main`".
+`MPICH_VERSION` out of `install-mpich.sh` one directory up -- a release, kept
+separate from the `MPICH_COMMIT` the library is built from (today both are
+5.0.2), so that bumping either is one variable against one expected-failure
+list; see MISSING.md "MPICH is built from the v5.0.2 release".
 
 It compiles each language's tests with `make -k -j` before running any of them,
 rather than leaving that to `runtests`, which builds one test at a time. Most of

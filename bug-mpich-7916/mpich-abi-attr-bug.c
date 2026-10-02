@@ -44,11 +44,10 @@
 // Each step is printed before it is attempted, so the last line of output
 // identifies where it stopped.
 //
-// Fixed on `main` by 2eb9a812, and then made unreachable: MPICH grew a
-// weak-symbols-without-alias branch, so Darwin no longer builds the second
-// library whose second copy of the table was the whole defect. Kept as the
-// check, not as an open report -- it passes on the commit
-// ci-scripts/install-mpich.sh pins.
+// Fixed on `main` by 2eb9a812, and in 5.0.2 the same way: mpi_abi_util.c is
+// compiled into libpmpi_abi alone, so the second library 5.0.2 still builds on
+// Darwin holds no second copy of the table. Kept as the check, not as an open
+// report -- it passes on the commit ci-scripts/install-mpich.sh pins.
 
 #include <mpi.h>
 

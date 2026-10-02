@@ -162,7 +162,7 @@ int main(int argc, char **argv) {
   // and reported and took the whole probe down with it, and these three were
   // behind MPIF_PROBE_PAIRTYPES until it was fixed. They are unconditional now
   // that the tree ci-scripts/install-openmpi.sh builds carries the fix -- which
-  // for v6.0.0rc1 is not an inference from ancestry: that tree has upstream's
+  // for v6.0.0rc2 is not an inference from ancestry: that tree has upstream's
   // own regression test for it, ompi/test/mpi-abi/cases/c-abi/
   // converter_fortran_datatypes.cbody.in, which names the issue.
   failures += probe("MPI_2INTEGER", MPI_2INTEGER, 1, with_toint);
