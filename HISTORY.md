@@ -183,6 +183,15 @@ Once the biggest time sink in the project; the rules in `CLAUDE.md`
   fix leaves them exactly as the caller passed them, which the standard also
   allows. A probe that asserts one particular fix rather than the absence of
   the defect fails on the next fix. It seeds a sentinel now.
+- **Back from `main` to a release**, when the pin moved to MPICH v5.0.2
+  (2026-10-02, with Open MPI to v6.0.0rc2). 5.0.2 is on the 5.0.x branch,
+  diverged from the `main` commit before it, and carried six of the seven
+  fixes; the Darwin weak-export patch came back, caught by
+  `check-mpi-install.sh` on the first unpatched build (`_MPI_Init` strong),
+  and with it `lib/libpmpi.*` in the prune list, since 5.0.2 still builds
+  the separate profiling library on macOS. The 5.0.2 suite fixed `bsendf`
+  itself, which retired the two `bsendf` xfail lines and their "cannot
+  pass" entry.
 
 ## Environment and harness traps, each paid for once
 

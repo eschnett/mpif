@@ -611,121 +611,138 @@ in `compilers.rst`). So the 32-bit variants are MPICH-only — a scope limit,
 not something to work around; the two 32-bit dockerfiles should not get
 Open MPI counterparts.
 
-### MPICH is built from `main`, not from a release
+### MPICH is built from the v5.0.2 release
 
 `ci-scripts/install-mpich.sh` clones pmodels/mpich and checks out
-`MPICH_COMMIT`, currently `ab53493d` (2026-08-04, 512 commits past v5.0.1).
-The *test suite* still comes from the v5.0.1 tarball — `MPICH_VERSION` in the
-same file, which `ci-scripts/suite/test-mpich-suite.sh` reads by name — so
-moving `MPICH_COMMIT` is a one-variable experiment against one
-expected-failure list.
+`MPICH_COMMIT`, `2597fa69`, the commit the `v5.0.2` tag resolves to (tagged
+2026-09-28). The *test suite* comes from the same release — `MPICH_VERSION`
+in the same file, which `ci-scripts/suite/test-mpich-suite.sh` reads by name.
+The two are separate variables so either can be moved alone, as one variable
+against one expected-failure list.
 
-Why: building v5.0.1 here took seven carried fixes, and `main` has since made
-every one of them unnecessary, each in a shape of its own — MPICH is carried
-unpatched now, which no other stage of this project manages:
+5.0.2 is cut from the 5.0.x branch, not from `main`: `gh api
+repos/pmodels/mpich/compare/v5.0.2...ab53493d` reports `diverged`, 202 commits
+behind and 512 ahead (`ab53493d` being the `main` commit this was built from
+before). As with Open MPI's `v6.0.x`, a fix known to be on `main` has to be
+checked in the pinned tree, not inferred. Building v5.0.1 here took seven
+carried fixes; this is where each stands on 5.0.2:
 
-| carried for v5.0.1 | on `main` |
+| carried for v5.0.1 | on v5.0.2 |
 |---|---|
-| fetched commit `689a0869` | obsolete — rewrites code `main` no longer has |
-| fetched commit `bb167f1c`, the `libmpi_abi.so.1` version-info | an ancestor |
-| `mpich-abi-util-one-copy.patch` (#7916) | `2eb9a812`, and no separate `libpmpi_abi` is built at all |
-| `mpich-abi-f90-datatypes.patch` (#7929) | `66cd5734`, "create_f90 do not depend on fortran" |
-| `mpich-abi-type-get-contents.patch` (#7930) | `31d79547`, "fix output datatype conversion in `MPI_Type_get_contents`" |
-| `fortran/mpich-disable-file.patch` | `MPI_File_{c2f,f2c}` are no longer generated into the ABI library |
-| `mpich-abi-darwin-weak.patch` | a weak-symbols-without-alias branch; measured identical with and without the patch |
+| fetched commit `689a0869` | not needed — the defect it fixed is gone (next row) |
+| fetched commit `bb167f1c`, the `libmpi_abi.so.1` version-info | in ("Fix libmpi_abi.so version-info not being applied"); measured: `libmpi_abi.1.dylib`, compatibility version 2.0.0 |
+| `mpich-abi-util-one-copy.patch` (#7916) | in: `mpi_abi_util.c` is in `mpi_abi_core_sources`, which only `libpmpi_abi` compiles; reproducer passes |
+| `mpich-abi-f90-datatypes.patch` (#7929) | in: `src/mpi/datatype/create_f90.c` is byte-identical to `main`'s fixed one; reproducer and checker pass |
+| `mpich-abi-type-get-contents.patch` (#7930) | in: the generator `MPL_calloc`s and skips null entries, as on `main`; reproducer passes |
+| `fortran/mpich-disable-file.patch` | not needed: the generated `io_abi.c` has `MPI_File_toint`/`fromint` and no `MPI_File_c2f`/`f2c` |
+| `mpich-abi-darwin-weak.patch` | **carried again** — see "strong `MPI_*` exports on Darwin" below |
 
-Measured on `darwin/26/arm64` before adopting it: all six pairings that touch
-MPICH report the suite's expected failures exactly, at the same counts as
-v5.0.1 (3/5/8 `mpich/gcc`, 3/5/9 `mpich/llvm`, 7/9/13 and 7/9/14 for the
-Open MPI-runtime crosses); `test/` is 75 of 75 on each; `consume` passes on
-both toolchains. The three reproducers under `bug-mpich-*/` pass. Nothing was
-gained in the suite, because each of those defects was already worked around;
-what changed is that the workarounds went away.
+Measured on `darwin/27/arm64`: `mpich/gcc` fails 2/4/8 tests across
+f77/f90/f08 and `mpich/llvm` 2/4/9, the old 3/5/8 and 3/5/9 less `bsendf`
+and `bsendf90`, which 5.0.2's suite fixed (upstream `0dc1adc9` sizes the
+buffer from `MPI_BSEND_OVERHEAD`); their xfail lines are gone. The f90
+total drops from 122 to 120 because 5.0.2 removed `f90/f90types`
+(`createf90types`, a C test, which never failed here). `test/` is 81 of 81
+on both, natively and against Open MPI; the three `bug-mpich-*/` reproducers
+pass. There is no `triaged` line for `darwin/27`, so no run could have
+*failed*; the comparison is the evidence.
 
-- The retired patches are gone rather than kept for the release path: with
-  them deleted, `MPICH_COMMIT` is the only supported way to build. Recovering
-  the v5.0.1 recipe means `git show` on the commit that removed them.
-- `git apply` refuses fuzz, which is how three of the seven retired
-  themselves: they stopped applying and said so. The other four had to be
-  checked by hand — two fetched commits that are ancestors or obsolete, one
-  file upstream no longer generates, and the Darwin export style, which was
-  settled by building the same commit both ways and comparing `nm`.
-- Following an unreleased tree is the cost. The stamp in `MPI_SRC_DIR` is
-  keyed on the commit, so a bump re-prepares the tree rather than reusing a
-  stale one, and CI's `mpi-src` cache key hashes `ci-scripts/install-*.sh`.
-- Still not fixed on `main`: partitioned communication, and the suite
-  disagreements below (`greqf*`, `bsendf*`, `statusconv`, `spawnargvf90`),
-  which are about the tests rather than the library.
+- On macOS 5.0.2 builds a separate profiling library again (`configure`
+  finds neither weak aliases nor `HAVE_PRAGMA_WEAK` here), so
+  `libmpi_abi` links `libpmpi_abi`, and the non-ABI `libpmpi` is installed
+  beside them. `lib/libpmpi.*` is back in `ci-scripts/mpich-prune.txt`; its
+  glob cannot match `libpmpi_abi.*`. On Linux the pattern matches nothing and
+  `prune-install.sh` warns, which is the price of one list for both.
+- Moving to the release costs one carried patch, against none on `main`.
+  The patch targets the generator and is applied with `git apply`, so a
+  release that fixes it stops it applying.
+- Still not fixed: partitioned communication, and the suite disagreements
+  below (`greqf*`, `statusconv`, `spawnargvf90`), which are about the tests
+  rather than the library.
 
-### Open MPI is built from the `v6.0.0rc1` tag
+### Open MPI is built from the `v6.0.0rc2` tag
 
 `ci-scripts/install-openmpi.sh` clones open-mpi/ompi and checks out
-`OMPI_COMMIT`, the commit the `v6.0.0rc1` tag resolves to. A commit rather than
-the tag name because an rc tag is the kind upstream re-cuts, and the stamp in
-`MPI_SRC_DIR` is keyed on this value — a name that moved under it would reuse a
-stale prepared tree rather than re-preparing one.
+`OMPI_COMMIT`, `733f33ec`, the commit the `v6.0.0rc2` tag resolves to (tagged
+2026-10-01). A commit rather than the tag name because an rc tag is the kind
+upstream re-cuts, and the stamp in `MPI_SRC_DIR` is keyed on this value — a
+name that moved under it would reuse a stale prepared tree rather than
+re-preparing one.
 
 Why a release candidate rather than `main`: it is the first Open MPI release
 series to ship the standard ABI, it moves only when a new rc is cut, and it
-carries both fixes this repository used to carry — so Open MPI is unpatched
-now, `patches=()` in that script. What it does not carry is the Fortran ABI:
+carries both fixes this repository used to carry — so Open MPI is unpatched,
+`patches=()` in that script. What it does not carry is the Fortran ABI:
 the v6.0.x changelog says so outright, which is why `fortran/f2c_abi_openmpi.c`
 is still copied in and hooked into `Makefile_abi.include`.
 
 **`v6.0.x` is not a snapshot of `main`, and this is the trap.** It branched at
 `67b2aa0a` (2025-10-24), months before open-mpi/ompi#13280 put the ABI on
 `main` (2026-08-05); the ABI arrived here by backport. `gh api
-repos/open-mpi/ompi/compare/<main-tip>...v6.0.0rc1` reports `diverged`, not
-`ahead`. So a fix known to be on `main` is *not* thereby in this tree:
+repos/open-mpi/ompi/compare/main...v6.0.0rc2` reports `diverged`, not
+`ahead` (and did for rc1). So a fix known to be on `main` is *not* thereby in this tree:
 `5e21b7b2`, which fixed the empty `MPI_Info_set` value, is not an ancestor of
 the pinned commit even though the fix is present. Check the pinned source, not
 the ancestry — both entries below were settled that way, by reading
 `ompi/mpi/c/info_set.c.in` and
 `ompi/mca/fbtl/posix/fbtl_posix_ipwritev.c` in the checked-out tree.
+`v6.0.0rc2` *is* a descendant of `v6.0.0rc1` (`compare` reports `ahead` by
+108 commits, `behind` by 0), and both files still read as fixed in it.
 
-Measured on `darwin/27/arm64` before adopting it, one run each: `openmpi/gcc`
-fails 7/9/13 tests across f77/f90/f08 and `openmpi/llvm` 7/9/14 — the counts
-this file's `darwin/26` rows record for those two variants — and `test/` is 81
-of 81 and `consume` green on both. Every failure matched an expected-failure entry except the six
-`dgraph` rows, whose key is `darwin/26` while this machine now reports
-`darwin/27`; the six reported names line up one for one with those rows, so the
-difference is the OS in the key, not the pin. **Neither run could have failed**:
-there is no `triaged` line for `darwin/27`, so the comparison above is the
-evidence and the exit status is not. The two cross pairings, where Open MPI is
-the runtime under an MPICH-built mpif, were not run.
+Measured on `darwin/27/arm64` for rc2, one run each: with Open MPI as the
+runtime, `openmpi/gcc` and `mpich/gcc` fail 7/9/13 tests across f77/f90/f08
+and `openmpi/llvm` and `mpich/llvm` 7/9/14 — what rc1 gave, and the counts
+this file's `darwin/26` rows record. With MPICH as the runtime, both
+Open MPI-built variants give the MPICH numbers exactly (2/4/8, 2/4/9). `test/`
+is 81 of 81 on all eight pairings and `consume` green on all four variants.
+Every failure matched an expected-failure entry except the six `dgraph` rows,
+whose key is `darwin/26` while this machine reports `darwin/27`; the six
+reported names line up one for one with those rows, so the difference is the
+OS in the key, not the pin. **No run could have failed**: there is no
+`triaged` line for `darwin/27`, so the comparison is the evidence and the exit
+status is not.
 
-- Checked before adopting it, from the tag's tree: `Makefile_abi.include` is
-  byte-identical to the previous pin's but for an added SPDX line, so the
-  `comm_fromint_abi.c` hook and its `grep -q` guard still land; and all four
-  configure options the script passes exist
-  (`--enable-standard-abi` and `--enable-mpi1-compatibility` in
-  `config/ompi_configure_options.m4`, `--enable-script-wrapper-compilers` in
-  `config/opal_configure_options.m4`).
+- Checked from rc2's tree: `Makefile_abi.include` is unchanged since rc1 (it
+  is not among the files `compare` lists), so the `comm_fromint_abi.c` hook
+  and its `grep -q` guard still land; all the configure options the script
+  passes still exist (`--enable-standard-abi` and
+  `--enable-mpi1-compatibility` in `config/ompi_configure_options.m4`,
+  `--enable-script-wrapper-compilers` in `config/opal_configure_options.m4`);
+  and upstream's regression test for open-mpi/ompi#14243, which
+  `test/predefined_types_c.c` cites, is still in it.
+- rc2 changes `topo/base`'s dist-graph creation ("do not inherit the parent
+  topology"), and the `dgraph` six still fail, reporting ranks that are "NOT
+  a neighbor" — the `reorder` symptom below, not something that change
+  touched.
 - Still open upstream and unaffected by the move: open-mpi/ompi#14297
   (`MPI_Info_create_env` across `MPI_Init`) and #14298 (a fresh window has a
   name). Their xfail entries stand.
 
 
-### MPICH: strong `MPI_*` exports on Darwin broke substituting the library — fixed upstream
+### MPICH: strong `MPI_*` exports on Darwin break substituting the library — patched here
 
 The ABI implementations export `MPI_*` as weak definitions, and on Mach-O
 that is binding: a client linked against a weak-def export can only be
 satisfied by another weak definition, so an executable linked against
-Open MPI died in dyld (`Symbol not found: _MPI_Abort ... Expected as weak-def
-export`) when MPICH's library was put first. MPICH's weak-symbol machinery had
-no branch Mach-O could use, so on Darwin it exported strong, and a local patch
-added `#pragma weak` per public definition in the binding generator.
+Open MPI dies in dyld (`Symbol not found: _MPI_Abort ... Expected as weak-def
+export`) when MPICH's library is put first. MPICH 5.0.2's weak-symbol
+machinery has no branch Mach-O can use — only weak *aliases*, and
+`mpichconf.h` here leaves `HAVE_PRAGMA_WEAK` and `HAVE_WEAK_ATTRIBUTE`
+undefined — so on Darwin it compiles the bindings twice and exports strong.
 
-`main` now has a weak-symbols-*without*-alias branch — `#pragma weak X` plus a
-wrapper calling `PX` — and `HAVE_PRAGMA_WEAK` is the macro `configure` defines
-on this platform, so the exports are already weak and the patch was dropped.
-Measured rather than assumed: two prefixes built from the same commit, one with
-the patch and one without, export the same 694 `MPI_*` symbols, all 694 weak,
-none strong.
+Measured on 5.0.2 unpatched: `check-mpi-install.sh` refuses the prefix,
+`_MPI_Init` being `(__TEXT,__text) external`. With
+`ci-scripts/mpich-abi-darwin-weak.patch`, which adds `#pragma weak` per
+public definition on `__APPLE__` in the binding generator, both toolchains
+export 698 `MPI_*` symbols, all weak, none strong.
 
-- `check-mpi-install.sh` asserts the export style on every Darwin prefix, and
-  is now the only thing holding it. It is what a regression would trip.
-- `fortran/f2c_abi_mpich.c` still carries its own `#pragma weak` for the
+- `main` fixed it upstream with a weak-symbols-*without*-alias branch in the
+  same generator (`HAVE_PRAGMA_WEAK` without an alias), which is why the
+  patch was dropped while this was built from `main`. That branch is not in
+  5.0.2; the patch goes once a release has it, and `git apply` refusing to
+  apply is what will say so.
+- `check-mpi-install.sh` asserts the export style on every Darwin prefix.
+- `fortran/f2c_abi_mpich.c` carries its own `#pragma weak` for the
   handle-conversion functions mpif injects; those are mpif's code and nothing
   upstream covers them.
 - ELF lookup is indifferent to weak-vs-strong, so only macOS ever saw this.
@@ -749,8 +766,9 @@ bindings; one macro stood for both.
 
 Fixed on `main` by `66cd5734`, "create_f90 do not depend on fortran", which
 removes the dependency rather than splitting the macro; the local patch that
-split it is gone. Reproducer and checker in `bug-mpich-f90-datatypes/`, both
-passing on the pinned commit.
+split it is gone. 5.0.2's `create_f90.c` is byte-identical to that fixed one.
+Reproducer and checker in `bug-mpich-f90-datatypes/`, both passing on the
+pinned commit.
 
 ### MPICH: `MPI_Type_get_contents` converted uninitialised memory — fixed upstream
 
@@ -764,7 +782,7 @@ aborted in `ABI_Datatype_from_mpi` (`MPIR_Assert`); garbage that did not was
 handed back. Heap contents decided which, so the failures looked
 nondeterministic (see `HISTORY.md`).
 
-Fixed on `main` by `31d79547`: the temporary is `MPL_calloc`'d and the
+Fixed on `main` by `31d79547` and in 5.0.2: the temporary is `MPL_calloc`'d and the
 conversion skips the zero entries. Note the shape — the surplus is left
 **exactly as the caller passed it**, not set to the null handle, which is all
 the standard asks for. `bug-mpich-type-get-contents/` seeds a sentinel and
@@ -888,12 +906,10 @@ Linux builds had weak symbols, one library, one table, and could not hit it.
 
 Fixed on `main` by
 [2eb9a812](https://github.com/pmodels/mpich/commit/2eb9a812025d5b22703fd35398714ba1c9e4f218),
-and then made unreachable: `main` grew a weak-symbols-without-alias branch
-(`HAVE_PRAGMA_WEAK` is now the macro `configure` defines here), so no second
-library is built anywhere and there is no second table to leave uninitialised.
-`lib/libpmpi.*` is out of `ci-scripts/mpich-prune.txt` for that reason —
-`prune-install.sh` warns about a pattern that matches nothing, and a permanent
-warning on every install is worth less than the pattern. Reproducer:
+and fixed in 5.0.2 the same way: `mpi_abi_util.c` is listed in
+`mpi_abi_core_sources`, which only `libpmpi_abi` compiles, so the second
+library that 5.0.2 builds on macOS again (see "MPICH is built from the v5.0.2
+release") has no second table. Reproducer:
 `bug-mpich-7916/mpich-abi-attr-bug.c`, pure C, passing on the pinned commit.
 
 ### OpenMPI: an empty info value was rejected — fixed upstream, patch dropped
@@ -969,7 +985,7 @@ sets `req_mpi_object.file` so the error handler is reachable. Reproducers:
 
 - Established by reading `ompi/mca/fbtl/posix/fbtl_posix_ipwritev.c` in the
   pinned tree, not by ancestry: the merge is on `main`, and `v6.0.x` diverged
-  from `main` long before it. See "Open MPI is built from the `v6.0.0rc1` tag".
+  from `main` long before it. See "Open MPI is built from the `v6.0.0rc2` tag".
 - Related but distinct, and still current: `i_fcoll_test` under flang fails on
   both implementations because flang's `STOP` prints an IEEE-exceptions line
   after "No Errors", which `runtests` counts as unexpected output — not an MPI
@@ -1085,11 +1101,6 @@ network changed in August 2026 (`CLAUDE.md` "This machine").
 Each carried in `ci-scripts/suite/mpich-suite-xfail.txt` with a reason
 pointing here.
 
-- **`bsendf`, `bsendf90`** attach a 400-byte buffer for a 10-integer send.
-  The ABI's `MPI_BSEND_OVERHEAD` is 512 (a bound over all implementations;
-  MPICH's own is 96), and an ABI MPICH checks against it: "Buffer size of
-  400 is smaller than MPI_BSEND_OVERHEAD (512)". MPICH-only — Open MPI's
-  attach has no size check beyond `size <= 0`.
 - **`dgraph_wgtf`, `dgraph_unwgtf` + f90/f08 copies** create a ring with
   `reorder = .true.` and then check neighbours against ranks in
   MPI_COMM_WORLD — valid only if the reorder did not reorder, and MPI-5.0
@@ -1683,7 +1694,7 @@ summary:
   upstream and in the pinned tree. Where a patch was held back, the
   local one is provisional: an upstream fix of a different shape supersedes
   it — which is what happened to pmodels/mpich#7929 (f90 datatypes) and
-  #7930 (get_contents), both fixed on `main` in a shape of upstream's own
+  #7930 (get_contents), both fixed upstream, on `main` and in 5.0.2, in a shape of upstream's own
   and both still open as issues.
 - Undecided: filing the `spawnargvf90` f08-copy inconsistency.
 
@@ -1696,19 +1707,22 @@ from it, in either direction. Count entries rather than trusting a number:
     awk '$1=="xfail"||$1=="flaky"' ci-scripts/suite/mpich-suite-xfail.txt | wc -l
 
 The table below is CI's twelve native variants, as failures out of 104 f77,
-122 f90 and 136 f08 tests, for telling a change from the background noise at
+120 f90 and 136 f08 tests, for telling a change from the background noise at
 a glance. It derives from the run of `baa7f65` adjusted for fixes landed
 since (derivations in `HISTORY.md`); some rows are inferred from their twin
-rather than re-measured, and CI is what confirms them.
+rather than re-measured, and CI is what confirms them. The MPICH rows'
+f77 and f90 columns, and the f90 total, are inferred for the 5.0.2 suite
+from this machine (`bsendf` and `bsendf90` pass; `f90/f90types` is gone)
+and not yet seen in CI.
 
 | variant                          | f77 | f90 | f08 |
 |----------------------------------|-----|-----|-----|
-| mpich/gcc/darwin/15/arm64        |   3 |   9 |  11 |
-| mpich/gcc/linux/24.04/x86_64     |   3 |  10 |  12 |
-| mpich/gcc/linux/24.04/aarch64    |   4 |   9 |  12 |
-| mpich/llvm/darwin/15/arm64       |   3 |   9 |  11 |
-| mpich/llvm/linux/24.04/x86_64    |   4 |  10 |  12 |
-| mpich/llvm/linux/24.04/aarch64   |   4 |  10 |  12 |
+| mpich/gcc/darwin/15/arm64        |   2 |   8 |  11 |
+| mpich/gcc/linux/24.04/x86_64     |   2 |   9 |  12 |
+| mpich/gcc/linux/24.04/aarch64    |   3 |   8 |  12 |
+| mpich/llvm/darwin/15/arm64       |   2 |   8 |  11 |
+| mpich/llvm/linux/24.04/x86_64    |   3 |   9 |  12 |
+| mpich/llvm/linux/24.04/aarch64   |   3 |   9 |  12 |
 | openmpi/gcc/darwin/15/arm64      |   5 |   7 |  12 |
 | openmpi/gcc/linux/24.04/x86_64   |   8 |  12 |  15 |
 | openmpi/gcc/linux/24.04/aarch64  |   5 |   7 |  12 |
@@ -1716,10 +1730,14 @@ rather than re-measured, and CI is what confirms them.
 | openmpi/llvm/linux/24.04/x86_64  |   8 |  12 |  15 |
 | openmpi/llvm/linux/24.04/aarch64 |   5 |   7 |  12 |
 
-- This machine's rows are not in the table (`darwin/26`): measured locally
-  after the assumed-rank change, `mpich/gcc/darwin/26/arm64` reports no
-  differences at 3/5/8, `mpich/llvm` at 3/5/9, `openmpi/gcc` at 7/9/13 and
-  `openmpi/llvm` at 7/9/14.
+- This machine's rows are not in the table. Now `darwin/27`, measured on
+  MPICH 5.0.2 and Open MPI v6.0.0rc2, all eight pairings: 2/4/8 and 2/4/9
+  (gcc, llvm) wherever MPICH is the runtime, 7/9/13 and 7/9/14 wherever
+  Open MPI is. Against the `darwin/26` rows, measured after the
+  assumed-rank change on the earlier pins (3/5/8, 3/5/9, 7/9/13, 7/9/14),
+  the only differences are `bsendf`/`bsendf90` and the `dgraph` six's
+  OS key. The Docker counts below predate the 5.0.2 suite, so expect their
+  MPICH-runtime f77 and f90 figures one lower each when next measured.
 - Nor are the four arm64v8 Docker images (`linux/26.04/aarch64`), measured
   2026-08-10: they report the same 3/5/8, 3/5/9, 7/9/13 and 7/9/14 as the
   `darwin/26` rows above, which is the same machine and the same compilers

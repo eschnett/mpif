@@ -24,26 +24,28 @@
 
 set -euo pipefail
 
-# The *library* is built from a commit on pmodels/mpich `main`, not from a
-# release. Building v5.0.1 here took seven carried fixes -- two upstream commits
-# fetched by URL and five patches; `main` has since made every one of them
-# unnecessary, each in a shape of its own, so nothing is carried and nothing is
-# measurably different: all four local variants report the suite's expected
-# failures exactly, on both runtimes. MISSING.md "MPICH is built from `main`"
-# says which fix went where.
+# MPICH v5.0.2, the release. The tag resolves to commit
+# 2597fa69b75e99531d92eaa4d00c29b7f7d862e0 (the merge of pmodels/mpich#7984,
+# tagged 2026-09-28). It is cut from the 5.0.x branch, not from `main`: `gh api
+# repos/pmodels/mpich/compare/v5.0.2...<main-commit>` reports `diverged`, so a
+# fix known to be on `main` has to be checked in this tree rather than inferred
+# from ancestry. Of the seven fixes building v5.0.1 here took, 5.0.2 carries
+# six in one shape or another and still needs one, the Darwin weak-export
+# patch below; MISSING.md "MPICH is built from the v5.0.2 release" says which
+# went where.
 #
-# Pinned to a commit rather than to the branch name, for the reason
-# install-openmpi.sh gives: a floating ref would never invalidate the cached,
-# prepared tree in MPI_SRC_DIR, and a moving upstream is exactly what the stamp
-# below exists to notice.
-MPICH_COMMIT=ab53493dad85ffee0fc95812b250e1c8dacf7982
+# Pinned to a commit rather than to the tag name, for the reason
+# install-openmpi.sh gives: a name upstream can move would never invalidate the
+# cached, prepared tree in MPI_SRC_DIR, and a moving upstream is exactly what
+# the stamp below exists to notice.
+MPICH_COMMIT=2597fa69b75e99531d92eaa4d00c29b7f7d862e0
 
-# The *test suite* stays on the last release, and this is the variable
+# The release the *test suite* is fetched from, and the variable
 # ci-scripts/suite/test-mpich-suite.sh reads out of this file (by name, with
-# sed) to fetch it. Holding the tests still while the library moves is what
-# makes a change of MPICH_COMMIT a one-variable experiment against one
-# expected-failure list.
-MPICH_VERSION=5.0.1
+# sed) to fetch it. Kept separate from MPICH_COMMIT so the two can be moved
+# one at a time, each a one-variable experiment against one expected-failure
+# list; today both name 5.0.2.
+MPICH_VERSION=5.0.2
 
 prefix=${1:-}
 prepare_only=${MPI_PREPARE_ONLY:-0}
@@ -60,17 +62,20 @@ repodir=$(cd "${scriptdir}/.." && pwd)
 nprocs=$(getconf _NPROCESSORS_ONLN 2>/dev/null ||
              sysctl -n hw.ncpu 2>/dev/null || echo 4)
 
-# Fixes applied to the source tree below -- none at the moment, and the loop is
-# kept because the next one will want it. Two things a patch put back here has to
-# respect: `git apply` rather than `patch`, so that it fails loudly rather than
-# with fuzz once upstream moves the code under it; and the fact that these run
-# *before* `autogen.sh`, so a patch against a file autogen regenerates must
-# target the generator (`maint/local_python/binding_c.py`) rather than its output
-# (`src/binding/abi/c_binding_abi.c`), or it will be overwritten without a word.
+# Fixes applied to the source tree below. Each patch says in its own preamble
+# what it is, where it comes from and why it is still needed here. Two things a
+# patch here has to respect: `git apply` rather than `patch`, so that it fails
+# loudly rather than with fuzz once upstream moves the code under it; and the
+# fact that these run *before* `autogen.sh`, so a patch against a file autogen
+# regenerates must target the generator (`maint/local_python/binding_c.py`)
+# rather than its output (`src/binding/abi/c_binding_abi.c`), or it will be
+# overwritten without a word.
 #
 # The array is expanded with the `${a[@]+...}` guard throughout so that being
 # empty is not an unbound variable under `set -u` in bash 3.2, which macOS has.
-patches=()
+patches=(
+    "${scriptdir}/mpich-abi-darwin-weak.patch"
+)
 
 # A prefix is not usable when `make install` is done with it, only when the
 # steps after it are: until the wrapper compilers select the ABI, the

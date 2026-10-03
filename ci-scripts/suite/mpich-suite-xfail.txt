@@ -122,9 +122,12 @@ triaged openmpi/llvm/darwin/26/arm64
 
 # All four of this machine's variants are measured, one run each; Open MPI
 # contributed the six `dgraph` entries below, on both toolchains alike. Remeasured
-# unchanged when MPICH moved from 5.0.1 to `main` at ab53493d -- all six pairings
-# that touch MPICH reported no differences, which is what let all seven carried
-# fixes go; MISSING.md "MPICH is built from `main`" has the accounting.
+# unchanged when MPICH moved from 5.0.1 to `main` at ab53493d, and again when it
+# moved on to the 5.0.2 release and Open MPI to v6.0.0rc2 -- that time on
+# darwin/27, all eight pairings, differing from the darwin/26 rows only by
+# `bsendf`/`bsendf90`, which 5.0.2's suite fixed (the `dgraph` six report as
+# unexpected there only because their rows say darwin/26); MISSING.md "MPICH is built from the v5.0.2 release" has
+# the accounting.
 #
 # **Measure a variant from a prefix the install script has just written**, not
 # from whatever `build/mpi/<variant>` happens to hold. Once cost two runs here:
@@ -198,8 +201,6 @@ xfail */*/*/*/arm64            f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL
 xfail */*/*/*/aarch64          f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds
 xfail */*/*/*/x86_64           f08  attrmpi1f08        # the MPI-2 MPI_COMM_NULL_COPY_FN handed to the MPI-1 MPI_Keyval_create: INTEGER(4) vs INTEGER(8). Per 64-bit arch: on a 32-bit one the two kinds coincide and it builds
 xfail */*/*/*/amd64            f08  attrmpi1f08        # the same, under FreeBSD's spelling of the same 64-bit x86 that x86_64 above names
-xfail mpich/*/*/*/*            f77  bsendf             # attaches 400 bytes, under the ABI's MPI_BSEND_OVERHEAD of 512; MISSING.md "suite tests that cannot pass"
-xfail mpich/*/*/*/*            f90  bsendf90           # attaches 400 bytes, under the ABI's MPI_BSEND_OVERHEAD of 512; MISSING.md "suite tests that cannot pass"
 # The `dgraph` six are per OS version rather than per OS on purpose. Open MPI
 # remaps or does not depending on what hwloc sees, and macOS 15 and macOS 26 differ:
 # the runners pass these and this machine fails them. A `darwin/*/arm64` selector

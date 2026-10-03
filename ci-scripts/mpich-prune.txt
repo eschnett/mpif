@@ -38,4 +38,5 @@ lib/libmpichf90.*
 lib/libmpifort.*
 lib/libmpl.*
 lib/libopa.*
+lib/libpmpi.*                          # macOS only: built where configure finds no weak aliases
 lib/pkgconfig/mpich.pc

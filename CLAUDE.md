@@ -174,13 +174,15 @@ pinned to `lo0`, and mpif's own `test/` never spawns.
   run the install again.
 - **Both implementations are pinned by commit** — `MPICH_COMMIT` and
   `OMPI_COMMIT` in `ci-scripts/install-*.sh` — but to different kinds of
-  thing: MPICH to a commit on `main`, Open MPI to the commit the `v6.0.0rc1`
-  tag resolves to. A commit either way, because a name upstream can move or
-  re-cut would never invalidate the cached, prepared source tree. The MPICH
-  *suite* is separate and stays on the last release (`MPICH_VERSION` in the
-  same file), so bumping the library is one variable against one
-  expected-failure list. `MISSING.md` "MPICH is built from `main`" and
-  "Open MPI is built from the `v6.0.0rc1` tag" say what each buys and costs.
+  thing: MPICH to the commit its `v5.0.2` release tag resolves to, Open MPI
+  to the commit the `v6.0.0rc2` release-candidate tag resolves to. A commit
+  either way, because a name upstream can move or re-cut would never
+  invalidate the cached, prepared source tree. The MPICH *suite* has a
+  variable of its own (`MPICH_VERSION` in the same file, today also 5.0.2),
+  so library and suite can each be bumped as one variable against one
+  expected-failure list. `MISSING.md` "MPICH is built from the v5.0.2
+  release" and "Open MPI is built from the `v6.0.0rc2` tag" say what each
+  buys and costs.
 - **Never `make install` an MPI into `build/mpi/<variant>` by hand.** The
   install script afterwards repoints the wrapper compilers at the ABI
   library, prunes the implementation's own headers, Fortran modules and
@@ -209,7 +211,7 @@ pinned to `lo0`, and mpif's own `test/` never spawns.
 
 To run one directory of the suite rather than all of it:
 
-    cd build/suite/<variant>-run-<runtime>/mpich-5.0.1/test/mpi/f90/rma
+    cd build/suite/<variant>-run-<runtime>/mpich-5.0.2/test/mpi/f90/rma
     MPIF_REAL_MPIEXEC=<mpi-prefix>/bin/mpiexec ../../runtests -tests=testlist \
         -mpiexec=<repo>/ci-scripts/suite/mpiexec-filter.sh -maxnp=4
 
